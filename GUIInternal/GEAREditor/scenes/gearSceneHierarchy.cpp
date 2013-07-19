@@ -192,7 +192,7 @@ bool gearSceneHierarchy::onKeyDown(int charValue, int flag)
 		if(selectedNode)
 		{
 			object3d* obj=(object3d*)((assetUserData*)selectedNode->getUserData())->getAssetObjectPtr();
-			if(monoWrapper::mono_engine_removeObject3d(engine_getWorld(0), obj))
+			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), obj))
 			{
 				geTreeNode* parentNode = (geTreeNode*)selectedNode->getParent();
 				parentNode->removeChild(selectedNode);

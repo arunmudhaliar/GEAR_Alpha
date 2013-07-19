@@ -1,0 +1,86 @@
+#ifndef GXMESH_H
+#define GXMESH_H
+
+#include "object3d.h"
+#include "gxTriInfo.h"
+#include "gxMaterial.h"
+
+class gxUV
+{
+public:
+	gxUV()
+	{
+		m_pMaterialPtr=NULL;
+		m_pszfGLTexCoordList=NULL;
+		m_iMatIDFromFile=-1;
+        m_cVBO_texID=0;
+	}
+
+	~gxUV()
+	{
+		m_pMaterialPtr=NULL;
+		GX_DELETE_ARY(m_pszfGLTexCoordList);
+	}
+
+	int			m_iMatIDFromFile;
+	gxMaterial* m_pMaterialPtr;		//must not delete this pointer
+	float*		m_pszfGLTexCoordList;
+    unsigned int m_cVBO_texID;
+};
+
+
+class gxMesh : public object3d
+{
+public:
+	gxMesh();
+	~gxMesh();
+
+	float* getVertexBuffer()	{	return m_pszVertexBuffer;	}
+	float* getColorBuffer()		{	return m_pszColorBuffer;	}
+	float* getNormalBuffer()	{	return m_pszNormalBuffer;	}
+
+	void update(float dt);
+	void render();
+
+	float* allocateVertexBuffer(int nTris);
+	float* allocateColorBuffer(int nTris);
+	float* allocateNormalBuffer(int nTris);
+
+	gxUV* allocateUVChannels(int nChannel, int nTris)
+	{
+		if(nChannel==0) return NULL;
+
+		m_nUVChannels=nChannel;
+		m_pszUVChannels = new gxUV[nChannel];
+		for(int x=0;x<nChannel;x++)
+		{
+			m_pszUVChannels[x].m_pszfGLTexCoordList = new float[nTris*3*2];
+		}
+
+		return m_pszUVChannels;
+	}
+
+	gxTriInfo* allocateTriInfoArray(int nCount)		{	m_nTriInfoArray=nCount; m_pszTriInfoArray=new gxTriInfo[nCount]; return m_pszTriInfoArray; }
+
+
+	int getNoOfTriInfo()							{	return m_nTriInfoArray;				}
+	gxTriInfo* getTriInfo(int index)				{	return &m_pszTriInfoArray[index];	}
+
+	int getTotalNoOfTris();
+
+private:
+
+	bool applyStageTexture(int stage, matrix4x4f* matrix, gxUV* uv, gxTexture* texture, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
+	void disableTextureOperations(int nMultiTextureUsed);
+
+	int m_nTriInfoArray;
+	gxTriInfo* m_pszTriInfoArray;
+
+	float* m_pszVertexBuffer;
+	float* m_pszColorBuffer;
+	float* m_pszNormalBuffer;
+	int m_nUVChannels;
+	gxUV* m_pszUVChannels;
+};
+
+#endif

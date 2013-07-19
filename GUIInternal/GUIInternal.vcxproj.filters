@@ -1,0 +1,349 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="GEAREditor">
+      <UniqueIdentifier>{7f646847-d8c7-4509-af92-06074b25c9a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEAREditor\renderer">
+      <UniqueIdentifier>{c2465951-4239-4d88-bf67-9363e56ccac2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEAREditor\gui">
+      <UniqueIdentifier>{98e72fbb-fcf6-4b43-b2d8-37310184a460}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEAREditor\util">
+      <UniqueIdentifier>{8994483a-a910-4619-9137-12470bb3a957}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEAREditor\win32">
+      <UniqueIdentifier>{6286d2ac-a984-4c3e-89c9-5081a0cf55ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mono">
+      <UniqueIdentifier>{2c3f7542-a583-4857-9b44-b863d83fd7a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mono\src">
+      <UniqueIdentifier>{6d88e032-6be1-4d99-89ca-6bbd87400b3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEAREditor\core">
+      <UniqueIdentifier>{6cffc933-9ea0-4c9a-9049-d4e3e2a5dd43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEAREditor\SpriteManager">
+      <UniqueIdentifier>{c48ddf97-5b41-4108-b3e8-7f5c556d5bd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEAREditor\scenes">
+      <UniqueIdentifier>{94f0f3c2-b47c-4666-83c7-53321edad2d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEAREditor\scenes\propertyViews">
+      <UniqueIdentifier>{3e40fd2d-aaef-47fe-8bb4-94324022caf8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GUIInternal.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="mono\mono.def">
+      <Filter>mono</Filter>
+    </None>
+    <None Include="mono\mono.exp">
+      <Filter>mono</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\renderer\wglew.h">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\renderer\glincludes.h">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\renderer\matrix4x4f.h">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\renderer\myDLL.h">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\renderer\renderer.h">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\renderer\rendererGL10.h">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\renderer\rendererGL20.h">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\EditorApp.h">
+      <Filter>GEAREditor</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geWindow.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geGUIBase.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geGUIManager.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\util\pxMath.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\util\geDefines.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\util\FontManager.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\util\objC_util.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geToolBar.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geLayout.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geLayoutManager.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\win32\cursorUtil.h">
+      <Filter>GEAREditor\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geButton.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="mono\src\monoWrapper.h">
+      <Filter>mono\src</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geTreeView.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\SpriteManager\Sprite.h">
+      <Filter>GEAREditor\SpriteManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\SpriteManager\Sprite2Dx.h">
+      <Filter>GEAREditor\SpriteManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\gePushButton.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geScrollBar.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearSceneHierarchy.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearSceneProject.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearScenePropertyEditor.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearSceneWorldEditor.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearSceneFileView.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\util\geVector2.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
+    <ClInclude Include="MDragGropInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\win32\MDropSource.h">
+      <Filter>GEAREditor\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMeshPreview.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyObject3d.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\util\geVector3.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geTextBox.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyTransform.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\core\Timer.h">
+      <Filter>GEAREditor\core</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\assetUserData.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearScenePreview.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geHorizontalSlider.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\core\geTexture.h">
+      <Filter>GEAREditor\core</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\core\steTexturePacket.h">
+      <Filter>GEAREditor\core</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\core\geTextureManager.h">
+      <Filter>GEAREditor\core</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geColorControl.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geTextureThumbnail.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\AssetImporter.h">
+      <Filter>GEAREditor</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\util\geUtil.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\renderer\myDLL.cpp">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\renderer\renderer.cpp">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\renderer\rendererGL10.cpp">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\renderer\rendererGL20.cpp">
+      <Filter>GEAREditor\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\EditorApp.cpp">
+      <Filter>GEAREditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geWindow.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geGUIManager.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\util\FontManager.cpp">
+      <Filter>GEAREditor\util</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geToolBar.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geGUIBase.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geLayout.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geLayoutManager.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geButton.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="mono\src\monoWrapper.cpp">
+      <Filter>mono\src</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geTreeView.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp">
+      <Filter>GEAREditor\SpriteManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\SpriteManager\Sprite2Dx.cpp">
+      <Filter>GEAREditor\SpriteManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\gePushButton.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geScrollBar.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearSceneHierarchy.cpp">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearSceneProject.cpp">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearScenePropertyEditor.cpp">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearSceneWorldEditor.cpp">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearSceneFileView.cpp">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geTextBox.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\core\Timer.cpp">
+      <Filter>GEAREditor\core</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearScenePreview.cpp">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geHorizontalSlider.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\core\geTextureManager.cpp">
+      <Filter>GEAREditor\core</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geColorControl.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geTextureThumbnail.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\AssetImporter.cpp">
+      <Filter>GEAREditor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GUIInternal.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="mono\mono.lib">
+      <Filter>mono</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

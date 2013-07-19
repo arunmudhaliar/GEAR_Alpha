@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{2a6eb022-7442-4b1c-be0e-87b4e3a43373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\fbxImporter">
+      <UniqueIdentifier>{eed86a60-277e-4025-8934-aea0dc747259}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\core">
+      <UniqueIdentifier>{0c6f5703-31b4-4af1-8189-cea37f3c889f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\renderer">
+      <UniqueIdentifier>{ff00b278-2bcb-4b03-bab0-133201fc1363}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\lpng151">
+      <UniqueIdentifier>{fa148161-c150-4ef7-869a-336e68cc4070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\zlib-1.2.4">
+      <UniqueIdentifier>{274408b9-94b1-49e6-a336-9b31bb84290b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\util">
+      <UniqueIdentifier>{e721c1e5-080f-43fd-8755-b8f72115e64b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\tga">
+      <UniqueIdentifier>{d6054a08-b198-4f0a-9858-f3f95b21d215}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp">
+      <Filter>engine\fbxImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\GEAREngine.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\gxMesh.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\Camera.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\renderer\gxRenderer.cpp">
+      <Filter>engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\gxWorld.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\TextureManager.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\adler32.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\compress.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\crc32.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\deflate.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\infback.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\inffast.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\inflate.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\inftrees.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\trees.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\uncompr.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\zutil.c">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\png.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngerror.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngget.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngmem.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngpread.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngread.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngrio.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngrtran.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngrutil.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngset.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngtrans.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngwio.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngwrite.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngwtran.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lpng151\pngwutil.c">
+      <Filter>engine\lpng151</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\util\gxFile.cpp">
+      <Filter>engine\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tga\TGALoader.cpp">
+      <Filter>engine\tga</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\util\gxUtil.cpp">
+      <Filter>engine\util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
+      <Filter>engine\fbxImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\GEAREngine.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\basicIncludes.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\object3d.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\transform.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxMesh.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\matrix4x4f.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxTriInfo.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\vector3.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxMath.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\Camera.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\renderer\gxRenderer.h">
+      <Filter>engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\vector2.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxWorld.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxSubMaterialMap.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\TextureManager.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxTexture.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\stTexturePacket.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxMaterial.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\vector4.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\crc32.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\deflate.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\inffast.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\inffixed.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\inflate.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\inftrees.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\trees.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\zconf.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\zlib.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\zutil.h">
+      <Filter>engine\zlib-1.2.4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lpng151\png.h">
+      <Filter>engine\lpng151</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lpng151\pngconf.h">
+      <Filter>engine\lpng151</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lpng151\pngdebug.h">
+      <Filter>engine\lpng151</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lpng151\pnginfo.h">
+      <Filter>engine\lpng151</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lpng151\pnglibconf.h">
+      <Filter>engine\lpng151</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lpng151\pngpriv.h">
+      <Filter>engine\lpng151</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lpng151\pngstruct.h">
+      <Filter>engine\lpng151</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\pngLoader.h">
+      <Filter>engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\renderer\glew.h">
+      <Filter>engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\gxFile.h">
+      <Filter>engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxMetaStructures.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\Crc32.h">
+      <Filter>engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tga\Tga.h">
+      <Filter>engine\tga</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\gxUtil.h">
+      <Filter>engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\aabb.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}</ProjectGuid>
+    <RootNamespace>GEAREngine</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\include;../src/zlib-1.2.4;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\lib\vs2010\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\include;../src/zlib-1.2.4;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\lib\vs2010\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;fbxsdk-2013.3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;fbxsdk-2013.3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\core\Camera.cpp" />
+    <ClCompile Include="..\src\core\gxMesh.cpp" />
+    <ClCompile Include="..\src\core\gxWorld.cpp" />
+    <ClCompile Include="..\src\core\TextureManager.cpp" />
+    <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp" />
+    <ClCompile Include="..\src\GEAREngine.cpp" />
+    <ClCompile Include="..\src\lpng151\png.c" />
+    <ClCompile Include="..\src\lpng151\pngerror.c" />
+    <ClCompile Include="..\src\lpng151\pngget.c" />
+    <ClCompile Include="..\src\lpng151\pngmem.c" />
+    <ClCompile Include="..\src\lpng151\pngpread.c" />
+    <ClCompile Include="..\src\lpng151\pngread.c" />
+    <ClCompile Include="..\src\lpng151\pngrio.c" />
+    <ClCompile Include="..\src\lpng151\pngrtran.c" />
+    <ClCompile Include="..\src\lpng151\pngrutil.c" />
+    <ClCompile Include="..\src\lpng151\pngset.c" />
+    <ClCompile Include="..\src\lpng151\pngtrans.c" />
+    <ClCompile Include="..\src\lpng151\pngwio.c" />
+    <ClCompile Include="..\src\lpng151\pngwrite.c" />
+    <ClCompile Include="..\src\lpng151\pngwtran.c" />
+    <ClCompile Include="..\src\lpng151\pngwutil.c" />
+    <ClCompile Include="..\src\renderer\gxRenderer.cpp" />
+    <ClCompile Include="..\src\tga\TGALoader.cpp" />
+    <ClCompile Include="..\src\util\gxFile.cpp" />
+    <ClCompile Include="..\src\util\gxUtil.cpp" />
+    <ClCompile Include="..\src\zlib-1.2.4\adler32.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\compress.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\crc32.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\deflate.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\infback.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\inffast.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\inflate.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\inftrees.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\trees.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\uncompr.c" />
+    <ClCompile Include="..\src\zlib-1.2.4\zutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\core\aabb.h" />
+    <ClInclude Include="..\src\core\basicIncludes.h" />
+    <ClInclude Include="..\src\core\Camera.h" />
+    <ClInclude Include="..\src\core\gxMaterial.h" />
+    <ClInclude Include="..\src\core\gxMath.h" />
+    <ClInclude Include="..\src\core\gxMesh.h" />
+    <ClInclude Include="..\src\core\gxMetaStructures.h" />
+    <ClInclude Include="..\src\core\gxSubMaterialMap.h" />
+    <ClInclude Include="..\src\core\gxTexture.h" />
+    <ClInclude Include="..\src\core\gxTriInfo.h" />
+    <ClInclude Include="..\src\core\gxWorld.h" />
+    <ClInclude Include="..\src\core\matrix4x4f.h" />
+    <ClInclude Include="..\src\core\object3d.h" />
+    <ClInclude Include="..\src\core\stTexturePacket.h" />
+    <ClInclude Include="..\src\core\TextureManager.h" />
+    <ClInclude Include="..\src\core\transform.h" />
+    <ClInclude Include="..\src\core\vector2.h" />
+    <ClInclude Include="..\src\core\vector3.h" />
+    <ClInclude Include="..\src\core\vector4.h" />
+    <ClInclude Include="..\src\fbxImporter\fbxImporter.h" />
+    <ClInclude Include="..\src\GEAREngine.h" />
+    <ClInclude Include="..\src\lpng151\png.h" />
+    <ClInclude Include="..\src\lpng151\pngconf.h" />
+    <ClInclude Include="..\src\lpng151\pngdebug.h" />
+    <ClInclude Include="..\src\lpng151\pnginfo.h" />
+    <ClInclude Include="..\src\lpng151\pnglibconf.h" />
+    <ClInclude Include="..\src\lpng151\pngpriv.h" />
+    <ClInclude Include="..\src\lpng151\pngstruct.h" />
+    <ClInclude Include="..\src\renderer\glew.h" />
+    <ClInclude Include="..\src\renderer\gxRenderer.h" />
+    <ClInclude Include="..\src\tga\Tga.h" />
+    <ClInclude Include="..\src\util\Crc32.h" />
+    <ClInclude Include="..\src\util\gxFile.h" />
+    <ClInclude Include="..\src\util\gxUtil.h" />
+    <ClInclude Include="..\src\util\pngLoader.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\crc32.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\deflate.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\inffast.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\inffixed.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\inflate.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\inftrees.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\trees.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\zconf.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\zlib.h" />
+    <ClInclude Include="..\src\zlib-1.2.4\zutil.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

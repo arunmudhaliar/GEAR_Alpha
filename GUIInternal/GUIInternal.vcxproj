@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{26F81658-AD70-4115-9ABE-B45B4CDFFF37}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GUIInternal</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Mono-2.10.6\include\mono-2.0;../GEAREngine/src/zlib-1.2.4;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Mono-2.10.6\lib\mono\4.0;C:\Mono-2.10.6\lib;C:\Mono-2.10.6\bin;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Mono-2.10.6\include\mono-2.0;../GEAREngine/src/zlib-1.2.4;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Mono-2.10.6\lib\mono\4.0;C:\Mono-2.10.6\lib;C:\Mono-2.10.6\bin;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;USEMONOENGINE;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;USEMONOENGINE;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="GUIInternal.ico" />
+    <None Include="mono\mono.def" />
+    <None Include="mono\mono.exp" />
+    <None Include="ReadMe.txt" />
+    <None Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GEAREditor\AssetImporter.h" />
+    <ClInclude Include="GEAREditor\core\geTexture.h" />
+    <ClInclude Include="GEAREditor\core\steTexturePacket.h" />
+    <ClInclude Include="GEAREditor\core\geTextureManager.h" />
+    <ClInclude Include="GEAREditor\core\Timer.h" />
+    <ClInclude Include="GEAREditor\EditorApp.h" />
+    <ClInclude Include="GEAREditor\gui\geButton.h" />
+    <ClInclude Include="GEAREditor\gui\geColorControl.h" />
+    <ClInclude Include="GEAREditor\gui\geGUIBase.h" />
+    <ClInclude Include="GEAREditor\gui\geGUIManager.h" />
+    <ClInclude Include="GEAREditor\gui\geHorizontalSlider.h" />
+    <ClInclude Include="GEAREditor\gui\geLayout.h" />
+    <ClInclude Include="GEAREditor\gui\geLayoutManager.h" />
+    <ClInclude Include="GEAREditor\gui\gePushButton.h" />
+    <ClInclude Include="GEAREditor\gui\geScrollBar.h" />
+    <ClInclude Include="GEAREditor\gui\geTextBox.h" />
+    <ClInclude Include="GEAREditor\gui\geTextureThumbnail.h" />
+    <ClInclude Include="GEAREditor\gui\geToolBar.h" />
+    <ClInclude Include="GEAREditor\gui\geTreeView.h" />
+    <ClInclude Include="GEAREditor\gui\geWindow.h" />
+    <ClInclude Include="GEAREditor\renderer\glincludes.h" />
+    <ClInclude Include="GEAREditor\renderer\matrix4x4f.h" />
+    <ClInclude Include="GEAREditor\renderer\myDLL.h" />
+    <ClInclude Include="GEAREditor\renderer\renderer.h" />
+    <ClInclude Include="GEAREditor\renderer\rendererGL10.h" />
+    <ClInclude Include="GEAREditor\renderer\rendererGL20.h" />
+    <ClInclude Include="GEAREditor\renderer\wglew.h" />
+    <ClInclude Include="GEAREditor\scenes\assetUserData.h" />
+    <ClInclude Include="GEAREditor\scenes\gearSceneFileView.h" />
+    <ClInclude Include="GEAREditor\scenes\gearSceneHierarchy.h" />
+    <ClInclude Include="GEAREditor\scenes\gearScenePreview.h" />
+    <ClInclude Include="GEAREditor\scenes\gearSceneProject.h" />
+    <ClInclude Include="GEAREditor\scenes\gearScenePropertyEditor.h" />
+    <ClInclude Include="GEAREditor\scenes\gearSceneWorldEditor.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMeshPreview.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyObject3d.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyTransform.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.h" />
+    <ClInclude Include="GEAREditor\SpriteManager\Sprite.h" />
+    <ClInclude Include="GEAREditor\SpriteManager\Sprite2Dx.h" />
+    <ClInclude Include="GEAREditor\util\FontManager.h" />
+    <ClInclude Include="GEAREditor\util\geDefines.h" />
+    <ClInclude Include="GEAREditor\util\geUtil.h" />
+    <ClInclude Include="GEAREditor\util\geVector3.h" />
+    <ClInclude Include="GEAREditor\util\objC_util.h" />
+    <ClInclude Include="GEAREditor\util\pxMath.h" />
+    <ClInclude Include="GEAREditor\util\geVector2.h" />
+    <ClInclude Include="GEAREditor\win32\cursorUtil.h" />
+    <ClInclude Include="GEAREditor\win32\MDropSource.h" />
+    <ClInclude Include="GUIInternal.h" />
+    <ClInclude Include="MDragGropInterface.h" />
+    <ClInclude Include="mono\src\monoWrapper.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GEAREditor\AssetImporter.cpp" />
+    <ClCompile Include="GEAREditor\core\geTextureManager.cpp" />
+    <ClCompile Include="GEAREditor\core\Timer.cpp" />
+    <ClCompile Include="GEAREditor\EditorApp.cpp" />
+    <ClCompile Include="GEAREditor\gui\geButton.cpp" />
+    <ClCompile Include="GEAREditor\gui\geColorControl.cpp" />
+    <ClCompile Include="GEAREditor\gui\geGUIBase.cpp" />
+    <ClCompile Include="GEAREditor\gui\geGUIManager.cpp" />
+    <ClCompile Include="GEAREditor\gui\geHorizontalSlider.cpp" />
+    <ClCompile Include="GEAREditor\gui\geLayout.cpp" />
+    <ClCompile Include="GEAREditor\gui\geLayoutManager.cpp" />
+    <ClCompile Include="GEAREditor\gui\gePushButton.cpp" />
+    <ClCompile Include="GEAREditor\gui\geScrollBar.cpp" />
+    <ClCompile Include="GEAREditor\gui\geTextBox.cpp" />
+    <ClCompile Include="GEAREditor\gui\geTextureThumbnail.cpp" />
+    <ClCompile Include="GEAREditor\gui\geToolBar.cpp" />
+    <ClCompile Include="GEAREditor\gui\geTreeView.cpp" />
+    <ClCompile Include="GEAREditor\gui\geWindow.cpp" />
+    <ClCompile Include="GEAREditor\renderer\myDLL.cpp" />
+    <ClCompile Include="GEAREditor\renderer\renderer.cpp" />
+    <ClCompile Include="GEAREditor\renderer\rendererGL10.cpp" />
+    <ClCompile Include="GEAREditor\renderer\rendererGL20.cpp" />
+    <ClCompile Include="GEAREditor\scenes\gearSceneFileView.cpp" />
+    <ClCompile Include="GEAREditor\scenes\gearSceneHierarchy.cpp" />
+    <ClCompile Include="GEAREditor\scenes\gearScenePreview.cpp" />
+    <ClCompile Include="GEAREditor\scenes\gearSceneProject.cpp" />
+    <ClCompile Include="GEAREditor\scenes\gearScenePropertyEditor.cpp" />
+    <ClCompile Include="GEAREditor\scenes\gearSceneWorldEditor.cpp" />
+    <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp" />
+    <ClCompile Include="GEAREditor\SpriteManager\Sprite2Dx.cpp" />
+    <ClCompile Include="GEAREditor\util\FontManager.cpp" />
+    <ClCompile Include="GUIInternal.cpp" />
+    <ClCompile Include="mono\src\monoWrapper.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GUIInternal.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="mono\mono.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

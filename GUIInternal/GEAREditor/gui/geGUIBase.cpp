@@ -1,0 +1,555 @@
+#include "geGUIBase.h"
+
+
+geGUIBase::geGUIBase()
+{
+	m_pSelectedControlPtr=NULL;
+	m_pParentPtr=NULL;
+	setMouseEntered(false);
+	setSizable(false);
+	setMouseBoundCheck(true);
+	m_pUserData=NULL;
+	m_pGUIObserver = NULL;
+}
+
+geGUIBase::geGUIBase(unsigned short uGUIID, const char* name):
+	m_uGUIID(uGUIID)
+{
+	setSizable(false);
+	m_pSelectedControlPtr=NULL;
+	m_pParentPtr=NULL;
+	setMouseEntered(false);
+	setMouseBoundCheck(true);
+	m_pUserData=NULL;
+
+	if(name!=NULL)
+	{
+		STRCPY(m_szName, name);
+	}
+	m_pGUIObserver=NULL;
+}
+
+geGUIBase::~geGUIBase()
+{
+	//for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	//{
+	//	geGUIBase* node = *it;
+	//	GE_DELETE(node);
+	//}
+	m_vControls.clear();
+}
+
+void geGUIBase::createBase(geGUIBase* parent)
+{
+	setSizable(false);
+	m_pSelectedControlPtr=NULL;
+	setMouseEntered(false);
+	setMouseBoundCheck(true);
+	if(parent)
+	{
+		m_pParentPtr=parent;
+		parent->appendChildControl(this);
+	}
+}
+
+void geGUIBase::setParent(geGUIBase* parent)
+{
+	if(parent)
+	{
+		m_pParentPtr=parent;
+		parent->appendChildControl(this);
+	}
+}
+
+void geGUIBase::setPos(const geVector2f& pos)
+{
+	setPos(pos.x, pos.y);
+}
+
+void geGUIBase::setPos(float x, float y)
+{
+	m_cPos.set(x, y);
+	onPosition(x, y, 0);
+}
+void geGUIBase::setSize(float cx, float cy)
+{
+	if(cx<=0.0f || cy<=0.0f)
+	{
+		cx=cy=1.0f;
+	}
+	m_cSize.set(cx, cy);
+
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		if(obj->isSizable())
+			obj->setSize(cx, cy-getTopMarginOffsetHeight());
+	}
+
+	onSize(cx, cy, 0);
+}
+
+void geGUIBase::setSize(const geVector2f& size)
+{
+	setSize(size.x, size.y);
+}
+
+void geGUIBase::onResizeComplete()
+{
+}
+
+void geGUIBase::resizeComplete()
+{
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		if(obj->isSizable())
+			obj->resizeComplete();
+	}
+
+	onResizeComplete();
+}
+
+void geGUIBase::setColor(stVertexBuffer* vbuffer, float r, float g, float b, float a, ESTYLE_GRADIENT eGradientStyle, float gradientScale)
+{
+	switch(eGradientStyle)
+	{
+	case EGRADIENT_NONE:
+		{
+			setColor(vbuffer, 0, r, g, b, a);
+			setColor(vbuffer, 1, r, g, b, a);
+			setColor(vbuffer, 2, r, g, b, a);
+			setColor(vbuffer, 3, r, g, b, a);
+		}
+		break;
+
+	case EGRADIENT_VERTICAL_UP:
+		{
+			setColor(vbuffer, 0, r, g, b, a);
+			setColor(vbuffer, 1, r, g, b, a);
+			setColor(vbuffer, 2, r*gradientScale, g*gradientScale, b*gradientScale, a);
+			setColor(vbuffer, 3, r*gradientScale, g*gradientScale, b*gradientScale, a);
+		}
+		break;
+
+	case EGRADIENT_VERTICAL_DOWN:
+		{
+			setColor(vbuffer, 0, r*gradientScale, g*gradientScale, b*gradientScale, a);
+			setColor(vbuffer, 1, r*gradientScale, g*gradientScale, b*gradientScale, a);
+			setColor(vbuffer, 2, r, g, b, a);
+			setColor(vbuffer, 3, r, g, b, a);
+		}
+		break;
+
+	case EGRADIENT_HORIZONTAL_RIGHT:
+		{
+			setColor(vbuffer, 0, r, g, b, a);
+			setColor(vbuffer, 2, r, g, b, a);
+			setColor(vbuffer, 1, r*gradientScale, g*gradientScale, b*gradientScale, a);
+			setColor(vbuffer, 3, r*gradientScale, g*gradientScale, b*gradientScale, a);
+		}
+		break;
+
+	case EGRADIENT_HORIZONTAL_LEFT:
+		{
+			setColor(vbuffer, 1, r, g, b, a);
+			setColor(vbuffer, 3, r, g, b, a);
+			setColor(vbuffer, 0, r*gradientScale, g*gradientScale, b*gradientScale, a);
+			setColor(vbuffer, 2, r*gradientScale, g*gradientScale, b*gradientScale, a);
+		}
+		break;
+	}
+}
+
+void geGUIBase::setColor(stVertexBuffer* vbuffer, int index, float r, float g, float b, float a)
+{
+	vbuffer->m_cszVertexColorList[index*4+0] = r;
+	vbuffer->m_cszVertexColorList[index*4+1] = g;
+	vbuffer->m_cszVertexColorList[index*4+2] = b;
+	vbuffer->m_cszVertexColorList[index*4+3] = a;
+}
+
+void geGUIBase::drawLine(float* line, float r, float g, float b, float a, int count, bool bLoop)
+{
+	glColor4f(r, g, b, a);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_FLOAT, 0, line);
+	glDrawArrays(bLoop?GL_LINE_LOOP:GL_LINE_STRIP, 0, count);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void geGUIBase::drawTriangle(float* buffer, float r, float g, float b, float a, int count)
+{
+	glColor4f(r, g, b, a);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_FLOAT, 0, buffer);
+	glDrawArrays(GL_TRIANGLES, 0, count);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void geGUIBase::drawRect(stVertexBuffer* vbuffer)
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_FLOAT, 0, vbuffer->m_cszVertexList);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4, GL_FLOAT, 0, vbuffer->m_cszVertexColorList);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+   	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void geGUIBase::drawRect(stVertexBuffer* vbuffer, float* textureCoord, unsigned int texID)
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_FLOAT, 0, vbuffer->m_cszVertexList);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4, GL_FLOAT, 0, vbuffer->m_cszVertexColorList);
+
+	if(textureCoord)
+	{
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texID);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexCoordPointer(2, GL_FLOAT, 0, textureCoord);
+	}
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	if(textureCoord)
+	{
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+	}
+
+   	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+bool geGUIBase::isPointInsideWindow(float x, float y)
+{
+	return (x>=m_cPos.x && x<=m_cPos.x+m_cSize.x && y>=m_cPos.y && y<=m_cPos.y+m_cSize.y);
+}
+
+void geGUIBase::onPosition(float x, float y, int flag)
+{
+}
+
+void geGUIBase::onSize(float cx, float cy, int flag)
+{
+}
+
+void geGUIBase::appendChildControl(geGUIBase* child)
+{
+	onAppendChild(child);
+	m_vControls.push_back(child);
+}
+
+bool geGUIBase::MouseLButtonDown(float x, float y, int nFlag)
+{
+	bool commandUsed=false;
+	if(isPointInsideWindow(x, y) || !isMouseBoundCheckEnabled())
+	{
+		if(!commandUsed)
+		{
+			for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+			{
+				geGUIBase* obj = *it;
+				commandUsed=obj->MouseLButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+				if(commandUsed)
+					return commandUsed;
+			}
+		}
+
+		commandUsed=onMouseLButtonDown(x, y, nFlag);
+		if(commandUsed)
+			m_pSelectedControlPtr=this;
+	}
+
+	return commandUsed;
+}
+
+void geGUIBase::MouseLButtonUp(float x, float y, int nFlag)
+{
+	bool bHandled=false;
+	if(isPointInsideWindow(x, y) || !isMouseBoundCheckEnabled())
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			obj->MouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+		}
+
+		bHandled=onMouseLButtonUp(x, y, nFlag);
+		//if(m_pSelectedControlPtr==this)
+		//	m_pSelectedControlPtr=NULL;
+	}
+
+	if(m_pSelectedControlPtr)
+	{
+		//if(!bHandled)
+			m_pSelectedControlPtr->CancelEngagedControls();
+		m_pSelectedControlPtr=NULL;
+	}
+}
+
+bool geGUIBase::MouseRButtonDown(float x, float y, int nFlag)
+{
+	return false;
+}
+
+void geGUIBase::MouseRButtonUp(float x, float y, int nFlag)
+{
+
+}
+
+void geGUIBase::MouseMove(float x, float y, int flag)
+{
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		obj->MouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
+	}
+
+	onMouseMove(x, y, flag);
+
+	//if(isPointInsideWindow(x, y) || !isMouseBoundCheckEnabled())
+	//{
+	//	onMouseMove(x, y, flag);
+	//	if(!isMouseEntered())
+	//	{
+	//		mouseEnteredClientArea();
+	//	}
+	//}
+	//else
+	//{
+	//	if(isMouseEntered())
+	//	{
+	//		mouseExitClientArea();
+	//	}
+	//}
+}
+
+void geGUIBase::MouseWheel(int zDelta, int x, int y, int flag)
+{
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		obj->MouseWheel(zDelta, x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
+	}
+
+	onMouseWheel(zDelta, x, y, flag);
+}
+
+bool geGUIBase::onMouseLButtonDown(float x, float y, int nFlag)
+{
+	return false;
+}
+
+bool geGUIBase::onMouseLButtonUp(float x, float y, int nFlag)
+{
+	return false;
+}
+
+bool geGUIBase::onMouseRButtonDown(float x, float y, int nFlag)
+{
+	return false;
+}
+
+void geGUIBase::onMouseRButtonUp(float x, float y, int nFlag)
+{
+}
+
+void geGUIBase::onMouseMove(float x, float y, int flag)
+{
+}
+
+void geGUIBase::onMouseWheel(int zDelta, int x, int y, int flag)
+{
+}
+
+void geGUIBase::hoverControl()
+{
+}
+
+void geGUIBase::unHoverControl()
+{
+}
+
+void geGUIBase::onHoverControl(int x, int y)
+{
+}
+
+void geGUIBase::onUnHoverControl(int x, int y)
+{
+}
+
+
+void geGUIBase::mouseEnteredClientArea()
+{
+	setMouseEntered(true);
+	onMouseEnterClientArea();
+}
+
+void geGUIBase::mouseExitClientArea()
+{
+	setMouseEntered(false);
+	onMouseExitClientArea();
+}
+
+void geGUIBase::onMouseEnterClientArea()
+{
+}
+
+void geGUIBase::onMouseExitClientArea()
+{
+}
+
+void geGUIBase::CancelEngagedControls()
+{
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		obj->CancelEngagedControls();
+	}
+
+	onCancelEngagedControls();
+}
+
+void geGUIBase::onCancelEngagedControls()
+{
+	setMouseEntered(false);
+}
+
+geVector2f geGUIBase::getAbsolutePositionOnScreen()
+{
+	return geVector2f();
+}
+
+void geGUIBase::focusLost()
+{
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		obj->focusLost();
+	}
+
+	onFocusLost();
+}
+
+void geGUIBase::onFocusLost()
+{
+}
+
+void geGUIBase::onCreate()
+{
+}
+
+void geGUIBase::DragEnter(int x, int y)
+{
+	if(isPointInsideWindow(x, y))
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			obj->DragEnter(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight());
+		}
+
+		onDragEnter(x, y);
+	}
+}
+
+void geGUIBase::DragDrop(int x, int y, MDataObject* dropObject)
+{
+	if(isPointInsideWindow(x, y) /*|| !isMouseBoundCheckEnabled()*/)
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			obj->DragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
+		}
+
+		onDragDrop(x, y, dropObject);
+	}
+}
+
+void geGUIBase::DragLeave()
+{
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		obj->DragLeave();
+	}
+
+	onDragLeave();
+}
+
+void geGUIBase::onDragEnter(int x, int y)
+{
+}
+
+void geGUIBase::onDragDrop(int x, int y, MDataObject* dropObject)
+{
+}
+
+void geGUIBase::onDragLeave()
+{
+}
+
+void geGUIBase::onAppendChild(geGUIBase* child)
+{
+}
+
+bool geGUIBase::KeyDown(int charValue, int flag)
+{
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		if(obj->KeyDown(charValue, flag))
+			return true;
+	}
+
+	return onKeyDown(charValue, flag);
+}
+
+bool geGUIBase::KeyUp(int charValue, int flag)
+{
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		if(obj->KeyUp(charValue, flag))
+			return true;
+	}
+
+	return onKeyUp(charValue, flag);
+}
+
+bool geGUIBase::onKeyDown(int charValue, int flag)
+{
+	return false;
+}
+
+bool geGUIBase::onKeyUp(int charValue, int flag)
+{
+	return false;
+}
+
+void geGUIBase::onSetName()
+{
+
+}
+
+bool geGUIBase::isNodeExistsInTree(geGUIBase* node)
+{
+	if(this==node)
+		return true;
+
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		if(obj->isNodeExistsInTree(node))
+			return true;
+	}
+}

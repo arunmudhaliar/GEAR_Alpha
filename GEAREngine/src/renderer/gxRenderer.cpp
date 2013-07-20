@@ -5,7 +5,7 @@ gxRenderer::gxRenderer()
 	m_pProjectionMatrixPtr=NULL;
 	m_pViewMatrixPtr=NULL;
 	m_pViewProjectionMatrixPtr=NULL;
-	m_cViewPortSz.set(1.0f, 1.0f);
+	m_cViewPortRect.set(0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 gxRenderer::~gxRenderer()
@@ -15,7 +15,7 @@ gxRenderer::~gxRenderer()
 void gxRenderer::setViewPort(float x, float y, float cx, float cy)
 {
     m_cOrthogonalProjectionMatrix.setOrtho(0.0f, cx, cy, 0.0f, 0.0f, 10.0f);
-	m_cViewPortSz.set(cx, cy);
+	m_cViewPortRect.set(x, y, cx, cy);
 	glViewport((int)x, (int)y, (int)cx, (int)cy);
 }
 

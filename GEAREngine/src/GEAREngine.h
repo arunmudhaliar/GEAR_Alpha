@@ -28,7 +28,6 @@ extern "C" {
 	DllExport bool engine_removeObject3d(gxWorld* world, object3d* obj);
 }
 
-
 class GEAREngine
 {
 public:

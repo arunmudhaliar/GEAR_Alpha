@@ -8,6 +8,17 @@
 #include "gxMaterial.h"
 #include "TextureManager.h"
 
+class MWorldObserver
+{
+public:
+	virtual void preWorldRender()
+	{
+	}
+	virtual void postWorldRender()
+	{
+	}
+};
+
 class gxWorld : public object3d
 {
 public:
@@ -47,6 +58,10 @@ public:
 	//bool removeObject3dFromWorld(object3d* obj);
 	void loadTextures(object3d* obj, const char* fbxFileName);
 
+	gxRenderer* getRenderer()	{	return &m_cRenderer;	}
+
+	void setWorldObserver(MWorldObserver* observer)	{	m_pObserverPtr = observer;	}
+
 private:
 
 
@@ -60,6 +75,7 @@ private:
 	gxMaterial m_cDefaultMaterial;
 	CTextureManager m_cTextureManager;
 	char m_szMetaDataFolder[512];
+	MWorldObserver* m_pObserverPtr;	//must not delete this pointer
 };
 
 #endif

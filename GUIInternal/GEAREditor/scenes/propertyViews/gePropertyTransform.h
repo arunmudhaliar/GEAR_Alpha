@@ -19,7 +19,7 @@ public:
 	  geTreeNode(parent, name, sprite, 10)
 	{
 		m_pObject3dPtr=NULL;
-		setSize(m_cSize.x, 100.0f);
+		setSize(m_cSize.x, 85.0f);
 
 		//geButton* btn=new geButton();
 		//btn->create(this, "button1", 40, 10);

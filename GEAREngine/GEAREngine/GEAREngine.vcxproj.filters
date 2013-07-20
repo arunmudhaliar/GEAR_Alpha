@@ -284,5 +284,8 @@
     <ClInclude Include="..\src\core\aabb.h">
       <Filter>engine\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\core\rect.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

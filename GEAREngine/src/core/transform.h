@@ -15,6 +15,11 @@ public:
 	{
 	}
 
+	void updatePositionf(vector3f v)
+	{
+		updatePositionf(v.x, v.y, v.z);
+	}
+
 	void updatePositionf(float aXdt, float aYdt, float aZdt)
 	{
 		m[12]	+= aXdt;
@@ -24,6 +29,11 @@ public:
 		transformationChangedf();
 	}
 	
+	void updateLocalPositionf(vector3f v)
+	{
+		updateLocalPositionf(v.x, v.y, v.z);
+	}
+
 	void updateLocalPositionf(float aXdt, float aYdt, float aZdt)
 	{
 		if(aXdt!=0)	translateLocalXf(aXdt);

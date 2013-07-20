@@ -25,6 +25,14 @@ AssetImporter::~AssetImporter()
 
 bool AssetImporter::importAssets(const char* assetsfolder)
 {
+	//if metaData folder doesn't exist create it
+	char temp_buffer[1024];
+	sprintf(temp_buffer, "%s/MetaData", EditorApp::getProjectHomeDirectory());
+	if(_mkdir(temp_buffer)==0)
+	{
+		//created a new metaDirectory
+	}
+
 	traverseAssetDirectory(EditorApp::getProjectHomeDirectory());
 	return true;
 }

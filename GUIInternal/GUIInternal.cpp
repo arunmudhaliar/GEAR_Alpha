@@ -274,11 +274,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYDOWN:
 		{
-			int hw=HIWORD(wParam);
-			int lw=LOWORD(wParam);
+
+
 			if(geTextBox::g_pCurrentlyActiveTextBoxPtr)
 			{
-				bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyDown(wParam, lParam);
+				if(wParam==VK_SHIFT)
+					break;
+				short shift_keystate=GetKeyState(VK_SHIFT);
+				char ch=MapVirtualKey(wParam, MAPVK_VK_TO_CHAR);
+				if(ch>=0x41 && ch<=0x5A)
+				{
+					if(!(shift_keystate&0x8000))
+						ch=ch+32;
+				}
+				else if(ch>=0x31 && ch<=0x39)
+				{
+					if((shift_keystate&0x8000))
+						ch=ch-16;
+				}
+
+				bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyDown(ch, lParam);
 			}
 			else
 			{
@@ -290,7 +305,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if(geTextBox::g_pCurrentlyActiveTextBoxPtr)
 			{
-				geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyUp(wParam, lParam);
+				if(wParam==VK_SHIFT)
+					break;
+				short shift_keystate=GetKeyState(VK_SHIFT);
+				char ch=MapVirtualKey(wParam, MAPVK_VK_TO_CHAR);
+				if(ch>=0x41 && ch<=0x5A)
+				{
+					if(!(shift_keystate&0x8000))
+						ch=ch+32;
+				}
+				else if(ch>=0x31 && ch<=0x39)
+				{
+					if((shift_keystate&0x8000))
+						ch=ch-16;
+				}
+				geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyUp(ch, lParam);
 			}
 			else
 			{

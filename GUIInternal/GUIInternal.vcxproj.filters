@@ -231,6 +231,9 @@
     <ClInclude Include="GEAREditor\util\geUtil.h">
       <Filter>GEAREditor\util</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geToolBarSeperator.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

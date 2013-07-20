@@ -9,13 +9,17 @@
 #include "../../gui/geColorControl.h"
 #include "geTextureThumbnailExtended.h"
 
-class gePropertyMaterial : public geTreeNode
+class gePropertyMaterial : public geTreeNode, public MGUIObserver
 {
 public:
+	geTextBox* m_pText_tileX;
+	geTextBox* m_pText_tileY;
+	gxMaterial* m_pCurrentMaterialPtr;
+
 	gePropertyMaterial(geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxMaterial* material):
 	  geTreeNode(parent, name, sprite, 10)
 	{
-		setSize(m_cSize.x, 100.0f);
+		setSize(m_cSize.x, 85.0f);
 
 		//geButton* btn=new geButton();
 		//btn->create(this, "button1", 40, 10);
@@ -23,11 +27,34 @@ public:
 		//gePushButton* pbtn = new gePushButton("");
 		//pbtn->create(this, "", 15, 10);
 
-		geTextBox* txt = new geTextBox("MaterialName");
-		txt->create(this, material->getMaterialName(), 50, 10, 200, 16);
+		m_pCurrentMaterialPtr=material;
+		geTextBox* text_material = new geTextBox("MaterialName");
+		text_material->create(this, material->getMaterialName(), 50, 10, 200, 16);
 
-		geHorizontalSlider* slider = new geHorizontalSlider();
-		slider->create(this, "slider", 50, 35, 70);
+		//geHorizontalSlider* slider = new geHorizontalSlider();
+		//slider->create(this, "slider", 50, 35, 70);
+		
+		char tileX_temp_buffer[10];
+		char tileY_temp_buffer[10];
+
+		if(material->getTexture())
+		{
+			const float* texMat4x4=material->getTexture()->getTextureMatrix()->getMatrix();
+			sprintf(tileX_temp_buffer, "%3.2f", texMat4x4[0]);
+			sprintf(tileY_temp_buffer, "%3.2f", texMat4x4[5]);
+		}
+		else
+		{
+			sprintf(tileX_temp_buffer, "%3.2f", 1.0f);
+			sprintf(tileY_temp_buffer, "%3.2f", 1.0f);
+		}
+
+		m_pText_tileX = new geTextBox("1.0");
+		m_pText_tileX->create(this, tileX_temp_buffer, 100, 40, 50, 16);
+		m_pText_tileX->setGUIObserver(this);
+		m_pText_tileY = new geTextBox("1.0");
+		m_pText_tileY->create(this, tileY_temp_buffer, 100, 60, 50, 16);
+		m_pText_tileY->setGUIObserver(this);
 
 		//geHorizontalSlider* slider2 = new geHorizontalSlider();
 		//slider2->create(this, "slider", 50, 55, 70);
@@ -76,9 +103,20 @@ public:
 			m_pSprite->draw();
 	}
 
-	virtual void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
+	virtual void onTextChange(geGUIBase* textbox)
 	{
-
+		if(textbox==m_pText_tileX && m_pCurrentMaterialPtr->getTexture())
+		{
+			float value=geUtil::getFloat(m_pText_tileX->getName());
+			const float* texMat4x4=m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->getMatrix();
+			m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->setXAxis(vector3f(value, texMat4x4[1], texMat4x4[2]));
+		}
+		else if(textbox==m_pText_tileY && m_pCurrentMaterialPtr->getTexture())
+		{
+			float value=geUtil::getFloat(m_pText_tileY->getName());
+			const float* texMat4x4=m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->getMatrix();
+			m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->setYAxis(vector3f(texMat4x4[4], value, texMat4x4[6]));
+		}
 	}
 };
 

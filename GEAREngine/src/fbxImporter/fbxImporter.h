@@ -49,6 +49,9 @@ public:
 	* Return a string-based representation based on the attribute type.
 	*/
 	FbxString GetAttributeTypeName(FbxNodeAttribute::EType type);
+
+private:
+	gxMaterial* createNewMaterial();
 };
 
 #endif

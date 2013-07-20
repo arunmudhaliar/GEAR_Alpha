@@ -36,6 +36,7 @@ public:
 	//gxFrustumf&	getFrustum()						{	return m_cFrustum;			}
 	const matrix4x4f*	getProjectionMatrix()		{	return &m_cProjMatrix;		}
 	const matrix4x4f*	getInverseTMViewMatrix()	{	return &m_cInvTranfMatrix;	}
+	const matrix4x4f*	getViewMatrix()				{	return &m_cInvTranfMatrix;	}
 
 private:
 	gxRenderer* m_pRendererPtr;	//must not delete this pointer

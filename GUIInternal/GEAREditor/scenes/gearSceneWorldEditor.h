@@ -6,7 +6,7 @@
 #include "../../mono/src/monoWrapper.h"
 #include "../gui/geHorizontalSlider.h"
 
-class gearSceneWorldEditor : public geWindow
+class gearSceneWorldEditor : public geWindow, public MWorldObserver, public MGUIObserver
 {
 public:
 	gearSceneWorldEditor();
@@ -16,6 +16,13 @@ public:
 	void selectedObject3D(object3d* obj)	{	m_pSelectedObj=obj;	}
 
 	gxWorld* getMainWorld()	{	return m_pMainWorldPtr;	}
+
+	void preWorldRender();
+	void postWorldRender();
+
+	void onButtonClicked(geGUIBase* btn);
+	void onSliderChange(geGUIBase* slider);
+
 protected:
 	virtual void onCreate();
 	virtual void onDraw();
@@ -33,6 +40,19 @@ protected:
 	gxWorld* m_pMainWorldPtr;	//0th world. Must not delete this pointer
 
 	geHorizontalSlider* m_pHorizontalSlider_LightAmbient;
+
+	geVector2f m_cGridOnYAxis[180];
+	geVector2f m_cGridOnXAxis[180];
+	geVector2f m_cThickGridOnYAxis[18];
+	geVector2f m_cThickGridOnXAxis[18];
+	geVector2f m_cGridOuterBox[4];
+
+	vector2f m_cMousePrevPos;
+	vector3f m_cMousePrevPosInWorld;
+	int m_iAxisSelected;
+
+	bool m_bTransformThroughLocalAxis;
+	geToolBarButton* m_pLocalOrGlobalAxis;
 };
 
 #endif

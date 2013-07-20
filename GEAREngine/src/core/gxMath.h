@@ -1,10 +1,8 @@
 #ifndef GXMATH_H
 #define GXMATH_H
 
-//#include "types.h"
-//#include "gxDebug.h"
+#include <stdlib.h>
 
-//#define EPSILON 0.01f
 
 #ifndef M_PI      // may already been defined
 #define M_PI  3.1415926535897932384626433832795f    // matches value in gcc v2 math.h

@@ -83,7 +83,11 @@ public:
         m[10]=sz;
 		matrixChanged();
     }
-    
+    void setScale(const vector3f& scale)
+    {
+		setScale(scale.x, scale.y, scale.z);
+    }
+
     const float* getMatrix() const {   return m;   }
     
 	matrix4x4f operator*(const matrix4x4f& matrix) const
@@ -441,8 +445,8 @@ public:
 	vector3f getXAxis()		{	return vector3f(m[0], m[1], m[2]);		}
 	vector3f getYAxis()		{	return vector3f(m[4], m[5], m[6]);		}
 	vector3f getZAxis()		{	return vector3f(m[8], m[9], m[10]);		}
-	vector3f getPosition()		{	return vector3f(m[12], m[13], m[14]);	}
-
+	vector3f getPosition()	{	return vector3f(m[12], m[13], m[14]);	}
+	vector3f getScale()		{	return vector3f(m[0], m[5], m[10]);		}
 	
 	void setXAxis(const vector3f& axis)
 	{

@@ -86,9 +86,9 @@ void monoWrapper::initMono()
 
 	//	MonoDomain *domain1 = mono_jit_init ("system");
 #if _DEBUG
-	const char* executableFile="D:\\MYPROJECTS\\TEMP_PROJ\\GUIInternal\\Debug\\MonoGEAR.exe";
+	const char* executableFile="./Debug/MonoGEAR.exe";
 #else
-	const char* executableFile="D:\\MYPROJECTS\\TEMP_PROJ\\GUIInternal\\Release\\MonoGEAR.exe";
+	const char* executableFile="./Release/MonoGEAR.exe";
 #endif
 	//executableFile="D:\\MYPROJECTS\\TEMP_PROJ\\TestProj\\monotest\\test.exe";
 

@@ -52,7 +52,7 @@ void gxMesh::render()
 		for(int m=0;m<m_nUVChannels;m++)
 		{
 			gxUV* uv=&m_pszUVChannels[m];
-			if(triInfo->getMaterial() && applyStageTexture(nTexUsed, NULL, uv, triInfo->getMaterial()->getTexture(), GL_TEXTURE_ENV_MODE, GL_MODULATE, 2))
+			if(triInfo->getMaterial() && applyStageTexture(nTexUsed, triInfo->getMaterial()->getTexture()->getTextureMatrix(), uv, triInfo->getMaterial()->getTexture(), GL_TEXTURE_ENV_MODE, GL_MODULATE, 2))
 				nTexUsed++;
 		}
 		glDrawElements(GL_TRIANGLES, triInfo->getNoOfTris(), GL_UNSIGNED_INT, triInfo->getTriList());
@@ -81,7 +81,11 @@ bool gxMesh::applyStageTexture(int stage, matrix4x4f* matrix, gxUV* uv, gxTextur
 	glBindTexture(GL_TEXTURE_2D, texture->getTextureID() );
 	glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		
+	
+	glMatrixMode(GL_TEXTURE);
+	glLoadMatrixf(matrix->getMatrix());
+	glMatrixMode(GL_MODELVIEW);
+
 	if(texture->getTextureType()==gxTexture::TEX_ALPHA)
 	{
 		glEnable(GL_BLEND);

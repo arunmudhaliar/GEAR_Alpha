@@ -11,6 +11,7 @@
 #define GXTEXTURE_H
 
 #include "stTexturePacket.h"
+#include "matrix4x4f.h"
 
 class gxTexture
 {
@@ -43,11 +44,14 @@ public:
     }
     
 	void setTextureType(ETEXTURE type)		{	m_eTextureType=type;	}
-	ETEXTURE getTextureType() const				{	return m_eTextureType;	}
+	ETEXTURE getTextureType() const			{	return m_eTextureType;	}
 	
+	matrix4x4f* getTextureMatrix()			{	return &m_cMatrix;		}
+
 private:
 	stTexturePacket* m_pTexTurePtr;     //must not delete this pointer
 	ETEXTURE m_eTextureType;
+	matrix4x4f m_cMatrix;
 };
 
 #endif

@@ -2,7 +2,7 @@
 #define GXRENDERER_H
 
 #include "../core/matrix4x4f.h"
-#include "../core/vector2.h"
+#include "../core/rect.h"
 
 class gxRenderer
 {
@@ -16,7 +16,8 @@ public:
 	void setViewMatrixToGL(matrix4x4f* matrix);
 	void setViewProjectionMatrix(matrix4x4f* matrix);
 
-	const vector2f& getViewPortSz()			{	return m_cViewPortSz;					}
+	const vector2f& getViewPortSz()			{	return m_cViewPortRect.m_size;			}
+	const gxRectf& getViewPortRect()		{	return m_cViewPortRect;					}
 
 	matrix4x4f* getProjectionMatrix()		{	return m_pProjectionMatrixPtr;			}
 	matrix4x4f* getViewMatrix()				{	return m_pViewMatrixPtr;				}
@@ -25,7 +26,7 @@ public:
 
 private:
 
-	vector2f	m_cViewPortSz;
+	gxRectf	m_cViewPortRect;
 	matrix4x4f* m_pProjectionMatrixPtr;			//must not delete this pointer
 	matrix4x4f* m_pViewMatrixPtr;				//must not delete this pointer
 	matrix4x4f* m_pViewProjectionMatrixPtr;     //must not delete this pointer

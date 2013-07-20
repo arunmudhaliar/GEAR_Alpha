@@ -528,8 +528,8 @@ gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &transform,
 
 	if(nMaterialCount==0)
 	{
-		//assign default material
-		triInfoArray[0].setMaterial(materialList->at(0));
+		//create and assign new material
+		triInfoArray[0].setMaterial(createNewMaterial());
 	}
 
 	for(int m=0;m<nCount;m++)
@@ -545,6 +545,18 @@ gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &transform,
 	GX_DELETE_ARY(vTriList);
 
 	return newMesh;
+}
+
+gxMaterial* fbxImporter::createNewMaterial()
+{
+	gxMaterial* material = new gxMaterial();
+	material->setMaterialName("New Material");
+
+	material->setDiffuseClr(vector4f(0.7f, 0.7f, 0.7f, 1.0f));
+	material->setAmbientClr(vector4f(0.7f, 0.7f, 0.7f, 1.0f));
+	material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
+
+	return material;
 }
 
 void fbxImporter::PrintTabs()

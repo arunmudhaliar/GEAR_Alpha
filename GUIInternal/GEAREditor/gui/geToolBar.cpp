@@ -91,7 +91,8 @@ void geToolBarButton::onButtonStateChanged(EBUTTON_STATE eFromState)
 
 void geToolBarButton::onButtonClicked()
 {
-
+	if(m_pGUIObserver)
+		m_pGUIObserver->onButtonClicked(this);
 }
 
 bool geToolBarButton::onMouseLButtonDown(float x, float y, int nFlag)

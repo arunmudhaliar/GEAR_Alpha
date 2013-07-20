@@ -5,6 +5,7 @@
 gxWorld::gxWorld():
 	object3d(999)
 {
+	m_pObserverPtr = NULL;
 	m_pActiveCameraPtr = NULL;
 
 	m_pActiveCameraPtr=NULL;
@@ -49,7 +50,9 @@ void gxWorld::render()
 		m_pActiveCameraPtr->processCamera();
 	}
 
+	if(m_pObserverPtr)m_pObserverPtr->preWorldRender();
 	object3d::render();
+	if(m_pObserverPtr)m_pObserverPtr->postWorldRender();
 }
 
 void gxWorld::renderSingleObject(object3d* obj)

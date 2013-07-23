@@ -1,1 +1,12 @@
 /GEAREngine/GEAREngine/*.user
+
+*.tlog
+
+*.obj
+*.pdb
+
+*.log
+
+*.ilk
+
+*.exe

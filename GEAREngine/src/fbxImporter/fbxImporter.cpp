@@ -180,10 +180,22 @@ object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene
 			assert(fbxChildNode);
 			if(fbxChildNode)
 			{
-				importFBXNode(*fbxChildNode, object3d_root_object, materialList, fbxScene);
+				importFBXNode(*fbxChildNode, object3d_root_object, materialList, fbxScene, object3d_root_object);
 			}
 		}
 		//importFBXNode(*fbxRoot, object3d_root_object);
+
+
+		//int numStacks = fbxScene.GetSrcObjectCount(FBX_TYPE(FbxAnimStack));
+		//for(int x=0;x<numStacks;x++)
+		//{
+		//	FbxAnimStack* pAnimStack = FbxCast<FbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(FbxAnimStack), x));
+		//	int numAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(FbxAnimLayer));
+		//	for(int y=0;y<numAnimLayers;y++)
+		//	{
+		//		FbxAnimLayer* lAnimLayer = pAnimStack->GetMember(FBX_TYPE(FbxAnimLayer), y);
+		//	}
+		//}
 
 		return object3d_root_object;
 	}
@@ -312,7 +324,7 @@ FbxAMatrix CalculateGlobalTransform(FbxNode* pNode)
     return lTransform;
 }
 
-void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene)
+void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d)
 {
 	//kTime fbxTime;
 	//KFbxXMatrix fbxGlobalPosition    = fbxNode.GetGlobalFromCurrentTake(fbxTime);
@@ -335,6 +347,14 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 
 	// import node...
 	FbxMesh *fbxMesh = fbxNode.GetMesh();
+	//FbxSkeleton* fbxSkeleton = fbxNode.GetSkeleton();
+	//int nSkinDeformer=fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
+	//
+	//if(nSkinDeformer)
+	//{
+	//	FbxSkin* skin=(FbxSkin*)fbxMesh->GetDeformer(0, FbxDeformer::eSkin);
+	//}
+
 	if(fbxMesh)
 	{
 		gxMesh* newMesh = importFBXMesh(*fbxMesh, globla_tm, materialList);
@@ -361,6 +381,154 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 
 	*parent_obj_node->getWorldMatrix() = *parent_obj_node * *temp_parent_obj->getWorldMatrix();
 
+	//animation
+
+	FbxGlobalSettings& lTimeSettings = fbxScene.GetGlobalSettings();
+	FbxTime::EMode lTimeMode = lTimeSettings.GetTimeMode();
+	FbxTimeSpan pTimeSpan;
+	lTimeSettings.GetTimelineDefaultTimeSpan(pTimeSpan);
+	FbxLongLong nGlobalFrame=pTimeSpan.GetStop().GetFrameCount();
+	double lFrameRate = FbxTime::GetFrameRate(lTimeMode);
+	double oneFrameTime_inSec = 1.0f/lFrameRate;
+	/*
+	Since an animation curve is a function, on a given animation curve, only one key per time is allowed.
+	The keys are sorted in time order. They can be accessed by their index on the curve, from 0 to FbxAnimCurve::KeyGetCount-1.
+	The time unit in FBX (FbxTime) is 1/46186158000 of one second.
+	*/
+	//FbxLongLong fc=FbxTime::GetFrame(true);
+
+	int numStacks = fbxScene.GetSrcObjectCount(FBX_TYPE(FbxAnimStack));
+	gxAnimation* animationController=NULL;
+	gxAnimationTrack* animTrack=NULL;
+	if(numStacks)
+	{
+		animationController=rootObject3d->createAnimationController();	//wont create new if there is already an animatiion controller exists
+
+		animTrack = new gxAnimationTrack();
+		animTrack->setFPS((int)lFrameRate);
+		animTrack->setTotalFrames((int)nGlobalFrame);
+		animTrack->allocateTrack();
+		parent_obj_node->setAnimationTrack(animTrack);
+		animationController->appendTrack(animTrack);
+	}
+
+	for(int x=0;x<numStacks;x++)
+	{
+		FbxAnimStack* pAnimStack = FbxCast<FbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(FbxAnimStack), x));
+		int numAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(FbxAnimLayer));
+		for(int y=0;y<numAnimLayers;y++)
+		{
+			FbxAnimLayer* lAnimLayer = pAnimStack->GetMember(FBX_TYPE(FbxAnimLayer), y);
+			FbxAnimCurve* lAnimCurve_translationX = fbxNode.LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
+			FbxAnimCurve* lAnimCurve_translationY = fbxNode.LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+			FbxAnimCurve* lAnimCurve_translationZ = fbxNode.LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+
+			FbxAnimCurve* lAnimCurve_rotationX = fbxNode.LclRotation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
+			FbxAnimCurve* lAnimCurve_rotationY = fbxNode.LclRotation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+			FbxAnimCurve* lAnimCurve_rotationZ = fbxNode.LclRotation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+
+			FbxAnimCurve* lAnimCurve_scalingX = fbxNode.LclScaling.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
+			FbxAnimCurve* lAnimCurve_scalingY = fbxNode.LclScaling.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+			FbxAnimCurve* lAnimCurve_scalingZ = fbxNode.LclScaling.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+
+			if(lAnimCurve_translationX)
+			{
+				matrix4x4f* componentTrack=animTrack->getTrack();
+				FbxTime tt(0);
+				FbxLongLong ti=0;
+				double frame_time=0;
+				for(int m=0;m<nGlobalFrame;m++)
+				{
+					float tx,ty,tz;
+					tx=ty=tz=0.0f;
+					if(lAnimCurve_translationX)
+						tx=lAnimCurve_translationX->Evaluate(tt);
+					if(lAnimCurve_translationY)
+						ty=lAnimCurve_translationY->Evaluate(tt);
+					if(lAnimCurve_translationZ)
+						tz=lAnimCurve_translationZ->Evaluate(tt);
+
+					float rx, ry, rz;
+					rx=ry=rz=0.0f;
+					if(lAnimCurve_rotationX)
+						rx=lAnimCurve_rotationX->Evaluate(tt);
+					if(lAnimCurve_rotationY)
+						ry=lAnimCurve_rotationY->Evaluate(tt);
+					if(lAnimCurve_rotationZ)
+						rz=lAnimCurve_rotationZ->Evaluate(tt);
+
+					float sx, sy, sz;
+					sx=sy=sz=1.0f;
+					if(lAnimCurve_scalingX)
+						sx=lAnimCurve_scalingX->Evaluate(tt);
+					if(lAnimCurve_scalingY)
+						sy=lAnimCurve_scalingY->Evaluate(tt);
+					if(lAnimCurve_scalingZ)
+						sz=lAnimCurve_scalingZ->Evaluate(tt);
+
+					FbxMatrix frameMatrix;
+					frameMatrix.SetTRS(FbxVector4(tx, ty, tz), FbxVector4(rx, ry, rz), FbxVector4(sx, sy, sz));
+
+					componentTrack[m].setPosition(frameMatrix.GetRow(3).mData[0], frameMatrix.GetRow(3).mData[1], frameMatrix.GetRow(3).mData[2]);
+					componentTrack[m].setXAxis(vector3f(frameMatrix.GetRow(0).mData[0], frameMatrix.GetRow(0).mData[1], frameMatrix.GetRow(0).mData[2]));
+					componentTrack[m].setYAxis(vector3f(frameMatrix.GetRow(1).mData[0], frameMatrix.GetRow(1).mData[1], frameMatrix.GetRow(1).mData[2]));
+					componentTrack[m].setZAxis(vector3f(frameMatrix.GetRow(2).mData[0], frameMatrix.GetRow(2).mData[1], frameMatrix.GetRow(2).mData[2]));
+
+					frame_time+=oneFrameTime_inSec;
+					ti=(frame_time*46186158000);
+					tt.Set(ti);
+				}
+			}
+
+			//if(lAnimCurve_translationY)
+			//{
+			//	float* componentTrack=animTrack->allocateTrackForComponent(1);
+			//	FbxTime tt(0);
+			//	FbxLongLong ti=0;
+			//	double frame_time=0;
+			//	for(int m=0;m<nGlobalFrame;m++)
+			//	{
+			//		float keyvalue=lAnimCurve_translationY->Evaluate(tt);
+			//		componentTrack[m]=keyvalue;
+			//		frame_time+=oneFrameTime_inSec;
+			//		ti=(frame_time*46186158000);
+			//		tt.Set(ti);
+			//	}
+			//}
+
+			//if(lAnimCurve_translationZ)
+			//{
+			//	float* componentTrack=animTrack->allocateTrackForComponent(1);
+			//	FbxTime tt(0);
+			//	FbxLongLong ti=0;
+			//	double frame_time=0;
+			//	for(int m=0;m<nGlobalFrame;m++)
+			//	{
+			//		float keyvalue=lAnimCurve_translationZ->Evaluate(tt);
+			//		componentTrack[m]=keyvalue;
+			//		frame_time+=oneFrameTime_inSec;
+			//		ti=(frame_time*46186158000);
+			//		tt.Set(ti);
+			//	}
+			//}
+
+			//if(lAnimCurve_rotationX)
+			//{
+			//	FbxTime tt(0);
+			//	FbxLongLong ti=0;
+			//	double frame_time=0;
+			//	for(int m=0;m<nGlobalFrame;m++)
+			//	{
+			//		float keyvalue=lAnimCurve_rotationX->Evaluate(tt);
+			//		frame_time+=oneFrameTime_inSec;
+			//		ti=(frame_time*46186158000);
+			//		tt.Set(ti);
+			//	}
+			//}
+		}
+	}
+	//
+
 	// import child nodes...
 	const unsigned int numChildren = fbxNode.GetChildCount();
 	for(unsigned int i=0; i<numChildren; i++)
@@ -369,7 +537,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 		assert(fbxChildNode);
 		if(fbxChildNode)
 		{
-			importFBXNode(*fbxChildNode, parent_obj_node, materialList, fbxScene);
+			importFBXNode(*fbxChildNode, parent_obj_node, materialList, fbxScene, rootObject3d);
 		}
 	}
 }

@@ -147,6 +147,15 @@
     <ClCompile Include="..\src\util\gxUtil.cpp">
       <Filter>engine\util</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\gxAnimationTrack.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\gxAnimation.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\object3d.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -285,6 +294,12 @@
       <Filter>engine\core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\rect.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxAnimationTrack.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxAnimation.h">
       <Filter>engine\core</Filter>
     </ClInclude>
   </ItemGroup>

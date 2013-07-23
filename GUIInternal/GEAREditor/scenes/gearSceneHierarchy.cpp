@@ -41,16 +41,16 @@ void gearSceneHierarchy::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tre
 	EditorApp::getScenePropertyEditor()->populatePropertyOfObject((object3d*)((assetUserData*)tvnode->getUserData())->getAssetObjectPtr());
 }
 
-void gearSceneHierarchy::onMouseMove(float x, float y, int flag)
+bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 {
-	if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
-		return;
+	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
+	//	return;
 
 	geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
 	if((flag&MK_LBUTTON) && selectedNode)
 	{
 		if(m_cGameObjectsTreeView.getScrollBar()->isScrollBarGrabbed())
-			return;
+			return true;
 		MDataObject* dataObject = new MDataObject(selectedNode, this);
 		MDropSource* dropSource = new MDropSource();
 
@@ -59,10 +59,10 @@ void gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 
 		dataObject->Release();
 		dropSource->Release();
-		return;
+		return true;
 	}
 
-	geWindow::onMouseMove(x, y, flag);
+	return true;
 }
 
 void gearSceneHierarchy::onDragEnter(int x, int y)
@@ -89,7 +89,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 	}
 	else if(dropObject->getSourcePtr()==this)
 	{
-		geTreeNode* selectedNode=m_cGameObjectsTreeView.getTVNode(x, y-getTopMarginOffsetHeight());
+		geTreeNode* selectedNode=m_cGameObjectsTreeView.getTVNode(x, y/*-getTopMarginOffsetHeight()*/);
 		if(selectedNode && !droppedDataObject->isNodeExistsInTree(selectedNode))
 		{
 			object3d* selectedObj=(object3d*)((assetUserData*)selectedNode->getUserData())->getAssetObjectPtr();

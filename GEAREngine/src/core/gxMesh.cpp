@@ -26,6 +26,7 @@ gxMesh::~gxMesh()
 
 void gxMesh::update(float dt)
 {
+	object3d::update(dt);
 }
 
 void gxMesh::render()

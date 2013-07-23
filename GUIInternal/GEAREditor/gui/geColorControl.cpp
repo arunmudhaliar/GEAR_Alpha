@@ -71,6 +71,7 @@ bool geColorControl::onMouseLButtonUp(float x, float y, int nFlag)
 	return true;
 }
 
-void geColorControl::onMouseMove(float x, float y, int flag)
+bool geColorControl::onMouseMove(float x, float y, int flag)
 {
+	return true;
 }

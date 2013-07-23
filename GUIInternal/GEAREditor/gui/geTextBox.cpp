@@ -179,7 +179,7 @@ float geTextBox::getVirtualEndBound(int& index)
 
 bool geTextBox::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	if(!isPointInsideWindow(x, y))
+	if(!isPointInsideClientArea(x, y))
 		return false;
 	//m_bStartSelection=true;
 	geTextBox::g_pCurrentlyActiveTextBoxPtr=this;
@@ -206,7 +206,7 @@ bool geTextBox::onMouseLButtonDown(float x, float y, int nFlag)
 
 bool geTextBox::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	if(!isPointInsideWindow(x, y))
+	if(!isPointInsideClientArea(x, y))
 		return false;
 
 	if(!m_bStartSelection)
@@ -272,10 +272,10 @@ bool geTextBox::onMouseLButtonUp(float x, float y, int nFlag)
 	return true;
 }
 
-void geTextBox::onMouseMove(float x, float y, int flag)
+bool geTextBox::onMouseMove(float x, float y, int flag)
 {
-	if(!isPointInsideWindow(x, y))
-		return;
+	if(!isPointInsideClientArea(x, y))
+		return false;
 
 	if(flag&MK_LBUTTON)
 		m_bStartSelection=true;
@@ -369,6 +369,8 @@ void geTextBox::onMouseMove(float x, float y, int flag)
 		memcpy(m_cVBSelectionArea.m_cszVertexList, selection_vertLst, sizeof(selection_vertLst));
 	}
 	m_fPrevMouseXPos=x;
+
+	return true;
 }
 
 void geTextBox::onCancelEngagedControls()

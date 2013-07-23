@@ -17,7 +17,7 @@ public:
 	gxMaterial* m_pCurrentMaterialPtr;
 
 	gePropertyMaterial(geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxMaterial* material):
-	  geTreeNode(parent, name, sprite, 10)
+	  geTreeNode(parent, name, sprite, 40)
 	{
 		setSize(m_cSize.x, 85.0f);
 
@@ -31,8 +31,8 @@ public:
 		geTextBox* text_material = new geTextBox("MaterialName");
 		text_material->create(this, material->getMaterialName(), 50, 10, 200, 16);
 
-		//geHorizontalSlider* slider = new geHorizontalSlider();
-		//slider->create(this, "slider", 50, 35, 70);
+		geHorizontalSlider* slider = new geHorizontalSlider();
+		slider->create(this, "slider", 50, 35, 70);
 		
 		char tileX_temp_buffer[10];
 		char tileY_temp_buffer[10];

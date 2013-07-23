@@ -233,6 +233,11 @@ bool geGUIBase::isPointInsideWindow(float x, float y)
 	return (x>=m_cPos.x && x<=m_cPos.x+m_cSize.x && y>=m_cPos.y && y<=m_cPos.y+m_cSize.y);
 }
 
+bool geGUIBase::isPointInsideClientArea(float x, float y)
+{
+	return (x>=0 && x<=m_cSize.x && y>=0 && y<=m_cSize.y);
+}
+
 void geGUIBase::onPosition(float x, float y, int flag)
 {
 }
@@ -263,9 +268,12 @@ bool geGUIBase::MouseLButtonDown(float x, float y, int nFlag)
 			}
 		}
 
-		commandUsed=onMouseLButtonDown(x, y, nFlag);
-		if(commandUsed)
-			m_pSelectedControlPtr=this;
+		if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight()))
+		{
+			commandUsed=onMouseLButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+			if(commandUsed)
+				m_pSelectedControlPtr=this;
+		}
 	}
 
 	return commandUsed;
@@ -282,9 +290,12 @@ void geGUIBase::MouseLButtonUp(float x, float y, int nFlag)
 			obj->MouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
 		}
 
-		bHandled=onMouseLButtonUp(x, y, nFlag);
-		//if(m_pSelectedControlPtr==this)
-		//	m_pSelectedControlPtr=NULL;
+		//if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight()))
+		{
+			bHandled=onMouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+			//if(m_pSelectedControlPtr==this)
+			//	m_pSelectedControlPtr=NULL;
+		}
 	}
 
 	if(m_pSelectedControlPtr)
@@ -305,7 +316,7 @@ void geGUIBase::MouseRButtonUp(float x, float y, int nFlag)
 
 }
 
-void geGUIBase::MouseMove(float x, float y, int flag)
+bool geGUIBase::MouseMove(float x, float y, int flag)
 {
 	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
 	{
@@ -313,7 +324,7 @@ void geGUIBase::MouseMove(float x, float y, int flag)
 		obj->MouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
 	}
 
-	onMouseMove(x, y, flag);
+	return onMouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
 
 	//if(isPointInsideWindow(x, y) || !isMouseBoundCheckEnabled())
 	//{
@@ -340,7 +351,7 @@ void geGUIBase::MouseWheel(int zDelta, int x, int y, int flag)
 		obj->MouseWheel(zDelta, x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
 	}
 
-	onMouseWheel(zDelta, x, y, flag);
+	onMouseWheel(zDelta, x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
 }
 
 bool geGUIBase::onMouseLButtonDown(float x, float y, int nFlag)
@@ -362,8 +373,9 @@ void geGUIBase::onMouseRButtonUp(float x, float y, int nFlag)
 {
 }
 
-void geGUIBase::onMouseMove(float x, float y, int flag)
+bool geGUIBase::onMouseMove(float x, float y, int flag)
 {
+	return false;
 }
 
 void geGUIBase::onMouseWheel(int zDelta, int x, int y, int flag)
@@ -457,7 +469,7 @@ void geGUIBase::DragEnter(int x, int y)
 			obj->DragEnter(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight());
 		}
 
-		onDragEnter(x, y);
+		onDragEnter(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight());
 	}
 }
 
@@ -471,7 +483,7 @@ void geGUIBase::DragDrop(int x, int y, MDataObject* dropObject)
 			obj->DragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
 		}
 
-		onDragDrop(x, y, dropObject);
+		onDragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
 	}
 }
 
@@ -552,4 +564,6 @@ bool geGUIBase::isNodeExistsInTree(geGUIBase* node)
 		if(obj->isNodeExistsInTree(node))
 			return true;
 	}
+
+	return false;
 }

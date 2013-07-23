@@ -39,7 +39,7 @@ public:
 
 	object3d* loadMyFBX(const char *filePath, std::vector<gxMaterial*>* materialList);
 	object3d* importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList);
-	void importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene);
+	void importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d);
 	gxMesh* importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &transform, std::vector<gxMaterial*>* materialList);
 
 	void triangulateFBXRecursive(FbxGeometryConverter &fbxConverter, FbxNode &fbxNode);

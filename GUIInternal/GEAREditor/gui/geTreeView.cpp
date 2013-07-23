@@ -478,8 +478,8 @@ void geTreeView::onDragDrop(int x, int y, MDataObject* dropObject)
 		for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 		{
 			geGUIBase* obj = *it;
-			float xxx=x-(getPos().x+selectedNode->getPos().x+xoff)+m_pRootNode->getXOffset();
-			float yyy=y-(getPos().y+selectedNode->getPos().y+getTopMarginOffsetHeight()+yoff);
+			float xxx=x-(/*getPos().x+*/selectedNode->getPos().x+xoff)+m_pRootNode->getXOffset();
+			float yyy=y-(/*getPos().y+*/selectedNode->getPos().y/*+getTopMarginOffsetHeight()*/+yoff+GE_TREEVIEWNODE_CY);
 
 			obj->DragDrop(xxx, yyy, dropObject);
 		}
@@ -556,7 +556,7 @@ bool geTreeView::onMouseLButtonUp(float x, float y, int nFlag)
 	return true;//arun-check geGUIBase::onMouseLButtonUp(x, y, nFlag);
 }
 
-void geTreeView::onMouseMove(float x, float y, int flag)
+bool geTreeView::onMouseMove(float x, float y, int flag)
 {
 	m_cVerticalScrollBar.MouseMove(x, y, flag);
 
@@ -576,7 +576,7 @@ void geTreeView::onMouseMove(float x, float y, int flag)
 	//	//int yoff=(int)m_fVirtualYPos-GE_TREEVIEWNODE_CY;
 	//	m_pSelectedNodePtr->MouseMove(x-m_fOffsetCacheForMouseMove.x, y-m_fOffsetCacheForMouseMove.y, flag);
 	//}
-	geGUIBase::onMouseMove(x, y, flag);
+	return geGUIBase::onMouseMove(x, y, flag);
 }
 
 void geTreeView::onMouseWheel(int zDelta, int x, int y, int flag)
@@ -587,7 +587,7 @@ void geTreeView::onMouseWheel(int zDelta, int x, int y, int flag)
 
 geTreeNode* geTreeView::getTVNode(float x, float y)
 {
-	if(m_cVerticalScrollBar.isPointInsideWindow(x, y))
+	if(m_cVerticalScrollBar.isPointInsideClientArea(x, y))
 		return NULL;
 
 	int xoff=-m_pRootNode->getXOffset();

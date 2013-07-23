@@ -108,16 +108,16 @@ bool gearSceneFileView::onMouseLButtonUp(float x, float y, int nFlag)
 	return geWindow::onMouseLButtonUp(x, y, nFlag);
 }
 
-void gearSceneFileView::onMouseMove(float x, float y, int flag)
+bool gearSceneFileView::onMouseMove(float x, float y, int flag)
 {
-	if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
-		return;
+	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
+	//	return;
 
 	geTreeNode* selectedNode=m_cFileTreeView.getSelectedNode();
 	if((flag&MK_LBUTTON) && selectedNode)
 	{
 		if(/*m_cFileTreeView.getScrollBar()->isScrollBarVisible() && */m_cFileTreeView.getScrollBar()->isScrollBarGrabbed()/* && x>m_cSize.x-SCROLLBAR_SIZE*/)
-			return;
+			return  true;
 		MDataObject* dataObject = new MDataObject(selectedNode, this);
 		MDropSource* dropSource = new MDropSource();
 
@@ -126,10 +126,10 @@ void gearSceneFileView::onMouseMove(float x, float y, int flag)
 
 		dataObject->Release();
 		dropSource->Release();
-		return;
+		return true;
 	}
 
-	geWindow::onMouseMove(x, y, flag);
+	return geWindow::onMouseMove(x, y, flag);
 }
 
 void gearSceneFileView::onMouseWheel(int zDelta, int x, int y, int flag)

@@ -106,7 +106,7 @@ protected:
 	virtual void onSize(float cx, float cy, int flag);
 	virtual bool onMouseLButtonDown(float x, float y, int nFlag);
 	virtual bool onMouseLButtonUp(float x, float y, int nFlag);
-	virtual void onMouseMove(float x, float y, int flag);
+	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);

@@ -102,9 +102,11 @@ void gearScenePreview::onMouseRButtonUp(float x, float y, int nFlag)
 	monoWrapper::mono_engine_mouseRButtonUp(m_pPreviewWorldPtr, x, y, nFlag);
 }
 
-void gearScenePreview::onMouseMove(float x, float y, int flag)
+bool gearScenePreview::onMouseMove(float x, float y, int flag)
 {
 	monoWrapper::mono_engine_mouseMove(m_pPreviewWorldPtr, x, y, flag);
+
+	return true;
 }
 
 void gearScenePreview::onMouseWheel(int zDelta, int x, int y, int flag)

@@ -439,7 +439,7 @@ bool geLayout::onMouseLButtonUp(float x, float y, int nFlag)
 	return true;
 }
 
-void geLayout::onMouseMove(float x, float y, int flag)
+bool geLayout::onMouseMove(float x, float y, int flag)
 {
 	//if(flag&0x0001)	//MK_LBUTTON
 	//{
@@ -451,6 +451,8 @@ void geLayout::onMouseMove(float x, float y, int flag)
 	//}
 
 	m_cMousePreviousPos.set(x, y);
+
+	return false;
 }
 
 void geLayout::traverseMouseMoveEvent(int x, int y, int flag)

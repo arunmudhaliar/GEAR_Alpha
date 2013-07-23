@@ -125,13 +125,13 @@ void geWindow::clearVarsAfterWindowMoved()
 	m_bCanMove = false;
 }
 
-bool geWindow::selectWindow(int x, int y)
-{
-	bool bSelected = isPointInsideWindow(x, y);
-	m_bCanMove = isPointInsideWindowTitle(x, y);
-
-	return bSelected;
-}
+//bool geWindow::selectWindow(int x, int y)
+//{
+//	bool bSelected = isPointInsideWindow(x, y);
+//	m_bCanMove = isPointInsideWindowTitle(x, y);
+//
+//	return bSelected;
+//}
 
 bool geWindow::isPointInsideWindowTitle(int x, int y)
 {
@@ -215,9 +215,9 @@ bool geWindow::onMouseLButtonUp(float x, float y, int nFlag)
 	return geGUIBase::onMouseLButtonUp(x, y, nFlag);
 }
 
-void geWindow::onMouseMove(float x, float y, int flag)
+bool geWindow::onMouseMove(float x, float y, int flag)
 {
-	geGUIBase::onMouseMove(x, y, flag);
+	return geGUIBase::onMouseMove(x, y, flag);
 }
 
 void geWindow::onMouseEnterClientArea()

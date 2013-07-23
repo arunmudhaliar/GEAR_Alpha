@@ -19,7 +19,7 @@ protected:
 	virtual void onCreate();
 	virtual void onDraw();
 
-	virtual void onMouseMove(float x, float y, int flag);
+	virtual bool onMouseMove(float x, float y, int flag);
 
 	virtual void onDragEnter(int x, int y);
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);

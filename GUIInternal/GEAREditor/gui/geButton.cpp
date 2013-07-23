@@ -154,8 +154,9 @@ bool geButton::onMouseLButtonUp(float x, float y, int nFlag)
 	return true;
 }
 
-void geButton::onMouseMove(float x, float y, int flag)
+bool geButton::onMouseMove(float x, float y, int flag)
 {
+	return true;
 }
 
 void geButton::onButtonStateChanged(EBUTTON_STATE eFromState)

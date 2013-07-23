@@ -86,6 +86,7 @@ bool geTextureThumbnail::onMouseLButtonUp(float x, float y, int nFlag)
 	return true;
 }
 
-void geTextureThumbnail::onMouseMove(float x, float y, int flag)
+bool geTextureThumbnail::onMouseMove(float x, float y, int flag)
 {
+	return true;
 }

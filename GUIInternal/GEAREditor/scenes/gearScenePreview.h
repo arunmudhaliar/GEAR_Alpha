@@ -23,7 +23,7 @@ protected:
 	virtual bool onMouseRButtonDown(float x, float y, int nFlag);
 	virtual void onMouseRButtonUp(float x, float y, int nFlag);
 
-	virtual void onMouseMove(float x, float y, int flag);
+	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 	object3d* m_pSelectedObj;

@@ -10,6 +10,8 @@ geWindow("World Editor")
 	m_pMainWorldPtr=NULL;
 
 	m_pHorizontalSlider_LightAmbient=NULL;
+	m_pLocalOrGlobalAxis=NULL;
+	m_pTBGridView=NULL;
 }
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
@@ -53,6 +55,10 @@ void gearSceneWorldEditor::onCreate()
 	m_pLocalOrGlobalAxis->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pLocalOrGlobalAxis);
 	m_bTransformThroughLocalAxis=true;
+
+	m_pTBGridView=new geToolBarButton("grid", getToolBar());
+	m_pTBGridView->loadImage("res//icons16x16.png", 112, 384);
+	getToolBar()->appendToolBarControl(m_pTBGridView);
 
 	//create grid
 	//geVector2f m_cGridOnYAxis[180];
@@ -169,30 +175,33 @@ void gearSceneWorldEditor::draw()
 
 void gearSceneWorldEditor::onDraw()
 {
-	monoWrapper::mono_engine_update(m_pMainWorldPtr, 1.0f);
+	monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec());
 	monoWrapper::mono_engine_render(m_pMainWorldPtr);
 
 	glDisable(GL_LIGHT0);
 	glDisable(GL_LIGHTING);
 
 	//grid
-	glColor4f(0.2f, 0.2f, 0.2f, 1.0f);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnYAxis[0].x);
-	glDrawArrays(GL_LINES, 0, 90*2);
-	glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnXAxis[0].x);
-	glDrawArrays(GL_LINES, 0, 90*2);
+	if(m_pTBGridView->isButtonPressed())
+	{
+		glColor4f(0.2f, 0.2f, 0.2f, 1.0f);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnYAxis[0].x);
+		glDrawArrays(GL_LINES, 0, 90*2);
+		glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnXAxis[0].x);
+		glDrawArrays(GL_LINES, 0, 90*2);
 	
-	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+		glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
 
-	glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnYAxis[0].x);
-	glDrawArrays(GL_LINES, 0, 9*2);
-	glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnXAxis[0].x);
-	glDrawArrays(GL_LINES, 0, 9*2);
+		glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnYAxis[0].x);
+		glDrawArrays(GL_LINES, 0, 9*2);
+		glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnXAxis[0].x);
+		glDrawArrays(GL_LINES, 0, 9*2);
 
-	glVertexPointer(2, GL_FLOAT, 0, &m_cGridOuterBox[0].x);
-	glDrawArrays(GL_LINE_LOOP, 0, 4);
-	glDisableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_FLOAT, 0, &m_cGridOuterBox[0].x);
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
 	//
 
 	if(m_pSelectedObj)
@@ -239,23 +248,23 @@ void gearSceneWorldEditor::preWorldRender()
 
 void gearSceneWorldEditor::postWorldRender()
 {
-	glBegin(GL_LINES);
-	glVertex3fv(&minV.x);
-	glVertex3fv(&maxV.x);
-	glEnd();
+	//glBegin(GL_LINES);
+	//glVertex3fv(&minV.x);
+	//glVertex3fv(&maxV.x);
+	//glEnd();
 
-	glDisable(GL_DEPTH_TEST);
-	glPushMatrix();
-	glTranslatef(i1.x, i1.y, i1.z);
+	//glDisable(GL_DEPTH_TEST);
+	//glPushMatrix();
+	//glTranslatef(i1.x, i1.y, i1.z);
+	////glColor4f(1, 0 , 0, 1);
+	//glutWireSphere(0.1f, 3, 3);
+	//glPopMatrix();
+	//glPushMatrix();
+	//glTranslatef(testSpehere.x, testSpehere.y, testSpehere.z);
 	//glColor4f(1, 0 , 0, 1);
-	glutWireSphere(0.1f, 3, 3);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(testSpehere.x, testSpehere.y, testSpehere.z);
-	glColor4f(1, 0 , 0, 1);
-	glutWireSphere(0.1f, 3, 3);
-	glPopMatrix();
-	glEnable(GL_DEPTH_TEST);
+	//glutWireSphere(0.1f, 3, 3);
+	//glPopMatrix();
+	//glEnable(GL_DEPTH_TEST);
 }
 
 void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
@@ -282,10 +291,14 @@ static bool intersectionOfLineSegmentAndPlane(vector3f p1, vector3f p2, vector3f
 
 bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 {
+	if(!isPointInsideClientArea(x, y))
+	{
+		m_iAxisSelected=-1;
+		return true;
+	}
 	//monoWrapper::mono_engine_mouseLButtonDown(m_pMainWorldPtr, x, y, nFlag);
 	if(!m_pMainWorldPtr) return true;
 
-	y-=getTopMarginOffsetHeight();
 	GLdouble viewTM[16];
 	GLdouble projectionTM[16];
 	for(int m=0;m<16;m++)
@@ -293,9 +306,6 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 		viewTM[m]=m_pMainWorldPtr->getActiveCamera()->getViewMatrix()->getMatrix()[m];
 		projectionTM[m]=m_pMainWorldPtr->getActiveCamera()->getProjectionMatrix()->getMatrix()[m];
 	}
-
-	//double __projection[16];
-	//glGetDoublev( GL_PROJECTION_MATRIX, __projection );
 
 	GLdouble x1, y1, z1, depth;
 	GLdouble x2, y2, z2;
@@ -403,7 +413,12 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 
 bool gearSceneWorldEditor::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	y-=getTopMarginOffsetHeight();
+	if(!isPointInsideClientArea(x, y))
+	{
+		return true;
+	}
+
+	m_iAxisSelected=-1;
 	monoWrapper::mono_engine_mouseLButtonUp(m_pMainWorldPtr, x, y, nFlag);
 	m_cMousePrevPos.set(x, y);
 	return true;
@@ -411,7 +426,11 @@ bool gearSceneWorldEditor::onMouseLButtonUp(float x, float y, int nFlag)
 
 bool gearSceneWorldEditor::onMouseRButtonDown(float x, float y, int nFlag)
 {
-	y-=getTopMarginOffsetHeight();
+	if(!isPointInsideClientArea(x, y))
+	{
+		m_iAxisSelected=-1;
+		return true;
+	}
 	monoWrapper::mono_engine_mouseRButtonDown(m_pMainWorldPtr, x, y, nFlag);
 	m_cMousePrevPos.set(x, y);
 	return true;
@@ -419,14 +438,18 @@ bool gearSceneWorldEditor::onMouseRButtonDown(float x, float y, int nFlag)
 
 void gearSceneWorldEditor::onMouseRButtonUp(float x, float y, int nFlag)
 {
-	y-=getTopMarginOffsetHeight();
+	if(!isPointInsideClientArea(x, y))
+	{
+		m_iAxisSelected=-1;
+		return;
+	}
 	monoWrapper::mono_engine_mouseRButtonUp(m_pMainWorldPtr, x, y, nFlag);
 	m_cMousePrevPos.set(x, y);
 }
 
-void gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
+bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 {
-	y-=getTopMarginOffsetHeight();
+	if(!isPointInsideClientArea(x, y)) return false;
 	//monoWrapper::mono_engine_mouseMove(m_pMainWorldPtr, x, y, flag);
 	Camera* camera=m_pMainWorldPtr->getActiveCamera();
 	
@@ -456,7 +479,7 @@ void gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 	}
 	else if(flag&MK_LBUTTON)
 	{
-		if(m_pSelectedObj)
+		if(m_pSelectedObj && m_iAxisSelected>0)
 		{
 			float d=camera->getPosition().length();
 					GLdouble viewTM[16];
@@ -486,58 +509,52 @@ void gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 						(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
 						(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
 						(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getYAxis():vector3f(0, 1, 0)
-
-						/*
-						vector3f(0, 0, 1),
-						vector3f(0, 0, 1),
-						vector3f(0, 1, 0)
-						*/
 					};
-			if(m_iAxisSelected>0)
-			{
-				float pu;
-				if(intersectionOfLineSegmentAndPlane(minV, maxV, planeNormalArray[m_iAxisSelected-1], m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
-				{
-					vector3f current_pos_in_world(minV+(maxV-minV)*pu);
-					vector3f diff_in_world(current_pos_in_world-m_cMousePrevPosInWorld);
-					vector3f transformed;
-					transformed=(m_bTransformThroughLocalAxis)?(m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world):m_pSelectedObj->getWorldMatrix()->getPosition() + diff_in_world;
-					//transformed=m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world;
 
-					if(m_bTransformThroughLocalAxis)
+					float pu;
+					if(intersectionOfLineSegmentAndPlane(minV, maxV, planeNormalArray[m_iAxisSelected-1], m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
 					{
-						if(m_iAxisSelected==1)
-							m_pSelectedObj->updateLocalPositionf(transformed.x, 0, 0);
-						else if(m_iAxisSelected==2)
-							m_pSelectedObj->updateLocalPositionf(0, transformed.y, 0);
-						else if(m_iAxisSelected==3)
-							m_pSelectedObj->updateLocalPositionf(0, 0, transformed.z);
-					}
-					else
-					{
-						vector3f right(1, 0, 0);
-						right=right*diff_in_world.x;
-						if(m_iAxisSelected==1)
-							m_pSelectedObj->updatePositionf(right.x, 0, 0);
-						else if(m_iAxisSelected==2)
-							m_pSelectedObj->updatePositionf(0, diff_in_world.y, 0);
-						else if(m_iAxisSelected==3)
-							m_pSelectedObj->updatePositionf(0, 0, diff_in_world.z);
-					}
+						vector3f current_pos_in_world(minV+(maxV-minV)*pu);
+						vector3f diff_in_world(current_pos_in_world-m_cMousePrevPosInWorld);
+						vector3f transformed;
+						transformed=(m_bTransformThroughLocalAxis)?(m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world):m_pSelectedObj->getWorldMatrix()->getPosition() + diff_in_world;
+						//transformed=m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world;
 
-					m_cMousePrevPosInWorld = current_pos_in_world;
-				}
-				
-			}
+						if(m_bTransformThroughLocalAxis)
+						{
+							if(m_iAxisSelected==1)
+								m_pSelectedObj->updateLocalPositionf(transformed.x, 0, 0);
+							else if(m_iAxisSelected==2)
+								m_pSelectedObj->updateLocalPositionf(0, transformed.y, 0);
+							else if(m_iAxisSelected==3)
+								m_pSelectedObj->updateLocalPositionf(0, 0, transformed.z);
+						}
+						else
+						{
+							vector3f right(1, 0, 0);
+							right=right*diff_in_world.x;
+							if(m_iAxisSelected==1)
+								m_pSelectedObj->updatePositionf(right.x, 0, 0);
+							else if(m_iAxisSelected==2)
+								m_pSelectedObj->updatePositionf(0, diff_in_world.y, 0);
+							else if(m_iAxisSelected==3)
+								m_pSelectedObj->updatePositionf(0, 0, diff_in_world.z);
+						}
+
+						m_cMousePrevPosInWorld = current_pos_in_world;
+					}
 		}
 	}
 
 	//DEBUG_PRINT("%f, %f\n", delta.x, delta.y);
 	m_cMousePrevPos.set(x, y);
+
+	return true;
 }
 
 void gearSceneWorldEditor::onMouseWheel(int zDelta, int x, int y, int flag)
 {
+	if(!isPointInsideClientArea(x, y)) return;
 	//monoWrapper::mono_engine_mouseWheel(m_pMainWorldPtr, zDelta, x, y, flag);
 	Camera* camera=m_pMainWorldPtr->getActiveCamera();
 	int dir = (zDelta<0)?1:-1;

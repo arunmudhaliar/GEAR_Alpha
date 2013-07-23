@@ -164,7 +164,7 @@ void geLayoutManager::onMouseRButtonUp(float x, float y, int nFlag)
 {
 }
 
-void geLayoutManager::onMouseMove(float x, float y, int flag)
+bool geLayoutManager::onMouseMove(float x, float y, int flag)
 {
 	bool bLayoutChangeLogicIssued=false;
 	if((flag&0x0001)==0)	//MK_LBUTTON
@@ -215,6 +215,8 @@ void geLayoutManager::onMouseMove(float x, float y, int flag)
 	}
 
 	m_cMousePreviousPos.set(x, y);
+
+	return false;
 }
 
 void geLayoutManager::onMouseWheel(int zDelta, int x, int y, int flag)

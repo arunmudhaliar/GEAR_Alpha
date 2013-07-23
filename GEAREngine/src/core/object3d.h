@@ -6,8 +6,10 @@
 #include <algorithm>
 #include "basicIncludes.h"
 #include "aabb.h"
+#include "gxAnimation.h"
 
-class object3d : public transform
+class gxAnimation;
+class DllExport object3d : public transform
 {
 public:
 
@@ -17,101 +19,25 @@ public:
 		eObject3dBaseFlag_Visible	= (1<<0)
 	};
 
-	object3d(int objID):
-	  transform(),
-		m_iObjectID(objID)
-	{
-		m_pParentPtr=NULL;
-		memset(m_cszName, 0, sizeof(m_cszName));
-		m_eBaseFlags=0;
-		setBaseFlag(eObject3dBaseFlag_Visible);
-	}
+	object3d(int objID);
+	virtual ~object3d();
 
-	virtual ~object3d()
-	{
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
-		{
-			object3d* obj = *it;
-			GX_DELETE(obj);
-		}
-		m_cChilds.clear();
-	}
+	virtual void update(float dt);
 
-	virtual void update(float dt)
-	{
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
-		{
-			object3d* obj = *it;
-			obj->update(dt);
-		}
-	}
+	void updateAnimationFrameToObject3d();
+	virtual void render();
 
-	virtual void render()
-	{
-		if(!isBaseFlag(eObject3dBaseFlag_Visible))
-			return;
+	bool removeChild(object3d* child);
 
-		//glPushMatrix();
-		//glMultMatrixf(getWorldMatrix()->getMatrix());
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
-		{
-			object3d* obj = *it;
-			obj->render();
-		}
-		//glPopMatrix();
-	}
+	virtual void transformationChangedf();
 
-	bool removeChild(object3d* child)
-	{
-		int old_sz=m_cChilds.size();
-		m_cChilds.erase(std::remove(m_cChilds.begin(), m_cChilds.end(), child), m_cChilds.end());
-
-		if((old_sz>m_cChilds.size()))
-		{
-			child->setParent(NULL);
-			return true;
-		}
-		else
-		{
-			for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
-			{
-				object3d* obj = *it;
-				if(obj->removeChild(child))
-					return true;
-			}
-		}
-		return false;
-	}
-
-	virtual void transformationChangedf()
-    {
-		object3d* parent=getParent();
-		if(parent)
-			m_cWorldMatrix = *(parent->getWorldMatrix()) * *this;
-		else
-			m_cWorldMatrix = *this;
-
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
-		{
-			object3d* obj = *it;
-			obj->transformationChangedf();
-		}
-    }
-
-	virtual void calculateAABB()
-	{
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
-		{
-			object3d* obj = *it;
-			obj->calculateAABB();
-		}
-	}
+	virtual void calculateAABB();
 
 	int getID()				{	return m_iObjectID;	}
 	const char* getName()	{	return m_cszName;	}
 	void setName(const char* name)	{	GX_STRCPY(m_cszName, name);	}
 
-	object3d* appendChild(object3d* child)	{	child->setParent(this); m_cChilds.push_back(child); child->transformationChangedf(); return child;	}
+	object3d* appendChild(object3d* child);
 	std::vector<object3d*>* getChildList()	{	return &m_cChilds;	}
 
 	void setParent(object3d* pParentPtr)	{	m_pParentPtr=pParentPtr;	}
@@ -125,6 +51,11 @@ public:
 
 	gxAABBf& getAABB()	{	return m_cAABB;	}
 
+	gxAnimation* createAnimationController();
+
+	gxAnimation* getAnimationController()				{	return m_pAnimationController;	}
+	void setAnimationTrack(gxAnimationTrack* track);
+
 protected:
 	char m_cszName[64];
 	int m_iObjectID;
@@ -132,6 +63,8 @@ protected:
 	unsigned int m_eBaseFlags;
 	std::vector<object3d*> m_cChilds;
 	gxAABBf m_cAABB;
+	gxAnimation* m_pAnimationController;
+	gxAnimationTrack* m_pAnimationTrack;	//must not delete this pointer
 };
 
 #endif

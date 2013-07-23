@@ -79,7 +79,7 @@ public:
 protected:
 	virtual bool onMouseLButtonDown(float x, float y, int nFlag);
 	virtual bool onMouseLButtonUp(float x, float y, int nFlag);
-	virtual void onMouseMove(float x, float y, int flag);
+	virtual bool onMouseMove(float x, float y, int flag);
 
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);

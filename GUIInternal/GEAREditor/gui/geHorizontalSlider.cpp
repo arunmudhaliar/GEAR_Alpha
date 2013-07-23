@@ -79,9 +79,9 @@ void geHorizontalSlider::onSize(float cx, float cy, int flag)
 
 bool geHorizontalSlider::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	float actualPos=m_cPos.x+m_fSliderPos*(m_cSize.x-SLIDER_GRABBER_SZ);
+	float actualPos=/*m_cPos.x+*/m_fSliderPos*(m_cSize.x-SLIDER_GRABBER_SZ);
 
-	if(x>actualPos && x<actualPos+SLIDER_GRABBER_SZ && y>m_cPos.y-2 && y<m_cPos.y+7)
+	if(x>actualPos && x<actualPos+SLIDER_GRABBER_SZ && y>-2 && y<7)
 	{
 		m_bGrabbed=true;
 		m_fMousePrevXPos=x;
@@ -97,7 +97,7 @@ bool geHorizontalSlider::onMouseLButtonUp(float x, float y, int nFlag)
 	return true;
 }
 
-void geHorizontalSlider::onMouseMove(float x, float y, int flag)
+bool geHorizontalSlider::onMouseMove(float x, float y, int flag)
 {
 	float diffX=x-m_fMousePrevXPos;
 	if(m_bGrabbed && (flag&MK_LBUTTON))
@@ -114,6 +114,8 @@ void geHorizontalSlider::onMouseMove(float x, float y, int flag)
 		onSliderChange(m_fSliderPos);
 	}
 	m_fMousePrevXPos=x;
+
+	return true;
 }
 
 void geHorizontalSlider::setSliderValue(float value)

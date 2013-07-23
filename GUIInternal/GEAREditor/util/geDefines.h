@@ -4,6 +4,7 @@
 #include <string.h>
 
 #define STRCPY(dst, src)	strcpy_s(dst, sizeof(dst), src)
+#define SPRINTF(dst, format, ...)	sprintf_s(dst, sizeof(dst), format, ...)
 
 #define GE_DELETE(x)		if(x){delete x; x=NULL;}
 #define GE_DELETE_ARY(x)	if(x){delete [] x; x=NULL;}

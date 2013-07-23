@@ -58,6 +58,7 @@ public:
 	void setColor(stVertexBuffer* vbuffer, int index, float r, float g, float b, float a);
 
 	bool isPointInsideWindow(float x, float y);
+	bool isPointInsideClientArea(float x, float y);
 
 	void setPos(const geVector2f& pos);
 	void setPos(float x, float y);
@@ -81,7 +82,7 @@ public:
 	bool MouseRButtonDown(float x, float y, int nFlag);
 	void MouseRButtonUp(float x, float y, int nFlag);
 
-	void MouseMove(float x, float y, int flag);
+	bool MouseMove(float x, float y, int flag);
 	void MouseWheel(int zDelta, int x, int y, int flag);
 
 	void DragEnter(int x, int y);
@@ -131,7 +132,7 @@ protected:
 	virtual bool onMouseRButtonDown(float x, float y, int nFlag);
 	virtual void onMouseRButtonUp(float x, float y, int nFlag);
 
-	virtual void onMouseMove(float x, float y, int flag);
+	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 	virtual void onHoverControl(int x, int y);

@@ -123,7 +123,7 @@ void geScrollBar::setConetentHeight(int contentHeight)
 bool geScrollBar::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	m_cMousePrevPos.set(x, y);
-	if(isPointInsideWindow(x, y))
+	if(isPointInsideClientArea(x, y))
 	{
 		m_bGrabbed=true;
 		return true;
@@ -143,7 +143,7 @@ bool geScrollBar::onMouseLButtonUp(float x, float y, int nFlag)
 	return true;
 }
 
-void geScrollBar::onMouseMove(float x, float y, int flag)
+bool geScrollBar::onMouseMove(float x, float y, int flag)
 {
 	//
 	if(m_bGrabbed && (flag&0x0001))
@@ -160,6 +160,8 @@ void geScrollBar::onMouseMove(float x, float y, int flag)
 		m_pObserverPtr->onScrollBarChange(this);
 	}
 	m_cMousePrevPos.set(x, y);
+
+	return true;
 }
 
 void geScrollBar::scrollMouseWheel(int zDelta, int x, int y, int flag)

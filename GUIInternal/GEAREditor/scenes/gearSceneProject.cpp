@@ -75,7 +75,7 @@ bool gearSceneProject::onMouseLButtonUp(float x, float y, int nFlag)
 	return geWindow::onMouseLButtonUp(x, y, nFlag);
 }
 
-void gearSceneProject::onMouseMove(float x, float y, int flag)
+bool gearSceneProject::onMouseMove(float x, float y, int flag)
 {
 	//geTreeNode* selectedNode=m_cAssetTreeView.getSelectedNode();
 	//if((flag&MK_LBUTTON) && selectedNode)
@@ -91,7 +91,7 @@ void gearSceneProject::onMouseMove(float x, float y, int flag)
 	//	return;
 	//}
 
-	geWindow::onMouseMove(x, y, flag);
+	return geWindow::onMouseMove(x, y, flag);
 }
 
 void gearSceneProject::onMouseWheel(int zDelta, int x, int y, int flag)

@@ -156,6 +156,9 @@
     <ClCompile Include="..\src\core\object3d.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\gxAnimationSet.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -300,6 +303,9 @@
       <Filter>engine\core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\gxAnimation.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxAnimationSet.h">
       <Filter>engine\core</Filter>
     </ClInclude>
   </ItemGroup>

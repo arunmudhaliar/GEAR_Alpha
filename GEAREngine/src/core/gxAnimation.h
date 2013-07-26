@@ -1,24 +1,23 @@
 #ifndef GXANIMATION_H
 #define GXANIMATION_H
 
-#include "gxAnimationTrack.h"
+#include "gxAnimationSet.h"
 #include <vector>
 
+class gxAnimationSet;
 class gxAnimation
 {
 public:
 	gxAnimation();
 	~gxAnimation();
 
-	void appendTrack(gxAnimationTrack* track);
+	void appendAnimationSet(gxAnimationSet* animationSet);
 	void update(float dt);
 
+	void setActiveAnimationSet(int index);
 private:
-	std::vector<gxAnimationTrack*> m_vAnimationTrack;
-	int m_nFrames;
-	int m_iFPS;
-	float m_fSpeed;
-	float m_fCurrentFrame;
+	std::vector<gxAnimationSet*> m_vAnimationSet;
+	gxAnimationSet* m_pActiveAnimationSetPtr;		//must not delete this
 };
 
 #endif

@@ -75,6 +75,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\core\Camera.cpp" />
     <ClCompile Include="..\src\core\gxAnimation.cpp" />
+    <ClCompile Include="..\src\core\gxAnimationSet.cpp" />
     <ClCompile Include="..\src\core\gxAnimationTrack.cpp" />
     <ClCompile Include="..\src\core\gxMesh.cpp" />
     <ClCompile Include="..\src\core\gxWorld.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="..\src\core\basicIncludes.h" />
     <ClInclude Include="..\src\core\Camera.h" />
     <ClInclude Include="..\src\core\gxAnimation.h" />
+    <ClInclude Include="..\src\core\gxAnimationSet.h" />
     <ClInclude Include="..\src\core\gxAnimationTrack.h" />
     <ClInclude Include="..\src\core\gxMaterial.h" />
     <ClInclude Include="..\src\core\gxMath.h" />

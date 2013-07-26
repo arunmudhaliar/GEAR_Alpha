@@ -2,42 +2,31 @@
 
 gxAnimation::gxAnimation()
 {
-	m_nFrames=0;
-	m_iFPS=0;
-	m_fCurrentFrame=0.0f;
-	m_fSpeed=1.0f;
+	m_pActiveAnimationSetPtr=NULL;
 }
 
 gxAnimation::~gxAnimation()
 {
-	for(std::vector<gxAnimationTrack*>::iterator it = m_vAnimationTrack.begin(); it != m_vAnimationTrack.end(); ++it)
+	for(std::vector<gxAnimationSet*>::iterator it = m_vAnimationSet.begin(); it != m_vAnimationSet.end(); ++it)
 	{
-		gxAnimationTrack* animationTrack = *it;
-		GX_DELETE(animationTrack);
+		gxAnimationSet* animationSet = *it;
+		GX_DELETE(animationSet);
 	}
-	m_vAnimationTrack.clear();
+	m_vAnimationSet.clear();
 }
 
-void gxAnimation::appendTrack(gxAnimationTrack* track)
+void gxAnimation::appendAnimationSet(gxAnimationSet* animationSet)
 {
-	m_iFPS=track->getFPS();
-	if(track->getTotalFrames()>m_nFrames)
-		m_nFrames=track->getTotalFrames();
-	m_vAnimationTrack.push_back(track);
+	m_vAnimationSet.push_back(animationSet);
+}
+
+void gxAnimation::setActiveAnimationSet(int index)
+{
+	m_pActiveAnimationSetPtr = m_vAnimationSet[index];
 }
 
 void gxAnimation::update(float dt)
 {
-	float nFramesToPlay=(dt*m_iFPS*m_fSpeed);
-	int curFrame=(int)m_fCurrentFrame;
-
-	for(std::vector<gxAnimationTrack*>::iterator it = m_vAnimationTrack.begin(); it != m_vAnimationTrack.end(); ++it)
-	{
-		gxAnimationTrack* animationTrack = *it;
-		animationTrack->setCurrentFrame(curFrame);
-	}
-
-	m_fCurrentFrame+=nFramesToPlay;
-	if(m_fCurrentFrame>=m_nFrames)
-		m_fCurrentFrame=0.0f;
+	if(m_pActiveAnimationSetPtr)
+		m_pActiveAnimationSetPtr->update(dt);
 }

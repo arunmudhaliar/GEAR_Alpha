@@ -348,12 +348,6 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	// import node...
 	FbxMesh *fbxMesh = fbxNode.GetMesh();
 	//FbxSkeleton* fbxSkeleton = fbxNode.GetSkeleton();
-	//int nSkinDeformer=fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
-	//
-	//if(nSkinDeformer)
-	//{
-	//	FbxSkin* skin=(FbxSkin*)fbxMesh->GetDeformer(0, FbxDeformer::eSkin);
-	//}
 
 	if(fbxMesh)
 	{
@@ -379,10 +373,26 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	parent_obj_node->setZAxis(vector3f(row3.mData[0], row3.mData[1], row3.mData[2]));
 	parent_obj_node->setPosition(vector3f(row4.mData[0], row4.mData[1], row4.mData[2]));
 
-	*parent_obj_node->getWorldMatrix() = *parent_obj_node * *temp_parent_obj->getWorldMatrix();
+	//*parent_obj_node->getWorldMatrix() = *parent_obj_node * *temp_parent_obj->getWorldMatrix();
+
+	//links
+	if(fbxMesh)
+	{
+		for(int mm=0;mm<fbxMesh->GetDeformerCount(FbxDeformer::eSkin);mm++)
+		{
+			FbxSkin* skin=(FbxSkin*)fbxMesh->GetDeformer(mm, FbxDeformer::eSkin);
+			for(int cc=0;cc<skin->GetClusterCount();cc++)
+			{
+				FbxCluster* cluster = skin->GetCluster(cc);
+				FbxNode* linkNode=cluster->GetLink();
+				const char* linknodename=linkNode->GetName();
+				linknodename=linknodename;
+			}
+		}
+	}
+	//
 
 	//animation
-
 	FbxGlobalSettings& lTimeSettings = fbxScene.GetGlobalSettings();
 	FbxTime::EMode lTimeMode = lTimeSettings.GetTimeMode();
 	FbxTimeSpan pTimeSpan;
@@ -400,17 +410,6 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	int numStacks = fbxScene.GetSrcObjectCount(FBX_TYPE(FbxAnimStack));
 	gxAnimation* animationController=NULL;
 	gxAnimationTrack* animTrack=NULL;
-	if(numStacks)
-	{
-		animationController=rootObject3d->createAnimationController();	//wont create new if there is already an animatiion controller exists
-
-		animTrack = new gxAnimationTrack();
-		animTrack->setFPS((int)lFrameRate);
-		animTrack->setTotalFrames((int)nGlobalFrame);
-		animTrack->allocateTrack();
-		parent_obj_node->setAnimationTrack(animTrack);
-		animationController->appendTrack(animTrack);
-	}
 
 	for(int x=0;x<numStacks;x++)
 	{
@@ -431,102 +430,44 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 			FbxAnimCurve* lAnimCurve_scalingY = fbxNode.LclScaling.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
 			FbxAnimCurve* lAnimCurve_scalingZ = fbxNode.LclScaling.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
 
-			if(lAnimCurve_translationX)
+			if(lAnimCurve_translationX || lAnimCurve_translationY || lAnimCurve_translationZ ||
+				lAnimCurve_rotationX || lAnimCurve_rotationY || lAnimCurve_rotationZ ||
+				lAnimCurve_scalingX || lAnimCurve_scalingY || lAnimCurve_scalingZ)
 			{
+				animationController=rootObject3d->createAnimationController();	//wont create new if there is already an animatiion controller exists
+				if(animTrack==NULL)
+				{
+					gxAnimationSet* animSet = new gxAnimationSet();
+					animTrack = new gxAnimationTrack();
+					animTrack->setFPS((int)lFrameRate);
+					animTrack->setTotalFrames((int)nGlobalFrame);
+					animTrack->allocateTrack();
+					parent_obj_node->setAnimationTrack(animTrack);
+					animSet->appendTrack(animTrack);
+					animationController->appendAnimationSet(animSet);
+					animationController->setActiveAnimationSet(0);
+				}
+
+
 				matrix4x4f* componentTrack=animTrack->getTrack();
 				FbxTime tt(0);
 				FbxLongLong ti=0;
 				double frame_time=0;
 				for(int m=0;m<nGlobalFrame;m++)
 				{
-					float tx,ty,tz;
-					tx=ty=tz=0.0f;
-					if(lAnimCurve_translationX)
-						tx=lAnimCurve_translationX->Evaluate(tt);
-					if(lAnimCurve_translationY)
-						ty=lAnimCurve_translationY->Evaluate(tt);
-					if(lAnimCurve_translationZ)
-						tz=lAnimCurve_translationZ->Evaluate(tt);
-
-					float rx, ry, rz;
-					rx=ry=rz=0.0f;
-					if(lAnimCurve_rotationX)
-						rx=lAnimCurve_rotationX->Evaluate(tt);
-					if(lAnimCurve_rotationY)
-						ry=lAnimCurve_rotationY->Evaluate(tt);
-					if(lAnimCurve_rotationZ)
-						rz=lAnimCurve_rotationZ->Evaluate(tt);
-
-					float sx, sy, sz;
-					sx=sy=sz=1.0f;
-					if(lAnimCurve_scalingX)
-						sx=lAnimCurve_scalingX->Evaluate(tt);
-					if(lAnimCurve_scalingY)
-						sy=lAnimCurve_scalingY->Evaluate(tt);
-					if(lAnimCurve_scalingZ)
-						sz=lAnimCurve_scalingZ->Evaluate(tt);
-
-					FbxMatrix frameMatrix;
-					frameMatrix.SetTRS(FbxVector4(tx, ty, tz), FbxVector4(rx, ry, rz), FbxVector4(sx, sy, sz));
-
-					componentTrack[m].setPosition(frameMatrix.GetRow(3).mData[0], frameMatrix.GetRow(3).mData[1], frameMatrix.GetRow(3).mData[2]);
-					componentTrack[m].setXAxis(vector3f(frameMatrix.GetRow(0).mData[0], frameMatrix.GetRow(0).mData[1], frameMatrix.GetRow(0).mData[2]));
-					componentTrack[m].setYAxis(vector3f(frameMatrix.GetRow(1).mData[0], frameMatrix.GetRow(1).mData[1], frameMatrix.GetRow(1).mData[2]));
-					componentTrack[m].setZAxis(vector3f(frameMatrix.GetRow(2).mData[0], frameMatrix.GetRow(2).mData[1], frameMatrix.GetRow(2).mData[2]));
+					FbxAMatrix local_tm=fbxNode.EvaluateLocalTransform(tt);
+					componentTrack[m].setPosition(local_tm.GetRow(3).mData[0], local_tm.GetRow(3).mData[1], local_tm.GetRow(3).mData[2]);
+					componentTrack[m].setXAxis(vector3f(local_tm.GetRow(0).mData[0], local_tm.GetRow(0).mData[1], local_tm.GetRow(0).mData[2]));
+					componentTrack[m].setYAxis(vector3f(local_tm.GetRow(1).mData[0], local_tm.GetRow(1).mData[1], local_tm.GetRow(1).mData[2]));
+					componentTrack[m].setZAxis(vector3f(local_tm.GetRow(2).mData[0], local_tm.GetRow(2).mData[1], local_tm.GetRow(2).mData[2]));
 
 					frame_time+=oneFrameTime_inSec;
 					ti=(frame_time*46186158000);
 					tt.Set(ti);
 				}
 			}
-
-			//if(lAnimCurve_translationY)
-			//{
-			//	float* componentTrack=animTrack->allocateTrackForComponent(1);
-			//	FbxTime tt(0);
-			//	FbxLongLong ti=0;
-			//	double frame_time=0;
-			//	for(int m=0;m<nGlobalFrame;m++)
-			//	{
-			//		float keyvalue=lAnimCurve_translationY->Evaluate(tt);
-			//		componentTrack[m]=keyvalue;
-			//		frame_time+=oneFrameTime_inSec;
-			//		ti=(frame_time*46186158000);
-			//		tt.Set(ti);
-			//	}
-			//}
-
-			//if(lAnimCurve_translationZ)
-			//{
-			//	float* componentTrack=animTrack->allocateTrackForComponent(1);
-			//	FbxTime tt(0);
-			//	FbxLongLong ti=0;
-			//	double frame_time=0;
-			//	for(int m=0;m<nGlobalFrame;m++)
-			//	{
-			//		float keyvalue=lAnimCurve_translationZ->Evaluate(tt);
-			//		componentTrack[m]=keyvalue;
-			//		frame_time+=oneFrameTime_inSec;
-			//		ti=(frame_time*46186158000);
-			//		tt.Set(ti);
-			//	}
-			//}
-
-			//if(lAnimCurve_rotationX)
-			//{
-			//	FbxTime tt(0);
-			//	FbxLongLong ti=0;
-			//	double frame_time=0;
-			//	for(int m=0;m<nGlobalFrame;m++)
-			//	{
-			//		float keyvalue=lAnimCurve_rotationX->Evaluate(tt);
-			//		frame_time+=oneFrameTime_inSec;
-			//		ti=(frame_time*46186158000);
-			//		tt.Set(ti);
-			//	}
-			//}
-		}
-	}
+		}//for(int y=0;y<numAnimLayers;y++)
+	}//for(int x=0;x<numStacks;x++)
 	//
 
 	// import child nodes...

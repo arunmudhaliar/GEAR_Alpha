@@ -17,7 +17,7 @@ public:
 	gxMaterial* m_pCurrentMaterialPtr;
 
 	gePropertyMaterial(geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxMaterial* material):
-	  geTreeNode(parent, name, sprite, 40)
+	  geTreeNode(parent, name, sprite, 10)
 	{
 		setSize(m_cSize.x, 85.0f);
 

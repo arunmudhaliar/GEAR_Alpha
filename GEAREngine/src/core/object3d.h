@@ -9,6 +9,7 @@
 #include "gxAnimation.h"
 
 class gxAnimation;
+class gxAnimationSet;
 class DllExport object3d : public transform
 {
 public:
@@ -51,9 +52,12 @@ public:
 
 	gxAABBf& getAABB()	{	return m_cAABB;	}
 
-	gxAnimation* createAnimationController();
+	object3d* find(const char* name);
 
+	//animation
+	gxAnimation* createAnimationController();
 	gxAnimation* getAnimationController()				{	return m_pAnimationController;	}
+	gxAnimationSet* applyAnimationSetRecursive(int index);
 	void setAnimationTrack(gxAnimationTrack* track);
 
 protected:

@@ -1,7 +1,8 @@
 #include "gxAnimationSet.h"
 
-gxAnimationSet::gxAnimationSet()
+gxAnimationSet::gxAnimationSet(const char* animationName)
 {
+	GX_STRCPY(m_szName, animationName);
 	m_nFrames=0;
 	m_iFPS=0;
 	m_fCurrentFrame=0.0f;

@@ -46,6 +46,7 @@ void gxMesh::render()
 	for(int x=0;x<m_nTriInfoArray;x++)
 	{
 		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+		if(!triInfo->getTriList()) continue;
 
 		glColor4fv(&triInfo->getMaterial()->getDiffuseClr().x);
 

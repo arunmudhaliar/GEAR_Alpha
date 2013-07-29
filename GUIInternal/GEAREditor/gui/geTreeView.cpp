@@ -102,7 +102,8 @@ void geTreeNode::drawNode()
 			drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 	}
 
-	m_pSprite->draw();
+	if(m_pSprite)
+		m_pSprite->draw();
 }
 
 void geTreeNode::draw()

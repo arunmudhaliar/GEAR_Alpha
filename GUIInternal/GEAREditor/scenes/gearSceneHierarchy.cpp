@@ -133,6 +133,23 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 
 		}
 	}
+	else if(dropObject->getSourcePtr()==EditorApp::getScenePropertyEditor())
+	{
+		if(droppedDataObject->getParent() && droppedDataObject->getParent()==EditorApp::getScenePropertyEditor()->getAnimationParentNode())
+		{
+			gxAnimationSet* animSet=(gxAnimationSet*)((geTreeNode*)droppedDataObject)->getUserData();
+
+			geTreeNode* selectedNode=m_cGameObjectsTreeView.getTVNode(x, y);
+			if(selectedNode)
+			{
+				object3d* selectedObj=(object3d*)((assetUserData*)selectedNode->getUserData())->getAssetObjectPtr();
+				gxAnimation* animationController = selectedObj->createAnimationController();	//wont create new if there is already an animatiion controller exists
+				animationController->appendAnimationSet(animSet);
+				selectedObj->applyAnimationSetRecursive(animationController->getAnimationSetList()->size()-1);
+				animationController->setActiveAnimationSet(animationController->getAnimationSetList()->size()-1);
+			}
+		}
+	}
 }
 
 void gearSceneHierarchy::onDragLeave()

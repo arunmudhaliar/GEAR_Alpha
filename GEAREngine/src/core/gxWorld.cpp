@@ -31,6 +31,13 @@ gxWorld::~gxWorld()
 		GX_DELETE(material);
 	}
 	m_cMaterialList.clear();
+
+	for(std::vector<gxAnimationSet*>::iterator it = m_vAnimationSetList.begin(); it != m_vAnimationSetList.end(); ++it)
+	{
+		gxAnimationSet* animationSet = *it;
+		GX_DELETE(animationSet);
+	}
+	m_vAnimationSetList.clear();
 }
 
 void gxWorld::update(float dt)
@@ -84,7 +91,8 @@ void gxWorld::loadTextures(object3d* obj, const char* fbxFileName)
 		for(int x=0;x<mesh->getNoOfTriInfo();x++)
 		{
 			gxTriInfo* triInfo=mesh->getTriInfo(x);
-			triInfo->getMaterial()->loadTextureFromDirectory(m_cTextureManager, directorPathPtr);
+			if(triInfo->getMaterial())
+				triInfo->getMaterial()->loadTextureFromDirectory(m_cTextureManager, directorPathPtr);
 		}
 	}
 

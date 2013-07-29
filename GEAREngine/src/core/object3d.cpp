@@ -21,8 +21,8 @@ object3d::~object3d()
 	}
 	m_cChilds.clear();
 
-	if(m_pAnimationTrack)
-		m_pAnimationTrack->setObject3d(NULL);
+	//if(m_pAnimationTrack)
+	//	m_pAnimationTrack->setObject3d(NULL);
 	GX_DELETE(m_pAnimationController);
 }
 
@@ -135,6 +135,45 @@ gxAnimation* object3d::createAnimationController()
 void object3d::setAnimationTrack(gxAnimationTrack* track)
 {
 	m_pAnimationTrack=track;
-	if(m_pAnimationTrack)
-		m_pAnimationTrack->setObject3d(this);
+	//if(m_pAnimationTrack)
+	//	m_pAnimationTrack->setObject3d(this);
+}
+
+object3d* object3d::find(const char* name)
+{
+	if(strcmp(m_cszName, name)==0)
+	{
+		return this;
+	}
+
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		object3d* return_obj = obj->find(name);
+		if(return_obj)
+			return return_obj;
+	}
+
+	return NULL;
+}
+
+gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
+{
+	if(m_pAnimationController==NULL)
+		return NULL;
+
+	gxAnimationSet* animSet=m_pAnimationController->setActiveAnimationSet(index);
+	std::vector<gxAnimationTrack*>* trackList=animSet->getTrackList();
+	for(std::vector<gxAnimationTrack*>::iterator it = trackList->begin(); it != trackList->end(); ++it)
+	{
+		gxAnimationTrack* animationTrack = *it;
+		object3d* obj_found=find(animationTrack->getName());
+		if(obj_found)
+		{
+			obj_found->setAnimationTrack(animationTrack);
+		}
+	}
+
+
+	return animSet;
 }

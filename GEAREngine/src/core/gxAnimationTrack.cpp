@@ -6,13 +6,13 @@ gxAnimationTrack::gxAnimationTrack()
 	m_nFrames=0;
 	m_iCurrentFrame=0;
 	m_pTrack=NULL;
-	m_pObjectPtr=NULL;
+	//m_pObjectPtr=NULL;
 }
 
 gxAnimationTrack::~gxAnimationTrack()
 {
-	if(m_pObjectPtr)
-		m_pObjectPtr->setAnimationTrack(NULL);
+	//if(m_pObjectPtr)
+	//	m_pObjectPtr->setAnimationTrack(NULL);
 	GX_DELETE_ARY(m_pTrack);
 }
 
@@ -27,7 +27,7 @@ matrix4x4f* gxAnimationTrack::allocateTrack()
 	return m_pTrack;
 }
 
-void gxAnimationTrack::setObject3d(object3d* obj)
-{
-	m_pObjectPtr=obj;
-}
+//void gxAnimationTrack::setObject3d(object3d* obj)
+//{
+//	m_pObjectPtr=obj;
+//}

@@ -7,11 +7,15 @@
 class gxAnimationSet
 {
 public:
-	gxAnimationSet();
+	gxAnimationSet(const char* animationName);
 	~gxAnimationSet();
 
 	void appendTrack(gxAnimationTrack* track);
 	void update(float dt);
+
+	const char* getAnimationName()		{	return m_szName;	}
+
+	std::vector<gxAnimationTrack*>* getTrackList()	{	return &m_vAnimationTrack;	}
 
 private:
 	std::vector<gxAnimationTrack*> m_vAnimationTrack;
@@ -19,6 +23,7 @@ private:
 	int m_iFPS;
 	float m_fSpeed;
 	float m_fCurrentFrame;
+	char m_szName[64];
 };
 
 #endif

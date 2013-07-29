@@ -43,7 +43,7 @@ void engine_renderSingleObject(gxWorld* world, object3d* obj)
 extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename)
 {
 	fbxImporter importer;
-	object3d* root_object_node=importer.loadMyFBX(filename, world->getMaterialList());
+	object3d* root_object_node=importer.loadMyFBX(filename, world->getMaterialList(), world->getAnimationSetList());
 	world->appendChild(root_object_node);
 	world->loadTextures(root_object_node, filename);
 	return root_object_node;
@@ -52,7 +52,7 @@ extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* f
 extern DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename)
 {
 	fbxImporter importer;
-	object3d* root_object_node=importer.loadMyFBX(filename, world->getMaterialList());
+	object3d* root_object_node=importer.loadMyFBX(filename, world->getMaterialList(), world->getAnimationSetList());
 	return root_object_node;
 }
 

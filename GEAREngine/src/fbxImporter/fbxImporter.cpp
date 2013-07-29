@@ -85,7 +85,7 @@ FbxMatrix fbxImporter::getFBXGeometryTransform(FbxNode &fbxNode)
 	return fbxGeometry;
 }
 
-object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>* materialList)
+object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList)
 {
 	object3d* return_object3d=NULL;
 
@@ -130,7 +130,7 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 		}
 		if(importOk)
 		{
-			return_object3d=importFBXScene(*fbxManager, *fbxScene, materialList);
+			return_object3d=importFBXScene(*fbxManager, *fbxScene, materialList, animationSetList);
 		}
     }
     
@@ -141,7 +141,7 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 	return return_object3d;
 }
 
-object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList)
+object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList)
 {
 	FbxNode *fbxRoot = fbxScene.GetRootNode();
 	assert(fbxRoot);
@@ -180,7 +180,7 @@ object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene
 			assert(fbxChildNode);
 			if(fbxChildNode)
 			{
-				importFBXNode(*fbxChildNode, object3d_root_object, materialList, fbxScene, object3d_root_object);
+				importFBXNode(*fbxChildNode, object3d_root_object, materialList, fbxScene, object3d_root_object, animationSetList);
 			}
 		}
 		//importFBXNode(*fbxRoot, object3d_root_object);
@@ -324,34 +324,22 @@ FbxAMatrix CalculateGlobalTransform(FbxNode* pNode)
     return lTransform;
 }
 
-void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d)
+void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList)
 {
-	//kTime fbxTime;
-	//KFbxXMatrix fbxGlobalPosition    = fbxNode.GetGlobalFromCurrentTake(fbxTime);
-	//KFbxXMatrix fbxGeometryOffset    = getFBXGeometryTransform(fbxNode);
-	//KFbxXMatrix fbxGlobalOffPosition = fbxGlobalPosition * fbxGeometryOffset;
-	//mat3x4 transform = FBXToXen(fbxGlobalOffPosition);
-
 	FbxMatrix transform;
-	FbxMatrix fbxGlobalPosition = fbxNode.EvaluateLocalTransform();
+	FbxMatrix fbxLocalPosition = fbxNode.EvaluateLocalTransform();
 	FbxMatrix fbxGeometryOffset = getFBXGeometryTransform(fbxNode);
-	FbxMatrix fbxGlobalOffPosition = fbxGlobalPosition * fbxGeometryOffset;
-    transform = FBXToXen(fbxGlobalOffPosition);
+	//FbxMatrix fbxLocalOffPosition = fbxLocalPosition * fbxGeometryOffset;
 
-	FbxAMatrix localTM = fbxNode.EvaluateLocalTransform();
-	
-	FbxAMatrix globla_tm = fbxNode.EvaluateLocalTransform();
-	globla_tm=fbxNode.EvaluateLocalTransform();
+	FbxMatrix local_tm = fbxLocalPosition;
 
 	object3d* temp_parent_obj=parent_obj_node;
-
-	// import node...
 	FbxMesh *fbxMesh = fbxNode.GetMesh();
 	//FbxSkeleton* fbxSkeleton = fbxNode.GetSkeleton();
 
 	if(fbxMesh)
 	{
-		gxMesh* newMesh = importFBXMesh(*fbxMesh, globla_tm, materialList);
+		gxMesh* newMesh = importFBXMesh(*fbxMesh, fbxGeometryOffset, materialList);
 		newMesh->setName(fbxNode.GetName());
 		parent_obj_node->appendChild(newMesh);
 		parent_obj_node=newMesh;
@@ -364,10 +352,10 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 		parent_obj_node=object3d_child;
 	}
 
-	FbxVector4 row1 = globla_tm.GetRow(0);
-	FbxVector4 row2 = globla_tm.GetRow(1);
-	FbxVector4 row3 = globla_tm.GetRow(2);
-	FbxVector4 row4 = globla_tm.GetRow(3);
+	FbxVector4 row1 = local_tm.GetRow(0);
+	FbxVector4 row2 = local_tm.GetRow(1);
+	FbxVector4 row3 = local_tm.GetRow(2);
+	FbxVector4 row4 = local_tm.GetRow(3);
 	parent_obj_node->setXAxis(vector3f(row1.mData[0], row1.mData[1], row1.mData[2]));
 	parent_obj_node->setYAxis(vector3f(row2.mData[0], row2.mData[1], row2.mData[2]));
 	parent_obj_node->setZAxis(vector3f(row3.mData[0], row3.mData[1], row3.mData[2]));
@@ -437,15 +425,25 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 				animationController=rootObject3d->createAnimationController();	//wont create new if there is already an animatiion controller exists
 				if(animTrack==NULL)
 				{
-					gxAnimationSet* animSet = new gxAnimationSet();
+					int nAnimSet=animationController->getAnimationSetList()->size();
+					gxAnimationSet* animSet=NULL;
+					if(nAnimSet)
+						animSet=animationController->getAnimationSetList()->at(nAnimSet-1);
+					if(!animSet)
+					{
+						animSet = new gxAnimationSet(pAnimStack->GetName());
+						animationController->appendAnimationSet(animSet);
+						//animationController->setActiveAnimationSet(0);
+						animationSetList->push_back(animSet);
+					}
+
 					animTrack = new gxAnimationTrack();
+					animTrack->setName(fbxNode.GetName());
 					animTrack->setFPS((int)lFrameRate);
 					animTrack->setTotalFrames((int)nGlobalFrame);
 					animTrack->allocateTrack();
 					parent_obj_node->setAnimationTrack(animTrack);
 					animSet->appendTrack(animTrack);
-					animationController->appendAnimationSet(animSet);
-					animationController->setActiveAnimationSet(0);
 				}
 
 
@@ -478,12 +476,12 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 		assert(fbxChildNode);
 		if(fbxChildNode)
 		{
-			importFBXNode(*fbxChildNode, parent_obj_node, materialList, fbxScene, rootObject3d);
+			importFBXNode(*fbxChildNode, parent_obj_node, materialList, fbxScene, rootObject3d, animationSetList);
 		}
 	}
 }
 
-gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &transform, std::vector<gxMaterial*>* materialList)
+gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList)
 {
 	gxMesh* newMesh = new gxMesh();
 	float* vertexBuffer = newMesh->allocateVertexBuffer(fbxMesh.GetPolygonCount());
@@ -608,7 +606,7 @@ gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &transform,
 		{
 			int vertexIndex=fbxMesh.GetPolygonVertex(x, y);
 			FbxVector4 vertex=fbxMesh.GetControlPointAt(vertexIndex);
-			//vertex=transform.MultNormalize(vertex);
+			vertex=geometryOffset.MultNormalize(vertex);
 			FbxVector4 normal;
 			fbxMesh.GetPolygonVertexNormal(x, y, normal);
 			//normal=transform.MultNormalize(normal);
@@ -643,8 +641,10 @@ gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &transform,
 
 	for(int m=0;m<nCount;m++)
 	{
-		int* triIndexPtr=triInfoArray[m].allocateMemory(vTriList[m].arrayList.size());
+		if(vTriList[m].arrayList.size()==0)
+			continue;
 
+		int* triIndexPtr=triInfoArray[m].allocateMemory(vTriList[m].arrayList.size());
 		for(int n=0;n<vTriList[m].arrayList.size();n++)
 		{
 			triIndexPtr[n]=vTriList[m].arrayList[n];

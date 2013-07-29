@@ -35,8 +35,9 @@ public:
 	void renderSingleObject(object3d* obj);
 	void resizeWorld(float x, float y, float cx, float cy);
 
-	gxMaterial* getDefaultMaterial()			{	return &m_cDefaultMaterial;	}
-	std::vector<gxMaterial*>* getMaterialList()	{	return &m_cMaterialList;	}
+	gxMaterial* getDefaultMaterial()					{	return &m_cDefaultMaterial;		}
+	std::vector<gxMaterial*>* getMaterialList()			{	return &m_cMaterialList;		}
+	std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &m_vAnimationSetList;	}
 
 	void setMetaDataFolder(const char* metaFolder)
 	{
@@ -67,6 +68,7 @@ private:
 
 	//std::vector<object3d*> m_cRootNodes;
 	std::vector<gxMaterial*> m_cMaterialList;
+	std::vector<gxAnimationSet*> m_vAnimationSetList;
 
 	gxRenderer m_cRenderer;
 	Camera* m_pActiveCameraPtr;	//must not delete this pointer

@@ -29,14 +29,18 @@ public:
 
 	int getCurrentFrame()	{	return m_iCurrentFrame;	}
 
-	void setObject3d(object3d* obj);
+	//void setObject3d(object3d* obj);
+
+	void setName(const char* name)	{	GX_STRCPY(m_szName, name);	}
+	const char* getName()			{	return m_szName;			}
 
 private:
 	int m_iFPS;
 	int m_nFrames;
 	int m_iCurrentFrame;
 	matrix4x4f* m_pTrack;
-	object3d* m_pObjectPtr;	//must not delete this pointer
+	//object3d* m_pObjectPtr;	//must not delete this pointer
+	char m_szName[64];
 };
 
 #include "object3d.h"

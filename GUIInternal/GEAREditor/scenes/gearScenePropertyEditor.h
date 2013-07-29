@@ -19,9 +19,14 @@ public:
 
 	void populatePropertyOfObject(object3d* obj);
 
+	geTreeNode* getMaterialParentNode()		{	return m_pMaterialParent;		}
+	geTreeNode* getAnimationParentNode()	{	return m_pAnimationParentNode;	}
+
 protected:
 	virtual void onCreate();
 	virtual void onDraw();
+
+	virtual bool onMouseMove(float x, float y, int flag);
 
 private:
 	geTreeView m_cPropertiesTreeView;
@@ -30,6 +35,7 @@ private:
 	geTreeNode* m_pObject3dParentNode;
 	geTreeNode* m_pTransformParentNode;
 	geTreeNode* m_pMaterialParent;
+	geTreeNode* m_pAnimationParentNode;
 
 	gePropertyObject3d* m_pObject3dPropertyNode;
 	gePropertyTransform* m_pTransformPropertyNode;

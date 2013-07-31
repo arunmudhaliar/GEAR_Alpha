@@ -33,6 +33,29 @@ public:
 	gxMaterial* getMaterial()				{	return m_pMaterialPtr;		}
 	void setMaterial(gxMaterial* material)	{	m_pMaterialPtr	=material;	}
 
+	void write(gxFile& file)
+	{
+		file.Write(m_nTris);
+		if(m_nTris)
+			file.WriteBuffer((unsigned char*)m_pTriList, sizeof(int)*m_nTris*3);
+		if(m_pMaterialPtr)
+			file.Write(m_pMaterialPtr->getFileCRC());
+		else
+			file.Write((int)0);
+	}
+
+	void read(gxFile& file)
+	{
+		file.Read(m_nTris);
+		if(m_nTris)
+		{
+			int* buffer = allocateMemory(m_nTris);
+			file.ReadBuffer((unsigned char*)buffer, sizeof(int)*m_nTris*3);
+		}
+		int materialCRC=0;
+		file.Read(materialCRC);
+	}
+
 private:
 	gxMaterial* m_pMaterialPtr;	//must not delete this pointer
 

@@ -39,7 +39,7 @@ namespace MonoGEAR
         static extern void engine_init(int nWorldToCreate);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr engine_getWorld(int index);
+        public static extern IntPtr engine_getWorld(int index);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void engine_update(IntPtr world, float dt);
@@ -54,7 +54,7 @@ namespace MonoGEAR
         static extern void engine_renderSingleObject(IntPtr world, IntPtr obj);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr engine_loadAndAppendFBX(IntPtr world, string filename);
+        public static extern IntPtr engine_loadAndAppendFBX(IntPtr world, string filename);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr engine_appendObject3dToRoot(IntPtr world, IntPtr obj);
@@ -103,6 +103,21 @@ namespace MonoGEAR
             Console.WriteLine("monogear_engine_test_function_for_mono called from C#");
 
             engine_test_function_for_mono();
+        }
+
+
+        /// <summary>
+        /// MONOGEAR GAME LOOP
+        /// </summary>
+
+        object3d m_pRootObject3d;
+        public void mono_game_start()
+        {
+            m_pRootObject3d = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\Level_1.FBX");
+        }
+
+        public void mono_game_run(float dt)
+        {
         }
     }
 }

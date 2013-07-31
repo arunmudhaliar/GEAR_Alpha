@@ -11,6 +11,7 @@ gxMesh::gxMesh():
 	m_pszNormalBuffer=NULL;
 	m_nUVChannels=0;
 	m_pszUVChannels=NULL;
+	m_nTris_For_Internal_Use=0;
 }
 
 gxMesh::~gxMesh()
@@ -48,7 +49,8 @@ void gxMesh::render()
 		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
 		if(!triInfo->getTriList()) continue;
 
-		glColor4fv(&triInfo->getMaterial()->getDiffuseClr().x);
+		if(triInfo->getMaterial())
+			glColor4fv(&triInfo->getMaterial()->getDiffuseClr().x);
 
 		int nTexUsed=0;
 		for(int m=0;m<m_nUVChannels;m++)
@@ -113,6 +115,7 @@ void gxMesh::disableTextureOperations(int nMultiTextureUsed)
 
 float* gxMesh::allocateVertexBuffer(int nTris)
 {
+	m_nTris_For_Internal_Use=nTris;
 	GX_DELETE_ARY(m_pszVertexBuffer);
 	m_pszVertexBuffer = new float[nTris*3*3];
 	return m_pszVertexBuffer;
@@ -137,8 +140,128 @@ int gxMesh::getTotalNoOfTris()
 	int nTris=0;
 	for(int x=0;x<m_nTriInfoArray;x++)
 	{
-		nTris+=m_pszTriInfoArray[x].getNoOfTris();
+		nTris+=m_pszTriInfoArray[x]	.getNoOfTris();
 	}
 
 	return nTris;
+}
+
+void gxMesh::write(gxFile& file)
+{
+	file.Write(m_iObjectID);
+	file.Write(m_eBaseFlags);
+	file.Write(m_cszName);
+	file.WriteBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
+	file.Write(m_iFileCRC);
+
+	file.Write(m_nTriInfoArray);
+	for(int x=0;x<m_nTriInfoArray;x++)
+	{
+		m_pszTriInfoArray[x].write(file);
+	}
+
+	file.Write(m_nTris_For_Internal_Use);
+	if(m_pszVertexBuffer)
+	{
+		file.Write(true);
+		file.WriteBuffer((unsigned char*)m_pszVertexBuffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+	}
+	else
+	{
+		file.Write(false);
+	}
+
+	if(m_pszColorBuffer)
+	{
+		file.Write(true);
+		file.WriteBuffer((unsigned char*)m_pszColorBuffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+	}
+	else
+	{
+		file.Write(false);
+	}
+
+	if(m_pszNormalBuffer)
+	{
+		file.Write(true);
+		file.WriteBuffer((unsigned char*)m_pszNormalBuffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+	}
+	else
+	{
+		file.Write(false);
+	}
+
+	file.Write(m_nUVChannels);
+	for(int x=0;x<m_nUVChannels;x++)
+	{
+		if(m_pszUVChannels[x].m_pMaterialPtr)
+			file.Write(m_pszUVChannels[x].m_pMaterialPtr->getFileCRC());
+		else
+			file.Write((int)0);
+		file.WriteBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
+	}
+
+	file.Write((int)m_cChilds.size());
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		obj->write(file);
+	}
+}
+
+void gxMesh::read(gxFile& file)
+{
+	file.Read(m_eBaseFlags);
+	char* temp=file.ReadString();
+	strcpy(m_cszName, temp);
+	GX_DELETE_ARY(temp);
+	file.ReadBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
+	file.Read(m_iFileCRC);
+
+	file.Read(m_nTriInfoArray);
+	if(m_nTriInfoArray)
+		m_pszTriInfoArray = new gxTriInfo[m_nTriInfoArray];
+
+	for(int x=0;x<m_nTriInfoArray;x++)
+	{
+		m_pszTriInfoArray[x].read(file);
+	}
+
+	file.Read(m_nTris_For_Internal_Use);
+
+	bool bVertexBuffer=false;
+	file.Read(bVertexBuffer);
+	if(bVertexBuffer)
+	{
+		float* buffer=allocateVertexBuffer(m_nTris_For_Internal_Use);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+	}
+
+	bool bColorBuffer=false;
+	file.Read(bColorBuffer);
+	if(bColorBuffer)
+	{
+		float* buffer=allocateColorBuffer(m_nTris_For_Internal_Use);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+	}
+
+	bool bNormalBuffer=false;
+	file.Read(bNormalBuffer);
+	if(bNormalBuffer)
+	{
+		float* buffer=allocateNormalBuffer(m_nTris_For_Internal_Use);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+	}
+
+
+	file.Read(m_nUVChannels);
+	if(m_nUVChannels)
+		m_pszUVChannels = new gxUV[m_nUVChannels];
+	for(int x=0;x<m_nUVChannels;x++)
+	{
+		int materialCRC=0;
+		file.Read(materialCRC);
+		m_pszUVChannels[x].m_pszfGLTexCoordList =new float[m_nTris_For_Internal_Use*3*2];
+		file.ReadBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
+	}
 }

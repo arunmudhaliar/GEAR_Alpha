@@ -5,6 +5,8 @@
 #include "../../GEAREngine/src/tga/Tga.h"
 #include "../../GEAREngine/src/core/gxMetaStructures.h"
 #include "../../GEAREngine/src/util/Crc32.h"
+#include "../../GEAREngine/src/fbxImporter/fbxImporter.h"
+#include "../../GEAREngine/src/util/gxUtil.cpp"
 
 #include <sys/types.h>
 #include <assert.h>
@@ -88,6 +90,7 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
                 {
 					bool bPNG=false;
 					bool bTGA=false;
+					bool bFBX=false;
 
 					if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG"))
 					{
@@ -98,8 +101,12 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 					{
 						bTGA=true;
 					}
+					if(util::GE_IS_EXTENSION(buffer, ".fbx") || util::GE_IS_EXTENSION(buffer, ".FBX"))
+					{
+						bFBX=true;
+					}
 
-					if(bPNG || bTGA)
+					if(bPNG || bTGA || bFBX)
 					{
 						bool bCreateMetaFile=false;
 						struct stat fst;
@@ -118,7 +125,10 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 								metaFile.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
 								metaFile.CloseFile();
 
-								if(metaHeader.lastmodified!=fst.st_mtime || metaHeader.filetype!=eMetaTexture2D)
+								if(metaHeader.lastmodified!=fst.st_mtime || 
+									((bPNG || bTGA) && metaHeader.filetype!=eMetaTexture2D) ||
+									((bFBX) && metaHeader.filetype!=eMeta3DFile)
+									)
 								{
 									//source file has some modifications so update meta file
 									bCreateMetaFile=true;
@@ -139,6 +149,11 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 								}
 
 								if(bTGA && import_tga_to_metadata(buffer, crcFileName, fst))
+								{
+									bWriteMetaInfo=true;
+								}
+
+								if(bFBX && import_fbx_to_metadata(buffer, crcFileName, fst))
 								{
 									bWriteMetaInfo=true;
 								}
@@ -186,6 +201,118 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
     }
 
     return ok;
+}
+
+int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char* crcFileName, struct stat srcStat)
+{
+	std::vector<gxMaterial*> materialList;
+	std::vector<gxAnimationSet*> animationSetList;
+
+	fbxImporter importer;
+	object3d* obj3d=importer.loadMyFBX(fbx_file_name, &materialList, &animationSetList);
+
+	for(std::vector<gxMaterial*>::iterator it = materialList.begin(); it != materialList.end(); ++it)
+	{
+		gxMaterial* material = *it;
+		import_material_to_metadata(fbx_file_name, material);
+	}
+
+	//
+	gxFile file_meta;
+	if(file_meta.OpenFile(crcFileName, gxFile::FILE_w))
+	{
+		stMetaHeader metaHeader;
+		metaHeader.filetype=eMeta3DFile;
+		metaHeader.lastaccessed = srcStat.st_atime;
+		metaHeader.lastmodified = srcStat.st_mtime;
+		metaHeader.lastchanged = srcStat.st_ctime;
+
+		//write the meta header
+		file_meta.WriteBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+		obj3d->write(file_meta);
+		//write the texture header
+		file_meta.CloseFile();
+	}
+	//
+
+	materialList.clear();
+	animationSetList.clear();
+
+	GX_DELETE(obj3d);
+
+	return 1;
+}
+
+int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMaterial* material)
+{
+	bool bCreateMetaFile=false;
+	struct stat fst;
+	char buffer[1024];
+	char temp_buffer[1024];
+	GX_STRCPY(temp_buffer, gxUtil::getFolderPathFromFileName(fbx_file_name));
+	sprintf(buffer, "%s/%s.mat", temp_buffer, material->getMaterialName());
+	int crc32=Crc32::Calc((unsigned char*)buffer);
+	gxFile materialFile;
+	if(materialFile.OpenFile(buffer))
+	{
+		materialFile.CloseFile();
+	}
+	else
+	{
+		materialFile.OpenFile(buffer, gxFile::FILE_w);
+		materialFile.Write(crc32);
+		materialFile.CloseFile();
+	}
+
+	memset(&fst, 0, sizeof(fst));
+	if(stat(buffer, &fst)==0) 
+	{
+		char crcFileName[512];
+		sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc32);
+
+		stMetaHeader metaHeader;
+		memset(&metaHeader, 0, sizeof(metaHeader));
+		gxFile metaFile;
+		if(metaFile.OpenFile(crcFileName))
+		{
+			metaFile.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+			metaFile.CloseFile();
+
+			if(metaHeader.lastmodified!=fst.st_mtime || (metaHeader.filetype!=eMetaMaterial))
+			{
+				//source file has some modifications so update meta file
+				bCreateMetaFile=true;
+			}
+		}
+		else
+		{
+			//there is no meta file associated with this source file. so create a new meta file
+			bCreateMetaFile=true;
+		}
+
+		if(bCreateMetaFile)
+		{
+			gxFile file_meta;
+			if(file_meta.OpenFile(crcFileName, gxFile::FILE_w))
+			{
+				stMetaHeader metaHeader;
+				metaHeader.filetype=eMetaMaterial;
+				metaHeader.lastaccessed = fst.st_atime;
+				metaHeader.lastmodified = fst.st_mtime;
+				metaHeader.lastchanged = fst.st_ctime;
+
+				//write the meta header
+				file_meta.WriteBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+				//write the material header
+				material->setFileCRC(crc32);
+				material->write(file_meta);
+				file_meta.CloseFile();
+			}
+		}
+	}
+
+	return 1;
 }
 
 int AssetImporter::import_tga_to_metadata(const char* tga_file_name, const char* crcFileName, struct stat srcStat)

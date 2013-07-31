@@ -90,6 +90,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	rootNode->removeChild(m_pObject3dParentNode);
 	rootNode->removeChild(m_pTransformParentNode);
 	rootNode->removeChild(m_pMaterialParent);
+	m_pAnimationParentNode->destroyAllChilds();
 	rootNode->removeChild(m_pAnimationParentNode);
 
 	if(obj==NULL)
@@ -126,7 +127,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	//animation
 	if(obj->getAnimationController())
 	{
-		m_pAnimationParentNode->destroyAllChilds();
+		//m_pAnimationParentNode->destroyAllChilds();
 		gxAnimation* animationController=obj->getAnimationController();
 		std::vector<gxAnimationSet*>* animList=animationController->getAnimationSetList();
 		for(std::vector<gxAnimationSet*>::iterator it = animList->begin(); it != animList->end(); ++it)

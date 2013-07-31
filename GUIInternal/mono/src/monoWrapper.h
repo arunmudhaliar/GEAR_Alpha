@@ -24,6 +24,11 @@ public:
 	static void mono_engine_test_function_for_mono();
 	//
 
+	//MONO GAME WRAPPERS
+	static void mono_game_start();
+	static void mono_game_run(float dt);
+	//
+
 	//MONO ENGINE WRAPPERS
 	static void mono_engine_init(int nWorldToCreate);
 	static gxWorld* mono_engine_getWorld(int index);
@@ -79,6 +84,9 @@ private:
 	*/
 
 	static MonoMethod* g_monogear_engine_test_function_for_mono;
+	static MonoMethod* g_mono_game_start;
+	static MonoMethod* g_mono_game_run;
+
 	static MonoMethod* g_pMethod_engine_init;
 	static MonoMethod* g_pMethod_engine_getWorld;
 	static MonoMethod* g_pMethod_engine_update;

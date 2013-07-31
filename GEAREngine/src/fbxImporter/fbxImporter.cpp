@@ -1,5 +1,7 @@
 #include "fbxImporter.h"
 #include "../util/gxUtil.h"
+#include "../util/Crc32.h"
+
 
 #include <assert.h>
 
@@ -22,59 +24,6 @@ fbxImporter::~fbxImporter()
 {
 }
 
-object3d* fbxImporter::loadFBX(const char* filename)
-{
-	numTabs=0;
-
-	// Change the following filename to a suitable filename value.
-	const char* lFilename = filename;
-
-	// Initialize the sdk manager. This object handles all our memory management.
-	FbxManager* lSdkManager = FbxManager::Create();
-  
-
-	// Create the io settings object.
-	FbxIOSettings *ios = FbxIOSettings::Create(lSdkManager, IOSROOT);
-	lSdkManager->SetIOSettings(ios);
-
-	// Create an importer using our sdk manager.
-	FbxImporter* lImporter = FbxImporter::Create(lSdkManager,"");
-    
-	// Use the first argument as the filename for the importer.
-	if(!lImporter->Initialize(lFilename, -1, lSdkManager->GetIOSettings())) {
-		printf("Call to FbxImporter::Initialize() failed.\n");
-		printf("Error returned: %s\n\n", lImporter->GetLastErrorString());
-		return NULL;
-	}
-    
-	// Create a new scene so it can be populated by the imported file.
-	FbxScene* lScene = FbxScene::Create(lSdkManager,"myScene");
-
-	// Import the contents of the file into the scene.
-	lImporter->Import(lScene);
-
-	// The file has been imported; we can get rid of the importer.
-	lImporter->Destroy();
-    
-	// Print the nodes of the scene and their attributes recursively.
-	// Note that we are not printing the root node, because it should
-	// not contain any attributes.
-	FbxNode* lRootNode = lScene->GetRootNode();
-	object3d* object3d_root_object = NULL;
-	if(lRootNode)
-	{
-		object3d_root_object = new object3d(0);
-		object3d_root_object->setName(lRootNode->GetName());
-
-		for(int i = 0; i < lRootNode->GetChildCount(); i++)
-			PrintNode(lRootNode->GetChild(i), object3d_root_object, lSdkManager);
-	}
-	// Destroy the sdk manager and all other objects it was handling.
-	lSdkManager->Destroy();
-
-	return object3d_root_object;
-}
-
 FbxMatrix fbxImporter::getFBXGeometryTransform(FbxNode &fbxNode)
 {
 
@@ -88,7 +37,7 @@ FbxMatrix fbxImporter::getFBXGeometryTransform(FbxNode &fbxNode)
 object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList)
 {
 	object3d* return_object3d=NULL;
-
+	int crc=0;
 	// make sure we use high precision... else FBX has a bad day.
     //fpucontrol fpu(FPUCONTROL_CHOP, FPUCONTROL_64BITS);
     
@@ -111,13 +60,14 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 		}
 		//fbxImporter->SetFileFormat(fbxFileFormat);
       
+		crc = Crc32::Calc((unsigned char*)filePath);
 #if defined(_WIN32)
+		memset(m_cszNormalizedFilePath, 0, sizeof(m_cszNormalizedFilePath));
 		// normalize the file path because FBX can't handle relative paths.
-		char normalizedFilePath[1024]={0};
-		GetFullPathNameA(filePath, 1024, normalizedFilePath, 0);
-		if(*normalizedFilePath)
+		GetFullPathNameA(filePath, 1024, m_cszNormalizedFilePath, 0);
+		if(*m_cszNormalizedFilePath)
 		{
-			filePath = normalizedFilePath;
+			filePath = m_cszNormalizedFilePath;
 		}
 #endif
       
@@ -130,7 +80,7 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 		}
 		if(importOk)
 		{
-			return_object3d=importFBXScene(*fbxManager, *fbxScene, materialList, animationSetList);
+			return_object3d=importFBXScene(*fbxManager, *fbxScene, materialList, animationSetList, crc);
 		}
     }
     
@@ -141,7 +91,7 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 	return return_object3d;
 }
 
-object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList)
+object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList, int fileCRC)
 {
 	FbxNode *fbxRoot = fbxScene.GetRootNode();
 	assert(fbxRoot);
@@ -171,6 +121,7 @@ object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene
       
 		// recurse over the scene nodes and import them as needed...
 		object3d* object3d_root_object = new object3d(0);
+		object3d_root_object->setFileCRC(fileCRC);
 		object3d_root_object->setName(fbxRoot->GetName());
 
 		const unsigned int numChildren = fbxRoot->GetChildCount();
@@ -183,19 +134,6 @@ object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene
 				importFBXNode(*fbxChildNode, object3d_root_object, materialList, fbxScene, object3d_root_object, animationSetList);
 			}
 		}
-		//importFBXNode(*fbxRoot, object3d_root_object);
-
-
-		//int numStacks = fbxScene.GetSrcObjectCount(FBX_TYPE(FbxAnimStack));
-		//for(int x=0;x<numStacks;x++)
-		//{
-		//	FbxAnimStack* pAnimStack = FbxCast<FbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(FbxAnimStack), x));
-		//	int numAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(FbxAnimLayer));
-		//	for(int y=0;y<numAnimLayers;y++)
-		//	{
-		//		FbxAnimLayer* lAnimLayer = pAnimStack->GetMember(FBX_TYPE(FbxAnimLayer), y);
-		//	}
-		//}
 
 		return object3d_root_object;
 	}
@@ -339,7 +277,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 
 	if(fbxMesh)
 	{
-		gxMesh* newMesh = importFBXMesh(*fbxMesh, fbxGeometryOffset, materialList);
+		gxMesh* newMesh = importFBXMesh(*fbxMesh, fbxGeometryOffset, materialList, rootObject3d);
 		newMesh->setName(fbxNode.GetName());
 		parent_obj_node->appendChild(newMesh);
 		parent_obj_node=newMesh;
@@ -481,7 +419,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	}
 }
 
-gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList)
+gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d)
 {
 	gxMesh* newMesh = new gxMesh();
 	float* vertexBuffer = newMesh->allocateVertexBuffer(fbxMesh.GetPolygonCount());
@@ -559,6 +497,7 @@ gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOf
 					if(strcmp(material_in_list->getMaterialName(), surfaceMaterial->GetName())==0)
 					{
 						triInfoArray[fbxMaterialIndex].setMaterial(material_in_list);
+						material_in_list->appendDependency(rootObject3d->getFileCRC());
 						material=material_in_list;
 						break;
 					}
@@ -593,6 +532,7 @@ gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOf
 					}
 
 					triInfoArray[fbxMaterialIndex].setMaterial(material);
+					material->appendDependency(rootObject3d->getFileCRC());
 					materialList->push_back(material);
 				}
 			}
@@ -637,6 +577,7 @@ gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOf
 	{
 		//create and assign new material
 		triInfoArray[0].setMaterial(createNewMaterial());
+		triInfoArray[0].getMaterial()->appendDependency(rootObject3d->getFileCRC());
 	}
 
 	for(int m=0;m<nCount;m++)
@@ -668,11 +609,6 @@ gxMaterial* fbxImporter::createNewMaterial()
 	return material;
 }
 
-void fbxImporter::PrintTabs()
-{
-	for(int i = 0; i < numTabs; i++)
-		printf("\t");
-}
 
 void fbxImporter::triangulateFBXRecursive(FbxGeometryConverter &fbxConverter, FbxNode &fbxNode)
 {
@@ -706,6 +642,13 @@ void fbxImporter::triangulateFBXRecursive(FbxGeometryConverter &fbxConverter, Fb
 			triangulateFBXRecursive(fbxConverter, *fbxChildNode);
 		}
 	}
+}
+
+/*
+void fbxImporter::PrintTabs()
+{
+	for(int i = 0; i < numTabs; i++)
+		printf("\t");
 }
 
 void fbxImporter::PrintNode(FbxNode* pNode, object3d* parent_obj_node, FbxManager* fbxManager)
@@ -786,9 +729,7 @@ void fbxImporter::PrintNode(FbxNode* pNode, object3d* parent_obj_node, FbxManage
 	printf("</node>\n");
 }
 
-/**
-* Print an attribute.
-*/
+
 void fbxImporter::PrintAttribute(FbxNodeAttribute* pAttribute)
 {
 	if(!pAttribute) return;
@@ -800,9 +741,7 @@ void fbxImporter::PrintAttribute(FbxNodeAttribute* pAttribute)
 	printf("<attribute type='%s' name='%s'/>\n", typeName.Buffer(), attrName.Buffer());
 }
 
-/**
-* Return a string-based representation based on the attribute type.
-*/
+
 FbxString fbxImporter::GetAttributeTypeName(FbxNodeAttribute::EType type)
 {
 	switch(type) {
@@ -829,3 +768,4 @@ FbxString fbxImporter::GetAttributeTypeName(FbxNodeAttribute::EType type)
 		default: return "unknown";
 	}
 }
+*/

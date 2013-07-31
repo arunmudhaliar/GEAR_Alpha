@@ -10,7 +10,7 @@ public:
 	assetUserData(int typeID, const char* path, void* ptr)
 	{
 		type=typeID;
-		strcpy(assetAbsolutePath, path);
+		STRCPY(assetAbsolutePath, path);
 		assetObjectPtr=ptr;
 	}
 

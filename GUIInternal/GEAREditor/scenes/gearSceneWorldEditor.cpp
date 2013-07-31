@@ -12,6 +12,9 @@ geWindow("World Editor")
 	m_pHorizontalSlider_LightAmbient=NULL;
 	m_pLocalOrGlobalAxis=NULL;
 	m_pTBGridView=NULL;
+
+	m_pPlayButton = NULL;
+	m_pPauseButton = NULL;
 }
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
@@ -31,13 +34,13 @@ void gearSceneWorldEditor::onCreate()
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(0), metaDataFolder);
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(1), metaDataFolder);
 
-	geToolBarButton* tbtn0=new geToolBarButton("hello", getToolBar());
+	geToolBarButton* tbtn0=new geToolBarButton("t", getToolBar());
 	tbtn0->loadImage("res//icons16x16.png", 7, 153);
 	getToolBar()->appendToolBarControl(tbtn0);
-	geToolBarButton* tbtn1=new geToolBarButton("hello world", getToolBar());
+	geToolBarButton* tbtn1=new geToolBarButton("r", getToolBar());
 	tbtn1->loadImage("res//icons16x16.png", 27, 153);
 	getToolBar()->appendToolBarControl(tbtn1);
-	geToolBarButton* tbtn2=new geToolBarButton("1234", getToolBar());
+	geToolBarButton* tbtn2=new geToolBarButton("s", getToolBar());
 	tbtn2->loadImage("res//icons16x16.png", 49, 153);
 	getToolBar()->appendToolBarControl(tbtn2);
 
@@ -60,10 +63,21 @@ void gearSceneWorldEditor::onCreate()
 	m_pTBGridView->loadImage("res//icons16x16.png", 112, 384);
 	getToolBar()->appendToolBarControl(m_pTBGridView);
 
-	//create grid
-	//geVector2f m_cGridOnYAxis[180];
-	//geVector2f m_cGridOnXAxis[180];
+	geToolBarSeperator* seperator3 = new geToolBarSeperator(getToolBar(), 40);
+	getToolBar()->appendToolBarControl(seperator3);
 
+	//play-pause-stop
+	m_pPlayButton=new geToolBarButton("play", getToolBar());
+	m_pPlayButton->loadImage("res//icons16x16.png", 26, 216);
+	m_pPlayButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pPlayButton);
+	m_pPauseButton=new geToolBarButton("pause", getToolBar());
+	m_pPauseButton->loadImage("res//icons16x16.png", 90, 216);
+	m_pPauseButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pPauseButton);
+	//
+
+	//create grid
 	float startX=-500.0f;
 	float startY=-500.0f;
 
@@ -176,6 +190,10 @@ void gearSceneWorldEditor::draw()
 void gearSceneWorldEditor::onDraw()
 {
 	monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec());
+	if(m_pPlayButton->isButtonPressed())
+	{
+		monoWrapper::mono_game_run(Timer::getDtinSec());
+	}
 	monoWrapper::mono_engine_render(m_pMainWorldPtr);
 
 	glDisable(GL_LIGHT0);
@@ -584,6 +602,10 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 			m_bTransformThroughLocalAxis=true;
 		}
 		m_pLocalOrGlobalAxis->buttonNormal();
+	}
+	else if(m_pPlayButton==btn)
+	{
+		monoWrapper::mono_game_start();
 	}
 }
 

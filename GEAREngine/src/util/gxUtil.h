@@ -4,64 +4,36 @@
 #include <string.h>
 #include "../core/vector3.h"
 
-class gxUtil
+class __declspec( dllexport ) gxUtil
 {
 public:
 	static const char* getFolderPathFromFileName(const char* filename)
 	{
-		char* directorPathPtr=NULL;
 		strcpy(g_directoryPath, filename);
-		char* last_slash=NULL;
-		char* fs=g_directoryPath;
-		char* bs=g_directoryPath;
-		fs=strrchr(fs, '\\');
-		bs=strrchr(bs, '/');
-		int fs_len=strlen(g_directoryPath);
-		if(fs)
+		for(int x=strlen(g_directoryPath)-1;x>=0;x--)
 		{
-			fs_len=strlen(fs);
-		}
-		int bs_len=strlen(g_directoryPath);
-		if(bs)
-		{
-			bs_len=strlen(bs);
+			if(g_directoryPath[x]=='\\' || g_directoryPath[x]=='/')
+			{
+				g_directoryPath[x]='\0';
+				break;
+			}
 		}
 
-		if(fs_len<bs_len)
-		{
-			fs[0]='\0';
-			last_slash=&fs[0];
-		}
-		else
-		{
-			bs[0]='\0';
-			last_slash=&bs[0];
-		}
-
-		if(last_slash)
-		{
-			//strcpy(last_slash, "");
-			//last_slash[0]='\0';
-			directorPathPtr=g_directoryPath;
-		}
-
-		return directorPathPtr;
+		return g_directoryPath;
 	}
 
 	static const char* getFileNameFromPath(const char* path)
 	{
-		strcpy(g_filePath, path);
-		const char* onlyfinename=strrchr(g_filePath, '\\');
-		if(onlyfinename==NULL)
+		for(int x=strlen(path)-1;x>=0;x--)
 		{
-			onlyfinename=strrchr(g_filePath, '/');
+			if(path[x]=='\\' || path[x]=='/')
+			{
+				strcpy(g_directoryPath, &path[x+1]);
+				return g_directoryPath;
+			}
 		}
-		if(onlyfinename==NULL)
-			onlyfinename=g_filePath;
-		else
-			onlyfinename=&onlyfinename[1];
 
-		return onlyfinename;
+		return path;
 	}
 
 	static bool twoLineSegmentIntersection(vector3f p1, vector3f p2, vector3f p3, vector3f p4, vector3f& pa, vector3f& pb, float& ua, float& ub)

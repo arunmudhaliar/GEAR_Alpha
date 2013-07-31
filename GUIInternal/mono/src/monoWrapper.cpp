@@ -14,6 +14,8 @@ MonoImage*		monoWrapper::g_pImage = NULL;
 MonoClass*		monoWrapper::g_pMonoGEAREntryPointClass = NULL;
 
 MonoMethod* monoWrapper::g_monogear_engine_test_function_for_mono=NULL;
+MonoMethod* monoWrapper::g_mono_game_start = NULL;
+MonoMethod* monoWrapper::g_mono_game_run = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_init = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_getWorld = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_update = NULL;
@@ -190,6 +192,9 @@ void monoWrapper::bindEngineMethods()
 	*/
 
 	g_monogear_engine_test_function_for_mono=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "monogear_engine_test_function_for_mono", 0);
+	g_mono_game_start						=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "mono_game_start", 0);
+	g_mono_game_run							=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "mono_game_run", 1);
+
 	g_pMethod_engine_init					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_init", 1);
 	g_pMethod_engine_getWorld				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_getWorld", 1);
 	g_pMethod_engine_update					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_update", 2);
@@ -222,6 +227,21 @@ void monoWrapper::destroyMono()
 #endif
 }
 
+//MONO GAME WRAPPERS
+void monoWrapper::mono_game_start()
+{
+#ifdef USEMONOENGINE
+	mono_runtime_invoke(g_mono_game_start, g_pMonoGEAREntryPointClass_Instance_Variable, NULL, NULL);
+#endif
+}
+
+void monoWrapper::mono_game_run(float dt)
+{
+#ifdef USEMONOENGINE
+	void* args[1]={&dt};
+	mono_runtime_invoke(g_mono_game_run, g_pMonoGEAREntryPointClass_Instance_Variable, args, NULL);
+#endif
+}
 
 //MONO ENGINE WRAPPERS
 

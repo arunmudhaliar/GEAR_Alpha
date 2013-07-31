@@ -10,6 +10,7 @@ object3d::object3d(int objID):
 	setBaseFlag(eObject3dBaseFlag_Visible);
 	m_pAnimationController=NULL;
 	m_pAnimationTrack=NULL;
+	m_iFileCRC=0;
 }
 
 object3d::~object3d()
@@ -176,4 +177,41 @@ gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
 
 
 	return animSet;
+}
+
+void object3d::write(gxFile& file)
+{
+	/*
+	char m_cszName[64];
+	int m_iObjectID;
+	object3d* m_pParentPtr;
+	unsigned int m_eBaseFlags;
+	std::vector<object3d*> m_cChilds;
+	gxAABBf m_cAABB;
+	gxAnimation* m_pAnimationController;
+	gxAnimationTrack* m_pAnimationTrack;	//must not delete this pointer
+	int m_iFileCRC;
+	*/
+
+	file.Write(m_iObjectID);
+	file.Write(m_eBaseFlags);
+	file.Write(m_cszName);
+	file.WriteBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
+	file.Write(m_iFileCRC);
+	file.Write((int)m_cChilds.size());
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		obj->write(file);
+	}
+}
+
+void object3d::read(gxFile& file)
+{
+	file.Read(m_eBaseFlags);
+	char* temp=file.ReadString();
+	strcpy(m_cszName, temp);
+	GX_DELETE_ARY(temp);
+	file.ReadBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
+	file.Read(m_iFileCRC);
 }

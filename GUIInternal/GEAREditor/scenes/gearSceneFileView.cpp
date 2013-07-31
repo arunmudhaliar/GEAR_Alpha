@@ -13,6 +13,7 @@
 #include "../EditorApp.h"
 #include "../win32/MDropSource.h"
 #include "assetUserData.h"
+#include "../../../GEAREngine/src/core/gxMetaStructures.h"
 
 static int find_files(const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
 
@@ -44,11 +45,40 @@ void gearSceneFileView::onCreate()
 
 	m_cszSprites[2].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[2].setClip(424, 68, 16, 16);
+
+	m_cszSprites[3].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[3].setClip(68, 110, 16, 16);
+
 }
 
 void gearSceneFileView::onDraw()
 {
 	m_cFileTreeView.draw();
+}
+
+void read3dFile(gxFile& file, object3d* obj)
+{
+	int nChild=0;
+	file.Read(nChild);
+
+	for(int x=0;x<nChild; x++)
+	{
+		int objID=0;
+		file.Read(objID);
+		object3d* tempObj=NULL;
+		if(objID==0 || objID==1)
+		{
+			tempObj = new object3d(objID);
+		}
+		else if(objID==100)
+		{
+			tempObj = new gxMesh();
+		}
+
+		tempObj->read(file);
+		obj->appendChild(tempObj);
+		read3dFile(file, tempObj);
+	}
 }
 
 void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
@@ -59,7 +89,41 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		const char* absolutePath=((assetUserData*)tvnode->getUserData())->getAssetAbsolutePath();
 		if(util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX"))
 		{
-			obj=monoWrapper::mono_engine_loadFBX(monoWrapper::mono_engine_getWorld(0), absolutePath);
+			//obj=monoWrapper::mono_engine_loadFBX(monoWrapper::mono_engine_getWorld(0), absolutePath);
+
+			char metaInfoFileName[256];
+			sprintf(metaInfoFileName, "%s.meta",absolutePath);
+
+			gxFile metaInfoFile;
+			if(metaInfoFile.OpenFile(metaInfoFileName))
+			{
+				int crc=0;
+				metaInfoFile.Read(crc);
+				metaInfoFile.CloseFile();
+
+				char crcFile[1024];
+				sprintf(crcFile, "%s/MetaData/%x", EditorApp::getProjectHomeDirectory(), crc);
+
+				gxFile file_meta;
+				if(file_meta.OpenFile(crcFile))
+				{
+					stMetaHeader metaHeader;
+					file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+					int objID=0;
+					file_meta.Read(objID);
+
+					object3d* tempObj=NULL;
+					if(objID==0 || objID==1)
+					{
+						tempObj = new object3d(objID);
+						tempObj->read(file_meta);
+						read3dFile(file_meta, tempObj);
+						obj=tempObj;
+					}
+					file_meta.CloseFile();
+				}
+			}
 			((assetUserData*)tvnode->getUserData())->setAssetObjectPtr(obj);
 		}
 	}
@@ -250,6 +314,8 @@ static int find_files(const char *dirname, const char* searchString, geTreeNode*
 						if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG") ||
 							util::GE_IS_EXTENSION(buffer, ".tga") || util::GE_IS_EXTENSION(buffer, ".TGA"))
 							sprite=&spriteArray[2];
+						else if(util::GE_IS_EXTENSION(buffer, ".mat") || util::GE_IS_EXTENSION(buffer, ".MAT"))
+							sprite=&spriteArray[3];
 						else
 							sprite=&spriteArray[1];
 

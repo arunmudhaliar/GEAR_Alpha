@@ -29,7 +29,7 @@ public:
 };
 
 
-class gxMesh : public object3d
+class DllExport gxMesh : public object3d
 {
 public:
 	gxMesh();
@@ -68,6 +68,9 @@ public:
 
 	int getTotalNoOfTris();
 
+	virtual void write(gxFile& file);
+	virtual void read(gxFile& file);
+
 private:
 
 	bool applyStageTexture(int stage, matrix4x4f* matrix, gxUV* uv, gxTexture* texture, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
@@ -81,6 +84,7 @@ private:
 	float* m_pszNormalBuffer;
 	int m_nUVChannels;
 	gxUV* m_pszUVChannels;
+	int m_nTris_For_Internal_Use;
 };
 
 #endif

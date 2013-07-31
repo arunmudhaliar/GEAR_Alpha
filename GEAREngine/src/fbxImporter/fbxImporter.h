@@ -12,46 +12,34 @@
 //DllExport void myDLL_fbxImport(const char* filename);
 //}
 
-class fbxImporter
+class DllExport fbxImporter
 {
 public:
 	fbxImporter();
-
 	~fbxImporter();
 
-	object3d* loadFBX(const char* filename);
+	//object3d* loadFBX(const char* filename);
 
 
-	/* Tab character ("\t") counter */
-	int numTabs; 
-
-	/**
-	 * Print the required number of tabs.
-	 */
-	void PrintTabs();
-
-	/**
-	* Print a node, its attributes, and all its children recursively.
-	*/
-	void PrintNode(FbxNode* pNode, object3d* parent_obj_node, FbxManager* fbxManager);
+	//int numTabs; 
+	//void PrintTabs();
+	//void PrintNode(FbxNode* pNode, object3d* parent_obj_node, FbxManager* fbxManager);
 
 	FbxMatrix getFBXGeometryTransform(FbxNode &fbxNode);
 
 	object3d* loadMyFBX(const char *filePath, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList);
-	object3d* importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList);
+	object3d* importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList, int fileCRC);
 	void importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList);
-	gxMesh* importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList);
+	gxMesh* importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d);
 
 	void triangulateFBXRecursive(FbxGeometryConverter &fbxConverter, FbxNode &fbxNode);
-	void PrintAttribute(FbxNodeAttribute* pAttribute);
+	//void PrintAttribute(FbxNodeAttribute* pAttribute);
 
-	/**
-	* Return a string-based representation based on the attribute type.
-	*/
-	FbxString GetAttributeTypeName(FbxNodeAttribute::EType type);
+	//FbxString GetAttributeTypeName(FbxNodeAttribute::EType type);
 
 private:
 	gxMaterial* createNewMaterial();
+	char m_cszNormalizedFilePath[1024];
 };
 
 #endif

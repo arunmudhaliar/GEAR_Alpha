@@ -7,6 +7,7 @@
 #include "basicIncludes.h"
 #include "aabb.h"
 #include "gxAnimation.h"
+#include "../util/gxFile.h"
 
 class gxAnimation;
 class gxAnimationSet;
@@ -60,6 +61,12 @@ public:
 	gxAnimationSet* applyAnimationSetRecursive(int index);
 	void setAnimationTrack(gxAnimationTrack* track);
 
+	void setFileCRC(int crc)	{	m_iFileCRC = crc;	}
+	int getFileCRC()			{	return m_iFileCRC;	}
+
+	virtual void write(gxFile& file);
+	virtual void read(gxFile& file);
+
 protected:
 	char m_cszName[64];
 	int m_iObjectID;
@@ -69,6 +76,7 @@ protected:
 	gxAABBf m_cAABB;
 	gxAnimation* m_pAnimationController;
 	gxAnimationTrack* m_pAnimationTrack;	//must not delete this pointer
+	int m_iFileCRC;
 };
 
 #endif

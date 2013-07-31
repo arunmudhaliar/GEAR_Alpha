@@ -5,7 +5,8 @@ enum EMETA_FILETYPE
 {
 	eMetaUnknown		=	9000,
 	eMetaTexture2D		=	9001,
-	eMetaMesh			=	9002,
+	eMeta3DFile			=	9002,
+	eMetaMaterial		=	9003,
 };
 
 enum ETEXTURE_2D_TYPE

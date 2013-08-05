@@ -217,6 +217,18 @@ public:
 	void setFileCRC(int crc)	{	m_iFileCRC=crc;		}
 	int getFileCRC()			{	return m_iFileCRC;	}
 
+	static gxMaterial* createNewMaterial()
+	{
+		gxMaterial* material = new gxMaterial();
+		material->setMaterialName("New Material");
+
+		material->setDiffuseClr(vector4f(0.7f, 0.7f, 0.7f, 1.0f));
+		material->setAmbientClr(vector4f(0.7f, 0.7f, 0.7f, 1.0f));
+		material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
+
+		return material;
+	}
+
 private:
 	vector4f m_cAmbient;
 	vector4f m_cDiffuse;

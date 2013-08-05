@@ -12,6 +12,7 @@ public:
 		m_nTris=0;
 		m_pTriList=NULL;
 		m_pMaterialPtr=NULL;
+		m_iMaterialCRC = 0;
 	}
 
 	~gxTriInfo()
@@ -52,15 +53,17 @@ public:
 			int* buffer = allocateMemory(m_nTris);
 			file.ReadBuffer((unsigned char*)buffer, sizeof(int)*m_nTris*3);
 		}
-		int materialCRC=0;
-		file.Read(materialCRC);
+		file.Read(m_iMaterialCRC);
 	}
+
+	int getMaterialCRCFromFileReadInfo()	{	return m_iMaterialCRC;	}
 
 private:
 	gxMaterial* m_pMaterialPtr;	//must not delete this pointer
 
 	int m_nTris;
 	int* m_pTriList;
+	int m_iMaterialCRC;
 };
 
 #endif

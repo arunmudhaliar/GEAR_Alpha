@@ -181,23 +181,13 @@ gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
 
 void object3d::write(gxFile& file)
 {
-	/*
-	char m_cszName[64];
-	int m_iObjectID;
-	object3d* m_pParentPtr;
-	unsigned int m_eBaseFlags;
-	std::vector<object3d*> m_cChilds;
-	gxAABBf m_cAABB;
-	gxAnimation* m_pAnimationController;
-	gxAnimationTrack* m_pAnimationTrack;	//must not delete this pointer
-	int m_iFileCRC;
-	*/
-
 	file.Write(m_iObjectID);
 	file.Write(m_eBaseFlags);
 	file.Write(m_cszName);
+	file.WriteBuffer((unsigned char*)m, sizeof(m));
 	file.WriteBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
 	file.Write(m_iFileCRC);
+	writeAnimationController(file);
 	file.Write((int)m_cChilds.size());
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{
@@ -212,6 +202,32 @@ void object3d::read(gxFile& file)
 	char* temp=file.ReadString();
 	strcpy(m_cszName, temp);
 	GX_DELETE_ARY(temp);
+	file.ReadBuffer((unsigned char*)m, sizeof(m));
 	file.ReadBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
 	file.Read(m_iFileCRC);
+	readAnimationController(file);
+}
+
+void object3d::writeAnimationController(gxFile& file)
+{
+	if(m_pAnimationController)
+	{
+		file.Write(true);
+		m_pAnimationController->write(file);
+	}
+	else
+	{
+		file.Write(false);
+	}
+}
+
+void object3d::readAnimationController(gxFile& file)
+{
+	bool bAnimationController=false;
+	file.Read(bAnimationController);
+	if(bAnimationController)
+	{
+		gxAnimation* animationController=createAnimationController();
+		animationController->read(file);
+	}
 }

@@ -33,3 +33,25 @@ void gxAnimation::update(float dt)
 	if(m_pActiveAnimationSetPtr)
 		m_pActiveAnimationSetPtr->update(dt);
 }
+
+void gxAnimation::write(gxFile& file)
+{
+	file.Write((int)m_vAnimationSet.size());
+	for(std::vector<gxAnimationSet*>::iterator it = m_vAnimationSet.begin(); it != m_vAnimationSet.end(); ++it)
+	{
+		gxAnimationSet* animationSet = *it;
+		animationSet->write(file);
+	}
+}
+
+void gxAnimation::read(gxFile& file)
+{
+	int nAnimSet=0;
+	file.Read(nAnimSet);
+	for(int x=0;x<nAnimSet;x++)
+	{
+		gxAnimationSet* animationSet = new gxAnimationSet("");
+		animationSet->read(file);
+		appendAnimationSet(animationSet);
+	}
+}

@@ -171,6 +171,26 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 									}
 								}
 							}
+							else
+							{
+								//check for .meta file
+								//create the meta-info file
+								gxFile metaInfoFile;
+								char metaInfoFileName[512];
+								sprintf(metaInfoFileName, "%s.meta", buffer);
+								if(!metaInfoFile.OpenFile(metaInfoFileName))
+								{
+									if(metaInfoFile.OpenFile(metaInfoFileName, gxFile::FILE_w))
+									{
+										metaInfoFile.Write(crc32);
+										metaInfoFile.CloseFile();
+									}
+								}
+								else
+								{
+									metaInfoFile.CloseFile();
+								}
+							}
 						}
 					}
 				}

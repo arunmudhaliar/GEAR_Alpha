@@ -3,7 +3,7 @@
 
 #include "basicIncludes.h"
 #include "matrix4x4f.h"
-//#include "object3d.h"
+#include "../util/gxFile.h"
 
 class object3d;
 class gxAnimationTrack
@@ -33,6 +33,9 @@ public:
 
 	void setName(const char* name)	{	GX_STRCPY(m_szName, name);	}
 	const char* getName()			{	return m_szName;			}
+
+	void write(gxFile& file);
+	void read(gxFile& file);
 
 private:
 	int m_iFPS;

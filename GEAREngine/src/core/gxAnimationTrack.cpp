@@ -31,3 +31,26 @@ matrix4x4f* gxAnimationTrack::allocateTrack()
 //{
 //	m_pObjectPtr=obj;
 //}
+
+
+void gxAnimationTrack::write(gxFile& file)
+{
+	file.Write(m_szName);
+	file.Write(m_iFPS);
+	file.Write(m_nFrames);
+	file.WriteBuffer((unsigned char*)m_pTrack, sizeof(matrix4x4f)*m_nFrames);
+}
+
+void gxAnimationTrack::read(gxFile& file)
+{
+	char* name = file.ReadString();
+	strcpy(m_szName, name);
+	GX_DELETE_ARY(name);
+	file.Read(m_iFPS);
+	file.Read(m_nFrames);
+	if(m_nFrames)
+	{
+		matrix4x4f* track=allocateTrack();
+		file.ReadBuffer((unsigned char*)track, sizeof(matrix4x4f)*m_nFrames);
+	}
+}

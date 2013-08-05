@@ -42,3 +42,29 @@ void gxAnimationSet::update(float dt)
 	if(m_fCurrentFrame>=m_nFrames)
 		m_fCurrentFrame=0.0f;
 }
+
+void gxAnimationSet::write(gxFile& file)
+{
+	file.Write(m_szName);
+	file.Write((int)m_vAnimationTrack.size());
+	for(std::vector<gxAnimationTrack*>::iterator it = m_vAnimationTrack.begin(); it != m_vAnimationTrack.end(); ++it)
+	{
+		gxAnimationTrack* animationTrack = *it;
+		animationTrack->write(file);
+	}
+}
+
+void gxAnimationSet::read(gxFile& file)
+{
+	char* name=file.ReadString();
+	strcpy(m_szName, name);
+	GX_DELETE_ARY(name);
+	int nTrack=0;
+	file.Read(nTrack);
+	for(int x=0;x<nTrack;x++)
+	{
+		gxAnimationTrack* animationTrack = new gxAnimationTrack();
+		animationTrack->read(file);
+		appendTrack(animationTrack);
+	}
+}

@@ -67,6 +67,10 @@ public:
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);
 
+	void writeAnimationController(gxFile& file);
+	void readAnimationController(gxFile& file);
+
+
 protected:
 	char m_cszName[64];
 	int m_iObjectID;

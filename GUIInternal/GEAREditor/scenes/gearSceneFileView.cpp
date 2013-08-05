@@ -120,6 +120,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 						tempObj->read(file_meta);
 						read3dFile(file_meta, tempObj);
 						obj=tempObj;
+						obj->transformationChangedf();
 					}
 					file_meta.CloseFile();
 				}

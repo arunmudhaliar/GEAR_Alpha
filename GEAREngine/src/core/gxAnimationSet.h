@@ -3,6 +3,7 @@
 
 #include "gxAnimationTrack.h"
 #include <vector>
+#include "../util/gxFile.h"
 
 class gxAnimationSet
 {
@@ -16,6 +17,9 @@ public:
 	const char* getAnimationName()		{	return m_szName;	}
 
 	std::vector<gxAnimationTrack*>* getTrackList()	{	return &m_vAnimationTrack;	}
+
+	void write(gxFile& file);
+	void read(gxFile& file);
 
 private:
 	std::vector<gxAnimationTrack*> m_vAnimationTrack;

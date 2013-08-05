@@ -38,7 +38,6 @@ public:
 	//FbxString GetAttributeTypeName(FbxNodeAttribute::EType type);
 
 private:
-	gxMaterial* createNewMaterial();
 	char m_cszNormalizedFilePath[1024];
 };
 

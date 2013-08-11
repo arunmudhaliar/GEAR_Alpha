@@ -23,7 +23,7 @@ matrix4x4f* gxAnimationTrack::allocateTrack()
 	if(m_pTrack!=NULL)
 		return m_pTrack;
 
-	m_pTrack = new matrix4x4f[m_nFrames];
+	m_pTrack = new matrix4x4f[m_nFrames];	//(matrix4x4f*)malloc(sizeof(*m_pTrack)*m_nFrames);
 	return m_pTrack;
 }
 
@@ -38,7 +38,10 @@ void gxAnimationTrack::write(gxFile& file)
 	file.Write(m_szName);
 	file.Write(m_iFPS);
 	file.Write(m_nFrames);
-	file.WriteBuffer((unsigned char*)m_pTrack, sizeof(matrix4x4f)*m_nFrames);
+	for(int x=0;x<m_nFrames;x++)
+	{
+		file.WriteBuffer((unsigned char*)m_pTrack[x].getMatrix(), sizeof(float)*16);
+	}
 }
 
 void gxAnimationTrack::read(gxFile& file)
@@ -51,6 +54,9 @@ void gxAnimationTrack::read(gxFile& file)
 	if(m_nFrames)
 	{
 		matrix4x4f* track=allocateTrack();
-		file.ReadBuffer((unsigned char*)track, sizeof(matrix4x4f)*m_nFrames);
+		for(int x=0;x<m_nFrames;x++)
+		{
+			file.ReadBuffer((unsigned char*)track[x].getMatrix(), sizeof(float)*16);
+		}
 	}
 }

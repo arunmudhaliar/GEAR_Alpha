@@ -11,7 +11,7 @@ geWindow("Hierarchy")
 
 gearSceneHierarchy::~gearSceneHierarchy()
 {
-	destroyTVUserData(m_cGameObjectsTreeView.getRoot());
+	//destroyTVUserData(m_cGameObjectsTreeView.getRoot());
 }
 
 void gearSceneHierarchy::onCreate()
@@ -37,9 +37,9 @@ void gearSceneHierarchy::onDraw()
 
 void gearSceneHierarchy::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
 {
-	EditorApp::getSceneWorldEditor()->selectedObject3D((object3d*)((assetUserData*)tvnode->getUserData())->getAssetObjectPtr());
+	EditorApp::getSceneWorldEditor()->selectedObject3D((object3d*)tvnode->getUserData());
 
-	EditorApp::getScenePropertyEditor()->populatePropertyOfObject((object3d*)((assetUserData*)tvnode->getUserData())->getAssetObjectPtr());
+	EditorApp::getScenePropertyEditor()->populatePropertyOfObject((object3d*)tvnode->getUserData());
 }
 
 bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
@@ -163,7 +163,7 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d)
 		for(std::vector<gxAnimationSet*>::iterator it = animationSetList->begin(); it != animationSetList->end(); ++it)
 		{
 			gxAnimationSet* animationSet = *it;
-			world->getAnimationSetList()->push_back(animationSet);
+			world->appendAnimationSetToWorld(animationSet);
 		}
 	}
 
@@ -236,8 +236,8 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 		geTreeNode* selectedNode=m_cGameObjectsTreeView.getTVNode(x, y/*-getTopMarginOffsetHeight()*/);
 		if(selectedNode && !droppedDataObject->isNodeExistsInTree(selectedNode))
 		{
-			object3d* selectedObj=(object3d*)((assetUserData*)selectedNode->getUserData())->getAssetObjectPtr();
-			object3d* droppedObj=(object3d*)((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetObjectPtr();
+			object3d* selectedObj=(object3d*)selectedNode->getUserData();
+			object3d* droppedObj=(object3d*)droppedDataObject->getUserData();
 		
 			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
 			{
@@ -245,10 +245,10 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 
 				geTreeNode* dtv=(geTreeNode*)droppedDataObject;
 				geTreeNode* dtv_parent=(geTreeNode*)dtv->getParent();
-				dtv_parent->removeChild(dtv);
+				dtv_parent->removeTVChild(dtv);
 
 				((geTreeNode*)droppedDataObject)->setXOffset(20.0f);
-				selectedNode->appnendChild((geTreeNode*)droppedDataObject);
+				selectedNode->appnendTVChild((geTreeNode*)droppedDataObject);
 				((geTreeNode*)droppedDataObject)->setNodeSprite(&m_cszSprites[0]);
 				rootNode->traverseSetWidth(m_cSize.x);
 				m_cGameObjectsTreeView.refreshTreeView();
@@ -257,7 +257,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 		else if(selectedNode==NULL)
 		{
 			//add to the root node
-			object3d* droppedObj=(object3d*)((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetObjectPtr();
+			object3d* droppedObj=(object3d*)droppedDataObject->getUserData();
 		
 			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
 			{
@@ -266,10 +266,10 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 
 				geTreeNode* dtv=(geTreeNode*)droppedDataObject;
 				geTreeNode* dtv_parent=(geTreeNode*)dtv->getParent();
-				dtv_parent->removeChild(dtv);
+				dtv_parent->removeTVChild(dtv);
 
 				((geTreeNode*)droppedDataObject)->setXOffset(0.0f);
-				m_cGameObjectsTreeView.getRoot()->appnendChild((geTreeNode*)droppedDataObject);
+				m_cGameObjectsTreeView.getRoot()->appnendTVChild((geTreeNode*)droppedDataObject);
 				((geTreeNode*)droppedDataObject)->setNodeSprite(&m_cszSprites[1]);
 				rootNode->traverseSetWidth(m_cSize.x);
 				m_cGameObjectsTreeView.refreshTreeView();
@@ -281,12 +281,11 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 	{
 		if(droppedDataObject->getParent() && droppedDataObject->getParent()==EditorApp::getScenePropertyEditor()->getAnimationParentNode())
 		{
-			gxAnimationSet* animSet=(gxAnimationSet*)((geTreeNode*)droppedDataObject)->getUserData();
-
+			gxAnimationSet* animSet=(gxAnimationSet*)droppedDataObject->getUserData();
 			geTreeNode* selectedNode=m_cGameObjectsTreeView.getTVNode(x, y);
 			if(selectedNode)
 			{
-				object3d* selectedObj=(object3d*)((assetUserData*)selectedNode->getUserData())->getAssetObjectPtr();
+				object3d* selectedObj=(object3d*)selectedNode->getUserData();
 				gxAnimation* animationController = selectedObj->createAnimationController();	//wont create new if there is already an animatiion controller exists
 				animationController->appendAnimationSet(animSet);
 				selectedObj->applyAnimationSetRecursive(animationController->getAnimationSetList()->size()-1);
@@ -319,8 +318,9 @@ void gearSceneHierarchy::createTVNode(geTreeNode* parentNode, object3d* obj, con
 	}
 
 	geTreeNode* newtvNode = new geTreeNode(parentNode, name, sprite);
-	assetUserData* userData = new assetUserData(2, "", obj);
-	newtvNode->setUserData(userData);
+	//assetUserData* userData = new assetUserData(2, "", obj);
+	newtvNode->setUserData(obj);
+	newtvNode->closeNode();
 
 	std::vector<object3d*>* list=obj->getChildList();
 	for(std::vector<object3d*>::iterator it = list->begin(); it != list->end(); ++it)
@@ -334,8 +334,8 @@ void gearSceneHierarchy::destroyTVUserData(geGUIBase* parent)
 {
 	std::vector<geGUIBase*>* list=parent->getChildControls();
 
-	assetUserData* userdata=(assetUserData*)((geTreeNode*)parent)->getUserData();
-	GE_DELETE(userdata);
+	//assetUserData* userdata=(assetUserData*)((geTreeNode*)parent)->getUserData();
+	//GE_DELETE(userdata);
 	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
@@ -352,11 +352,11 @@ bool gearSceneHierarchy::onKeyDown(int charValue, int flag)
 		geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
 		if(selectedNode)
 		{
-			object3d* obj=(object3d*)((assetUserData*)selectedNode->getUserData())->getAssetObjectPtr();
+			object3d* obj=(object3d*)selectedNode->getUserData();
 			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), obj))
 			{
 				geTreeNode* parentNode = (geTreeNode*)selectedNode->getParent();
-				parentNode->removeChild(selectedNode);
+				parentNode->removeTVChild(selectedNode);
 				destroyTVUserData(selectedNode);
 				GE_DELETE(selectedNode);
 				m_cGameObjectsTreeView.resetSelectedNodePtr();

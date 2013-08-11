@@ -8,6 +8,7 @@
 #include "propertyViews\gePropertyObject3d.h"
 #include "propertyViews\gePropertyTransform.h"
 #include "propertyViews\gePropertyMaterial.h"
+#include "propertyViews\gePropertyAnimationSet.h"
 
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {

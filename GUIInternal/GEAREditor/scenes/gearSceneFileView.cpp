@@ -89,8 +89,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		const char* absolutePath=((assetUserData*)tvnode->getUserData())->getAssetAbsolutePath();
 		if(util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX"))
 		{
-			//obj=monoWrapper::mono_engine_loadFBX(monoWrapper::mono_engine_getWorld(0), absolutePath);
-
+			/*
 			char metaInfoFileName[256];
 			sprintf(metaInfoFileName, "%s.meta",absolutePath);
 
@@ -124,8 +123,10 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 					}
 					file_meta.CloseFile();
 				}
+
 			}
 			((assetUserData*)tvnode->getUserData())->setAssetObjectPtr(obj);
+			*/
 		}
 	}
 	EditorApp::getScenePreview()->selectedObject3D(obj);

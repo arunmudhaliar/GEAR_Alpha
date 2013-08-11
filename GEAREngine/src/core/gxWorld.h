@@ -39,6 +39,18 @@ public:
 	std::vector<gxMaterial*>* getMaterialList()			{	return &m_cMaterialList;		}
 	std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &m_vAnimationSetList;	}
 
+	bool appendAnimationSetToWorld(gxAnimationSet* animset)
+	{
+		if(std::find(m_vAnimationSetList.begin(), m_vAnimationSetList.end(), animset)==m_vAnimationSetList.end())
+		{
+			m_vAnimationSetList.push_back(animset);
+			return true;
+		}
+
+		return false;
+	}
+
+
 	void setMetaDataFolder(const char* metaFolder)
 	{
 		GX_STRCPY(m_szMetaDataFolder, metaFolder);

@@ -47,10 +47,10 @@ public:
 
 	void onAppendChild(geGUIBase* child);
 
-	void appnendChild(geTreeNode* child);
-	void removeChild(geTreeNode* child);
+	void appnendTVChild(geTreeNode* child);
+	void removeTVChild(geTreeNode* child);
 
-	void destroyAllChilds();
+	void destroyAllTVChilds();
 
 	geTreeNode* getTopNode();
 	geTreeNode* getBottomMostNode();
@@ -63,7 +63,7 @@ protected:
 	Sprite2Dx* m_pSprite;
 	stVertexBuffer m_cVBClientArea;
 
-	std::vector<geTreeNode*> m_vChilds;
+	//std::vector<geTreeNode*> m_vChilds;
 
 	bool m_bNodeOpen;
 	float m_cVBLayoutToggleButtonLine[6*2];

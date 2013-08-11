@@ -75,7 +75,7 @@ void geTreeNode::setNodeSprite(Sprite2Dx* sprite)
 	}
 }
 
-void geTreeNode::destroyAllChilds()
+void geTreeNode::destroyAllTVChilds()
 {
 	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
 	{
@@ -223,7 +223,7 @@ void geTreeNode::onAppendChild(geGUIBase* child)
 		m_bHaveAtleastOneTreeNodeChild=(child->getGUIID()==GEGUI_TREEVIEW_NODE);
 }
 
-void geTreeNode::appnendChild(geTreeNode* child)
+void geTreeNode::appnendTVChild(geTreeNode* child)
 {
 	child->setPos(child->getXOffset(), GE_TREEVIEWNODE_CY);
 
@@ -231,8 +231,11 @@ void geTreeNode::appnendChild(geTreeNode* child)
 	traverseSetWidth(m_cSize.x);
 }
 
-void geTreeNode::removeChild(geTreeNode* child)
+void geTreeNode::removeTVChild(geTreeNode* child)
 {
+	if(m_vControls.size()==0)
+		return;
+
 	m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), child), m_vControls.end());
 	m_bHaveAtleastOneTreeNodeChild=false;
 	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)

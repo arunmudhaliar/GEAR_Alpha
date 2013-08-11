@@ -40,10 +40,10 @@ void gearScenePropertyEditor::onCreate()
 	m_pMaterialParent = new geTreeNode(rootNode, "Material", &m_cszSprites[2], 0);
 	m_pAnimationParentNode  = new geTreeNode(rootNode, "Animation", &m_cszSprites[3], 0);
 
-	rootNode->removeChild(m_pObject3dParentNode);
-	rootNode->removeChild(m_pTransformParentNode);
-	rootNode->removeChild(m_pMaterialParent);
-	rootNode->removeChild(m_pAnimationParentNode);
+	rootNode->removeTVChild(m_pObject3dParentNode);
+	rootNode->removeTVChild(m_pTransformParentNode);
+	rootNode->removeTVChild(m_pMaterialParent);
+	rootNode->removeTVChild(m_pAnimationParentNode);
 }
 
 void gearScenePropertyEditor::onDraw()
@@ -87,11 +87,10 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 {
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 
-	rootNode->removeChild(m_pObject3dParentNode);
-	rootNode->removeChild(m_pTransformParentNode);
-	rootNode->removeChild(m_pMaterialParent);
-	m_pAnimationParentNode->destroyAllChilds();
-	rootNode->removeChild(m_pAnimationParentNode);
+	rootNode->removeTVChild(m_pObject3dParentNode);
+	rootNode->removeTVChild(m_pTransformParentNode);
+	rootNode->removeTVChild(m_pMaterialParent);
+	rootNode->removeTVChild(m_pAnimationParentNode);
 
 	if(obj==NULL)
 	{
@@ -101,15 +100,15 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 
 	//object3d
 	m_pObject3dPropertyNode->populatePropertyOfObject(obj);
-	rootNode->appnendChild(m_pObject3dParentNode);
+	rootNode->appnendTVChild(m_pObject3dParentNode);
 
 	//transform
 	m_pTransformPropertyNode->populatePropertyOfTransform(obj);
-	rootNode->appnendChild(m_pTransformParentNode);
+	rootNode->appnendTVChild(m_pTransformParentNode);
 
 	//material
 	if(m_pMaterialParent)
-		m_pMaterialParent->destroyAllChilds();
+		m_pMaterialParent->destroyAllTVChilds();
 	if(obj->getID()==100)	//mesh
 	{
 		gxMesh* mesh=(gxMesh*)obj;
@@ -121,22 +120,25 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 			gePropertyMaterial* materialProperty = new gePropertyMaterial(m_pMaterialParent, "", NULL, mesh->getTriInfo(x)->getMaterial());
 		}
 
-		rootNode->appnendChild(m_pMaterialParent);
+		rootNode->appnendTVChild(m_pMaterialParent);
 	}
 
 	//animation
+	if(m_pAnimationParentNode)
+		m_pAnimationParentNode->destroyAllTVChilds();
 	if(obj->getAnimationController())
 	{
-		//m_pAnimationParentNode->destroyAllChilds();
+		
 		gxAnimation* animationController=obj->getAnimationController();
 		std::vector<gxAnimationSet*>* animList=animationController->getAnimationSetList();
 		for(std::vector<gxAnimationSet*>::iterator it = animList->begin(); it != animList->end(); ++it)
 		{
 			gxAnimationSet* animationSet = *it;
-			geTreeNode* pAnimationSetNode  = new geTreeNode(m_pAnimationParentNode, animationSet->getAnimationName(), NULL);
+
+			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(m_pAnimationParentNode, animationSet->getAnimationName(), NULL);
 			pAnimationSetNode->setUserData(animationSet);
 		}
-		rootNode->appnendChild(m_pAnimationParentNode);
+		rootNode->appnendTVChild(m_pAnimationParentNode);
 	}
 
 	m_cPropertiesTreeView.refreshTreeView();

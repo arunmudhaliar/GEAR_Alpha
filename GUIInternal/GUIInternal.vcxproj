@@ -120,6 +120,7 @@
     <ClInclude Include="GEAREditor\scenes\gearSceneProject.h" />
     <ClInclude Include="GEAREditor\scenes\gearScenePropertyEditor.h" />
     <ClInclude Include="GEAREditor\scenes\gearSceneWorldEditor.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyAnimationSet.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMeshPreview.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyObject3d.h" />

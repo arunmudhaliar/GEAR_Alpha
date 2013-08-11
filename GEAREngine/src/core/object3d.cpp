@@ -24,6 +24,9 @@ object3d::~object3d()
 
 	//if(m_pAnimationTrack)
 	//	m_pAnimationTrack->setObject3d(NULL);
+	m_iFileCRC=0;
+	m_pParentPtr=NULL;
+	m_pAnimationTrack=NULL;
 	GX_DELETE(m_pAnimationController);
 }
 
@@ -73,6 +76,8 @@ void object3d::render()
 bool object3d::removeChild(object3d* child)
 {
 	int old_sz=m_cChilds.size();
+	if(old_sz==0) return false;
+
 	m_cChilds.erase(std::remove(m_cChilds.begin(), m_cChilds.end(), child), m_cChilds.end());
 
 	if((old_sz>m_cChilds.size()))

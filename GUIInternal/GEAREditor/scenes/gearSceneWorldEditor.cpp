@@ -61,6 +61,7 @@ void gearSceneWorldEditor::onCreate()
 
 	m_pTBGridView=new geToolBarButton("grid", getToolBar());
 	m_pTBGridView->loadImage("res//icons16x16.png", 112, 384);
+	m_pTBGridView->buttonPressed();
 	getToolBar()->appendToolBarControl(m_pTBGridView);
 
 	geToolBarSeperator* seperator3 = new geToolBarSeperator(getToolBar(), 40);

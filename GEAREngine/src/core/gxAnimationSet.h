@@ -5,7 +5,7 @@
 #include <vector>
 #include "../util/gxFile.h"
 
-class gxAnimationSet
+class DllExport gxAnimationSet
 {
 public:
 	gxAnimationSet(const char* animationName);

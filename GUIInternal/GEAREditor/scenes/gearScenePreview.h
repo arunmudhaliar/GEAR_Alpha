@@ -12,7 +12,8 @@ public:
 	~gearScenePreview();
 
 	void draw();
-	void selectedObject3D(object3d* obj)	{	m_pSelectedObj=obj;	}
+	void selectedObject3D(object3d* obj)	{	m_pSelectedObj=obj;		}
+	object3d* getSelectedObject3D()			{	return m_pSelectedObj;	}
 
 protected:
 	virtual void onCreate();

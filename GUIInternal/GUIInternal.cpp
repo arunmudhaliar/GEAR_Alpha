@@ -14,7 +14,9 @@
 #include "MDragGropInterface.h"
 #include "GEAREditor\win32\MDropSource.h"
 
-
+#ifdef _DEBUG
+#include <crtdbg.h>
+#endif
 
 #define MAX_LOADSTRING 100
 
@@ -41,6 +43,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {
+
+#ifdef _DEBUG
+	_CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
+	_CrtSetReportMode ( _CRT_ERROR, _CRTDBG_MODE_DEBUG);
+#endif
+
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -180,6 +188,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				m_cDropTargetInterfacePtr=dropTarget;
 
 				Timer::init();
+
 			}
 		}
 		break;
@@ -274,8 +283,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYDOWN:
 		{
-
-
 			if(geTextBox::g_pCurrentlyActiveTextBoxPtr)
 			{
 				if(wParam==VK_SHIFT)

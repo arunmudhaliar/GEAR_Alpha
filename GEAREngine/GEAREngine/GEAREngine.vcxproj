@@ -131,6 +131,7 @@
     <ClInclude Include="..\src\core\gxWorld.h" />
     <ClInclude Include="..\src\core\matrix4x4f.h" />
     <ClInclude Include="..\src\core\object3d.h" />
+    <ClInclude Include="..\src\core\quaternion.h" />
     <ClInclude Include="..\src\core\rect.h" />
     <ClInclude Include="..\src\core\stTexturePacket.h" />
     <ClInclude Include="..\src\core\TextureManager.h" />

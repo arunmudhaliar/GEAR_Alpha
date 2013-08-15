@@ -14,6 +14,7 @@
 #include "../win32/MDropSource.h"
 #include "assetUserData.h"
 #include "../../../GEAREngine/src/core/gxMetaStructures.h"
+#include "../../../GEAREngine/src/core/gxAnimationSet.h"
 
 static int find_files(const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
 
@@ -81,6 +82,28 @@ void read3dFile(gxFile& file, object3d* obj)
 	}
 }
 
+void deleteAnmationFromObject3d(object3d* obj3d)
+{
+	gxAnimation* animationController = obj3d->getAnimationController();
+	if(animationController)
+	{
+		std::vector<gxAnimationSet*>* animationSetList=animationController->getAnimationSetList();
+		for(std::vector<gxAnimationSet*>::iterator it = animationSetList->begin(); it != animationSetList->end(); ++it)
+		{
+			gxAnimationSet* animationSet = *it;
+			GE_DELETE(animationSet);
+		}
+		animationSetList->clear();
+	}
+
+	std::vector<object3d*>* childList=obj3d->getChildList();
+	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
+	{
+		object3d* childobj = *it;
+		deleteAnmationFromObject3d(childobj);
+	}
+}
+
 void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
 {
 	object3d* obj=(object3d*)((assetUserData*)tvnode->getUserData())->getAssetObjectPtr();
@@ -89,7 +112,6 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		const char* absolutePath=((assetUserData*)tvnode->getUserData())->getAssetAbsolutePath();
 		if(util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX"))
 		{
-			/*
 			char metaInfoFileName[256];
 			sprintf(metaInfoFileName, "%s.meta",absolutePath);
 
@@ -123,10 +145,10 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 					}
 					file_meta.CloseFile();
 				}
-
+				deleteAnmationFromObject3d(obj);
 			}
+
 			((assetUserData*)tvnode->getUserData())->setAssetObjectPtr(obj);
-			*/
 		}
 	}
 	EditorApp::getScenePreview()->selectedObject3D(obj);

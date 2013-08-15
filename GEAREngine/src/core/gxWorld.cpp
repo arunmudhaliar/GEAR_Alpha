@@ -15,7 +15,7 @@ gxWorld::gxWorld():
 	vector3f v(1, -1, -1);
 	m_pActiveCameraPtr->setDirection(&v);
 
-	m_pActiveCameraPtr->updateLocalPositionf(0, 0, 40);
+	m_pActiveCameraPtr->updateLocalPositionf(0, 0, 300);
 
 	m_cDefaultMaterial.setMaterialName("Default");
 	m_cMaterialList.push_back(&m_cDefaultMaterial);

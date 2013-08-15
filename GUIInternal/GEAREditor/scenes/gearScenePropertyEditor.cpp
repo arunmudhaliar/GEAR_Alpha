@@ -16,6 +16,15 @@ geWindow("Property Editor")
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
 {
+	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	rootNode->removeTVChild(m_pObject3dParentNode);
+	rootNode->removeTVChild(m_pTransformParentNode);
+	rootNode->removeTVChild(m_pMaterialParent);
+	rootNode->removeTVChild(m_pAnimationParentNode);
+	GE_DELETE(m_pObject3dParentNode);
+	GE_DELETE(m_pTransformParentNode);
+	GE_DELETE(m_pMaterialParent);
+	GE_DELETE(m_pAnimationParentNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -142,4 +151,5 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	}
 
 	m_cPropertiesTreeView.refreshTreeView();
+	m_cPropertiesTreeView.resetSelectedNodePtr();
 }

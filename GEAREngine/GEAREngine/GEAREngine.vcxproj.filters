@@ -308,5 +308,8 @@
     <ClInclude Include="..\src\core\gxAnimationSet.h">
       <Filter>engine\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\core\quaternion.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

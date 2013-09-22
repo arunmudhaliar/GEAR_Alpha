@@ -15,7 +15,8 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <Windows.h>
+#include <CommCtrl.h>
 
 AssetImporter::AssetImporter()
 {
@@ -25,7 +26,7 @@ AssetImporter::~AssetImporter()
 {
 }
 
-bool AssetImporter::importAssets(const char* assetsfolder)
+bool AssetImporter::importAssets(const char* assetsfolder, HWND hWndDlg, int progressBarID, int statictextID)
 {
 	//if metaData folder doesn't exist create it
 	char temp_buffer[1024];
@@ -35,10 +36,118 @@ bool AssetImporter::importAssets(const char* assetsfolder)
 		//created a new metaDirectory
 	}
 
+	m_hWndProgress=hWndDlg;
+	m_iProgressBarID=progressBarID;
+	m_iStatictextID=statictextID;
+	m_nAssetsToProcess=0;
+	traverseAndCountAssetDirectory(EditorApp::getProjectHomeDirectory());
+	SendDlgItemMessage(hWndDlg, m_iProgressBarID, PBM_SETRANGE, 0, MAKELPARAM(0, m_nAssetsToProcess));
+	m_nAssetsToProcess=0;
 	traverseAssetDirectory(EditorApp::getProjectHomeDirectory());
+	SendDlgItemMessage(m_hWndProgress, m_iStatictextID, WM_SETTEXT, 0, (LPARAM)"Complete");
 	return true;
 }
 
+int AssetImporter::traverseAndCountAssetDirectory(const char *dirname)
+{
+    DIR *dir;
+    char buffer[PATH_MAX + 2];
+    char *p = buffer;
+    const char *src;
+    char *end = &buffer[PATH_MAX];
+    int ok;
+
+    /* Copy directory name to buffer */
+    src = dirname;
+    while (p < end  &&  *src != '\0') {
+        *p++ = *src++;
+    }
+    *p = '\0';
+
+    /* Open directory stream */
+    dir = opendir (dirname);
+    if (dir != NULL) {
+        struct dirent *ent;
+
+        /* Print all files and directories within the directory */
+        while ((ent = readdir (dir)) != NULL) {
+            char *q = p;
+            char c;
+
+            /* Get final character of directory name */
+            if (buffer < q) {
+                c = q[-1];
+            } else {
+                c = ':';
+            }
+
+            /* Append directory separator if not already there */
+            if (c != ':'  &&  c != '/'  &&  c != '\\') {
+                *q++ = '/';
+            }
+
+            /* Append file name */
+            src = ent->d_name;
+            while (q < end  &&  *src != '\0') {
+                *q++ = *src++;
+            }
+            *q = '\0';
+
+            /* Decide what to do with the directory entry */
+            switch (ent->d_type) {
+            case DT_REG:
+                {
+					bool bPNG=false;
+					bool bTGA=false;
+					bool bFBX=false;
+
+					if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG"))
+					{
+						bPNG=true;
+					}
+
+					if(util::GE_IS_EXTENSION(buffer, ".tga") || util::GE_IS_EXTENSION(buffer, ".TGA"))
+					{
+						bTGA=true;
+					}
+					if(util::GE_IS_EXTENSION(buffer, ".fbx") || util::GE_IS_EXTENSION(buffer, ".FBX"))
+					{
+						bFBX=true;
+					}
+
+					if(bPNG || bTGA || bFBX)
+					{
+						m_nAssetsToProcess++;
+					}
+				}
+                break;
+
+            case DT_DIR:
+                /* Scan sub-directory recursively */
+                if (strcmp (ent->d_name, ".") != 0  &&  strcmp (ent->d_name, "..") != 0)
+				{
+                    traverseAndCountAssetDirectory(buffer);
+                }
+                break;
+
+            default:
+                /* Do not device entries */
+                /*NOP*/;
+            }
+
+        }
+
+        closedir (dir);
+        ok = 1;
+
+    } else {
+        /* Could not open directory */
+        printf ("Cannot open directory %s\n", dirname);
+        ok = 0;
+    }
+
+    return ok;
+}
 int AssetImporter::traverseAssetDirectory(const char *dirname)
 {
     DIR *dir;
@@ -140,6 +249,8 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 								bCreateMetaFile=true;
 							}
 
+							SendDlgItemMessage(m_hWndProgress, m_iStatictextID, WM_SETTEXT, 0, (LPARAM)buffer);
+
 							if(bCreateMetaFile)
 							{
 								bool bWriteMetaInfo=false;
@@ -192,6 +303,9 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 								}
 							}
 						}
+
+						m_nAssetsToProcess++;
+						SendDlgItemMessage(m_hWndProgress, m_iProgressBarID, PBM_SETPOS, m_nAssetsToProcess, 0);
 					}
 				}
                 break;

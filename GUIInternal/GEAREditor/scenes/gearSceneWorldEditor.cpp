@@ -604,7 +604,7 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 		}
 		m_pLocalOrGlobalAxis->buttonNormal();
 	}
-	else if(m_pPlayButton==btn)
+	else if(m_pPlayButton==btn && m_pPlayButton->isButtonPressed())
 	{
 		monoWrapper::mono_game_start();
 	}

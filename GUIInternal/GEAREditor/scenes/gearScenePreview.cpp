@@ -32,8 +32,8 @@ void gearScenePreview::draw()
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 	
 	float colorWhite[]  = {1.0f,1.0f,1.0f,1.0f};
-	float ambient[]   = {0.1f,0.1f,0.1f,1.0f};
-	float diffuse[]   = {0.4f,0.4f,0.4f,1.0f};
+	float ambient[]   = {0.5f,0.5f,0.5f,1.0f};
+	float diffuse[]   = {1.0f,1.0f,1.0f,1.0f};
 	float specular[]   = {0.1f,0.1f,0.1f,1.0f};
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient );
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse );

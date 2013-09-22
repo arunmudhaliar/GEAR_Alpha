@@ -4,6 +4,17 @@
 #include "core\gxWorld.h"
 #include "renderer\gxRenderer.h"
 
+class MEngineObserver
+{
+public:
+	virtual void onAppendToWorld(gxWorld* world, object3d* obj)
+	{
+	}
+	virtual void onRemoveFromWorld(gxWorld* world, object3d* obj)
+	{
+	}
+};
+
 extern "C" {
 	DllExport void engine_test_function_for_mono();
 	DllExport void engine_init(int nWorldToCreate);
@@ -26,6 +37,10 @@ extern "C" {
 	DllExport void engine_setMetaFolder(gxWorld* world, const char* metaFolder);
 	DllExport gxTexture* engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename);
 	DllExport bool engine_removeObject3d(gxWorld* world, object3d* obj);
+	DllExport bool engine_destroyObject3d(gxWorld* world, object3d* obj);
+
+	DllExport void engine_setEngineObserver(MEngineObserver* observer);
+	DllExport void engine_setObject3dObserver(MObject3dObserver* observer);
 }
 
 class GEAREngine

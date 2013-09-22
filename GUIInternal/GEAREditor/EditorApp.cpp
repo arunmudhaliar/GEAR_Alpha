@@ -10,6 +10,10 @@
 #include "scenes\gearSceneFileView.h"
 #include "AssetImporter.h"
 
+#include "../stdafx.h"
+#include "../resource.h"
+#include <CommCtrl.h>
+
 char EditorApp::g_cszProjectHomeDirectory[1024];
 HWND EditorApp::g_hWnd=NULL;
 
@@ -32,7 +36,7 @@ EditorApp::~EditorApp()
 	GE_DELETE(rendererGL10::g_pRendererGL10);
 }
 
-void EditorApp::init(HWND hWnd)
+void EditorApp::init(HWND hWnd, HINSTANCE hInst)
 {
 	g_hWnd=hWnd;
 	m_bInitialised=true;
@@ -44,7 +48,7 @@ void EditorApp::init(HWND hWnd)
 	m_cGUIManager.init();
 
 	//import all assets to the metadata folder
-	importAssetToMetaData();
+	importAssetToMetaData(hWnd, hInst);
 
 	gearSceneWorldEditor* worldEditorWnd = new gearSceneWorldEditor();
 	worldEditorWnd->create(NULL, 0, 0, 300, 200, true);
@@ -255,10 +259,14 @@ int EditorApp::createNewProject(const char* projectDirectory)
 	return -1;
 }
 
-bool EditorApp::importAssetToMetaData()
+LRESULT CALLBACK	Proj_AssetImportDlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+bool EditorApp::importAssetToMetaData(HWND hWnd, HINSTANCE hInst)
 {
-	AssetImporter assetImporter;
-	assetImporter.importAssets(EditorApp::getProjectHomeDirectory());
+	HWND hWndprogress=CreateDialog(hInst, MAKEINTRESOURCE(IDD_ASSET_IMPORT_PROGRESS_DLG), hWnd, reinterpret_cast<DLGPROC>(Proj_AssetImportDlgProc));
+	//ShowWindow(hWndprogress, SW_SHOW);
+	//AssetImporter assetImporter;
+	//assetImporter.importAssets(EditorApp::getProjectHomeDirectory(), hWndprogress, IDC_ASSET_PROGRESS_BAR, IDC_ASSET_FILE_STATIC);
+
 	return true;
 }
 
@@ -344,4 +352,32 @@ bool EditorApp::KeyUp(int charValue, int flag)
 	if(!m_bInitialised) return false;
 
 	return m_cGUIManager.KeyUp(charValue, flag);
+}
+
+LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+	switch(Msg)
+	{
+	case WM_INITDIALOG:
+		{
+			SendDlgItemMessage(hWndDlg, IDC_ASSET_PROGRESS_BAR, PBM_SETSTEP, 1, 0);
+			ShowWindow(hWndDlg, SW_SHOW);
+			AssetImporter assetImporter;
+			assetImporter.importAssets(EditorApp::getProjectHomeDirectory(), hWndDlg, IDC_ASSET_PROGRESS_BAR, IDC_ASSET_FILE_STATIC);
+			EndDialog(hWndDlg, 0);
+			return TRUE;
+		}
+		break;
+
+	case WM_COMMAND:
+		break;
+
+	case WM_CLOSE:
+		{
+			return EndDialog(hWndDlg, 0);
+		}
+		break;
+	}
+
+	return FALSE;
 }

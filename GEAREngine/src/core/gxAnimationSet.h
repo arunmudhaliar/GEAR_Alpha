@@ -21,6 +21,7 @@ public:
 	void write(gxFile& file);
 	void read(gxFile& file);
 
+	void setCurrentFrame(int currentFrame);
 private:
 	std::vector<gxAnimationTrack*> m_vAnimationTrack;
 	int m_nFrames;

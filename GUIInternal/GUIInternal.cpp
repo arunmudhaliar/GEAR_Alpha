@@ -178,7 +178,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
-				m_cEditorApp.init(hWnd);
+				m_cEditorApp.init(hWnd, hInst);
 				OleInitialize(NULL);
 
 				MDragDropInterface* dropTarget = new MDragDropInterface(&m_cEditorApp);

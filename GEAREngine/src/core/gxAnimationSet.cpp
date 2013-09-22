@@ -43,6 +43,16 @@ void gxAnimationSet::update(float dt)
 		m_fCurrentFrame=0.0f;
 }
 
+void gxAnimationSet::setCurrentFrame(int currentFrame)
+{
+	m_fCurrentFrame=0;
+	for(std::vector<gxAnimationTrack*>::iterator it = m_vAnimationTrack.begin(); it != m_vAnimationTrack.end(); ++it)
+	{
+		gxAnimationTrack* animationTrack = *it;
+		animationTrack->setCurrentFrame(m_fCurrentFrame);
+	}
+}
+
 void gxAnimationSet::write(gxFile& file)
 {
 	file.Write(m_szName);

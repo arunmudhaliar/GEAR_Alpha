@@ -6,7 +6,7 @@
 #include "../../mono/src/monoWrapper.h"
 //#include "gearSceneWorldEditor.h"
 
-class gearSceneHierarchy : public geWindow, public MTreeViewObserver
+class gearSceneHierarchy : public geWindow, public MEngineObserver, public MObject3dObserver, public MTreeViewObserver
 {
 public:
 	gearSceneHierarchy();
@@ -14,6 +14,14 @@ public:
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
 	//void setSceneWorldEditor(gearSceneWorldEditor* pSceneWorldEditorPtr	)	{	m_pSceneWorldEditorPtr=pSceneWorldEditorPtr;	}
+
+	//engine observer
+	virtual void onAppendToWorld(gxWorld* world, object3d* obj);
+	virtual void onRemoveFromWorld(gxWorld* world, object3d* obj);
+
+	//object3d observer
+	virtual void onObject3dChildAppend(object3d* child);
+	virtual void onObject3dChildRemove(object3d* child);
 
 protected:
 	virtual void onCreate();

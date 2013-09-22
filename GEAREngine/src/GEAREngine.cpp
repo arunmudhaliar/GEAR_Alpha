@@ -1,9 +1,22 @@
 #include "GEAREngine.h"
 #include "fbxImporter\fbxImporter.h"
+#include "core\gxMetaStructures.h"
 
 extern "C" {
 static GEAREngine g_cGEAREngine;
+static MEngineObserver* g_EngineObserver = NULL;
+static MObject3dObserver* g_Object3dObserver = NULL;
 vector2i g_cMousePrevPos;
+
+extern DllExport void engine_setEngineObserver(MEngineObserver* observer)
+{
+	g_EngineObserver=observer;
+}
+
+extern DllExport void engine_setObject3dObserver(MObject3dObserver* observer)
+{
+	g_Object3dObserver=observer;
+}
 
 extern DllExport void engine_test_function_for_mono()
 {
@@ -40,14 +53,165 @@ void engine_renderSingleObject(gxWorld* world, object3d* obj)
 	world->renderSingleObject(obj);
 }
 
+void read3dFile2(gxFile& file, object3d* obj)
+{
+	int nChild=0;
+	file.Read(nChild);
+
+	for(int x=0;x<nChild; x++)
+	{
+		int objID=0;
+		file.Read(objID);
+		object3d* tempObj=NULL;
+		if(objID==0 || objID==1)
+		{
+			tempObj = new object3d(objID);
+		}
+		else if(objID==100)
+		{
+			tempObj = new gxMesh();
+		}
+		tempObj->setObject3dObserver(g_Object3dObserver);
+		tempObj->read(file);
+		obj->appendChild(tempObj);
+		read3dFile2(file, tempObj);
+	}
+}
+
+void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
+{
+	if(obj3d->getID()==100)
+	{
+		gxMesh* mesh = (gxMesh*)obj3d;
+		for(int x=0;x<mesh->getNoOfTriInfo();x++)
+		{
+			gxTriInfo* triInfo = mesh->getTriInfo(x);
+			int materialCRC=triInfo->getMaterialCRCFromFileReadInfo();
+			char crcFile[1024];
+			sprintf(crcFile, "%s/%x", world->getMetaDataFolder(), materialCRC);
+
+			gxFile file_meta;
+			if(file_meta.OpenFile(crcFile))
+			{
+				stMetaHeader metaHeader;
+				file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+				gxMaterial* material = new gxMaterial();
+				material->read(file_meta);
+
+				//check if the material name already exists in our list or not
+				std::vector<gxMaterial*>* materialList = world->getMaterialList();
+				for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+				{
+					gxMaterial* material_in_list = *it;
+					if(material_in_list->getFileCRC()==material->getFileCRC())
+					{
+						//match found, so assing and delete the new material object
+						triInfo->setMaterial(material_in_list);
+						GX_DELETE(material);
+						break;
+					}
+				}
+
+				if(triInfo->getMaterial()==NULL)
+				{
+					//assign the new materiak
+					triInfo->setMaterial(material);
+					materialList->push_back(material);
+				}
+				file_meta.CloseFile();
+			}
+			else
+			{
+				triInfo->setMaterial(gxMaterial::createNewMaterial());
+				world->getMaterialList()->push_back(triInfo->getMaterial());
+			}
+		}
+	}
+
+	std::vector<object3d*>* childList=obj3d->getChildList();
+	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
+	{
+		object3d* childobj = *it;
+		loadMaterialFromObject3d(world, childobj);
+	}
+}
+
+void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d)
+{
+	gxAnimation* animationController = obj3d->getAnimationController();
+	if(animationController)
+	{
+		std::vector<gxAnimationSet*>* animationSetList=animationController->getAnimationSetList();
+		for(std::vector<gxAnimationSet*>::iterator it = animationSetList->begin(); it != animationSetList->end(); ++it)
+		{
+			gxAnimationSet* animationSet = *it;
+			world->appendAnimationSetToWorld(animationSet);
+		}
+	}
+
+	std::vector<object3d*>* childList=obj3d->getChildList();
+	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
+	{
+		object3d* childobj = *it;
+		loadAnmationFromObject3d(world, childobj);
+	}
+}
+
 extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename)
 {
-	fbxImporter importer;
-	object3d* root_object_node=importer.loadMyFBX(filename, world->getMaterialList(), world->getAnimationSetList());
-	world->appendChild(root_object_node);
-	world->loadTextures(root_object_node, filename);
+	object3d* root_object_node=NULL;
+	if (gxUtil::GX_IS_EXTENSION(filename, ".fbx") || gxUtil::GX_IS_EXTENSION(filename, ".FBX"))
+	{
+		object3d* obj = NULL;
+		char metaInfoFileName[256];
+		sprintf(metaInfoFileName, "%s.meta",filename);
+
+		gxFile metaInfoFile;
+		if(metaInfoFile.OpenFile(metaInfoFileName))
+		{
+			int crc=0;
+			metaInfoFile.Read(crc);
+			metaInfoFile.CloseFile();
+
+			char crcFile[1024];
+			sprintf(crcFile, "%s/%x", world->getMetaDataFolder(), crc);
+
+			gxFile file_meta;
+			if(file_meta.OpenFile(crcFile))
+			{
+				stMetaHeader metaHeader;
+				file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+				int objID=0;
+				file_meta.Read(objID);
+
+				object3d* tempObj=NULL;
+				if(objID==0 || objID==1)
+				{
+					tempObj = new object3d(objID);
+					tempObj->setObject3dObserver(g_Object3dObserver);
+					tempObj->read(file_meta);
+					world->appendChild(tempObj);
+					read3dFile2(file_meta, tempObj);
+					obj=tempObj;
+					loadMaterialFromObject3d(world, obj);
+					loadAnmationFromObject3d(world, obj);
+					obj->transformationChangedf();
+					root_object_node=obj;
+
+
+					if(g_EngineObserver)
+						g_EngineObserver->onAppendToWorld(world, obj);
+				}
+				file_meta.CloseFile();
+			}
+		}
+	}
+
 	return root_object_node;
 }
+
 
 extern DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename)
 {
@@ -147,7 +311,27 @@ extern gxTexture* engine_loadTextureFromFile(gxWorld* world, gxMaterial* materia
 
 extern bool engine_removeObject3d(gxWorld* world, object3d* obj)
 {
-	return world->removeChild(obj);
+	if(world->removeChild(obj))
+	{
+		if(g_EngineObserver)
+			g_EngineObserver->onRemoveFromWorld(world, obj);
+		return true;
+	}
+
+	return false;
+}
+
+extern bool engine_destroyObject3d(gxWorld* world, object3d* obj)
+{
+	if(world->removeChild(obj))
+	{
+		if(g_EngineObserver)
+			g_EngineObserver->onRemoveFromWorld(world, obj);
+		GX_DELETE(obj);
+		return true;
+	}
+
+	return false;
 }
 
 }

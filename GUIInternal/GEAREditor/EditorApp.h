@@ -20,7 +20,7 @@ public:
 	EditorApp();
 	~EditorApp();
 
-	void init(HWND hWnd);
+	void init(HWND hWnd, HINSTANCE hInst);
 	void size(int cx, int cy);
 	void update(float dt);
 	void draw();
@@ -41,7 +41,7 @@ public:
 	bool KeyUp(int charValue, int flag);
 
 	static int createNewProject(const char* projectDirectory);
-	bool importAssetToMetaData();
+	bool importAssetToMetaData(HWND hWnd, HINSTANCE hInst);
 
 	static void setProjectHomeDirectory(const char* projectDir);
 	static const char* getProjectHomeDirectory();

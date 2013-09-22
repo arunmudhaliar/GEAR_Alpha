@@ -80,6 +80,14 @@ public:
 
 		return true;
 	}
+
+	static bool GX_IS_EXTENSION(const char* path, const char* ext)
+	{
+		const char* extension_begin=strrchr(path, '.');
+		if(extension_begin==NULL) return NULL;
+		return (strcmp(extension_begin, ext)==0);
+	}
+
 private:
 	static char g_directoryPath[512];
 	static char g_filePath[512];

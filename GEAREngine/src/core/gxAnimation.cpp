@@ -3,6 +3,7 @@
 gxAnimation::gxAnimation()
 {
 	m_pActiveAnimationSetPtr=NULL;
+	m_bPlay=false;
 }
 
 gxAnimation::~gxAnimation()
@@ -22,15 +23,15 @@ void gxAnimation::appendAnimationSet(gxAnimationSet* animationSet)
 	m_vAnimationSet.push_back(animationSet);
 }
 
-gxAnimationSet* gxAnimation::setActiveAnimationSet(int index)
-{
-	m_pActiveAnimationSetPtr = m_vAnimationSet[index];
-	return m_pActiveAnimationSetPtr;
-}
+//gxAnimationSet* gxAnimation::setActiveAnimationSet(int index)
+//{
+//	m_pActiveAnimationSetPtr = m_vAnimationSet[index];
+//	return m_pActiveAnimationSetPtr;
+//}
 
 void gxAnimation::update(float dt)
 {
-	if(m_pActiveAnimationSetPtr)
+	if(m_pActiveAnimationSetPtr && m_bPlay)
 		m_pActiveAnimationSetPtr->update(dt);
 }
 
@@ -54,4 +55,48 @@ void gxAnimation::read(gxFile& file)
 		animationSet->read(file);
 		appendAnimationSet(animationSet);
 	}
+}
+
+gxAnimationSet* gxAnimation::play(int animSetIndex)
+{
+	m_pActiveAnimationSetPtr = m_vAnimationSet[animSetIndex];
+	m_bPlay=true;
+	return m_pActiveAnimationSetPtr;
+}
+
+void gxAnimation::stop()
+{
+	m_bPlay=false;
+}
+
+void gxAnimation::pause()
+{
+	stop();
+}
+
+void gxAnimation::resume()
+{
+	m_bPlay=true;
+}
+
+void gxAnimation::rewind()
+{
+	if(m_pActiveAnimationSetPtr)
+	{
+		m_pActiveAnimationSetPtr->setCurrentFrame(0);
+	}
+}
+
+void gxAnimation::rewindAll()
+{
+	for(std::vector<gxAnimationSet*>::iterator it = m_vAnimationSet.begin(); it != m_vAnimationSet.end(); ++it)
+	{
+		gxAnimationSet* animationSet = *it;
+		animationSet->setCurrentFrame(0);
+	}
+}
+
+bool gxAnimation::isPlaying(int animSetIndex)
+{
+	return m_bPlay;
 }

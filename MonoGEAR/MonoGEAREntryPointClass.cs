@@ -89,7 +89,10 @@ namespace MonoGEAR
         static extern IntPtr engine_loadTextureFromFile(IntPtr world, IntPtr material, string filename);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern bool engine_removeObject3d(IntPtr world, IntPtr obj);
+        public static extern bool engine_removeObject3d(IntPtr world, IntPtr obj);
+
+        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool engine_destroyObject3d(IntPtr world, IntPtr obj);
 
 
 
@@ -114,6 +117,7 @@ namespace MonoGEAR
         public void mono_game_start()
         {
             m_pRootObject3d = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\Level_1.FBX");
+            object3d.destroy(m_pRootObject3d.find("BarTable"));
         }
 
         public void mono_game_run(float dt)

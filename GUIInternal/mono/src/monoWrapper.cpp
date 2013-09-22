@@ -12,6 +12,7 @@ MonoDomain*		monoWrapper::g_pMonoDomain = NULL;
 MonoAssembly*	monoWrapper::g_pMonoAssembly = NULL;
 MonoImage*		monoWrapper::g_pImage = NULL;
 MonoClass*		monoWrapper::g_pMonoGEAREntryPointClass = NULL;
+MonoClass*		monoWrapper::g_pMonoobject3d = NULL;
 
 MonoMethod* monoWrapper::g_monogear_engine_test_function_for_mono=NULL;
 MonoMethod* monoWrapper::g_mono_game_start = NULL;
@@ -34,7 +35,11 @@ MonoMethod* monoWrapper::g_pMethod_engine_mouseMove = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_setMetaFolder = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_loadTextureFromFile = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_removeObject3d = NULL;
+MonoMethod* monoWrapper::g_pMethod_engine_destroyObject3d = NULL;
 
+MonoMethod* monoWrapper::g_mono_object3d_onObject3dChildAppend = NULL;
+MonoMethod* monoWrapper::g_mono_object3d_onObject3dChildRemove = NULL;
+	
 void monoWrapper::initMono()
 {
 #ifndef USEMONOENGINE
@@ -120,6 +125,7 @@ void monoWrapper::initMono()
 
 	g_pImage = mono_assembly_get_image(g_pMonoAssembly);
 	g_pMonoGEAREntryPointClass = mono_class_from_name (g_pImage, "MonoGEAR", "MonoGEAREntryPointClass");
+	g_pMonoobject3d = mono_class_from_name (g_pImage, "MonoGEAR", "object3d");
 
 	///* allocate memory for the object */
 	g_pMonoGEAREntryPointClass_Instance_Variable = mono_object_new(g_pMonoDomain, g_pMonoGEAREntryPointClass);
@@ -212,6 +218,10 @@ void monoWrapper::bindEngineMethods()
 	g_pMethod_engine_setMetaFolder			=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_setMetaFolder", 2);
 	g_pMethod_engine_loadTextureFromFile	=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadTextureFromFile", 3);
 	g_pMethod_engine_removeObject3d			=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_removeObject3d", 2);
+	g_pMethod_engine_destroyObject3d		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_destroyObject3d", 2);
+
+	g_mono_object3d_onObject3dChildAppend =  mono_class_get_method_from_name(g_pMonoobject3d, "mono_object3d_onObject3dChildAppend", 2);
+	g_mono_object3d_onObject3dChildRemove =  mono_class_get_method_from_name(g_pMonoobject3d, "mono_object3d_onObject3dChildRemove", 2);
 }
 
 void monoWrapper::updateMono()
@@ -444,5 +454,35 @@ bool monoWrapper::mono_engine_removeObject3d(gxWorld* world, object3d* obj)
 	return (bool)underlyingType;
 #else
 	return engine_removeObject3d(world, obj);
+#endif
+}
+
+bool monoWrapper::mono_engine_destroyObject3d(gxWorld* world, object3d* obj)
+{
+#ifdef USEMONOENGINE
+	void* args[2]={&world, &obj};
+	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_destroyObject3d, NULL, args, NULL);
+	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
+
+	//don't know this casting is right or wrong		- arun-check
+	return (bool)underlyingType;
+#else
+	return engine_destroyObject3d(world, obj);
+#endif
+}
+
+void monoWrapper::mono_object3d_onObject3dChildAppend(object3d* parent, object3d* child)
+{
+#ifdef USEMONOENGINE
+	void* args[2]={&parent, &child};
+	mono_runtime_invoke(g_mono_object3d_onObject3dChildAppend, NULL, args, NULL);
+#endif
+}
+
+void monoWrapper::mono_object3d_onObject3dChildRemove(object3d* parent, object3d* child)
+{
+#ifdef USEMONOENGINE
+	void* args[2]={&parent, &child};
+	mono_runtime_invoke(g_mono_object3d_onObject3dChildRemove, NULL, args, NULL);
 #endif
 }

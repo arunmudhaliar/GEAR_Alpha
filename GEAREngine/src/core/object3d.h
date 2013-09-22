@@ -9,6 +9,22 @@
 #include "gxAnimation.h"
 #include "../util/gxFile.h"
 
+
+extern "C" {
+	DllExport const char* object3d_getName(object3d* obj);
+	DllExport int object3d_getID(object3d* obj);
+	DllExport object3d* object3d_find(object3d* obj, const char* name);
+	DllExport int object3d_getChildCount(object3d* obj);
+	DllExport object3d* object3d_getChild(object3d* obj, int index);
+}
+
+class DllExport MObject3dObserver
+{
+public:
+	virtual void onObject3dChildAppend(object3d* child)=0;
+	virtual void onObject3dChildRemove(object3d* child)=0;
+};
+
 class gxAnimation;
 class gxAnimationSet;
 class DllExport object3d : public transform
@@ -42,6 +58,9 @@ public:
 	object3d* appendChild(object3d* child);
 	std::vector<object3d*>* getChildList()	{	return &m_cChilds;	}
 
+	int getChildCount()				{	return m_cChilds.size();	}
+	object3d* getChild(int index)	{	return m_cChilds[index];	}
+
 	void setParent(object3d* pParentPtr)	{	m_pParentPtr=pParentPtr;	}
 	object3d* getParent()					{	return m_pParentPtr;		}
 
@@ -70,6 +89,10 @@ public:
 	void writeAnimationController(gxFile& file);
 	void readAnimationController(gxFile& file);
 
+	void setEditorUserData(void* userData)	{	m_pEditorUserDataPtr=userData;	}
+	void* getEditorUserData()				{	return m_pEditorUserDataPtr;	}
+
+	void setObject3dObserver(MObject3dObserver* observer)	{	m_pObject3dObserver = observer;	}
 
 protected:
 	char m_cszName[64];
@@ -81,6 +104,8 @@ protected:
 	gxAnimation* m_pAnimationController;
 	gxAnimationTrack* m_pAnimationTrack;	//must not delete this pointer
 	int m_iFileCRC;
+	void* m_pEditorUserDataPtr;				//must not delete this pointer
+	MObject3dObserver* m_pObject3dObserver;	//must not delete this pointer
 };
 
 #endif

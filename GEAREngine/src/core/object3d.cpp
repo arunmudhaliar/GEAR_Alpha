@@ -1,9 +1,35 @@
 #include "object3d.h"
 
+extern "C" {
+extern DllExport const char* object3d_getName(object3d* obj)
+{
+	return obj->getName();
+}
+
+extern DllExport int object3d_getID(object3d* obj)
+{
+	return obj->getID();
+}
+extern DllExport object3d* object3d_find(object3d* obj, const char* name)
+{
+	return obj->find(name);
+}
+extern DllExport int object3d_getChildCount(object3d* obj)
+{
+	return obj->getChildCount();
+}
+extern DllExport object3d* object3d_getChild(object3d* obj, int index)
+{
+	return obj->getChild(index);
+}
+}
+
 object3d::object3d(int objID):
 	transform(),
 	m_iObjectID(objID)
 {
+	setObject3dObserver(NULL);
+	setEditorUserData(NULL);
 	m_pParentPtr=NULL;
 	memset(m_cszName, 0, sizeof(m_cszName));
 	m_eBaseFlags=0;
@@ -82,6 +108,8 @@ bool object3d::removeChild(object3d* child)
 
 	if((old_sz>m_cChilds.size()))
 	{
+		if(m_pObject3dObserver)
+			m_pObject3dObserver->onObject3dChildRemove(child);
 		child->setParent(NULL);
 		//child->setAnimationTrack(NULL);	nned to test fully
 		return true;
@@ -125,6 +153,8 @@ void object3d::calculateAABB()
 object3d* object3d::appendChild(object3d* child)
 {
 	child->setParent(this);
+	if(m_pObject3dObserver)
+		m_pObject3dObserver->onObject3dChildAppend(child);
 	m_cChilds.push_back(child);
 	child->transformationChangedf();
 	return child;
@@ -168,7 +198,7 @@ gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
 	if(m_pAnimationController==NULL)
 		return NULL;
 
-	gxAnimationSet* animSet=m_pAnimationController->setActiveAnimationSet(index);
+	gxAnimationSet* animSet=m_pAnimationController->play(index);
 	std::vector<gxAnimationTrack*>* trackList=animSet->getTrackList();
 	for(std::vector<gxAnimationTrack*>::iterator it = trackList->begin(); it != trackList->end(); ++it)
 	{

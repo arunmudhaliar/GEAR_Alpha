@@ -50,7 +50,10 @@ public:
 	static void mono_engine_setMetaFolder(gxWorld* world, const char* metaFolder);
 	static gxTexture* mono_engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename);
 	static bool mono_engine_removeObject3d(gxWorld* world, object3d* obj);
-	//
+	static bool mono_engine_destroyObject3d(gxWorld* world, object3d* obj);
+
+	static void mono_object3d_onObject3dChildAppend(object3d* parent, object3d* child);
+	static void mono_object3d_onObject3dChildRemove(object3d* parent, object3d* child);
 
 private:
 	static MonoObject*		g_pMonoGEAREntryPointClass_Instance_Variable;
@@ -58,6 +61,7 @@ private:
 	static MonoAssembly*	g_pMonoAssembly;
 	static MonoImage*		g_pImage;
 	static MonoClass*		g_pMonoGEAREntryPointClass;
+	static MonoClass*		g_pMonoobject3d;
 
 	//ENGIINE INTERFACES
 	/*
@@ -105,6 +109,10 @@ private:
 	static MonoMethod* g_pMethod_engine_setMetaFolder;
 	static MonoMethod* g_pMethod_engine_loadTextureFromFile;
 	static MonoMethod* g_pMethod_engine_removeObject3d;
+	static MonoMethod* g_pMethod_engine_destroyObject3d;
+
+	static MonoMethod* g_mono_object3d_onObject3dChildAppend;
+	static MonoMethod* g_mono_object3d_onObject3dChildRemove;
 	//
 };
 

@@ -93,11 +93,11 @@ namespace MonoGEAR
         object3d m_pRootObject3d;
         public void mono_game_start()
         {
-            object3d zombie_bodymesh = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombie_bodymesh.FBX");
-            object3d zombie_idle = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombie@idle.FBX");
-            object3d zombie_run = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombie@run.FBX");
-            object3d shotgun_set0_attack01 = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombies\\animations\\medium\\weapon\\shotgun\\shotgun@set0_attack01.FBX");
-            object3d shotgun_set0_attack02 = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombies\\animations\\medium\\weapon\\shotgun\\shotgun@set0_attack02.FBX");
+            object3d zombie_bodymesh = object3d.create(Resource.getResourcePath("for_arun/zombie_bodymesh.FBX"));
+            object3d zombie_idle = object3d.create(Resource.getResourcePath("for_arun/zombie@idle.FBX"));
+            object3d zombie_run = object3d.create(Resource.getResourcePath("for_arun/zombie@run.FBX"));
+            object3d shotgun_set0_attack01 = object3d.create(Resource.getResourcePath("for_arun/zombies/animations/medium/weapon/shotgun/shotgun@set0_attack01.FBX"));
+            object3d shotgun_set0_attack02 = object3d.create(Resource.getResourcePath("for_arun/zombies/animations/medium/weapon/shotgun/shotgun@set0_attack02.FBX"));
             //shotgun@attack_run.FBX
 
             zombie_bodymesh.createAnimationController();
@@ -118,13 +118,12 @@ namespace MonoGEAR
 
             //animbuilder
             //Stream stream = new MemoryStream(asset.bytes);
-            FileStream stream = new FileStream("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombies\\animations\\medium\\weapon\\shotgun\\medium_weapon_shotgun.anb.txt", FileMode.Open, FileAccess.Read);
+            FileStream stream = new FileStream(Resource.getResourcePath("for_arun/zombies/animations/medium/weapon/shotgun/medium_weapon_shotgun.anb.txt"), FileMode.Open, FileAccess.Read);
             BinaryReader reader = new BinaryReader(stream);
 
             stAnimationPackage package = new stAnimationPackage();
             package.readANBFile(reader);
             reader.Close();
-
         }
 
         public void mono_game_run(float dt)

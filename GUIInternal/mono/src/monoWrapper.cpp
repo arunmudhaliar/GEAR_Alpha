@@ -17,6 +17,9 @@ MonoClass*		monoWrapper::g_pMonoobject3d = NULL;
 MonoMethod* monoWrapper::g_monogear_engine_test_function_for_mono=NULL;
 MonoMethod* monoWrapper::g_mono_game_start = NULL;
 MonoMethod* monoWrapper::g_mono_game_run = NULL;
+MonoMethod* monoWrapper::g_mono_game_onkeydown = NULL;
+MonoMethod* monoWrapper::g_mono_game_onkeyup = NULL;
+
 MonoMethod* monoWrapper::g_pMethod_engine_init = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_getWorld = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_update = NULL;
@@ -200,6 +203,8 @@ void monoWrapper::bindEngineMethods()
 	g_monogear_engine_test_function_for_mono=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "monogear_engine_test_function_for_mono", 0);
 	g_mono_game_start						=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "mono_game_start", 0);
 	g_mono_game_run							=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "mono_game_run", 1);
+	g_mono_game_onkeydown					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "mono_game_onkeydown", 2);
+	g_mono_game_onkeyup						=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "mono_game_onkeyup", 2);
 
 	g_pMethod_engine_init					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_init", 1);
 	g_pMethod_engine_getWorld				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_getWorld", 1);
@@ -250,6 +255,30 @@ void monoWrapper::mono_game_run(float dt)
 #ifdef USEMONOENGINE
 	void* args[1]={&dt};
 	mono_runtime_invoke(g_mono_game_run, g_pMonoGEAREntryPointClass_Instance_Variable, args, NULL);
+#endif
+}
+
+bool monoWrapper::mono_game_onkeydown(int charValue, int flag)
+{
+#ifdef USEMONOENGINE
+	void* args[2]={&charValue, &flag};
+	MonoObject* returnValue=mono_runtime_invoke(g_mono_game_onkeydown, g_pMonoGEAREntryPointClass_Instance_Variable, args, NULL);
+	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
+
+	//don't know this casting is right or wrong		- arun-check
+	return (bool)underlyingType;
+#endif
+}
+
+bool monoWrapper::mono_game_onkeyup(int charValue, int flag)
+{
+	#ifdef USEMONOENGINE
+	void* args[2]={&charValue, &flag};
+	MonoObject* returnValue=mono_runtime_invoke(g_mono_game_onkeyup, g_pMonoGEAREntryPointClass_Instance_Variable, args, NULL);
+	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
+
+	//don't know this casting is right or wrong		- arun-check
+	return (bool)underlyingType;
 #endif
 }
 

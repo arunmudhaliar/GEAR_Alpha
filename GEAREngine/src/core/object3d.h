@@ -9,15 +9,6 @@
 #include "gxAnimation.h"
 #include "../util/gxFile.h"
 
-
-extern "C" {
-	DllExport const char* object3d_getName(object3d* obj);
-	DllExport int object3d_getID(object3d* obj);
-	DllExport object3d* object3d_find(object3d* obj, const char* name);
-	DllExport int object3d_getChildCount(object3d* obj);
-	DllExport object3d* object3d_getChild(object3d* obj, int index);
-}
-
 class DllExport MObject3dObserver
 {
 public:
@@ -107,5 +98,17 @@ protected:
 	void* m_pEditorUserDataPtr;				//must not delete this pointer
 	MObject3dObserver* m_pObject3dObserver;	//must not delete this pointer
 };
+
+extern "C" {
+	DllExport const char* object3d_getName(object3d* obj);
+	DllExport int object3d_getID(object3d* obj);
+	DllExport object3d* object3d_find(object3d* obj, const char* name);
+	DllExport int object3d_getChildCount(object3d* obj);
+	DllExport object3d* object3d_getChild(object3d* obj, int index);
+
+	DllExport gxAnimation* object3d_createAnimationController(object3d* obj);
+	DllExport gxAnimation* object3d_getAnimationController(object3d* obj);
+	DllExport gxAnimationSet* object3d_applyAnimationSetRecursive(object3d* obj, int index);
+}
 
 #endif

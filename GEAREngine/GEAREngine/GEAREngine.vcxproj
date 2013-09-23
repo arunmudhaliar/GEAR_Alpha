@@ -81,6 +81,7 @@
     <ClCompile Include="..\src\core\gxWorld.cpp" />
     <ClCompile Include="..\src\core\object3d.cpp" />
     <ClCompile Include="..\src\core\TextureManager.cpp" />
+    <ClCompile Include="..\src\core\transform.cpp" />
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp" />
     <ClCompile Include="..\src\GEAREngine.cpp" />
     <ClCompile Include="..\src\lpng151\png.c" />

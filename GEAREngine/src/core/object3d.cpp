@@ -22,6 +22,21 @@ extern DllExport object3d* object3d_getChild(object3d* obj, int index)
 {
 	return obj->getChild(index);
 }
+
+extern DllExport gxAnimation* object3d_createAnimationController(object3d* obj)
+{
+	return obj->createAnimationController();
+}
+
+extern DllExport gxAnimation* object3d_getAnimationController(object3d* obj)
+{
+	return obj->getAnimationController();
+}
+
+extern DllExport gxAnimationSet* object3d_applyAnimationSetRecursive(object3d* obj, int index)
+{
+	return obj->applyAnimationSetRecursive(index);
+}
 }
 
 object3d::object3d(int objID):
@@ -198,7 +213,7 @@ gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
 	if(m_pAnimationController==NULL)
 		return NULL;
 
-	gxAnimationSet* animSet=m_pAnimationController->play(index);
+	gxAnimationSet* animSet=m_pAnimationController->getAnimationSetList()->at(index);
 	std::vector<gxAnimationTrack*>* trackList=animSet->getTrackList();
 	for(std::vector<gxAnimationTrack*>::iterator it = trackList->begin(); it != trackList->end(); ++it)
 	{

@@ -17,7 +17,9 @@ public:
 
 	//gxAnimationSet* setActiveAnimationSet(int index);
 	gxAnimationSet* getActiveAnimationSet()		{	return m_pActiveAnimationSetPtr;	}
-	std::vector<gxAnimationSet*>* getAnimationSetList()		{	return &m_vAnimationSet; }
+	std::vector<gxAnimationSet*>* getAnimationSetList	()		{	return &m_vAnimationSet; }
+	gxAnimationSet* getAnimationSet(int index)	{	return m_vAnimationSet[index];	}
+	int getAnimSetCount()	{	return m_vAnimationSet.size();	}
 
 	void write(gxFile& file);
 	void read(gxFile& file);
@@ -36,5 +38,20 @@ private:
 
 	bool m_bPlay;
 };
+
+
+extern "C" {
+	DllExport gxAnimationSet* gxAnimation_play(gxAnimation* animation, int animSetIndex);
+	DllExport void gxAnimation_stop(gxAnimation* animation);
+	DllExport void gxAnimation_pause(gxAnimation* animation);
+	DllExport void gxAnimation_resume(gxAnimation* animation);
+	DllExport void gxAnimation_rewind(gxAnimation* animation);
+	DllExport void gxAnimation_rewindAll(gxAnimation* animation);
+	DllExport bool gxAnimation_isPlaying(gxAnimation* animation, int animSetIndex);
+
+	DllExport gxAnimationSet* gxAnimation_getAnimationSet(gxAnimation* animation, int index);
+	DllExport int gxAnimation_getAnimSetCount(gxAnimation* animation);
+	DllExport void gxAnimation_appendAnimationSet(gxAnimation* animation, gxAnimationSet* animationSet);
+}
 
 #endif

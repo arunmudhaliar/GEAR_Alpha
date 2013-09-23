@@ -262,4 +262,19 @@ public:
 
 };
 
+extern "C" {
+	DllExport void transform_updatePositionf(transform* t, float aXdt, float aYdt, float aZdt);
+	DllExport void transform_updateLocalPositionf(transform* t, float aXdt, float aYdt, float aZdt);
+	DllExport void transform_scaleX(transform* t, float scale);
+	DllExport void transform_scaleY(transform* t, float scale);
+	DllExport void transform_scaleZ(transform* t, float scale);
+	DllExport void transform_rotateLocalXf(transform* t, float aAngleInDeg);
+	DllExport void transform_rotateLocalYf(transform* t, float aAngleInDeg);
+	DllExport void transform_rotateLocalZf(transform* t, float aAngleInDeg);
+	DllExport void transform_setPosition(transform* t, float x, float y, float z);
+	DllExport float transform_getX(transform* t);
+	DllExport float transform_getY(transform* t);
+	DllExport float transform_getZ(transform* t);
+}
+
 #endif

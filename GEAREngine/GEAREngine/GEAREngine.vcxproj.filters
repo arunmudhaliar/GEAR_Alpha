@@ -159,6 +159,9 @@
     <ClCompile Include="..\src\core\gxAnimationSet.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\transform.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">

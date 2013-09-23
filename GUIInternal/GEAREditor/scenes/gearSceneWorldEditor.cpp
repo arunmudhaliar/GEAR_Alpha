@@ -10,11 +10,13 @@ geWindow("World Editor")
 	m_pMainWorldPtr=NULL;
 
 	m_pHorizontalSlider_LightAmbient=NULL;
+	m_pHorizontalSlider_TimeScale=NULL;
 	m_pLocalOrGlobalAxis=NULL;
 	m_pTBGridView=NULL;
 
 	m_pPlayButton = NULL;
 	m_pPauseButton = NULL;
+	m_bMonoGameInitialized=false;
 }
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
@@ -34,6 +36,11 @@ void gearSceneWorldEditor::onCreate()
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(0), metaDataFolder);
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(1), metaDataFolder);
 
+	m_pLocalOrGlobalAxis=new geToolBarButton("Local", getToolBar());
+	m_pLocalOrGlobalAxis->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pLocalOrGlobalAxis);
+	m_bTransformThroughLocalAxis=true;
+
 	geToolBarButton* tbtn0=new geToolBarButton("t", getToolBar());
 	tbtn0->loadImage("res//icons16x16.png", 7, 153);
 	getToolBar()->appendToolBarControl(tbtn0);
@@ -46,18 +53,13 @@ void gearSceneWorldEditor::onCreate()
 
 	m_pHorizontalSlider_LightAmbient = new geHorizontalSlider();
 	m_pHorizontalSlider_LightAmbient->create(getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
-	m_pHorizontalSlider_LightAmbient->setSliderValue(0.03f);
+	m_pHorizontalSlider_LightAmbient->setSliderValue(0.2f);
 	getToolBar()->appendToolBarControl(m_pHorizontalSlider_LightAmbient);
 
 	geToolBarSeperator* seperator = new geToolBarSeperator(getToolBar(), 20);
 	getToolBar()->appendToolBarControl(seperator);
 	geToolBarSeperator* seperator2 = new geToolBarSeperator(getToolBar(), 40);
 	getToolBar()->appendToolBarControl(seperator2);
-
-	m_pLocalOrGlobalAxis=new geToolBarButton("Local", getToolBar());
-	m_pLocalOrGlobalAxis->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pLocalOrGlobalAxis);
-	m_bTransformThroughLocalAxis=true;
 
 	m_pTBGridView=new geToolBarButton("grid", getToolBar());
 	m_pTBGridView->loadImage("res//icons16x16.png", 112, 384);
@@ -77,6 +79,14 @@ void gearSceneWorldEditor::onCreate()
 	m_pPauseButton->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pPauseButton);
 	//
+
+	geToolBarSeperator* seperator4 = new geToolBarSeperator(getToolBar(), 40);
+	getToolBar()->appendToolBarControl(seperator4);
+
+	m_pHorizontalSlider_TimeScale = new geHorizontalSlider();
+	m_pHorizontalSlider_TimeScale->create(getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
+	m_pHorizontalSlider_TimeScale->setSliderValue(1.0f);
+	getToolBar()->appendToolBarControl(m_pHorizontalSlider_TimeScale);
 
 	//create grid
 	float startX=-500.0f;
@@ -180,6 +190,8 @@ void gearSceneWorldEditor::draw()
 	sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
 	glDisable(GL_DEPTH_TEST);
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+	sprintf(buffer, "TimeScale : %1.1f", m_pHorizontalSlider_TimeScale->getSliderValue());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*2, m_cSize.x);
 
 	//m_pHorizontalSlider_LightAmbient->draw();
 
@@ -190,10 +202,11 @@ void gearSceneWorldEditor::draw()
 
 void gearSceneWorldEditor::onDraw()
 {
-	monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec());
 	if(m_pPlayButton->isButtonPressed())
 	{
-		monoWrapper::mono_game_run(Timer::getDtinSec());
+		monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
+		if(m_bMonoGameInitialized)
+			monoWrapper::mono_game_run(Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 	}
 	monoWrapper::mono_engine_render(m_pMainWorldPtr);
 
@@ -604,13 +617,33 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 		}
 		m_pLocalOrGlobalAxis->buttonNormal();
 	}
-	else if(m_pPlayButton==btn && m_pPlayButton->isButtonPressed())
+	else if(m_pPlayButton==btn)
 	{
-		monoWrapper::mono_game_start();
+		if(m_pPlayButton->isButtonPressed())
+		{
+			monoWrapper::mono_game_start();
+			m_bMonoGameInitialized=true;
+		}
+		else
+		{
+			m_bMonoGameInitialized=false;
+		}
 	}
 }
 
 void gearSceneWorldEditor::onSliderChange(geGUIBase* slider)
 {
 
+}
+
+bool gearSceneWorldEditor::onKeyDown(int charValue, int flag)
+{
+	monoWrapper::mono_game_onkeydown(charValue, flag);
+	return geWindow::onKeyDown(charValue, flag);
+}
+
+bool gearSceneWorldEditor::onKeyUp(int charValue, int flag)
+{
+	monoWrapper::mono_game_onkeyup(charValue, flag);
+	return geWindow::onKeyUp(charValue, flag);
 }

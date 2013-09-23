@@ -3,35 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace MonoGEAR
 {
-    class MonoGEAREntryPointClass
+    public class MonoGEAREntryPointClass
     {
-        /*
-        DllExport void engine_test_function_for_mono();
-        DllExport void engine_init(int nWorldToCreate);
-        DllExport gxWorld* engine_getWorld(int index);
-
-        DllExport void engine_update(gxWorld* world, float dt);
-        DllExport void engine_resize(gxWorld* world, float x, float y, float cx, float cy);
-        DllExport void engine_render(gxWorld* world);
-        DllExport void engine_renderSingleObject(gxWorld* world, object3d* obj);
-        DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename);
-        DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename);
-        DllExport object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
-        
-        DllExport void engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag);
-        DllExport void engine_mouseLButtonUp(gxWorld* world, int x, int y, int flag);
-        DllExport void engine_mouseRButtonDown(gxWorld* world, int x, int y, int flag);
-        DllExport void engine_mouseRButtonUp(gxWorld* world, int x, int y, int flag);
-        DllExport void engine_mouseWheel(gxWorld* world, int zDelta, int x, int y, int flag);
-        DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag);
-        DllExport void engine_setMetaFolder(gxWorld* world, const char* metaFolder);
-        DllExport gxTexture* engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename);
-        DllExport bool engine_removeObject3d(gxWorld* world, object3d* obj);
-        */
-
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void engine_test_function_for_mono();
 
@@ -116,12 +93,76 @@ namespace MonoGEAR
         object3d m_pRootObject3d;
         public void mono_game_start()
         {
-            m_pRootObject3d = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\Level_1.FBX");
-            object3d.destroy(m_pRootObject3d.find("BarTable"));
+            object3d zombie_bodymesh = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombie_bodymesh.FBX");
+            object3d zombie_idle = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombie@idle.FBX");
+            object3d zombie_run = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombie@run.FBX");
+            object3d shotgun_set0_attack01 = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombies\\animations\\medium\\weapon\\shotgun\\shotgun@set0_attack01.FBX");
+            object3d shotgun_set0_attack02 = object3d.create("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombies\\animations\\medium\\weapon\\shotgun\\shotgun@set0_attack02.FBX");
+            //shotgun@attack_run.FBX
+
+            zombie_bodymesh.createAnimationController();
+            zombie_bodymesh.animation.appendAnimationSet(zombie_idle.animation.getAnimationSet(0));
+            zombie_bodymesh.animation.appendAnimationSet(zombie_run.animation.getAnimationSet(0));
+            zombie_bodymesh.animation.appendAnimationSet(shotgun_set0_attack01.animation.getAnimationSet(0));
+            zombie_bodymesh.animation.appendAnimationSet(shotgun_set0_attack02.animation.getAnimationSet(0));
+            //zombie_bodymesh.applyAnimationSetRecursive(0);
+            //zombie_bodymesh.animation.play(0);
+
+            zombie_bodymesh.updateLocalPositionf(0, 0, 0);
+            //zombie_bodymesh.rotateLocalZf(10);
+            m_pRootObject3d = zombie_bodymesh;
+            //m_pRootObject3d.rotateLocalZf(10);
+
+            Console.WriteLine(zombie_idle.animation.getAnimationSetCount() + " count");
+            Console.WriteLine(zombie_bodymesh.name + "created");
+
+            //animbuilder
+            //Stream stream = new MemoryStream(asset.bytes);
+            FileStream stream = new FileStream("D:\\MYPROJECTS\\GEAR_PROJECTS\\test1\\Assets\\for_arun\\zombies\\animations\\medium\\weapon\\shotgun\\medium_weapon_shotgun.anb.txt", FileMode.Open, FileAccess.Read);
+            BinaryReader reader = new BinaryReader(stream);
+
+            stAnimationPackage package = new stAnimationPackage();
+            package.readANBFile(reader);
+            reader.Close();
+
         }
 
         public void mono_game_run(float dt)
         {
+            //m_pRootObject3d.rotateLocalZf(10);
         }
+
+        public bool mono_game_onkeydown(int charValue, int flag)
+        {
+            if (charValue == 37)
+            {
+                m_pRootObject3d.applyAnimationSetRecursive(0);
+                m_pRootObject3d.animation.play(0);
+            }
+            else if (charValue == 38)
+            {
+                m_pRootObject3d.applyAnimationSetRecursive(1);
+                m_pRootObject3d.animation.play(1);
+            }
+            else if (charValue == 39)
+            {
+                m_pRootObject3d.applyAnimationSetRecursive(2);
+                m_pRootObject3d.animation.play(2);
+            }
+            else if (charValue == 40)
+            {
+                m_pRootObject3d.applyAnimationSetRecursive(3);
+                m_pRootObject3d.animation.play(3);
+            }
+            Console.WriteLine("keydown " + charValue);
+            return true;
+        }
+
+        public bool mono_game_onkeyup(int charValue, int flag)
+        {
+            Console.WriteLine("keyup " + charValue);
+            return true;
+        }
+
     }
 }

@@ -27,6 +27,8 @@ public:
 	//MONO GAME WRAPPERS
 	static void mono_game_start();
 	static void mono_game_run(float dt);
+	static bool mono_game_onkeydown(int charValue, int flag);
+    static bool mono_game_onkeyup(int charValue, int flag);
 	//
 
 	//MONO ENGINE WRAPPERS
@@ -90,6 +92,8 @@ private:
 	static MonoMethod* g_monogear_engine_test_function_for_mono;
 	static MonoMethod* g_mono_game_start;
 	static MonoMethod* g_mono_game_run;
+	static MonoMethod* g_mono_game_onkeydown;
+	static MonoMethod* g_mono_game_onkeyup;
 
 	static MonoMethod* g_pMethod_engine_init;
 	static MonoMethod* g_pMethod_engine_getWorld;

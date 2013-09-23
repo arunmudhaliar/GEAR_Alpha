@@ -43,6 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="game\animation\stAnimationPackage.cs" />
+    <Compile Include="game\animation\stAnimCommand.cs" />
+    <Compile Include="game\animation\stAnimState.cs" />
+    <Compile Include="game\ZBGlobal.cs" />
+    <Compile Include="gxAnimation.cs" />
     <Compile Include="MonoGEAREntryPointClass.cs" />
     <Compile Include="object3d.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

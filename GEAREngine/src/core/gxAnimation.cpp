@@ -100,3 +100,55 @@ bool gxAnimation::isPlaying(int animSetIndex)
 {
 	return m_bPlay;
 }
+
+
+extern "C" {
+extern DllExport gxAnimationSet* gxAnimation_play(gxAnimation* animation, int animSetIndex)
+{
+	return animation->play(animSetIndex);
+}
+extern DllExport void gxAnimation_stop(gxAnimation* animation)
+{
+	animation->stop();
+}
+
+extern DllExport void gxAnimation_pause(gxAnimation* animation)
+{
+	animation->pause();
+}
+
+extern DllExport void gxAnimation_resume(gxAnimation* animation)
+{
+	animation->resume();
+}
+
+extern DllExport void gxAnimation_rewind(gxAnimation* animation)
+{
+	animation->rewind();
+}
+
+extern DllExport void gxAnimation_rewindAll(gxAnimation* animation)
+{
+	animation->rewindAll();
+}
+
+extern DllExport bool gxAnimation_isPlaying(gxAnimation* animation, int animSetIndex)
+{
+	return animation->isPlaying(animSetIndex);
+}
+
+extern DllExport gxAnimationSet* gxAnimation_getAnimationSet(gxAnimation* animation, int index)
+{
+	return animation->getAnimationSet(index);
+}
+
+extern DllExport int gxAnimation_getAnimSetCount(gxAnimation* animation)
+{
+	return animation->getAnimSetCount();
+}
+
+extern DllExport void gxAnimation_appendAnimationSet(gxAnimation* animation, gxAnimationSet* animationSet)
+{
+	animation->appendAnimationSet(animationSet);
+}
+}

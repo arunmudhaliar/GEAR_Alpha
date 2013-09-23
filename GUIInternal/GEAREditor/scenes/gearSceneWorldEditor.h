@@ -36,10 +36,14 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
+	virtual bool onKeyDown(int charValue, int flag);
+	virtual bool onKeyUp(int charValue, int flag);
+
 	object3d* m_pSelectedObj;
 	gxWorld* m_pMainWorldPtr;	//0th world. Must not delete this pointer
 
 	geHorizontalSlider* m_pHorizontalSlider_LightAmbient;
+	geHorizontalSlider* m_pHorizontalSlider_TimeScale;
 
 	geVector2f m_cGridOnYAxis[180];
 	geVector2f m_cGridOnXAxis[180];
@@ -57,6 +61,7 @@ protected:
 
 	geToolBarButton* m_pPlayButton;
 	geToolBarButton* m_pPauseButton;
+	bool m_bMonoGameInitialized;
 };
 
 #endif

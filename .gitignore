@@ -10,3 +10,22 @@
 *.ilk
 
 *.exe
+
+/GEAREngine/GEAREngine/Debug/*.manifest
+
+/GEAREngine/GEAREngine/Debug/*.lastbuildstate
+
+/GEAREngine/GEAREngine/Debug/*.cache
+
+/GEAREngine/GEAREngine/Debug/*.idb
+
+/GEAREngine/GEAREngine/Release/*.manifest
+*.lastbuildstate
+
+*.cache
+
+*.exp
+
+*.manifest
+
+*.ipch

@@ -100,6 +100,10 @@ namespace MonoGEAR
             object3d shotgun_set0_attack02 = object3d.create(Resource.getResourcePath("for_arun/zombies/animations/medium/weapon/shotgun/shotgun@set0_attack02.FBX"));
             //shotgun@attack_run.FBX
 
+            //D:\MYPROJECTS\GEAR_PROJECTS\test1\Assets\for_arun\zombies\characters\medium\range_weapons
+            object3d shotgun = object3d.create(Resource.getResourcePath("for_arun/zombies/characters/medium/range_weapons/shotgun.FBX"));
+            object3d chainsaw = object3d.create(Resource.getResourcePath("for_arun/zombies/characters/medium/melee_weapons/chainsaw.FBX"));
+
             zombie_bodymesh.createAnimationController();
             zombie_bodymesh.animation.appendAnimationSet(zombie_idle.animation.getAnimationSet(0));
             zombie_bodymesh.animation.appendAnimationSet(zombie_run.animation.getAnimationSet(0));
@@ -107,14 +111,29 @@ namespace MonoGEAR
             zombie_bodymesh.animation.appendAnimationSet(shotgun_set0_attack02.animation.getAnimationSet(0));
             //zombie_bodymesh.applyAnimationSetRecursive(0);
             //zombie_bodymesh.animation.play(0);
+            object3d.destroy(zombie_idle);
+            object3d.destroy(zombie_run);
+            object3d.destroy(shotgun_set0_attack01);
+            object3d.destroy(shotgun_set0_attack02);
 
-            zombie_bodymesh.updateLocalPositionf(0, 0, 0);
+            //zombie_bodymesh.updateLocalPositionf(100, 0, 0);
+
+            zombie_bodymesh.find("bone_l_forearm").appendChild(shotgun.find("mesh_l_weapon"));
+            shotgun.find("mesh_l_weapon").copyTranfrom(zombie_bodymesh.find("bone_l_forearm"));
+
+            //zombie_bodymesh.find("bone_r_forearm").appendChild(chainsaw);
+            //chainsaw.copyTranfrom(zombie_bodymesh.find("bone_r_forearm"));
+            zombie_bodymesh.find("bone_r_forearm").appendChild(chainsaw.find("mesh_r_weapon"));
+            chainsaw.find("mesh_r_weapon").copyTranfrom(zombie_bodymesh.find("bone_r_forearm"));
+
+
+             Console.WriteLine("find bone location = " + zombie_bodymesh.find("bone_r_forearm").name);
             //zombie_bodymesh.rotateLocalZf(10);
             m_pRootObject3d = zombie_bodymesh;
             //m_pRootObject3d.rotateLocalZf(10);
 
-            Console.WriteLine(zombie_idle.animation.getAnimationSetCount() + " count");
-            Console.WriteLine(zombie_bodymesh.name + "created");
+            //Console.WriteLine(zombie_idle.animation.getAnimationSetCount() + " count");
+            //Console.WriteLine(zombie_bodymesh.name + "created");
 
             //animbuilder
             //Stream stream = new MemoryStream(asset.bytes);
@@ -135,22 +154,22 @@ namespace MonoGEAR
         {
             if (charValue == 37)
             {
-                m_pRootObject3d.applyAnimationSetRecursive(0);
+                Console.WriteLine("animset= " + m_pRootObject3d.applyAnimationSetRecursive(0).name);
                 m_pRootObject3d.animation.play(0);
             }
             else if (charValue == 38)
             {
-                m_pRootObject3d.applyAnimationSetRecursive(1);
+                Console.WriteLine("animset= " + m_pRootObject3d.applyAnimationSetRecursive(1).name);
                 m_pRootObject3d.animation.play(1);
             }
             else if (charValue == 39)
             {
-                m_pRootObject3d.applyAnimationSetRecursive(2);
+                Console.WriteLine("animset= " + m_pRootObject3d.applyAnimationSetRecursive(2).name);
                 m_pRootObject3d.animation.play(2);
             }
             else if (charValue == 40)
             {
-                m_pRootObject3d.applyAnimationSetRecursive(3);
+                Console.WriteLine("animset= " + m_pRootObject3d.applyAnimationSetRecursive(3).name);
                 m_pRootObject3d.animation.play(3);
             }
             Console.WriteLine("keydown " + charValue);

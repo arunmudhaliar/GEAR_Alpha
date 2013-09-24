@@ -31,4 +31,8 @@ private:
 	char m_szName[64];
 };
 
+extern "C" {
+	DllExport const char* gxAnimationSet_getAnimationName(gxAnimationSet* animSet);
+}
+
 #endif

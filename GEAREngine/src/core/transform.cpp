@@ -49,4 +49,8 @@ extern "C" {
 	{
 		return t->getMatrix()[14];
 	}
+	extern DllExport void transform_copy(transform* a, transform* b)
+	{
+		*a=*b;
+	}
 }

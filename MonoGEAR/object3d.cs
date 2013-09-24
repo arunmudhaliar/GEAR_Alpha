@@ -28,6 +28,12 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr object3d_applyAnimationSetRecursive(IntPtr obj, int index);
 
+        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr object3d_appendChild(IntPtr obj, IntPtr child);
+        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool object3d_removeChild(IntPtr obj, IntPtr child);
+
+
         public object3d(IntPtr ptr):
             base(ptr)
         {
@@ -43,9 +49,9 @@ namespace MonoGEAR
             return MonoGEAREntryPointClass.engine_destroyObject3d(MonoGEAREntryPointClass.engine_getWorld(0), obj.getHandle());
         }
 
-        public void applyAnimationSetRecursive(int index)
+        public gxAnimationSet applyAnimationSetRecursive(int index)
         {
-            object3d_applyAnimationSetRecursive(getHandle(), index);
+            return new gxAnimationSet(object3d_applyAnimationSetRecursive(getHandle(), index));
         }
 
         public gxAnimation createAnimationController()
@@ -95,6 +101,16 @@ namespace MonoGEAR
         public static void mono_object3d_onObject3dChildRemove(IntPtr parent, IntPtr child)
         {
             //Console.WriteLine(Marshal.PtrToStringAnsi(object3d_getName(child)) + " removed");
+        }
+
+        public void appendChild(object3d child)
+        {
+            object3d_appendChild(m_pObj3dPtr, child.getHandle());
+        }
+
+        public bool removeChild(object3d child)
+        {
+            return object3d_removeChild(m_pObj3dPtr, child.getHandle());
         }
         //List<object3d> m_cChildList;
 

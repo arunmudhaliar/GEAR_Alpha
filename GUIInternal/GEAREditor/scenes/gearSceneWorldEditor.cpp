@@ -84,7 +84,7 @@ void gearSceneWorldEditor::onCreate()
 	getToolBar()->appendToolBarControl(seperator4);
 
 	m_pHorizontalSlider_TimeScale = new geHorizontalSlider();
-	m_pHorizontalSlider_TimeScale->create(getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
+	m_pHorizontalSlider_TimeScale->create(getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
 	m_pHorizontalSlider_TimeScale->setSliderValue(1.0f);
 	getToolBar()->appendToolBarControl(m_pHorizontalSlider_TimeScale);
 
@@ -186,11 +186,11 @@ void gearSceneWorldEditor::draw()
 
 	glPushMatrix();
 	glTranslatef(0, 0, -1);
-	char buffer[16];
+	char buffer[32];
 	sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
 	glDisable(GL_DEPTH_TEST);
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
-	sprintf(buffer, "TimeScale : %1.1f", m_pHorizontalSlider_TimeScale->getSliderValue());
+	sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*2, m_cSize.x);
 
 	//m_pHorizontalSlider_LightAmbient->draw();

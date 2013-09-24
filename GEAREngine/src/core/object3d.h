@@ -36,7 +36,6 @@ public:
 	void updateAnimationFrameToObject3d();
 	virtual void render();
 
-	bool removeChild(object3d* child);
 
 	virtual void transformationChangedf();
 
@@ -47,6 +46,7 @@ public:
 	void setName(const char* name)	{	GX_STRCPY(m_cszName, name);	}
 
 	object3d* appendChild(object3d* child);
+	bool removeChild(object3d* child);
 	std::vector<object3d*>* getChildList()	{	return &m_cChilds;	}
 
 	int getChildCount()				{	return m_cChilds.size();	}
@@ -109,6 +109,9 @@ extern "C" {
 	DllExport gxAnimation* object3d_createAnimationController(object3d* obj);
 	DllExport gxAnimation* object3d_getAnimationController(object3d* obj);
 	DllExport gxAnimationSet* object3d_applyAnimationSetRecursive(object3d* obj, int index);
+
+	DllExport object3d* object3d_appendChild(object3d* obj, object3d* child);
+	DllExport bool object3d_removeChild(object3d* obj, object3d* child);
 }
 
 #endif

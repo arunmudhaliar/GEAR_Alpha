@@ -44,6 +44,9 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern float transform_getZ(IntPtr t);
 
+        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void transform_copy(IntPtr a, IntPtr b);
+
         protected IntPtr m_pObj3dPtr;
 
         public transform(IntPtr ptr)
@@ -109,6 +112,11 @@ namespace MonoGEAR
         public float getZ()
         {
             return transform_getZ(m_pObj3dPtr);
+        }
+
+        public void copyTranfrom(transform t)
+        {
+            transform_copy(m_pObj3dPtr, t.getHandle());
         }
     }
 }

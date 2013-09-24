@@ -83,14 +83,14 @@ namespace MonoGEAR
             return gxAnimation_getAnimSetCount(m_pAnimationHandle);
         }
 
-        public IntPtr getAnimationSet(int index)
+        public gxAnimationSet getAnimationSet(int index)
         {
-            return gxAnimation_getAnimationSet(m_pAnimationHandle, index);
+            return new gxAnimationSet(gxAnimation_getAnimationSet(m_pAnimationHandle, index));
         }
 
-        public void appendAnimationSet(IntPtr animationSet)
+        public void appendAnimationSet(gxAnimationSet animationSet)
         {
-            gxAnimation_appendAnimationSet(m_pAnimationHandle, animationSet);
+            gxAnimation_appendAnimationSet(m_pAnimationHandle, animationSet.getHandle());
         }
 
         IntPtr m_pAnimationHandle;

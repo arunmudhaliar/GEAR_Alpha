@@ -275,6 +275,7 @@ extern "C" {
 	DllExport float transform_getX(transform* t);
 	DllExport float transform_getY(transform* t);
 	DllExport float transform_getZ(transform* t);
+	DllExport void transform_copy(transform* a, transform* b);
 }
 
 #endif

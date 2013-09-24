@@ -78,3 +78,10 @@ void gxAnimationSet::read(gxFile& file)
 		appendTrack(animationTrack);
 	}
 }
+
+extern "C" {
+extern DllExport const char* gxAnimationSet_getAnimationName(gxAnimationSet* animSet)
+{
+	return animSet->getAnimationName();
+}
+}

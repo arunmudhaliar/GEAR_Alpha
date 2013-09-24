@@ -48,12 +48,16 @@
     <Compile Include="game\animation\stAnimState.cs" />
     <Compile Include="game\ZBGlobal.cs" />
     <Compile Include="gxAnimation.cs" />
+    <Compile Include="gxAnimationSet.cs" />
+    <Compile Include="gxMath.cs" />
+    <Compile Include="matrix4x4f.cs" />
     <Compile Include="MonoGEAREntryPointClass.cs" />
     <Compile Include="object3d.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="scripts\testScript.cs" />
     <Compile Include="transform.cs" />
+    <Compile Include="vector3.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

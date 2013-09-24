@@ -37,6 +37,16 @@ extern DllExport gxAnimationSet* object3d_applyAnimationSetRecursive(object3d* o
 {
 	return obj->applyAnimationSetRecursive(index);
 }
+
+extern DllExport object3d* object3d_appendChild(object3d* obj, object3d* child)
+{
+	return obj->appendChild(child);
+}
+
+extern DllExport bool object3d_removeChild(object3d* obj, object3d* child)
+{
+	return obj->removeChild(child);
+}
 }
 
 object3d::object3d(int objID):

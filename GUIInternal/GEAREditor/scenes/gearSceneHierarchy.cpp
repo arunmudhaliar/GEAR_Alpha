@@ -2,11 +2,12 @@
 #include "../EditorApp.h"
 #include "assetUserData.h"
 #include "../../../GEAREngine/src/core/gxMetaStructures.h"
+#include "../../../GEAREngine/src/GEAREngine.h"
 
 gearSceneHierarchy::gearSceneHierarchy():
 geWindow("Hierarchy")
 {
-	//m_pSceneWorldEditorPtr = NULL;
+	m_pCreateToolBarDropMenuBtnPtr = NULL;
 }
 
 gearSceneHierarchy::~gearSceneHierarchy()
@@ -19,6 +20,10 @@ void gearSceneHierarchy::onCreate()
 	engine_setEngineObserver(this);
 	engine_setObject3dObserver(this);
 	EditorApp::getSceneWorldEditor()->getMainWorld()->setObject3dObserver(this);
+
+	m_pCreateToolBarDropMenuBtnPtr=new geToolBarDropMenu("Create", getToolBar());
+	m_pCreateToolBarDropMenuBtnPtr->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pCreateToolBarDropMenuBtnPtr);
 
 	m_cGameObjectsTreeView.create(this, "gameObjectsTV", this);
 
@@ -274,4 +279,25 @@ bool gearSceneHierarchy::onKeyDown(int charValue, int flag)
 bool gearSceneHierarchy::onKeyUp(int charValue, int flag)
 {
 	return geWindow::onKeyUp(charValue, flag);
+}
+
+void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
+{
+	if(m_pCreateToolBarDropMenuBtnPtr==btn)
+	{
+		geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
+		if(selectedNode)
+		{
+			object3d* obj=(object3d*)selectedNode->getUserData();
+			object3d* emptyObject=engine_createEmptyObject3d(obj, "EmptyObject");
+		}
+		else
+		{
+			object3d* emptyObject=engine_createEmptyObject3d(monoWrapper::mono_engine_getWorld(0), "EmptyObject");
+		}
+	}
+}
+
+void gearSceneHierarchy::onSliderChange(geGUIBase* slider)
+{
 }

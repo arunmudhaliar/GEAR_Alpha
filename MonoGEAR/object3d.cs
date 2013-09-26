@@ -32,11 +32,14 @@ namespace MonoGEAR
         public static extern IntPtr object3d_appendChild(IntPtr obj, IntPtr child);
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool object3d_removeChild(IntPtr obj, IntPtr child);
+        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr object3d_getParent(IntPtr obj);
 
 
         public object3d(IntPtr ptr):
             base(ptr)
         {
+            //m_vComponents.Add(new object3d(IntPtr.Zero));
         }
 
         public static object3d create(string name)
@@ -70,9 +73,19 @@ namespace MonoGEAR
                     m_pAnimation = new gxAnimation(object3d_getAnimationController(getHandle()));
                 return m_pAnimation;
             }
+        }
+
+        public object3d parent
+        {
+            get
+            {
+                return new object3d(object3d_getParent(getHandle()));
+            }
             set
             {
-                //not implemented
+                if(parent!=null)
+                    parent.removeChild(this);
+                value.appendChild(this);
             }
         }
 
@@ -116,5 +129,7 @@ namespace MonoGEAR
 
         string m_pName;
         gxAnimation m_pAnimation;
+
+        List<Object> m_vComponents;
     }
 }

@@ -47,6 +47,11 @@ extern DllExport bool object3d_removeChild(object3d* obj, object3d* child)
 {
 	return obj->removeChild(child);
 }
+
+extern DllExport object3d* object3d_getParent(object3d* obj)
+{
+	return obj->getParent();
+}
 }
 
 object3d::object3d(int objID):

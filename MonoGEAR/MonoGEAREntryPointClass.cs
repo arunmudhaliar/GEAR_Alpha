@@ -101,16 +101,15 @@ namespace MonoGEAR
             //shotgun@attack_run.FBX
 
             //D:\MYPROJECTS\GEAR_PROJECTS\test1\Assets\for_arun\zombies\characters\medium\range_weapons
-            object3d shotgun = object3d.create(Resource.getResourcePath("for_arun/zombies/characters/medium/range_weapons/shotgun.FBX"));
-            object3d chainsaw = object3d.create(Resource.getResourcePath("for_arun/zombies/characters/medium/melee_weapons/chainsaw.FBX"));
+            object3d shotgun = object3d.create(Resource.getResourcePath("for_arun/zombies/characters/medium/range_weapons/shotgun.FBX")).find("mesh_l_weapon");
+            object3d chainsaw = object3d.create(Resource.getResourcePath("for_arun/zombies/characters/medium/melee_weapons/chainsaw.FBX")).find("mesh_r_weapon");
 
             zombie_bodymesh.createAnimationController();
             zombie_bodymesh.animation.appendAnimationSet(zombie_idle.animation.getAnimationSet(0));
             zombie_bodymesh.animation.appendAnimationSet(zombie_run.animation.getAnimationSet(0));
             zombie_bodymesh.animation.appendAnimationSet(shotgun_set0_attack01.animation.getAnimationSet(0));
             zombie_bodymesh.animation.appendAnimationSet(shotgun_set0_attack02.animation.getAnimationSet(0));
-            //zombie_bodymesh.applyAnimationSetRecursive(0);
-            //zombie_bodymesh.animation.play(0);
+
             object3d.destroy(zombie_idle);
             object3d.destroy(zombie_run);
             object3d.destroy(shotgun_set0_attack01);
@@ -118,16 +117,14 @@ namespace MonoGEAR
 
             //zombie_bodymesh.updateLocalPositionf(100, 0, 0);
 
-            zombie_bodymesh.find("bone_l_forearm").appendChild(shotgun.find("mesh_l_weapon"));
-            shotgun.find("mesh_l_weapon").copyTranfrom(zombie_bodymesh.find("bone_l_forearm"));
+            shotgun.parent = zombie_bodymesh.find("bone_l_forearm");
+            shotgun.copyTranfrom(zombie_bodymesh.find("bone_l_forearm"));
 
-            //zombie_bodymesh.find("bone_r_forearm").appendChild(chainsaw);
-            //chainsaw.copyTranfrom(zombie_bodymesh.find("bone_r_forearm"));
-            zombie_bodymesh.find("bone_r_forearm").appendChild(chainsaw.find("mesh_r_weapon"));
-            chainsaw.find("mesh_r_weapon").copyTranfrom(zombie_bodymesh.find("bone_r_forearm"));
+            chainsaw.parent = zombie_bodymesh.find("bone_r_forearm");
+            chainsaw.copyTranfrom(zombie_bodymesh.find("bone_r_forearm"));
 
 
-             Console.WriteLine("find bone location = " + zombie_bodymesh.find("bone_r_forearm").name);
+            Console.WriteLine("find bone location = " + shotgun.name);
             //zombie_bodymesh.rotateLocalZf(10);
             m_pRootObject3d = zombie_bodymesh;
             //m_pRootObject3d.rotateLocalZf(10);

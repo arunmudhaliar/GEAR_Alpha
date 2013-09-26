@@ -112,6 +112,7 @@ extern "C" {
 
 	DllExport object3d* object3d_appendChild(object3d* obj, object3d* child);
 	DllExport bool object3d_removeChild(object3d* obj, object3d* child);
+	DllExport object3d* object3d_getParent(object3d* obj);
 }
 
 #endif

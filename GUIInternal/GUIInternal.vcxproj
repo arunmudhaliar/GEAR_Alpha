@@ -103,6 +103,7 @@
     <ClInclude Include="GEAREditor\gui\geTextBox.h" />
     <ClInclude Include="GEAREditor\gui\geTextureThumbnail.h" />
     <ClInclude Include="GEAREditor\gui\geToolBar.h" />
+    <ClInclude Include="GEAREditor\gui\geToolBarDropMenu.h" />
     <ClInclude Include="GEAREditor\gui\geToolBarSeperator.h" />
     <ClInclude Include="GEAREditor\gui\geTreeView.h" />
     <ClInclude Include="GEAREditor\gui\geWindow.h" />
@@ -161,6 +162,7 @@
     <ClCompile Include="GEAREditor\gui\geTextBox.cpp" />
     <ClCompile Include="GEAREditor\gui\geTextureThumbnail.cpp" />
     <ClCompile Include="GEAREditor\gui\geToolBar.cpp" />
+    <ClCompile Include="GEAREditor\gui\geToolBarDropMenu.cpp" />
     <ClCompile Include="GEAREditor\gui\geTreeView.cpp" />
     <ClCompile Include="GEAREditor\gui\geWindow.cpp" />
     <ClCompile Include="GEAREditor\renderer\myDLL.cpp" />

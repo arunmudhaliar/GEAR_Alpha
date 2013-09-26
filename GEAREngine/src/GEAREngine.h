@@ -41,6 +41,8 @@ extern "C" {
 
 	DllExport void engine_setEngineObserver(MEngineObserver* observer);
 	DllExport void engine_setObject3dObserver(MObject3dObserver* observer);
+
+	DllExport object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name);
 }
 
 class GEAREngine

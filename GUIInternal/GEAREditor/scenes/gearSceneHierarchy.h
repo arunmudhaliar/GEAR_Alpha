@@ -4,9 +4,9 @@
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
 #include "../../mono/src/monoWrapper.h"
-//#include "gearSceneWorldEditor.h"
+#include "../gui/geToolBarDropMenu.h"
 
-class gearSceneHierarchy : public geWindow, public MEngineObserver, public MObject3dObserver, public MTreeViewObserver
+class gearSceneHierarchy : public geWindow, public MEngineObserver, public MObject3dObserver, public MTreeViewObserver, public MGUIObserver
 {
 public:
 	gearSceneHierarchy();
@@ -22,6 +22,10 @@ public:
 	//object3d observer
 	virtual void onObject3dChildAppend(object3d* child);
 	virtual void onObject3dChildRemove(object3d* child);
+
+	//gui observer
+	void onButtonClicked(geGUIBase* btn);
+	void onSliderChange(geGUIBase* slider);
 
 protected:
 	virtual void onCreate();
@@ -42,6 +46,7 @@ private:
 
 	geTreeView m_cGameObjectsTreeView;
 	Sprite2Dx m_cszSprites[5];
+	geToolBarDropMenu* m_pCreateToolBarDropMenuBtnPtr;
 //	gearSceneWorldEditor* m_pSceneWorldEditorPtr;	//must not delete this pointer
 	//geButton m_cButton;
 	//gePushButton m_cPushButton;

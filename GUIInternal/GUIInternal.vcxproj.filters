@@ -237,6 +237,9 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyAnimationSet.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geToolBarDropMenu.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -340,6 +343,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\AssetImporter.cpp">
       <Filter>GEAREditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geToolBarDropMenu.cpp">
+      <Filter>GEAREditor\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

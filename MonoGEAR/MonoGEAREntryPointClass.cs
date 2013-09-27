@@ -71,6 +71,8 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool engine_destroyObject3d(IntPtr world, IntPtr obj);
 
+        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr engine_createEmptyObject3d(IntPtr parentObj, string name);
 
 
         public static void Main(string[] args)
@@ -115,6 +117,8 @@ namespace MonoGEAR
             object3d.destroy(shotgun_set0_attack01);
             object3d.destroy(shotgun_set0_attack02);
 
+            object3d empty = new object3d("hello world");
+            object3d empty2 = new object3d(empty, "hello world child");
             //zombie_bodymesh.updateLocalPositionf(100, 0, 0);
 
             shotgun.parent = zombie_bodymesh.find("bone_l_forearm");
@@ -123,7 +127,7 @@ namespace MonoGEAR
             chainsaw.parent = zombie_bodymesh.find("bone_r_forearm");
             chainsaw.copyTranfrom(zombie_bodymesh.find("bone_r_forearm"));
 
-
+            zombie_bodymesh.parent = empty2;
             Console.WriteLine("find bone location = " + shotgun.name);
             //zombie_bodymesh.rotateLocalZf(10);
             m_pRootObject3d = zombie_bodymesh;

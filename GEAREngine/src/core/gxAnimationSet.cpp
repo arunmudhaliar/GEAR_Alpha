@@ -7,6 +7,7 @@ gxAnimationSet::gxAnimationSet(const char* animationName)
 	m_iFPS=0;
 	m_fCurrentFrame=0.0f;
 	m_fSpeed=1.0f;
+	m_iCRC_of_mesh_data=0;
 }
 
 gxAnimationSet::~gxAnimationSet()

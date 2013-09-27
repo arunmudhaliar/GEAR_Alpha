@@ -22,6 +22,10 @@ public:
 	void read(gxFile& file);
 
 	void setCurrentFrame(int currentFrame);
+
+	void setCRCOfMeshData(int crc)	{	m_iCRC_of_mesh_data = crc;	}
+	int getCRCOfMeshData()			{	return m_iCRC_of_mesh_data;	}
+
 private:
 	std::vector<gxAnimationTrack*> m_vAnimationTrack;
 	int m_nFrames;
@@ -29,6 +33,7 @@ private:
 	float m_fSpeed;
 	float m_fCurrentFrame;
 	char m_szName[64];
+	int m_iCRC_of_mesh_data;
 };
 
 extern "C" {

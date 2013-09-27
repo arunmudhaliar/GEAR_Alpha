@@ -90,6 +90,9 @@ void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 			char crcFile[1024];
 			sprintf(crcFile, "%s/%x", world->getMetaDataFolder(), materialCRC);
 
+			if(materialCRC==0)
+				continue;
+
 			gxFile file_meta;
 			if(file_meta.OpenFile(crcFile))
 			{
@@ -137,7 +140,7 @@ void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 	}
 }
 
-void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d)
+void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d, int crc)
 {
 	gxAnimation* animationController = obj3d->getAnimationController();
 	if(animationController)
@@ -146,7 +149,25 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d)
 		for(std::vector<gxAnimationSet*>::iterator it = animationSetList->begin(); it != animationSetList->end(); ++it)
 		{
 			gxAnimationSet* animationSet = *it;
-			world->appendAnimationSetToWorld(animationSet);
+
+			bool bFound=false;
+			//check if the animation already on world list
+			std::vector<gxAnimationSet*>* world_animationSetList=world->getAnimationSetList();
+			for(std::vector<gxAnimationSet*>::iterator it2 = world_animationSetList->begin(); it2 != world_animationSetList->end(); ++it2)
+			{
+				gxAnimationSet* worldanimationSet = *it2;
+				if(worldanimationSet->getCRCOfMeshData()==crc && strcmp(worldanimationSet->getAnimationName(), animationSet->getAnimationName())==0)
+				{
+					bFound=true;
+					break;
+				}
+			}
+
+			if(!bFound)
+			{
+				animationSet->setCRCOfMeshData(crc);
+				world->appendAnimationSetToWorld(animationSet);
+			}
 		}
 	}
 
@@ -154,7 +175,7 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d)
 	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
 	{
 		object3d* childobj = *it;
-		loadAnmationFromObject3d(world, childobj);
+		loadAnmationFromObject3d(world, childobj, crc);
 	}
 }
 
@@ -196,7 +217,7 @@ extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* f
 					read3dFile2(file_meta, tempObj);
 					obj=tempObj;
 					loadMaterialFromObject3d(world, obj);
-					loadAnmationFromObject3d(world, obj);
+					loadAnmationFromObject3d(world, obj, crc);
 					obj->transformationChangedf();
 					root_object_node=obj;
 

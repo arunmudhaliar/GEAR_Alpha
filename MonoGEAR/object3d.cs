@@ -36,6 +36,17 @@ namespace MonoGEAR
         public static extern IntPtr object3d_getParent(IntPtr obj);
 
 
+        public object3d(string name):
+            base(MonoGEAREntryPointClass.engine_createEmptyObject3d(MonoGEAREntryPointClass.engine_getWorld(0), name))
+        {
+
+        }
+
+        public object3d(object3d parent, string name):
+            base(MonoGEAREntryPointClass.engine_createEmptyObject3d(parent.getHandle(), name))
+        {
+        }
+
         public object3d(IntPtr ptr):
             base(ptr)
         {

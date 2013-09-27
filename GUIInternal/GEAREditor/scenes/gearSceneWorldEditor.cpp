@@ -192,6 +192,10 @@ void gearSceneWorldEditor::draw()
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
 	sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*2, m_cSize.x);
+	sprintf(buffer, "nMaterial : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*3, m_cSize.x);
+	sprintf(buffer, "nAnimation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*4, m_cSize.x);
 
 	//m_pHorizontalSlider_LightAmbient->draw();
 

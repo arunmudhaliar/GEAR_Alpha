@@ -737,3 +737,8 @@ int AssetImporter::import_png_to_metadata(const char* png_file_name, const char*
 	////DEBUG_PRINT("%s : size(%d, %d), format %d, compressed size %d bytes\n", out_filename, width, height, out_format, compressedSize);
 	return 1;
 }
+
+int AssetImporter::calcCRC32(unsigned char* data)
+{
+	return Crc32::Calc(data);
+}

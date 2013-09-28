@@ -21,6 +21,7 @@ public:
 
 		m_cDiffuse.set(0.5f, 0.5f, 0.5f, 1.0f);
 		m_iFileCRC=0;
+		m_iTextureFileCRC=0;
 	}
 
 	~gxMaterial()
@@ -133,32 +134,38 @@ public:
 			int crc=0;
 			metaInfoFile.Read(crc);
 			metaInfoFile.CloseFile();
-
-			char metaDataFileName[256];
-			sprintf(metaDataFileName, "%x", crc);
-
-			stTexturePacket* texturePack=textureManager.LoadTexture(metaDataFileName);
-			if(texturePack)
-			{
-				//delete old texture instance
-				GX_DELETE(m_pTexture);
-
-				m_pTexture = new gxTexture();
-				m_pTexture->setTexture(texturePack);
-				if(texturePack->bAlphaTex)
-				{
-					m_pTexture->setTextureType(gxTexture::TEX_ALPHA);
-				}
-				else
-				{
-					m_pTexture->setTextureType(gxTexture::TEX_NORMAL);
-				}
-			}
-			return m_pTexture;
+			return loadTextureFromMeta(textureManager, crc);
 		}
 
 		return NULL;
 	}
+
+	gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc)
+	{
+		char metaDataFileName[256];
+		sprintf(metaDataFileName, "%x", crc);
+
+		stTexturePacket* texturePack=textureManager.LoadTexture(metaDataFileName);
+		if(texturePack)
+		{
+			//delete old texture instance
+			GX_DELETE(m_pTexture);
+
+			m_pTexture = new gxTexture();
+			m_pTexture->setTexture(texturePack);
+			m_pTexture->setFileCRC(crc);
+			if(texturePack->bAlphaTex)
+			{
+				m_pTexture->setTextureType(gxTexture::TEX_ALPHA);
+			}
+			else
+			{
+				m_pTexture->setTextureType(gxTexture::TEX_NORMAL);
+			}
+		}
+		return m_pTexture;
+	}
+
 	void setTextureName(const char* textureName)
 	{
 		strcpy(m_szTextureName, textureName);
@@ -186,6 +193,10 @@ public:
 		file.Write(m_bTwoSided);
 		file.Write(m_szMaterialName);
 		file.Write(m_szTextureName);
+		if(m_pTexture)
+			file.Write(m_pTexture->getFileCRC());
+		else
+			file.Write(0);
 		file.Write(m_vDependencyCRCList.size());
 		for(int x=0;x<m_vDependencyCRCList.size();x++)
 		{
@@ -208,6 +219,7 @@ public:
 		temp=file.ReadString();
 		strcpy(m_szTextureName, temp);
 		GX_DELETE_ARY(temp);
+		file.Read(m_iTextureFileCRC);
 		int nDep=0;
 		file.Read(nDep);
 		for(int x=0;x<nDep;x++)
@@ -233,6 +245,8 @@ public:
 		return material;
 	}
 
+	int getTextureReadCRC()	{	return m_iTextureFileCRC;	}
+
 private:
 	vector4f m_cAmbient;
 	vector4f m_cDiffuse;
@@ -246,6 +260,7 @@ private:
 	char m_szTextureName[256];
 	std::vector<int> m_vDependencyCRCList;
 	int m_iFileCRC;
+	int m_iTextureFileCRC;
 };
 
 #endif

@@ -25,6 +25,7 @@ public:
 	static void readMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile, struct stat& fst);
 	static void writeMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile);
 
+	static int calcCRC32(unsigned char* data);
 private:
 	int traverseAndCountAssetDirectory(const char *dirname);
 	int traverseAssetDirectory(const char *dirname);

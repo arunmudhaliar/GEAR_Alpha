@@ -243,6 +243,12 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\util\geCrc32.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\geNullMaterialExtended.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -351,6 +357,9 @@
       <Filter>GEAREditor\gui</Filter>
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.cpp">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClCompile>
   </ItemGroup>

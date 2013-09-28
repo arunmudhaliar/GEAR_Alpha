@@ -90,8 +90,10 @@ void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 			char crcFile[1024];
 			sprintf(crcFile, "%s/%x", world->getMetaDataFolder(), materialCRC);
 
+#if !CREATE_MATERIAL_FOR_MESH_IF_NOT_FOUND_IN_METAFILE
 			if(materialCRC==0)
 				continue;
+#endif
 
 			gxFile file_meta;
 			if(file_meta.OpenFile(crcFile))
@@ -101,7 +103,11 @@ void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 
 				gxMaterial* material = new gxMaterial();
 				material->read(file_meta);
-
+				if(material->getTextureReadCRC())
+				{
+					//load the texture
+					material->loadTextureFromMeta(*world->getTextureManager(), material->getTextureReadCRC());
+				}
 				//check if the material name already exists in our list or not
 				std::vector<gxMaterial*>* materialList = world->getMaterialList();
 				for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)

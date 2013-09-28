@@ -53,6 +53,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;USEMONOENGINE;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -121,6 +123,7 @@
     <ClInclude Include="GEAREditor\scenes\gearSceneProject.h" />
     <ClInclude Include="GEAREditor\scenes\gearScenePropertyEditor.h" />
     <ClInclude Include="GEAREditor\scenes\gearSceneWorldEditor.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\geNullMaterialExtended.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyAnimationSet.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMeshPreview.h" />
@@ -131,6 +134,7 @@
     <ClInclude Include="GEAREditor\SpriteManager\Sprite.h" />
     <ClInclude Include="GEAREditor\SpriteManager\Sprite2Dx.h" />
     <ClInclude Include="GEAREditor\util\FontManager.h" />
+    <ClInclude Include="GEAREditor\util\geCrc32.h" />
     <ClInclude Include="GEAREditor\util\geDefines.h" />
     <ClInclude Include="GEAREditor\util\geUtil.h" />
     <ClInclude Include="GEAREditor\util\geVector3.h" />
@@ -176,6 +180,7 @@
     <ClCompile Include="GEAREditor\scenes\gearSceneProject.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearScenePropertyEditor.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneWorldEditor.cpp" />
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite2Dx.cpp" />

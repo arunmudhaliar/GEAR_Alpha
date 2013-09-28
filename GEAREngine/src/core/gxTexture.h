@@ -27,6 +27,7 @@ public:
 	{
 		m_pTexTurePtr=NULL;
 		m_eTextureType=TEX_UNDEFINED;
+		m_iFileCRC=0;
 	}
 	
 	~gxTexture()
@@ -48,10 +49,14 @@ public:
 	
 	matrix4x4f* getTextureMatrix()			{	return &m_cMatrix;		}
 
+	void setFileCRC(int crc)	{	m_iFileCRC=crc;		}
+	int getFileCRC()			{	return m_iFileCRC;	}
+
 private:
 	stTexturePacket* m_pTexTurePtr;     //must not delete this pointer
 	ETEXTURE m_eTextureType;
 	matrix4x4f m_cMatrix;
+	int m_iFileCRC;
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include "../../gui/geHorizontalSlider.h"
 #include "../../gui/geColorControl.h"
 #include "geTextureThumbnailExtended.h"
+#include "geNullMaterialExtended.h"
 
 class gePropertyMaterial : public geTreeNode, public MGUIObserver
 {
@@ -15,93 +16,29 @@ public:
 	geTextBox* m_pText_tileX;
 	geTextBox* m_pText_tileY;
 	gxMaterial* m_pCurrentMaterialPtr;
+	gxTriInfo* m_pTriInfoPtr;
 
-	gePropertyMaterial(geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxMaterial* material):
+	gePropertyMaterial(geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo):
 	  geTreeNode(parent, name, sprite, 10)
 	{
 		setSize(m_cSize.x, 85.0f);
 
-		//geButton* btn=new geButton();
-		//btn->create(this, "button1", 40, 10);
-
-		//gePushButton* pbtn = new gePushButton("");
-		//pbtn->create(this, "", 15, 10);
-
-		m_pCurrentMaterialPtr=material;
-		geTextBox* text_material = new geTextBox("MaterialName");
-		text_material->create(this, material->getMaterialName(), 50, 10, 200, 16);
-
-		geHorizontalSlider* slider = new geHorizontalSlider();
-		slider->create(this, "slider", 50, 35, 70);
-		
-		char tileX_temp_buffer[10];
-		char tileY_temp_buffer[10];
-
-		if(material->getTexture())
-		{
-			const float* texMat4x4=material->getTexture()->getTextureMatrix()->getMatrix();
-			sprintf(tileX_temp_buffer, "%3.2f", texMat4x4[0]);
-			sprintf(tileY_temp_buffer, "%3.2f", texMat4x4[5]);
-		}
-		else
-		{
-			sprintf(tileX_temp_buffer, "%3.2f", 1.0f);
-			sprintf(tileY_temp_buffer, "%3.2f", 1.0f);
-		}
-
-		m_pText_tileX = new geTextBox("1.0");
-		m_pText_tileX->create(this, tileX_temp_buffer, 100, 40, 50, 16);
-		m_pText_tileX->setGUIObserver(this);
-		m_pText_tileY = new geTextBox("1.0");
-		m_pText_tileY->create(this, tileY_temp_buffer, 100, 60, 50, 16);
-		m_pText_tileY->setGUIObserver(this);
-
-		//geHorizontalSlider* slider2 = new geHorizontalSlider();
-		//slider2->create(this, "slider", 50, 55, 70);
-
-		geColorControl* colorControl = new geColorControl();
-		colorControl->create(this, 10, 10);
-		vector4f diffuse=material->getDiffuseClr();
-		colorControl->setControlColor(diffuse.x, diffuse.y, diffuse.z, diffuse.w);
-
-		geTextureThumbnailExtended* thumbnail = new geTextureThumbnailExtended();
-		thumbnail->create(this, material->getTexture(), 260, 10, 70, 70);
-		thumbnail->setUserData(material);
+		m_pTriInfoPtr=triinfo;
+		loadClientViewFromMaterial(m_pTriInfoPtr->getMaterial());
 
 		setNodeColor(0.21f, 0.21f, 0.21f);
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
 		setColor(&m_cVBClientArea, 0.21f, 0.21f, 0.21f, 1.0f);
 	}
 
+	void loadClientViewFromMaterial(gxMaterial* material);
+
 	virtual ~gePropertyMaterial()
 	{
 
 	}
 
-	//virtual void draw();
-	virtual void drawNode()
-	{
-		drawRect(&m_cVBClientArea);
-
-		geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
-
-		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
-		{
-			if(m_bNodeOpen)
-				drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
-			else
-				drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
-		}
-
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
-		{
-			geGUIBase* tvnode = *it;
-			tvnode->draw();
-		}
-
-		if(m_pSprite)
-			m_pSprite->draw();
-	}
+	virtual void drawNode();
 
 	virtual void onTextChange(geGUIBase* textbox)
 	{
@@ -118,6 +55,8 @@ public:
 			m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->setYAxis(vector3f(texMat4x4[4], value, texMat4x4[6]));
 		}
 	}
+
+	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
 };
 
 #endif

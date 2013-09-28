@@ -478,16 +478,16 @@ void geTreeView::onDragDrop(int x, int y, MDataObject* dropObject)
 	geTreeNode* selectedNode = m_pRootNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
 	if(selectedNode)
 	{
-		std::vector<geGUIBase*>* list=selectedNode->getChildControls();
-		for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
-		{
-			geGUIBase* obj = *it;
-			float xxx=x-(/*getPos().x+*/selectedNode->getPos().x+xoff)+m_pRootNode->getXOffset();
-			float yyy=y-(/*getPos().y+*/selectedNode->getPos().y/*+getTopMarginOffsetHeight()*/+yoff+GE_TREEVIEWNODE_CY);
+		//std::vector<geGUIBase*>* list=selectedNode->getChildControls();
+		//for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
+		//{
+		//	geGUIBase* obj = *it;
+		//	float xxx=x-(/*getPos().x+*/selectedNode->getPos().x+xoff)+m_pRootNode->getXOffset();
+		//	float yyy=y-(/*getPos().y+*/selectedNode->getPos().y/*+getTopMarginOffsetHeight()*/+yoff+GE_TREEVIEWNODE_CY);
 
-			obj->DragDrop(xxx, yyy, dropObject);
-		}
-		//selectedNode->DragDrop(x-xoff+m_pRootNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, dropObject);
+		//	obj->DragDrop(xxx, yyy, dropObject);
+		//}
+		selectedNode->DragDrop(x-xoff+m_pRootNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, dropObject);
 		return;
 	}
 

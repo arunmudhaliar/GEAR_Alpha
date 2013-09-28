@@ -4,6 +4,8 @@
 #include "core\gxWorld.h"
 #include "renderer\gxRenderer.h"
 
+#define CREATE_MATERIAL_FOR_MESH_IF_NOT_FOUND_IN_METAFILE	0
+
 class MEngineObserver
 {
 public:

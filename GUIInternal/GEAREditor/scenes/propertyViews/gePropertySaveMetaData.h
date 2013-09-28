@@ -65,6 +65,7 @@ public:
 	}
 
 	virtual void onButtonClicked(geGUIBase* btn);
+	void saveMaterialRecursiveToMeta(object3d* obj);
 
 private:
 	object3d* m_pObject3dPtr;

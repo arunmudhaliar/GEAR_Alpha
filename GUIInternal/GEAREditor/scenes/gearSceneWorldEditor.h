@@ -62,6 +62,10 @@ protected:
 	geToolBarButton* m_pPlayButton;
 	geToolBarButton* m_pPauseButton;
 	bool m_bMonoGameInitialized;
+
+	geToolBarButton* m_pTranslateGizmo;
+	geToolBarButton* m_pRotateGizmo;
+	geToolBarButton* m_pScaleGizmo;
 };
 
 #endif

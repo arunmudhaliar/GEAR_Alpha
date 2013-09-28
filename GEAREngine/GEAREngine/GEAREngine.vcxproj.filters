@@ -162,6 +162,9 @@
     <ClCompile Include="..\src\core\transform.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\gxDebug.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -312,6 +315,9 @@
       <Filter>engine\core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\quaternion.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxDebug.h">
       <Filter>engine\core</Filter>
     </ClInclude>
   </ItemGroup>

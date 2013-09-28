@@ -240,6 +240,9 @@
     <ClInclude Include="GEAREditor\gui\geToolBarDropMenu.h">
       <Filter>GEAREditor\gui</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -346,6 +349,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\gui\geToolBarDropMenu.cpp">
       <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.cpp">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

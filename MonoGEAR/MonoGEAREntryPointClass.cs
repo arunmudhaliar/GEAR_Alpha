@@ -128,7 +128,7 @@ namespace MonoGEAR
             chainsaw.copyTranfrom(zombie_bodymesh.find("bone_r_forearm"));
 
             zombie_bodymesh.parent = empty2;
-            Console.WriteLine("find bone location = " + shotgun.name);
+            //Console.WriteLine("find bone location = " + shotgun.name);
             //zombie_bodymesh.rotateLocalZf(10);
             m_pRootObject3d = zombie_bodymesh;
             //m_pRootObject3d.rotateLocalZf(10);
@@ -179,7 +179,7 @@ namespace MonoGEAR
 
         public bool mono_game_onkeyup(int charValue, int flag)
         {
-            Console.WriteLine("keyup " + charValue);
+            //Console.WriteLine("keyup " + charValue);
             return true;
         }
 

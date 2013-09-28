@@ -4,17 +4,15 @@ gxAnimation::gxAnimation()
 {
 	m_pActiveAnimationSetPtr=NULL;
 	m_bPlay=false;
+
+	m_nFrames=0;
+	m_iFPS=0;
+	m_fCurrentFrame=0.0f;
+	m_fSpeed=1.0f;
 }
 
 gxAnimation::~gxAnimation()
 {
-	/*
-	for(std::vector<gxAnimationSet*>::iterator it = m_vAnimationSet.begin(); it != m_vAnimationSet.end(); ++it)
-	{
-		gxAnimationSet* animationSet = *it;
-		GX_DELETE(animationSet);
-	}
-	*/
 	m_vAnimationSet.clear();
 }
 
@@ -23,16 +21,15 @@ void gxAnimation::appendAnimationSet(gxAnimationSet* animationSet)
 	m_vAnimationSet.push_back(animationSet);
 }
 
-//gxAnimationSet* gxAnimation::setActiveAnimationSet(int index)
-//{
-//	m_pActiveAnimationSetPtr = m_vAnimationSet[index];
-//	return m_pActiveAnimationSetPtr;
-//}
-
 void gxAnimation::update(float dt)
 {
 	if(m_pActiveAnimationSetPtr && m_bPlay)
-		m_pActiveAnimationSetPtr->update(dt);
+	{
+		float nFramesToPlay=(dt*m_iFPS*m_fSpeed);
+		m_fCurrentFrame+=nFramesToPlay;
+		if(m_fCurrentFrame>=m_nFrames)
+			m_fCurrentFrame=0.0f;
+	}
 }
 
 void gxAnimation::write(gxFile& file)
@@ -61,12 +58,17 @@ gxAnimationSet* gxAnimation::play(int animSetIndex)
 {
 	m_pActiveAnimationSetPtr = m_vAnimationSet[animSetIndex];
 	m_bPlay=true;
+	m_fCurrentFrame=0;
+	m_iFPS=m_pActiveAnimationSetPtr->getFPS();
+	m_nFrames=m_pActiveAnimationSetPtr->getFrameCount();
+
 	return m_pActiveAnimationSetPtr;
 }
 
 void gxAnimation::stop()
 {
 	m_bPlay=false;
+	m_fCurrentFrame=0;
 }
 
 void gxAnimation::pause()
@@ -81,22 +83,16 @@ void gxAnimation::resume()
 
 void gxAnimation::rewind()
 {
-	if(m_pActiveAnimationSetPtr)
-	{
-		m_pActiveAnimationSetPtr->setCurrentFrame(0);
-	}
+	m_fCurrentFrame=0;
+
 }
 
 void gxAnimation::rewindAll()
 {
-	for(std::vector<gxAnimationSet*>::iterator it = m_vAnimationSet.begin(); it != m_vAnimationSet.end(); ++it)
-	{
-		gxAnimationSet* animationSet = *it;
-		animationSet->setCurrentFrame(0);
-	}
+	m_fCurrentFrame=0;
 }
 
-bool gxAnimation::isPlaying(int animSetIndex)
+bool gxAnimation::isPlaying()
 {
 	return m_bPlay;
 }
@@ -132,9 +128,9 @@ extern DllExport void gxAnimation_rewindAll(gxAnimation* animation)
 	animation->rewindAll();
 }
 
-extern DllExport bool gxAnimation_isPlaying(gxAnimation* animation, int animSetIndex)
+extern DllExport bool gxAnimation_isPlaying(gxAnimation* animation)
 {
-	return animation->isPlaying(animSetIndex);
+	return animation->isPlaying();
 }
 
 extern DllExport gxAnimationSet* gxAnimation_getAnimationSet(gxAnimation* animation, int index)

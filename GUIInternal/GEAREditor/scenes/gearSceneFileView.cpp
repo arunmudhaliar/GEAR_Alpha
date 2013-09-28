@@ -148,7 +148,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				deleteAnmationFromObject3d(obj);
 			}
 
-			((assetUserData*)tvnode->getUserData())->setAssetObjectPtr(obj);
+			((assetUserData*)tvnode->getUserData())->setAssetObjectPtr(obj, assetUserData::ASSET_MESH_OBJECT);
 		}
 	}
 	EditorApp::getScenePreview()->selectedObject3D(obj);
@@ -344,7 +344,7 @@ static int find_files(const char *dirname, const char* searchString, geTreeNode*
 							sprite=&spriteArray[1];
 
 						geTreeNode* newtvNode = new geTreeNode(parentNode, ent->d_name, sprite);
-						assetUserData* userdata = new assetUserData(1, buffer, NULL);
+						assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, buffer, NULL);
 						newtvNode->setUserData(userdata);
 						newtvNode->closeNode();
 					}

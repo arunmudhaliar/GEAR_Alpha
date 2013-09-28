@@ -7,7 +7,15 @@ class assetUserData
 	{
 	}
 public:
-	assetUserData(int typeID, const char* path, void* ptr)
+
+	enum ASSETUSERDATA_TYPE
+	{
+		ASSET_ONLY_PATH,
+		ASSET_MESH_OBJECT,
+		ASSET_TEXTURE
+	};
+
+	assetUserData(ASSETUSERDATA_TYPE typeID, const char* path, void* ptr)
 	{
 		type=typeID;
 		STRCPY(assetAbsolutePath, path);
@@ -15,13 +23,13 @@ public:
 	}
 
 	const char* getAssetAbsolutePath()	{	return assetAbsolutePath;	}
-	int getAssetType()					{	return type;				}
+	ASSETUSERDATA_TYPE getAssetType()	{	return type;				}
 	void* getAssetObjectPtr()			{	return assetObjectPtr;		}
-	void setAssetObjectPtr(void* ptr)	{	assetObjectPtr= ptr;		}
+	void setAssetObjectPtr(void* ptr, ASSETUSERDATA_TYPE typeID)	{	assetObjectPtr= ptr; type=typeID;	}
 
 private:
 	char assetAbsolutePath[1024];
-	int type;
+	ASSETUSERDATA_TYPE type;
 	void* assetObjectPtr;
 };
 

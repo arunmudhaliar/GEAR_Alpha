@@ -27,7 +27,6 @@ public:
 
 	void update(float dt);
 	void render();
-	//object3d* loadFBX(const char* filename);
 
 	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
 	Camera* setDefaultCameraActive();
@@ -50,7 +49,6 @@ public:
 		return false;
 	}
 
-
 	void setMetaDataFolder(const char* metaFolder)
 	{
 		GX_STRCPY(m_szMetaDataFolder, metaFolder);
@@ -65,20 +63,15 @@ public:
 	void calculateAABB();
 
 	CTextureManager* getTextureManager()	{	return &m_cTextureManager;	}
-
-	//object3d* appendObject3dToRoot(object3d* obj);
-
-	//bool removeObject3dFromWorld(object3d* obj);
+#if 0
 	void loadTextures(object3d* obj, const char* fbxFileName);
+#endif
 
 	gxRenderer* getRenderer()	{	return &m_cRenderer;	}
 
 	void setWorldObserver(MWorldObserver* observer)	{	m_pObserverPtr = observer;	}
 
 private:
-
-
-	//std::vector<object3d*> m_cRootNodes;
 	std::vector<gxMaterial*> m_cMaterialList;
 	std::vector<gxAnimationSet*> m_vAnimationSetList;
 

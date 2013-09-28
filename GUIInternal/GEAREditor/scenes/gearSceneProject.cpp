@@ -190,7 +190,7 @@ static int find_directory(const char *dirname, geTreeNode* parentNode, Sprite2Dx
 				{
 					geTreeNode* newtvNode = new geTreeNode(parentNode, ent->d_name, &spriteArray[0]);
 
-					assetUserData* userdata = new assetUserData(99, buffer, NULL);
+					assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, buffer, NULL);
 					newtvNode->setUserData(userdata);
 
 					newtvNode->closeNode();

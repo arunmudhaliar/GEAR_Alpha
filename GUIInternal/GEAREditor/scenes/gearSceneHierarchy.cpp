@@ -156,7 +156,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 				gxAnimation* animationController = selectedObj->createAnimationController();	//wont create new if there is already an animatiion controller exists
 				animationController->appendAnimationSet(animSet);
 				selectedObj->applyAnimationSetRecursive(animationController->getAnimationSetList()->size()-1);
-				animationController->play(animationController->getAnimationSetList()->size()-1);
+				//animationController->play(animationController->getAnimationSetList()->size()-1);
 			}
 		}
 	}
@@ -300,4 +300,10 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 
 void gearSceneHierarchy::onSliderChange(geGUIBase* slider)
 {
+}
+
+geGUIBase* gearSceneHierarchy::getSelectedTreeNode()
+{
+	geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
+	return selectedNode;
 }

@@ -17,6 +17,10 @@ geWindow("World Editor")
 	m_pPlayButton = NULL;
 	m_pPauseButton = NULL;
 	m_bMonoGameInitialized=false;
+
+	m_pTranslateGizmo = NULL;
+	m_pRotateGizmo = NULL;
+	m_pScaleGizmo = NULL;
 }
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
@@ -41,15 +45,18 @@ void gearSceneWorldEditor::onCreate()
 	getToolBar()->appendToolBarControl(m_pLocalOrGlobalAxis);
 	m_bTransformThroughLocalAxis=true;
 
-	geToolBarButton* tbtn0=new geToolBarButton("t", getToolBar());
-	tbtn0->loadImage("res//icons16x16.png", 7, 153);
-	getToolBar()->appendToolBarControl(tbtn0);
-	geToolBarButton* tbtn1=new geToolBarButton("r", getToolBar());
-	tbtn1->loadImage("res//icons16x16.png", 27, 153);
-	getToolBar()->appendToolBarControl(tbtn1);
-	geToolBarButton* tbtn2=new geToolBarButton("s", getToolBar());
-	tbtn2->loadImage("res//icons16x16.png", 49, 153);
-	getToolBar()->appendToolBarControl(tbtn2);
+	m_pTranslateGizmo=new geToolBarButton("t", getToolBar());
+	m_pTranslateGizmo->loadImage("res//icons16x16.png", 7, 153);
+	m_pTranslateGizmo->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pTranslateGizmo);
+	m_pRotateGizmo=new geToolBarButton("r", getToolBar());
+	m_pRotateGizmo->loadImage("res//icons16x16.png", 27, 153);
+	m_pRotateGizmo->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pRotateGizmo);
+	m_pScaleGizmo=new geToolBarButton("s", getToolBar());
+	m_pScaleGizmo->loadImage("res//icons16x16.png", 49, 153);
+	m_pScaleGizmo->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pScaleGizmo);
 
 	m_pHorizontalSlider_LightAmbient = new geHorizontalSlider();
 	m_pHorizontalSlider_LightAmbient->create(getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
@@ -197,6 +204,17 @@ void gearSceneWorldEditor::draw()
 	sprintf(buffer, "nAnimation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*4, m_cSize.x);
 
+	geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
+	if(selectedNodeInHirarchy)
+	{
+		object3d* obj=(object3d*)selectedNodeInHirarchy->getUserData();
+		if(obj && obj->getAnimationController())
+		{
+			sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
+			geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*5, m_cSize.x);
+		}
+	}
+
 	//m_pHorizontalSlider_LightAmbient->draw();
 
 	glEnable(GL_DEPTH_TEST);
@@ -334,6 +352,13 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	}
 	//monoWrapper::mono_engine_mouseLButtonDown(m_pMainWorldPtr, x, y, nFlag);
 	if(!m_pMainWorldPtr) return true;
+
+	bool bTranslateGizmo=m_pTranslateGizmo->isButtonPressed();
+	bool bRotateGizmo=m_pRotateGizmo->isButtonPressed();
+	bool bScaleGizmo=m_pScaleGizmo->isButtonPressed();
+
+	if(!bTranslateGizmo && !bRotateGizmo && !bScaleGizmo)
+		return true;
 
 	GLdouble viewTM[16];
 	GLdouble projectionTM[16];
@@ -515,48 +540,56 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 	}
 	else if(flag&MK_LBUTTON)
 	{
-		if(m_pSelectedObj && m_iAxisSelected>0)
+		bool bTranslateGizmo=m_pTranslateGizmo->isButtonPressed();
+		bool bRotateGizmo=m_pRotateGizmo->isButtonPressed();
+		bool bScaleGizmo=m_pScaleGizmo->isButtonPressed();
+
+		if((bTranslateGizmo || bRotateGizmo || bScaleGizmo))
 		{
-			float d=camera->getPosition().length();
-					GLdouble viewTM[16];
-					GLdouble projectionTM[16];
-					for(int m=0;m<16;m++)
+			if(m_pSelectedObj && m_iAxisSelected>0)
+			{
+				float d=camera->getPosition().length();
+				GLdouble viewTM[16];
+				GLdouble projectionTM[16];
+				for(int m=0;m<16;m++)
+				{
+					viewTM[m]=m_pMainWorldPtr->getActiveCamera()->getViewMatrix()->getMatrix()[m];
+					projectionTM[m]=m_pMainWorldPtr->getActiveCamera()->getProjectionMatrix()->getMatrix()[m];
+				}
+
+				GLdouble x1, y1, z1, depth;
+				GLdouble x2, y2, z2;
+				glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth);
+				z1=z2=depth;
+
+				gxRectf viewPortRect=m_pMainWorldPtr->getRenderer()->getViewPortRect();
+				GLint viewport[4]={viewPortRect.m_pos.x, viewPortRect.m_pos.y, viewPortRect.m_size.x, viewPortRect.m_size.y}; 
+				//float ptY=Scene::getCommonData()->getScreenHeight();
+				gluUnProject(x, viewPortRect.m_size.y - y, 0, viewTM, projectionTM, viewport, &x1, &y1, &z1);
+				gluUnProject(x, viewPortRect.m_size.y - y, 1, viewTM, projectionTM, viewport, &x2, &y2, &z2);
+
+				minV.set(x1, y1, z1);
+				maxV.set(x2, y2, z2);
+
+				vector3f planeNormalArray[3]={
+
+					(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
+					(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
+					(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getYAxis():vector3f(0, 1, 0)
+				};
+
+				float pu;
+				if(intersectionOfLineSegmentAndPlane(minV, maxV, planeNormalArray[m_iAxisSelected-1], m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
+				{
+					vector3f current_pos_in_world(minV+(maxV-minV)*pu);
+					vector3f diff_in_world(current_pos_in_world-m_cMousePrevPosInWorld);
+					vector3f transformed;
+					transformed=(m_bTransformThroughLocalAxis)?(m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world):m_pSelectedObj->getWorldMatrix()->getPosition() + diff_in_world;
+					//transformed=m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world;
+
+					if(m_bTransformThroughLocalAxis)
 					{
-						viewTM[m]=m_pMainWorldPtr->getActiveCamera()->getViewMatrix()->getMatrix()[m];
-						projectionTM[m]=m_pMainWorldPtr->getActiveCamera()->getProjectionMatrix()->getMatrix()[m];
-					}
-
-					GLdouble x1, y1, z1, depth;
-					GLdouble x2, y2, z2;
-					glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth);
-					z1=z2=depth;
-
-					gxRectf viewPortRect=m_pMainWorldPtr->getRenderer()->getViewPortRect();
-					GLint viewport[4]={viewPortRect.m_pos.x, viewPortRect.m_pos.y, viewPortRect.m_size.x, viewPortRect.m_size.y}; 
-					//float ptY=Scene::getCommonData()->getScreenHeight();
-					gluUnProject(x, viewPortRect.m_size.y - y, 0, viewTM, projectionTM, viewport, &x1, &y1, &z1);
-					gluUnProject(x, viewPortRect.m_size.y - y, 1, viewTM, projectionTM, viewport, &x2, &y2, &z2);
-
-					minV.set(x1, y1, z1);
-					maxV.set(x2, y2, z2);
-
-					vector3f planeNormalArray[3]={
-
-						(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
-						(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
-						(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getYAxis():vector3f(0, 1, 0)
-					};
-
-					float pu;
-					if(intersectionOfLineSegmentAndPlane(minV, maxV, planeNormalArray[m_iAxisSelected-1], m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
-					{
-						vector3f current_pos_in_world(minV+(maxV-minV)*pu);
-						vector3f diff_in_world(current_pos_in_world-m_cMousePrevPosInWorld);
-						vector3f transformed;
-						transformed=(m_bTransformThroughLocalAxis)?(m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world):m_pSelectedObj->getWorldMatrix()->getPosition() + diff_in_world;
-						//transformed=m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world;
-
-						if(m_bTransformThroughLocalAxis)
+						if(bTranslateGizmo)
 						{
 							if(m_iAxisSelected==1)
 								m_pSelectedObj->updateLocalPositionf(transformed.x, 0, 0);
@@ -565,10 +598,31 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 							else if(m_iAxisSelected==3)
 								m_pSelectedObj->updateLocalPositionf(0, 0, transformed.z);
 						}
-						else
+						else if(bRotateGizmo)
 						{
-							vector3f right(1, 0, 0);
-							right=right*diff_in_world.x;
+							if(m_iAxisSelected==1)
+								m_pSelectedObj->rotateLocalXf(transformed.x);
+							else if(m_iAxisSelected==2)
+								m_pSelectedObj->rotateLocalYf(transformed.y);
+							else if(m_iAxisSelected==3)
+								m_pSelectedObj->rotateLocalZf(transformed.z);
+						}
+						else if(bScaleGizmo)
+						{
+							if(m_iAxisSelected==1)
+								m_pSelectedObj->scaleX(transformed.x);
+							else if(m_iAxisSelected==2)
+								m_pSelectedObj->scaleY(transformed.y);
+							else if(m_iAxisSelected==3)
+								m_pSelectedObj->scaleZ(transformed.z);
+						}
+					}
+					else
+					{
+						vector3f right(1, 0, 0);
+						right=right*diff_in_world.x;
+						if(bTranslateGizmo)
+						{
 							if(m_iAxisSelected==1)
 								m_pSelectedObj->updatePositionf(right.x, 0, 0);
 							else if(m_iAxisSelected==2)
@@ -576,9 +630,11 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 							else if(m_iAxisSelected==3)
 								m_pSelectedObj->updatePositionf(0, 0, diff_in_world.z);
 						}
-
-						m_cMousePrevPosInWorld = current_pos_in_world;
 					}
+
+					m_cMousePrevPosInWorld = current_pos_in_world;
+				}
+			}
 		}
 	}
 
@@ -631,6 +687,30 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 		else
 		{
 			m_bMonoGameInitialized=false;
+		}
+	}
+	else if(m_pTranslateGizmo==btn)
+	{
+		if(m_pTranslateGizmo->isButtonPressed())
+		{
+			m_pRotateGizmo->buttonNormal();
+			m_pScaleGizmo->buttonNormal();
+		}
+	}
+	else if(m_pRotateGizmo==btn)
+	{
+		if(m_pRotateGizmo->isButtonPressed())
+		{
+			m_pTranslateGizmo->buttonNormal();
+			m_pScaleGizmo->buttonNormal();
+		}
+	}
+	else if(m_pScaleGizmo==btn)
+	{
+		if(m_pScaleGizmo->isButtonPressed())
+		{
+			m_pRotateGizmo->buttonNormal();
+			m_pTranslateGizmo->buttonNormal();
 		}
 	}
 }

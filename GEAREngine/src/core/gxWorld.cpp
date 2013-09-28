@@ -81,6 +81,7 @@ void gxWorld::resizeWorld(float x, float y, float cx, float cy)
 	}
 }
 
+#if 0
 void gxWorld::loadTextures(object3d* obj, const char* fbxFileName)
 {
 	if(obj->getID()==100)
@@ -103,6 +104,7 @@ void gxWorld::loadTextures(object3d* obj, const char* fbxFileName)
 		loadTextures(childobj, fbxFileName);
 	}
 }
+#endif
 
 Camera* gxWorld::setDefaultCameraActive()
 {

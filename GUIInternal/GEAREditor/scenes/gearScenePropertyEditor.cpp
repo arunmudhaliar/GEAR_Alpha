@@ -7,11 +7,13 @@ geWindow("Property Editor")
 	m_pObject3dPropertyNode=NULL;
 	m_pTransformPropertyNode=NULL;
 	m_pMaterialPropertyNode=NULL;
+	m_pSaveMetaDataPropertyNode=NULL;
 
 	m_pObject3dParentNode=NULL;
 	m_pMaterialParent=NULL;
 	m_pTransformParentNode=NULL;
 	m_pAnimationParentNode=NULL;
+	m_pSaveMetaDataParentNode=NULL;
 }
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
@@ -21,10 +23,13 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	rootNode->removeTVChild(m_pTransformParentNode);
 	rootNode->removeTVChild(m_pMaterialParent);
 	rootNode->removeTVChild(m_pAnimationParentNode);
+	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
+
 	GE_DELETE(m_pObject3dParentNode);
 	GE_DELETE(m_pTransformParentNode);
 	GE_DELETE(m_pMaterialParent);
 	GE_DELETE(m_pAnimationParentNode);
+	GE_DELETE(m_pSaveMetaDataParentNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -48,11 +53,14 @@ void gearScenePropertyEditor::onCreate()
 	m_pTransformPropertyNode = new gePropertyTransform(m_pTransformParentNode, "", NULL);
 	m_pMaterialParent = new geTreeNode(rootNode, "Material", &m_cszSprites[2], 0);
 	m_pAnimationParentNode  = new geTreeNode(rootNode, "Animation", &m_cszSprites[3], 0);
+	m_pSaveMetaDataParentNode = new geTreeNode(rootNode, "Save MetaData", &m_cszSprites[0], 0);
+	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pSaveMetaDataParentNode, "", NULL);
 
 	rootNode->removeTVChild(m_pObject3dParentNode);
 	rootNode->removeTVChild(m_pTransformParentNode);
 	rootNode->removeTVChild(m_pMaterialParent);
 	rootNode->removeTVChild(m_pAnimationParentNode);
+	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
 }
 
 void gearScenePropertyEditor::onDraw()
@@ -100,6 +108,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	rootNode->removeTVChild(m_pTransformParentNode);
 	rootNode->removeTVChild(m_pMaterialParent);
 	rootNode->removeTVChild(m_pAnimationParentNode);
+	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
 
 	if(obj==NULL)
 	{
@@ -149,6 +158,9 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		}
 		rootNode->appnendTVChild(m_pAnimationParentNode);
 	}
+
+	m_pSaveMetaDataPropertyNode->populatePropertyOfObject(obj);
+	rootNode->appnendTVChild(m_pSaveMetaDataParentNode);
 
 	m_cPropertiesTreeView.refreshTreeView();
 	m_cPropertiesTreeView.resetSelectedNodePtr();

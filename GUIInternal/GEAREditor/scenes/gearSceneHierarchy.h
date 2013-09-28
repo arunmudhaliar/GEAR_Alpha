@@ -27,6 +27,8 @@ public:
 	void onButtonClicked(geGUIBase* btn);
 	void onSliderChange(geGUIBase* slider);
 
+	geGUIBase* getSelectedTreeNode();
+
 protected:
 	virtual void onCreate();
 	virtual void onDraw();

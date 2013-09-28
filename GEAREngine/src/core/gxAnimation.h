@@ -30,13 +30,20 @@ public:
 	void resume();
 	void rewind();
 	void rewindAll();
-	bool isPlaying(int animSetIndex);
+	bool isPlaying();
+
+	float getCurrentFrame()		{	return m_fCurrentFrame;	}
+	int getFrameCount()			{	return m_nFrames;		}
 
 private:
 	std::vector<gxAnimationSet*> m_vAnimationSet;
 	gxAnimationSet* m_pActiveAnimationSetPtr;		//must not delete this
 
 	bool m_bPlay;
+	int m_nFrames;
+	int m_iFPS;
+	float m_fSpeed;
+	float m_fCurrentFrame;
 };
 
 
@@ -47,7 +54,7 @@ extern "C" {
 	DllExport void gxAnimation_resume(gxAnimation* animation);
 	DllExport void gxAnimation_rewind(gxAnimation* animation);
 	DllExport void gxAnimation_rewindAll(gxAnimation* animation);
-	DllExport bool gxAnimation_isPlaying(gxAnimation* animation, int animSetIndex);
+	DllExport bool gxAnimation_isPlaying(gxAnimation* animation);
 
 	DllExport gxAnimationSet* gxAnimation_getAnimationSet(gxAnimation* animation, int index);
 	DllExport int gxAnimation_getAnimSetCount(gxAnimation* animation);

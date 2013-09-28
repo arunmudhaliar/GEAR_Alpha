@@ -33,7 +33,7 @@ public:
 
 	virtual void update(float dt);
 
-	void updateAnimationFrameToObject3d();
+	void updateAnimationFrameToObject3d(int frame);
 	virtual void render();
 
 
@@ -70,6 +70,7 @@ public:
 	gxAnimation* getAnimationController()				{	return m_pAnimationController;	}
 	gxAnimationSet* applyAnimationSetRecursive(int index);
 	void setAnimationTrack(gxAnimationTrack* track);
+	gxAnimationTrack* getAnimationTrack()	{	return m_pAnimationTrack;	}
 
 	void setFileCRC(int crc)	{	m_iFileCRC = crc;	}
 	int getFileCRC()			{	return m_iFileCRC;	}
@@ -86,6 +87,8 @@ public:
 	void setObject3dObserver(MObject3dObserver* observer)	{	m_pObject3dObserver = observer;	}
 
 protected:
+	void clearAnimTrackOnAllNodes();
+
 	char m_cszName[64];
 	int m_iObjectID;
 	object3d* m_pParentPtr;

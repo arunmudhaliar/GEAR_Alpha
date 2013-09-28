@@ -7,7 +7,7 @@
 #include <Windows.h>
 #include "../renderer/glew.h"
 #include <gl/GL.h>
-
+#include "gxDebug.h"
 //#include <gl/GLU.h>
 
 

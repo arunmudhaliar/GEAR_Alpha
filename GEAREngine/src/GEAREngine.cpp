@@ -145,6 +145,8 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d, int crc)
 	gxAnimation* animationController = obj3d->getAnimationController();
 	if(animationController)
 	{
+		std::vector<gxAnimationSet*> duplicateList;
+		std::vector<gxAnimationSet*> reinsertFromWorldList;
 		std::vector<gxAnimationSet*>* animationSetList=animationController->getAnimationSetList();
 		for(std::vector<gxAnimationSet*>::iterator it = animationSetList->begin(); it != animationSetList->end(); ++it)
 		{
@@ -159,6 +161,8 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d, int crc)
 				if(worldanimationSet->getCRCOfMeshData()==crc && strcmp(worldanimationSet->getAnimationName(), animationSet->getAnimationName())==0)
 				{
 					bFound=true;
+					duplicateList.push_back(animationSet);
+					reinsertFromWorldList.push_back(worldanimationSet);
 					break;
 				}
 			}
@@ -169,6 +173,23 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d, int crc)
 				world->appendAnimationSetToWorld(animationSet);
 			}
 		}
+
+		//destroy duplicates
+		for(std::vector<gxAnimationSet*>::iterator it = duplicateList.begin(); it != duplicateList.end(); ++it)
+		{
+			gxAnimationSet* duplicate_animationSet = *it;
+			animationSetList->erase(std::remove(animationSetList->begin(), animationSetList->end(), duplicate_animationSet), animationSetList->end());
+			GX_DELETE(duplicate_animationSet);
+		}
+		duplicateList.clear();
+
+		//reinsert any animset from world to object's animlist
+		for(std::vector<gxAnimationSet*>::iterator it = reinsertFromWorldList.begin(); it != reinsertFromWorldList.end(); ++it)
+		{
+			gxAnimationSet* reinsert_animationSet = *it;
+			animationSetList->push_back(reinsert_animationSet);
+		}
+		reinsertFromWorldList.clear();
 	}
 
 	std::vector<object3d*>* childList=obj3d->getChildList();

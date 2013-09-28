@@ -91,11 +91,7 @@ void object3d::update(float dt)
 	if(m_pAnimationController)
 	{
 		m_pAnimationController->update(dt);
-	}
-
-	if(m_pAnimationTrack)
-	{
-		updateAnimationFrameToObject3d();
+		updateAnimationFrameToObject3d((int)m_pAnimationController->getCurrentFrame());
 	}
 
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
@@ -105,13 +101,20 @@ void object3d::update(float dt)
 	}
 }
 
-void object3d::updateAnimationFrameToObject3d()
+void object3d::updateAnimationFrameToObject3d(int frame)
 {
-	matrix4x4f* trackInfo=m_pAnimationTrack->getTrack();
-	int currentFrame = m_pAnimationTrack->getCurrentFrame();
-	float* local_tm = m;
+	if(m_pAnimationTrack)
+	{
+		matrix4x4f* trackInfo=m_pAnimationTrack->getTrack();
+		if(frame<m_pAnimationTrack->getTotalFrames())
+			*(matrix4x4f*)this = trackInfo[frame];
+	}
 
-	*(matrix4x4f*)this = trackInfo[currentFrame];
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		obj->updateAnimationFrameToObject3d(frame);
+	}
 }
 
 void object3d::render()
@@ -223,10 +226,22 @@ object3d* object3d::find(const char* name)
 	return NULL;
 }
 
+void object3d::clearAnimTrackOnAllNodes()
+{
+	setAnimationTrack(NULL);
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		obj->clearAnimTrackOnAllNodes();
+	}
+}
+
 gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
 {
 	if(m_pAnimationController==NULL)
 		return NULL;
+
+	clearAnimTrackOnAllNodes();
 
 	gxAnimationSet* animSet=m_pAnimationController->getAnimationSetList()->at(index);
 	std::vector<gxAnimationTrack*>* trackList=animSet->getTrackList();
@@ -237,6 +252,10 @@ gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
 		if(obj_found)
 		{
 			obj_found->setAnimationTrack(animationTrack);
+		}
+		else
+		{
+			DEBUG_PRINT("object3d instance not found for track %s", animationTrack->getName());
 		}
 	}
 

@@ -3,7 +3,6 @@
 #include "../../GEAREngine/src/util/gxFile.h"
 #include "../../GEAREngine/src/lpng151/png.h"
 #include "../../GEAREngine/src/tga/Tga.h"
-#include "../../GEAREngine/src/core/gxMetaStructures.h"
 #include "../../GEAREngine/src/util/Crc32.h"
 #include "../../GEAREngine/src/fbxImporter/fbxImporter.h"
 #include "../../GEAREngine/src/util/gxUtil.cpp"
@@ -337,6 +336,44 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
     return ok;
 }
 
+void AssetImporter::readMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile, struct stat& fst)
+{
+	memset(&metaHeader, 0, sizeof(metaHeader));
+	metaFile.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+	metaFile.CloseFile();
+
+	fst.st_atime = metaHeader.lastaccessed;
+	fst.st_mtime = metaHeader.lastmodified;
+	fst.st_ctime = metaHeader.lastchanged;
+}
+
+bool AssetImporter::readMetaHeader(int crc, stMetaHeader& metaHeader, struct stat& fst)
+{
+	char crcFileName[512];
+	sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc);
+
+	memset(&metaHeader, 0, sizeof(metaHeader));
+	gxFile metaFile;
+	if(metaFile.OpenFile(crcFileName))
+	{
+		metaFile.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+		metaFile.CloseFile();
+
+		fst.st_atime = metaHeader.lastaccessed;
+		fst.st_mtime = metaHeader.lastmodified;
+		fst.st_ctime = metaHeader.lastchanged;
+
+		return true;
+	}
+
+	return false;
+}
+
+void AssetImporter::writeMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile)
+{
+	metaFile.WriteBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+}
+
 int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char* crcFileName, struct stat srcStat)
 {
 	std::vector<gxMaterial*> materialList;
@@ -352,21 +389,7 @@ int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char*
 	}
 
 	//
-	gxFile file_meta;
-	if(file_meta.OpenFile(crcFileName, gxFile::FILE_w))
-	{
-		stMetaHeader metaHeader;
-		metaHeader.filetype=eMeta3DFile;
-		metaHeader.lastaccessed = srcStat.st_atime;
-		metaHeader.lastmodified = srcStat.st_mtime;
-		metaHeader.lastchanged = srcStat.st_ctime;
-
-		//write the meta header
-		file_meta.WriteBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
-		obj3d->write(file_meta);
-		//write the texture header
-		file_meta.CloseFile();
-	}
+	saveObject3DToMetaData(crcFileName, obj3d, srcStat);
 	//
 
 	materialList.clear();
@@ -375,6 +398,25 @@ int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char*
 	GX_DELETE(obj3d);
 
 	return 1;
+}
+
+void AssetImporter::saveObject3DToMetaData(const char* crcFileName, object3d* obj3d, struct stat& fst)
+{
+	gxFile file_meta;
+	if(file_meta.OpenFile(crcFileName, gxFile::FILE_w))
+	{
+		stMetaHeader metaHeader;
+		metaHeader.filetype=eMeta3DFile;
+		metaHeader.lastaccessed = fst.st_atime;
+		metaHeader.lastmodified = fst.st_mtime;
+		metaHeader.lastchanged = fst.st_ctime;
+
+		//write the meta header
+		file_meta.WriteBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+		obj3d->write(file_meta);
+		//write the texture header
+		file_meta.CloseFile();
+	}
 }
 
 int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMaterial* material)
@@ -427,26 +469,32 @@ int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMate
 		if(bCreateMetaFile)
 		{
 			gxFile file_meta;
-			if(file_meta.OpenFile(crcFileName, gxFile::FILE_w))
-			{
-				stMetaHeader metaHeader;
-				metaHeader.filetype=eMetaMaterial;
-				metaHeader.lastaccessed = fst.st_atime;
-				metaHeader.lastmodified = fst.st_mtime;
-				metaHeader.lastchanged = fst.st_ctime;
-
-				//write the meta header
-				file_meta.WriteBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
-
-				//write the material header
-				material->setFileCRC(crc32);
-				material->write(file_meta);
-				file_meta.CloseFile();
-			}
+			material->setFileCRC(crc32);
+			saveMaterialToMetaData(crcFileName, material, fst);
 		}
 	}
 
 	return 1;
+}
+
+void AssetImporter::saveMaterialToMetaData(const char* crcFileName, gxMaterial* material, struct stat& fst)
+{
+	gxFile file_meta;
+	if(file_meta.OpenFile(crcFileName, gxFile::FILE_w))
+	{
+		stMetaHeader metaHeader;
+		metaHeader.filetype=eMetaMaterial;
+		metaHeader.lastaccessed = fst.st_atime;
+		metaHeader.lastmodified = fst.st_mtime;
+		metaHeader.lastchanged = fst.st_ctime;
+
+		//write the meta header
+		file_meta.WriteBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+		//write the material header
+		material->write(file_meta);
+		file_meta.CloseFile();
+	}
 }
 
 int AssetImporter::import_tga_to_metadata(const char* tga_file_name, const char* crcFileName, struct stat srcStat)

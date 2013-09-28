@@ -78,6 +78,7 @@ public:
 
 	gxTexture* getTexture()					{	return m_pTexture;	}
 
+#if 0
 	gxTexture* loadTextureFromDirectory(CTextureManager& textureManager, const char* directory)
 	{
 		if(strlen(m_szTextureName)==0)
@@ -114,6 +115,7 @@ public:
 
 		return NULL;
 	}
+#endif
 
 	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename)
 	{
@@ -138,7 +140,9 @@ public:
 			stTexturePacket* texturePack=textureManager.LoadTexture(metaDataFileName);
 			if(texturePack)
 			{
+				//delete old texture instance
 				GX_DELETE(m_pTexture);
+
 				m_pTexture = new gxTexture();
 				m_pTexture->setTexture(texturePack);
 				if(texturePack->bAlphaTex)

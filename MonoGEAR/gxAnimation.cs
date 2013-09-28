@@ -29,7 +29,7 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gxAnimation_rewindAll(IntPtr animation);
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool gxAnimation_isPlaying(IntPtr animation, int animSetIndex);
+        public static extern bool gxAnimation_isPlaying(IntPtr animation);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr gxAnimation_getAnimationSet(IntPtr animation, int index);
@@ -73,9 +73,9 @@ namespace MonoGEAR
             gxAnimation_rewindAll(m_pAnimationHandle);
         }
 
-        public bool isPlaying(int animSetIndex)
+        public bool isPlaying()
         {
-            return gxAnimation_isPlaying(m_pAnimationHandle, animSetIndex);
+            return gxAnimation_isPlaying(m_pAnimationHandle);
         }
 
         public int getAnimationSetCount()

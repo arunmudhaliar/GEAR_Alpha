@@ -9,6 +9,7 @@
 #include "propertyViews\gePropertyTransform.h"
 #include "propertyViews\gePropertyMaterial.h"
 #include "propertyViews\gePropertyAnimationSet.h"
+#include "propertyViews\gePropertySaveMetaData.h"
 
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {
@@ -37,10 +38,12 @@ private:
 	geTreeNode* m_pTransformParentNode;
 	geTreeNode* m_pMaterialParent;
 	geTreeNode* m_pAnimationParentNode;
+	geTreeNode* m_pSaveMetaDataParentNode;
 
 	gePropertyObject3d* m_pObject3dPropertyNode;
 	gePropertyTransform* m_pTransformPropertyNode;
 	gePropertyMaterial* m_pMaterialPropertyNode;
+	gePropertySaveMetaData* m_pSaveMetaDataPropertyNode;
 };
 
 #endif

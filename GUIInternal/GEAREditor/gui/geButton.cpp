@@ -104,7 +104,7 @@ void geButton::draw()
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
 	drawRect(&m_cVBClientArea);
 	drawLine(m_cVBClientAreaLine, 0.1, 0.1, 0.1, 1.0f);
-	geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 10, geGUIManager::g_pFontArial12Ptr->getLineHeight()-5, m_cSize.x);
+	geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 10, geGUIManager::g_pFontArial12Ptr->getLineHeight()-2, m_cSize.x);
 	glPopMatrix();
 }
 	

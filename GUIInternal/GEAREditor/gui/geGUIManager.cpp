@@ -21,7 +21,7 @@ geGUIManager::~geGUIManager()
 void geGUIManager::init()
 {
 	g_cFontManager.init(rendererBase::gl_fixed_pipeline);
-	g_pFontArial12Ptr=g_cFontManager.loadFont("res//fonts//arial13.ecf");
+	g_pFontArial12Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_84.ecf");
 	m_cLayoutManager.create(0, 0, 1184, 567);
 }
 

@@ -336,15 +336,16 @@ int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     glTexCoordPointer(2, GL_FLOAT, 0, m_cszTexCoordList);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, m_iTexID);
-    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     
     //arun_commenting_alphatest glEnable(GL_ALPHA_TEST);
     //arun_commenting_alphatest glAlphaFuncx(GL_GREATER, 6553); //0.1f
 	glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE);
 
     glPushMatrix();
     if(bShadowed)

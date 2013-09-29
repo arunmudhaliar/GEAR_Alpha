@@ -209,7 +209,8 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d, int crc)
 extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename)
 {
 	object3d* root_object_node=NULL;
-	if (gxUtil::GX_IS_EXTENSION(filename, ".fbx") || gxUtil::GX_IS_EXTENSION(filename, ".FBX"))
+	if (gxUtil::GX_IS_EXTENSION(filename, ".fbx") || gxUtil::GX_IS_EXTENSION(filename, ".FBX") ||
+		gxUtil::GX_IS_EXTENSION(filename, ".prefab") || gxUtil::GX_IS_EXTENSION(filename, ".PREFAB"))
 	{
 		object3d* obj = NULL;
 		char metaInfoFileName[256];

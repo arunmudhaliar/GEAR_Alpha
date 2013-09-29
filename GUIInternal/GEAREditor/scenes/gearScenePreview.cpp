@@ -39,9 +39,12 @@ void gearScenePreview::draw()
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse );
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular );
 
+	glEnable(GL_COLOR_MATERIAL);
+	glColor4f(0.7f, 0.7f, 0.7f, 1.0f);
 	glPushMatrix();
 	onDraw();
 	glPopMatrix();
+	glDisable(GL_COLOR_MATERIAL);
 
 	glDisable(GL_LIGHT0);
 	glDisable(GL_LIGHTING);

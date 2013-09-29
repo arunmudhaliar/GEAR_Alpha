@@ -400,7 +400,7 @@ int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char*
 	return 1;
 }
 
-void AssetImporter::saveObject3DToMetaData(const char* crcFileName, object3d* obj3d, struct stat& fst)
+bool AssetImporter::saveObject3DToMetaData(const char* crcFileName, object3d* obj3d, struct stat& fst)
 {
 	gxFile file_meta;
 	if(file_meta.OpenFile(crcFileName, gxFile::FILE_w))
@@ -416,7 +416,10 @@ void AssetImporter::saveObject3DToMetaData(const char* crcFileName, object3d* ob
 		obj3d->write(file_meta);
 		//write the texture header
 		file_meta.CloseFile();
+		return true;
 	}
+
+	return false;
 }
 
 int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMaterial* material)
@@ -477,7 +480,7 @@ int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMate
 	return 1;
 }
 
-void AssetImporter::saveMaterialToMetaData(const char* crcFileName, gxMaterial* material, struct stat& fst)
+bool AssetImporter::saveMaterialToMetaData(const char* crcFileName, gxMaterial* material, struct stat& fst)
 {
 	gxFile file_meta;
 	if(file_meta.OpenFile(crcFileName, gxFile::FILE_w))
@@ -494,7 +497,9 @@ void AssetImporter::saveMaterialToMetaData(const char* crcFileName, gxMaterial* 
 		//write the material header
 		material->write(file_meta);
 		file_meta.CloseFile();
+		return true;
 	}
+	return false;
 }
 
 int AssetImporter::import_tga_to_metadata(const char* tga_file_name, const char* crcFileName, struct stat srcStat)

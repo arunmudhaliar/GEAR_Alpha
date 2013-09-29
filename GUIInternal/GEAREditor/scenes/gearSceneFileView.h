@@ -26,6 +26,7 @@ protected:
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 	virtual void onTextChange(geGUIBase* btn);
+	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
 private:
 	void destroyTVUserData(geGUIBase* parent);
 

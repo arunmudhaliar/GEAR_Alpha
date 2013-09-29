@@ -89,7 +89,8 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 	{
 		const char* absolutePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
 
-		if (util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX"))
+		if (util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX") ||
+			util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
 		{
 			object3d* obj = monoWrapper::mono_engine_loadAndAppendFBX(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
 			//if(obj)

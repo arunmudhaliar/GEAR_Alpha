@@ -50,6 +50,9 @@ void gearSceneFileView::onCreate()
 	m_cszSprites[3].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[3].setClip(68, 110, 16, 16);
 
+	m_cszSprites[4].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[4].setClip(110, 238, 16, 16);
+
 }
 
 void gearSceneFileView::onDraw()
@@ -110,7 +113,8 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 	if(obj==NULL)
 	{
 		const char* absolutePath=((assetUserData*)tvnode->getUserData())->getAssetAbsolutePath();
-		if(util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX"))
+		if(util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX") ||
+			util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
 		{
 			char metaInfoFileName[256];
 			sprintf(metaInfoFileName, "%s.meta",absolutePath);
@@ -231,6 +235,49 @@ void gearSceneFileView::onTextChange(geGUIBase* textBox)
 		populateFiles(m_szDirectoryPath);
 }
 
+void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
+{
+	geTreeNode* rootNode = m_cFileTreeView.getRoot();
+	geGUIBase* droppedDataObject = dropObject->getActualData();
+
+	if(dropObject->getSourcePtr()==EditorApp::getSceneHierarchy())
+	{
+		object3d* obj=(object3d*)droppedDataObject->getUserData();
+		//create prefab
+		const char* prefabFileName="test.prefab";
+		char absolutepath[512];
+		sprintf(absolutepath, "%s/%s", m_szDirectoryPath, prefabFileName);
+		int crc32 = AssetImporter::calcCRC32((unsigned char*)absolutepath);
+		gxFile prefabFile;
+		if(prefabFile.OpenFile(absolutepath, gxFile::FILE_w))
+		{
+			prefabFile.CloseFile();
+
+			struct stat fst;
+			memset(&fst, 0, sizeof(fst));
+			if(stat(absolutepath, &fst)==0) 
+			{
+				char crcFileName[512];
+				sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc32);
+
+				obj->setFileCRC(crc32);
+				if(AssetImporter::saveObject3DToMetaData(crcFileName, obj, fst))
+				{
+					//create the meta-info file
+					gxFile metaInfoFile;
+					char metaInfoFileName[512];
+					sprintf(metaInfoFileName, "%s/%s.meta", m_szDirectoryPath, prefabFileName);
+					if(metaInfoFile.OpenFile(metaInfoFileName, gxFile::FILE_w))
+					{
+						metaInfoFile.Write(crc32);
+						metaInfoFile.CloseFile();
+					}
+				}
+			}
+		}
+	}
+}
+
 static const char* STRCHR_nocase(const char* str, char value)
 {
 	for(int x=0;x<strlen(str);x++)
@@ -340,6 +387,8 @@ static int find_files(const char *dirname, const char* searchString, geTreeNode*
 							sprite=&spriteArray[2];
 						else if(util::GE_IS_EXTENSION(buffer, ".mat") || util::GE_IS_EXTENSION(buffer, ".MAT"))
 							sprite=&spriteArray[3];
+						else if(util::GE_IS_EXTENSION(buffer, ".prefab") || util::GE_IS_EXTENSION(buffer, ".PREFAB"))
+							sprite=&spriteArray[4];
 						else
 							sprite=&spriteArray[1];
 

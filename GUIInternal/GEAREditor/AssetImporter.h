@@ -18,8 +18,8 @@ public:
 	static int import_material_to_metadata(const char* fbx_file_name, gxMaterial* material);
 
 	//save to crc
-	static void saveMaterialToMetaData(const char* crcFileName, gxMaterial* material, struct stat& fst);
-	static void saveObject3DToMetaData(const char* crcFileName, object3d* obj3d, struct stat& fst);
+	static bool saveMaterialToMetaData(const char* crcFileName, gxMaterial* material, struct stat& fst);
+	static bool saveObject3DToMetaData(const char* crcFileName, object3d* obj3d, struct stat& fst);
 
 	static bool readMetaHeader(int crc, stMetaHeader& metaHeader, struct stat& fst);
 	static void readMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile, struct stat& fst);

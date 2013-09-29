@@ -87,12 +87,10 @@ bool rendererBase::setupRenderer()
 	}
 	
 	glewInit();
-	//if (!GLEW_VERSION_2_0)
-	//{
-	//	//MessageBox(NULL, "OpenGL 2.0 not supported. Shaders won't work !!!", "ERROR", MB_OK|MB_ICONEXCLAMATION);
-	//}
-
-	//MessageBox(NULL, "OpenGL 2.0 not supported. Shaders won't work !!!", "ERROR", MB_OK|MB_ICONEXCLAMATION);
+	if (!GLEW_VERSION_2_0)
+	{
+		MessageBox(NULL, "OpenGL 2.0 not supported. Shaders won't work !!!", "ERROR", MB_OK|MB_ICONEXCLAMATION);
+	}
 #endif
 
 	return true;

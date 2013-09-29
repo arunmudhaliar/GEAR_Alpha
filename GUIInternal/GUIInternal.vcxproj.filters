@@ -84,9 +84,6 @@
     <ClInclude Include="GEAREditor\renderer\matrix4x4f.h">
       <Filter>GEAREditor\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="GEAREditor\renderer\myDLL.h">
-      <Filter>GEAREditor\renderer</Filter>
-    </ClInclude>
     <ClInclude Include="GEAREditor\renderer\renderer.h">
       <Filter>GEAREditor\renderer</Filter>
     </ClInclude>
@@ -256,9 +253,6 @@
     </ClCompile>
     <ClCompile Include="GUIInternal.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GEAREditor\renderer\myDLL.cpp">
-      <Filter>GEAREditor\renderer</Filter>
     </ClCompile>
     <ClCompile Include="GEAREditor\renderer\renderer.cpp">
       <Filter>GEAREditor\renderer</Filter>

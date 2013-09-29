@@ -187,7 +187,8 @@ void gearSceneWorldEditor::draw()
 	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (rendererGL10::g_pRendererGL10->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D((int)0, (int)(m_cSize.x), (int)(m_cSize.y-getTopMarginOffsetHeight()), (int)0);
+	//gluOrtho2D((int)0, (int)(m_cSize.x), (int)(m_cSize.y-getTopMarginOffsetHeight()), (int)0);
+	glOrtho((int)0, (int)(m_cSize.x), (int)(m_cSize.y-getTopMarginOffsetHeight()), (int)0, -100, 100);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -215,9 +216,29 @@ void gearSceneWorldEditor::draw()
 		}
 	}
 
-	//m_pHorizontalSlider_LightAmbient->draw();
-
 	glEnable(GL_DEPTH_TEST);
+
+	//
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	gxWorld* world = monoWrapper::mono_engine_getWorld(0);
+	matrix4x4f cameramatrix(*world->getActiveCamera()->getInverseTMViewMatrix());
+	cameramatrix.setPosition(0, 0, 0);
+	//cameramatrix.setXAxis(-cameramatrix.getXAxis());
+	//cameramatrix.setYAxis(-cameramatrix.getYAxis());
+	cameramatrix.setZAxis(-cameramatrix.getZAxis());
+
+	glPushMatrix();
+	glTranslatef(m_cSize.x-50, 50, 0);
+	glMultMatrixf(cameramatrix.getMatrix());
+	glColor3f(1, 1, 1);
+	glutSolidCube(10);
+	geUtil::drawGizmoCones(60);
+	glPopMatrix();
+	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);
+	//
+
 	glPopMatrix();
 	//
 }

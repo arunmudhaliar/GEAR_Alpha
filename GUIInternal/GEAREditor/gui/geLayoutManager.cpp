@@ -359,3 +359,10 @@ bool geLayoutManager::onKeyUp(int charValue, int flag)
 
 	return false;
 }
+
+void geLayoutManager::onCommand(int cmd)
+{
+	if(m_pSelectedLayout)
+		return m_pSelectedLayout->DoCommand(cmd);
+
+}

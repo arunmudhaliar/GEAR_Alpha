@@ -67,5 +67,7 @@ private:
 public:
 	static ERENDERER g_eRenderingTechnique;
     static unsigned int g_nTrisRendered;
+	static int g_iOGLMajorVersion;
+	static int g_iOGLMinorVersion;
 };
 #endif

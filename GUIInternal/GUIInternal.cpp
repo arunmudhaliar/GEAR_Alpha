@@ -195,6 +195,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
+		m_cEditorApp.DoCommand(wmId);
 		// Parse the menu selections:
 		switch (wmId)
 		{

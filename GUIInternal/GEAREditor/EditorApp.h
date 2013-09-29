@@ -40,6 +40,8 @@ public:
 	bool KeyDown(int charValue, int flag);
 	bool KeyUp(int charValue, int flag);
 
+	void DoCommand(int cmd);
+
 	static int createNewProject(const char* projectDirectory);
 	bool importAssetToMetaData(HWND hWnd, HINSTANCE hInst);
 

@@ -103,3 +103,9 @@ bool geGUIManager::KeyUp(int charValue, int flag)
 {
 	return m_cLayoutManager.KeyUp(charValue, flag);
 }
+
+void geGUIManager::DoCommand(int cmd)
+{
+	m_cLayoutManager.DoCommand(cmd);
+
+}

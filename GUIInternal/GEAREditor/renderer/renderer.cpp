@@ -1,8 +1,10 @@
-#include "renderer.h"
+﻿#include "renderer.h"
 
 
 rendererBase::ERENDERER rendererBase::g_eRenderingTechnique=gl_fixed_pipeline;
 unsigned int rendererBase::g_nTrisRendered=0;
+int rendererBase::g_iOGLMajorVersion=0;
+int rendererBase::g_iOGLMinorVersion=0;
 
 #ifdef _WIN32
 rendererBase::rendererBase(HWND hWnd, ERENDERER technique):
@@ -91,6 +93,12 @@ bool rendererBase::setupRenderer()
 	{
 		MessageBox(NULL, "OpenGL 2.0 not supported. Shaders won't work !!!", "ERROR", MB_OK|MB_ICONEXCLAMATION);
 	}
+
+	glGetIntegerv(GL_MAJOR_VERSION, &g_iOGLMajorVersion);
+	glGetIntegerv(GL_MINOR_VERSION, &g_iOGLMinorVersion);
+
+	//glGetIntegerv​(GL_MAJOR_VERSION​, &major_version);
+	//glGetIntegerv​(GL_MINOR_VERSION​, &minor_version);
 #endif
 
 	return true;

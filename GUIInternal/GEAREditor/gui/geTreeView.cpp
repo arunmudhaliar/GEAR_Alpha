@@ -494,6 +494,22 @@ void geTreeView::onDragDrop(int x, int y, MDataObject* dropObject)
 	geGUIBase::onDragDrop(x, y, dropObject);
 }
 
+void geTreeView::onCommand(int cmd)
+{
+	geGUIBase* selectedNode = getSelectedNode();
+	if(selectedNode)
+		selectedNode->DoCommand(cmd);
+	//std::vector<geGUIBase*>* list=selectedNode->getChildControls();
+	//for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
+	//{
+	//	geGUIBase* obj = *it;
+	//	float xxx=x-(/*getPos().x+*/selectedNode->getPos().x+xoff)+m_pRootNode->getXOffset();
+	//	float yyy=y-(/*getPos().y+*/selectedNode->getPos().y/*+getTopMarginOffsetHeight()*/+yoff+GE_TREEVIEWNODE_CY);
+
+	//	obj->DragDrop(xxx, yyy, dropObject);
+	//}
+}
+
 bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	if(m_cVerticalScrollBar.MouseLButtonDown(x, y, nFlag))

@@ -354,6 +354,13 @@ bool EditorApp::KeyUp(int charValue, int flag)
 	return m_cGUIManager.KeyUp(charValue, flag);
 }
 
+void EditorApp::DoCommand(int cmd)
+{
+	if(!m_bInitialised) return;
+
+	m_cGUIManager.DoCommand(cmd);
+}
+
 LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(Msg)
@@ -381,3 +388,4 @@ LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, 
 
 	return FALSE;
 }
+

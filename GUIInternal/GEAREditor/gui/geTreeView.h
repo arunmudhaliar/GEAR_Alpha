@@ -111,6 +111,8 @@ protected:
 
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
 
+	virtual void onCommand(int cmd);
+
 	virtual void onCancelEngagedControls();
 	virtual void onFocusLost();
 	virtual void onResizeComplete();

@@ -440,6 +440,20 @@ geVector2f geGUIBase::getAbsolutePositionOnScreen()
 	return geVector2f();
 }
 
+geVector2f geGUIBase::getPositionOnScreen()
+{
+	geGUIBase* baseGUI=this;
+	geVector2f absPos;
+	while(baseGUI)
+	{
+		absPos=absPos+baseGUI->getPos();//+baseGUI->getAbsolutePositionOnScreen();
+		absPos.y-=(/*-baseGUI->getTopMarginOffsetHeight()+*/baseGUI->getTitleOffsetHeight());
+		baseGUI=baseGUI->getParent();
+	}
+
+	return absPos;
+}
+
 void geGUIBase::focusLost()
 {
 	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
@@ -566,4 +580,20 @@ bool geGUIBase::isNodeExistsInTree(geGUIBase* node)
 	}
 
 	return false;
+}
+
+void geGUIBase::DoCommand(int cmd)
+{
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* obj = *it;
+		obj->DoCommand(cmd);
+	}
+
+	return onCommand(cmd);
+}
+
+void geGUIBase::onCommand(int cmd)
+{
+
 }

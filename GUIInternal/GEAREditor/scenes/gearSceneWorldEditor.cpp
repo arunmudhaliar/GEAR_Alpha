@@ -1,4 +1,4 @@
-#include "gearSceneWorldEditor.h"
+﻿#include "gearSceneWorldEditor.h"
 #include "../EditorApp.h"
 #include "../core/Timer.h"
 #include "../gui/geToolBarSeperator.h"
@@ -57,6 +57,9 @@ void gearSceneWorldEditor::onCreate()
 	m_pScaleGizmo->loadImage("res//icons16x16.png", 49, 153);
 	m_pScaleGizmo->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pScaleGizmo);
+
+	//enable translate gizmo
+	m_pTranslateGizmo->buttonPressed();
 
 	m_pHorizontalSlider_LightAmbient = new geHorizontalSlider();
 	m_pHorizontalSlider_LightAmbient->create(getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
@@ -195,15 +198,18 @@ void gearSceneWorldEditor::draw()
 	glPushMatrix();
 	glTranslatef(0, 0, -1);
 	char buffer[32];
-	sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
+
 	glDisable(GL_DEPTH_TEST);
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+	sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+	sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*3, m_cSize.x);
 	sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*2, m_cSize.x);
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*4, m_cSize.x);
 	sprintf(buffer, "nMaterial : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*3, m_cSize.x);
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*5, m_cSize.x);
 	sprintf(buffer, "nAnimation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*4, m_cSize.x);
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*6, m_cSize.x);
 
 	geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
 	if(selectedNodeInHirarchy)
@@ -212,7 +218,7 @@ void gearSceneWorldEditor::draw()
 		if(obj && obj->getAnimationController())
 		{
 			sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
-			geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*5, m_cSize.x);
+			geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*7, m_cSize.x);
 		}
 	}
 

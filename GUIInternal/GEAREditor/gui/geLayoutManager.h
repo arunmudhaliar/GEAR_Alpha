@@ -43,6 +43,8 @@ protected:
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);
 
+	virtual void onCommand(int cmd);
+
 private:
 	stVertexBuffer m_cVBClientArea;
 	geLayout* m_pSelectedLayout;

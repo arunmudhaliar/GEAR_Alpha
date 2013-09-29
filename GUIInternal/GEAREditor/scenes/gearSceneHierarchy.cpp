@@ -58,7 +58,8 @@ bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 	//	return;
 
 	geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
-	if((flag&MK_LBUTTON) && selectedNode)
+	geTreeNode* nodeAtMousePos=m_cGameObjectsTreeView.getTVNode(x, y);
+	if((flag&MK_LBUTTON) && selectedNode && selectedNode==nodeAtMousePos)
 	{
 		if(m_cGameObjectsTreeView.getScrollBar()->isScrollBarGrabbed())
 			return true;
@@ -286,16 +287,16 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 {
 	if(m_pCreateToolBarDropMenuBtnPtr==btn)
 	{
+		HMENU hPopupMenu = CreatePopupMenu();
+		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");
 		geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
-		if(selectedNode)
-		{
-			object3d* obj=(object3d*)selectedNode->getUserData();
-			object3d* emptyObject=engine_createEmptyObject3d(obj, "EmptyObject");
-		}
-		else
-		{
-			object3d* emptyObject=engine_createEmptyObject3d(monoWrapper::mono_engine_getWorld(0), "EmptyObject");
-		}
+		int disableFlag = (selectedNode)?0:MF_DISABLED;
+		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING | disableFlag, 0x00004001, "Create Object on Selected Node");
+		POINT pt;
+		pt.x=btn->getPositionOnScreen().x;
+		pt.y=-btn->getPositionOnScreen().y;
+		ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
+		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
 	}
 }
 
@@ -307,4 +308,19 @@ geGUIBase* gearSceneHierarchy::getSelectedTreeNode()
 {
 	geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
 	return selectedNode;
+}
+
+void gearSceneHierarchy::onCommand(int cmd)
+{
+	if(cmd==0x00004000)
+		object3d* emptyObject=engine_createEmptyObject3d(monoWrapper::mono_engine_getWorld(0), "EmptyObject");
+	else if(cmd==0x00004001)
+	{
+		geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
+		if(selectedNode)
+		{
+			object3d* obj=(object3d*)selectedNode->getUserData();
+			object3d* emptyObject=engine_createEmptyObject3d(obj, "EmptyObject");
+		}
+	}
 }

@@ -15,8 +15,12 @@
 #include "assetUserData.h"
 #include "../../../GEAREngine/src/core/gxMetaStructures.h"
 #include "../../../GEAREngine/src/core/gxAnimationSet.h"
+#include <Windows.h>
+#include "../../resource.h"
 
 static int find_files(const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
+LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
+char g_cszPrefabName[256];
 
 gearSceneFileView::gearSceneFileView():
 geWindow("File View")
@@ -242,9 +246,14 @@ void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
 
 	if(dropObject->getSourcePtr()==EditorApp::getSceneHierarchy())
 	{
+		if(DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INPUT_DLG), EditorApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(Proj_InputDlgProc))==IDCANCEL)
+		{
+			return;
+		}
 		object3d* obj=(object3d*)droppedDataObject->getUserData();
 		//create prefab
-		const char* prefabFileName="test.prefab";
+		char prefabFileName[512];
+		sprintf(prefabFileName, "%s.prefab", g_cszPrefabName);
 		char absolutepath[512];
 		sprintf(absolutepath, "%s/%s", m_szDirectoryPath, prefabFileName);
 		int crc32 = AssetImporter::calcCRC32((unsigned char*)absolutepath);
@@ -271,6 +280,9 @@ void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
 					{
 						metaInfoFile.Write(crc32);
 						metaInfoFile.CloseFile();
+
+						//repopulate the file view
+						populateFiles(m_szDirectoryPath);
 					}
 				}
 			}
@@ -427,4 +439,59 @@ static int find_files(const char *dirname, const char* searchString, geTreeNode*
     }
 
     return ok;
+}
+
+LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+	switch(Msg)
+	{
+	case WM_INITDIALOG:
+		{
+			//read the recent dialog
+			memset(g_cszPrefabName, 0, sizeof(g_cszPrefabName));
+			strcpy(g_cszPrefabName, "PrefabName");
+			SetDlgItemText(hWndDlg, IDC_EDIT_INPUT_NAME, g_cszPrefabName);
+			//SendDlgItemMessage(hWndDlg, IDC_EDIT_INPUT_NAME, WM_SETFOCUS,NULL,NULL);
+			SendDlgItemMessage(hWndDlg, IDC_EDIT_INPUT_NAME, EM_SETSEL, 0, -1);
+			return TRUE;
+		}
+		break;
+	case WM_COMMAND:
+		switch(wParam)
+		{
+			case IDOK:
+			{
+				GetDlgItemText(hWndDlg, IDC_EDIT_INPUT_NAME, g_cszPrefabName, sizeof(g_cszPrefabName));
+				char* trimmed=geUtil::trimwhitespace(g_cszPrefabName);
+				if(strlen(trimmed))
+				{
+					char temp[256];
+					strcpy(temp,trimmed);
+					strcpy(g_cszPrefabName,temp);
+
+					EndDialog(hWndDlg, IDOK);
+				}
+				else
+					EndDialog(hWndDlg, IDCANCEL);
+				return true;
+			}
+			break;
+
+			case IDCANCEL:
+			{
+				EndDialog(hWndDlg, IDCANCEL);
+				return true;
+			}
+			break;
+		}
+		break;
+
+	case WM_CLOSE:
+		{
+			return EndDialog(hWndDlg, IDCANCEL);
+		}
+		break;
+	}
+
+	return FALSE;
 }

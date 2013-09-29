@@ -42,6 +42,8 @@ protected:
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);
 
+	virtual void onCommand(int cmd);
+
 private:
 	void destroyTVUserData(geGUIBase* parent);
 	void createTVNode(geTreeNode* parentNode, object3d* obj, const char* filename);

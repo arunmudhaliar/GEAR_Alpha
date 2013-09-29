@@ -93,6 +93,8 @@ public:
 	bool KeyDown(int charValue, int flag);
 	bool KeyUp(int charValue, int flag);
 
+	void DoCommand(int cmd);
+
 	void CancelEngagedControls();
 
 	geGUIBase* getParent()	{	return m_pParentPtr;	}
@@ -108,6 +110,7 @@ public:
 	bool isSizable()			{	return m_bSizable;	}
 	void setSizable(bool flag)	{	m_bSizable=flag;	}
 	virtual geVector2f getAbsolutePositionOnScreen();
+	geVector2f getPositionOnScreen();
 
 	void focusLost();
 	void resizeComplete();
@@ -156,6 +159,8 @@ protected:
 	virtual bool onKeyUp(int charValue, int flag);
 
 	virtual void onSetName();
+
+	virtual void onCommand(int cmd);
 
 	void drawRect(stVertexBuffer* vbuffer);
 	void drawRect(stVertexBuffer* vbuffer, float* textureCoord, unsigned int texID);

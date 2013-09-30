@@ -167,31 +167,3 @@ void rendererBase::swapGLBuffer()
 	SwapBuffers(m_hDC);
 #endif
 }
-
-
-void rendererBase::setProjectionMatrixToGL(geMatrix4x4f* matrix)
-{
-	m_pProjectionMatrixPtr=matrix;
-#if defined (USE_ProgrammablePipeLine)
-#else
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(matrix->getMatrix());
-    glMatrixMode(GL_MODELVIEW);
-#endif
-}
-
-/*void rendererBase::setViewMatrixToGL(matrix4x4f* matrix)
-{
-	m_pViewMatrixPtr=matrix;
-#if defined (USE_ProgrammablePipeLine)
-#else
-    glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixf(matrix->getMatrix());
-#endif
-}
-
-void rendererBase::setViewProjectionMatrix(matrix4x4f* matrix)
-{
-	m_pViewProjectionMatrixPtr=matrix;
-}
-*/

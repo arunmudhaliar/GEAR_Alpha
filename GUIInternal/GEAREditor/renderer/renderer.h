@@ -32,19 +32,9 @@ public:
 
 	void swapGLBuffer();
 
-	void setProjectionMatrixToGL(geMatrix4x4f* matrix);
-	//void setViewMatrixToGL(geMatrix4x4f* matrix);
-	//void setViewProjectionMatrix(geMatrix4x4f* matrix);
-
 	const geVector2f& getViewPortSz()	{	return m_cViewPortSz;	}
-
 	geMatrix4x4f* getProjectionMatrix()		{	return m_pProjectionMatrixPtr;	}
-	//geMatrix4x4f* getViewMatrix()				{	return m_pViewMatrixPtr;	}
-	//geMatrix4x4f* getViewProjectionMatrix()	{	return m_pViewProjectionMatrixPtr;	}
 	geMatrix4x4f* getOrthoProjectionMatrix()	{	return &m_cOrthogonalProjectionMatrix;	}
-
-	//void enableDirectionalLighting()		{	m_bDirectionalLighting=true;	}
-	//void disableDirectionalLighting()		{	m_bDirectionalLighting=false;	}
 
 private:
 

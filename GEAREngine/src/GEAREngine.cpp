@@ -45,7 +45,7 @@ extern DllExport void engine_resize(gxWorld* world, float x, float y, float cx, 
 
 extern DllExport void engine_render(gxWorld* world)
 {
-	world->render();
+	world->render(world->getRenderer());
 }
 
 void engine_renderSingleObject(gxWorld* world, object3d* obj)
@@ -390,6 +390,11 @@ extern DllExport object3d* engine_createEmptyObject3d(object3d* parentObj, const
 	emptyObject->setName(name);
 	parentObj->appendChild(emptyObject);
 	return emptyObject;
+}
+
+extern DllExport HWShaderManager* engine_getHWShaderManager()
+{
+	return g_cGEAREngine.getHWShaderManager();
 }
 }
 

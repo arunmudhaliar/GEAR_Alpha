@@ -6,6 +6,8 @@
 #include "../../mono/src/monoWrapper.h"
 #include "../gui/geHorizontalSlider.h"
 
+#include "../../../GEAREngine/src/hwShader/HWShaderManager.h"
+
 class gearSceneWorldEditor : public geWindow, public MWorldObserver, public MGUIObserver
 {
 public:
@@ -66,6 +68,8 @@ protected:
 	geToolBarButton* m_pTranslateGizmo;
 	geToolBarButton* m_pRotateGizmo;
 	geToolBarButton* m_pScaleGizmo;
+
+	HWShaderManager* m_pHWShaderManager;
 };
 
 #endif

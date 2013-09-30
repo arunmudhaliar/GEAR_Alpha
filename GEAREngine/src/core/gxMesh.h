@@ -40,7 +40,9 @@ public:
 	float* getNormalBuffer()	{	return m_pszNormalBuffer;	}
 
 	void update(float dt);
-	void render();
+	void render(gxRenderer* renderer);
+	void renderNormal(gxRenderer* renderer);
+	void renderWithHWShader(gxRenderer* renderer);
 
 	float* allocateVertexBuffer(int nTris);
 	float* allocateColorBuffer(int nTris);

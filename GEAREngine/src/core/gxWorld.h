@@ -26,7 +26,7 @@ public:
 	~gxWorld();
 
 	void update(float dt);
-	void render();
+	void render(gxRenderer* renderer);
 
 	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
 	Camera* setDefaultCameraActive();

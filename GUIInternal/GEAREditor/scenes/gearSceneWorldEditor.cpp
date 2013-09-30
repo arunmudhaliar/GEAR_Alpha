@@ -144,6 +144,10 @@ void gearSceneWorldEditor::onCreate()
 		}
 	}
 	//
+
+	//hwshader manager
+	m_pHWShaderManager = engine_getHWShaderManager();
+	m_pHWShaderManager->Init();
 }
 
 

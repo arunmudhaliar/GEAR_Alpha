@@ -3,6 +3,7 @@
 
 #include "core\gxWorld.h"
 #include "renderer\gxRenderer.h"
+#include "hwShader\HWShaderManager.h"
 
 #define CREATE_MATERIAL_FOR_MESH_IF_NOT_FOUND_IN_METAFILE	0
 
@@ -45,6 +46,8 @@ extern "C" {
 	DllExport void engine_setObject3dObserver(MObject3dObserver* observer);
 
 	DllExport object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name);
+
+	DllExport HWShaderManager* engine_getHWShaderManager();
 }
 
 class GEAREngine
@@ -62,8 +65,10 @@ public:
 
 	gxWorld* getWorld(int index)		{	return m_cWorlds[index];	}
 
+	HWShaderManager* getHWShaderManager()	{	return &m_cHWShaderManager;	}
 private:
 	std::vector<gxWorld*> m_cWorlds;
+	HWShaderManager m_cHWShaderManager;
 };
 
 #endif

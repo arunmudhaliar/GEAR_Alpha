@@ -52,6 +52,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>USE_ProgrammablePipeLine;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,6 +86,9 @@
     <ClCompile Include="..\src\core\transform.cpp" />
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp" />
     <ClCompile Include="..\src\GEAREngine.cpp" />
+    <ClCompile Include="..\src\hwShader\gxHWShader.cpp" />
+    <ClCompile Include="..\src\hwShader\gxOnlyDiffuse.cpp" />
+    <ClCompile Include="..\src\hwShader\HWShaderManager.cpp" />
     <ClCompile Include="..\src\lpng151\png.c" />
     <ClCompile Include="..\src\lpng151\pngerror.c" />
     <ClCompile Include="..\src\lpng151\pngget.c" />
@@ -144,6 +148,9 @@
     <ClInclude Include="..\src\core\vector4.h" />
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h" />
     <ClInclude Include="..\src\GEAREngine.h" />
+    <ClInclude Include="..\src\hwShader\gxHWShader.h" />
+    <ClInclude Include="..\src\hwShader\gxOnlyDiffuse.h" />
+    <ClInclude Include="..\src\hwShader\HWShaderManager.h" />
     <ClInclude Include="..\src\lpng151\png.h" />
     <ClInclude Include="..\src\lpng151\pngconf.h" />
     <ClInclude Include="..\src\lpng151\pngdebug.h" />

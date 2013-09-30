@@ -30,11 +30,22 @@ void gxMesh::update(float dt)
 	object3d::update(dt);
 }
 
-void gxMesh::render()
+void gxMesh::render(gxRenderer* renderer)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
 
+#if defined (USE_ProgrammablePipeLine)
+	renderWithHWShader(renderer);
+#else
+	renderNormal(renderer);
+#endif
+
+	object3d::render(renderer);
+}
+
+void gxMesh::renderNormal(gxRenderer* renderer)
+{
 	glPushMatrix();
 	glMultMatrixf(getWorldMatrix()->getMatrix());
 
@@ -68,8 +79,48 @@ void gxMesh::render()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	
 	glPopMatrix();
+}
 
-	object3d::render();
+#include "../GEAREngine.h"
+void gxMesh::renderWithHWShader(gxRenderer* renderer)
+{
+	HWShaderManager* hwManager = engine_getHWShaderManager();
+	gxHWShader* shader=hwManager->GetHWShader(0);
+    
+	shader->enableProgram();
+	shader->resetAllFlags();
+
+	glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
+    glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+
+
+	matrix4x4f cRenderMatrix = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
+    const float* u_mvp_m4x4=cRenderMatrix.getMatrix();
+	shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+
+	for(int x=0;x<m_nTriInfoArray;x++)
+	{
+		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+		if(!triInfo->getTriList()) continue;
+
+		if(triInfo->getMaterial())
+			shader->sendUniform4fv("u_diffuse_clr", &triInfo->getMaterial()->getDiffuseClr().x);
+
+		//int nTexUsed=0;
+		//for(int m=0;m<m_nUVChannels;m++)
+		//{
+		//	gxUV* uv=&m_pszUVChannels[m];
+		//	if(triInfo->getMaterial() && applyStageTexture(nTexUsed, triInfo->getMaterial()->getTexture()->getTextureMatrix(), uv, triInfo->getMaterial()->getTexture(), GL_TEXTURE_ENV_MODE, GL_MODULATE, 2))
+		//		nTexUsed++;
+		//}
+		glDrawElements(GL_TRIANGLES, triInfo->getNoOfTris(), GL_UNSIGNED_INT, triInfo->getTriList());
+
+		//disableTextureOperations(nTexUsed);
+	}
+
+	glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+
+	shader->disableProgram();
 }
 
 bool gxMesh::applyStageTexture(int stage, matrix4x4f* matrix, gxUV* uv, gxTexture* texture, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz)

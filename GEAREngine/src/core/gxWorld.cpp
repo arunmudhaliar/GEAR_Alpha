@@ -50,7 +50,7 @@ void gxWorld::update(float dt)
 	object3d::update(dt);
 }
 
-void gxWorld::render()
+void gxWorld::render(gxRenderer* renderer)
 {
 	if(m_pActiveCameraPtr)
 	{
@@ -58,7 +58,7 @@ void gxWorld::render()
 	}
 
 	if(m_pObserverPtr)m_pObserverPtr->preWorldRender();
-	object3d::render();
+	object3d::render(renderer);
 	if(m_pObserverPtr)m_pObserverPtr->postWorldRender();
 }
 
@@ -69,7 +69,7 @@ void gxWorld::renderSingleObject(object3d* obj)
 		m_pActiveCameraPtr->processCamera();
 	}
 
-	obj->render();
+	obj->render(&m_cRenderer);
 }
 
 void gxWorld::resizeWorld(float x, float y, float cx, float cy)

@@ -37,6 +37,9 @@
     <Filter Include="engine\tga">
       <UniqueIdentifier>{d6054a08-b198-4f0a-9858-f3f95b21d215}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\hwShader">
+      <UniqueIdentifier>{10a55d15-3a57-4d5e-afa5-de48c1fe8ad4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp">
@@ -164,6 +167,15 @@
     </ClCompile>
     <ClCompile Include="..\src\core\gxDebug.cpp">
       <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hwShader\gxHWShader.cpp">
+      <Filter>engine\hwShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hwShader\gxOnlyDiffuse.cpp">
+      <Filter>engine\hwShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hwShader\HWShaderManager.cpp">
+      <Filter>engine\hwShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +331,15 @@
     </ClInclude>
     <ClInclude Include="..\src\core\gxDebug.h">
       <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\hwShader\HWShaderManager.h">
+      <Filter>engine\hwShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\hwShader\gxHWShader.h">
+      <Filter>engine\hwShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\hwShader\gxOnlyDiffuse.h">
+      <Filter>engine\hwShader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

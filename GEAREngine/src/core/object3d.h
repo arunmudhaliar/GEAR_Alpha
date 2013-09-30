@@ -8,6 +8,7 @@
 #include "aabb.h"
 #include "gxAnimation.h"
 #include "../util/gxFile.h"
+#include "../renderer/gxRenderer.h"
 
 class DllExport MObject3dObserver
 {
@@ -34,7 +35,7 @@ public:
 	virtual void update(float dt);
 
 	void updateAnimationFrameToObject3d(int frame);
-	virtual void render();
+	virtual void render(gxRenderer* renderer);
 
 
 	virtual void transformationChangedf();

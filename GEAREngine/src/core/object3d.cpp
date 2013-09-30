@@ -117,19 +117,16 @@ void object3d::updateAnimationFrameToObject3d(int frame)
 	}
 }
 
-void object3d::render()
+void object3d::render(gxRenderer* renderer)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
 
-	//glPushMatrix();
-	//glMultMatrixf(getWorldMatrix()->getMatrix());
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{
 		object3d* obj = *it;
-		obj->render();
+		obj->render(renderer);
 	}
-	//glPopMatrix();
 }
 
 bool object3d::removeChild(object3d* child)

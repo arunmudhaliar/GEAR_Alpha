@@ -253,6 +253,7 @@ void gearSceneWorldEditor::draw()
 	//
 }
 
+#include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 void gearSceneWorldEditor::onDraw()
 {
 	if(m_pPlayButton->isButtonPressed())
@@ -269,28 +270,66 @@ void gearSceneWorldEditor::onDraw()
 	//grid
 	if(m_pTBGridView->isButtonPressed())
 	{
-		glColor4f(0.2f, 0.2f, 0.2f, 1.0f);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnYAxis[0].x);
-		glDrawArrays(GL_LINES, 0, 90*2);
-		glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnXAxis[0].x);
-		glDrawArrays(GL_LINES, 0, 90*2);
-	
-		glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(0);
+		shader->enableProgram();
+		shader->resetAllFlags();
 
-		glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnYAxis[0].x);
+		const float* u_mvp_m4x4=m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix();
+		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+
+		vector4f diffuseClr(0.2f, 0.2f, 0.2f, 1.0f);
+		shader->sendUniform4fv("u_diffuse_clr", &diffuseClr.x);
+
+		glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cGridOnYAxis[0].x);
+		glDrawArrays(GL_LINES, 0, 90*2);
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cGridOnXAxis[0].x);
+		glDrawArrays(GL_LINES, 0, 90*2);
+
+		diffuseClr.set(0.1f, 0.1f, 0.1f, 1.0f);
+		shader->sendUniform4fv("u_diffuse_clr", &diffuseClr.x);
+
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cThickGridOnYAxis[0].x);
 		glDrawArrays(GL_LINES, 0, 9*2);
-		glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnXAxis[0].x);
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cThickGridOnXAxis[0].x);
 		glDrawArrays(GL_LINES, 0, 9*2);
 
-		glVertexPointer(2, GL_FLOAT, 0, &m_cGridOuterBox[0].x);
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cGridOuterBox[0].x);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);
-		glDisableClientState(GL_VERTEX_ARRAY);
+
+		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+		shader->disableProgram();
+
+		//glColor4f(0.2f, 0.2f, 0.2f, 1.0f);
+		//glEnableClientState(GL_VERTEX_ARRAY);
+		//glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnYAxis[0].x);
+		//glDrawArrays(GL_LINES, 0, 90*2);
+		//glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnXAxis[0].x);
+		//glDrawArrays(GL_LINES, 0, 90*2);
+	
+		//glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+
+		//glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnYAxis[0].x);
+		//glDrawArrays(GL_LINES, 0, 9*2);
+		//glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnXAxis[0].x);
+		//glDrawArrays(GL_LINES, 0, 9*2);
+
+		//glVertexPointer(2, GL_FLOAT, 0, &m_cGridOuterBox[0].x);
+		//glDrawArrays(GL_LINE_LOOP, 0, 4);
+		//glDisableClientState(GL_VERTEX_ARRAY);
 	}
 	//
 
 	if(m_pSelectedObj)
 	{
+		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(2);
+		shader->enableProgram();
+		shader->resetAllFlags();
+
+		//const float* u_mvp_m4x4=m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix();
+		//shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+
 		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHTING);
 		
@@ -307,19 +346,26 @@ void gearSceneWorldEditor::onDraw()
 		//localTM.setScale(localScale);
 		glPushMatrix();
 		if(m_bTransformThroughLocalAxis)
-			glMultMatrixf(m_pSelectedObj->getWorldMatrix()->getMatrix());
+		{
+			//glMultMatrixf(m_pSelectedObj->getWorldMatrix()->getMatrix());
+			const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * *m_pSelectedObj->getWorldMatrix()).getMatrix();
+			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+		}
 		else
 			glTranslatef(m_pSelectedObj->getWorldMatrix()->getMatrix()[12], m_pSelectedObj->getWorldMatrix()->getMatrix()[13], m_pSelectedObj->getWorldMatrix()->getMatrix()[14]);
-			geUtil::drawGizmo(distance_frm_cam, m_iAxisSelected);
-			glColor4f(0.25f, 0.4f, 0.62f, 1);
-			m_pSelectedObj->getAABB().draw();
+		geUtil::drawGizmo(distance_frm_cam, shader, m_iAxisSelected);
+		glColor4f(0.25f, 0.4f, 0.62f, 1);
+		m_pSelectedObj->getAABB().draw();
 		glPopMatrix();
 
 		//glDisable(GL_COLOR_MATERIAL);
 
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHTING);
+
+		shader->disableProgram();
 	}
+
 
 
 	//geUtil::drawGizmo(3.0f);

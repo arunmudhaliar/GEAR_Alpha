@@ -79,7 +79,7 @@ void Sprite2Dx::draw(/*const matrix4x4f& parentTM, */geVector2f* pos)
 
 void Sprite2Dx::drawVerextBufferOnly(geVector2f* pos)
 {
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
     
 #else
     glEnableClientState(GL_VERTEX_ARRAY);

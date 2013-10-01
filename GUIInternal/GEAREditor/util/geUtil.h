@@ -4,6 +4,8 @@
 #include <string.h>
 #include <gl\GL.h>
 #include <gl\glut.h>
+#include "../../../GEAREngine/src/hwShader/gxHWShader.h"
+#include "../../../GEAREngine/src/core/vector4.h"
 
 class geUtil
 {
@@ -24,7 +26,7 @@ public:
 		return value;
 	}
 
-	static void drawGizmo(float scale, int selectedAxiz=0)
+	static void drawGizmo(float scale, gxHWShader* shader, int selectedAxiz=0)
 	{
 		float lines[]=
 		{
@@ -68,46 +70,58 @@ public:
 			color[17]=0.0f;
 		}
 
-		glDisable(GL_DEPTH_TEST);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, 0, lines);
+		//glDisable(GL_DEPTH_TEST);
+		//glEnableClientState(GL_VERTEX_ARRAY);
+		//glVertexPointer(3, GL_FLOAT, 0, lines);
 
-		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(3, GL_FLOAT, 0, color);
+		//glEnableClientState(GL_COLOR_ARRAY);
+		//glColorPointer(3, GL_FLOAT, 0, color);
+
+		//glDrawArrays(GL_LINES, 0, 6);
+
+		//glDisableClientState(GL_COLOR_ARRAY);
+		//glDisableClientState(GL_VERTEX_ARRAY);
+
+		glDisable(GL_DEPTH_TEST);
+		glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, lines);
+
+		glEnableVertexAttribArray(shader->getAttribLoc("a_color_coord_v4"));
+		glVertexAttribPointer(shader->getAttribLoc("a_color_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, color);
 
 		glDrawArrays(GL_LINES, 0, 6);
+		glDisableVertexAttribArray(shader->getAttribLoc("a_color_coord_v4"));
+		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 
-		glDisableClientState(GL_COLOR_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
 
-		//x-axis cone
-		glPushMatrix();
-		glColor3fv(&color[0]);
-		glTranslatef(scale, 0.0f, 0.0f);
-		glRotatef(90, 0, 1, 0);
-		glutSolidCone(0.1*scale, 0.2*scale, 10, 4);
-		glRotatef(-180, 0, 1, 0);
-		glutSolidCone(0.1*scale, 0.0f, 10, 4);
-		glPopMatrix();
+		////x-axis cone
+		//glPushMatrix();
+		//glColor3fv(&color[0]);
+		//glTranslatef(scale, 0.0f, 0.0f);
+		//glRotatef(90, 0, 1, 0);
+		//glutSolidCone(0.1*scale, 0.2*scale, 10, 4);
+		//glRotatef(-180, 0, 1, 0);
+		//glutSolidCone(0.1*scale, 0.0f, 10, 4);
+		//glPopMatrix();
 
-		//y-axis cone
-		glPushMatrix();
-		glColor3fv(&color[6]);
-		glTranslatef(0.0f, scale, 0.0f);
-		glRotatef(-90, 1, 0, 0);
-		glutSolidCone(0.1*scale, 0.2*scale, 10, 4);
-		glRotatef(-180, 1, 0, 0);
-		glutSolidCone(0.1*scale, 0.0f, 10, 4);
-		glPopMatrix();
+		////y-axis cone
+		//glPushMatrix();
+		//glColor3fv(&color[6]);
+		//glTranslatef(0.0f, scale, 0.0f);
+		//glRotatef(-90, 1, 0, 0);
+		//glutSolidCone(0.1*scale, 0.2*scale, 10, 4);
+		//glRotatef(-180, 1, 0, 0);
+		//glutSolidCone(0.1*scale, 0.0f, 10, 4);
+		//glPopMatrix();
 
-		//z-axis cone
-		glPushMatrix();
-		glColor3fv(&color[12]);
-		glTranslatef(0.0f, 0.0f, scale);
-		glutSolidCone(0.1*scale, 0.2*scale, 10, 4);
-		glRotatef(-180, 0, 1, 0);
-		glutSolidCone(0.1*scale, 0.0f, 10, 4);
-		glPopMatrix();
+		////z-axis cone
+		//glPushMatrix();
+		//glColor3fv(&color[12]);
+		//glTranslatef(0.0f, 0.0f, scale);
+		//glutSolidCone(0.1*scale, 0.2*scale, 10, 4);
+		//glRotatef(-180, 0, 1, 0);
+		//glutSolidCone(0.1*scale, 0.0f, 10, 4);
+		//glPopMatrix();
 
 		glEnable(GL_DEPTH_TEST);
 	}

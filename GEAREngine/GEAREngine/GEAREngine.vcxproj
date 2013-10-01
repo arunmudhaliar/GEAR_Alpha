@@ -86,8 +86,10 @@
     <ClCompile Include="..\src\core\transform.cpp" />
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp" />
     <ClCompile Include="..\src\GEAREngine.cpp" />
+    <ClCompile Include="..\src\hwShader\gxDiffuseUnlit.cpp" />
     <ClCompile Include="..\src\hwShader\gxHWShader.cpp" />
     <ClCompile Include="..\src\hwShader\gxOnlyDiffuse.cpp" />
+    <ClCompile Include="..\src\hwShader\gxOnlyDiffuseWithColor.cpp" />
     <ClCompile Include="..\src\hwShader\HWShaderManager.cpp" />
     <ClCompile Include="..\src\lpng151\png.c" />
     <ClCompile Include="..\src\lpng151\pngerror.c" />
@@ -148,8 +150,11 @@
     <ClInclude Include="..\src\core\vector4.h" />
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h" />
     <ClInclude Include="..\src\GEAREngine.h" />
+    <ClInclude Include="..\src\hwShader\gxDiffuseUnlit.h" />
     <ClInclude Include="..\src\hwShader\gxHWShader.h" />
     <ClInclude Include="..\src\hwShader\gxOnlyDiffuse.h" />
+    <ClInclude Include="..\src\hwShader\gxOnlyDiffuseWithColor.h" />
+    <ClInclude Include="..\src\hwShader\gxShader.h" />
     <ClInclude Include="..\src\hwShader\HWShaderManager.h" />
     <ClInclude Include="..\src\lpng151\png.h" />
     <ClInclude Include="..\src\lpng151\pngconf.h" />

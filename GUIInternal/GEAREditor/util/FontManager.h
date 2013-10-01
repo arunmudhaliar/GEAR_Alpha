@@ -13,7 +13,7 @@
 #include "../../../GEAREngine/src/util/gxFile.h"
 #include "../renderer/renderer.h"
 #include "geDefines.h"
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
 #include "../hwShader/gxFontShader.h"
 #endif
 
@@ -30,7 +30,7 @@ public:
         ALIGN_JUSTIFY
     };
     
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
     gxFont(gxFontShader* pFontShaderPtr);
 #else
     gxFont();
@@ -104,7 +104,7 @@ private:
     bool m_bDeleteGLTexture;
     float m_cszRGBA[4];
     float m_fYOffset;   //for small adjustments
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
     gxFontShader* m_pFontShaderPtr;
 #endif
 };
@@ -122,7 +122,7 @@ public:
 
 private:
     std::vector<gxFont*> m_cvFontList;
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
     gxFontShader m_cFontShader;
 #endif
 };

@@ -9,7 +9,7 @@
 #include "FontManager.h"
 #include "objC_util.h"
 
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
 gxFont::gxFont(gxFontShader* pFontShaderPtr)
 {
     m_pFontShaderPtr=pFontShaderPtr;
@@ -53,7 +53,7 @@ void gxFont::reset()
     GE_DELETE_ARY(m_pszV);
     GE_DELETE_ARY(m_pszU_width);
     GE_DELETE_ARY(m_pszU_height);
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
     m_pFontShaderPtr=NULL;
 #endif
     
@@ -127,7 +127,7 @@ void gxFont::draw()
 		0,      65536,
 	};
 
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
 #else
 #if ARUN_COMMENTED
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -281,7 +281,7 @@ int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
         cntr++;
     }
     
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
     m_pFontShaderPtr->enableProgram();
     m_pFontShaderPtr->resetAllFlags();
     
@@ -1004,7 +1004,7 @@ FontManager::~FontManager()
 
 void FontManager::init(rendererBase::ERENDERER technique)
 {
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
     if(technique==rendererBase::gl_programmable_pipeline)
     {
 #if defined(WIN32)
@@ -1029,7 +1029,7 @@ void FontManager::reset(bool reload)
 
 gxFont* FontManager::loadFont(const char* filename)
 {
-#if defined (USE_ProgrammablePipeLine)
+#if defined (USE_ProgrammablePipeLine_test)
     gxFont* newFont=new gxFont(&m_cFontShader);
 #else
     gxFont* newFont=new gxFont();

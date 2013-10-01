@@ -171,10 +171,16 @@
     <ClCompile Include="..\src\hwShader\gxHWShader.cpp">
       <Filter>engine\hwShader</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\hwShader\HWShaderManager.cpp">
+      <Filter>engine\hwShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hwShader\gxOnlyDiffuseWithColor.cpp">
+      <Filter>engine\hwShader</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\hwShader\gxOnlyDiffuse.cpp">
       <Filter>engine\hwShader</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\hwShader\HWShaderManager.cpp">
+    <ClCompile Include="..\src\hwShader\gxDiffuseUnlit.cpp">
       <Filter>engine\hwShader</Filter>
     </ClCompile>
   </ItemGroup>
@@ -336,6 +342,15 @@
       <Filter>engine\hwShader</Filter>
     </ClInclude>
     <ClInclude Include="..\src\hwShader\gxHWShader.h">
+      <Filter>engine\hwShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\hwShader\gxShader.h">
+      <Filter>engine\hwShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\hwShader\gxOnlyDiffuseWithColor.h">
+      <Filter>engine\hwShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\hwShader\gxDiffuseUnlit.h">
       <Filter>engine\hwShader</Filter>
     </ClInclude>
     <ClInclude Include="..\src\hwShader\gxOnlyDiffuse.h">

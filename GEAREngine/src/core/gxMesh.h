@@ -4,6 +4,7 @@
 #include "object3d.h"
 #include "gxTriInfo.h"
 #include "gxMaterial.h"
+#include "../hwShader/gxShader.h"
 
 class gxUV
 {
@@ -75,8 +76,10 @@ public:
 
 private:
 
-	bool applyStageTexture(int stage, matrix4x4f* matrix, gxUV* uv, gxTexture* texture, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
-	void disableTextureOperations(int nMultiTextureUsed);
+	bool applyStageTexture(int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
+	bool applyStageTexture(int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxShader* shader, const char* texCoordAttribName);
+	
+	void disableTextureOperations(int nMultiTextureUsed, gxShader* shader, const char* texCoordAttribName);
 
 	int m_nTriInfoArray;
 	gxTriInfo* m_pszTriInfoArray;

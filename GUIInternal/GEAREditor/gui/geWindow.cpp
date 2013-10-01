@@ -77,7 +77,7 @@ void geWindow::drawTitleAndToolBar()
 	glLoadIdentity();
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
 	drawRect(&m_cVBTitle);
-	geGUIManager::g_pFontArial12Ptr->setRGBA(0.5f, 0.5f, 0.5f);
+	geGUIManager::g_pFontArial12Ptr->setRGBA(0.7f, 0.7f, 0.7f);
 	geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
 	drawTriangle(&m_cVBLayoutToggleButtonLine[3*0], 0.05f, 0.05f, 0.05f, 1.0f, 3);
 	if(m_pToolBar)

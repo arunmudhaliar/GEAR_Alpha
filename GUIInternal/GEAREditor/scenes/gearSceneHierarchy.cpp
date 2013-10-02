@@ -288,10 +288,14 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 	if(m_pCreateToolBarDropMenuBtnPtr==btn)
 	{
 		HMENU hPopupMenu = CreatePopupMenu();
-		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");
+		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004003, "Directional Light");
+		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004002, "Point Light");
+		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 		geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
 		int disableFlag = (selectedNode)?0:MF_DISABLED;
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING | disableFlag, 0x00004001, "Create Object on Selected Node");
+		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");
+
 		POINT pt;
 		pt.x=btn->getPositionOnScreen().x;
 		pt.y=-btn->getPositionOnScreen().y;
@@ -312,15 +316,34 @@ geGUIBase* gearSceneHierarchy::getSelectedTreeNode()
 
 void gearSceneHierarchy::onCommand(int cmd)
 {
-	if(cmd==0x00004000)
-		object3d* emptyObject=engine_createEmptyObject3d(monoWrapper::mono_engine_getWorld(0), "EmptyObject");
-	else if(cmd==0x00004001)
+	switch(cmd)
 	{
-		geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
-		if(selectedNode)
+		case 0x00004000:
+			{
+			object3d* emptyObject=engine_createEmptyObject3d(monoWrapper::mono_engine_getWorld(0), "EmptyObject");
+			}
+			break;
+
+		case 0x00004001:
 		{
-			object3d* obj=(object3d*)selectedNode->getUserData();
-			object3d* emptyObject=engine_createEmptyObject3d(obj, "EmptyObject");
+			geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
+			if(selectedNode)
+			{
+				object3d* obj=(object3d*)selectedNode->getUserData();
+				object3d* emptyObject=engine_createEmptyObject3d(obj, "EmptyObject");
+			}
 		}
+			break;
+
+		case 0x00004002:
+			{
+			object3d* light=engine_createLight(monoWrapper::mono_engine_getWorld(0), "Point Light", gxLight::LIGHT_POINT);
+			}
+			break;
+		case 0x00004003:
+			{
+			object3d* light=engine_createLight(monoWrapper::mono_engine_getWorld(0), "Directional Light", gxLight::LIGHT_DIRECTIONAL);
+			}
+			break;
 	}
 }

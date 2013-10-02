@@ -63,14 +63,15 @@ void read3dFile2(gxFile& file, object3d* obj)
 		int objID=0;
 		file.Read(objID);
 		object3d* tempObj=NULL;
-		if(objID==0 || objID==1)
-		{
-			tempObj = new object3d(objID);
-		}
-		else if(objID==100)
+		if(objID==100)
 		{
 			tempObj = new gxMesh();
 		}
+		else
+		{
+			tempObj = new object3d(objID);
+		}
+
 		tempObj->setObject3dObserver(g_Object3dObserver);
 		tempObj->read(file);
 		obj->appendChild(tempObj);
@@ -236,7 +237,7 @@ extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* f
 				file_meta.Read(objID);
 
 				object3d* tempObj=NULL;
-				if(objID==0 || objID==1)
+				if(objID!=100)
 				{
 					tempObj = new object3d(objID);
 					tempObj->setObject3dObserver(g_Object3dObserver);
@@ -390,6 +391,16 @@ extern DllExport object3d* engine_createEmptyObject3d(object3d* parentObj, const
 	emptyObject->setName(name);
 	parentObj->appendChild(emptyObject);
 	return emptyObject;
+}
+
+extern DllExport object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType)
+{
+	gxLight* light = new gxLight();
+	light->setObject3dObserver(g_Object3dObserver);
+	light->setName(name);
+	light->setLightType(eType);
+	parentObj->appendChild(light);
+	return light;
 }
 
 extern DllExport HWShaderManager* engine_getHWShaderManager()

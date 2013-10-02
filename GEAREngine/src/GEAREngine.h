@@ -46,6 +46,7 @@ extern "C" {
 	DllExport void engine_setObject3dObserver(MObject3dObserver* observer);
 
 	DllExport object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name);
+	DllExport object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType);
 
 	DllExport HWShaderManager* engine_getHWShaderManager();
 }

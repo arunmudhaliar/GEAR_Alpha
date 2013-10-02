@@ -3,6 +3,7 @@
 
 #include "object3d.h"
 #include "gxMesh.h"
+#include "gxLight.h"
 #include "Camera.h"
 #include "../renderer/gxRenderer.h"
 #include "gxMaterial.h"

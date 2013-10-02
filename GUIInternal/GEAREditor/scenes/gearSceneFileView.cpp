@@ -74,13 +74,13 @@ void read3dFile(gxFile& file, object3d* obj)
 		int objID=0;
 		file.Read(objID);
 		object3d* tempObj=NULL;
-		if(objID==0 || objID==1)
-		{
-			tempObj = new object3d(objID);
-		}
-		else if(objID==100)
+		if(objID==100)
 		{
 			tempObj = new gxMesh();
+		}
+		else
+		{
+			tempObj = new object3d(objID);
 		}
 
 		tempObj->read(file);
@@ -143,7 +143,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 					file_meta.Read(objID);
 
 					object3d* tempObj=NULL;
-					if(objID==0 || objID==1)
+					if(objID!=100)
 					{
 						tempObj = new object3d(objID);
 						tempObj->read(file_meta);

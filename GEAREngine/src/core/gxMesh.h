@@ -76,8 +76,8 @@ public:
 
 private:
 
-	bool applyStageTexture(int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
-	bool applyStageTexture(int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxShader* shader, const char* texCoordAttribName);
+	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
+	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxShader* shader, const char* texCoordAttribName);
 	
 	void disableTextureOperations(int nMultiTextureUsed, gxShader* shader, const char* texCoordAttribName);
 

@@ -5,6 +5,7 @@ gxRenderer::gxRenderer()
 	m_pProjectionMatrixPtr=NULL;
 	m_pViewMatrixPtr=NULL;
 	m_pViewProjectionMatrixPtr=NULL;
+	m_pGEARTexture1x1Ptr=NULL;
 	m_cViewPortRect.set(0.0f, 0.0f, 1.0f, 1.0f);
 }
 

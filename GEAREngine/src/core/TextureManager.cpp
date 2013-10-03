@@ -11,6 +11,7 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 CTextureManager::CTextureManager()
 {
     m_iTotalTextureMemory=0;
+	m_pGEARTexture1x1=NULL;
 }
 
 CTextureManager::~CTextureManager()
@@ -19,6 +20,39 @@ CTextureManager::~CTextureManager()
 #if defined (LOG_DEBUG_ENGINE)
     DEBUG_PRINT("Texture Manager Destroyed...");
 #endif
+}
+
+void CTextureManager::LoadDefaultTextures()
+{
+	stTexturePacket*	whiteTexPack	= new stTexturePacket();
+
+	unsigned char tex1x1[3];
+	whiteTexPack->m_cWidth=1;
+	whiteTexPack->m_cHeight=1;
+	whiteTexPack->m_cBpp=3;
+	memset(tex1x1, 128, sizeof(tex1x1));
+
+    //texture loading utility
+    glEnable(GL_TEXTURE_2D);
+	glGenTextures(1, &whiteTexPack->iTextureID);
+	glBindTexture(GL_TEXTURE_2D, whiteTexPack->iTextureID);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); 
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, tex1x1);
+    glDisable(GL_TEXTURE_2D);
+
+	whiteTexPack->bAlphaTex=false;
+    if(whiteTexPack->iTextureID>0)
+    {
+        m_iTotalTextureMemory+=(unsigned int)(whiteTexPack->m_cWidth*whiteTexPack->m_cHeight*whiteTexPack->m_cBpp);
+    }
+
+	whiteTexPack->iTextureName = new char[strlen("gearWhiteTex1x1")+1];
+	strcpy(whiteTexPack->iTextureName, "gearWhiteTex1x1");
+	whiteTexPack->iTextureName[strlen("gearWhiteTex1x1")]	= '\0';
+
+	m_pGEARTexture1x1 = whiteTexPack;
+	iTexturePacket.push_back(whiteTexPack);
 }
 
 stTexturePacket* CTextureManager::LoadTexture(const char* aFileName)

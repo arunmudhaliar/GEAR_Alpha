@@ -241,10 +241,7 @@ void gearSceneWorldEditor::draw()
 		}
 	}
 
-	//drawRoundedRectangle(300, 300, 100, 20, 5);
-
 	glEnable(GL_DEPTH_TEST);
-
 	//
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -351,7 +348,7 @@ void gearSceneWorldEditor::drawFBO(GLuint t)
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 void gearSceneWorldEditor::onDraw()
 {
-	if(m_pPlayButton->isButtonPressed())
+	if(m_pPlayButton->isButtonPressed() && !m_pPauseButton->isButtonPressed())
 	{
 		monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 		if(m_bMonoGameInitialized)
@@ -422,9 +419,6 @@ void gearSceneWorldEditor::onDraw()
 		shader->enableProgram();
 		shader->resetAllFlags();
 
-		//const float* u_mvp_m4x4=m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix();
-		//shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
-
 		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHTING);
 		
@@ -438,11 +432,12 @@ void gearSceneWorldEditor::onDraw()
 		//vector3f localScale(localTM.getScale());
 		//localScale.normalize();
 		//localTM.setScale(localScale);
-		glPushMatrix();
+		//glPushMatrix();
+		const float* u_mvp_m4x4=NULL;
 		if(m_bTransformThroughLocalAxis)
 		{
 			//glMultMatrixf(m_pSelectedObj->getWorldMatrix()->getMatrix());
-			const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * *m_pSelectedObj->getWorldMatrix()).getMatrix();
+			u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * *m_pSelectedObj->getWorldMatrix()).getMatrix();
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 		}
 		else
@@ -450,15 +445,28 @@ void gearSceneWorldEditor::onDraw()
 
 		glEnable(GL_COLOR_MATERIAL);
 		geUtil::drawGizmo(distance_frm_cam, shader, m_iAxisSelected);
-		glColor4f(0.25f, 0.4f, 0.62f, 1);
-		m_pSelectedObj->getAABB().draw();
+
+		shader->disableProgram();
+
+		shader = engine_getHWShaderManager()->GetHWShader(0);
+		shader->enableProgram();
+		shader->resetAllFlags();
+
+		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+		//glColor4f(0.25f, 0.4f, 0.62f, 1);
+		shader->sendUniform4f("u_diffuse_clr", 0.25f, 0.4f, 0.62f, 1.0f);
+
+		m_pSelectedObj->getAABB().draw(shader);
 		glDisable(GL_COLOR_MATERIAL);
-		glPopMatrix();
+
+		shader->disableProgram();
+
+		//glPopMatrix();
 
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHTING);
 
-		shader->disableProgram();
+		
 	}
 
 	//geUtil::drawGizmo(3.0f);

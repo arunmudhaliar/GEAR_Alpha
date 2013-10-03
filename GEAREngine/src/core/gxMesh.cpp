@@ -68,7 +68,7 @@ void gxMesh::renderNormal(gxRenderer* renderer)
 		for(int m=0;m<m_nUVChannels;m++)
 		{
 			gxUV* uv=&m_pszUVChannels[m];
-			if(triInfo->getMaterial() && applyStageTexture(nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_MODULATE, 2))
+			if(triInfo->getMaterial() && applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_MODULATE, 2))
 				nTexUsed++;
 		}
 		glDrawElements(GL_TRIANGLES, triInfo->getNoOfTris(), GL_UNSIGNED_INT, triInfo->getTriList());
@@ -110,7 +110,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 		for(int m=0;m<m_nUVChannels;m++)
 		{
 			gxUV* uv=&m_pszUVChannels[m];
-			if(triInfo->getMaterial() && applyStageTexture(nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_MODULATE, 2, shader, "a_uv_coord0_v2"))
+			if(/*triInfo->getMaterial() && */applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_MODULATE, 2, shader, "a_uv_coord0_v2"))
 			{
 				shader->sendUniform1i("u_diffuse_texture", nTexUsed);
 				nTexUsed++;
@@ -126,7 +126,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 	shader->disableProgram();
 }
 
-bool gxMesh::applyStageTexture(int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz)
+bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz)
 {
 	if(!triInfo->getMaterial()->getTexture()) return false;
 	if(triInfo->getMaterial()->getTexture()->getTextureID()==0 || !uv) return false;
@@ -152,9 +152,11 @@ bool gxMesh::applyStageTexture(int stage, gxTriInfo* triInfo, gxUV* uv, int aTex
 	return true;
 }
 
-bool gxMesh::applyStageTexture(int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxShader* shader, const char* texCoordAttribName)
+bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxShader* shader, const char* texCoordAttribName)
 {
 	if(!shader) return false;
+
+	bool bUse1x1Texture=(triInfo->getMaterial()==NULL);
 
 	gxHWShader* hwShader=(gxHWShader*)shader;
     glActiveTexture(GL_TEXTURE0+stage);
@@ -169,13 +171,20 @@ bool gxMesh::applyStageTexture(int stage, gxTriInfo* triInfo, gxUV* uv, int aTex
     }
 	glEnableVertexAttribArray(hwShader->getAttribLoc(texCoordAttribName));
 	//glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, triInfo->getMaterial()->getTexture()->getTextureID());	
-	//glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
-	if(triInfo->getMaterial()->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
+	if(bUse1x1Texture)
+		glBindTexture(GL_TEXTURE_2D, renderer->getGEARTexture1x1()->iTextureID);	
+	else
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBindTexture(GL_TEXTURE_2D, triInfo->getMaterial()->getTexture()->getTextureID());	
+		//glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
+		if(triInfo->getMaterial()->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
 	}
+
+	return true;
 }
 
 void gxMesh::disableTextureOperations(int nMultiTextureUsed, gxShader* shader, const char* texCoordAttribName)

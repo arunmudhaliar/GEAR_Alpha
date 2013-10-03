@@ -11,7 +11,9 @@
 #include "vector2.h"
 #include "gxMath.h"
 #include "basicIncludes.h"
+#include "../hwShader/gxHWShader.h"
 
+class gxHWShader;
 template<class T>
 class AABB;
 typedef AABB<int> gxAABBi;
@@ -132,12 +134,9 @@ public:
 		return (T)MAX(diff.x,MAX(diff.y, diff.z));
 	}
 
-	void draw(bool bDrawBox=false)
+	void draw(gxHWShader* shader, bool bDrawBox=false)
 	{
-#if defined (USE_ProgrammablePipeLine)
-        
-#else
-		float lineAry[]={
+				float lineAry[]={
 			m_min.x, m_min.y, m_min.z,		//0
 			m_min.x, m_min.y, m_max.z,		//1
 			m_max.x, m_min.y, m_max.z,		//2
@@ -211,6 +210,24 @@ public:
 
 		
 		unsigned int mode=(bDrawBox)?GL_TRIANGLES:GL_LINE_LOOP;
+
+#if defined (USE_ProgrammablePipeLine)
+        glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+		if(mode==GL_TRIANGLES)
+		{
+			glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, vertAry);
+			glDrawArrays(mode, 0, 36);
+		}
+		else
+		{
+			for(int x=0;x<4;x++)
+			{	
+				glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, &lineAry[x*3*4]);
+				glDrawArrays(mode, 0, 4);
+			}
+		}
+		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+#else
 		
 		glEnableClientState(GL_VERTEX_ARRAY);
 		if(mode==GL_TRIANGLES)

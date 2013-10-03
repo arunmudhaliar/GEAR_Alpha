@@ -26,11 +26,15 @@ public:
 		GX_STRCPY(m_szMetaDataFolder, metaFolder);
 	}
 
+	void LoadDefaultTextures();
+	stTexturePacket* getGEARTexture1x1()	{	return m_pGEARTexture1x1;	}
+
 private:
 	std::vector<stTexturePacket*>	iTexturePacket;
     unsigned int m_iTotalTextureMemory;
 
 	char m_szMetaDataFolder[512];
+	stTexturePacket* m_pGEARTexture1x1;
 };
 
 #endif

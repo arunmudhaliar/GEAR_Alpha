@@ -7,6 +7,7 @@
 #include "../core/object3d.h"
 #include "gxShader.h"
 
+class object3d;
 struct stUniformLocation
 {
 	stUniformLocation()

@@ -3,6 +3,7 @@
 
 #include "../core/matrix4x4f.h"
 #include "../core/rect.h"
+#include "../core/TextureManager.h"
 
 class gxRenderer
 {
@@ -24,6 +25,9 @@ public:
 	matrix4x4f* getViewProjectionMatrix()	{	return m_pViewProjectionMatrixPtr;		}
 	matrix4x4f* getOrthoProjectionMatrix()	{	return &m_cOrthogonalProjectionMatrix;	}
 
+	void setGEARTexture1x1(stTexturePacket* tex)	{	m_pGEARTexture1x1Ptr=tex;	}
+	stTexturePacket* getGEARTexture1x1()			{	return m_pGEARTexture1x1Ptr;		}
+
 private:
 
 	gxRectf	m_cViewPortRect;
@@ -31,6 +35,8 @@ private:
 	matrix4x4f* m_pViewMatrixPtr;				//must not delete this pointer
 	matrix4x4f* m_pViewProjectionMatrixPtr;     //must not delete this pointer
     matrix4x4f  m_cOrthogonalProjectionMatrix;
+
+	stTexturePacket* m_pGEARTexture1x1Ptr;		//must not delete this pointer
 };
 
 #endif

@@ -19,6 +19,9 @@ gxWorld::gxWorld():
 
 	m_cDefaultMaterial.setMaterialName("Default");
 	m_cMaterialList.push_back(&m_cDefaultMaterial);
+
+	m_cTextureManager.LoadDefaultTextures();
+	m_cRenderer.setGEARTexture1x1(m_cTextureManager.getGEARTexture1x1());
 }
 
 gxWorld::~gxWorld()

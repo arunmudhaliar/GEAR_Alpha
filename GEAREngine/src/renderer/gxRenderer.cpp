@@ -1,5 +1,6 @@
 #include "gxRenderer.h"
 
+
 gxRenderer::gxRenderer()
 {
 	m_pProjectionMatrixPtr=NULL;
@@ -7,6 +8,8 @@ gxRenderer::gxRenderer()
 	m_pViewProjectionMatrixPtr=NULL;
 	m_pGEARTexture1x1Ptr=NULL;
 	m_cViewPortRect.set(0.0f, 0.0f, 1.0f, 1.0f);
+	m_nTrisRendered=0;
+	m_nDrawCalls=0;
 }
 
 gxRenderer::~gxRenderer()

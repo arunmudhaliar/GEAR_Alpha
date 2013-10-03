@@ -71,7 +71,9 @@ void gxMesh::renderNormal(gxRenderer* renderer)
 			if(triInfo->getMaterial() && applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_MODULATE, 2))
 				nTexUsed++;
 		}
-		glDrawElements(GL_TRIANGLES, triInfo->getNoOfTris(), GL_UNSIGNED_INT, triInfo->getTriList());
+		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
+		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
+		renderer->m_nDrawCalls++;
 
 		disableTextureOperations(nTexUsed, NULL, NULL);
 	}
@@ -116,7 +118,9 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 				nTexUsed++;
 			}
 		}
-		glDrawElements(GL_TRIANGLES, triInfo->getNoOfTris(), GL_UNSIGNED_INT, triInfo->getTriList());
+		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
+		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
+		renderer->m_nDrawCalls++;
 
 		disableTextureOperations(nTexUsed, shader, "a_uv_coord0_v2");
 	}
@@ -232,12 +236,12 @@ float* gxMesh::allocateNormalBuffer(int nTris)
 	return m_pszNormalBuffer;
 }
 
-int gxMesh::getTotalNoOfTris()
+int gxMesh::getVerticesCount()
 {
 	int nTris=0;
 	for(int x=0;x<m_nTriInfoArray;x++)
 	{
-		nTris+=m_pszTriInfoArray[x]	.getNoOfTris();
+		nTris+=m_pszTriInfoArray[x].getVerticesCount();
 	}
 
 	return nTris;

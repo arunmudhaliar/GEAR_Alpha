@@ -64,7 +64,7 @@ void gearScenePreview::draw()
 	//gxMesh* mesh = (gxMesh*)m_pSelectedObj;
 
 	//char buffer[16];
-	//sprintf(buffer, "Tris: %d", mesh->getTotalNoOfTris());
+	//sprintf(buffer, "Tris: %d", mesh->getVerticesCount()/3);
 	glDisable(GL_DEPTH_TEST);
 	geGUIManager::g_pFontArial12Ptr->drawString("1 object selected", 5, 5+geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
 	glEnable(GL_DEPTH_TEST);

@@ -9,7 +9,7 @@ class gxTriInfo
 public:
 	gxTriInfo()
 	{
-		m_nTris=0;
+		m_nVertices=0;
 		m_pTriList=NULL;
 		m_pMaterialPtr=NULL;
 		m_iMaterialCRC = 0;
@@ -17,17 +17,17 @@ public:
 
 	~gxTriInfo()
 	{
-		m_nTris=0;
+		m_nVertices=0;
 		GX_DELETE_ARY(m_pTriList);
 	}
 
-	int getNoOfTris()	{	return m_nTris;		}
+	int getVerticesCount()	{	return m_nVertices;		}
 	int* getTriList()	{	return m_pTriList;	}
 
-	int* allocateMemory(int nTris)
+	int* allocateMemory(int nVertices)
 	{
-		m_nTris=nTris;
-		m_pTriList = new int[m_nTris*3];
+		m_nVertices=nVertices;
+		m_pTriList = new int[m_nVertices*3];
 		return m_pTriList;
 	}
 
@@ -36,9 +36,9 @@ public:
 
 	void write(gxFile& file)
 	{
-		file.Write(m_nTris);
-		if(m_nTris)
-			file.WriteBuffer((unsigned char*)m_pTriList, sizeof(int)*m_nTris*3);
+		file.Write(m_nVertices);
+		if(m_nVertices)
+			file.WriteBuffer((unsigned char*)m_pTriList, sizeof(int)*m_nVertices*3);
 		if(m_pMaterialPtr)
 			file.Write(m_pMaterialPtr->getFileCRC());
 		else
@@ -47,11 +47,11 @@ public:
 
 	void read(gxFile& file)
 	{
-		file.Read(m_nTris);
-		if(m_nTris)
+		file.Read(m_nVertices);
+		if(m_nVertices)
 		{
-			int* buffer = allocateMemory(m_nTris);
-			file.ReadBuffer((unsigned char*)buffer, sizeof(int)*m_nTris*3);
+			int* buffer = allocateMemory(m_nVertices);
+			file.ReadBuffer((unsigned char*)buffer, sizeof(int)*m_nVertices*3);
 		}
 		file.Read(m_iMaterialCRC);
 	}
@@ -61,7 +61,7 @@ public:
 private:
 	gxMaterial* m_pMaterialPtr;	//must not delete this pointer
 
-	int m_nTris;
+	int m_nVertices;
 	int* m_pTriList;
 	int m_iMaterialCRC;
 };

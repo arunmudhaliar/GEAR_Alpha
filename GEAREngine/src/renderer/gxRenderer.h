@@ -5,7 +5,7 @@
 #include "../core/rect.h"
 #include "../core/TextureManager.h"
 
-class gxRenderer
+class DllExport gxRenderer
 {
 public:
 	gxRenderer();
@@ -27,6 +27,9 @@ public:
 
 	void setGEARTexture1x1(stTexturePacket* tex)	{	m_pGEARTexture1x1Ptr=tex;	}
 	stTexturePacket* getGEARTexture1x1()			{	return m_pGEARTexture1x1Ptr;		}
+
+	unsigned int m_nTrisRendered;
+	unsigned int m_nDrawCalls;
 
 private:
 

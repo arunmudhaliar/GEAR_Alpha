@@ -225,10 +225,15 @@ void gearSceneWorldEditor::draw()
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*3, m_cSize.x);
 	sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*4, m_cSize.x);
-	sprintf(buffer, "nMaterial : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
+	sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*5, m_cSize.x);
-	sprintf(buffer, "nAnimation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
+	sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
 	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*6, m_cSize.x);
+
+	sprintf(buffer, "Total Material : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*7, m_cSize.x);
+	sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*8, m_cSize.x);
 
 	geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
 	if(selectedNodeInHirarchy)
@@ -237,7 +242,7 @@ void gearSceneWorldEditor::draw()
 		if(obj && obj->getAnimationController())
 		{
 			sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
-			geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*7, m_cSize.x);
+			geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*9, m_cSize.x);
 		}
 	}
 

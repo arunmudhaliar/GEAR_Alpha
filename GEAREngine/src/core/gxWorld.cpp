@@ -60,6 +60,9 @@ void gxWorld::render(gxRenderer* renderer)
 		m_pActiveCameraPtr->processCamera();
 	}
 
+	renderer->m_nTrisRendered=0;
+	renderer->m_nDrawCalls=0;
+
 	if(m_pObserverPtr)m_pObserverPtr->preWorldRender();
 	object3d::render(renderer);
 	if(m_pObserverPtr)m_pObserverPtr->postWorldRender();

@@ -69,7 +69,7 @@ public:
 	int getNoOfTriInfo()							{	return m_nTriInfoArray;				}
 	gxTriInfo* getTriInfo(int index)				{	return &m_pszTriInfoArray[index];	}
 
-	int getTotalNoOfTris();
+	int getVerticesCount();
 
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);

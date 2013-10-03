@@ -160,7 +160,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 {
 	if(!shader) return false;
 
-	bool bUse1x1Texture=(triInfo->getMaterial()==NULL);
+	bool bUse1x1Texture=(triInfo->getMaterial()==NULL || triInfo->getMaterial()->getTexture()==NULL);
 
 	gxHWShader* hwShader=(gxHWShader*)shader;
     glActiveTexture(GL_TEXTURE0+stage);

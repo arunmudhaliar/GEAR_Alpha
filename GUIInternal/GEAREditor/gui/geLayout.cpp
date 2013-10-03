@@ -100,7 +100,7 @@ void geLayout::draw()
 		glLoadIdentity();
 		gluOrtho2D(0.0f, (int)(m_cSize.x-(BORDER_LAYOUT_OFFSET)), (int)(m_cSize.y-(BORDER_LAYOUT_OFFSET)), 0.0f);
 		glMatrixMode(GL_MODELVIEW);
-		drawLine(m_cVBClientAreaLine, 0.05f, 0.05f, 0.05f, 1.0f, 3, false); 
+		drawLine(m_cVBClientAreaLine, 0.13f, 0.13f, 0.13f, 1.0f, 3, false); 
 
 		m_pWindowPointer->draw();
 	}

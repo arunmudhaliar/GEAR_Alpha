@@ -87,10 +87,10 @@ void geWindow::drawTitleAndToolBar()
 		cursorPos+=geGUIManager::g_pFontArial12Ptr->getCharWidth(m_szName[index]);
 	}
 
-	drawRoundedRectangle(12, 3, cursorPos+30, geGUIManager::g_pFontArial12Ptr->getLineHeight()*2, 5);
+	drawRoundedRectangle(1, 3, cursorPos+30, GE_WND_TITLE_HEIGHT-3, 5);
 	geGUIManager::g_pFontArial12Ptr->setRGBA(0.7f, 0.7f, 0.7f);
 	geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
-	drawTriangle(&m_cVBLayoutToggleButtonLine[3*0], 0.05f, 0.05f, 0.05f, 1.0f, 3);
+	//drawTriangle(&m_cVBLayoutToggleButtonLine[3*0], 0.05f, 0.05f, 0.05f, 1.0f, 3);
 	if(m_pToolBar)
 		m_pToolBar->draw();
 	glPopMatrix();
@@ -247,24 +247,26 @@ geVector2f geWindow::getAbsolutePositionOnScreen()
 
 void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight)
 {
-	float rgb_top[4] ={0.3, 0.3, 0.3, 1.0f};
-	float rgb_bottom[4] ={0.3*0.45f, 0.3*0.45f, 0.3*0.45f, 1.0f};
+	int type=1;
+
+	float rgb_top[4] ={0.21f, 0.21f, 0.21f, 1.0f};
+	float rgb_bottom[4] ={0.21f*0.75f, 0.21f*0.75f, 0.21f*0.75f, 1.0f};
 	float rgb_delta[4]={(rgb_bottom[0]-rgb_top[0]), (rgb_bottom[1]-rgb_top[1]), (rgb_bottom[2]-rgb_top[2]), (rgb_bottom[3]-rgb_top[3])};
 
 	const float horizontal_vertLst[8] =
 	{
 		cx,	deltaHeight,
 		0,	deltaHeight,
-		cx,	cy-deltaHeight,
-		0,	cy-deltaHeight,
+		cx,	(type==0)?cy-deltaHeight:cy,
+		0,	(type==0)?cy-deltaHeight:cy,
 	};
 
 	const float horizontal_colorLst[16] =
 	{
 		rgb_top[0]+rgb_delta[0]*(deltaHeight/cy), rgb_top[1]+rgb_delta[1]*(deltaHeight/cy), rgb_top[2]+rgb_delta[2]*(deltaHeight/cy), rgb_top[3]+rgb_delta[3]*(deltaHeight/cy),
 		rgb_top[0]+rgb_delta[0]*(deltaHeight/cy), rgb_top[1]+rgb_delta[1]*(deltaHeight/cy), rgb_top[2]+rgb_delta[2]*(deltaHeight/cy), rgb_top[3]+rgb_delta[3]*(deltaHeight/cy),
-		rgb_bottom[0]-rgb_delta[0]*(deltaHeight/cy), rgb_bottom[1]-rgb_delta[1]*(deltaHeight/cy), rgb_bottom[2]-rgb_delta[2]*(deltaHeight/cy), rgb_bottom[3]-rgb_delta[3]*(deltaHeight/cy),
-		rgb_bottom[0]-rgb_delta[0]*(deltaHeight/cy), rgb_bottom[1]-rgb_delta[1]*(deltaHeight/cy), rgb_bottom[2]-rgb_delta[2]*(deltaHeight/cy), rgb_bottom[3]-rgb_delta[3]*(deltaHeight/cy)
+		(type==0)?rgb_bottom[0]-rgb_delta[0]*(deltaHeight/cy):rgb_bottom[0], (type==0)?rgb_bottom[1]-rgb_delta[1]*(deltaHeight/cy):rgb_bottom[1], (type==0)?rgb_bottom[2]-rgb_delta[2]*(deltaHeight/cy):rgb_bottom[2], (type==0)?rgb_bottom[3]-rgb_delta[3]*(deltaHeight/cy):rgb_bottom[3],
+		(type==0)?rgb_bottom[0]-rgb_delta[0]*(deltaHeight/cy):rgb_bottom[0], (type==0)?rgb_bottom[1]-rgb_delta[1]*(deltaHeight/cy):rgb_bottom[1], (type==0)?rgb_bottom[2]-rgb_delta[2]*(deltaHeight/cy):rgb_bottom[2], (type==0)?rgb_bottom[3]-rgb_delta[3]*(deltaHeight/cy):rgb_bottom[3]
 	};
 	
 	const float vertical_vertLst[8] =
@@ -341,50 +343,52 @@ void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeigh
 		angle+=delta_angle;
 	}
 
-	//right bottom
-	rounded_right_bottom_vertList[0]=cx-deltaHeight;
-	rounded_right_bottom_vertList[1]=cy-deltaHeight;
-	rounded_right_bottom_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_right_bottom_vertList[1]/cy);
-	rounded_right_bottom_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_right_bottom_vertList[1]/cy);
-	rounded_right_bottom_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_right_bottom_vertList[1]/cy);
-	rounded_right_bottom_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_right_bottom_vertList[1]/cy);
-
-	angle=0;
-	for(int xx=step;xx>=0;xx--)
+	if(type==0)
 	{
-		rounded_right_bottom_vertList[(xx+1)*2+0]=rounded_right_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
-		rounded_right_bottom_vertList[(xx+1)*2+1]=rounded_right_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
+		//right bottom
+		rounded_right_bottom_vertList[0]=cx-deltaHeight;
+		rounded_right_bottom_vertList[1]=cy-deltaHeight;
+		rounded_right_bottom_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_right_bottom_vertList[1]/cy);
+		rounded_right_bottom_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_right_bottom_vertList[1]/cy);
+		rounded_right_bottom_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_right_bottom_vertList[1]/cy);
+		rounded_right_bottom_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_right_bottom_vertList[1]/cy);
 
-		float color_height=rounded_right_bottom_vertList[(xx+1)*2+1];
-		rounded_right_bottom_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-		rounded_right_bottom_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-		rounded_right_bottom_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-		rounded_right_bottom_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-		angle+=delta_angle;
+		angle=0;
+		for(int xx=step;xx>=0;xx--)
+		{
+			rounded_right_bottom_vertList[(xx+1)*2+0]=rounded_right_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
+			rounded_right_bottom_vertList[(xx+1)*2+1]=rounded_right_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
+
+			float color_height=rounded_right_bottom_vertList[(xx+1)*2+1];
+			rounded_right_bottom_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
+			rounded_right_bottom_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
+			rounded_right_bottom_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
+			rounded_right_bottom_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
+			angle+=delta_angle;
+		}
+
+		//left bottom
+		rounded_left_bottom_vertList[0]=deltaHeight;
+		rounded_left_bottom_vertList[1]=cy-deltaHeight;
+		rounded_left_bottom_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_left_bottom_vertList[1]/cy);
+		rounded_left_bottom_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_left_bottom_vertList[1]/cy);
+		rounded_left_bottom_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_left_bottom_vertList[1]/cy);
+		rounded_left_bottom_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_left_bottom_vertList[1]/cy);
+
+		angle=90;
+		for(int xx=step;xx>=0;xx--)
+		{
+			rounded_left_bottom_vertList[(xx+1)*2+0]=rounded_left_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
+			rounded_left_bottom_vertList[(xx+1)*2+1]=rounded_left_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
+
+			float color_height=rounded_left_bottom_vertList[(xx+1)*2+1];
+			rounded_left_bottom_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
+			rounded_left_bottom_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
+			rounded_left_bottom_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
+			rounded_left_bottom_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
+			angle+=delta_angle;
+		}
 	}
-
-	//left bottom
-	rounded_left_bottom_vertList[0]=deltaHeight;
-	rounded_left_bottom_vertList[1]=cy-deltaHeight;
-	rounded_left_bottom_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_left_bottom_vertList[1]/cy);
-	rounded_left_bottom_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_left_bottom_vertList[1]/cy);
-	rounded_left_bottom_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_left_bottom_vertList[1]/cy);
-	rounded_left_bottom_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_left_bottom_vertList[1]/cy);
-
-	angle=90;
-	for(int xx=step;xx>=0;xx--)
-	{
-		rounded_left_bottom_vertList[(xx+1)*2+0]=rounded_left_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
-		rounded_left_bottom_vertList[(xx+1)*2+1]=rounded_left_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
-
-		float color_height=rounded_left_bottom_vertList[(xx+1)*2+1];
-		rounded_left_bottom_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-		rounded_left_bottom_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-		rounded_left_bottom_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-		rounded_left_bottom_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-		angle+=delta_angle;
-	}
-
 
 	glPushMatrix();
 	glTranslatef(x, y, 0);
@@ -410,13 +414,16 @@ void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeigh
 	glColorPointer(4, GL_FLOAT, 0, rounded_right_top_colorList);
     glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
 
-	glVertexPointer(2, GL_FLOAT, 0, rounded_right_bottom_vertList);
-	glColorPointer(4, GL_FLOAT, 0, rounded_right_bottom_colorList);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
+	if(type==0)
+	{
+		glVertexPointer(2, GL_FLOAT, 0, rounded_right_bottom_vertList);
+		glColorPointer(4, GL_FLOAT, 0, rounded_right_bottom_colorList);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
 
-	glVertexPointer(2, GL_FLOAT, 0, rounded_left_bottom_vertList);
-	glColorPointer(4, GL_FLOAT, 0, rounded_left_bottom_colorList);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
+		glVertexPointer(2, GL_FLOAT, 0, rounded_left_bottom_vertList);
+		glColorPointer(4, GL_FLOAT, 0, rounded_left_bottom_colorList);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
+	}
 
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

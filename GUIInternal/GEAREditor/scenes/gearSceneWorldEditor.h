@@ -8,6 +8,11 @@
 
 #include "../../../GEAREngine/src/hwShader/HWShaderManager.h"
 
+#define USE_FBO
+#if defined USE_FBO
+#include "../../../GEAREngine/src/core/fbo.h"
+#endif
+
 class gearSceneWorldEditor : public geWindow, public MWorldObserver, public MGUIObserver
 {
 public:
@@ -41,6 +46,8 @@ protected:
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);
 
+	void drawFBO(GLuint t);
+
 	object3d* m_pSelectedObj;
 	gxWorld* m_pMainWorldPtr;	//0th world. Must not delete this pointer
 
@@ -70,6 +77,11 @@ protected:
 	geToolBarButton* m_pScaleGizmo;
 
 	HWShaderManager* m_pHWShaderManager;
+
+#if defined USE_FBO
+	FBO m_cFBO;
+	GLuint m_cFBOTexID;
+#endif
 };
 
 #endif

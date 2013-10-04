@@ -47,7 +47,7 @@ void gxAnimationTrack::write(gxFile& file)
 void gxAnimationTrack::read(gxFile& file)
 {
 	char* name = file.ReadString();
-	strcpy(m_szName, name);
+	GX_STRCPY(m_szName, name);
 	GX_DELETE_ARY(name);
 	file.Read(m_iFPS);
 	file.Read(m_nFrames);

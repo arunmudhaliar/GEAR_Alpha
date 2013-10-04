@@ -280,7 +280,7 @@ int gxHWShader::getAttribLoc(const char* avar)
 	}
 
 	stAttribLocation* newAttribRefVar=new stAttribLocation();
-	strcpy(newAttribRefVar->attrib_ref_name, avar);
+	GX_STRCPY(newAttribRefVar->attrib_ref_name, avar);
 	newAttribRefVar->attrib_ref=loc;
 
 	m_vAttribRefVarList.push_back(newAttribRefVar);
@@ -318,7 +318,7 @@ int gxHWShader::getUniformLoc(const char* uvar)
 	}
 
 	stUniformLocation* newUnifromRefVar=new stUniformLocation();
-	strcpy(newUnifromRefVar->uniform_ref_name, uvar);
+	GX_STRCPY(newUnifromRefVar->uniform_ref_name, uvar);
 	newUnifromRefVar->uniform_ref=loc;
 
 	m_vUniformRefVarList.push_back(newUnifromRefVar);

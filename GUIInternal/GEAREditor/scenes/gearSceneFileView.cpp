@@ -449,7 +449,7 @@ LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM
 		{
 			//read the recent dialog
 			memset(g_cszPrefabName, 0, sizeof(g_cszPrefabName));
-			strcpy(g_cszPrefabName, "PrefabName");
+			GX_STRCPY(g_cszPrefabName, "PrefabName");
 			SetDlgItemText(hWndDlg, IDC_EDIT_INPUT_NAME, g_cszPrefabName);
 			//SendDlgItemMessage(hWndDlg, IDC_EDIT_INPUT_NAME, WM_SETFOCUS,NULL,NULL);
 			SendDlgItemMessage(hWndDlg, IDC_EDIT_INPUT_NAME, EM_SETSEL, 0, -1);
@@ -466,8 +466,8 @@ LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM
 				if(strlen(trimmed))
 				{
 					char temp[256];
-					strcpy(temp,trimmed);
-					strcpy(g_cszPrefabName,temp);
+					GX_STRCPY(temp,trimmed);
+					GX_STRCPY(g_cszPrefabName,temp);
 
 					EndDialog(hWndDlg, IDOK);
 				}

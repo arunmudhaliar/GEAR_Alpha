@@ -20,9 +20,15 @@ int gxFile::OpenFile(const char* pszFileName, EFILEMODE eFileMode/* =FILE_r */)
 	
 	switch(m_eFileMode)
 	{
+#ifdef _WIN32
+		case FILE_r: fopen_s(&m_pFP, pszFileName, "rb");	break;
+		case FILE_w: fopen_s(&m_pFP, pszFileName, "wb");	break;
+		case FILE_a: fopen_s(&m_pFP, pszFileName, "a");		break;
+#else
 		case FILE_r: m_pFP = fopen(pszFileName, "rb");		break;
 		case FILE_w: m_pFP = fopen(pszFileName, "wb");		break;
 		case FILE_a: m_pFP = fopen(pszFileName, "a");		break;
+#endif
 	}
 
 	if(m_pFP==NULL)
@@ -43,9 +49,15 @@ int gxFile::OpenFileDescriptor(int fd, EFILEMODE eFileMode)
 	
 	switch(m_eFileMode)
 	{
+#ifdef _WIN32
+		case FILE_r: m_pFP = _fdopen(fd, "rb");		break;
+		case FILE_w: m_pFP = _fdopen(fd, "wb");		break;
+		case FILE_a: m_pFP = _fdopen(fd, "a");		break;
+#else
 		case FILE_r: m_pFP = fdopen(fd, "rb");		break;
 		case FILE_w: m_pFP = fdopen(fd, "wb");		break;
 		case FILE_a: m_pFP = fdopen(fd, "a");		break;
+#endif
 	}
 
     if(m_pFP==NULL)

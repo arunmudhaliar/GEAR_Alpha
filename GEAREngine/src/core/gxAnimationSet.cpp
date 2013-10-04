@@ -40,7 +40,7 @@ void gxAnimationSet::write(gxFile& file)
 void gxAnimationSet::read(gxFile& file)
 {
 	char* name=file.ReadString();
-	strcpy(m_szName, name);
+	GX_STRCPY(m_szName, name);
 	GX_DELETE_ARY(name);
 	int nTrack=0;
 	file.Read(nTrack);

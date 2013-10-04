@@ -266,7 +266,7 @@ void object3d::write(gxFile& file)
 	file.Write(m_eBaseFlags);
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
-	file.WriteBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
+	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
 	file.Write(m_iFileCRC);
 	writeAnimationController(file);
 	file.Write((int)m_cChilds.size());
@@ -281,10 +281,10 @@ void object3d::read(gxFile& file)
 {
 	file.Read(m_eBaseFlags);
 	char* temp=file.ReadString();
-	strcpy(m_cszName, temp);
+	GX_STRCPY(m_cszName, temp);
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
-	file.ReadBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
+	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
 	file.Read(m_iFileCRC);
 	readAnimationController(file);
 }

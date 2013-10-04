@@ -253,7 +253,7 @@ void gxMesh::write(gxFile& file)
 	file.Write(m_eBaseFlags);
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
-	file.WriteBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
+	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
 	file.Write(m_iFileCRC);
 	writeAnimationController(file);
 
@@ -316,10 +316,10 @@ void gxMesh::read(gxFile& file)
 {
 	file.Read(m_eBaseFlags);
 	char* temp=file.ReadString();
-	strcpy(m_cszName, temp);
+	GX_STRCPY(m_cszName, temp);
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
-	file.ReadBuffer((unsigned char*)&m_cAABB, sizeof(m_cAABB));
+	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
 	file.Read(m_iFileCRC);
 	readAnimationController(file);
 
@@ -369,4 +369,9 @@ void gxMesh::read(gxFile& file)
 		m_pszUVChannels[x].m_pszfGLTexCoordList =new float[m_nTris_For_Internal_Use*3*2];
 		file.ReadBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
 	}
+}
+
+void gxMesh::transformationChangedf()
+{
+
 }

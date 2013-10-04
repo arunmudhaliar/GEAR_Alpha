@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "basicIncludes.h"
 #include "aabb.h"
+#include "oobb.h"
 #include "gxAnimation.h"
 #include "../util/gxFile.h"
 #include "../renderer/gxRenderer.h"
@@ -63,6 +64,7 @@ public:
 	int		getBaseFlag()							{	return m_eBaseFlags;				}
 
 	gxAABBf& getAABB()	{	return m_cAABB;	}
+	gxOOBBf& getOOBB()	{	return m_cOOBB;	}
 
 	object3d* find(const char* name);
 
@@ -96,6 +98,7 @@ protected:
 	unsigned int m_eBaseFlags;
 	std::vector<object3d*> m_cChilds;
 	gxAABBf m_cAABB;
+	gxOOBBf m_cOOBB;
 	gxAnimation* m_pAnimationController;
 	gxAnimationTrack* m_pAnimationTrack;	//must not delete this pointer
 	int m_iFileCRC;

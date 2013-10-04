@@ -461,7 +461,7 @@ void gearSceneWorldEditor::onDraw()
 		//glColor4f(0.25f, 0.4f, 0.62f, 1);
 		shader->sendUniform4f("u_diffuse_clr", 0.25f, 0.4f, 0.62f, 1.0f);
 
-		m_pSelectedObj->getAABB().draw(shader);
+		m_pSelectedObj->getOOBB().draw(shader);
 		glDisable(GL_COLOR_MATERIAL);
 
 		shader->disableProgram();
@@ -470,8 +470,6 @@ void gearSceneWorldEditor::onDraw()
 
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHTING);
-
-		
 	}
 
 	//geUtil::drawGizmo(3.0f);

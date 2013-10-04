@@ -74,6 +74,8 @@ public:
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);
 
+	virtual void transformationChangedf();
+
 private:
 
 	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);

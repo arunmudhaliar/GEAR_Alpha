@@ -9,7 +9,7 @@ class __declspec( dllexport ) gxUtil
 public:
 	static const char* getFolderPathFromFileName(const char* filename)
 	{
-		strcpy(g_directoryPath, filename);
+		strcpy_s(g_directoryPath, sizeof(g_directoryPath), filename);
 		for(int x=strlen(g_directoryPath)-1;x>=0;x--)
 		{
 			if(g_directoryPath[x]=='\\' || g_directoryPath[x]=='/')

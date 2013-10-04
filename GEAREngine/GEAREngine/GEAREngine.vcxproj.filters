@@ -368,5 +368,8 @@
     <ClInclude Include="..\src\core\fbo.h">
       <Filter>engine\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\core\oobb.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

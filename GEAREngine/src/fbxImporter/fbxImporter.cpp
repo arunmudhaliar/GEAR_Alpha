@@ -458,7 +458,7 @@ gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOf
 	fbxMesh.ComputeBBox();
 	FbxDouble3 bbmin=geometryOffset.MultNormalize(FbxVector4(fbxMesh.BBoxMin));
 	FbxDouble3 bbmax=geometryOffset.MultNormalize(FbxVector4(fbxMesh.BBoxMax));
-	newMesh->getAABB().set(vector3f(bbmin.mData[0], bbmin.mData[1], bbmin.mData[2]), vector3f(bbmax.mData[0], bbmax.mData[1], bbmax.mData[2]));
+	newMesh->getOOBB().set(vector3f(bbmin.mData[0], bbmin.mData[1], bbmin.mData[2]), vector3f(bbmax.mData[0], bbmax.mData[1], bbmax.mData[2]));
 
 	//UV sets
 	//fbxMesh.GetTextureUVCount();

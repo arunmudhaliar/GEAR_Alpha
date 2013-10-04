@@ -268,7 +268,7 @@ public:
     {
         //replace .png to .tzx
         char out_filename[256];
-        strcpy(out_filename, filepath);
+        strcpy_s(out_filename, sizeof(out_filename), filepath);
 #if !defined(WIN32)
         char* dot_p=strrchr(out_filename, '.');
         strcpy(dot_p, ".tx");

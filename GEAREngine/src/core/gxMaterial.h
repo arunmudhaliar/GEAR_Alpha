@@ -74,7 +74,7 @@ public:
 
 	//gxSubMaterialMap* getSubMaterialMap(int index)	{	return m_pszSubMap[index];	}
 
-	void setMaterialName(const char* name)	{	strcpy(m_szMaterialName, name);	}
+	void setMaterialName(const char* name)	{	GX_STRCPY(m_szMaterialName, name);	}
 	const char* getMaterialName()			{	return m_szMaterialName;		}
 
 	gxTexture* getTexture()					{	return m_pTexture;	}
@@ -168,7 +168,7 @@ public:
 
 	void setTextureName(const char* textureName)
 	{
-		strcpy(m_szTextureName, textureName);
+		GX_STRCPY(m_szTextureName, textureName);
 	}
 
 	bool appendDependency(int crc)
@@ -214,10 +214,10 @@ public:
 		file.Read(m_fShininess);
 		file.Read(m_bTwoSided);	
 		char* temp=file.ReadString();
-		strcpy(m_szMaterialName, temp);
+		GX_STRCPY(m_szMaterialName, temp);
 		GX_DELETE_ARY(temp);
 		temp=file.ReadString();
-		strcpy(m_szTextureName, temp);
+		GX_STRCPY(m_szTextureName, temp);
 		GX_DELETE_ARY(temp);
 		file.Read(m_iTextureFileCRC);
 		int nDep=0;

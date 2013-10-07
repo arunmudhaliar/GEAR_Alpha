@@ -33,6 +33,10 @@ void HWShaderManager::LoadDefaultShaders()
 		m_cvHWShaderLst.push_back(&m_cDiffuseUnlit);
     if(m_cOnlyDiffuseWithColor.loadShader("res/shadersWin32/only_diffuse_with_color_pointer.vsh", "res/shadersWin32/only_diffuse_with_color_pointer.fsh"))
 		m_cvHWShaderLst.push_back(&m_cOnlyDiffuseWithColor);
+    if(m_cGenericShader.loadShader("res/shadersWin32/pvLightingShader.vsh", "res/shadersWin32/pvLightingShader.fsh"))
+		m_cvHWShaderLst.push_back(&m_cGenericShader);
+    if(m_cLightingOnlyGenericShader.loadShader("res/shadersWin32/pvLightingOnlyShader.vsh", "res/shadersWin32/pvLightingOnlyShader.fsh"))
+		m_cvHWShaderLst.push_back(&m_cLightingOnlyGenericShader);
 #endif
 #endif
 }

@@ -271,7 +271,7 @@ void gxOnlyDiffuse::renderAsVBOMesh(objectBase* obj, const matrix4x4f* parentTM)
 			
 			//ApplyMaterial(mat, 1.0f);
 			vector4f diffuseClr(mat->getDiffuseClr());
-			shader->sendUniform4fv("u_diffuse_clr", &diffuseClr.x);
+			shader->sendUniform4fv("u_diffuse_v4", &diffuseClr.x);
 			//glColor4f(diffuseClr.x, diffuseClr.y, diffuseClr.z, 1.0f);
             
             //			gxUV* lightmap_uv=mesh->getUV(gxSubMaterialMap::EMMAP_OPACITY);

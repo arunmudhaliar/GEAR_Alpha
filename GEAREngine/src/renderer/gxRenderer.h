@@ -8,6 +8,12 @@
 class DllExport gxRenderer
 {
 public:
+	enum RENDER_PASS_TYPE
+	{
+		RENDER_NORMAL,
+		RENDER_LIGHTING_ONLY
+	};
+
 	gxRenderer();
 	~gxRenderer();
 
@@ -31,6 +37,12 @@ public:
 	unsigned int m_nTrisRendered;
 	unsigned int m_nDrawCalls;
 
+	void setRenderPassType(RENDER_PASS_TYPE eType)	{	m_eRenderPassType=eType;	}
+	RENDER_PASS_TYPE getRenderPassType()			{	return m_eRenderPassType;	}
+
+	void setMainCameraEye(vector3f eye)		{	m_cMainCameraEyePos=eye;	}
+	vector3f getMainCameraEye()				{	return m_cMainCameraEyePos;	}
+
 private:
 
 	gxRectf	m_cViewPortRect;
@@ -40,6 +52,8 @@ private:
     matrix4x4f  m_cOrthogonalProjectionMatrix;
 
 	stTexturePacket* m_pGEARTexture1x1Ptr;		//must not delete this pointer
+	RENDER_PASS_TYPE m_eRenderPassType;
+	vector3f m_cMainCameraEyePos;
 };
 
 #endif

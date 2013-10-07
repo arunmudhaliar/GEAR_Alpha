@@ -22,6 +22,7 @@ public:
 	//object3d observer
 	virtual void onObject3dChildAppend(object3d* child);
 	virtual void onObject3dChildRemove(object3d* child);
+	virtual void onObject3dDestroy(object3d* obj);
 
 	//gui observer
 	void onButtonClicked(geGUIBase* btn);

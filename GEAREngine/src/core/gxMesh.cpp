@@ -87,7 +87,7 @@ void gxMesh::renderNormal(gxRenderer* renderer)
 void gxMesh::renderWithHWShader(gxRenderer* renderer)
 {
 	HWShaderManager* hwManager = engine_getHWShaderManager();
-	gxHWShader* shader=hwManager->GetHWShader(1);
+	gxHWShader* shader=(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)?hwManager->GetHWShader(3):hwManager->GetHWShader(4);
     
 	shader->enableProgram();
 	shader->resetAllFlags();
@@ -95,9 +95,15 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 	glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
     glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 
+	glVertexAttribPointer(shader->getAttribLoc("a_normal_coord_v3"), 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
+    glEnableVertexAttribArray(shader->getAttribLoc("a_normal_coord_v3"));
 
-	matrix4x4f cRenderMatrix = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
-    const float* u_mvp_m4x4=cRenderMatrix.getMatrix();
+	matrix4x4f cMV = *renderer->getViewMatrix() * *getWorldMatrix();
+    const float* u_modelview_m4x4=cMV.getMatrix();
+	shader->sendUniformTMfv("u_modelview_m4x4", u_modelview_m4x4, false, 4);
+
+	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
+    const float* u_mvp_m4x4=cMVP.getMatrix();
 	shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 
 	for(int x=0;x<m_nTriInfoArray;x++)
@@ -105,17 +111,31 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
 		if(!triInfo->getTriList()) continue;
 
-		//if(triInfo->getMaterial())
-		//	shader->sendUniform4fv("u_diffuse_clr", &triInfo->getMaterial()->getDiffuseClr().x);
+		/*
+		uniform float u_shininess_f1;
+		uniform vec4 u_ambient_v4;
+		uniform vec4 u_diffuse_v4;
+		uniform vec4 u_specular_v4;
+		*/
+		if(triInfo->getMaterial())
+		{
+			shader->sendUniform4fv("u_diffuse_v4", &triInfo->getMaterial()->getDiffuseClr().x);
+			shader->sendUniform4fv("u_ambient_v4", &triInfo->getMaterial()->getAmbientClr().x);
+			shader->sendUniform4fv("u_specular_v4", &triInfo->getMaterial()->getSpecularClr().x);
+			shader->sendUniform1f("u_shininess_f1", 1.0f/*triInfo->getMaterial()->getShininess()*/);
+		}
 
 		int nTexUsed=0;
-		for(int m=0;m<m_nUVChannels;m++)
+		if(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)
 		{
-			gxUV* uv=&m_pszUVChannels[m];
-			if(/*triInfo->getMaterial() && */applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_MODULATE, 2, shader, "a_uv_coord0_v2"))
+			for(int m=0;m<m_nUVChannels;m++)
 			{
-				shader->sendUniform1i("u_diffuse_texture", nTexUsed);
-				nTexUsed++;
+				gxUV* uv=&m_pszUVChannels[m];
+				if(/*triInfo->getMaterial() && */applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_MODULATE, 2, shader, "a_uv_coord0_v2"))
+				{
+					shader->sendUniform1i("u_diffuse_texture", nTexUsed);
+					nTexUsed++;
+				}
 			}
 		}
 		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
@@ -125,6 +145,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 		disableTextureOperations(nTexUsed, shader, "a_uv_coord0_v2");
 	}
 
+	glDisableVertexAttribArray(shader->getAttribLoc("a_normal_coord_v3"));
 	glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 
 	shader->disableProgram();
@@ -373,5 +394,5 @@ void gxMesh::read(gxFile& file)
 
 void gxMesh::transformationChangedf()
 {
-
+	object3d::transformationChangedf();
 }

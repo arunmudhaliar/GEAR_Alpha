@@ -159,6 +159,13 @@ void gearSceneWorldEditor::onCreate()
     m_cFBO.CreateTextureBuffer();
     m_cFBOTexID=m_cFBO.AttachTextureBuffer(0);
     m_cFBO.UnBindFBO();
+
+	m_cMultiPassFBO.ReInitFBO(512, 512);
+    m_cMultiPassFBO.CreateDepthBuffer();
+    m_cMultiPassFBO.AttachDepthBuffer();
+    m_cMultiPassFBO.CreateTextureBuffer();
+    m_cMultiPassFBOTexID=m_cMultiPassFBO.AttachTextureBuffer(0);
+    m_cMultiPassFBO.UnBindFBO();
 #endif
 }
 
@@ -359,7 +366,28 @@ void gearSceneWorldEditor::onDraw()
 		if(m_bMonoGameInitialized)
 			monoWrapper::mono_game_run(Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 	}
-	monoWrapper::mono_engine_render(m_pMainWorldPtr);
+
+	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
+	if(lightList->size())
+	{
+		for(int x=0;x<lightList->size();x++)
+		{
+			HWShaderManager* hwManager = engine_getHWShaderManager();
+			gxHWShader* shader=hwManager->GetHWShader(4);
+			gxLight* light = lightList->at(x);
+			shader->enableProgram();
+			shader->resetAllFlags();
+			light->renderPass(m_pMainWorldPtr->getRenderer(), shader);
+			shader->disableProgram();
+			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+			monoWrapper::mono_engine_render(m_pMainWorldPtr);
+		}
+	}
+	else
+	{
+		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+		monoWrapper::mono_engine_render(m_pMainWorldPtr);
+	}
 
 	glDisable(GL_LIGHT0);
 	glDisable(GL_LIGHTING);
@@ -375,7 +403,7 @@ void gearSceneWorldEditor::onDraw()
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 
 		vector4f diffuseClr(0.2f, 0.2f, 0.2f, 1.0f);
-		shader->sendUniform4fv("u_diffuse_clr", &diffuseClr.x);
+		shader->sendUniform4fv("u_diffuse_v4", &diffuseClr.x);
 
 		glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 
@@ -385,7 +413,7 @@ void gearSceneWorldEditor::onDraw()
 		glDrawArrays(GL_LINES, 0, 90*2);
 
 		diffuseClr.set(0.1f, 0.1f, 0.1f, 1.0f);
-		shader->sendUniform4fv("u_diffuse_clr", &diffuseClr.x);
+		shader->sendUniform4fv("u_diffuse_v4", &diffuseClr.x);
 
 		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cThickGridOnYAxis[0].x);
 		glDrawArrays(GL_LINES, 0, 9*2);
@@ -459,7 +487,7 @@ void gearSceneWorldEditor::onDraw()
 
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 		//glColor4f(0.25f, 0.4f, 0.62f, 1);
-		shader->sendUniform4f("u_diffuse_clr", 0.25f, 0.4f, 0.62f, 1.0f);
+		shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
 
 		m_pSelectedObj->getOOBB().draw(shader);
 		glDisable(GL_COLOR_MATERIAL);
@@ -511,6 +539,13 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
     m_cFBO.CreateTextureBuffer();
     m_cFBOTexID=m_cFBO.AttachTextureBuffer(0);
     m_cFBO.UnBindFBO();
+
+	m_cMultiPassFBO.ReInitFBO(cx, cy);
+    m_cMultiPassFBO.CreateDepthBuffer();
+    m_cMultiPassFBO.AttachDepthBuffer();
+    m_cMultiPassFBO.CreateTextureBuffer();
+    m_cMultiPassFBOTexID=m_cMultiPassFBO.AttachTextureBuffer(0);
+    m_cMultiPassFBO.UnBindFBO();
 #endif
 
 	geWindow::onSize(cx, cy, flag);

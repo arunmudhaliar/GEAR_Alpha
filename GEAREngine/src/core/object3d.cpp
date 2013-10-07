@@ -71,6 +71,9 @@ object3d::object3d(int objID):
 
 object3d::~object3d()
 {
+	if(m_pObject3dObserver)
+		m_pObject3dObserver->onObject3dDestroy(this);
+
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{
 		object3d* obj = *it;

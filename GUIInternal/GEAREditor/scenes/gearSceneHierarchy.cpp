@@ -12,6 +12,11 @@ geWindow("Hierarchy")
 
 gearSceneHierarchy::~gearSceneHierarchy()
 {
+	engine_setEngineObserver(NULL);
+	engine_setObject3dObserver(NULL);
+	gxWorld* world=engine_getWorld(0);
+	world->setObject3dObserver(NULL);
+
 	//destroyTVUserData(m_cGameObjectsTreeView.getRoot());
 }
 
@@ -235,6 +240,10 @@ void gearSceneHierarchy::onObject3dChildAppend(object3d* child)
 	createTVNode(rootNode, child, child->getName());
 	rootNode->traverseSetWidth(m_cSize.x);
 	m_cGameObjectsTreeView.refreshTreeView();
+	//if light
+	if(child->getID()==3)
+		monoWrapper::mono_engine_getWorld(0)->getLightList()->push_back((gxLight*)child);
+	//
 	monoWrapper::mono_object3d_onObject3dChildAppend(parent_obj, child);
 }
 
@@ -251,6 +260,16 @@ void gearSceneHierarchy::onObject3dChildRemove(object3d* child)
 	monoWrapper::mono_object3d_onObject3dChildRemove(parent_obj, child);
 }
 
+void gearSceneHierarchy::onObject3dDestroy(object3d* obj)
+{
+	//if light then remove it frm world
+	if(obj->getID()==3)
+	{
+		std::vector<gxLight*>* lightList=monoWrapper::mono_engine_getWorld(0)->getLightList();
+		lightList->erase(std::remove(lightList->begin(), lightList->end(), obj), lightList->end());
+	}
+	//
+}
 
 bool gearSceneHierarchy::onKeyDown(int charValue, int flag)
 {

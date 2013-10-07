@@ -72,9 +72,13 @@ public:
 
 	void setWorldObserver(MWorldObserver* observer)	{	m_pObserverPtr = observer;	}
 
+	std::vector<gxLight*>* getLightList()	{	return &m_vLightList;		}
+	gxLight* getLight(int index)			{	return m_vLightList[index];	}
+
 private:
 	std::vector<gxMaterial*> m_cMaterialList;
 	std::vector<gxAnimationSet*> m_vAnimationSetList;
+	std::vector<gxLight*> m_vLightList;
 
 	gxRenderer m_cRenderer;
 	Camera* m_pActiveCameraPtr;	//must not delete this pointer

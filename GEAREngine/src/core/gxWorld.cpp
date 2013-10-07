@@ -41,6 +41,8 @@ gxWorld::~gxWorld()
 		GX_DELETE(animationSet);
 	}
 	m_vAnimationSetList.clear();
+
+	m_vLightList.clear();
 }
 
 void gxWorld::update(float dt)

@@ -89,6 +89,7 @@
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp" />
     <ClCompile Include="..\src\GEAREngine.cpp" />
     <ClCompile Include="..\src\hwShader\gxDiffuseUnlit.cpp" />
+    <ClCompile Include="..\src\hwShader\gxGenericShader.cpp" />
     <ClCompile Include="..\src\hwShader\gxHWShader.cpp" />
     <ClCompile Include="..\src\hwShader\gxOnlyDiffuse.cpp" />
     <ClCompile Include="..\src\hwShader\gxOnlyDiffuseWithColor.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h" />
     <ClInclude Include="..\src\GEAREngine.h" />
     <ClInclude Include="..\src\hwShader\gxDiffuseUnlit.h" />
+    <ClInclude Include="..\src\hwShader\gxGenericShader.h" />
     <ClInclude Include="..\src\hwShader\gxHWShader.h" />
     <ClInclude Include="..\src\hwShader\gxOnlyDiffuse.h" />
     <ClInclude Include="..\src\hwShader\gxOnlyDiffuseWithColor.h" />

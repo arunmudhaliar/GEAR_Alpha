@@ -10,6 +10,7 @@
 #include "gxOnlyDiffuse.h"
 #include "gxDiffuseUnlit.h"
 #include "gxOnlyDiffuseWithColor.h"
+#include "gxGenericShader.h"
 #include <vector>
 #endif
 
@@ -36,6 +37,8 @@ private:
 	gxOnlyDiffuse m_cOnlyDiffuse;
 	gxDiffuseUnlit m_cDiffuseUnlit;
 	gxOnlyDiffuseWithColor m_cOnlyDiffuseWithColor;
+	gxGenericShader m_cGenericShader;
+	gxGenericShader m_cLightingOnlyGenericShader;
 	std::vector<gxHWShader*> m_cvHWShaderLst;
 #endif
 };

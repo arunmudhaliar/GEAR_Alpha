@@ -39,6 +39,7 @@ void Camera::processCamera(matrix4x4f* matrix)
 
 void Camera::updateCamera()
 {
+	m_pRendererPtr->setMainCameraEye(getWorldMatrix()->getPosition());
 	m_cInvTranfMatrix = getWorldMatrix()->getInverse();
 	m_cViewProjectionMatrix = m_cProjMatrix * m_cInvTranfMatrix;
 }

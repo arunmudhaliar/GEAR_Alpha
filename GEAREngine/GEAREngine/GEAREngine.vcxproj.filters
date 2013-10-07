@@ -189,6 +189,9 @@
     <ClCompile Include="..\src\core\fbo.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\hwShader\gxGenericShader.cpp">
+      <Filter>engine\hwShader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -370,6 +373,9 @@
     </ClInclude>
     <ClInclude Include="..\src\core\oobb.h">
       <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\hwShader\gxGenericShader.h">
+      <Filter>engine\hwShader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -81,6 +81,9 @@ protected:
 #if defined USE_FBO
 	FBO m_cFBO;
 	GLuint m_cFBOTexID;
+
+	FBO m_cMultiPassFBO;
+	GLuint m_cMultiPassFBOTexID;
 #endif
 };
 

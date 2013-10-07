@@ -8,7 +8,7 @@
 //http://xissburg.com/faster-gaussian-blur-in-glsl/
 //http://blog.angusforbes.com/openglglsl-render-to-texture/
 
-class gxLight : public object3d
+class DllExport gxLight : public object3d
 {
 public:
 	gxLight();
@@ -22,6 +22,8 @@ public:
 
 	void update(float dt);
 	void render(gxRenderer* renderer);
+
+	void renderPass(gxRenderer* renderer, gxHWShader* shader);
 
 	const vector4f& getDiffuseColor()	{	return m_cDiffuse;	}
 	const vector4f& getSpecularColor()	{	return m_cSpecular;	}

@@ -16,6 +16,7 @@ class DllExport MObject3dObserver
 public:
 	virtual void onObject3dChildAppend(object3d* child)=0;
 	virtual void onObject3dChildRemove(object3d* child)=0;
+	virtual void onObject3dDestroy(object3d* obj)=0;
 };
 
 class gxAnimation;

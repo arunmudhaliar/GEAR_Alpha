@@ -87,20 +87,26 @@ void gxMesh::renderNormal(gxRenderer* renderer)
 void gxMesh::renderWithHWShader(gxRenderer* renderer)
 {
 	HWShaderManager* hwManager = engine_getHWShaderManager();
-	gxHWShader* shader=(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)?hwManager->GetHWShader(3):hwManager->GetHWShader(4);
+	gxHWShader* shader=(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)?hwManager->GetHWShader(1):hwManager->GetHWShader(4);
     
-	shader->enableProgram();
-	shader->resetAllFlags();
+	if(renderer->getRenderPassType()!=gxRenderer::RENDER_LIGHTING_ONLY)
+	{
+		shader->enableProgram();
+		shader->resetAllFlags();
+	}
 
 	glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
     glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 
-	glVertexAttribPointer(shader->getAttribLoc("a_normal_coord_v3"), 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
-    glEnableVertexAttribArray(shader->getAttribLoc("a_normal_coord_v3"));
+	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
+	{
+		glVertexAttribPointer(shader->getAttribLoc("a_normal_coord_v3"), 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
+		glEnableVertexAttribArray(shader->getAttribLoc("a_normal_coord_v3"));
 
-	matrix4x4f cMV = *renderer->getViewMatrix() * *getWorldMatrix();
-    const float* u_modelview_m4x4=cMV.getMatrix();
-	shader->sendUniformTMfv("u_modelview_m4x4", u_modelview_m4x4, false, 4);
+		matrix4x4f cMV = *renderer->getViewMatrix() * *getWorldMatrix();
+		const float* u_modelview_m4x4=cMV.getMatrix();
+		shader->sendUniformTMfv("u_modelview_m4x4", u_modelview_m4x4, false, 4);
+	}
 
 	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
     const float* u_mvp_m4x4=cMVP.getMatrix();
@@ -111,18 +117,21 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
 		if(!triInfo->getTriList()) continue;
 
-		/*
-		uniform float u_shininess_f1;
-		uniform vec4 u_ambient_v4;
-		uniform vec4 u_diffuse_v4;
-		uniform vec4 u_specular_v4;
-		*/
-		if(triInfo->getMaterial())
+		if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
 		{
-			shader->sendUniform4fv("u_diffuse_v4", &triInfo->getMaterial()->getDiffuseClr().x);
-			shader->sendUniform4fv("u_ambient_v4", &triInfo->getMaterial()->getAmbientClr().x);
-			shader->sendUniform4fv("u_specular_v4", &triInfo->getMaterial()->getSpecularClr().x);
-			shader->sendUniform1f("u_shininess_f1", 1.0f/*triInfo->getMaterial()->getShininess()*/);
+			/*
+			uniform float u_shininess_f1;
+			uniform vec4 u_ambient_v4;
+			uniform vec4 u_diffuse_v4;
+			uniform vec4 u_specular_v4;
+			*/
+			if(triInfo->getMaterial())
+			{
+				shader->sendUniform4fv("u_diffuse_v4", &triInfo->getMaterial()->getDiffuseClr().x);
+				shader->sendUniform4fv("u_ambient_v4", &triInfo->getMaterial()->getAmbientClr().x);
+				shader->sendUniform4fv("u_specular_v4", &triInfo->getMaterial()->getSpecularClr().x);
+				shader->sendUniform1f("u_shininess_f1", 1.0f/*triInfo->getMaterial()->getShininess()*/);
+			}
 		}
 
 		int nTexUsed=0;
@@ -131,7 +140,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 			for(int m=0;m<m_nUVChannels;m++)
 			{
 				gxUV* uv=&m_pszUVChannels[m];
-				if(/*triInfo->getMaterial() && */applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_MODULATE, 2, shader, "a_uv_coord0_v2"))
+				if(/*triInfo->getMaterial() && */applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, "a_uv_coord0_v2"))
 				{
 					shader->sendUniform1i("u_diffuse_texture", nTexUsed);
 					nTexUsed++;
@@ -145,10 +154,16 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 		disableTextureOperations(nTexUsed, shader, "a_uv_coord0_v2");
 	}
 
-	glDisableVertexAttribArray(shader->getAttribLoc("a_normal_coord_v3"));
+	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
+	{
+		glDisableVertexAttribArray(shader->getAttribLoc("a_normal_coord_v3"));
+	}
 	glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 
-	shader->disableProgram();
+	if(renderer->getRenderPassType()!=gxRenderer::RENDER_LIGHTING_ONLY)
+	{
+		shader->disableProgram();
+	}
 }
 
 bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz)
@@ -201,7 +216,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	else
 	{
 		glBindTexture(GL_TEXTURE_2D, triInfo->getMaterial()->getTexture()->getTextureID());	
-		//glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
+		glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
 		if(triInfo->getMaterial()->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
 		{
 			glEnable(GL_BLEND);

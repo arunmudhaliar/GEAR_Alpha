@@ -46,7 +46,11 @@ protected:
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);
 
-	void drawFBO(GLuint t);
+	void drawFBO(GLuint t, float x, float y, float cx, float cy);
+	void drawGrid();
+	void drawSelectedObject();
+	void drawStats();
+	void drawLightsOnMultiPass();
 
 	object3d* m_pSelectedObj;
 	gxWorld* m_pMainWorldPtr;	//0th world. Must not delete this pointer
@@ -79,11 +83,7 @@ protected:
 	HWShaderManager* m_pHWShaderManager;
 
 #if defined USE_FBO
-	FBO m_cFBO;
-	GLuint m_cFBOTexID;
-
 	FBO m_cMultiPassFBO;
-	GLuint m_cMultiPassFBOTexID;
 #endif
 };
 

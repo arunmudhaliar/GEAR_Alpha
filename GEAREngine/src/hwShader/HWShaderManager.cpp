@@ -35,7 +35,9 @@ void HWShaderManager::LoadDefaultShaders()
 		m_cvHWShaderLst.push_back(&m_cOnlyDiffuseWithColor);
     if(m_cGenericShader.loadShader("res/shadersWin32/pvLightingShader.vsh", "res/shadersWin32/pvLightingShader.fsh"))
 		m_cvHWShaderLst.push_back(&m_cGenericShader);
-    if(m_cLightingOnlyGenericShader.loadShader("res/shadersWin32/pvLightingOnlyShader.vsh", "res/shadersWin32/pvLightingOnlyShader.fsh"))
+    if(m_cLightingOnlyFirstPassGenericShader.loadShader("res/shadersWin32/pvLightingOnlyShaderFirstPass.vsh", "res/shadersWin32/pvLightingOnlyShaderFirstPass.fsh"))
+		m_cvHWShaderLst.push_back(&m_cLightingOnlyFirstPassGenericShader);
+	if(m_cLightingOnlyGenericShader.loadShader("res/shadersWin32/pvLightingOnlyShader.vsh", "res/shadersWin32/pvLightingOnlyShader.fsh"))
 		m_cvHWShaderLst.push_back(&m_cLightingOnlyGenericShader);
 #endif
 #endif

@@ -2,6 +2,7 @@
 #include "../EditorApp.h"
 #include "../core/Timer.h"
 #include "../gui/geToolBarSeperator.h"
+#include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 
 //void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight);
 
@@ -153,18 +154,11 @@ void gearSceneWorldEditor::onCreate()
 
 #if defined USE_FBO
 	//fbo
-	m_cFBO.ReInitFBO(512, 512);
-    m_cFBO.CreateDepthBuffer();
-    m_cFBO.AttachDepthBuffer();
-    m_cFBO.CreateTextureBuffer();
-    m_cFBOTexID=m_cFBO.AttachTextureBuffer(0);
-    m_cFBO.UnBindFBO();
-
 	m_cMultiPassFBO.ReInitFBO(512, 512);
     m_cMultiPassFBO.CreateDepthBuffer();
     m_cMultiPassFBO.AttachDepthBuffer();
     m_cMultiPassFBO.CreateTextureBuffer();
-    m_cMultiPassFBOTexID=m_cMultiPassFBO.AttachTextureBuffer(0);
+    m_cMultiPassFBO.AttachTextureBuffer(0);
     m_cMultiPassFBO.UnBindFBO();
 #endif
 }
@@ -177,117 +171,36 @@ vector3f i1, i2, testSpehere;
 void gearSceneWorldEditor::draw()
 {
 	drawTitleAndToolBar();
+	drawLightsOnMultiPass();
 
-#if defined USE_FBO
-	m_cFBO.BindFBO();
-	monoWrapper::mono_engine_resize(m_pMainWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (rendererGL10::g_pRendererGL10->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-#else
-	monoWrapper::mono_engine_resize(m_pMainWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (rendererGL10::g_pRendererGL10->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);
-#endif
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	GLfloat lightpos[] = {-1, 1, 1, 0.0f};
-	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-	
-	float af=m_pHorizontalSlider_LightAmbient->getSliderValue();//*0.5f;
-
-	float colorWhite[]  = {1.0f,1.0f,1.0f,1.0f};
-	float ambient[]   = {af,af,af,1.0f};//{af,af,af,1.0f};
-	float diffuse[]   = {1.0f, 1.0f, 1.0f, 1.0f};
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient );
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse );
+	//drawBasePass();
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+	//GLfloat lightpos[] = {-1, 1, 1, 0.0f};
+	//glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+	//float af=m_pHorizontalSlider_LightAmbient->getSliderValue();
+	//float ambient[]   = {af,af,af,1.0f};
+	//float diffuse[]   = {1.0f, 1.0f, 1.0f, 1.0f};
+	//glLightfv(GL_LIGHT0, GL_AMBIENT, ambient );
+ //   glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse );
 
 
-	glPushMatrix();
+	//glPushMatrix();
 	onDraw();
-	glPopMatrix();
+
+	//glPopMatrix();
 
 #if defined USE_FBO
-	m_cFBO.UnBindFBO();
+	//if(bMultiPass)
+		//m_cMultiPassFBO.UnBindFBO();
+	//m_cFBO.UnBindFBO();
 #endif
 
-	//STATS
-	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (rendererGL10::g_pRendererGL10->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho((int)0, (int)(m_cSize.x), (int)(m_cSize.y-getTopMarginOffsetHeight()), (int)0, -100, 100);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glPushMatrix();
-	glTranslatef(0, 0, -1);
-
-	glDisable(GL_DEPTH_TEST);
-#if defined USE_FBO
-	drawFBO(m_cFBOTexID);
-#endif
-
-	char buffer[32];
-	sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
-	sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*3, m_cSize.x);
-	sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*4, m_cSize.x);
-	sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*5, m_cSize.x);
-	sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*6, m_cSize.x);
-
-	sprintf(buffer, "Total Material : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*7, m_cSize.x);
-	sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*8, m_cSize.x);
-
-	geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
-	if(selectedNodeInHirarchy)
-	{
-		object3d* obj=(object3d*)selectedNodeInHirarchy->getUserData();
-		if(obj && obj->getAnimationController())
-		{
-			sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
-			geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*9, m_cSize.x);
-		}
-	}
-
-	glEnable(GL_DEPTH_TEST);
-	//
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	gxWorld* world = monoWrapper::mono_engine_getWorld(0);
-	matrix4x4f cameramatrix(*world->getActiveCamera()->getInverseTMViewMatrix());
-	cameramatrix.setPosition(0, 0, 0);
-	//cameramatrix.setXAxis(-cameramatrix.getXAxis());
-	//cameramatrix.setYAxis(-cameramatrix.getYAxis());
-	cameramatrix.setZAxis(-cameramatrix.getZAxis());
-
-	glPushMatrix();
-	glTranslatef(m_cSize.x-50, 50, 0);
-	glMultMatrixf(cameramatrix.getMatrix());
-	glEnable(GL_COLOR_MATERIAL);
-	glColor3f(1, 1, 1);
-	glutSolidCube(10);
-	geUtil::drawGizmoCones(60);
-	glDisable(GL_COLOR_MATERIAL);
-	glPopMatrix();
-	glDisable(GL_LIGHT0);
-	glDisable(GL_LIGHTING);
-	//
-
-	glPopMatrix();
-	//
+	drawStats();
 }
 
-void gearSceneWorldEditor::drawFBO(GLuint t)
+void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float cy)
 {
-    float x=0.0f;
-    float y=-getTopMarginOffsetHeight();
-    float cx=m_cSize.x;
-    float cy=m_cSize.y;
-    
     float cszTileBuffer[]={
         x,      y,
         x,      y+cy,
@@ -357,7 +270,6 @@ void gearSceneWorldEditor::drawFBO(GLuint t)
 #endif
 }
 
-#include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 void gearSceneWorldEditor::onDraw()
 {
 	if(m_pPlayButton->isButtonPressed() && !m_pPauseButton->isButtonPressed())
@@ -367,6 +279,7 @@ void gearSceneWorldEditor::onDraw()
 			monoWrapper::mono_game_run(Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 	}
 
+	/*
 	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
 	if(lightList->size())
 	{
@@ -380,7 +293,10 @@ void gearSceneWorldEditor::onDraw()
 			light->renderPass(m_pMainWorldPtr->getRenderer(), shader);
 			shader->disableProgram();
 			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE);
 			monoWrapper::mono_engine_render(m_pMainWorldPtr);
+			glDisable(GL_BLEND);
 		}
 	}
 	else
@@ -389,9 +305,52 @@ void gearSceneWorldEditor::onDraw()
 		monoWrapper::mono_engine_render(m_pMainWorldPtr);
 	}
 
-	glDisable(GL_LIGHT0);
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHT0);
+	//glDisable(GL_LIGHTING);
 
+	//geUtil::drawGizmo(3.0f);
+	//glDisable(GL_COLOR_MATERIAL);
+	*/
+}
+
+void gearSceneWorldEditor::drawLightsOnMultiPass()
+{
+	m_cMultiPassFBO.BindFBO();
+	monoWrapper::mono_engine_resize(m_pMainWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (rendererGL10::g_pRendererGL10->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glEnable(GL_DEPTH_TEST);
+	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+	monoWrapper::mono_engine_render(m_pMainWorldPtr);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	HWShaderManager* hwManager = engine_getHWShaderManager();
+	gxHWShader* shader=hwManager->GetHWShader(4);
+	shader->enableProgram();
+	shader->resetAllFlags();
+	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
+	for(int x=0;x<lightList->size();x++)
+	{
+		gxLight* light = lightList->at(x);
+		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			continue;
+		light->renderPass(m_pMainWorldPtr->getRenderer(), shader);
+
+		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+		monoWrapper::mono_engine_render(m_pMainWorldPtr);
+	}
+	shader->disableProgram();
+	glDisable(GL_BLEND);
+
+	drawGrid();
+	drawSelectedObject();
+	m_cMultiPassFBO.UnBindFBO();
+}
+
+void gearSceneWorldEditor::drawGrid()
+{
 	//grid
 	if(m_pTBGridView->isButtonPressed())
 	{
@@ -445,7 +404,10 @@ void gearSceneWorldEditor::onDraw()
 		//glDisableClientState(GL_VERTEX_ARRAY);
 	}
 	//
+}
 
+void gearSceneWorldEditor::drawSelectedObject()
+{
 	if(m_pSelectedObj)
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(2);
@@ -499,9 +461,81 @@ void gearSceneWorldEditor::onDraw()
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHTING);
 	}
+}
 
-	//geUtil::drawGizmo(3.0f);
-	//glDisable(GL_COLOR_MATERIAL);
+void gearSceneWorldEditor::drawStats()
+{
+	//STATS
+	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (rendererGL10::g_pRendererGL10->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho((int)0, (int)(m_cSize.x), (int)(m_cSize.y-getTopMarginOffsetHeight()), (int)0, -100, 100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glPushMatrix();
+	glTranslatef(0, 0, -1);
+
+	glDisable(GL_DEPTH_TEST);
+#if defined USE_FBO
+	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, -getTopMarginOffsetHeight(), m_cSize.x, m_cSize.y);
+#endif
+
+	char buffer[128];
+	sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+	sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*3, m_cSize.x);
+	sprintf(buffer, "GLSL %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*4, m_cSize.x);
+	sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*5, m_cSize.x);
+	sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*6, m_cSize.x);
+	sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*7, m_cSize.x);
+
+	sprintf(buffer, "Total Material : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*8, m_cSize.x);
+	sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
+	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*9, m_cSize.x);
+
+	geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
+	if(selectedNodeInHirarchy)
+	{
+		object3d* obj=(object3d*)selectedNodeInHirarchy->getUserData();
+		if(obj && obj->getAnimationController())
+		{
+			sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
+			geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*10, m_cSize.x);
+		}
+	}
+
+	glEnable(GL_DEPTH_TEST);
+
+	//
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+	gxWorld* world = monoWrapper::mono_engine_getWorld(0);
+	matrix4x4f cameramatrix(*world->getActiveCamera()->getInverseTMViewMatrix());
+	cameramatrix.setPosition(0, 0, 0);
+	cameramatrix.setZAxis(-cameramatrix.getZAxis());
+
+	glPushMatrix();
+	glTranslatef(m_cSize.x-50, 50, 0);
+	glMultMatrixf(cameramatrix.getMatrix());
+	glEnable(GL_COLOR_MATERIAL);
+	glColor3f(1, 1, 1);
+	glutSolidCube(10);
+	geUtil::drawGizmoCones(60);
+	glDisable(GL_COLOR_MATERIAL);
+	glPopMatrix();
+	//glDisable(GL_LIGHT0);
+	//glDisable(GL_LIGHTING);
+	//
+
+	glPopMatrix();
+	//
 }
 
 void gearSceneWorldEditor::preWorldRender()
@@ -533,18 +567,11 @@ void gearSceneWorldEditor::postWorldRender()
 void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 {
 #if defined USE_FBO
-	m_cFBO.ReInitFBO(cx, cy);
-    m_cFBO.CreateDepthBuffer();
-    m_cFBO.AttachDepthBuffer();
-    m_cFBO.CreateTextureBuffer();
-    m_cFBOTexID=m_cFBO.AttachTextureBuffer(0);
-    m_cFBO.UnBindFBO();
-
 	m_cMultiPassFBO.ReInitFBO(cx, cy);
     m_cMultiPassFBO.CreateDepthBuffer();
     m_cMultiPassFBO.AttachDepthBuffer();
     m_cMultiPassFBO.CreateTextureBuffer();
-    m_cMultiPassFBOTexID=m_cMultiPassFBO.AttachTextureBuffer(0);
+    m_cMultiPassFBO.AttachTextureBuffer(0);
     m_cMultiPassFBO.UnBindFBO();
 #endif
 

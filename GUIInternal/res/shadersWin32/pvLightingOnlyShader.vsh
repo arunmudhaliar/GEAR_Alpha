@@ -42,8 +42,9 @@ varying vec4 v_destinationcolor_v4;
 
 void main()
 {
-	vec3 n = mat3(u_modelview_m4x4) * a_normal_coord_v3;
-	vec3 l = normalize(u_lightposition_v3);
+
+	vec3 n = normalize(mat3(u_modelview_m4x4) * a_normal_coord_v3);
+	vec3 l = normalize(mat3(u_modelview_m4x4)*u_lightposition_v3);
 	vec3 e = u_eyedirection_v3;//vec3(0, 0, 1);
 	vec3 h = normalize(l+e);
 
@@ -55,6 +56,25 @@ void main()
 	v_destinationcolor_v4 = color;
 	
 	gl_Position = u_mvp_m4x4 * a_vertex_coord_v4;
+
+
+	/*	//vec4 vp=u_modelview_m4x4*a_vertex_coord_v4;
+	vec3 n = normalize(mat3(u_modelview_m4x4) * a_normal_coord_v3);
+	float nDotVP = max(0.0, dot(n, normalize(u_lightposition_v3)));
+	vec3 hv = normalize(u_lightposition_v3-u_eyedirection_v3);
+	float nDotHV = max(0.0, dot(n, hv));
+	float pf;
+	
+	if(nDotVP==0.0)
+		pf=0.0;
+	else
+		pf=pow(nDotHV, u_shininess_f1);
+	
+	vec4 color = (u_ambient_v4*u_light_ambient_v4) + (u_diffuse_v4*u_light_diffuse_v4)*nDotVP + (u_specular_v4*u_light_specular_v4)*pf;
+	v_destinationcolor_v4 = color;
+	
+	gl_Position = u_mvp_m4x4 * a_vertex_coord_v4;
+	*/	
 }
 
 #elif PERPIXEL_LIGHTING_SHADER

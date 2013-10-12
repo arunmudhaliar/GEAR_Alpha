@@ -124,6 +124,7 @@
     <ClInclude Include="GEAREditor\scenes\gearSceneWorldEditor.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\geNullMaterialExtended.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyAnimationSet.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyLight.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMeshPreview.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyObject3d.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="GEAREditor\scenes\gearSceneProject.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearScenePropertyEditor.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneWorldEditor.cpp" />
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyLight.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp" />

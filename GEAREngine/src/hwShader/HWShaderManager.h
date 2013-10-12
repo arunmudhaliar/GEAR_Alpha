@@ -39,6 +39,7 @@ private:
 	gxOnlyDiffuseWithColor m_cOnlyDiffuseWithColor;
 	gxGenericShader m_cGenericShader;
 	gxGenericShader m_cLightingOnlyGenericShader;
+	gxGenericShader m_cLightingOnlyFirstPassGenericShader;
 	std::vector<gxHWShader*> m_cvHWShaderLst;
 #endif
 };

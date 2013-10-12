@@ -4,16 +4,18 @@
 gearScenePropertyEditor::gearScenePropertyEditor():
 geWindow("Property Editor")
 {
-	m_pObject3dPropertyNode=NULL;
-	m_pTransformPropertyNode=NULL;
-	m_pMaterialPropertyNode=NULL;
-	m_pSaveMetaDataPropertyNode=NULL;
-
 	m_pObject3dParentNode=NULL;
 	m_pMaterialParent=NULL;
 	m_pTransformParentNode=NULL;
 	m_pAnimationParentNode=NULL;
 	m_pSaveMetaDataParentNode=NULL;
+	m_pLightParentNode=NULL;
+
+	m_pObject3dPropertyNode=NULL;
+	m_pTransformPropertyNode=NULL;
+	m_pMaterialPropertyNode=NULL;
+	m_pSaveMetaDataPropertyNode=NULL;
+	m_pLightPropertyNode=NULL;
 }
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
@@ -24,12 +26,14 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	rootNode->removeTVChild(m_pMaterialParent);
 	rootNode->removeTVChild(m_pAnimationParentNode);
 	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
+	rootNode->removeTVChild(m_pLightParentNode);
 
 	GE_DELETE(m_pObject3dParentNode);
 	GE_DELETE(m_pTransformParentNode);
 	GE_DELETE(m_pMaterialParent);
 	GE_DELETE(m_pAnimationParentNode);
 	GE_DELETE(m_pSaveMetaDataParentNode);
+	GE_DELETE(m_pLightParentNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -46,6 +50,8 @@ void gearScenePropertyEditor::onCreate()
 	m_cszSprites[3].setClip(404, 362, 16, 16);
 	m_cszSprites[4].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[4].setClip(151, 48, 16, 16);
+	m_cszSprites[5].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[5].setClip(256, 382, 16, 16);
 
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 
@@ -57,12 +63,15 @@ void gearScenePropertyEditor::onCreate()
 	m_pAnimationParentNode  = new geTreeNode(rootNode, "Animation", &m_cszSprites[3], 0);
 	m_pSaveMetaDataParentNode = new geTreeNode(rootNode, "Save MetaData", &m_cszSprites[4], 0);
 	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pSaveMetaDataParentNode, "", NULL);
+	m_pLightParentNode = new geTreeNode(rootNode, "Light", &m_cszSprites[5], 0);
+	m_pLightPropertyNode = new gePropertyLight(m_pLightParentNode, "", NULL);
 
 	rootNode->removeTVChild(m_pObject3dParentNode);
 	rootNode->removeTVChild(m_pTransformParentNode);
 	rootNode->removeTVChild(m_pMaterialParent);
 	rootNode->removeTVChild(m_pAnimationParentNode);
 	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
+	rootNode->removeTVChild(m_pLightParentNode);
 }
 
 void gearScenePropertyEditor::onDraw()
@@ -111,6 +120,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	rootNode->removeTVChild(m_pMaterialParent);
 	rootNode->removeTVChild(m_pAnimationParentNode);
 	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
+	rootNode->removeTVChild(m_pLightParentNode);
 
 	if(obj==NULL)
 	{
@@ -141,6 +151,11 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		}
 
 		rootNode->appnendTVChild(m_pMaterialParent);
+	}
+	else if(obj->getID()==3)
+	{
+		m_pLightPropertyNode->populatePropertyOfLight(obj);
+		rootNode->appnendTVChild(m_pLightParentNode);
 	}
 
 	//animation

@@ -24,6 +24,8 @@ public:
 	void UnBindFBO();
 
     void DrawFBO(int index);
+
+	unsigned int getFBOTextureBuffer(int index)	{	return *m_szTexture.at(index);	}
     
 	//vars
 

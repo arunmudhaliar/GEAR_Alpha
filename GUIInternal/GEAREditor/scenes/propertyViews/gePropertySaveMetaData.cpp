@@ -29,7 +29,7 @@ void gePropertySaveMetaData::onButtonClicked(geGUIBase* btn)
 
 void gePropertySaveMetaData::saveMaterialRecursiveToMeta(object3d* obj)
 {
-	if(obj->getID()==100)
+	if(obj->getID()==100 || obj->getID()==101)
 	{
 		gxMesh* mesh=(gxMesh*)obj;
 		for(int x=0;x<mesh->getNoOfTriInfo();x++)

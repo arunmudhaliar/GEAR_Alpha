@@ -92,7 +92,7 @@ void gxWorld::resizeWorld(float x, float y, float cx, float cy)
 #if 0
 void gxWorld::loadTextures(object3d* obj, const char* fbxFileName)
 {
-	if(obj->getID()==100)
+	if(obj->getID()==100 || obj->getID()==101)
 	{
 		const char* directorPathPtr=gxUtil::getFolderPathFromFileName(fbxFileName);
 

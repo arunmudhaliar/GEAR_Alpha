@@ -17,6 +17,7 @@
 #include "../../../GEAREngine/src/core/gxAnimationSet.h"
 #include <Windows.h>
 #include "../../resource.h"
+#include "../../../GEAREngine/src/core/gxSkinnedMesh.h"
 
 static int find_files(const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
 LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
@@ -77,6 +78,10 @@ void read3dFile(gxFile& file, object3d* obj)
 		if(objID==100)
 		{
 			tempObj = new gxMesh();
+		}
+		else if(objID==101)
+		{
+			tempObj = new gxSkinnedMesh();
 		}
 		else
 		{

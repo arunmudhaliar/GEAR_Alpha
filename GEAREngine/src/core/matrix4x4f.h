@@ -262,6 +262,32 @@ public:
 		return res;
 	}
 	
+	bool noScale()
+	{
+		// Compute the scaling part.
+		float scaleX = gxMath::SQRT( m[ 0 ] * m[ 0 ] + m[ 1 ] * m[ 1 ] + m[ 2 ] * m[ 2 ] );
+		float scaleY = gxMath::SQRT( m[ 4 ] * m[ 4 ] + m[ 5 ] * m[ 5 ] + m[ 6 ] * m[ 6 ] );
+		float scaleZ = gxMath::SQRT( m[ 8 ] * m[ 8 ] + m[ 9 ] * m[ 9 ] + m[ 10 ] * m[ 10 ] );
+
+		// Let's calculate the rotation now 
+		if( ( scaleX == 0.0 ) || ( scaleY == 0.0 ) || ( scaleZ == 0.0 ) )
+		{
+			return false;
+		}
+
+		m[ 0 ] = (float)( m[ 0 ] / scaleX );
+		m[ 1 ] = (float)( m[ 1 ] / scaleX );
+		m[ 2 ] = (float)( m[ 2 ] / scaleX );
+		m[ 4 ] = (float)( m[ 4 ] / scaleY );
+		m[ 5 ] = (float)( m[ 5 ] / scaleY );
+		m[ 6 ] = (float)( m[ 6 ] / scaleY );
+		m[ 8 ] = (float)( m[ 8 ] / scaleZ );
+		m[ 9 ] = (float)( m[ 9 ] / scaleZ );
+		m[ 10 ] = (float)( m[ 10 ] / scaleZ );
+
+		return true;
+	}
+
 	void setPerspective(float fovy, float aspect, float zNear, float zFar)
 	{
 		float xmin, xmax, ymin, ymax;

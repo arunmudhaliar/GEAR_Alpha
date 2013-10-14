@@ -67,6 +67,10 @@ void read3dFile2(gxFile& file, object3d* obj)
 		{
 			tempObj = new gxMesh();
 		}
+		else if(objID==101)
+		{
+			tempObj = new gxSkinnedMesh();
+		}
 		else
 		{
 			tempObj = new object3d(objID);
@@ -81,7 +85,7 @@ void read3dFile2(gxFile& file, object3d* obj)
 
 void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 {
-	if(obj3d->getID()==100)
+	if(obj3d->getID()==100 || obj3d->getID()==101)
 	{
 		gxMesh* mesh = (gxMesh*)obj3d;
 		for(int x=0;x<mesh->getNoOfTriInfo();x++)
@@ -207,6 +211,24 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d, int crc)
 	}
 }
 
+void populateBonesToMeshNode(object3d* obj, object3d* rootNode)
+{
+	if(obj->getID()==101)
+	{
+		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj;
+		int index=0;
+		skinMesh->clearPrivateIterator();
+		skinMesh->populateBoneList(rootNode, index);
+	}
+
+	std::vector<object3d*>* childlist=obj->getChildList();
+	for(std::vector<object3d*>::iterator it = childlist->begin(); it != childlist->end(); ++it)
+	{
+		object3d* childobj = *it;
+		populateBonesToMeshNode(childobj, rootNode);
+	}
+}
+
 extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename)
 {
 	object3d* root_object_node=NULL;
@@ -258,6 +280,8 @@ extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* f
 			}
 		}
 	}
+
+	populateBonesToMeshNode(root_object_node, root_object_node);
 
 	return root_object_node;
 }

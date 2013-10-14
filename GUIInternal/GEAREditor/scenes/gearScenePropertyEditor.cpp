@@ -139,7 +139,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	//material
 	if(m_pMaterialParent)
 		m_pMaterialParent->destroyAllTVChilds();
-	if(obj->getID()==100)	//mesh
+	if(obj->getID()==100 || obj->getID()==101)	//mesh
 	{
 		gxMesh* mesh=(gxMesh*)obj;
 

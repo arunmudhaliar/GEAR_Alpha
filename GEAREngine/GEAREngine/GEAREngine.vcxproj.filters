@@ -192,6 +192,9 @@
     <ClCompile Include="..\src\hwShader\gxGenericShader.cpp">
       <Filter>engine\hwShader</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\gxSkinnedMesh.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -376,6 +379,9 @@
     </ClInclude>
     <ClInclude Include="..\src\hwShader\gxGenericShader.h">
       <Filter>engine\hwShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxSkinnedMesh.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

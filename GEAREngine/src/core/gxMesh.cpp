@@ -1,6 +1,20 @@
 #include "gxMesh.h"
 #include "../GEAREngine.h"
 
+gxMesh::gxMesh(int ID):
+	object3d(ID)
+{
+	m_nTriInfoArray=0;
+	m_pszTriInfoArray=NULL;
+
+	m_pszVertexBuffer=NULL;
+	m_pszColorBuffer=NULL;
+	m_pszNormalBuffer=NULL;
+	m_nUVChannels=0;
+	m_pszUVChannels=NULL;
+	m_nTris_For_Internal_Use=0;
+}
+
 gxMesh::gxMesh():
 	object3d(100)
 {
@@ -130,6 +144,13 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 				shader->sendUniform4fv("u_diffuse_v4", &triInfo->getMaterial()->getDiffuseClr().x);
 				shader->sendUniform4fv("u_ambient_v4", &triInfo->getMaterial()->getAmbientClr().x);
 				shader->sendUniform4fv("u_specular_v4", &triInfo->getMaterial()->getSpecularClr().x);
+				shader->sendUniform1f("u_shininess_f1", 1.0f/*triInfo->getMaterial()->getShininess()*/);
+			}
+			else
+			{
+				shader->sendUniform4f("u_diffuse_v4", 0.5f, 0.5f, 0.5f, 1.0f);
+				shader->sendUniform4f("u_ambient_v4", 0.2f, 0.2f, 0.2f, 1.0f);
+				shader->sendUniform4f("u_specular_v4", 0.2f, 0.2f, 0.2f, 1.0f);
 				shader->sendUniform1f("u_shininess_f1", 1.0f/*triInfo->getMaterial()->getShininess()*/);
 			}
 		}
@@ -283,7 +304,7 @@ int gxMesh::getVerticesCount()
 	return nTris;
 }
 
-void gxMesh::write(gxFile& file)
+void gxMesh::writeMeshData(gxFile& file)
 {
 	file.Write(m_iObjectID);
 	file.Write(m_eBaseFlags);
@@ -339,6 +360,11 @@ void gxMesh::write(gxFile& file)
 			file.Write((int)0);
 		file.WriteBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
 	}
+}
+
+void gxMesh::write(gxFile& file)
+{
+	writeMeshData(file);
 
 	file.Write((int)m_cChilds.size());
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)

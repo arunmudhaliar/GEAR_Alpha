@@ -80,7 +80,7 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 		}
 		if(importOk)
 		{
-			return_object3d=importFBXScene(*fbxManager, *fbxScene, materialList, animationSetList, crc);
+			return_object3d=importFBXScene(filePath, *fbxManager, *fbxScene, materialList, animationSetList, crc);
 		}
     }
     
@@ -91,7 +91,7 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 	return return_object3d;
 }
 
-object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList, int fileCRC)
+object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList, int fileCRC)
 {
 	FbxNode *fbxRoot = fbxScene.GetRootNode();
 	assert(fbxRoot);
@@ -106,6 +106,7 @@ object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene
 			fbxOurAxisSystem.ConvertScene(&fbxScene);
 		}
       
+
 		//// convert units...
 		//const float unitsPerMeter = 1.0f; // "The equivalent number of centimeters in the new system unit"
 		//FbxSystemUnit fbxSceneSystemUnit = fbxScene.GetGlobalSettings().GetSystemUnit();
@@ -122,8 +123,12 @@ object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene
 		// recurse over the scene nodes and import them as needed...
 		object3d* object3d_root_object = new object3d(0);
 		object3d_root_object->setFileCRC(fileCRC);
-		object3d_root_object->setName(fbxRoot->GetName());
+		object3d_root_object->setName(gxUtil::getFileNameFromPath(filePath));
 
+		stBoneList boneList;
+		int boneindex=0;
+		m_iPrivateBoneIterator=0;
+		pushAllNodes(&boneList, fbxRoot, boneindex);
 		const unsigned int numChildren = fbxRoot->GetChildCount();
 		for(unsigned int i=0; i<numChildren; i++)
 		{
@@ -131,10 +136,11 @@ object3d* fbxImporter::importFBXScene(FbxManager &fbxManager, FbxScene &fbxScene
 			assert(fbxChildNode);
 			if(fbxChildNode)
 			{
-				importFBXNode(*fbxChildNode, object3d_root_object, materialList, fbxScene, object3d_root_object, animationSetList);
+				importFBXNode(*fbxChildNode, object3d_root_object, materialList, fbxScene, object3d_root_object, animationSetList, &boneList);
 			}
 		}
 
+		populateBonesToMeshNode(&boneList, object3d_root_object, object3d_root_object);
 		return object3d_root_object;
 	}
 
@@ -262,7 +268,50 @@ FbxAMatrix CalculateGlobalTransform(FbxNode* pNode)
     return lTransform;
 }
 
-void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList)
+FbxNode* fbxImporter::findRoot(FbxNode *fbxNode)
+{
+	FbxNode *node = fbxNode;
+	const char* parentName	= node->GetName();
+	
+	while(strcmp(parentName,"RootNode")!=0) {
+		node = node->GetParent();
+		parentName	= node->GetName();
+	}
+	return node;
+}
+
+void fbxImporter::populateBonesToMeshNode(stBoneList* boneList, object3d* obj, object3d* rootNode)
+{
+	if(obj->getID()==101)
+	{
+		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj;
+		int index=0;
+		skinMesh->clearPrivateIterator();
+		skinMesh->populateBoneList(rootNode, index);
+	}
+
+	std::vector<object3d*>* childlist=obj->getChildList();
+	for(std::vector<object3d*>::iterator it = childlist->begin(); it != childlist->end(); ++it)
+	{
+		object3d* childobj = *it;
+		populateBonesToMeshNode(boneList, childobj, rootNode);
+	}
+}
+
+void fbxImporter::pushAllNodes(stBoneList* boneList, FbxNode *fbxNode, int& index)
+{
+	boneList->bonelst.push_back(fbxNode);
+	boneList->boneIndex.push_back(m_iPrivateBoneIterator);
+	m_iPrivateBoneIterator++;
+	const unsigned int numChildren = fbxNode->GetChildCount();
+	for(unsigned int i=0; i<numChildren; i++)
+	{
+		FbxNode *fbxChildNode = fbxNode->GetChild(i);
+		pushAllNodes(boneList, fbxChildNode, index);
+	}
+}
+
+void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList, stBoneList* boneList)
 {
 	FbxMatrix transform;
 	FbxMatrix fbxLocalPosition = fbxNode.EvaluateLocalTransform();
@@ -277,10 +326,91 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 
 	if(fbxMesh)
 	{
-		gxMesh* newMesh = importFBXMesh(*fbxMesh, fbxGeometryOffset, materialList, rootObject3d);
-		newMesh->setName(fbxNode.GetName());
-		parent_obj_node->appendChild(newMesh);
-		parent_obj_node=newMesh;
+		//links
+		int nCluster=0;
+		for(int mm=0;mm<fbxMesh->GetDeformerCount(FbxDeformer::eSkin);mm++)
+		{
+			FbxSkin* skin=(FbxSkin*)fbxMesh->GetDeformer(mm, FbxDeformer::eSkin);
+			nCluster+=skin->GetClusterCount();
+		}
+		//
+
+		if(nCluster)
+		{
+			FbxSkin*		skinDeformer = (FbxSkin *)fbxMesh->GetDeformer(0, FbxDeformer::eSkin);
+			FbxSkin::EType	skinningType = skinDeformer->GetSkinningType();
+
+			if(skinningType == FbxSkin::eLinear || skinningType == FbxSkin::eRigid)
+			{
+				int vc=fbxMesh->GetControlPointsCount();
+				stBoneInfluence* boneInfluenceList = new stBoneInfluence[vc];
+
+				FbxCluster* clusterR	= skinDeformer->GetCluster(0);
+				FbxNode*	rootBone	= findRoot(clusterR->GetLink());
+
+				int deformerCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin); // Count of skeletons used for skinning
+				for ( int defInd = 0; defInd < deformerCount; defInd++ )
+				{
+					skinDeformer = (FbxSkin *)fbxMesh->GetDeformer(defInd, FbxDeformer::eSkin);
+					int clusterCount = skinDeformer->GetClusterCount();							// Count of bones in skeleton
+					for (int clusterIndex = 0; clusterIndex < clusterCount; ++clusterIndex)
+					{
+						FbxCluster* cluster = skinDeformer->GetCluster(clusterIndex);
+						if (!cluster->GetLink())
+							continue;
+
+						FbxNode*	currentFbxLimb	= cluster->GetLink();
+						const char*	currentLimbName = currentFbxLimb->GetName();
+
+						int vertexIndexCount = cluster->GetControlPointIndicesCount();
+						for (int k = 0; k < vertexIndexCount; ++k)
+						{
+							int index = cluster->GetControlPointIndices()[k];
+
+							// Sometimes, the mesh can have less points than at the time of the skinning
+							// because a smooth operator was active when skinning but has been deactivated during export.
+							if (index >= fbxMesh->GetControlPointsCount())
+								continue;
+
+							double weight = cluster->GetControlPointWeights()[k];
+							if (weight == 0.0)
+							{
+								continue;
+							}
+
+							boneInfluenceList[index].bone.push_back(currentFbxLimb);
+							boneInfluenceList[index].weight.push_back(weight);
+						}
+///////////////////////////////////
+					}
+				}
+
+				gxSkinnedMesh* newSkinnedMesh = new gxSkinnedMesh();
+				importFBXMesh(newSkinnedMesh, *fbxMesh, fbxGeometryOffset, materialList, rootObject3d, boneInfluenceList, boneList);
+				newSkinnedMesh->setName(fbxNode.GetName());
+				parent_obj_node->appendChild(newSkinnedMesh);
+				parent_obj_node=newSkinnedMesh;
+				
+				newSkinnedMesh->allocateBoneList(boneList->bonelst.size());
+				delete [] boneInfluenceList;
+			}
+			else
+			{
+				//didnt find any skinned mesh, so create a dummy object
+				object3d* object3d_child = new object3d(1);
+				object3d_child->setName(fbxNode.GetName());
+				parent_obj_node->appendChild(object3d_child);
+				parent_obj_node=object3d_child;
+			}
+		}
+		else
+		{
+			gxMesh* newMesh = new gxMesh();
+			importFBXMesh(newMesh, *fbxMesh, fbxGeometryOffset, materialList, rootObject3d, NULL, NULL);
+			newMesh->setName(fbxNode.GetName());
+			parent_obj_node->appendChild(newMesh);
+			parent_obj_node=newMesh;
+		}
 	}
 	else
 	{
@@ -300,23 +430,6 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	parent_obj_node->setPosition(vector3f(row4.mData[0], row4.mData[1], row4.mData[2]));
 
 	//*parent_obj_node->getWorldMatrix() = *parent_obj_node * *temp_parent_obj->getWorldMatrix();
-
-	//links
-	if(fbxMesh)
-	{
-		for(int mm=0;mm<fbxMesh->GetDeformerCount(FbxDeformer::eSkin);mm++)
-		{
-			FbxSkin* skin=(FbxSkin*)fbxMesh->GetDeformer(mm, FbxDeformer::eSkin);
-			for(int cc=0;cc<skin->GetClusterCount();cc++)
-			{
-				FbxCluster* cluster = skin->GetCluster(cc);
-				FbxNode* linkNode=cluster->GetLink();
-				const char* linknodename=linkNode->GetName();
-				linknodename=linknodename;
-			}
-		}
-	}
-	//
 
 	//animation
 	FbxGlobalSettings& lTimeSettings = fbxScene.GetGlobalSettings();
@@ -414,17 +527,35 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 		assert(fbxChildNode);
 		if(fbxChildNode)
 		{
-			importFBXNode(*fbxChildNode, parent_obj_node, materialList, fbxScene, rootObject3d, animationSetList);
+			importFBXNode(*fbxChildNode, parent_obj_node, materialList, fbxScene, rootObject3d, animationSetList, boneList);
 		}
 	}
 }
 
-gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d)
+gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d, stBoneInfluence* boneInfluenceList, stBoneList* boneList)
 {
-	gxMesh* newMesh = new gxMesh();
 	float* vertexBuffer = newMesh->allocateVertexBuffer(fbxMesh.GetPolygonCount());
 	float* normalBuffer = newMesh->allocateNormalBuffer(fbxMesh.GetPolygonCount());
 	gxTriInfo* triInfoArray = NULL;
+
+	//Max no of bones per vertex
+	int nMaxBonePerVert=0;
+	int* boneIndexBuffer=NULL;
+	float* weightBuffer=NULL;
+
+	if(boneInfluenceList)
+	{
+		for(int x=0;x<fbxMesh.GetControlPointsCount();x++)
+		{
+			if(boneInfluenceList[x].bone.size()>nMaxBonePerVert)
+				nMaxBonePerVert=boneInfluenceList[x].bone.size();
+		}
+		nMaxBonePerVert=4;	//hack
+		//allocation for influence bones and weights
+		boneIndexBuffer=((gxSkinnedMesh*)newMesh)->allocateBoneIndexBuffer(fbxMesh.GetPolygonCount(), nMaxBonePerVert);
+		weightBuffer=((gxSkinnedMesh*)newMesh)->allocateWeightBuffer(fbxMesh.GetPolygonCount(), nMaxBonePerVert);
+	}
+	//
 
 	struct stTriData
 	{
@@ -559,6 +690,34 @@ gxMesh* fbxImporter::importFBXMesh(FbxMesh &fbxMesh, const FbxMatrix &geometryOf
 			normalBuffer[vertexIndices[y]*3+0]=(float)normal.mData[0];
 			normalBuffer[vertexIndices[y]*3+1]=(float)normal.mData[1];
 			normalBuffer[vertexIndices[y]*3+2]=(float)normal.mData[2];
+
+			//bone influence
+			if(boneInfluenceList)
+			{
+				int nReminder = nMaxBonePerVert-boneInfluenceList[vertexIndex].bone.size();
+
+				for(int bb=0;bb<boneInfluenceList[vertexIndex].bone.size();bb++)
+				{
+					FbxNode* influencedBone=boneInfluenceList[vertexIndex].bone[bb];
+					float weight=boneInfluenceList[vertexIndex].weight[bb];
+
+					int si=0;
+					for(si=0;si<boneList->bonelst.size();si++)
+					{
+						if(boneList->bonelst[si]==influencedBone)
+							break;
+					}
+					boneIndexBuffer[vertexIndices[y]*nMaxBonePerVert+bb]=si;
+					weightBuffer[vertexIndices[y]*nMaxBonePerVert+bb]=weight;
+				}
+				if(nReminder>0)
+				{
+					for(int bb=nMaxBonePerVert-nReminder;bb<nMaxBonePerVert;bb++)
+					{
+						boneIndexBuffer[vertexIndices[y]*nMaxBonePerVert+bb]=boneIndexBuffer[vertexIndices[y]*nMaxBonePerVert+bb];
+					}
+				}
+			}
 
 			//uv sets
 			for(int m=0;m<uvSetNames.GetCount();m++)

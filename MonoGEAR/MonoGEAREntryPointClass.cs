@@ -95,6 +95,7 @@ namespace MonoGEAR
         object3d m_pRootObject3d;
         public void mono_game_start()
         {
+            /*
             object3d zombie_bodymesh = object3d.create(Resource.getResourcePath("for_arun/zombie_bodymesh.FBX"));
             object3d zombie_idle = object3d.create(Resource.getResourcePath("for_arun/zombie@idle.FBX"));
             object3d zombie_run = object3d.create(Resource.getResourcePath("for_arun/zombie@run.FBX"));
@@ -144,15 +145,16 @@ namespace MonoGEAR
             stAnimationPackage package = new stAnimationPackage();
             package.readANBFile(reader);
             reader.Close();
+             * */
         }
 
         public void mono_game_run(float dt)
         {
-            //m_pRootObject3d.rotateLocalZf(10);
         }
 
         public bool mono_game_onkeydown(int charValue, int flag)
         {
+            /*
             if (charValue == 37)
             {
                 Console.WriteLine("animset= " + m_pRootObject3d.applyAnimationSetRecursive(0).name);
@@ -174,6 +176,7 @@ namespace MonoGEAR
                 m_pRootObject3d.animation.play(3);
             }
             Console.WriteLine("keydown " + charValue);
+             * */
             return true;
         }
 

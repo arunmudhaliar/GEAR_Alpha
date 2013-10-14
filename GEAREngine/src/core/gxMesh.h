@@ -32,6 +32,8 @@ public:
 
 class DllExport gxMesh : public object3d
 {
+protected:
+	gxMesh(int ID);
 public:
 	gxMesh();
 	~gxMesh();
@@ -40,8 +42,8 @@ public:
 	float* getColorBuffer()		{	return m_pszColorBuffer;	}
 	float* getNormalBuffer()	{	return m_pszNormalBuffer;	}
 
-	void update(float dt);
-	void render(gxRenderer* renderer);
+	virtual void update(float dt);
+	virtual void render(gxRenderer* renderer);
 	void renderNormal(gxRenderer* renderer);
 	void renderWithHWShader(gxRenderer* renderer);
 
@@ -73,10 +75,10 @@ public:
 
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);
-
+	void writeMeshData(gxFile& file);
 	virtual void transformationChangedf();
 
-private:
+protected:
 
 	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
 	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxShader* shader, const char* texCoordAttribName);

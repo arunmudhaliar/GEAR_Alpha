@@ -10,6 +10,7 @@ gxMesh(101)
 	m_nBones=0;
 	m_pszVertexCopyBuffer=NULL;
 	m_pszInvBoneTMList=NULL;
+	m_pszBoneOffsetList=NULL;
 }
 
 gxSkinnedMesh::~gxSkinnedMesh()
@@ -20,6 +21,7 @@ gxSkinnedMesh::~gxSkinnedMesh()
 	GX_DELETE_ARY(m_pszBoneList);
 	GX_DELETE_ARY(m_pszVertexCopyBuffer);
 	GX_DELETE_ARY(m_pszInvBoneTMList);
+	GX_DELETE_ARY(m_pszBoneOffsetList);
 }
 
 void gxSkinnedMesh::update(float dt)
@@ -37,16 +39,20 @@ void gxSkinnedMesh::update(float dt)
 				continue;
 
 			object3d* bone=m_pszBoneList[boneID];
+			if(bone==this || bone==this->getParent())
+			{
+				bone=bone;
+			}
 			float weight=m_pszWeightBuffer[x*m_nBoneInfluencePerVertex+y];
 
 			vector3f transformedVertex(m_pszInvBoneTMList[boneID] * vertex);
-			//bone->noScale();
 			vector3f deformVertex(*bone->getWorldMatrix() * transformedVertex);
 			finalVertex.x+=deformVertex.x*weight;
 			finalVertex.y+=deformVertex.y*weight;
 			finalVertex.z+=deformVertex.z*weight;
 		}
 
+		finalVertex=finalVertex-this->getParent()->getWorldMatrix()->getPosition();
 		m_pszVertexBuffer[x*3+0]=finalVertex.x;
 		m_pszVertexBuffer[x*3+1]=finalVertex.y;
 		m_pszVertexBuffer[x*3+2]=finalVertex.z;
@@ -93,6 +99,7 @@ void gxSkinnedMesh::allocateBoneList(int nBones)
 	GX_DELETE_ARY(m_pszInvBoneTMList);
 	m_pszBoneList = new object3d*[nBones];
 	m_pszInvBoneTMList = new matrix4x4f[nBones];
+	m_pszBoneOffsetList = new vector3f[nBones];
 }
 
 void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
@@ -104,8 +111,12 @@ void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
 	}
 
 	m_pszBoneList[m_iPrivateIterator]=bone;
+	//if(/*bone!=this &&*/ bone!=this->getParent())
+	{
+		*(matrix4x4f*)bone = *bone * this->getWorldMatrix()->getInverse();
+	}
 	m_pszInvBoneTMList[m_iPrivateIterator]=bone->getWorldMatrix()->getInverse();
-	//m_pszInvBoneTMList[m_iPrivateIterator].noScale();
+	m_pszBoneOffsetList[m_iPrivateIterator]=bone->getWorldMatrix()->getPosition();
 	m_iPrivateIterator++;
 
 	std::vector<object3d*>* childList = bone->getChildList();

@@ -545,8 +545,10 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 
 	if(boneInfluenceList)
 	{
+		int nData=0;
 		for(int x=0;x<fbxMesh.GetControlPointsCount();x++)
 		{
+			nData+=boneInfluenceList[x].bone.size();
 			if(boneInfluenceList[x].bone.size()>nMaxBonePerVert)
 				nMaxBonePerVert=boneInfluenceList[x].bone.size();
 		}
@@ -673,11 +675,21 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 		vTriList[fbxMaterialIndex].arrayList.push_back(vertexIndices[1]);
 		vTriList[fbxMaterialIndex].arrayList.push_back(vertexIndices[2]);
 			
+		////http://stackoverflow.com/questions/13566608/loading-skinning-information-from-fbx
+		//FbxAMatrix globalTM=fbxMesh.GetNode()->EvaluateGlobalTransform(0);
+		//FbxAMatrix globalTM_inverse=globalTM.Inverse();
+		//FbxAMatrix localTM=fbxMesh.GetNode()->EvaluateLocalTransform(0);
+		//FbxAMatrix pivot = localTM*globalTM_inverse;
+
 		for(int y=0;y<fbxMesh.GetPolygonSize(x);y++)
 		{
 			int vertexIndex=fbxMesh.GetPolygonVertex(x, y);
+
 			FbxVector4 vertex=fbxMesh.GetControlPointAt(vertexIndex);
+			//FbxVector4 v = pivot.MultT(vertex);
+			//vertex=globalTM.MultT(v);
 			vertex=geometryOffset.MultNormalize(vertex);
+
 			FbxVector4 normal;
 			fbxMesh.GetPolygonVertexNormal(x, y, normal);
 			//normal=transform.MultNormalize(normal);

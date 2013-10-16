@@ -35,6 +35,7 @@ private:
 	int m_nBones;
 	object3d** m_pszBoneList;
 	matrix4x4f* m_pszInvBoneTMList;
+	vector3f* m_pszBoneOffsetList;
 };
 
 #endif

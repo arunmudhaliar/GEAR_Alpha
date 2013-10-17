@@ -12,12 +12,11 @@ geWindow("Hierarchy")
 
 gearSceneHierarchy::~gearSceneHierarchy()
 {
-	engine_setEngineObserver(NULL);
-	engine_setObject3dObserver(NULL);
-	gxWorld* world=engine_getWorld(0);
-	world->setObject3dObserver(NULL);
-
-	//destroyTVUserData(m_cGameObjectsTreeView.getRoot());
+	//engine_setEngineObserver(NULL);
+	//engine_setObject3dObserver(NULL);
+	//gxWorld* world=engine_getWorld(0);
+	//world->setObject3dObserver(NULL);
+	engine_destroy();	
 }
 
 void gearSceneHierarchy::onCreate()
@@ -99,10 +98,6 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 			util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
 		{
 			object3d* obj = monoWrapper::mono_engine_loadAndAppendFBX(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
-			//if(obj)
-			//{
-			//	createTVNode(rootNode, obj, droppedDataObject->getName());
-			//}
 		}
 	}
 	else if(dropObject->getSourcePtr()==this)
@@ -116,16 +111,6 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
 			{
 				selectedObj->appendChild(droppedObj);
-
-				//geTreeNode* dtv=(geTreeNode*)droppedDataObject;
-				//geTreeNode* dtv_parent=(geTreeNode*)dtv->getParent();
-				//dtv_parent->removeTVChild(dtv);
-
-				//((geTreeNode*)droppedDataObject)->setXOffset(20.0f);
-				//selectedNode->appnendTVChild((geTreeNode*)droppedDataObject);
-				//((geTreeNode*)droppedDataObject)->setNodeSprite(&m_cszSprites[0]);
-				//rootNode->traverseSetWidth(m_cSize.x);
-				//m_cGameObjectsTreeView.refreshTreeView();
 			}
 		}
 		else if(selectedNode==NULL)
@@ -136,19 +121,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
 			{
 				monoWrapper::mono_engine_appendObject3dToRoot(monoWrapper::mono_engine_getWorld(0), droppedObj);
-				////selectedObj->appendChild(droppedObj);
-
-				//geTreeNode* dtv=(geTreeNode*)droppedDataObject;
-				//geTreeNode* dtv_parent=(geTreeNode*)dtv->getParent();
-				//dtv_parent->removeTVChild(dtv);
-
-				//((geTreeNode*)droppedDataObject)->setXOffset(0.0f);
-				//m_cGameObjectsTreeView.getRoot()->appnendTVChild((geTreeNode*)droppedDataObject);
-				//((geTreeNode*)droppedDataObject)->setNodeSprite(&m_cszSprites[1]);
-				//rootNode->traverseSetWidth(m_cSize.x);
-				//m_cGameObjectsTreeView.refreshTreeView();
 			}
-
 		}
 	}
 	else if(dropObject->getSourcePtr()==EditorApp::getScenePropertyEditor())
@@ -222,15 +195,10 @@ void gearSceneHierarchy::destroyTVUserData(geGUIBase* parent)
 
 void gearSceneHierarchy::onAppendToWorld(gxWorld* world, object3d* obj)
 {
-	//geTreeNode* rootNode = m_cGameObjectsTreeView.getRoot();
-	//createTVNode(rootNode, obj, obj->getName());
-	//rootNode->traverseSetWidth(m_cSize.x);
-	//m_cGameObjectsTreeView.refreshTreeView();
 }
 
 void gearSceneHierarchy::onRemoveFromWorld(gxWorld* world, object3d* obj)
 {
-
 }
 
 void gearSceneHierarchy::onObject3dChildAppend(object3d* child)
@@ -240,10 +208,6 @@ void gearSceneHierarchy::onObject3dChildAppend(object3d* child)
 	createTVNode(rootNode, child, child->getName());
 	rootNode->traverseSetWidth(m_cSize.x);
 	m_cGameObjectsTreeView.refreshTreeView();
-	//if light
-	if(child->getID()==3)
-		monoWrapper::mono_engine_getWorld(0)->getLightList()->push_back((gxLight*)child);
-	//
 	monoWrapper::mono_object3d_onObject3dChildAppend(parent_obj, child);
 }
 
@@ -262,13 +226,6 @@ void gearSceneHierarchy::onObject3dChildRemove(object3d* child)
 
 void gearSceneHierarchy::onObject3dDestroy(object3d* obj)
 {
-	//if light then remove it frm world
-	if(obj->getID()==3)
-	{
-		std::vector<gxLight*>* lightList=monoWrapper::mono_engine_getWorld(0)->getLightList();
-		lightList->erase(std::remove(lightList->begin(), lightList->end(), obj), lightList->end());
-	}
-	//
 }
 
 bool gearSceneHierarchy::onKeyDown(int charValue, int flag)

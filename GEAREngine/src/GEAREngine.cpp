@@ -431,6 +431,11 @@ extern DllExport HWShaderManager* engine_getHWShaderManager()
 {
 	return g_cGEAREngine.getHWShaderManager();
 }
+
+extern DllExport void engine_destroy()
+{
+	g_cGEAREngine.resetEngine();
+}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -441,6 +446,11 @@ GEAREngine::GEAREngine()
 }
 
 GEAREngine::~GEAREngine()
+{
+	resetEngine();
+}
+
+void GEAREngine::resetEngine()
 {
 	for(std::vector<gxWorld*>::iterator it = m_cWorlds.begin(); it != m_cWorlds.end(); ++it)
 	{
@@ -455,6 +465,7 @@ void GEAREngine::initEngine(int nWorldToCreate)
 	for(int x=0;x<nWorldToCreate;x++)
 	{
 		gxWorld* newWorld = new gxWorld();
+		newWorld->setRootObserverOfTree(newWorld);
 		m_cWorlds.push_back(newWorld);
 	}
 }

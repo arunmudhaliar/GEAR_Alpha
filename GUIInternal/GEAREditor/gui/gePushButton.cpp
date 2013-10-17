@@ -24,7 +24,7 @@ gePushButton::~gePushButton()
 void gePushButton::create(geGUIBase* parent, const char* name, float x, float y)
 {
 	createBase(parent);
-	int width=geGUIManager::g_pFontArial12Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(14, 14);
 	setPos(x, y);
 
@@ -45,7 +45,7 @@ void gePushButton::draw()
 	{
 		drawRect(&m_cVBCheckMark);
 	}
-	geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 17, geGUIManager::g_pFontArial12Ptr->getLineHeight()-5, m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 17, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()-5, m_cSize.x);
 	glPopMatrix();
 }
 	

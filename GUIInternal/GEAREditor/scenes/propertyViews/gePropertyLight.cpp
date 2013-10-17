@@ -10,9 +10,9 @@ void gePropertyLight::drawNode()
 {
 	drawRect(&m_cVBClientArea);
 
-	geGUIManager::g_pFontArial12Ptr->drawString("Diffuse", 10, 50+geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
-	geGUIManager::g_pFontArial12Ptr->drawString("Ambient", 120, 50+geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
-	geGUIManager::g_pFontArial12Ptr->drawString("Specular", 230, 50+geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString("Diffuse", 10, 50+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString("Ambient", 120, 50+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString("Specular", 230, 50+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 	{

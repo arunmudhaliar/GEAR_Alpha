@@ -49,6 +49,7 @@ extern "C" {
 	DllExport object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType);
 
 	DllExport HWShaderManager* engine_getHWShaderManager();
+	DllExport void engine_destroy();
 }
 
 class GEAREngine
@@ -58,11 +59,7 @@ public:
 	~GEAREngine();
 
 	void initEngine(int nWorldToCreate);
-	//void updateEngine(gxWorld* world, float dt);
-	//void renderEngine(gxWorld* world);
-	//void renderSingleObject(gxWorld* world, object3d* obj);
-
-	//void resizeEngine(gxWorld* world, float x, float y, float cx, float cy);
+	void resetEngine();
 
 	gxWorld* getWorld(int index)		{	return m_cWorlds[index];	}
 

@@ -48,7 +48,8 @@ private:
 	geLayoutManager m_cLayoutManager;
 public:
 	static FontManager g_cFontManager;
-	static gxFont* g_pFontArial12Ptr;
+	static gxFont* g_pFontArial10_84Ptr;
+	static gxFont* g_pFontArial10_80Ptr;
 	static CGETextureManager g_cTextureManager;
 };
 

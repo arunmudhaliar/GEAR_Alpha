@@ -67,12 +67,16 @@ object3d::object3d(int objID):
 	m_pAnimationController=NULL;
 	m_pAnimationTrack=NULL;
 	m_iFileCRC=0;
+	setRootObserverOfTree(NULL);
 }
 
 object3d::~object3d()
 {
 	if(m_pObject3dObserver)
 		m_pObject3dObserver->onObject3dDestroy(this);
+
+	if(m_pRootObserver)
+		m_pRootObserver->callback_object3dDestroyedFromTree(this);
 
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{
@@ -87,6 +91,18 @@ object3d::~object3d()
 	m_pParentPtr=NULL;
 	m_pAnimationTrack=NULL;
 	GX_DELETE(m_pAnimationController);
+}
+
+void object3d::setObject3dObserverRecursive(MObject3dObserver* observer)
+{
+	setObject3dObserver(observer);
+
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		obj->setObject3dObserverRecursive(observer);
+	}
+	m_cChilds.clear();
 }
 
 void object3d::update(float dt)
@@ -143,6 +159,8 @@ bool object3d::removeChild(object3d* child)
 	{
 		if(m_pObject3dObserver)
 			m_pObject3dObserver->onObject3dChildRemove(child);
+		if(m_pRootObserver)
+			m_pRootObserver->callback_object3dRemovedFromTree(child);
 		child->setParent(NULL);
 		//child->setAnimationTrack(NULL);	nned to test fully
 		return true;
@@ -186,8 +204,12 @@ void object3d::calculateAABB()
 object3d* object3d::appendChild(object3d* child)
 {
 	child->setParent(this);
+	child->setRootObserverOfTree(getRootObserverOfThisTree());
+
 	if(m_pObject3dObserver)
 		m_pObject3dObserver->onObject3dChildAppend(child);
+	if(m_pRootObserver)
+		m_pRootObserver->callback_object3dAppendToTree(child);
 	m_cChilds.push_back(child);
 	child->transformationChangedf();
 	return child;
@@ -236,15 +258,13 @@ void object3d::clearAnimTrackOnAllNodes()
 	}
 }
 
-gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
+gxAnimationSet* object3d::applyAnimationSetRecursive(gxAnimationSet* animset)
 {
 	if(m_pAnimationController==NULL)
 		return NULL;
 
 	clearAnimTrackOnAllNodes();
-
-	gxAnimationSet* animSet=m_pAnimationController->getAnimationSetList()->at(index);
-	std::vector<gxAnimationTrack*>* trackList=animSet->getTrackList();
+	std::vector<gxAnimationTrack*>* trackList=animset->getTrackList();
 	for(std::vector<gxAnimationTrack*>::iterator it = trackList->begin(); it != trackList->end(); ++it)
 	{
 		gxAnimationTrack* animationTrack = *it;
@@ -259,8 +279,13 @@ gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
 		}
 	}
 
+	return animset;
+}
 
-	return animSet;
+gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
+{
+	gxAnimationSet* animSet=m_pAnimationController->getAnimationSetList()->at(index);
+	return applyAnimationSetRecursive(animSet);
 }
 
 void object3d::write(gxFile& file)

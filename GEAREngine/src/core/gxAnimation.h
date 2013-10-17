@@ -24,6 +24,7 @@ public:
 	void write(gxFile& file);
 	void read(gxFile& file);
 
+	gxAnimationSet* play(gxAnimationSet* animset);
 	gxAnimationSet* play(int animSetIndex);
 	void stop();
 	void pause();

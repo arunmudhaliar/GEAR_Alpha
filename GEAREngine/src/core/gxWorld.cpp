@@ -125,3 +125,29 @@ void gxWorld::calculateAABB()
 {
 	object3d::calculateAABB();
 }
+
+void gxWorld::callback_object3dRemovedFromTree(object3d* child)
+{
+	if(child->getID()==3)
+	{
+		std::vector<gxLight*>* lightList=getLightList();
+		lightList->erase(std::remove(lightList->begin(), lightList->end(), child), lightList->end());
+	}
+}
+
+void gxWorld::callback_object3dAppendToTree(object3d* child)
+{
+	//if light
+	if(child->getID()==3)
+		getLightList()->push_back((gxLight*)child);
+	//
+}
+
+void gxWorld::callback_object3dDestroyedFromTree(object3d* child)
+{
+	if(child->getID()==3)
+	{
+		std::vector<gxLight*>* lightList=getLightList();
+		lightList->erase(std::remove(lightList->begin(), lightList->end(), child), lightList->end());
+	}
+}

@@ -113,7 +113,7 @@ void gePropertyMaterial::drawNode()
 
 	if(m_pCurrentMaterialPtr)
 	{
-		geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 		{

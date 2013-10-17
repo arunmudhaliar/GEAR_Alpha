@@ -77,7 +77,7 @@ void geButton::create(geGUIBase* parent, const char* name, float x, float y, flo
 {
 	createBase(parent);
 
-	int width=geGUIManager::g_pFontArial12Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(cx, cy);
 	setPos(x, y);
 
@@ -89,7 +89,7 @@ void geButton::create(geGUIBase* parent, const char* name, float x, float y, flo
 void geButton::create(geGUIBase* parent, const char* name, float x, float y)
 {
 	createBase(parent);
-	int width=geGUIManager::g_pFontArial12Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(width+20, 20);
 	setPos(x, y);
 
@@ -104,7 +104,7 @@ void geButton::draw()
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
 	drawRect(&m_cVBClientArea);
 	drawLine(m_cVBClientAreaLine, 0.1, 0.1, 0.1, 1.0f);
-	geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 10, geGUIManager::g_pFontArial12Ptr->getLineHeight()-2, m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 10, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()-2, m_cSize.x);
 	glPopMatrix();
 }
 	

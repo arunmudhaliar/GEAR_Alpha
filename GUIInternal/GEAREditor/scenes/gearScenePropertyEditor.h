@@ -33,7 +33,7 @@ protected:
 
 private:
 	geTreeView m_cPropertiesTreeView;
-	Sprite2Dx m_cszSprites[6];
+	Sprite2Dx m_cszSprites[10];
 
 	geTreeNode* m_pObject3dParentNode;
 	geTreeNode* m_pTransformParentNode;

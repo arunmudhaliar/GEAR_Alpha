@@ -39,10 +39,6 @@ void gxSkinnedMesh::update(float dt)
 				continue;
 
 			object3d* bone=m_pszBoneList[boneID];
-			if(bone==this || bone==this->getParent())
-			{
-				bone=bone;
-			}
 			float weight=m_pszWeightBuffer[x*m_nBoneInfluencePerVertex+y];
 
 			vector3f transformedVertex(m_pszInvBoneTMList[boneID] * vertex);
@@ -52,7 +48,7 @@ void gxSkinnedMesh::update(float dt)
 			finalVertex.z+=deformVertex.z*weight;
 		}
 
-		finalVertex=finalVertex-this->getParent()->getWorldMatrix()->getPosition();
+		//finalVertex=finalVertex-this->getParent()->getWorldMatrix()->getPosition();
 		m_pszVertexBuffer[x*3+0]=finalVertex.x;
 		m_pszVertexBuffer[x*3+1]=finalVertex.y;
 		m_pszVertexBuffer[x*3+2]=finalVertex.z;

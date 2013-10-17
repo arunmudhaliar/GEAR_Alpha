@@ -436,7 +436,12 @@ void gearSceneWorldEditor::drawSelectedObject()
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 		}
 		else
-			glTranslatef(m_pSelectedObj->getWorldMatrix()->getMatrix()[12], m_pSelectedObj->getWorldMatrix()->getMatrix()[13], m_pSelectedObj->getWorldMatrix()->getMatrix()[14]);
+		{
+			matrix4x4f globalAxisTM;
+			globalAxisTM.setPosition(m_pSelectedObj->getWorldMatrix()->getPosition());
+			u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * globalAxisTM).getMatrix();
+			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+		}
 
 		glEnable(GL_COLOR_MATERIAL);
 		geUtil::drawGizmo(distance_frm_cam, shader, m_iAxisSelected);
@@ -483,22 +488,22 @@ void gearSceneWorldEditor::drawStats()
 
 	char buffer[128];
 	sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*3, m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*3, m_cSize.x);
 	sprintf(buffer, "GLSL %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*4, m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*4, m_cSize.x);
 	sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*5, m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*5, m_cSize.x);
 	sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*6, m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*6, m_cSize.x);
 	sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*7, m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*7, m_cSize.x);
 
 	sprintf(buffer, "Total Material : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*8, m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*8, m_cSize.x);
 	sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
-	geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial12Ptr->getLineHeight()*9, m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*9, m_cSize.x);
 
 	geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
 	if(selectedNodeInHirarchy)
@@ -507,7 +512,7 @@ void gearSceneWorldEditor::drawStats()
 		if(obj && obj->getAnimationController())
 		{
 			sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
-			geGUIManager::g_pFontArial12Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial12Ptr->getLineHeight()*10, m_cSize.x);
+			geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*10, m_cSize.x);
 		}
 	}
 

@@ -84,12 +84,11 @@ void geWindow::drawTitleAndToolBar()
 	for(int index=0;index<strlen(m_szName);index++)
 	{
 		float temp=cursorPos;
-		cursorPos+=geGUIManager::g_pFontArial12Ptr->getCharWidth(m_szName[index]);
+		cursorPos+=geGUIManager::g_pFontArial10_84Ptr->getCharWidth(m_szName[index]);
 	}
 
 	drawRoundedRectangle(1, 3, cursorPos+30, GE_WND_TITLE_HEIGHT-3, 5);
-	geGUIManager::g_pFontArial12Ptr->setRGBA(0.7f, 0.7f, 0.7f);
-	geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	//drawTriangle(&m_cVBLayoutToggleButtonLine[3*0], 0.05f, 0.05f, 0.05f, 1.0f, 3);
 	if(m_pToolBar)
 		m_pToolBar->draw();
@@ -114,8 +113,8 @@ void geWindow::draw()
 	drawRect(&m_cVBClientArea);
 
 	onDraw();
-	////geGUIManager::g_pFontArial12Ptr->setRGBA(0.7f, 0.7f, 0.7f);
-	////geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial12Ptr->getLineHeight());
+	////geGUIManager::g_pFontArial10_84Ptr->setRGBA(0.7f, 0.7f, 0.7f);
+	////geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial10_84Ptr->getLineHeight());
 
 	////glTranslatef(0, -getTopMarginOffsetHeight(), 0);
 	//m_cButton.draw();

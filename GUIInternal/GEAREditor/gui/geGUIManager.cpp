@@ -1,7 +1,8 @@
 #include "geGUIManager.h"
 
 FontManager geGUIManager::g_cFontManager;
-gxFont* geGUIManager::g_pFontArial12Ptr=NULL;
+gxFont* geGUIManager::g_pFontArial10_84Ptr=NULL;
+gxFont* geGUIManager::g_pFontArial10_80Ptr=NULL;
 CGETextureManager geGUIManager::g_cTextureManager;
 
 geGUIManager::geGUIManager()
@@ -21,7 +22,12 @@ geGUIManager::~geGUIManager()
 void geGUIManager::init()
 {
 	g_cFontManager.init(rendererBase::gl_fixed_pipeline);
-	g_pFontArial12Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_84.ecf");
+	g_pFontArial10_84Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_84.ecf");
+	g_pFontArial10_80Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_80.ecf");
+
+	g_pFontArial10_84Ptr->setRGBA(0.7f, 0.7f, 0.7f);
+	g_pFontArial10_80Ptr->setRGBA(0.5f, 0.5f, 0.5f);
+
 	m_cLayoutManager.create(0, 0, 1184, 567);
 }
 

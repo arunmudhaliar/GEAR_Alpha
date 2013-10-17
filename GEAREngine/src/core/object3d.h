@@ -11,6 +11,14 @@
 #include "../util/gxFile.h"
 #include "../renderer/gxRenderer.h"
 
+class MRootObserver
+{
+public:
+	virtual void callback_object3dRemovedFromTree(object3d* child){};
+	virtual void callback_object3dAppendToTree(object3d* child){};
+	virtual void callback_object3dDestroyedFromTree(object3d* child){};
+};
+
 class DllExport MObject3dObserver
 {
 public:
@@ -21,7 +29,7 @@ public:
 
 class gxAnimation;
 class gxAnimationSet;
-class DllExport object3d : public transform
+class DllExport object3d : public transform, public MRootObserver
 {
 public:
 
@@ -73,6 +81,7 @@ public:
 	gxAnimation* createAnimationController();
 	gxAnimation* getAnimationController()				{	return m_pAnimationController;	}
 	gxAnimationSet* applyAnimationSetRecursive(int index);
+	gxAnimationSet* applyAnimationSetRecursive(gxAnimationSet* animset);
 	void setAnimationTrack(gxAnimationTrack* track);
 	gxAnimationTrack* getAnimationTrack()	{	return m_pAnimationTrack;	}
 
@@ -89,6 +98,10 @@ public:
 	void* getEditorUserData()				{	return m_pEditorUserDataPtr;	}
 
 	void setObject3dObserver(MObject3dObserver* observer)	{	m_pObject3dObserver = observer;	}
+	void setObject3dObserverRecursive(MObject3dObserver* observer);
+
+	void setRootObserverOfTree(MRootObserver* rootObserver)	{	m_pRootObserver=rootObserver;	}
+	MRootObserver* getRootObserverOfThisTree()				{	return m_pRootObserver;			}
 
 protected:
 	void clearAnimTrackOnAllNodes();
@@ -105,6 +118,7 @@ protected:
 	int m_iFileCRC;
 	void* m_pEditorUserDataPtr;				//must not delete this pointer
 	MObject3dObserver* m_pObject3dObserver;	//must not delete this pointer
+	MRootObserver* m_pRootObserver;			//must not delete this pointer
 };
 
 extern "C" {

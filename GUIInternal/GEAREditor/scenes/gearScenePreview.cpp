@@ -66,7 +66,7 @@ void gearScenePreview::draw()
 	//char buffer[16];
 	//sprintf(buffer, "Tris: %d", mesh->getVerticesCount()/3);
 	glDisable(GL_DEPTH_TEST);
-	geGUIManager::g_pFontArial12Ptr->drawString("1 object selected", 5, 5+geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString("1 object selected", 5, 5+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	glEnable(GL_DEPTH_TEST);
 	//GLUquadric* q=gluNewQuadric();
 	//gluCylinder(q, 10, 0, 20, 20, 5);

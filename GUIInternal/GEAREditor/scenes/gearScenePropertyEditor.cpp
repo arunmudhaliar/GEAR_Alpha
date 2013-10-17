@@ -52,6 +52,8 @@ void gearScenePropertyEditor::onCreate()
 	m_cszSprites[4].setClip(151, 48, 16, 16);
 	m_cszSprites[5].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[5].setClip(256, 382, 16, 16);
+	m_cszSprites[6].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[6].setClip(26, 298, 16, 16);
 
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 
@@ -170,7 +172,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		{
 			gxAnimationSet* animationSet = *it;
 
-			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(m_pAnimationParentNode, animationSet->getAnimationName(), NULL);
+			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(m_pAnimationParentNode, obj, animationSet, &m_cszSprites[6]);
 			pAnimationSetNode->setUserData(animationSet);
 		}
 		rootNode->appnendTVChild(m_pAnimationParentNode);

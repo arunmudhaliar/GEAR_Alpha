@@ -13,7 +13,7 @@ geToolBarDropMenu::geToolBarDropMenu(const char* name, geGUIBase* parent):
 {
 	createBase(parent);
 
-	int width=geGUIManager::g_pFontArial12Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(width+27, parent->getSize().y);
 
 	setColor(&m_cVBClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
@@ -47,7 +47,7 @@ void geToolBarDropMenu::draw()
 	}
 	else
 	{
-		geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 17, geGUIManager::g_pFontArial12Ptr->getLineHeight()-5, m_cSize.x);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 17, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()-5, m_cSize.x);
 	}
 
 	drawTriangle(m_cVBLayoutToggleButtonLine, 0.4f, 0.4f, 0.4f, 1.0f, 3);

@@ -54,15 +54,20 @@ void gxAnimation::read(gxFile& file)
 	}
 }
 
-gxAnimationSet* gxAnimation::play(int animSetIndex)
+gxAnimationSet* gxAnimation::play(gxAnimationSet* animset)
 {
-	m_pActiveAnimationSetPtr = m_vAnimationSet[animSetIndex];
+	m_pActiveAnimationSetPtr = animset;
 	m_bPlay=true;
 	m_fCurrentFrame=0;
 	m_iFPS=m_pActiveAnimationSetPtr->getFPS();
 	m_nFrames=m_pActiveAnimationSetPtr->getFrameCount();
 
 	return m_pActiveAnimationSetPtr;
+}
+
+gxAnimationSet* gxAnimation::play(int animSetIndex)
+{
+	return play(m_vAnimationSet[animSetIndex]);
 }
 
 void gxAnimation::stop()

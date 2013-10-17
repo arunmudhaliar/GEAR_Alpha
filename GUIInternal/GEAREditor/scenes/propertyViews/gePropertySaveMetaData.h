@@ -34,7 +34,9 @@ public:
 	{
 		drawRect(&m_cVBClientArea);
 
-		geGUIManager::g_pFontArial12Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial12Ptr->getLineHeight(), m_cSize.x);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+
+		geGUIManager::g_pFontArial10_80Ptr->drawString("Update meta file with the current change.", m_pButtonSave->getPos().x+m_pButtonSave->getSize().x+20, geGUIManager::g_pFontArial10_80Ptr->getLineHeight()+10, m_cSize.x);
 
 		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 		{

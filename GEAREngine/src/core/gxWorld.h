@@ -75,6 +75,10 @@ public:
 	std::vector<gxLight*>* getLightList()	{	return &m_vLightList;		}
 	gxLight* getLight(int index)			{	return m_vLightList[index];	}
 
+	void callback_object3dRemovedFromTree(object3d* child);
+	void callback_object3dAppendToTree(object3d* child);
+	void callback_object3dDestroyedFromTree(object3d* child);
+
 private:
 	std::vector<gxMaterial*> m_cMaterialList;
 	std::vector<gxAnimationSet*> m_vAnimationSetList;

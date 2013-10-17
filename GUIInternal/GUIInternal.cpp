@@ -401,6 +401,8 @@ LRESULT CALLBACK Proj_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				if(EditorApp::createNewProject(project_directory)!=0)
 				{
 					MessageBox(hWndDlg, "Project creation failed", "Error.", MB_OK | MB_ICONERROR);
+					GE_DELETE_ARY(project_directory);
+					return true;
 				}
 				EditorApp::setProjectHomeDirectory(project_directory);
 				GE_DELETE_ARY(project_directory);

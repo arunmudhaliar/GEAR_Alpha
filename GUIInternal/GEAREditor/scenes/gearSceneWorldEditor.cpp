@@ -43,20 +43,20 @@ void gearSceneWorldEditor::onCreate()
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(0), metaDataFolder);
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(1), metaDataFolder);
 
-	m_pLocalOrGlobalAxis=new geToolBarButton("Local", getToolBar());
+	m_pLocalOrGlobalAxis=new geToolBarButton(m_pRenderer, "Local", getToolBar());
 	m_pLocalOrGlobalAxis->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pLocalOrGlobalAxis);
 	m_bTransformThroughLocalAxis=true;
 
-	m_pTranslateGizmo=new geToolBarButton("t", getToolBar());
+	m_pTranslateGizmo=new geToolBarButton(m_pRenderer, "t", getToolBar());
 	m_pTranslateGizmo->loadImage("res//icons16x16.png", 7, 153);
 	m_pTranslateGizmo->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pTranslateGizmo);
-	m_pRotateGizmo=new geToolBarButton("r", getToolBar());
+	m_pRotateGizmo=new geToolBarButton(m_pRenderer, "r", getToolBar());
 	m_pRotateGizmo->loadImage("res//icons16x16.png", 27, 153);
 	m_pRotateGizmo->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pRotateGizmo);
-	m_pScaleGizmo=new geToolBarButton("s", getToolBar());
+	m_pScaleGizmo=new geToolBarButton(m_pRenderer, "s", getToolBar());
 	m_pScaleGizmo->loadImage("res//icons16x16.png", 49, 153);
 	m_pScaleGizmo->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pScaleGizmo);
@@ -65,39 +65,39 @@ void gearSceneWorldEditor::onCreate()
 	m_pTranslateGizmo->buttonPressed();
 
 	m_pHorizontalSlider_LightAmbient = new geHorizontalSlider();
-	m_pHorizontalSlider_LightAmbient->create(getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
+	m_pHorizontalSlider_LightAmbient->create(m_pRenderer, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
 	m_pHorizontalSlider_LightAmbient->setSliderValue(0.2f);
 	getToolBar()->appendToolBarControl(m_pHorizontalSlider_LightAmbient);
 
-	geToolBarSeperator* seperator = new geToolBarSeperator(getToolBar(), 20);
+	geToolBarSeperator* seperator = new geToolBarSeperator(m_pRenderer, getToolBar(), 20);
 	getToolBar()->appendToolBarControl(seperator);
-	geToolBarSeperator* seperator2 = new geToolBarSeperator(getToolBar(), 40);
+	geToolBarSeperator* seperator2 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40);
 	getToolBar()->appendToolBarControl(seperator2);
 
-	m_pTBGridView=new geToolBarButton("grid", getToolBar());
+	m_pTBGridView=new geToolBarButton(m_pRenderer, "grid", getToolBar());
 	m_pTBGridView->loadImage("res//icons16x16.png", 112, 384);
 	m_pTBGridView->buttonPressed();
 	getToolBar()->appendToolBarControl(m_pTBGridView);
 
-	geToolBarSeperator* seperator3 = new geToolBarSeperator(getToolBar(), 40);
+	geToolBarSeperator* seperator3 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40);
 	getToolBar()->appendToolBarControl(seperator3);
 
 	//play-pause-stop
-	m_pPlayButton=new geToolBarButton("play", getToolBar());
+	m_pPlayButton=new geToolBarButton(m_pRenderer, "play", getToolBar());
 	m_pPlayButton->loadImage("res//icons16x16.png", 26, 216);
 	m_pPlayButton->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pPlayButton);
-	m_pPauseButton=new geToolBarButton("pause", getToolBar());
+	m_pPauseButton=new geToolBarButton(m_pRenderer, "pause", getToolBar());
 	m_pPauseButton->loadImage("res//icons16x16.png", 90, 216);
 	m_pPauseButton->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pPauseButton);
 	//
 
-	geToolBarSeperator* seperator4 = new geToolBarSeperator(getToolBar(), 40);
+	geToolBarSeperator* seperator4 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40);
 	getToolBar()->appendToolBarControl(seperator4);
 
 	m_pHorizontalSlider_TimeScale = new geHorizontalSlider();
-	m_pHorizontalSlider_TimeScale->create(getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
+	m_pHorizontalSlider_TimeScale->create(m_pRenderer, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
 	m_pHorizontalSlider_TimeScale->setSliderValue(1.0f);
 	getToolBar()->appendToolBarControl(m_pHorizontalSlider_TimeScale);
 
@@ -319,7 +319,7 @@ void gearSceneWorldEditor::onDraw()
 void gearSceneWorldEditor::drawLightsOnMultiPass()
 {
 	m_cMultiPassFBO.BindFBO();
-	monoWrapper::mono_engine_resize(m_pMainWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (rendererGL10::g_pRendererGL10->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);
+	monoWrapper::mono_engine_resize(m_pMainWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
@@ -504,7 +504,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 void gearSceneWorldEditor::drawStats()
 {
 	//STATS
-	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (rendererGL10::g_pRendererGL10->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
+	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho((int)0, (int)(m_cSize.x), (int)(m_cSize.y-getTopMarginOffsetHeight()), (int)0, -100, 100);

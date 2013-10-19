@@ -11,9 +11,9 @@ geTextureThumbnail::~geTextureThumbnail()
 {
 }
 
-void geTextureThumbnail::create(geGUIBase* parent, gxTexture* texture, float x, float y, float cx, float cy)
+void geTextureThumbnail::create(rendererGL10* renderer, geGUIBase* parent, gxTexture* texture, float x, float y, float cx, float cy)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 
 	setSize(cx, cy);
 	setPos(x, y);

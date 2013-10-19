@@ -11,7 +11,7 @@ class geToolBarButton : public geButtonBase
 {
 public:
 	geToolBarButton();
-	geToolBarButton(const char* name, geGUIBase* parent);
+	geToolBarButton(rendererGL10* renderer, const char* name, geGUIBase* parent);
 	virtual ~geToolBarButton();
 
 	virtual void draw();
@@ -46,7 +46,7 @@ public:
 	geToolBar(unsigned short uGUIID, const char* name);
 	virtual ~geToolBar();
 
-	void create(geGUIBase* parent, float x, float y, float cx, float cy);
+	void create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy);
 
 	virtual void draw();
 

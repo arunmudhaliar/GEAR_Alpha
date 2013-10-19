@@ -3,6 +3,7 @@
 
 geGUIBase::geGUIBase()
 {
+	m_pRenderer=NULL;
 	m_pSelectedControlPtr=NULL;
 	m_pParentPtr=NULL;
 	setMouseEntered(false);
@@ -15,6 +16,7 @@ geGUIBase::geGUIBase()
 geGUIBase::geGUIBase(unsigned short uGUIID, const char* name):
 	m_uGUIID(uGUIID)
 {
+	m_pRenderer=NULL;
 	setSizable(false);
 	m_pSelectedControlPtr=NULL;
 	m_pParentPtr=NULL;
@@ -39,8 +41,9 @@ geGUIBase::~geGUIBase()
 	m_vControls.clear();
 }
 
-void geGUIBase::createBase(geGUIBase* parent)
+void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent)
 {
+	m_pRenderer=renderer;
 	setSizable(false);
 	m_pSelectedControlPtr=NULL;
 	setMouseEntered(false);

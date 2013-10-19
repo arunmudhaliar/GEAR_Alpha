@@ -38,7 +38,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 
 void gearScenePropertyEditor::onCreate()
 {
-	m_cPropertiesTreeView.create(this, "propertyeditorTV", this);
+	m_cPropertiesTreeView.create(m_pRenderer, this, "propertyeditorTV", this);
 
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(68, 488, 16, 16);
@@ -57,16 +57,16 @@ void gearScenePropertyEditor::onCreate()
 
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 
-	m_pObject3dParentNode = new geTreeNode(rootNode, "Object3d", &m_cszSprites[0], 0);
-	m_pObject3dPropertyNode = new gePropertyObject3d(m_pObject3dParentNode, "", NULL);
-	m_pTransformParentNode = new geTreeNode(rootNode, "Transform", &m_cszSprites[1], 0);
-	m_pTransformPropertyNode = new gePropertyTransform(m_pTransformParentNode, "", NULL);
-	m_pMaterialParent = new geTreeNode(rootNode, "Material", &m_cszSprites[2], 0);
-	m_pAnimationParentNode  = new geTreeNode(rootNode, "Animation", &m_cszSprites[3], 0);
-	m_pSaveMetaDataParentNode = new geTreeNode(rootNode, "Save MetaData", &m_cszSprites[4], 0);
-	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pSaveMetaDataParentNode, "", NULL);
-	m_pLightParentNode = new geTreeNode(rootNode, "Light", &m_cszSprites[5], 0);
-	m_pLightPropertyNode = new gePropertyLight(m_pLightParentNode, "", NULL);
+	m_pObject3dParentNode = new geTreeNode(m_pRenderer, rootNode, "Object3d", &m_cszSprites[0], 0);
+	m_pObject3dPropertyNode = new gePropertyObject3d(m_pRenderer, m_pObject3dParentNode, "", NULL);
+	m_pTransformParentNode = new geTreeNode(m_pRenderer, rootNode, "Transform", &m_cszSprites[1], 0);
+	m_pTransformPropertyNode = new gePropertyTransform(m_pRenderer, m_pTransformParentNode, "", NULL);
+	m_pMaterialParent = new geTreeNode(m_pRenderer, rootNode, "Material", &m_cszSprites[2], 0);
+	m_pAnimationParentNode  = new geTreeNode(m_pRenderer, rootNode, "Animation", &m_cszSprites[3], 0);
+	m_pSaveMetaDataParentNode = new geTreeNode(m_pRenderer, rootNode, "Save MetaData", &m_cszSprites[4], 0);
+	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pRenderer, m_pSaveMetaDataParentNode, "", NULL);
+	m_pLightParentNode = new geTreeNode(m_pRenderer, rootNode, "Light", &m_cszSprites[5], 0);
+	m_pLightPropertyNode = new gePropertyLight(m_pRenderer, m_pLightParentNode, "", NULL);
 
 	rootNode->removeTVChild(m_pObject3dParentNode);
 	rootNode->removeTVChild(m_pTransformParentNode);
@@ -149,7 +149,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		{
 			//if(!mesh->getTriInfo(x)->getMaterial())
 			//	continue;
-			gePropertyMaterial* materialProperty = new gePropertyMaterial(m_pMaterialParent, "", NULL, mesh->getTriInfo(x));
+			gePropertyMaterial* materialProperty = new gePropertyMaterial(m_pRenderer, m_pMaterialParent, "", NULL, mesh->getTriInfo(x));
 		}
 
 		rootNode->appnendTVChild(m_pMaterialParent);
@@ -172,7 +172,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		{
 			gxAnimationSet* animationSet = *it;
 
-			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(m_pAnimationParentNode, obj, animationSet, &m_cszSprites[6]);
+			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(m_pRenderer, m_pAnimationParentNode, obj, animationSet, &m_cszSprites[6]);
 			pAnimationSetNode->setUserData(animationSet);
 		}
 		rootNode->appnendTVChild(m_pAnimationParentNode);

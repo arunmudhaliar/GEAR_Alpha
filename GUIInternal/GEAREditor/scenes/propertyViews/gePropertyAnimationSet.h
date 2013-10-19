@@ -12,8 +12,8 @@
 class gePropertyAnimationSet : public geTreeNode, public MGUIObserver
 {
 public:
-	gePropertyAnimationSet(geGUIBase* parent, object3d* ownerObj, gxAnimationSet* animSet, Sprite2Dx* sprite):
-	  geTreeNode(parent, animSet->getAnimationName(), sprite, 10)
+	gePropertyAnimationSet(rendererGL10* renderer, geGUIBase* parent, object3d* ownerObj, gxAnimationSet* animSet, Sprite2Dx* sprite):
+	  geTreeNode(renderer, parent, animSet->getAnimationName(), sprite, 10)
 	{
 		m_pButtonSetAnimation=NULL;
 		m_pOwnerObj=ownerObj;
@@ -21,7 +21,7 @@ public:
 		setSize(m_cSize.x, m_cSize.y*1.2f);
 
 		m_pButtonSetAnimation = new geButton("");
-		m_pButtonSetAnimation->create(this, "Set", 0, 3);
+		m_pButtonSetAnimation->create(renderer, this, "Set", 0, 3);
 		m_pButtonSetAnimation->setSize(m_pButtonSetAnimation->getSize().x, m_pButtonSetAnimation->getSize().y);
 		m_pButtonSetAnimation->setGUIObserver(this);
 

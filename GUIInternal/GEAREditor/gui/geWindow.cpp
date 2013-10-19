@@ -15,9 +15,9 @@ geWindow::~geWindow()
 	GE_DELETE(m_pToolBar);
 }
 
-void geWindow::create(geGUIBase* parent, float x, float y, float cx, float cy, bool bCreateToolBar)
+void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy, bool bCreateToolBar)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 
 	m_bCanMove=false;
 	m_pIamOnLayout=NULL;
@@ -30,7 +30,7 @@ void geWindow::create(geGUIBase* parent, float x, float y, float cx, float cy, b
 	if(bCreateToolBar)
 	{
 		m_pToolBar = new geToolBar();
-		m_pToolBar->create(this, 0, -GE_TOOLBAR_HEIGHT/*GE_WND_TITLE_HEIGHT*/, cx, GE_TOOLBAR_HEIGHT);
+		m_pToolBar->create(renderer, this, 0, -GE_TOOLBAR_HEIGHT/*GE_WND_TITLE_HEIGHT*/, cx, GE_TOOLBAR_HEIGHT);
 	}
 
 	onCreate();
@@ -99,7 +99,7 @@ void geWindow::draw()
 {
 	drawTitleAndToolBar();
 
-	glViewport(m_cPos.x+m_pIamOnLayout->getPos().x, (rendererGL10::g_pRendererGL10->getViewPortSz().y)-(m_cPos.y+m_pIamOnLayout->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);	
+	glViewport(m_cPos.x+m_pIamOnLayout->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+m_pIamOnLayout->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);	
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -107,7 +107,7 @@ void geWindow::draw()
 	glMatrixMode(GL_MODELVIEW);
 
 	glPushMatrix();
-	//glTranslatef(m_cPos.x, m_cPos.y, /*rendererGL10::g_pRendererGL10->getViewPortSz().y-(m_cSize.y+m_cPos.y),*/ 0);
+	//glTranslatef(m_cPos.x, m_cPos.y, /*m_pRenderer->getViewPortSz().y-(m_cSize.y+m_cPos.y),*/ 0);
 
 
 	drawRect(&m_cVBClientArea);

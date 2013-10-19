@@ -28,7 +28,7 @@ public:
 	geLayout(const char* name);
 	virtual ~geLayout();
 
-	void create(geLayout* pParentLayout, float x, float y, float cx, float cy);
+	void create(rendererGL10* renderer, geLayout* pParentLayout, float x, float y, float cx, float cy);
 
 	void setWindow(geWindow* window);
 	geWindow* getWindow()	{	return m_pWindowPointer;	}

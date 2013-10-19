@@ -12,9 +12,9 @@ geHorizontalSlider::~geHorizontalSlider()
 {
 }
 
-void geHorizontalSlider::create(geGUIBase* parent, const char* name, float x, float y, float cx)
+void geHorizontalSlider::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float cx)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 
 	setSize(cx, 5);
 	setPos(x, y);

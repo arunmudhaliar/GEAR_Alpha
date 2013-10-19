@@ -52,7 +52,7 @@ public:
 
 	int getGUIID()	{	return m_uGUIID;	}
 
-	void createBase(geGUIBase* parent);
+	void createBase(rendererGL10* renderer, geGUIBase* parent);
 	void setParent(geGUIBase* parent);
 
 	void setColor(stVertexBuffer* vbuffer, float r, float g, float b, float a, ESTYLE_GRADIENT eGradientStyle=EGRADIENT_NONE, float gradientScale=0.5f);
@@ -188,7 +188,8 @@ protected:
 	geGUIBase* m_pSelectedControlPtr;
 
 	void* m_pUserData;
-	MGUIObserver* m_pGUIObserver	;
+	MGUIObserver* m_pGUIObserver;
+	rendererGL10* m_pRenderer;
 };
 
 class MGUIObserver

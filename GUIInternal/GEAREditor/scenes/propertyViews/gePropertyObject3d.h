@@ -10,8 +10,8 @@
 class gePropertyObject3d : public geTreeNode, public MGUIObserver
 {
 public:
-	gePropertyObject3d(geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	  geTreeNode(parent, name, sprite, 10)
+	gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
+	  geTreeNode(renderer, parent, name, sprite, 10)
 	{
 		setSize(m_cSize.x, 30.0f);
 
@@ -19,11 +19,11 @@ public:
 		//btn->create(this, "button1", 40, 10);
 
 		m_pPushBtn_Object3dVisible = new gePushButton("");
-		m_pPushBtn_Object3dVisible->create(this, "", 15, 10);
+		m_pPushBtn_Object3dVisible->create(renderer, this, "", 15, 10);
 		m_pPushBtn_Object3dVisible->setGUIObserver(this);
 
 		m_pTextBoxMeshName = new geTextBox("MeshName");
-		m_pTextBoxMeshName->create(this, "MeshName", 35, 10, 200, 16);
+		m_pTextBoxMeshName->create(renderer, this, "MeshName", 35, 10, 200, 16);
 
 		setNodeColor(0.21f, 0.21f, 0.21f);
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);

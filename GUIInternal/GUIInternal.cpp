@@ -14,6 +14,7 @@
 #include "MDragGropInterface.h"
 #include "GEAREditor\win32\MDropSource.h"
 #include "GEAREditor\win32\eventHook.h"
+#include "GEAREditor\secondryViews\geColorDlg.h"
 
 #ifdef _DEBUG
 #include <crtdbg.h>
@@ -35,7 +36,6 @@ BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK	Proj_DlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-//LRESULT CALLBACK	TextureSelect_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 char* browseFolder();
 
@@ -84,7 +84,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 }
 
 
-
 //
 //  FUNCTION: MyRegisterClass()
 //
@@ -116,19 +115,32 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.lpszClassName	= szWindowClass;
 	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
+	static TCHAR szAppName2[] = TEXT ("childWnd");
+	WNDCLASSEX childWndClass;
+	childWndClass.cbSize = sizeof(WNDCLASSEX);
+ 
+    childWndClass.style				= CS_HREDRAW | CS_VREDRAW;
+    childWndClass.lpfnWndProc		= geSecondryView::SecondryView_DlgProc;
+    childWndClass.cbClsExtra		= 0;
+    childWndClass.cbWndExtra		= 0;
+    childWndClass.hInstance			= hInstance;
+    childWndClass.hIcon				= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_GUIINTERNAL));
+    childWndClass.hCursor			= LoadCursor (NULL, IDC_ARROW);
+    childWndClass.hbrBackground		= (HBRUSH) GetStockObject (WHITE_BRUSH);
+    childWndClass.lpszMenuName		= NULL;
+    childWndClass.lpszClassName		= szAppName2;
+	childWndClass.hIconSm			= LoadIcon(childWndClass.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+	if (!RegisterClassEx(&childWndClass))
+    {
+        MessageBox (NULL, TEXT ("This program requires Windows 95/98/NT"),
+                    szAppName2, MB_ICONERROR);
+		return NULL;
+    }
+
 	return RegisterClassEx(&wcex);
 }
 
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    HWND hWnd;
@@ -149,16 +161,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND	- process the application menu
-//  WM_PAINT	- Paint the main window
-//  WM_DESTROY	- post a quit message and return
-//
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -206,7 +208,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_HELP_COMMAND:
 			{
-				m_cEditorApp.importAssetToMetaData(hWnd, hInst);
+				geColorDlg* view = new geColorDlg();
+				view->showView(hWnd);
+				GE_DELETE(view);
 			}
 			break;
 		case IDM_EXIT:
@@ -272,9 +276,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int xx=LOWORD(lParam);
 			int yy=HIWORD(lParam);
 			m_cEditorApp.MouseLButtonUp(xx, yy, nFlags);
-			//if(DialogBox(hInst, MAKEINTRESOURCE(IDD_PROJ_DLG), hWnd, reinterpret_cast<DLGPROC>(TextureSelect_DlgProc))==0)
-			//{
-			//}
 		}
 		break;
 	case WM_DESTROY:
@@ -379,6 +380,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			return (INT_PTR)TRUE;
 		}
 		break;
+	default:
+		return DefWindowProc(hDlg, message, wParam, lParam);
 	}
 	return (INT_PTR)FALSE;
 }
@@ -451,37 +454,12 @@ LRESULT CALLBACK Proj_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 			return EndDialog(hWndDlg, 0);
 		}
 		break;
+	default:
+		return DefWindowProc(hWndDlg, Msg, wParam, lParam);
 	}
 
 	return FALSE;
 }
-
-/*
-EditorApp* m_pTextureSelectEditorApp;
-LRESULT CALLBACK TextureSelect_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
-{
-	switch(Msg)
-	{
-	case WM_INITDIALOG:
-		{
-			m_pTextureSelectEditorApp = new EditorApp();
-			m_pTextureSelectEditorApp->init(hWndDlg);
-
-			return TRUE;
-		}
-		break;
-
-	case WM_CLOSE:
-		{
-			GE_DELETE(m_pTextureSelectEditorApp);
-			return EndDialog(hWndDlg, 0);
-		}
-		break;
-	}
-
-	return FALSE;
-}
-*/
 
 char* browseFolder()
 {

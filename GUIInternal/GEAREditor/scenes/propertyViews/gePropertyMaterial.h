@@ -18,8 +18,8 @@ public:
 	gxMaterial* m_pCurrentMaterialPtr;
 	gxTriInfo* m_pTriInfoPtr;
 
-	gePropertyMaterial(geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo):
-	  geTreeNode(parent, name, sprite, 10)
+	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo):
+	  geTreeNode(renderer, parent, name, sprite, 10)
 	{
 		setSize(m_cSize.x, 85.0f);
 

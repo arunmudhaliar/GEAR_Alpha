@@ -25,11 +25,11 @@ void gearSceneHierarchy::onCreate()
 	engine_setObject3dObserver(this);
 	EditorApp::getSceneWorldEditor()->getMainWorld()->setObject3dObserver(this);
 
-	m_pCreateToolBarDropMenuBtnPtr=new geToolBarDropMenu("Create", getToolBar());
+	m_pCreateToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "Create", getToolBar());
 	m_pCreateToolBarDropMenuBtnPtr->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pCreateToolBarDropMenuBtnPtr);
 
-	m_cGameObjectsTreeView.create(this, "gameObjectsTV", this);
+	m_cGameObjectsTreeView.create(m_pRenderer, this, "gameObjectsTV", this);
 
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(88, 382, 16, 16);
@@ -164,7 +164,7 @@ void gearSceneHierarchy::createTVNode(geTreeNode* parentNode, object3d* obj, con
 		sprite=&m_cszSprites[0];
 	}
 
-	geTreeNode* newtvNode = new geTreeNode(parentNode, name, sprite);
+	geTreeNode* newtvNode = new geTreeNode(m_pRenderer, parentNode, name, sprite);
 	//assetUserData* userData = new assetUserData(2, "", obj);
 	newtvNode->setUserData(obj);
 	newtvNode->closeNode();

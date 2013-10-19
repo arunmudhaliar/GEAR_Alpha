@@ -13,6 +13,6 @@ public:
 #endif
 	~rendererGL10();
 
-	static rendererGL10* g_pRendererGL10;
+	//static rendererGL10* g_pRendererGL10;
 };
 #endif

@@ -12,8 +12,9 @@ geScrollBar::geScrollBar():
 	m_fContentHeight=0.0f;
 }
 
-void geScrollBar::create(geGUIBase* parent, MScrollBarObserver* observer)
+void geScrollBar::create(rendererGL10* renderer, geGUIBase* parent, MScrollBarObserver* observer)
 {
+	m_pRenderer=renderer;
 	//createBase(parent);
 	m_pObserverPtr=observer;
 

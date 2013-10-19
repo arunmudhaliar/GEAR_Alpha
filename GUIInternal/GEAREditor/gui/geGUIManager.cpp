@@ -19,7 +19,7 @@ geGUIManager::~geGUIManager()
 	m_vWindowObjects.clear();
 }
 
-void geGUIManager::init()
+void geGUIManager::init(rendererGL10* renderer)
 {
 	g_cFontManager.init(rendererBase::gl_fixed_pipeline);
 	g_pFontArial10_84Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_84.ecf");
@@ -28,7 +28,7 @@ void geGUIManager::init()
 	g_pFontArial10_84Ptr->setRGBA(0.7f, 0.7f, 0.7f);
 	g_pFontArial10_80Ptr->setRGBA(0.5f, 0.5f, 0.5f);
 
-	m_cLayoutManager.create(0, 0, 1184, 567);
+	m_cLayoutManager.create(renderer, 0, 0, 1184, 567);
 }
 
 void geGUIManager::appendWindow(geWindow* window)

@@ -12,7 +12,7 @@ public:
 public:
 	virtual ~geTextBox();
 
-	void create(geGUIBase* parent, const char* name, float x, float y, float cx, float cy);
+	void create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float cx, float cy);
 	//void create(geGUIBase* parent, const char* name, float x, float y);
 
 	virtual void draw();

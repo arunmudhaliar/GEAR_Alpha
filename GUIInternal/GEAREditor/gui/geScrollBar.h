@@ -18,7 +18,7 @@ class geScrollBar : public geGUIBase
 public:
 	geScrollBar();
 
-	void create(geGUIBase* parent, MScrollBarObserver* observer);
+	void create(rendererGL10* renderer, geGUIBase* parent, MScrollBarObserver* observer);
 	virtual ~geScrollBar();
 
 	void resetScrollBar();

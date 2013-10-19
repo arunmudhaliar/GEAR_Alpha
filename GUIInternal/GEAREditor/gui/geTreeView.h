@@ -14,7 +14,7 @@ class geTreeNode : public geGUIBase
 private:
 	geTreeNode();
 public:
-	geTreeNode(geGUIBase* parent, const char* name, Sprite2Dx* sprite, float xoffset=20.0f);
+	geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, float xoffset=20.0f);
 	virtual ~geTreeNode();
 
 	virtual void onPosition(float x, float y, int flag);
@@ -83,7 +83,7 @@ public:
 	geTreeView(const char* name);
 	virtual ~geTreeView();
 
-	void create(geGUIBase* parent, const char* name, MTreeViewObserver* pObserver);
+	void create(rendererGL10* renderer, geGUIBase* parent, const char* name, MTreeViewObserver* pObserver);
 
 	virtual void draw();
 

@@ -73,9 +73,9 @@ geButton::~geButton()
 {
 }
 
-void geButton::create(geGUIBase* parent, const char* name, float x, float y, float cx, float cy)
+void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float cx, float cy)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 
 	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(cx, cy);
@@ -86,9 +86,9 @@ void geButton::create(geGUIBase* parent, const char* name, float x, float y, flo
 	m_bMouseHover=false;
 }
 
-void geButton::create(geGUIBase* parent, const char* name, float x, float y)
+void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(width+20, 20);
 	setPos(x, y);

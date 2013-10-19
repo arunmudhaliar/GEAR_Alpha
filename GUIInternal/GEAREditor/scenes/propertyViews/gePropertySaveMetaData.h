@@ -11,13 +11,13 @@
 class gePropertySaveMetaData : public geTreeNode, public MGUIObserver
 {
 public:
-	gePropertySaveMetaData(geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	  geTreeNode(parent, name, sprite, 10)
+	gePropertySaveMetaData(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
+	  geTreeNode(renderer, parent, name, sprite, 10)
 	{
 		setSize(m_cSize.x, 40.0f);
 
 		m_pButtonSave = new geButton("");
-		m_pButtonSave->create(this, "Save Meta", 15, 10);
+		m_pButtonSave->create(renderer, this, "Save Meta", 15, 10);
 		m_pButtonSave->setGUIObserver(this);
 
 		setNodeColor(0.21f, 0.21f, 0.21f);

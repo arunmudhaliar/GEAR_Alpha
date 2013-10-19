@@ -22,7 +22,7 @@ public:
 #endif
 	virtual ~rendererBase();
 
-	bool setupRenderer();
+	bool setupRenderer(rendererBase* mainRenderer=NULL);
 	void destroyRenderer();
 
 	void setViewPort(float cx, float cy);
@@ -35,6 +35,10 @@ public:
 	const geVector2f& getViewPortSz()	{	return m_cViewPortSz;	}
 	geMatrix4x4f* getProjectionMatrix()		{	return m_pProjectionMatrixPtr;	}
 	geMatrix4x4f* getOrthoProjectionMatrix()	{	return &m_cOrthogonalProjectionMatrix;	}
+
+	bool makeCurrent();
+
+	HGLRC getRenderingContext()	{	return m_hRC;	}
 
 private:
 
@@ -54,6 +58,7 @@ private:
 	//geMatrix4x4f* m_pViewProjectionMatrixPtr;     //must not delete this pointer
     geMatrix4x4f  m_cOrthogonalProjectionMatrix;
 	//bool		m_bDirectionalLighting;
+	bool m_bSecondryRenderer; 
 public:
 	static ERENDERER g_eRenderingTechnique;
     static unsigned int g_nTrisRendered;

@@ -8,10 +8,10 @@ geToolBarButton::geToolBarButton():
 	//no implementation
 }
 
-geToolBarButton::geToolBarButton(const char* name, geGUIBase* parent):
+geToolBarButton::geToolBarButton(rendererGL10* renderer, const char* name, geGUIBase* parent):
 	geButtonBase(GEGUI_TOOLBAR_BUTTON, name)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 
 	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(width+20, parent->getSize().y);
@@ -156,9 +156,9 @@ geToolBar::~geToolBar()
 	}
 }
 
-void geToolBar::create(geGUIBase* parent, float x, float y, float cx, float cy)
+void geToolBar::create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 
 	setPos(x, y);
 	setSize(cx, cy);

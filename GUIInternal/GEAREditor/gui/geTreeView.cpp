@@ -8,10 +8,10 @@ geTreeNode::geTreeNode():
 	m_pSprite=NULL;
 }
 
-geTreeNode::geTreeNode(geGUIBase* parent, const char* name, Sprite2Dx* sprite, float xoffset):
+geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, float xoffset):
 	geGUIBase(GEGUI_TREEVIEW_NODE, name)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 
 	m_bHaveAtleastOneTreeNodeChild=false;
 	m_fXOffSet=xoffset;
@@ -444,19 +444,19 @@ geTreeView::~geTreeView()
 	GE_DELETE(m_pRootNode);
 }
 
-void geTreeView::create(geGUIBase* parent, const char* name, MTreeViewObserver* pObserver)
+void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* name, MTreeViewObserver* pObserver)
 {
 	m_pTVObserver=pObserver;
-	createBase(parent);
+	createBase(renderer, parent);
 	setSizable(true);
 	setPos(0, 0);
 	setSize(parent->getSize().x, parent->getSize().y-parent->getTopMarginOffsetHeight());
 
-	m_cVerticalScrollBar.create(this, this);
+	m_cVerticalScrollBar.create(renderer, this, this);
 
 	m_fVirtualYPos=0.0f;
 
-	m_pRootNode = new geTreeNode(NULL, "root", NULL);
+	m_pRootNode = new geTreeNode(renderer, NULL, "root", NULL);
 	m_pSelectedNodePtr=NULL;
 }
 
@@ -676,7 +676,7 @@ void geTreeView::clearAndDestroyAll()
 	m_fVirtualYPos=0.0f;
 	m_cVerticalScrollBar.setConetentHeight(0);
 
-	m_pRootNode = new geTreeNode(NULL, "root", NULL);
+	m_pRootNode = new geTreeNode(m_pRenderer, NULL, "root", NULL);
 	m_pSelectedNodePtr=NULL;
 }
 

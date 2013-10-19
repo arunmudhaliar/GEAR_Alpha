@@ -16,6 +16,7 @@ rendererBase::rendererBase(HWND hWnd, ERENDERER technique):
 rendererBase::rendererBase(ERENDERER technique)
 #endif
 {
+	m_bSecondryRenderer=false;
 	g_eRenderingTechnique=technique;
 	//m_pProjectionMatrixPtr=NULL;
 	//m_pViewMatrixPtr=NULL;
@@ -28,9 +29,11 @@ rendererBase::~rendererBase()
 	destroyRenderer();
 }
 
-bool rendererBase::setupRenderer()
+bool rendererBase::setupRenderer(rendererBase* mainRenderer)
 {
 #ifdef _WIN32
+	m_bSecondryRenderer=(mainRenderer)?true:false;
+
 	static	PIXELFORMATDESCRIPTOR pfd=							// pfd Tells Windows How We Want Things To Be
 	{
 		sizeof(PIXELFORMATDESCRIPTOR),							// Size Of This Pixel Format Descriptor
@@ -74,34 +77,50 @@ bool rendererBase::setupRenderer()
 		return false;											// Return GX_FALSE
 	}
 	
-	if (!(m_hRC=wglCreateContext(m_hDC)))							// Are We Able To Get A Rendering Context?
+	if(!mainRenderer)
 	{
-		destroyRenderer();												// Reset The Display
-		MessageBox(NULL,"Can't Create A GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
-		return false;											// Return GX_FALSE
-	}	
+		if (!(m_hRC=wglCreateContext(m_hDC)))							// Are We Able To Get A Rendering Context?
+		{
+			destroyRenderer();												// Reset The Display
+			MessageBox(NULL,"Can't Create A GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+			return false;											// Return GX_FALSE
+		}
+	}
+	else
+	{
+		m_hRC=mainRenderer->getRenderingContext();
+	}
+
 	
+	if(!makeCurrent())
+		return false;
+
+	if(!mainRenderer)
+	{
+		glewInit();
+		if (!GLEW_VERSION_2_0)
+		{
+			MessageBox(NULL, "OpenGL 2.0 not supported. Shaders won't work !!!", "ERROR", MB_OK|MB_ICONEXCLAMATION);
+		}
+
+		glGetIntegerv(GL_MAJOR_VERSION, &g_iOGLMajorVersion);
+		glGetIntegerv(GL_MINOR_VERSION, &g_iOGLMinorVersion);
+	}
+	//glGetIntegerv​(GL_MAJOR_VERSION​, &major_version);
+	//glGetIntegerv​(GL_MINOR_VERSION​, &minor_version);
+#endif
+
+	return true;
+}
+
+bool rendererBase::makeCurrent()
+{
 	if(!wglMakeCurrent(m_hDC,m_hRC))								// Try To Activate The Rendering Context
 	{
 		destroyRenderer();												// Reset The Display
 		MessageBox(NULL,"Can't Activate The GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return false;											// Return GX_FALSE
 	}
-	
-	glewInit();
-	if (!GLEW_VERSION_2_0)
-	{
-		MessageBox(NULL, "OpenGL 2.0 not supported. Shaders won't work !!!", "ERROR", MB_OK|MB_ICONEXCLAMATION);
-	}
-
-	glGetIntegerv(GL_MAJOR_VERSION, &g_iOGLMajorVersion);
-	glGetIntegerv(GL_MINOR_VERSION, &g_iOGLMinorVersion);
-
-	//glGetIntegerv​(GL_MAJOR_VERSION​, &major_version);
-	//glGetIntegerv​(GL_MINOR_VERSION​, &minor_version);
-#endif
-
-	return true;
 }
 
 void rendererBase::destroyRenderer()
@@ -114,10 +133,9 @@ void rendererBase::destroyRenderer()
 #ifdef _WIN32
 bool rendererBase::killGL()
 {
-
 	bool flag=false;
 	
-	if(m_hRC)													// Do We Have A Rendering Context?
+	if(m_hRC && !m_bSecondryRenderer)													// Do We Have A Rendering Context?
 	{
 		if (!wglMakeCurrent(NULL,NULL))						// Are We Able To Release The DC And RC Contexts?
 		{

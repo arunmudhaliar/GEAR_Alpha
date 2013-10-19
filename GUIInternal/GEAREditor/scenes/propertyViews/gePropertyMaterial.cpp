@@ -67,7 +67,7 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 	if(m_pCurrentMaterialPtr)
 	{
 		geTextBox* text_material = new geTextBox("MaterialName");
-		text_material->create(this, m_pCurrentMaterialPtr->getMaterialName(), 50, 10, 200, 16);
+		text_material->create(m_pRenderer, this, m_pCurrentMaterialPtr->getMaterialName(), 50, 10, 200, 16);
 		
 		char tileX_temp_buffer[10];
 		char tileY_temp_buffer[10];
@@ -85,19 +85,19 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 		}
 
 		m_pText_tileX = new geTextBox("1.0");
-		m_pText_tileX->create(this, tileX_temp_buffer, 100, 40, 50, 16);
+		m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 40, 50, 16);
 		m_pText_tileX->setGUIObserver(this);
 		m_pText_tileY = new geTextBox("1.0");
-		m_pText_tileY->create(this, tileY_temp_buffer, 100, 60, 50, 16);
+		m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 60, 50, 16);
 		m_pText_tileY->setGUIObserver(this);
 
 		geColorControl* colorControl = new geColorControl();
-		colorControl->create(this, 10, 10);
+		colorControl->create(m_pRenderer, this, 10, 10);
 		vector4f diffuse=m_pCurrentMaterialPtr->getDiffuseClr();
 		colorControl->setControlColor(diffuse.x, diffuse.y, diffuse.z, diffuse.w);
 
 		geTextureThumbnailExtended* thumbnail = new geTextureThumbnailExtended();
-		thumbnail->create(this, m_pCurrentMaterialPtr->getTexture(), 260, 10, 70, 70);
+		thumbnail->create(m_pRenderer, this, m_pCurrentMaterialPtr->getTexture(), 260, 10, 70, 70);
 		thumbnail->setUserData(m_pCurrentMaterialPtr);
 	}
 	//else

@@ -15,7 +15,7 @@
 #include "../win32/MDropSource.h"
 #include"assetUserData.h"
 
-static int find_directory(const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray);
+static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray);
 
 gearSceneProject::gearSceneProject():
 geWindow("Project")
@@ -30,7 +30,7 @@ gearSceneProject::~gearSceneProject()
 
 void gearSceneProject::onCreate()
 {
-	m_cAssetTreeView.create(this, "AssetsTV", this);
+	m_cAssetTreeView.create(m_pRenderer, this, "AssetsTV", this);
 
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(362, 70, 16, 16);
@@ -45,7 +45,7 @@ void gearSceneProject::populateProjectView()
 	destroyTVUserData(m_cAssetTreeView.getRoot());
 	m_cAssetTreeView.clearAndDestroyAll();
 
-	find_directory(/*"."*/EditorApp::getProjectHomeDirectory(), m_cAssetTreeView.getRoot(), m_cszSprites);
+	find_directory(m_pRenderer, EditorApp::getProjectHomeDirectory(), m_cAssetTreeView.getRoot(), m_cszSprites);
 }
 
 void gearSceneProject::onDraw()
@@ -121,7 +121,7 @@ void gearSceneProject::onDragLeave()
 {
 }
 
-static int find_directory(const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray)
+static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray)
 {
     DIR *dir;
     char buffer[PATH_MAX + 2];
@@ -196,13 +196,13 @@ static int find_directory(const char *dirname, geTreeNode* parentNode, Sprite2Dx
                 /* Scan sub-directory recursively */
                 if (strcmp (ent->d_name, ".") != 0  &&  strcmp (ent->d_name, "..") != 0)
 				{
-					geTreeNode* newtvNode = new geTreeNode(parentNode, ent->d_name, &spriteArray[0]);
+					geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, &spriteArray[0]);
 
 					assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, buffer, NULL);
 					newtvNode->setUserData(userdata);
 
 					newtvNode->closeNode();
-                    find_directory (buffer, newtvNode, spriteArray);
+                    find_directory (renderer, buffer, newtvNode, spriteArray);
                 }
                 break;
 

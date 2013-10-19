@@ -10,9 +10,9 @@ geColorControl::~geColorControl()
 {
 }
 
-void geColorControl::create(geGUIBase* parent, float x, float y)
+void geColorControl::create(rendererGL10* renderer, geGUIBase* parent, float x, float y)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 
 	setSize(16, 16);
 	setPos(x, y);

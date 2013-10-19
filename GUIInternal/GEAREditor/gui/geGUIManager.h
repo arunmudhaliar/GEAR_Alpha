@@ -13,7 +13,7 @@ public:
 	geGUIManager();
 	~geGUIManager();
 
-	void init();
+	void init(rendererGL10* renderer);
 	void size(int cx, int cy);
 	void update(float dt);
 	void draw();

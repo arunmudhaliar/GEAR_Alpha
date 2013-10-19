@@ -36,8 +36,9 @@ geLayout:: ~geLayout()
 	m_vChildLeftLayouts.clear();
 }
 
-void geLayout::create(geLayout* pParentLayout, float x, float y, float cx, float cy)
+void geLayout::create(rendererGL10* renderer, geLayout* pParentLayout, float x, float y, float cx, float cy)
 {
+	m_pRenderer=renderer;
 	m_pParentLayout=pParentLayout;
 	m_pWindowPointer = NULL;
 	setPos(x, y);
@@ -95,7 +96,7 @@ void geLayout::draw()
 {
 	if(m_pParentLayout!=NULL)
 	{
-		glViewport(m_cPos.x+(BORDER_LAYOUT_OFFSET>>1), rendererGL10::g_pRendererGL10->getViewPortSz().y-(m_cSize.y+m_cPos.y+(BORDER_LAYOUT_OFFSET>>1)), m_cSize.x-(BORDER_LAYOUT_OFFSET), m_cSize.y-(BORDER_LAYOUT_OFFSET));	
+		glViewport(m_cPos.x+(BORDER_LAYOUT_OFFSET>>1), m_pRenderer->getViewPortSz().y-(m_cSize.y+m_cPos.y+(BORDER_LAYOUT_OFFSET>>1)), m_cSize.x-(BORDER_LAYOUT_OFFSET), m_cSize.y-(BORDER_LAYOUT_OFFSET));	
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		gluOrtho2D(0.0f, (int)(m_cSize.x-(BORDER_LAYOUT_OFFSET)), (int)(m_cSize.y-(BORDER_LAYOUT_OFFSET)), 0.0f);
@@ -287,7 +288,7 @@ geLayout* geLayout::createLeft(geWindow* window, float ratio)
 	}
 	
 	geLayout* pLayout = new geLayout();
-	pLayout->create(pParentOfNewLayout, this->getPos().x, this->getPos().y, this->getSize().x*ratio,  this->getSize().y);
+	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x, this->getPos().y, this->getSize().x*ratio,  this->getSize().y);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?LEFT_TO_PARENT:RIGHT_TO_PARENT);
 
 	this->setPos(this->getPos().x+this->getSize().x*ratio, this->getPos().y);
@@ -320,7 +321,7 @@ geLayout* geLayout::createRight(geWindow* window, float ratio)
 	}
 
 	geLayout* pLayout = new geLayout();
-	pLayout->create(pParentOfNewLayout, this->getPos().x+this->getSize().x*(1.0f-ratio), this->getPos().y, this->getSize().x*ratio,  this->getSize().y);
+	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x+this->getSize().x*(1.0f-ratio), this->getPos().y, this->getSize().x*ratio,  this->getSize().y);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?RIGHT_TO_PARENT:LEFT_TO_PARENT);
 
 	this->setSize(this->getSize().x*(1.0f-ratio),  this->getSize().y);
@@ -352,7 +353,7 @@ geLayout* geLayout::createTop(geWindow* window, float ratio)
 	}
 
 	geLayout* pLayout = new geLayout();
-	pLayout->create(pParentOfNewLayout, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y*ratio);
+	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y*ratio);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?TOP_TO_PARENT:BOTTOM_TO_PARENT);
 
 	this->setPos(this->getPos().x, this->getPos().y+this->getSize().y*ratio);
@@ -385,7 +386,7 @@ geLayout* geLayout::createBottom(geWindow* window, float ratio)
 	}
 
 	geLayout* pLayout = new geLayout();
-	pLayout->create(pParentOfNewLayout, this->getPos().x, this->getPos().y+this->getSize().y*(1.0f-ratio), this->getSize().x,  this->getSize().y*ratio);
+	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x, this->getPos().y+this->getSize().y*(1.0f-ratio), this->getSize().x,  this->getSize().y*ratio);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?BOTTOM_TO_PARENT:TOP_TO_PARENT);
 
 	this->setSize(this->getSize().x,  this->getSize().y*(1.0f-ratio));
@@ -408,7 +409,7 @@ geLayout* geLayout::createBottom(geWindow* window, float ratio)
 geLayout* geLayout::createAsParent(geWindow* window)
 {
 	geLayout* pLayout = new geLayout();
-	pLayout->create(this, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y);
+	pLayout->create(m_pRenderer, this, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y);
 	pLayout->setLayoutDirection(LAYOUT_PARENT);
 	this->setSize(this->getSize().x,  this->getSize().y);
 	appendLeftChildLayout(pLayout);

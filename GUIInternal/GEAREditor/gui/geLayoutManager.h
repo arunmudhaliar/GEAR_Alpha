@@ -11,7 +11,7 @@ public:
 	geLayoutManager();
 	virtual ~geLayoutManager();
 
-	void create(float x, float y, float cx, float cy);
+	void create(rendererGL10* renderer, float x, float y, float cx, float cy);
 
 	void mouseMoveWithGrabbedWindow(int x, int y, geWindow* grabbedWindow);
 	void dropGrabbedWindow(int x, int y, geWindow* grabbedWindow);

@@ -18,7 +18,7 @@ public:
 	geWindow(const char* name);
 	virtual ~geWindow();
 
-	void create(geGUIBase* parent, float x, float y, float cx, float cy, bool bCreateToolBar=false);
+	void create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy, bool bCreateToolBar=false);
 	void show();
 	void hide();
 	void enable();
@@ -69,10 +69,6 @@ private:
 	geToolBar* m_pToolBar;
 
 	bool m_bCanMove;
-
-	//geTreeView m_cTreeView;
-	//geButton m_cButton;
-	//gePushButton m_cPushButton;
 	float m_cVBLayoutToggleButtonLine[6*2];
 };
 

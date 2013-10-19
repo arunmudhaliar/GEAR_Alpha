@@ -11,7 +11,7 @@ class geToolBarDropMenu : public geButtonBase
 {
 public:
 	geToolBarDropMenu();
-	geToolBarDropMenu(const char* name, geGUIBase* parent);
+	geToolBarDropMenu(rendererGL10* renderer, const char* name, geGUIBase* parent);
 	virtual ~geToolBarDropMenu();
 
 	virtual void draw();

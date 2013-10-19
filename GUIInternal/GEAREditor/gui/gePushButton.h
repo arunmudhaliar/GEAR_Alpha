@@ -15,7 +15,7 @@ protected:
 public:
 	virtual ~gePushButton();
 
-	void create(geGUIBase* parent, const char* name, float x, float y);
+	void create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y);
 	virtual void draw();
 	
 	void setCheck(bool flag)	{	m_bCheck=flag;		}

@@ -65,16 +65,19 @@ public:
 	static gearSceneWorldEditor* getSceneWorldEditor();
 	static HWND getMainWindowHandle()	{	return g_hWnd;	}
 
+	static rendererGL10* getMainRenderer()	{	return g_pMainRenderer;	}
+
 private:
 	static HWND g_hWnd;	//main window
 
 	geGUIManager m_cGUIManager;
 	geVector2i m_cViewPortSz;
-
+	rendererGL10* m_pRendererGL10;
 	monoWrapper m_cMonoWrapper;
 	float angle;
 	bool m_bInitialised;
 
+	static rendererGL10* g_pMainRenderer;
 	static char g_cszProjectHomeDirectory[1024];
 
 	static gearSceneFileView* g_pSceneFileViewPtr;

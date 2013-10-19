@@ -20,14 +20,15 @@ geLayoutManager:: ~geLayoutManager()
 	GE_DELETE(m_pRootLayout);
 }
 
-void geLayoutManager::create(float x, float y, float cx, float cy)
+void geLayoutManager::create(rendererGL10* renderer, float x, float y, float cx, float cy)
 {
+	m_pRenderer=renderer;
 	m_cPrevScale.set(1.0f, 1.0f);
 	setPos(x, y);
 	setSize(cx, cy);
 
 	m_pRootLayout = new geLayout();
-	m_pRootLayout->create(NULL, x, y, cx, cy);
+	m_pRootLayout->create(renderer, NULL, x, y, cx, cy);
 	m_pRootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
 
 	cursorUtil::init();

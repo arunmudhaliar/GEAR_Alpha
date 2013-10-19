@@ -8,10 +8,10 @@ geToolBarDropMenu::geToolBarDropMenu():
 	//no implementation
 }
 
-geToolBarDropMenu::geToolBarDropMenu(const char* name, geGUIBase* parent):
+geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, geGUIBase* parent):
 	geButtonBase(GEGUI_TOOLBAR_DROPMENU, name)
 {
-	createBase(parent);
+	createBase(renderer, parent);
 
 	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(width+27, parent->getSize().y);

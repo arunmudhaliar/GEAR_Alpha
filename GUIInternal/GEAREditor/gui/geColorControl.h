@@ -11,7 +11,7 @@ public:
 public:
 	virtual ~geColorControl();
 
-	void create(geGUIBase* parent, float x, float y);
+	void create(rendererGL10* renderer, geGUIBase* parent, float x, float y);
 
 	virtual void draw();
 	

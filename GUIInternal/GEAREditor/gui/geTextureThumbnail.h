@@ -12,7 +12,7 @@ public:
 public:
 	virtual ~geTextureThumbnail();
 
-	void create(geGUIBase* parent, gxTexture* texture, float x, float y, float cx, float cy);
+	void create(rendererGL10* renderer, geGUIBase* parent, gxTexture* texture, float x, float y, float cx, float cy);
 	virtual void draw();
 	
 protected:

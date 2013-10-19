@@ -19,7 +19,7 @@
 #include "../../resource.h"
 #include "../../../GEAREngine/src/core/gxSkinnedMesh.h"
 
-static int find_files(const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
+static int find_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
 LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 char g_cszPrefabName[256];
 
@@ -37,10 +37,10 @@ gearSceneFileView::~gearSceneFileView()
 
 void gearSceneFileView::onCreate()
 {
-	m_cFileTreeView.create(this, "AssetsFileTV", this);
+	m_cFileTreeView.create(m_pRenderer, this, "AssetsFileTV", this);
 
 	m_pSerachStringTextBoxPtr=new geTextBox();
-	m_pSerachStringTextBoxPtr->create(getToolBar(), "", 0, 1, 100, 13);
+	m_pSerachStringTextBoxPtr->create(m_pRenderer, getToolBar(), "", 0, 1, 100, 13);
 	m_pSerachStringTextBoxPtr->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pSerachStringTextBoxPtr);
 
@@ -179,7 +179,7 @@ void gearSceneFileView::populateFiles(const char* dirPath)
 	destroyTVUserData(m_cFileTreeView.getRoot());
 	m_cFileTreeView.clearAndDestroyAll();
 
-	find_files(dirPath, m_pSerachStringTextBoxPtr->getName(), m_cFileTreeView.getRoot(), m_cszSprites);
+	find_files(m_pRenderer, dirPath, m_pSerachStringTextBoxPtr->getName(), m_cFileTreeView.getRoot(), m_cszSprites);
 	m_cFileTreeView.getRoot()->traverseSetWidth(m_cSize.x);
 	m_cFileTreeView.refreshTreeView();
 }
@@ -345,7 +345,7 @@ static bool isSubString(const char* str, const char* substr)
 	return false;
 }
 
-static int find_files(const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray)
+static int find_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray)
 {
     DIR *dir;
     char buffer[PATH_MAX + 2];
@@ -414,7 +414,7 @@ static int find_files(const char *dirname, const char* searchString, geTreeNode*
 						else
 							sprite=&spriteArray[1];
 
-						geTreeNode* newtvNode = new geTreeNode(parentNode, ent->d_name, sprite);
+						geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, sprite);
 						assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, buffer, NULL);
 						newtvNode->setUserData(userdata);
 						newtvNode->closeNode();

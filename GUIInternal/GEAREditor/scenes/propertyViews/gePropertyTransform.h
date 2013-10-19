@@ -18,8 +18,8 @@ public:
 	geTextBox* m_pszTextBoxScale[3];
 	object3d* m_pObject3dPtr;
 
-	gePropertyTransform(geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	  geTreeNode(parent, name, sprite, 10)
+	gePropertyTransform(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
+	  geTreeNode(renderer, parent, name, sprite, 10)
 	{
 		m_pObject3dPtr=NULL;
 		setSize(m_cSize.x, 85.0f);
@@ -31,33 +31,33 @@ public:
 		//pbtn->create(this, "", 10, 10);
 
 		m_pszTextBoxTranslation[0] = new geTextBox("X");
-		m_pszTextBoxTranslation[0]->create(this, "0.0", 30, 10, 60, 16);
+		m_pszTextBoxTranslation[0]->create(renderer, this, "0.0", 30, 10, 60, 16);
 		m_pszTextBoxTranslation[0]->setGUIObserver(this);
 		m_pszTextBoxTranslation[1] = new geTextBox("Y");
-		m_pszTextBoxTranslation[1]->create(this, "0.0", 105, 10, 60, 16);
+		m_pszTextBoxTranslation[1]->create(renderer, this, "0.0", 105, 10, 60, 16);
 		m_pszTextBoxTranslation[1]->setGUIObserver(this);
 		m_pszTextBoxTranslation[2] = new geTextBox("Z");
-		m_pszTextBoxTranslation[2]->create(this, "0.0", 180, 10, 60, 16);
+		m_pszTextBoxTranslation[2]->create(renderer, this, "0.0", 180, 10, 60, 16);
 		m_pszTextBoxTranslation[2]->setGUIObserver(this);
 
 		m_pszTextBoxRotation[0] = new geTextBox("X");
-		m_pszTextBoxRotation[0]->create(this, "0.0", 30, 30, 60, 16);
+		m_pszTextBoxRotation[0]->create(renderer, this, "0.0", 30, 30, 60, 16);
 		m_pszTextBoxRotation[0]->setGUIObserver(this);
 		m_pszTextBoxRotation[1] = new geTextBox("Y");
-		m_pszTextBoxRotation[1]->create(this, "0.0", 105, 30, 60, 16);
+		m_pszTextBoxRotation[1]->create(renderer, this, "0.0", 105, 30, 60, 16);
 		m_pszTextBoxRotation[1]->setGUIObserver(this);
 		m_pszTextBoxRotation[2] = new geTextBox("Z");
-		m_pszTextBoxRotation[2]->create(this, "0.0", 180, 30, 60, 16);
+		m_pszTextBoxRotation[2]->create(renderer, this, "0.0", 180, 30, 60, 16);
 		m_pszTextBoxRotation[2]->setGUIObserver(this);
 
 		m_pszTextBoxScale[0] = new geTextBox("X");
-		m_pszTextBoxScale[0]->create(this, "0.0", 30, 50, 60, 16);
+		m_pszTextBoxScale[0]->create(renderer, this, "0.0", 30, 50, 60, 16);
 		m_pszTextBoxScale[0]->setGUIObserver(this);
 		m_pszTextBoxScale[1] = new geTextBox("Y");
-		m_pszTextBoxScale[1]->create(this, "0.0", 105, 50, 60, 16);
+		m_pszTextBoxScale[1]->create(renderer, this, "0.0", 105, 50, 60, 16);
 		m_pszTextBoxScale[1]->setGUIObserver(this);
 		m_pszTextBoxScale[2] = new geTextBox("Z");
-		m_pszTextBoxScale[2]->create(this, "0.0", 180, 50, 60, 16);
+		m_pszTextBoxScale[2]->create(renderer, this, "0.0", 180, 50, 60, 16);
 		m_pszTextBoxScale[2]->setGUIObserver(this);
 
 

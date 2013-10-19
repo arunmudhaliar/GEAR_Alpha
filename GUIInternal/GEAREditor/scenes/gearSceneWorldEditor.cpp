@@ -161,6 +161,9 @@ void gearSceneWorldEditor::onCreate()
     m_cMultiPassFBO.AttachTextureBuffer(0);
     m_cMultiPassFBO.UnBindFBO();
 #endif
+
+	m_cLightBillBoardSprite.setOffset(0, 0);
+	m_cLightBillBoardSprite.loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 }
 
 
@@ -408,6 +411,36 @@ void gearSceneWorldEditor::drawGrid()
 
 void gearSceneWorldEditor::drawSelectedObject()
 {
+	//lights
+	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
+	if(lightList->size())
+	{
+		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(6);
+		shader->enableProgram();
+		shader->resetAllFlags();
+		for(int x=0;x<lightList->size();x++)
+		{
+			gxLight* light=lightList->at(x);
+			float distance_frm_cam=(light->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
+			if(distance_frm_cam<500.0f)
+				distance_frm_cam=1.0f;
+			else
+				distance_frm_cam/=500.0f;
+
+			m_cLightBillBoardSprite.setClip(277, 383, 18, 18);
+			m_cLightBillBoardSprite.setDirection(&m_pMainWorldPtr->getActiveCamera()->getYAxis(), &m_pMainWorldPtr->getActiveCamera()->getZAxis()/**/);
+			m_cLightBillBoardSprite.scale(distance_frm_cam*0.5f);
+			const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * m_cLightBillBoardSprite)).getMatrix();
+			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+
+			glDisable(GL_CULL_FACE);
+			m_cLightBillBoardSprite.draw(shader);
+			glEnable(GL_CULL_FACE);
+		}
+		shader->disableProgram();
+	}
+	//
+
 	if(m_pSelectedObj)
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(2);

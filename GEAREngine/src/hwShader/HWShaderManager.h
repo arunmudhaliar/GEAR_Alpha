@@ -40,6 +40,7 @@ private:
 	gxGenericShader m_cGenericShader;
 	gxGenericShader m_cLightingOnlyGenericShader;
 	gxGenericShader m_cLightingOnlyFirstPassGenericShader;
+	gxGenericShader m_cSpriteGenericShader;
 	std::vector<gxHWShader*> m_cvHWShaderLst;
 #endif
 };

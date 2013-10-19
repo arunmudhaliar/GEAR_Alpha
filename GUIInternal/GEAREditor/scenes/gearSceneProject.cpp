@@ -37,6 +37,14 @@ void gearSceneProject::onCreate()
 	m_cszSprites[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[1].setClip(46, 26, 16, 16);
 
+	populateProjectView();
+}
+
+void gearSceneProject::populateProjectView()
+{
+	destroyTVUserData(m_cAssetTreeView.getRoot());
+	m_cAssetTreeView.clearAndDestroyAll();
+
 	find_directory(/*"."*/EditorApp::getProjectHomeDirectory(), m_cAssetTreeView.getRoot(), m_cszSprites);
 }
 

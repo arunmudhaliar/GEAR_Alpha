@@ -39,6 +39,8 @@ void HWShaderManager::LoadDefaultShaders()
 		m_cvHWShaderLst.push_back(&m_cLightingOnlyFirstPassGenericShader);
 	if(m_cLightingOnlyGenericShader.loadShader("res/shadersWin32/pvLightingOnlyShader.vsh", "res/shadersWin32/pvLightingOnlyShader.fsh"))
 		m_cvHWShaderLst.push_back(&m_cLightingOnlyGenericShader);
+	if(m_cSpriteGenericShader.loadShader("res/shadersWin32/guishader.vsh", "res/shadersWin32/guishader.fsh"))
+		m_cvHWShaderLst.push_back(&m_cSpriteGenericShader);
 #endif
 #endif
 }

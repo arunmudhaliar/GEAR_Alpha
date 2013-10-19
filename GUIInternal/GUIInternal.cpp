@@ -13,6 +13,7 @@
 
 #include "MDragGropInterface.h"
 #include "GEAREditor\win32\MDropSource.h"
+#include "GEAREditor\win32\eventHook.h"
 
 #ifdef _DEBUG
 #include <crtdbg.h>
@@ -188,7 +189,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				m_cDropTargetInterfacePtr=dropTarget;
 
 				Timer::init();
-
+				//eventHook::g_pEditorAppPtr=&m_cEditorApp;
+				//eventHook::hookEvent(hWnd);
 			}
 		}
 		break;
@@ -201,6 +203,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case IDM_ABOUT:
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+			break;
+		case ID_HELP_COMMAND:
+			{
+				m_cEditorApp.importAssetToMetaData(hWnd, hInst);
+			}
 			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
@@ -219,6 +226,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_SIZE:
 		{
+			if(LOWORD(wParam)==SIZE_MAXIMIZED || LOWORD(wParam)==SIZE_RESTORED)
+			{
+				m_cEditorApp.importAssetToMetaData(hWnd, hInst);
+				EditorApp::getSceneProject()->populateProjectView();
+				EditorApp::getSceneFileView()->populateFileView();
+			}
 			m_cEditorApp.size(LOWORD(lParam), HIWORD(lParam));
 		}
 		break;

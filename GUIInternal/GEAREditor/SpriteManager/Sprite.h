@@ -6,9 +6,11 @@
 //#include "../engine/core/transformf.h"
 #include "../core/geTexture.h"
 #include "../util/geVector2.h"
+#include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 //#include "../engine/core/rect.h"
+#include "../../../GEAREngine/src/core/transform.h"
 
-class Sprite// : public transformf
+class Sprite : public transform
 {
 public:
     
@@ -36,6 +38,8 @@ public:
 	void loadTexture(CGETextureManager* textureManager, const char *pszFileName);
 	
 	virtual void draw(/*const matrix4x4f& parentTM, */geVector2f* pos=NULL){};
+	virtual void draw(gxHWShader* shader){};
+
 	void setClip(float clipX, float clipY, float width, float height);
 	//void setClip(const bxRectf& rect)  {   setClip(rect.m_pos.x, rect.m_pos.y, rect.m_size.x, rect.m_size.y); }
 
@@ -83,7 +87,7 @@ public:
 	void setBlendMode(EBLENDFLAG eFlag)		{	m_eBlendFlag=eFlag;	}
 	EBLENDFLAG getBlendMode()				{	return m_eBlendFlag;	}
 
-	void setPos(int x, int y)	{	m_cPos.x=x;	m_cPos.y=y;	}
+	void setPos(int x, int y)	{	setPosition(x, y, 0);	}
 
 	float* getVertexBuffer()	{	return m_cszVertLst;	}
 	float* getTexCoordBuffer()	{	return m_cszTexCoord;	}
@@ -106,7 +110,7 @@ protected:
     float m_fAlphaThreshold;
 	EBLENDFLAG m_eBlendFlag;
 
-	geVector2i m_cPos;
+	//geVector2i m_cPos;
 };
 
 #endif

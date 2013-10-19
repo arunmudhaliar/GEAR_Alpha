@@ -62,6 +62,18 @@ public:
 		m[14] += (aZdt* m[10]);
 	}
 
+	void scale(float scale)
+    {
+        matrix4x4f scaleTM;
+
+        scaleTM.setScale(scale, scale, scale);
+        //multiply with transform matrix
+		matrix4x4f* p=this;
+		*p = (scaleTM * (*this));
+		
+		//transformationChangedf();    
+    }
+
 	void scaleX(float scale)
     {
         matrix4x4f scaleTM;

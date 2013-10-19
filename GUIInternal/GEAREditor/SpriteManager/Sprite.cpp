@@ -141,7 +141,7 @@ void Sprite::debugDraw(geVector2f* pos)
 	if(pos)
 		glTranslatef(pos->x, pos->y, 0.0f);
 	else
-		glTranslatef(m_cPos.x, m_cPos.y, 0.0f);
+		glTranslatef(m[12], m[13], m[14]);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     

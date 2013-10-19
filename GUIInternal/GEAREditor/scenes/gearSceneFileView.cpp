@@ -167,6 +167,11 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 	EditorApp::getScenePreview()->selectedObject3D(obj);
 }
 
+void gearSceneFileView::populateFileView()
+{
+	populateFiles(m_szDirectoryPath);
+}
+
 void gearSceneFileView::populateFiles(const char* dirPath)
 {
 	EditorApp::getScenePreview()->selectedObject3D(NULL);

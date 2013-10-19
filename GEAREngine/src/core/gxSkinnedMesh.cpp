@@ -107,7 +107,7 @@ void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
 	}
 
 	m_pszBoneList[m_iPrivateIterator]=bone;
-	//if(/*bone!=this &&*/ bone!=this->getParent())
+	if(bone!=this /*&& bone!=this->getParent()*/)
 	{
 		*(matrix4x4f*)bone = *bone * this->getWorldMatrix()->getInverse();
 	}

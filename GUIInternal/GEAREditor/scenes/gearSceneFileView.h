@@ -14,7 +14,7 @@ public:
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
 
 	void populateFiles(const char* dirPath);
-
+	void populateFileView();
 
 protected:
 	virtual void onCreate();

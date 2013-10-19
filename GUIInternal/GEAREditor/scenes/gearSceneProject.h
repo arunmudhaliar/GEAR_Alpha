@@ -14,7 +14,8 @@ public:
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
 
-	//void setFileViewScenePtr(gearSceneFileView* fileView)	{	m_pFileViewScenePtr=fileView;	}
+	//void setFileViewScenePtr(gearSceneFileView* fileView)	{	m_pFileViewScenePtr=fileView;	
+	void populateProjectView();
 protected:
 	virtual void onCreate();
 	virtual void onDraw();

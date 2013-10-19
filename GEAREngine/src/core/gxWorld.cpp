@@ -12,8 +12,8 @@ gxWorld::gxWorld():
 	setDefaultCameraActive();
 	m_pActiveCameraPtr->initCamera(&m_cRenderer);
 
-	vector3f v(1, -1, -1);
-	m_pActiveCameraPtr->setDirection(&v);
+	//vector3f v(1, -1, -1);
+	//m_pActiveCameraPtr->setDirection(&v);
 
 	m_pActiveCameraPtr->updateLocalPositionf(0, 0, 300);
 

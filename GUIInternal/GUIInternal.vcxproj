@@ -142,6 +142,7 @@
     <ClInclude Include="GEAREditor\util\pxMath.h" />
     <ClInclude Include="GEAREditor\util\geVector2.h" />
     <ClInclude Include="GEAREditor\win32\cursorUtil.h" />
+    <ClInclude Include="GEAREditor\win32\eventHook.h" />
     <ClInclude Include="GEAREditor\win32\MDropSource.h" />
     <ClInclude Include="GUIInternal.h" />
     <ClInclude Include="MDragGropInterface.h" />
@@ -179,6 +180,7 @@
     <ClCompile Include="GEAREditor\scenes\gearSceneProject.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearScenePropertyEditor.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneWorldEditor.cpp" />
+    <ClCompile Include="GEAREditor\scenes\propertyViews\geNullMaterialExtended.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyLight.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.cpp" />

@@ -17,6 +17,8 @@ public:
 	{
 	}
 
+	virtual void draw();
+
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject)
 	{
 		getParent()->DragDrop(x-getPos().x, y-getPos().y, dropObject);

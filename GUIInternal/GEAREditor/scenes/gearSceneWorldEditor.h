@@ -81,6 +81,7 @@ protected:
 	geToolBarButton* m_pScaleGizmo;
 
 	HWShaderManager* m_pHWShaderManager;
+	Sprite2Dx m_cLightBillBoardSprite;
 
 #if defined USE_FBO
 	FBO m_cMultiPassFBO;

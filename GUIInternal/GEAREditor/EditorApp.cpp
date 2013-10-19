@@ -48,7 +48,7 @@ void EditorApp::init(HWND hWnd, HINSTANCE hInst)
 	m_cGUIManager.init();
 
 	//import all assets to the metadata folder
-	importAssetToMetaData(hWnd, hInst);
+	//importAssetToMetaData(hWnd, hInst);
 
 	gearSceneWorldEditor* worldEditorWnd = new gearSceneWorldEditor();
 	worldEditorWnd->create(NULL, 0, 0, 300, 200, true);

@@ -39,6 +39,14 @@ public:
 	}
 	
 	void setTexture(stTexturePacket* pTexTurePtr)		{	m_pTexTurePtr=pTexTurePtr;			}
+
+	const char* getTextureName()
+	{
+		if(m_pTexTurePtr)
+			return m_pTexTurePtr->iTextureName;
+
+		return NULL;
+	}
 	unsigned int getTextureID()	const
     {
         return (m_pTexTurePtr)?m_pTexTurePtr->iTextureID:0;

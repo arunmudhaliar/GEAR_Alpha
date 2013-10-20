@@ -4,6 +4,7 @@
 #include "../../gui/geTextureThumbnail.h"
 #include "../assetUserData.h"
 #include "../../../mono/src/monoWrapper.h"
+#include "../../gui/geTreeView.h"
 
 class geTextureThumbnailExtended : public geTextureThumbnail
 {
@@ -38,6 +39,9 @@ public:
 		//rootNode->traverseSetWidth(m_cSize.x);
 		//m_cGameObjectsTreeView.refreshTreeView();
 	}
+
+	virtual bool onMouseLButtonDown(float x, float y, int nFlag);
+
 };
 
 #endif

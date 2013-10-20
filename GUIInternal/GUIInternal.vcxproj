@@ -133,6 +133,7 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.h" />
     <ClInclude Include="GEAREditor\secondryViews\geColorDlg.h" />
     <ClInclude Include="GEAREditor\secondryViews\geSecondryView.h" />
+    <ClInclude Include="GEAREditor\secondryViews\geTextureDlg.h" />
     <ClInclude Include="GEAREditor\SpriteManager\Sprite.h" />
     <ClInclude Include="GEAREditor\SpriteManager\Sprite2Dx.h" />
     <ClInclude Include="GEAREditor\util\FontManager.h" />
@@ -187,8 +188,10 @@
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyLight.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.cpp" />
+    <ClCompile Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geColorDlg.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geSecondryView.cpp" />
+    <ClCompile Include="GEAREditor\secondryViews\geTextureDlg.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite2Dx.cpp" />
     <ClCompile Include="GEAREditor\util\FontManager.cpp" />

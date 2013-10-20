@@ -264,6 +264,9 @@
     <ClInclude Include="GEAREditor\util\geVector4.h">
       <Filter>GEAREditor\util</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\secondryViews\geTextureDlg.h">
+      <Filter>GEAREditor\secondryViews</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -385,6 +388,12 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\secondryViews\geColorDlg.cpp">
       <Filter>GEAREditor\secondryViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\secondryViews\geTextureDlg.cpp">
+      <Filter>GEAREditor\secondryViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.cpp">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

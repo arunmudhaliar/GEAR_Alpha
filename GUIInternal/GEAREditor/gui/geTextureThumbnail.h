@@ -15,6 +15,8 @@ public:
 	void create(rendererGL10* renderer, geGUIBase* parent, gxTexture* texture, float x, float y, float cx, float cy);
 	virtual void draw();
 	
+	gxTexture* getTexturePtr()	{	return m_pTexturePtr;	}
+
 protected:
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);

@@ -21,6 +21,7 @@ public:
 	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo):
 	  geTreeNode(renderer, parent, name, sprite, 10)
 	{
+		m_pColorControl=NULL;
 		setSize(m_cSize.x, 85.0f);
 
 		m_pTriInfoPtr=triinfo;
@@ -57,6 +58,9 @@ public:
 	}
 
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+	virtual void onColorChange(geGUIBase* colorControl);
+
+	geColorControl* m_pColorControl;
 };
 
 #endif

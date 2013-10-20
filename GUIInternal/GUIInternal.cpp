@@ -208,9 +208,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_HELP_COMMAND:
 			{
-				geColorDlg* view = new geColorDlg();
-				view->showView(hWnd);
-				GE_DELETE(view);
+				//geColorDlg* view = new geColorDlg(NULL);
+				//view->showView(hWnd);
+				//GE_DELETE(view);
 			}
 			break;
 		case IDM_EXIT:

@@ -1,9 +1,10 @@
 #include "geColorDlg.h"
 #include "../EditorApp.h"
 
-geColorDlg::geColorDlg():
+geColorDlg::geColorDlg(geColorControl* pObserverControlPtr):
 	geSecondryView("Color Dialog")
 {
+	m_pObserverControlPtr=pObserverControlPtr;
 	setSize(geVector2f(200.0f, 320.0f));
 	m_pWindow=NULL;
 	m_fCircleRadius=1.0f;
@@ -28,22 +29,31 @@ void geColorDlg::onCreate()
 	m_cLayoutManager.getRootLayout()->createAsParent(m_pWindow);
 	//m_pRootLayout->createAsParent(EditorApp::getSceneWorldEditor());
 
+	float rgba[4]={1.0f, 1.0f, 1.0f, 1.0f};
+	if(m_pObserverControlPtr)
+	{
+		rgba[0]=m_pObserverControlPtr->getControlColor().x;
+		rgba[1]=m_pObserverControlPtr->getControlColor().y;
+		rgba[2]=m_pObserverControlPtr->getControlColor().z;
+		rgba[3]=m_pObserverControlPtr->getControlColor().w;
+	}
+
 	for(int x=0;x<3;x++)
 	{
 		m_pHorizontalSlider_RGBA[x] = new geHorizontalSlider();
 		m_pHorizontalSlider_RGBA[x]->create(m_pSecondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+x*15, 120.0f);
-		m_pHorizontalSlider_RGBA[x]->setSliderValue(0.0f);
+		m_pHorizontalSlider_RGBA[x]->setSliderValue(rgba[x]);
 		m_pHorizontalSlider_RGBA[x]->setGUIObserver(this);
 	}
 	
 	m_pHorizontalSlider_RGBA[3] = new geHorizontalSlider();
 	m_pHorizontalSlider_RGBA[3]->create(m_pSecondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+3*15+10, 120.0f);
-	m_pHorizontalSlider_RGBA[3]->setSliderValue(1.0f);
+	m_pHorizontalSlider_RGBA[3]->setSliderValue(rgba[3]);
 	m_pHorizontalSlider_RGBA[3]->setGUIObserver(this);
 
 	m_pColorControl = new geColorControl();
 	m_pColorControl->create(m_pSecondryRenderer, m_pWindow, m_cSize.x-50.0f, m_fCircleRadius*2.0f);
-	m_pColorControl->setControlColor(0.0f, 0.0f, 0.0f, 1.0f);
+	m_pColorControl->setControlColor(rgba[0], rgba[1], rgba[2], rgba[3]);
 
 	//vertices
 	for(int xx=0;xx<COLOR_DLG_MAX_RESOLUTION-1;xx++)
@@ -182,6 +192,9 @@ bool geColorDlg::onMouseMove(float x, float y, int flag)
 			m_pHorizontalSlider_RGBA[0]->setSliderValue(res.x, false);
 			m_pHorizontalSlider_RGBA[1]->setSliderValue(res.y, false);
 			m_pHorizontalSlider_RGBA[2]->setSliderValue(res.z, false);
+
+			if(m_pObserverControlPtr)
+				m_pObserverControlPtr->setControlColor(res.x, res.y, res.z, 1.0f);
 		}
 	}
 
@@ -192,6 +205,8 @@ void geColorDlg::onSliderChange(geGUIBase* slider)
 {
 	geVector3f rgb(m_pHorizontalSlider_RGBA[0]->getSliderValue(), m_pHorizontalSlider_RGBA[1]->getSliderValue(), m_pHorizontalSlider_RGBA[2]->getSliderValue());
 	m_pColorControl->setControlColor(rgb.x, rgb.y, rgb.z, 1.0f);
+	if(m_pObserverControlPtr)
+		m_pObserverControlPtr->setControlColor(rgb.x, rgb.y, rgb.z, 1.0f);
 
 	//rgb to xyz
 	matrix4x4f xyzTM;

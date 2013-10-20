@@ -91,10 +91,11 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 		m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 60, 50, 16);
 		m_pText_tileY->setGUIObserver(this);
 
-		geColorControl* colorControl = new geColorControl();
-		colorControl->create(m_pRenderer, this, 10, 10);
+		m_pColorControl = new geColorControl();
+		m_pColorControl->create(m_pRenderer, this, 10, 10);
 		vector4f diffuse=m_pCurrentMaterialPtr->getDiffuseClr();
-		colorControl->setControlColor(diffuse.x, diffuse.y, diffuse.z, diffuse.w);
+		m_pColorControl->setControlColor(diffuse.x, diffuse.y, diffuse.z, diffuse.w);
+		m_pColorControl->setGUIObserver(this);
 
 		geTextureThumbnailExtended* thumbnail = new geTextureThumbnailExtended();
 		thumbnail->create(m_pRenderer, this, m_pCurrentMaterialPtr->getTexture(), 260, 10, 70, 70);
@@ -134,4 +135,17 @@ void gePropertyMaterial::drawNode()
 
 	if(m_pSprite)
 		m_pSprite->draw();
+}
+
+void gePropertyMaterial::onColorChange(geGUIBase* colorControl)
+{
+	if(colorControl==m_pColorControl)
+	{
+		m_pCurrentMaterialPtr->setDiffuseClr(vector4f(
+			m_pColorControl->getControlColor().x,
+			m_pColorControl->getControlColor().y,
+			m_pColorControl->getControlColor().z,
+			m_pColorControl->getControlColor().z
+			));
+	}
 }

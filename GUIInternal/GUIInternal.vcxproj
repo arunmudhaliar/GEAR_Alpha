@@ -140,6 +140,7 @@
     <ClInclude Include="GEAREditor\util\geDefines.h" />
     <ClInclude Include="GEAREditor\util\geUtil.h" />
     <ClInclude Include="GEAREditor\util\geVector3.h" />
+    <ClInclude Include="GEAREditor\util\geVector4.h" />
     <ClInclude Include="GEAREditor\util\objC_util.h" />
     <ClInclude Include="GEAREditor\util\pxMath.h" />
     <ClInclude Include="GEAREditor\util\geVector2.h" />

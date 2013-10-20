@@ -67,17 +67,17 @@ void geSecondryView::showView(HWND parentHWND)
     ShowWindow(child, SW_NORMAL);
     UpdateWindow(child);
 
-	MSG msg;
-	HACCEL hAccelTable = LoadAccelerators(GetModuleHandle(NULL), MAKEINTRESOURCE(IDC_GUIINTERNAL));
-	while (GetMessage (&msg, NULL, 0, 0))
-	{
+	//MSG msg;
+	//HACCEL hAccelTable = LoadAccelerators(GetModuleHandle(NULL), MAKEINTRESOURCE(IDC_GUIINTERNAL));
+	//while (GetMessage (&msg, NULL, 0, 0))
+	//{
 
-		if (!TranslateAccelerator (child, hAccelTable, &msg))
-		{
-			TranslateMessage (&msg) ;
-			DispatchMessage  (&msg) ;
-		}
-	}
+	//	if (!TranslateAccelerator (child, hAccelTable, &msg))
+	//	{
+	//		TranslateMessage (&msg) ;
+	//		DispatchMessage  (&msg) ;
+	//	}
+	//}
 }
 
 void geSecondryView::drawView()
@@ -94,10 +94,6 @@ void geSecondryView::sizeView(float cx, float cy)
 		cy=1.0f;
 
 	m_cLayoutManager.setSize(cx, cy);
-	//if(m_pRootLayout)
-	//{
-	//	m_pRootLayout->resize(cx/m_cPrevScale.x, cy/m_cPrevScale.y);
-	//}
 
 	setSize(geVector2f(cx, cy));
 	onSize(cx, cy);
@@ -108,6 +104,7 @@ void geSecondryView::sizeView(float cx, float cy)
 void geSecondryView::destroyView()
 {
 	onDestroy();
+	delete this;
 }
 
 bool geSecondryView::mouseLButtonDown(float x, float y, int nFlag)
@@ -208,9 +205,12 @@ LRESULT CALLBACK geSecondryView::SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WP
 	case WM_PAINT:
 		{
 			geSecondryView* viewPtr = (geSecondryView*)GetWindowLongPtr(hWndDlg, GWLP_USERDATA);
+			viewPtr->getRenderer()->makeCurrent();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			viewPtr->drawView();
 			viewPtr->getRenderer()->swapGLBuffer();
+			EditorApp::getMainRenderer()->makeCurrent();
+			UpdateWindow(GetParent(hWndDlg));
 			return 0;
 		}
 		break;
@@ -264,7 +264,7 @@ LRESULT CALLBACK geSecondryView::SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WP
 		}
 		break;
 	case WM_DESTROY:
-		PostQuitMessage(0);
+		//PostQuitMessage(0);
 		break;
 	default:
 		return DefWindowProc(hWndDlg, Msg, wParam, lParam);

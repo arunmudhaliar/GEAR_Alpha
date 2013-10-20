@@ -10,7 +10,7 @@
 class geColorDlg : public geSecondryView, public MGUIObserver
 {
 public:
-	geColorDlg();
+	geColorDlg(geColorControl* pObserverControlPtr);
 	virtual ~geColorDlg();
 
 	virtual void onCreate();
@@ -34,6 +34,8 @@ protected:
 	geVector2f m_cPointerPos;
 	geVector2f m_cRGBPointerPos[3];
 	geColorControl* m_pColorControl;
+
+	geColorControl* m_pObserverControlPtr;	//must not delete this pointer
 };
 
 #endif

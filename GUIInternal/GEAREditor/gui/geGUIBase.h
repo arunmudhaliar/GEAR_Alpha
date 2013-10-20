@@ -205,6 +205,10 @@ public:
 	virtual void onTextChange(geGUIBase* textbox)
 	{
 	}
+
+	virtual void onColorChange(geGUIBase* colorControl)
+	{
+	}
 };
 
 #endif

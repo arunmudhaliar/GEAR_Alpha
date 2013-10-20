@@ -261,6 +261,9 @@
     <ClInclude Include="GEAREditor\secondryViews\geColorDlg.h">
       <Filter>GEAREditor\secondryViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\util\geVector4.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

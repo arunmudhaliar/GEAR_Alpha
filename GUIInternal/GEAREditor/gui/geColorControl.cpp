@@ -1,5 +1,7 @@
 #include "geColorControl.h"
 #include "geGUIManager.h"
+#include "../secondryViews/geColorDlg.h"
+#include "../EditorApp.h"
 
 geColorControl::geColorControl():
 	geGUIBase(GEGUI_COLOR_CONTROL, "Color Control")
@@ -22,7 +24,10 @@ void geColorControl::create(rendererGL10* renderer, geGUIBase* parent, float x, 
 
 void geColorControl::setControlColor(float r, float g, float b, float a)
 {
+	m_cColor.set(r, g, b, a);
 	setColor(&m_cVBClientArea, r, g, b, a);
+	if(m_pGUIObserver)
+		m_pGUIObserver->onColorChange(this);
 }
 
 void geColorControl::draw()
@@ -63,6 +68,8 @@ void geColorControl::onSize(float cx, float cy, int flag)
 
 bool geColorControl::onMouseLButtonDown(float x, float y, int nFlag)
 {
+	geColorDlg* view = new geColorDlg(this);
+	view->showView(EditorApp::getMainWindowHandle());
 	return true;
 }
 

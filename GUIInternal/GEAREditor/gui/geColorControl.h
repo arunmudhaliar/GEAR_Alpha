@@ -2,6 +2,7 @@
 #define GECOLORCONTROL_H
 
 #include "geGUIBase.h"
+#include "../util/geVector4.h"
 
 class geColorControl : public geGUIBase
 {
@@ -16,6 +17,7 @@ public:
 	virtual void draw();
 	
 	void setControlColor(float r, float g, float b, float a);
+	geVector4f getControlColor()	{	return m_cColor;	}
 
 protected:
 	virtual void onPosition(float x, float y, int flag);
@@ -28,6 +30,7 @@ protected:
 private:
 	stVertexBuffer m_cVBClientArea;
 	float m_cVBClientAreaLine[10];
+	geVector4f m_cColor;
 };
 
 #endif

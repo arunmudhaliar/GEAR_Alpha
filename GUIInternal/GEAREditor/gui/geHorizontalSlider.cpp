@@ -111,7 +111,7 @@ bool geHorizontalSlider::onMouseMove(float x, float y, int flag)
 		if(m_fSliderPos>=1.0f)
 			m_fSliderPos=1.0f;
 
-		onSliderChange(m_fSliderPos);
+		setSliderValue(m_fSliderPos, true);
 	}
 	m_fMousePrevXPos=x;
 

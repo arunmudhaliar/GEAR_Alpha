@@ -6,12 +6,10 @@ geSecondryView::geSecondryView(const char* name)
 {
 	strcpy(m_szName, name);
 	m_pSecondryRenderer=NULL;
-	m_pRootLayout=NULL;
 }
 
 geSecondryView::~geSecondryView()
 {
-	GE_DELETE(m_pRootLayout);
 	GE_DELETE(m_pSecondryRenderer);
 	//restore gl context to the EditorApp
 	EditorApp::getMainRenderer()->makeCurrent();
@@ -23,28 +21,42 @@ void geSecondryView::createRenderer(HWND hwnd)
 	m_pSecondryRenderer = new rendererGL10(hwnd);
 	m_pSecondryRenderer->setupRenderer(EditorApp::getMainRenderer());
 
-	m_pRootLayout = new geLayout();
-	m_pRootLayout->create(m_pSecondryRenderer, NULL, 0, 0, 1, 1);
-	m_pRootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
+	m_cLayoutManager.create(m_pSecondryRenderer, 0, 0, 1184, 567);
+	//m_pRootLayout = new geLayout();
+	//m_pRootLayout->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y);
+	//m_pRootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
 
-	m_cPrevScale.set(1.0f, 1.0f);
+	m_cPrevScale.set(m_cSize.x, m_cSize.y);
 	onCreate();
+}
+
+void geSecondryView::setSize(geVector2f& sz)
+{
+	m_cSize=sz;
+}
+
+void geSecondryView::setPos(geVector2f& pos)
+{
+	m_cPos=pos;
 }
 
 void geSecondryView::showView(HWND parentHWND)
 {
 	static TCHAR szAppName2[] = TEXT ("childWnd");
+	DWORD dwStyle = WS_CHILD | WS_OVERLAPPEDWINDOW | WS_POPUPWINDOW;
+	DWORD dwExStyle = WS_EX_TOOLWINDOW;
+	//dwStyle&=~WS_MAXIMIZEBOX;
+	//dwStyle&=~WS_MINIMIZEBOX;
 
-    HWND child = CreateWindow(szAppName2,       
+	HWND child = CreateWindowEx(
+						dwExStyle,
+						szAppName2,       
                         TEXT(m_szName),
-                        WS_CHILD | WS_VISIBLE | WS_CAPTION
-                        | WS_OVERLAPPEDWINDOW | WS_POPUP,
-                        //| ~WS_MINIMIZEBOX | ~WS_MAXIMIZEBOX, 
-						//| WS_POPUP,
-                        CW_USEDEFAULT,     
-                        CW_USEDEFAULT,     
-                        300,       
-                        300,       
+                        dwStyle,
+						(int)m_cPos.x,       
+                        (int)m_cPos.y, 
+                        (int)m_cSize.x,       
+                        (int)m_cSize.y,       
                         parentHWND,              
                         NULL,              
                         GetModuleHandle(NULL),       
@@ -70,7 +82,7 @@ void geSecondryView::showView(HWND parentHWND)
 
 void geSecondryView::drawView()
 {
-	m_pRootLayout->draw();
+	m_cLayoutManager.draw();
 	onDraw();
 }
 
@@ -81,11 +93,13 @@ void geSecondryView::sizeView(float cx, float cy)
 	if(cy<=1.0f)
 		cy=1.0f;
 
-	if(m_pRootLayout)
-	{
-		m_pRootLayout->resize(cx/m_cPrevScale.x, cy/m_cPrevScale.y);
-	}
+	m_cLayoutManager.setSize(cx, cy);
+	//if(m_pRootLayout)
+	//{
+	//	m_pRootLayout->resize(cx/m_cPrevScale.x, cy/m_cPrevScale.y);
+	//}
 
+	setSize(geVector2f(cx, cy));
 	onSize(cx, cy);
 
 	m_cPrevScale.set(cx, cy);
@@ -94,6 +108,61 @@ void geSecondryView::sizeView(float cx, float cy)
 void geSecondryView::destroyView()
 {
 	onDestroy();
+}
+
+bool geSecondryView::mouseLButtonDown(float x, float y, int nFlag)
+{
+	return onMouseLButtonDown(x, y, nFlag);
+}
+
+void geSecondryView::mouseLButtonUp(float x, float y, int nFlag)
+{
+	onMouseLButtonUp(x, y, nFlag);
+}
+
+bool geSecondryView::mouseRButtonDown(float x, float y, int nFlag)
+{
+	return onMouseRButtonDown(x, y, nFlag);
+}
+
+void geSecondryView::mouseRButtonUp(float x, float y, int nFlag)
+{
+	onMouseRButtonUp(x, y, nFlag);
+}
+
+bool geSecondryView::mouseMove(float x, float y, int flag)
+{
+	return onMouseMove(x, y, flag);
+}
+
+void geSecondryView::mouseWheel(int zDelta, int x, int y, int flag)
+{
+	onMouseWheel(zDelta, x, y, flag);
+}
+
+bool geSecondryView::onMouseLButtonDown(float x, float y, int nFlag)
+{
+	return m_cLayoutManager.MouseLButtonDown(x, y, nFlag);
+}
+void geSecondryView::onMouseLButtonUp(float x, float y, int nFlag)
+{
+	m_cLayoutManager.MouseLButtonUp(x, y, nFlag);
+}
+bool geSecondryView::onMouseRButtonDown(float x, float y, int nFlag)
+{
+	return m_cLayoutManager.MouseRButtonDown(x, y, nFlag);
+}
+void geSecondryView::onMouseRButtonUp(float x, float y, int nFlag)
+{
+	m_cLayoutManager.MouseRButtonUp(x, y, nFlag);
+}
+bool geSecondryView::onMouseMove(float x, float y, int flag)
+{
+	return m_cLayoutManager.MouseMove(x, y, flag);
+}
+void geSecondryView::onMouseWheel(int zDelta, int x, int y, int flag)
+{
+	m_cLayoutManager.MouseWheel(zDelta, x, y, flag);
 }
 
 void geSecondryView::onCreate()
@@ -143,6 +212,47 @@ LRESULT CALLBACK geSecondryView::SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WP
 			viewPtr->drawView();
 			viewPtr->getRenderer()->swapGLBuffer();
 			return 0;
+		}
+		break;
+
+	case WM_MOUSEMOVE:
+		{
+			geSecondryView* viewPtr = (geSecondryView*)GetWindowLongPtr(hWndDlg, GWLP_USERDATA);
+			int nFlags=LOWORD(wParam);
+			int xx=LOWORD(lParam);
+			int yy=HIWORD(lParam);
+			viewPtr->mouseMove(xx, yy, nFlags);
+		}
+		break;
+
+	case WM_MOUSEWHEEL:
+		{
+			//int nFlags=LOWORD(wParam);
+			//int xx=LOWORD(lParam);
+			//int yy=HIWORD(lParam);
+			//xx = GET_X_LPARAM(lParam); 
+			//yy = GET_Y_LPARAM(lParam); 
+			//int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+			//m_cEditorApp.MouseWheel(zDelta, xx, yy, nFlags);
+		}
+		break;
+	case WM_LBUTTONDOWN:
+		{
+			geSecondryView* viewPtr = (geSecondryView*)GetWindowLongPtr(hWndDlg, GWLP_USERDATA);
+			geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
+			int nFlags=LOWORD(wParam);
+			int xx=LOWORD(lParam);
+			int yy=HIWORD(lParam);
+			viewPtr->mouseLButtonDown(xx, yy, nFlags);
+		}
+		break;
+	case WM_LBUTTONUP:
+		{
+			geSecondryView* viewPtr = (geSecondryView*)GetWindowLongPtr(hWndDlg, GWLP_USERDATA);
+			int nFlags=LOWORD(wParam);
+			int xx=LOWORD(lParam);
+			int yy=HIWORD(lParam);
+			viewPtr->mouseLButtonUp(xx, yy, nFlags);
 		}
 		break;
 

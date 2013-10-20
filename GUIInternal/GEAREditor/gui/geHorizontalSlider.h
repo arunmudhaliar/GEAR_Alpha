@@ -15,7 +15,7 @@ public:
 
 	virtual void draw();
 	float getSliderValue()				{	return m_fSliderPos;	}
-	void setSliderValue(float value);
+	void setSliderValue(float value, bool bCallObserver=true);
 
 protected:
 	virtual void onPosition(float x, float y, int flag);

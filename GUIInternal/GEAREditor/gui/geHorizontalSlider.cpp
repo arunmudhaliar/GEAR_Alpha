@@ -118,18 +118,19 @@ bool geHorizontalSlider::onMouseMove(float x, float y, int flag)
 	return true;
 }
 
-void geHorizontalSlider::setSliderValue(float value)
+void geHorizontalSlider::setSliderValue(float value, bool bCallObserver)
 {
 	if(value<0.0f || value>1.0f)
 		return;
 
 	m_fSliderPos=value;
-	onSliderChange(m_fSliderPos);	
+	setColor(&m_cVBClientArea, m_fSliderPos, m_fSliderPos, m_fSliderPos, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.4f);
+	if(bCallObserver)
+		onSliderChange(m_fSliderPos);
 }
 
 void geHorizontalSlider::onSliderChange(float sliderValue)
 {
-	setColor(&m_cVBClientArea, sliderValue, sliderValue, sliderValue, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.4f);
 	if(m_pGUIObserver)
 		m_pGUIObserver->onSliderChange(this);
 }

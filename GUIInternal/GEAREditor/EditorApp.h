@@ -67,6 +67,8 @@ public:
 
 	static rendererGL10* getMainRenderer()	{	return g_pMainRenderer;	}
 
+	bool isInitialized()	{	return m_bInitialised;	}
+
 private:
 	static HWND g_hWnd;	//main window
 

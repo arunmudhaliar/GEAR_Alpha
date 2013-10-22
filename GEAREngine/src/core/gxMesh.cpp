@@ -213,7 +213,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	return true;
 }
 
-bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxShader* shader, const char* texCoordAttribName)
+bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxHWShader* shader, const char* texCoordAttribName)
 {
 	if(!shader) return false;
 
@@ -248,7 +248,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	return true;
 }
 
-void gxMesh::disableTextureOperations(int nMultiTextureUsed, gxShader* shader, const char* texCoordAttribName)
+void gxMesh::disableTextureOperations(int nMultiTextureUsed, gxHWShader* shader, const char* texCoordAttribName)
 {
 #if defined (USE_ProgrammablePipeLine)
 	if(nMultiTextureUsed && shader)

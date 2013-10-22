@@ -46,6 +46,8 @@ protected:
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);
 
+	virtual void onCommand(int cmd);
+
 	void drawFBO(GLuint t, float x, float y, float cx, float cy);
 	void drawGrid();
 	void drawSelectedObject();
@@ -86,6 +88,7 @@ protected:
 #if defined USE_FBO
 	FBO m_cMultiPassFBO;
 #endif
+	bool m_bEnablePostProcessorBlur;
 };
 
 #endif

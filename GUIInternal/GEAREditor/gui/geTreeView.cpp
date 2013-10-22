@@ -5,6 +5,7 @@ geTreeNode::geTreeNode():
 	geGUIBase(GEGUI_TREEVIEW_NODE, "TreeView Node")
 {
 	//no implementation
+	m_pParentTreeView=NULL;
 	m_pSprite=NULL;
 }
 
@@ -457,6 +458,7 @@ void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* n
 	m_fVirtualYPos=0.0f;
 
 	m_pRootNode = new geTreeNode(renderer, NULL, "root", NULL);
+	m_pRootNode->setParentTreeView(this);
 	m_pSelectedNodePtr=NULL;
 }
 
@@ -677,6 +679,7 @@ void geTreeView::clearAndDestroyAll()
 	m_cVerticalScrollBar.setConetentHeight(0);
 
 	m_pRootNode = new geTreeNode(m_pRenderer, NULL, "root", NULL);
+	m_pRootNode->setParentTreeView(this);
 	m_pSelectedNodePtr=NULL;
 }
 

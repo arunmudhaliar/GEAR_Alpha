@@ -16,44 +16,81 @@ gxHWShader::~gxHWShader()
 	clearUniformRefVarList();
 }
 
-bool gxHWShader::loadShader(const char* vShaderFile, const char* fShaderFile)
+bool gxHWShader::loadShader(const char* shaderFile)
 {
-	const char* vertShaderPathname=NULL;
-	const char* fragShaderPathname=NULL;
+	//read shader code
+	int fileSz=0;
+	FILE* fp=fopen(shaderFile, "r");
+	if(fp==NULL) return false;
+
+	fseek(fp, 0, SEEK_END);
+	fileSz=ftell(fp);
+	fclose(fp);
 	
-	//FILE* fp=fopen(vShaderFile, "r");
-	//int nScript=0;
-	//fscanf(fp, "%d\n", &nScript);
-	//fclose(fp);
+	if(!fileSz) return false;
+	
+	const char* define_vertex="#define GEAR_VERTEX_SHADER\n";
+	const char* define_fragment="#define GEAR_FRAGMENT_SHADER\n";
+
+	//vertex shader source
+	fp=fopen(shaderFile, "r");
+	if(fp==NULL) return false;
+	int vSz=fileSz+strlen(define_vertex);
+	char* vsource=new char[vSz];
+	memset((void*)vsource, 0, vSz);
+	strcpy(vsource, define_vertex);
+
+	fread((void*)&vsource[strlen(define_vertex)], 1, fileSz, fp);
+	fclose(fp);
+	//
+
+	//fragment shader source
+	fp=fopen(shaderFile, "r");
+	if(fp==NULL) return false;
+	int fSz=fileSz+strlen(define_fragment);
+	char* fsource=new char[fSz];
+	memset((void*)fsource, 0, fSz);
+	strcpy(fsource, define_fragment);
+
+	fread((void*)&fsource[strlen(define_fragment)], 1, fileSz, fp);
+	fclose(fp);
+	//
+
 
 	// Create shader program
 	m_cProgram = glCreateProgram();
 	
 	// Create and compile vertex shader
-	
-	vertShaderPathname = vShaderFile;//getResourcePath(vShaderFile);
-	if (!compileShader(&m_cVertShader, GL_VERTEX_SHADER, vertShaderPathname))
+	if (!compileShader(&m_cVertShader, GL_VERTEX_SHADER, vsource, vSz))
 	{
-		DEBUG_PRINT("Failed to compile vertex shader");
+		DEBUG_PRINT("Failed to compile vertex shader '%s'", shaderFile);
+		GX_DELETE_ARY(vsource);
+		GX_DELETE_ARY(fsource);
 		return false;
 	}
 	
 	// Create and compile fragment shader
-	fragShaderPathname = fShaderFile;//getResourcePath(fShaderFile);
-	if (!compileShader(&m_cFragShader, GL_FRAGMENT_SHADER, fragShaderPathname))
+	if (!compileShader(&m_cFragShader, GL_FRAGMENT_SHADER, fsource, fSz))
 	{
-		DEBUG_PRINT("Failed to compile fragment shader");
+		DEBUG_PRINT("Failed to compile fragment shader '%s'", shaderFile);
+		GX_DELETE_ARY(vsource);
+		GX_DELETE_ARY(fsource);
 		return false;
 	}
 	
+	GX_DELETE_ARY(vsource);
+	GX_DELETE_ARY(fsource);
+
 	attachShader();
 	bind();
 	
 	// Link program
 	if (!linkProgram())
 	{
-		DEBUG_PRINT("Failed to link program: %d", m_cProgram);
+		DEBUG_PRINT("Failed to link program: %d (shader : %s)", m_cProgram, shaderFile);
 		destroyShader();
+		GX_DELETE_ARY(vsource);
+		GX_DELETE_ARY(fsource);
 		return false;
 	}
 	
@@ -64,29 +101,14 @@ bool gxHWShader::loadShader(const char* vShaderFile, const char* fShaderFile)
     detachShader();
     
 	disableProgram();
-		
+	
 	return true;
 }
 
-bool gxHWShader::compileShader(GLuint* shader, GLenum type, const char* file)
+bool gxHWShader::compileShader(GLuint* shader, GLenum type, const char* source, int fileSz)
 {
     GLint status;
-    const GLchar *source=NULL;
-	
-	int fileSz=0;
-	FILE* fp=fopen(file, "r");
-	fseek(fp, 0, SEEK_END);
-	fileSz=ftell(fp);
-	fclose(fp);
-	
-	if(!fileSz) return false;
-	
-	source=new char[fileSz];
-	memset((void*)source, 0, fileSz);
-	fp=fopen(file, "r");
-	fread((void*)source, 1, fileSz, fp);
-	fclose(fp);
-	
+
     *shader = glCreateShader(type);
     glShaderSource(*shader, 1, &source, &fileSz);
     glCompileShader(*shader);
@@ -94,7 +116,7 @@ bool gxHWShader::compileShader(GLuint* shader, GLenum type, const char* file)
 #if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
 	GLint logLength;
     glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
-    if (logLength > 0)
+    if (logLength > 1)
     {
         GLchar *log = (GLchar *)malloc(logLength);
         glGetShaderInfoLog(*shader, logLength, &logLength, log);
@@ -107,11 +129,9 @@ bool gxHWShader::compileShader(GLuint* shader, GLenum type, const char* file)
     if (status == 0)
     {
         glDeleteShader(*shader);
-		GX_DELETE_ARY(source);
         return false;
     }
 	
-	GX_DELETE_ARY(source);
     return true;
 }
 
@@ -124,7 +144,7 @@ bool gxHWShader::linkProgram()
 #if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
     GLint logLength;
     glGetProgramiv(m_cProgram, GL_INFO_LOG_LENGTH, &logLength);
-    if (logLength > 0)
+    if (logLength > 1)
     {
         GLchar *log = (GLchar *)malloc(logLength);
         glGetProgramInfoLog(m_cProgram, logLength, &logLength, log);
@@ -212,7 +232,7 @@ bool gxHWShader::validateProgram()
 
 #if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
 	glGetProgramiv(m_cProgram, GL_INFO_LOG_LENGTH, &logLength);
-	if (logLength > 0)
+	if (logLength > 1)
 	{
 		GLchar *log = (GLchar *)malloc(logLength);
 		glGetProgramInfoLog(m_cProgram, logLength, &logLength, log);
@@ -252,7 +272,7 @@ void gxHWShader::showShaderLog(const char* title)
 {
 	GLint logLength;
 	glGetProgramiv(m_cProgram, GL_INFO_LOG_LENGTH, &logLength);
-	if (logLength > 0)
+	if (logLength > 1)
 	{
 		GLchar *log = (GLchar *)malloc(logLength);
 		glGetProgramInfoLog(m_cProgram, logLength, &logLength, log);

@@ -37,7 +37,7 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK	Proj_DlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
-char* browseFolder();
+char* browseFolder(HWND hWndParent);
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -230,7 +230,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_SIZE:
 		{
-			if(LOWORD(wParam)==SIZE_MAXIMIZED || LOWORD(wParam)==SIZE_RESTORED)
+			if((LOWORD(wParam)==SIZE_MAXIMIZED || LOWORD(wParam)==SIZE_RESTORED) && m_cEditorApp.isInitialized())
 			{
 				m_cEditorApp.importAssetToMetaData(hWnd, hInst);
 				EditorApp::getSceneProject()->populateProjectView();
@@ -413,7 +413,7 @@ LRESULT CALLBACK Proj_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 		{
 			case ID_PROJ_DLG_OPEN_NEW_PROJECT:
 			{
-				char* project_directory=browseFolder();
+				char* project_directory=browseFolder(hWndDlg);
 				if(EditorApp::createNewProject(project_directory)!=0)
 				{
 					MessageBox(hWndDlg, "Project creation failed", "Error.", MB_OK | MB_ICONERROR);
@@ -454,20 +454,24 @@ LRESULT CALLBACK Proj_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 			return EndDialog(hWndDlg, 0);
 		}
 		break;
-	default:
-		return DefWindowProc(hWndDlg, Msg, wParam, lParam);
+	//commented this default block, since the SHBrowseForFolder [New project option] wont work
+	//default:
+	//	return DefWindowProc(hWndDlg, Msg, wParam, lParam);
+	//
 	}
 
 	return FALSE;
 }
 
-char* browseFolder()
+char* browseFolder(HWND hWndParent)
 {
 	char* return_buffer=NULL;
 	BROWSEINFO bi = { 0 };
+	bi.hwndOwner=hWndParent;
     bi.lpszTitle = _T("Select an empty folder to create project.");
-	bi.ulFlags|=BIF_NEWDIALOGSTYLE;
+	bi.ulFlags=BIF_USENEWUI;// | BIF_RETURNONLYFSDIRS;
 
+	HRESULT r=OleInitialize(NULL);
     LPITEMIDLIST pidl = SHBrowseForFolder ( &bi );
     if ( pidl != 0 )
     {
@@ -489,6 +493,8 @@ char* browseFolder()
             imalloc->Release ( );
         }
     }
+
+	OleUninitialize();
 
 	return return_buffer;
 }

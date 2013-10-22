@@ -11,6 +11,7 @@
 #include "propertyViews\gePropertyAnimationSet.h"
 #include "propertyViews\gePropertySaveMetaData.h"
 #include "propertyViews\gePropertyLight.h"
+#include "propertyViews\gePropertyBlurProcessor.h"
 
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {
@@ -20,7 +21,9 @@ public:
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
 
+	void removeAllProperties();
 	void populatePropertyOfObject(object3d* obj);
+	void populatePropertyOfBlurShader(gxHWShader* blurShader);
 
 	geTreeNode* getMaterialParentNode()		{	return m_pMaterialParent;		}
 	geTreeNode* getAnimationParentNode()	{	return m_pAnimationParentNode;	}
@@ -42,11 +45,18 @@ private:
 	geTreeNode* m_pSaveMetaDataParentNode;
 	geTreeNode* m_pLightParentNode;
 
+	//post processors
+	geTreeNode* m_pPostProcessorBlurShaderNode;
+
+
 	gePropertyObject3d* m_pObject3dPropertyNode;
 	gePropertyTransform* m_pTransformPropertyNode;
 	gePropertyMaterial* m_pMaterialPropertyNode;
 	gePropertySaveMetaData* m_pSaveMetaDataPropertyNode;
 	gePropertyLight* m_pLightPropertyNode;
+
+	//post processors
+	gePropertyBlurProcessor* m_pBlurProcessorPropertyNode;
 };
 
 #endif

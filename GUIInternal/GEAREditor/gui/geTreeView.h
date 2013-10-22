@@ -59,6 +59,11 @@ public:
 
 	void setNodeSprite(Sprite2Dx* sprite);
 
+	//hack
+	void setParentTreeView(geGUIBase* parentTreeView)	{	m_pParentTreeView=parentTreeView;	}
+	geGUIBase* getParentTreeView()						{	return m_pParentTreeView;			}
+	//
+
 protected:
 	Sprite2Dx* m_pSprite;
 	stVertexBuffer m_cVBClientArea;
@@ -73,6 +78,9 @@ protected:
 	geVector3f m_cNodeColor;
 	geVector3f m_cNodeSelectionColor;
 	bool m_bHaveAtleastOneTreeNodeChild;
+
+	//hack
+	geGUIBase* m_pParentTreeView;
 };
 
 class MTreeViewObserver;

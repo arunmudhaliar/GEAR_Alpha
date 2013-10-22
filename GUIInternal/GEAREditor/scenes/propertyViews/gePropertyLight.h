@@ -8,18 +8,16 @@
 #include "../../gui/geHorizontalSlider.h"
 #include "../../gui/geColorControl.h"
 #include "../../../../GEAREngine/src/core/gxLight.h"
+#include "../../gui/geToolBarDropMenu.h"
 
 class gePropertyLight : public geTreeNode, public MGUIObserver
 {
 public:
 	gxLight* m_pLightPtr;
-	//geHorizontalSlider* m_pHorizontalSlider_LightColor[3];
 	geColorControl* m_pColorControl;
-
-	//geHorizontalSlider* m_pHorizontalSlider_LightAmbientColor[3];
 	geColorControl* m_pColorControlAmbient;
-	//geHorizontalSlider* m_pHorizontalSlider_LightSpecularColor[3];
 	geColorControl* m_pColorControlSpecular;
+	geToolBarDropMenu* m_pLightTypeToolBarDropMenuBtnPtr;
 
 	gePropertyLight(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
 	  geTreeNode(renderer, parent, name, sprite, 10)
@@ -31,39 +29,27 @@ public:
 		m_pColorControl->create(renderer, this, 10, 10);
 		m_pColorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_pColorControl->setGUIObserver(this);
-		//for(int x=0;x<3;x++)
-		//{
-		//	m_pHorizontalSlider_LightColor[x] = new geHorizontalSlider();
-		//	m_pHorizontalSlider_LightColor[x]->create(renderer, this, "slider", 30, 10+x*15, 70);
-		//	m_pHorizontalSlider_LightColor[x]->setSliderValue(0.2f);
-		//	m_pHorizontalSlider_LightColor[x]->setGUIObserver(this);
-		//}
+
+		m_pLightTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "LightType", this);
+		m_pLightTypeToolBarDropMenuBtnPtr->setGUIObserver(this);
+		m_pLightTypeToolBarDropMenuBtnPtr->setPos(100, 20);
+
+		m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00005003);
+		m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Point Light", 0x00005002);
+		m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Spot Light", 0x00005003);
 
 		//ambient
 		m_pColorControlAmbient = new geColorControl();
 		m_pColorControlAmbient->create(renderer, this, 10, 35);
 		m_pColorControlAmbient->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_pColorControlAmbient->setGUIObserver(this);
-		//for(int x=0;x<3;x++)
-		//{
-		//	m_pHorizontalSlider_LightAmbientColor[x] = new geHorizontalSlider();
-		//	m_pHorizontalSlider_LightAmbientColor[x]->create(renderer, this, "slider", 140, 10+x*15, 70);
-		//	m_pHorizontalSlider_LightAmbientColor[x]->setSliderValue(0.2f);
-		//	m_pHorizontalSlider_LightAmbientColor[x]->setGUIObserver(this);
-		//}
+
 
 		//specular
 		m_pColorControlSpecular = new geColorControl();
 		m_pColorControlSpecular->create(renderer, this, 10, 60);
 		m_pColorControlSpecular->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_pColorControlSpecular->setGUIObserver(this);
-		//for(int x=0;x<3;x++)
-		//{
-		//	m_pHorizontalSlider_LightSpecularColor[x] = new geHorizontalSlider();
-		//	m_pHorizontalSlider_LightSpecularColor[x]->create(renderer, this, "slider", 250, 10+x*15, 70);
-		//	m_pHorizontalSlider_LightSpecularColor[x]->setSliderValue(0.2f);
-		//	m_pHorizontalSlider_LightSpecularColor[x]->setGUIObserver(this);
-		//}
 
 		m_pLightPtr=NULL;
 
@@ -77,6 +63,7 @@ public:
 
 	}
 
+
 	void populatePropertyOfLight(object3d* obj);
 
 	virtual void drawNode();
@@ -85,6 +72,7 @@ public:
 	virtual void onSliderChange(geGUIBase* slider);
 	virtual void onColorChange(geGUIBase* colorControl);
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+	virtual void onButtonClicked(geGUIBase* btn);
 };
 
 #endif

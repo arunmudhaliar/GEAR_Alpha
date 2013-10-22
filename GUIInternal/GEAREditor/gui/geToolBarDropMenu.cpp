@@ -1,6 +1,6 @@
 #include "geToolBarDropMenu.h"
 #include "geGUIManager.h"
-
+#include "../EditorApp.h"
 
 geToolBarDropMenu::geToolBarDropMenu():
 	geButtonBase(GEGUI_TOOLBAR_DROPMENU, "ToolBarButton")
@@ -14,7 +14,7 @@ geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, g
 	createBase(renderer, parent);
 
 	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
-	setSize(width+27, parent->getSize().y);
+	setSize(width+27, GE_TOOLBAR_HEIGHT);
 
 	setColor(&m_cVBClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
 	m_bImageLoaded=false;
@@ -24,6 +24,12 @@ geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, g
 
 geToolBarDropMenu::~geToolBarDropMenu()
 {
+	for(int x=0;x<m_vMenuItems.size();x++)
+	{
+		stDropMenuItem* item=m_vMenuItems[x];
+		GE_DELETE(item);
+	}
+	m_vMenuItems.clear();
 }
 
 void geToolBarDropMenu::loadImage(const char* filename, int clipx, int clipy)
@@ -101,8 +107,92 @@ void geToolBarDropMenu::onButtonStateChanged(EBUTTON_STATE eFromState)
 	}
 }
 
+bool calculatePosOfMyChild(geGUIBase* compareme, geGUIBase* parent, int& x, int& y)
+{
+	if(parent)
+	{
+		if(parent->getGUIID()==GEGUI_TREEVIEW_NODE)
+		{
+			y+=parent->getSize().y;
+
+			if(((geTreeNode*)parent)->isOpenNode())
+			{
+				std::vector<geGUIBase*>* childList=parent->getChildControls();
+				for(std::vector<geGUIBase*>::iterator it = childList->begin(); it != childList->end(); ++it)
+				{
+					geGUIBase* tvnode = *it;
+					if(compareme==tvnode)
+					{
+						x+=compareme->getPos().x-((geTreeNode*)parent)->getXOffset();
+						y+=compareme->getSize().y;
+						y-=parent->getSize().y;
+
+						compareme=compareme;
+						//calculate and return
+						return true;
+					}
+					if(calculatePosOfMyChild(compareme, tvnode, x, y))
+						return true;
+				}
+				x+=((geTreeNode*)parent)->getXOffset();
+			}
+		}
+	}
+
+	return false;
+}
+
 void geToolBarDropMenu::onButtonClicked()
 {
+	HMENU hPopupMenu = CreatePopupMenu();
+	for(int x=0;x<m_vMenuItems.size();x++)
+	{
+		stDropMenuItem* item=m_vMenuItems[x];
+		if(item->type==0)
+			InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, item->menuid, item->name);
+		else if(item->type==1)
+			InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+	}
+	//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004002, "Point Light");
+	//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+	////geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
+	//int disableFlag = 0;//(selectedNode)?0:MF_DISABLED;
+	//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING | disableFlag, 0x00004001, "Create Object on Selected Node");
+	//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");
+
+	//
+	geGUIBase* baseGUI=this;
+	geGUIBase* rootTVNode=this;
+	geVector2f absPos;
+	while(baseGUI)
+	{
+		rootTVNode=baseGUI;
+		baseGUI=baseGUI->getParent();
+	}
+
+	if(rootTVNode && rootTVNode->getGUIID()==GEGUI_TREEVIEW_NODE)
+	{
+		geGUIBase* treeView = ((geTreeNode*)rootTVNode)->getParentTreeView();
+		int x, y;
+		x=y=0;
+		calculatePosOfMyChild(this, rootTVNode, x, y);
+
+		POINT pt;
+		pt.x=x+treeView->getPositionOnScreen().x;
+		pt.y=y-treeView->getPositionOnScreen().y;
+		ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
+		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+
+	}
+	else if(rootTVNode)
+	{
+		POINT pt;
+		pt.x=getPositionOnScreen().x;
+		pt.y=-getPositionOnScreen().y;
+		ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
+		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+	}
+
 	if(m_pGUIObserver)
 		m_pGUIObserver->onButtonClicked(this);
 	buttonNormal();
@@ -147,4 +237,13 @@ void geToolBarDropMenu::onMouseExitClientArea()
 void geToolBarDropMenu::onCancelEngagedControls()
 {
 	//setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.3f);
+}
+
+void geToolBarDropMenu::appendMenuItem(const char* name, int menuID, bool bSeperator)
+{
+	stDropMenuItem* newItem = new stDropMenuItem();
+	strcpy(newItem->name, name);
+	newItem->menuid=menuID;
+	newItem->type=bSeperator?1:0;
+	m_vMenuItems.push_back(newItem);
 }

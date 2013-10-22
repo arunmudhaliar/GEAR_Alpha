@@ -267,6 +267,9 @@
     <ClInclude Include="GEAREditor\secondryViews\geTextureDlg.h">
       <Filter>GEAREditor\secondryViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyBlurProcessor.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -393,6 +396,9 @@
       <Filter>GEAREditor\secondryViews</Filter>
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.cpp">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyBlurProcessor.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClCompile>
   </ItemGroup>

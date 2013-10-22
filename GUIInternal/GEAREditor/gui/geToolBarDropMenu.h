@@ -10,12 +10,21 @@
 class geToolBarDropMenu : public geButtonBase
 {
 public:
+	struct stDropMenuItem
+	{
+		char name[256];
+		int menuid;
+		int type;
+	};
+
 	geToolBarDropMenu();
 	geToolBarDropMenu(rendererGL10* renderer, const char* name, geGUIBase* parent);
 	virtual ~geToolBarDropMenu();
 
 	virtual void draw();
 	void loadImage(const char* filename, int clipx, int clipy);
+
+	void appendMenuItem(const char* name, int menuID, bool bSeperator=false);
 
 protected:
 	virtual void onPosition(float x, float y, int flag);
@@ -38,6 +47,8 @@ private:
 	Sprite2Dx m_cSprite;
 	bool m_bImageLoaded;
 	float m_cVBLayoutToggleButtonLine[3*2];
+
+	std::vector<stDropMenuItem*> m_vMenuItems;
 };
 
 #endif

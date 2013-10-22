@@ -29,6 +29,12 @@ void gearSceneHierarchy::onCreate()
 	m_pCreateToolBarDropMenuBtnPtr->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pCreateToolBarDropMenuBtnPtr);
 
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00004003);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Point Light", 0x00004002);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("", 0, true);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Create Object on Selected Node", 0x00004001);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Create Object", 0x00004000);
+
 	m_cGameObjectsTreeView.create(m_pRenderer, this, "gameObjectsTV", this);
 
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
@@ -263,20 +269,20 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 {
 	if(m_pCreateToolBarDropMenuBtnPtr==btn)
 	{
-		HMENU hPopupMenu = CreatePopupMenu();
-		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004003, "Directional Light");
-		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004002, "Point Light");
-		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-		geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
-		int disableFlag = (selectedNode)?0:MF_DISABLED;
-		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING | disableFlag, 0x00004001, "Create Object on Selected Node");
-		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");
+		//HMENU hPopupMenu = CreatePopupMenu();
+		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004003, "Directional Light");
+		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004002, "Point Light");
+		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+		//geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
+		//int disableFlag = (selectedNode)?0:MF_DISABLED;
+		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING | disableFlag, 0x00004001, "Create Object on Selected Node");
+		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");
 
-		POINT pt;
-		pt.x=btn->getPositionOnScreen().x;
-		pt.y=-btn->getPositionOnScreen().y;
-		ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
-		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+		//POINT pt;
+		//pt.x=btn->getPositionOnScreen().x;
+		//pt.y=-btn->getPositionOnScreen().y;
+		//ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
+		//TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
 	}
 }
 

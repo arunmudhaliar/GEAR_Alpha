@@ -2,14 +2,7 @@
 #define HWSHADERMANAGER_H
 
 #include "../renderer/gxRenderer.h"
-//#include "gxShader.h"
-
-
 #if defined (USE_ProgrammablePipeLine)
-//#include "gxHWShader.h"
-#include "gxOnlyDiffuse.h"
-#include "gxDiffuseUnlit.h"
-#include "gxOnlyDiffuseWithColor.h"
 #include "gxGenericShader.h"
 #include <vector>
 #endif
@@ -34,13 +27,14 @@ private:
 	
 #if defined (USE_ProgrammablePipeLine)
 	//default shaders
-	gxOnlyDiffuse m_cOnlyDiffuse;
-	gxDiffuseUnlit m_cDiffuseUnlit;
-	gxOnlyDiffuseWithColor m_cOnlyDiffuseWithColor;
+	gxGenericShader m_cOnlyDiffuse;
+	gxGenericShader m_cDiffuseUnlit;
+	gxGenericShader m_cOnlyDiffuseWithColor;
 	gxGenericShader m_cGenericShader;
 	gxGenericShader m_cLightingOnlyGenericShader;
 	gxGenericShader m_cLightingOnlyFirstPassGenericShader;
 	gxGenericShader m_cSpriteGenericShader;
+	gxGenericShader m_cBlurGenericShader;
 	std::vector<gxHWShader*> m_cvHWShaderLst;
 #endif
 };

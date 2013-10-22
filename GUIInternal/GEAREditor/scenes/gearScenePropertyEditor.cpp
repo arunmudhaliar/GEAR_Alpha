@@ -11,22 +11,20 @@ geWindow("Property Editor")
 	m_pSaveMetaDataParentNode=NULL;
 	m_pLightParentNode=NULL;
 
+	m_pPostProcessorBlurShaderNode=NULL;
+
 	m_pObject3dPropertyNode=NULL;
 	m_pTransformPropertyNode=NULL;
 	m_pMaterialPropertyNode=NULL;
 	m_pSaveMetaDataPropertyNode=NULL;
 	m_pLightPropertyNode=NULL;
+
+	m_pBlurProcessorPropertyNode=NULL;
 }
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
 {
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
-	rootNode->removeTVChild(m_pObject3dParentNode);
-	rootNode->removeTVChild(m_pTransformParentNode);
-	rootNode->removeTVChild(m_pMaterialParent);
-	rootNode->removeTVChild(m_pAnimationParentNode);
-	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
-	rootNode->removeTVChild(m_pLightParentNode);
+	removeAllProperties();
 
 	GE_DELETE(m_pObject3dParentNode);
 	GE_DELETE(m_pTransformParentNode);
@@ -34,6 +32,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	GE_DELETE(m_pAnimationParentNode);
 	GE_DELETE(m_pSaveMetaDataParentNode);
 	GE_DELETE(m_pLightParentNode);
+	GE_DELETE(m_pPostProcessorBlurShaderNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -67,13 +66,10 @@ void gearScenePropertyEditor::onCreate()
 	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pRenderer, m_pSaveMetaDataParentNode, "", NULL);
 	m_pLightParentNode = new geTreeNode(m_pRenderer, rootNode, "Light", &m_cszSprites[5], 0);
 	m_pLightPropertyNode = new gePropertyLight(m_pRenderer, m_pLightParentNode, "", NULL);
+	m_pPostProcessorBlurShaderNode = new geTreeNode(m_pRenderer, rootNode, "Blur Processor", &m_cszSprites[5], 0);
+	m_pBlurProcessorPropertyNode = new gePropertyBlurProcessor(m_pRenderer, m_pPostProcessorBlurShaderNode, "", NULL);
 
-	rootNode->removeTVChild(m_pObject3dParentNode);
-	rootNode->removeTVChild(m_pTransformParentNode);
-	rootNode->removeTVChild(m_pMaterialParent);
-	rootNode->removeTVChild(m_pAnimationParentNode);
-	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
-	rootNode->removeTVChild(m_pLightParentNode);
+	removeAllProperties();
 }
 
 void gearScenePropertyEditor::onDraw()
@@ -113,7 +109,7 @@ bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 	return true;
 }
 
-void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
+void gearScenePropertyEditor::removeAllProperties()
 {
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 
@@ -123,7 +119,35 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	rootNode->removeTVChild(m_pAnimationParentNode);
 	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
 	rootNode->removeTVChild(m_pLightParentNode);
+	rootNode->removeTVChild(m_pPostProcessorBlurShaderNode);
 
+	//material
+	if(m_pMaterialParent)
+		m_pMaterialParent->destroyAllTVChilds();
+
+	//animation
+	if(m_pAnimationParentNode)
+		m_pAnimationParentNode->destroyAllTVChilds();
+}
+
+void gearScenePropertyEditor::populatePropertyOfBlurShader(gxHWShader* blurShader)
+{
+	removeAllProperties();
+
+	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	//blur
+	m_pBlurProcessorPropertyNode->populatePropertyOfBlurShader(blurShader);
+	rootNode->appnendTVChild(m_pPostProcessorBlurShaderNode);
+
+	m_cPropertiesTreeView.refreshTreeView();
+	m_cPropertiesTreeView.resetSelectedNodePtr();
+}
+
+void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
+{
+	removeAllProperties();
+
+	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 	if(obj==NULL)
 	{
 		m_cPropertiesTreeView.refreshTreeView();
@@ -180,6 +204,11 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 
 	m_pSaveMetaDataPropertyNode->populatePropertyOfObject(obj);
 	rootNode->appnendTVChild(m_pSaveMetaDataParentNode);
+
+	////hack
+	//m_pBlurProcessorPropertyNode->populatePropertyOfBlurShader(NULL);
+	//rootNode->appnendTVChild(m_pPostProcessorBlurShaderNode);
+	////
 
 	m_cPropertiesTreeView.refreshTreeView();
 	m_cPropertiesTreeView.resetSelectedNodePtr();

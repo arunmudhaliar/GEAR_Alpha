@@ -3,6 +3,7 @@
 #include "../core/Timer.h"
 #include "../gui/geToolBarSeperator.h"
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
+#include "../../resource.h"
 
 //void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight);
 
@@ -24,6 +25,7 @@ geWindow("World Editor")
 	m_pTranslateGizmo = NULL;
 	m_pRotateGizmo = NULL;
 	m_pScaleGizmo = NULL;
+	m_bEnablePostProcessorBlur=false;
 }
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
@@ -218,59 +220,63 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
 		1,1,
     };
   
-#if 0
-//#if defined (USE_ProgrammablePipeLine)
-	gxHWShader* shader=HWShaderManager::getHWShaderManager()->GetHWShader(3);
+	if(m_bEnablePostProcessorBlur)
+	{
+		gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(7);
     
-	shader->enableProgram();
-	shader->resetAllFlags();
+		shader->enableProgram();
+		shader->resetAllFlags();
     
-	glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, cszTileBuffer);
-    glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, cszTileBuffer);
+		glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
     
     
-    ////////
+		////////
 
-    glActiveTexture(GL_TEXTURE0);
-    glVertexAttribPointer(shader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, cszTileTexBuffer);
-    glEnableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, t);	
+		glActiveTexture(GL_TEXTURE0);
+		glVertexAttribPointer(shader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, cszTileTexBuffer);
+		glEnableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, t);	
 
-    matrix4x4f cRenderMatrix;
-    const float* u_mvp_m4x4=objectBase::getRenderer()->getOrthoProjectionMatrix()->getMatrix();
-    shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+		shader->sendUniform1i("u_diffuse_texture", 0);
+
+		matrix4x4f cRenderMatrix;
+		const float* u_mvp_m4x4= m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix()->getMatrix();
+		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
     
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     
-    //Disable all texture ops
-    glDisableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
-    glDisable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
+		//Disable all texture ops
+		glDisableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
+		glDisable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
     
-    glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
-    glBindBuffer(GL_ARRAY_BUFFER,0);
+		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+		glBindBuffer(GL_ARRAY_BUFFER,0);
     
-    shader->disableProgram();    
-#else
-	glColor3f(1.0f, 1.0f, 1.0f);
- 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, cszTileBuffer);
+		shader->disableProgram();    
+	}
+	else
+	{
+		glColor3f(1.0f, 1.0f, 1.0f);
+ 		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_FLOAT, 0, cszTileBuffer);
     
-    glActiveTexture(GL_TEXTURE0);
-    glClientActiveTexture(GL_TEXTURE0);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, cszTileTexBuffer);
+		glActiveTexture(GL_TEXTURE0);
+		glClientActiveTexture(GL_TEXTURE0);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(2, GL_FLOAT, 0, cszTileTexBuffer);
     
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, t);
-    //glTranslatef(0, 0, 0);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    //glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-#endif
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, t);
+		//glTranslatef(0, 0, 0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		//glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
 }
 
 void gearSceneWorldEditor::onDraw()
@@ -1018,6 +1024,19 @@ bool gearSceneWorldEditor::onKeyUp(int charValue, int flag)
 {
 	monoWrapper::mono_game_onkeyup(charValue, flag);
 	return geWindow::onKeyUp(charValue, flag);
+}
+
+void gearSceneWorldEditor::onCommand(int cmd)
+{
+	switch(cmd)
+	{
+	case ID_POSTPROCESSOR_BLURPROCESSOR:
+		{
+			m_bEnablePostProcessorBlur=!m_bEnablePostProcessorBlur;
+			//EditorApp::getScenePropertyEditor()->populatePropertyOfBlurShader(engine_getHWShaderManager()->GetHWShader(7));
+		}
+		break;
+	}
 }
 
 //void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight)

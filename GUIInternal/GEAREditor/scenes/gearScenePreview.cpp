@@ -16,6 +16,9 @@ gearScenePreview::~gearScenePreview()
 void gearScenePreview::onCreate()
 {
 	m_pPreviewWorldPtr=monoWrapper::mono_engine_getWorld(1);
+	object3d* light=engine_createLight(m_pPreviewWorldPtr, "Point Light", gxLight::LIGHT_POINT);
+	((gxLight*)light)->setDiffuseColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
+	((gxLight*)light)->setAmbientColor(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
 }
 
 void gearScenePreview::draw()
@@ -79,7 +82,29 @@ void gearScenePreview::onDraw()
 {
 	monoWrapper::mono_engine_update(m_pPreviewWorldPtr, 1.0f);
 
+	m_pPreviewWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 	monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	HWShaderManager* hwManager = engine_getHWShaderManager();
+	gxHWShader* shader=hwManager->GetHWShader(4);
+	shader->enableProgram();
+	shader->resetAllFlags();
+	std::vector<gxLight*>* lightList = m_pPreviewWorldPtr->getLightList();
+	for(int x=0;x<lightList->size();x++)
+	{
+		gxLight* light = lightList->at(x);
+		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			continue;
+		light->renderPass(m_pPreviewWorldPtr->getRenderer(), shader);
+
+		m_pPreviewWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+		monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj);
+	}
+	shader->disableProgram();
+	glDisable(GL_BLEND);
 }
 
 bool gearScenePreview::onMouseLButtonDown(float x, float y, int nFlag)

@@ -109,6 +109,7 @@ public:
 
 	geTreeNode* getTVNode(float x, float y);
 
+	float getVirtualYPos()	{	return m_fVirtualYPos;	}
 
 protected:
 	virtual void onSize(float cx, float cy, int flag);

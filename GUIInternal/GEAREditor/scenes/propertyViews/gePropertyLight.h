@@ -73,6 +73,8 @@ public:
 	virtual void onColorChange(geGUIBase* colorControl);
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
 	virtual void onButtonClicked(geGUIBase* btn);
+
+	virtual void onCommand(int cmd);
 };
 
 #endif

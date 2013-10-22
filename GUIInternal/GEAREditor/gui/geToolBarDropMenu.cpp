@@ -153,13 +153,6 @@ void geToolBarDropMenu::onButtonClicked()
 		else if(item->type==1)
 			InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 	}
-	//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004002, "Point Light");
-	//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-	////geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
-	//int disableFlag = 0;//(selectedNode)?0:MF_DISABLED;
-	//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING | disableFlag, 0x00004001, "Create Object on Selected Node");
-	//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");
-
 	//
 	geGUIBase* baseGUI=this;
 	geGUIBase* rootTVNode=this;
@@ -179,7 +172,7 @@ void geToolBarDropMenu::onButtonClicked()
 
 		POINT pt;
 		pt.x=x+treeView->getPositionOnScreen().x;
-		pt.y=y-treeView->getPositionOnScreen().y;
+		pt.y=y-treeView->getPositionOnScreen().y+((geTreeView*)treeView)->getVirtualYPos();
 		ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
 		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
 

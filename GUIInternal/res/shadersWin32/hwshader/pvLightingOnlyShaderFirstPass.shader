@@ -1,48 +1,114 @@
 #ifdef GEAR_VERTEX_SHADER
-
 #version 120
 
-attribute vec4 a_vertex_coord_v4;
-attribute vec3 a_normal_coord_v3;
+struct Light
+{
+    vec4    position;
+    vec4    ambient;
+    vec4    diffuse;
+    vec4    specular;
+    float   constant_attenuation;
+    float   linear_attenuation;
+    float   quadratic_attenuation;
+    vec3    spot_direction;
+    float   spot_cutoff;
+    float   spot_exponent;
+};
 
-//light
-uniform vec4 u_light_diffuse_v4;
-uniform vec4 u_light_ambient_v4;
-uniform vec4 u_light_specular_v4;
-uniform vec3 u_lightposition_v3;
+struct Material
+{
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+    float shininess;
+};
 
-//model
-uniform vec4 u_ambient_v4;
-uniform vec4 u_diffuse_v4;
-uniform vec4 u_specular_v4;
-uniform float u_shininess_f1;
+uniform mat4 GEAR_MV;
+uniform mat4 GEAR_MVP;
+uniform mat4 GEAR_NORMAL_MATRIX;
 
-uniform mat4 u_modelview_m4x4;
-uniform mat4 u_mvp_m4x4;
-uniform vec3 u_eyedirection_v3;
+attribute vec4 vIN_Position;
+attribute vec3 vIN_Normal;
+attribute vec4 vIN_Color;
+attribute vec2 vIN_UVCoord0;
+attribute vec2 vIN_UVCoord1;
+attribute vec2 vIN_UVCoord2;
+attribute vec2 vIN_UVCoord3;
 
-varying vec4 v_destinationcolor_v4;
+varying vec4 vOUT_Position;
+varying vec3 vOUT_Normal;
+varying vec4 vOUT_Color;
+varying vec2 vOUT_UVCoord0;
+varying vec2 vOUT_UVCoord1;
+varying vec2 vOUT_UVCoord2;
+varying vec2 vOUT_UVCoord3;
+
+uniform Light light;
+uniform Material material;
+
+vec4 pointLight ()
+{
+    float nDotVP;       // normal * light direction
+    float nDotR;        // normal * light reflection vector
+    float pf;           // power factor
+    float attenuation;  // computed attenuation factor
+    float d;            // distance from surface to light position
+    vec3 VP;            // direction from surface to light position
+    vec3 reflection;    // direction of maximum highlights
+	vec3 vNormal;
+	
+#ifdef GEAR_VERTEX_SHADER
+	// Get surface normal in eye coordinates
+    vNormal = mat3(GEAR_NORMAL_MATRIX) * vIN_Normal;
+	
+	// Get vertex position in eye coordinates
+    vec4 vertexPos = GEAR_MV * vIN_Position;
+    vec3 vertexEyePos = vertexPos.xyz / vertexPos.w;
+    vec3 vPosition = vertexEyePos;
+	VP = vec3 (light.position) - vec3 (vPosition);
+#elif defined (GEAR_FRAGMENT_SHADER)
+	vNormal = vOUT_Normal;
+	VP = vec3 (light.position) - vec3 (vOUT_Position);
+#endif
+	
+    // Compute distance between surface and light position
+    d = length (VP);
+ 
+    // Normalize the vector from surface to light position
+    VP = normalize (VP);
+ 
+    // Compute attenuation
+    attenuation = 1.f / (light.constant_attenuation +
+                         light.linear_attenuation * d +
+                         light.quadratic_attenuation * d * d);
+ 
+    reflection = normalize (reflect (-normalize (VP), normalize
+                (vNormal)));
+ 
+    nDotVP = max (0.f, dot (vNormal, VP));
+    nDotR = max (0.f, dot (normalize (vNormal), reflection));
+ 
+    if (nDotVP == 0.f)
+        pf = 0.f;
+    else
+        pf = pow (nDotR, material.shininess);
+ 
+    vec4 ambient = material.ambient * light.ambient * attenuation;
+    vec4 diffuse = material.diffuse * light.diffuse * nDotVP * attenuation;
+    vec4 specular = material.specular * light.specular * pf * attenuation;
+ 
+    return ambient + diffuse + specular;
+}
 
 void main()
 {
-	vec3 n = normalize(mat3(u_modelview_m4x4) * a_normal_coord_v3);
-	vec3 l = normalize(mat3(u_modelview_m4x4)*u_lightposition_v3);
-	vec3 e = u_eyedirection_v3;//vec3(0, 0, 1);
-	vec3 h = normalize(l+e);
-
-	float df = max(0.0, dot(n, l));
-	float sf = max(0.0, dot(n, h));
-	sf = pow(sf, u_shininess_f1);
-
-	vec4 color = (u_ambient_v4*u_light_ambient_v4) + df * (u_diffuse_v4*u_light_diffuse_v4) + sf * (u_specular_v4*u_light_specular_v4);
-	v_destinationcolor_v4 = color;
-	
-	gl_Position = u_mvp_m4x4 * a_vertex_coord_v4;
+	vOUT_Color=pointLight();
+	gl_Position = GEAR_MVP * vIN_Position;
 }
 #elif defined (GEAR_FRAGMENT_SHADER)
-varying vec4 v_destinationcolor_v4;
+varying vec4 vOUT_Color;
 void main()
 {
-	gl_FragColor = v_destinationcolor_v4;
+	gl_FragColor = vOUT_Color;
 }
 #endif

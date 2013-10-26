@@ -82,6 +82,7 @@
     <ClCompile Include="..\src\core\gxAnimationTrack.cpp" />
     <ClCompile Include="..\src\core\gxDebug.cpp" />
     <ClCompile Include="..\src\core\gxLight.cpp" />
+    <ClCompile Include="..\src\core\gxMaterial.cpp" />
     <ClCompile Include="..\src\core\gxMesh.cpp" />
     <ClCompile Include="..\src\core\gxSkinnedMesh.cpp" />
     <ClCompile Include="..\src\core\gxWorld.cpp" />

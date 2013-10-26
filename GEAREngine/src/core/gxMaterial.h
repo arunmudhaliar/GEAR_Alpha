@@ -7,58 +7,47 @@
 #include "../util/gxFile.h"
 #include "../util/gxUtil.h"
 #include <algorithm>
+#include "../hwShader/gxHWShader.h"
 
 //#define MAX_SUBMATERIALMAP	8
 
-class gxMaterial// : public objectBase
+class DllExport gxSubMap
 {
 public:
-	gxMaterial()
+	gxSubMap();
+	~gxSubMap();
+
+	enum ESUBMAP
 	{
-		//memset(m_pszSubMap, 0, sizeof(m_pszSubMap));
-		m_pTexture=NULL;
-		memset(m_szTextureName, 0, sizeof(m_szTextureName));
+		MAP_DIFFUSE,
+		MAP_NORMAL,
+		MAP_SPECULAR,
+		MAP_MAX
+	};
+	
+	void setTextureName(const char* name)	{	GX_STRCPY(m_szTextureName, name);	}
+	//void setTextureType(ESUBMAP type)		{	m_eType=type;		}
+	void setTextureCRC(int crc)				{	m_iTextureCRC=crc;	}
+	const char* getTextureName()			{	return m_szTextureName;	}
+	//ESUBMAP getTextureType()				{	return m_eType;			}
+	int getTextureCRC()						{	return m_iTextureCRC;	}
+	gxTexture* load(CTextureManager& textureManager, const char* filename);
+	gxTexture* getTexture()		{	return m_pTexture;	}
+	gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc);
 
-		m_cDiffuse.set(0.5f, 0.5f, 0.5f, 1.0f);
-		m_iFileCRC=0;
-		m_iTextureFileCRC=0;
-	}
+private:
 
-	~gxMaterial()
-	{
-		//for(int x=0;x<gxSubMaterialMap::EMMAP_MAX;x++)
-		//{
-		//	gxSubMaterialMap* subMap=m_pszSubMap[x];
-		//	GX_DELETE(subMap);
-		//}
+	char m_szTextureName[256];
+	int m_iTextureCRC;
+	gxTexture* m_pTexture;
+	//ESUBMAP m_eType;
+};
 
-		GX_DELETE(m_pTexture);
-	}
-
-	//bool isAlphaOrBlended()
-	//{
-	//	bool bAlphaOrBlended=false;
-	//
-	//	//chk on the shader array
-	//	for(int x=0;x<gxSubMaterialMap::EMMAP_MAX;x++)
-	//	{
-	//		gxSubMaterialMap* subMatMap=m_pszSubMap[x];
-
-	//		if(!subMatMap) continue;
-	//	
-	//		if(subMatMap->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
-	//		{
-	//			bAlphaOrBlended=true;
-	//			break;
-	//		}
-	//	}
-	//
-	//	//chk if transparency value is other than 1.0f
-	//	if(m_fAlpha<1.0f)
-	//		bAlphaOrBlended=true;
-	//	
-	//	return bAlphaOrBlended;
-	//}
+class DllExport gxMaterial// : public objectBase
+{
+public:
+	gxMaterial();
+	~gxMaterial();
 
 	bool isTwoSided()	{	return m_bTwoSided;	}
 
@@ -77,175 +66,28 @@ public:
 	void setMaterialName(const char* name)	{	GX_STRCPY(m_szMaterialName, name);	}
 	const char* getMaterialName()			{	return m_szMaterialName;		}
 
-	gxTexture* getTexture()					{	return m_pTexture;	}
+	//gxTexture* getTexture()					{	return m_pTexture;	}
 
 #if 0
-	gxTexture* loadTextureFromDirectory(CTextureManager& textureManager, const char* directory)
-	{
-		if(strlen(m_szTextureName)==0)
-			return NULL;
-		char metaInfoFileName[256];
-		sprintf(metaInfoFileName, "%s//%s.meta",directory, m_szTextureName);
-
-		gxFile metaInfoFile;
-		if(metaInfoFile.OpenFile(metaInfoFileName))
-		{
-			int crc=0;
-			metaInfoFile.Read(crc);
-			metaInfoFile.CloseFile();
-
-			char metaDataFileName[256];
-			sprintf(metaDataFileName, "%x", crc);
-
-			stTexturePacket* texturePack=textureManager.LoadTexture(metaDataFileName);
-
-			GX_DELETE(m_pTexture);
-			m_pTexture = new gxTexture();
-			m_pTexture->setTexture(texturePack);
-			if(texturePack->bAlphaTex)
-			{
-				m_pTexture->setTextureType(gxTexture::TEX_ALPHA);
-			}
-			else
-			{
-				m_pTexture->setTextureType(gxTexture::TEX_NORMAL);
-			}
-
-			return m_pTexture;
-		}
-
-		return NULL;
-	}
+	gxTexture* loadTextureFromDirectory(CTextureManager& textureManager, const char* directory);
 #endif
 
-	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename)
-	{
-/*		if(strlen(m_szTextureName)==0)
-			return NULL;*/
-		char metaInfoFileName[256];
-		const char* onlyFilename = gxUtil::getFileNameFromPath(filename);
-		setTextureName(onlyFilename);
+	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename, gxSubMap::ESUBMAP eType=gxSubMap::MAP_DIFFUSE);
 
-		sprintf(metaInfoFileName, "%s.meta", filename);
+	//void setTextureName(const char* textureName);
+	bool appendDependency(int crc);
 
-		gxFile metaInfoFile;
-		if(metaInfoFile.OpenFile(metaInfoFileName))
-		{
-			int crc=0;
-			metaInfoFile.Read(crc);
-			metaInfoFile.CloseFile();
-			return loadTextureFromMeta(textureManager, crc);
-		}
-
-		return NULL;
-	}
-
-	gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc)
-	{
-		char metaDataFileName[256];
-		sprintf(metaDataFileName, "%x", crc);
-
-		stTexturePacket* texturePack=textureManager.LoadTexture(metaDataFileName);
-		if(texturePack)
-		{
-			//delete old texture instance
-			GX_DELETE(m_pTexture);
-
-			m_pTexture = new gxTexture();
-			m_pTexture->setTexture(texturePack);
-			m_pTexture->setFileCRC(crc);
-			if(texturePack->bAlphaTex)
-			{
-				m_pTexture->setTextureType(gxTexture::TEX_ALPHA);
-			}
-			else
-			{
-				m_pTexture->setTextureType(gxTexture::TEX_NORMAL);
-			}
-		}
-		return m_pTexture;
-	}
-
-	void setTextureName(const char* textureName)
-	{
-		GX_STRCPY(m_szTextureName, textureName);
-	}
-
-	bool appendDependency(int crc)
-	{
-		if(std::find(m_vDependencyCRCList.begin(), m_vDependencyCRCList.end(), crc)==m_vDependencyCRCList.end())
-		{
-			m_vDependencyCRCList.push_back(crc);
-			return true;
-		}
-
-		return false;
-	}
-
-	void write(gxFile& file)
-	{
-		file.Write(m_iFileCRC);
-		file.WriteBuffer((unsigned char*)&m_cAmbient, sizeof(m_cAmbient));
-		file.WriteBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
-		file.WriteBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
-		file.Write(m_fAlpha);
-		file.Write(m_fShininess);
-		file.Write(m_bTwoSided);
-		file.Write(m_szMaterialName);
-		file.Write(m_szTextureName);
-		if(m_pTexture)
-			file.Write(m_pTexture->getFileCRC());
-		else
-			file.Write(0);
-		file.Write(m_vDependencyCRCList.size());
-		for(int x=0;x<m_vDependencyCRCList.size();x++)
-		{
-			file.Write(m_vDependencyCRCList[x]);
-		}
-	}
-
-	void read(gxFile& file)
-	{
-		file.Read(m_iFileCRC);
-		file.ReadBuffer((unsigned char*)&m_cAmbient, sizeof(m_cAmbient));
-		file.ReadBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
-		file.ReadBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
-		file.Read(m_fAlpha);
-		file.Read(m_fShininess);
-		file.Read(m_bTwoSided);	
-		char* temp=file.ReadString();
-		GX_STRCPY(m_szMaterialName, temp);
-		GX_DELETE_ARY(temp);
-		temp=file.ReadString();
-		GX_STRCPY(m_szTextureName, temp);
-		GX_DELETE_ARY(temp);
-		file.Read(m_iTextureFileCRC);
-		int nDep=0;
-		file.Read(nDep);
-		for(int x=0;x<nDep;x++)
-		{
-			int crc=0;
-			file.Read(crc);
-			m_vDependencyCRCList.push_back(crc);
-		}
-	}
+	void write(gxFile& file);
+	void read(gxFile& file);
 
 	void setFileCRC(int crc)	{	m_iFileCRC=crc;		}
 	int getFileCRC()			{	return m_iFileCRC;	}
+	//int getTextureReadCRC()		{	return m_iTextureFileCRC;	}
 
-	static gxMaterial* createNewMaterial()
-	{
-		gxMaterial* material = new gxMaterial();
-		material->setMaterialName("New Material");
+	static gxMaterial* createNewMaterial();
 
-		material->setDiffuseClr(vector4f(0.7f, 0.7f, 0.7f, 1.0f));
-		material->setAmbientClr(vector4f(0.7f, 0.7f, 0.7f, 1.0f));
-		material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
-
-		return material;
-	}
-
-	int getTextureReadCRC()	{	return m_iTextureFileCRC;	}
+	void setSubMap(gxSubMap* submap, gxSubMap::ESUBMAP eType);
+	gxSubMap* getSubMap(gxSubMap::ESUBMAP eType);
 
 private:
 	vector4f m_cAmbient;
@@ -255,12 +97,15 @@ private:
 	float m_fShininess;
 	bool m_bTwoSided;
 	//gxSubMaterialMap* m_pszSubMap[gxSubMaterialMap::EMMAP_MAX];
-	gxTexture* m_pTexture;
+	//gxTexture* m_pTexture;
 	char m_szMaterialName[64];
-	char m_szTextureName[256];
+	//char m_szTextureName[256];
 	std::vector<int> m_vDependencyCRCList;
 	int m_iFileCRC;
-	int m_iTextureFileCRC;
+	//int m_iTextureFileCRC;
+
+	gxHWShader* m_pShader;
+	gxSubMap* m_pszSubMap[gxSubMap::MAP_MAX];
 };
 
 #endif

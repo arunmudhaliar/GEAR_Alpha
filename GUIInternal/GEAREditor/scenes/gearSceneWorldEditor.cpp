@@ -222,7 +222,7 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
   
 	if(m_bEnablePostProcessorBlur)
 	{
-		gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(7);
+		gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(5);
     
 		shader->enableProgram();
 		shader->resetAllFlags();
@@ -295,7 +295,7 @@ void gearSceneWorldEditor::onDraw()
 		for(int x=0;x<lightList->size();x++)
 		{
 			HWShaderManager* hwManager = engine_getHWShaderManager();
-			gxHWShader* shader=hwManager->GetHWShader(4);
+			gxHWShader* shader=hwManager->GetHWShader(3);
 			gxLight* light = lightList->at(x);
 			shader->enableProgram();
 			shader->resetAllFlags();
@@ -335,7 +335,7 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 	HWShaderManager* hwManager = engine_getHWShaderManager();
-	gxHWShader* shader=hwManager->GetHWShader(4);
+	gxHWShader* shader=hwManager->GetHWShader(3);
 	shader->enableProgram();
 	shader->resetAllFlags();
 	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
@@ -421,7 +421,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
 	if(lightList->size())
 	{
-		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(6);
+		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(4);
 		shader->enableProgram();
 		shader->resetAllFlags();
 		for(int x=0;x<lightList->size();x++)
@@ -1033,7 +1033,7 @@ void gearSceneWorldEditor::onCommand(int cmd)
 	case ID_POSTPROCESSOR_BLURPROCESSOR:
 		{
 			m_bEnablePostProcessorBlur=!m_bEnablePostProcessorBlur;
-			//EditorApp::getScenePropertyEditor()->populatePropertyOfBlurShader(engine_getHWShaderManager()->GetHWShader(7));
+			//EditorApp::getScenePropertyEditor()->populatePropertyOfBlurShader(engine_getHWShaderManager()->GetHWShader(5));
 		}
 		break;
 	}

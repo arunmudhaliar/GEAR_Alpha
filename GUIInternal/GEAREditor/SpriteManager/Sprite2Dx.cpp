@@ -17,8 +17,8 @@ Sprite2Dx::~Sprite2Dx()
 
 void Sprite2Dx::draw(gxHWShader* shader)
 {
-	glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v2"), 2, GL_FLOAT, GL_FALSE, 0, m_cszVertLst);
-    glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v2"));
+	glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, m_cszVertLst);
+    glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 
     glVertexAttribPointer(shader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, m_cszTexCoord);
 	glEnableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
@@ -53,7 +53,7 @@ void Sprite2Dx::draw(gxHWShader* shader)
 		glDisable(GL_TEXTURE_2D);
 	}
 	
-	glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v2"));
+	glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 }
 
 void Sprite2Dx::draw(/*const matrix4x4f& parentTM, */geVector2f* pos)

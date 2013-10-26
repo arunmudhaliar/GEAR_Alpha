@@ -108,10 +108,12 @@ void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 
 				gxMaterial* material = new gxMaterial();
 				material->read(file_meta);
-				if(material->getTextureReadCRC())
+				//load sub maps
+				for(int sm=0;sm<gxSubMap::MAP_MAX;sm++)
 				{
-					//load the texture
-					material->loadTextureFromMeta(*world->getTextureManager(), material->getTextureReadCRC());
+					gxSubMap* submap = material->getSubMap((gxSubMap::ESUBMAP)sm);
+					if(submap)
+						submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
 				}
 				//check if the material name already exists in our list or not
 				std::vector<gxMaterial*>* materialList = world->getMaterialList();

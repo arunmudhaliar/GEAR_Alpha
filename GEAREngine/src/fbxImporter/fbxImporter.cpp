@@ -659,8 +659,11 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 								diffuseProp.GetSrcObject(FbxTexture::ClassId, iTexture)); 
 
 							if( !texture ) continue;
+							
+							gxSubMap* submap = new gxSubMap();
+							submap->setTextureName(gxUtil::getFileNameFromPath(texture->GetFileName()));
 
-							material->setTextureName(gxUtil::getFileNameFromPath(texture->GetFileName()));
+							material->setSubMap(submap, gxSubMap::MAP_DIFFUSE);
 						}
 					}
 

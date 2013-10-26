@@ -88,7 +88,7 @@ void gearScenePreview::onDraw()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 	HWShaderManager* hwManager = engine_getHWShaderManager();
-	gxHWShader* shader=hwManager->GetHWShader(4);
+	gxHWShader* shader=hwManager->GetHWShader(3);
 	shader->enableProgram();
 	shader->resetAllFlags();
 	std::vector<gxLight*>* lightList = m_pPreviewWorldPtr->getLightList();

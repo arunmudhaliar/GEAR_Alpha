@@ -18,11 +18,14 @@ public:
 	geColorControl* m_pColorControlAmbient;
 	geColorControl* m_pColorControlSpecular;
 	geToolBarDropMenu* m_pLightTypeToolBarDropMenuBtnPtr;
+	geHorizontalSlider* m_pHorizontalSlider_ConstantAttenuation;
+	geHorizontalSlider* m_pHorizontalSlider_LinearAttenuation;
+	geHorizontalSlider* m_pHorizontalSlider_QuadraticAttenuation;
 
 	gePropertyLight(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
 	  geTreeNode(renderer, parent, name, sprite, 10)
 	{
-		setSize(m_cSize.x, 85.0f);
+		setSize(m_cSize.x, 130.0f);
 
 		//diffuse
 		m_pColorControl = new geColorControl();
@@ -32,7 +35,7 @@ public:
 
 		m_pLightTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "LightType", this);
 		m_pLightTypeToolBarDropMenuBtnPtr->setGUIObserver(this);
-		m_pLightTypeToolBarDropMenuBtnPtr->setPos(100, 20);
+		m_pLightTypeToolBarDropMenuBtnPtr->setPos(10, 35);
 
 		m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00005003);
 		m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Point Light", 0x00005002);
@@ -40,16 +43,34 @@ public:
 
 		//ambient
 		m_pColorControlAmbient = new geColorControl();
-		m_pColorControlAmbient->create(renderer, this, 10, 35);
+		m_pColorControlAmbient->create(renderer, this, 100, 10);
 		m_pColorControlAmbient->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_pColorControlAmbient->setGUIObserver(this);
 
 
 		//specular
 		m_pColorControlSpecular = new geColorControl();
-		m_pColorControlSpecular->create(renderer, this, 10, 60);
+		m_pColorControlSpecular->create(renderer, this, 190, 10);
 		m_pColorControlSpecular->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_pColorControlSpecular->setGUIObserver(this);
+
+
+		//attenuations
+		m_pHorizontalSlider_ConstantAttenuation = new geHorizontalSlider();
+		m_pHorizontalSlider_ConstantAttenuation->create(m_pRenderer, this, "slider", 10, 65, 130);
+		m_pHorizontalSlider_ConstantAttenuation->setSliderValue(1.0f);
+		m_pHorizontalSlider_ConstantAttenuation->setGUIObserver(this);
+
+		m_pHorizontalSlider_LinearAttenuation = new geHorizontalSlider();
+		m_pHorizontalSlider_LinearAttenuation->create(m_pRenderer, this, "slider", 10, 85, 130);
+		m_pHorizontalSlider_LinearAttenuation->setSliderValue(1.0f);
+		m_pHorizontalSlider_LinearAttenuation->setGUIObserver(this);
+
+		m_pHorizontalSlider_QuadraticAttenuation = new geHorizontalSlider();
+		m_pHorizontalSlider_QuadraticAttenuation->create(m_pRenderer, this, "slider", 10, 105, 130);
+		m_pHorizontalSlider_QuadraticAttenuation->setSliderValue(1.0f);
+		m_pHorizontalSlider_QuadraticAttenuation->setGUIObserver(this);
+
 
 		m_pLightPtr=NULL;
 

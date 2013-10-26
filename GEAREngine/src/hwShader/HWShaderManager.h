@@ -10,6 +10,22 @@
 class __declspec( dllexport ) HWShaderManager
 {
 public:
+
+	struct stHWShaderSnippet
+	{
+		stHWShaderSnippet()
+		{
+			snippet=NULL;
+			size=0;
+		}
+		~stHWShaderSnippet()
+		{
+			GX_DELETE_ARY(snippet);
+		}
+		char* snippet;
+		int size;
+	};
+
 	HWShaderManager();
 	~HWShaderManager();
 	
@@ -24,6 +40,9 @@ public:
     
 private:
 	void LoadDefaultShaders();
+
+private:
+	stHWShaderSnippet* LoadCodeSnippet(const char* filename);
 	
 #if defined (USE_ProgrammablePipeLine)
 	//default shaders
@@ -36,6 +55,8 @@ private:
 	gxGenericShader m_cSpriteGenericShader;
 	gxGenericShader m_cBlurGenericShader;
 	std::vector<gxHWShader*> m_cvHWShaderLst;
+
+	std::vector<stHWShaderSnippet*> m_cvHWShaderSnippets;
 #endif
 };
 

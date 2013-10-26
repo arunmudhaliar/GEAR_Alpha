@@ -149,11 +149,36 @@ public:
 		return res;
 	}
 
+	void transpose()
+	{
+		*this=getTranspose();
+		matrixChanged();
+	}
+
+	matrix4x4f getTranspose()
+	{
+		matrix4x4f ret;
+
+		float* dst;
+		dst=ret.m;
+		/* transpose matrix */
+		for(int i = 0; i < 4; i++) 
+		{
+			dst[i]   = m[i*4];
+			dst[i+4] = m[i*4 + 1];
+			dst[i+8] = m[i*4 + 2];
+			dst[i+12]= m[i*4 + 3];
+		}
+
+		return ret;
+	}
+
 	void inverse()
 	{
 		*this=getInverse();
 		matrixChanged();
 	}
+
 
 	matrix4x4f getInverse()
 	{

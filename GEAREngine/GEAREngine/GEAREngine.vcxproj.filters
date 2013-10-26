@@ -186,6 +186,9 @@
     <ClCompile Include="..\src\core\gxSkinnedMesh.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\gxMaterial.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">

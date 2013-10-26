@@ -34,11 +34,23 @@ public:
 	const vector4f& getAmbientColor()	{	return m_cAmbient;	}
 	ELIGHT_TYPE	getLightType()			{	return m_eType;		}
 	void setLightType(ELIGHT_TYPE eType){	m_eType=m_eType;	}
+
+	float getConstantAttenuation()	{	return m_fConstantAttenuation;	}
+	float getLinearAttenuation()	{	return m_fLinearAttenuation;	}
+	float getQuadraticAttenuation()	{	return m_fQuadraticAttenuation;	}
+
+	void setConstantAttenuation(float value)	{	m_fConstantAttenuation=value;	}
+	void setLinearAttenuation(float value)		{	m_fLinearAttenuation=value;		}
+	void setQuadraticAttenuation(float value)	{	m_fQuadraticAttenuation=value;	}
+
 private:
 	ELIGHT_TYPE m_eType;
 	vector4f m_cDiffuse;
 	vector4f m_cSpecular;
 	vector4f m_cAmbient;
+	float m_fConstantAttenuation;
+	float m_fLinearAttenuation;
+	float m_fQuadraticAttenuation;
 };
 
 #endif

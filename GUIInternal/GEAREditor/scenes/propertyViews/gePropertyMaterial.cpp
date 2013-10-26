@@ -38,10 +38,12 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 
 			gxMaterial* material = new gxMaterial();
 			material->read(file_meta);
-			if(material->getTextureReadCRC())
+			//load sub maps
+			for(int x=0;x<gxSubMap::MAP_MAX;x++)
 			{
-				//load the texture
-				material->loadTextureFromMeta(*world->getTextureManager(), material->getTextureReadCRC());
+				gxSubMap* submap = material->getSubMap((gxSubMap::ESUBMAP)x);
+				if(submap)
+					submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
 			}
 			file_meta.CloseFile();
 
@@ -54,6 +56,14 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 
 void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 {
+	//destroy submapview nodes
+	for(std::vector<stSubMapView*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	{
+		stSubMapView* tvnode = *it;
+		GE_DELETE(tvnode);
+	}
+	m_vSubMap.clear();
+
 	//destroy the child views
 	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
 	{
@@ -69,43 +79,47 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 		geTextBox* text_material = new geTextBox("MaterialName");
 		text_material->create(m_pRenderer, this, m_pCurrentMaterialPtr->getMaterialName(), 50, 10, 200, 16);
 		
-		char tileX_temp_buffer[10];
-		char tileY_temp_buffer[10];
-
-		if(m_pCurrentMaterialPtr->getTexture())
+		//m_vSubMap
+		for(int x=0;x<gxSubMap::MAP_MAX;x++)
 		{
-			const float* texMat4x4=m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->getMatrix();
-			sprintf(tileX_temp_buffer, "%3.2f", texMat4x4[0]);
-			sprintf(tileY_temp_buffer, "%3.2f", texMat4x4[5]);
-		}
-		else
-		{
-			sprintf(tileX_temp_buffer, "%3.2f", 1.0f);
-			sprintf(tileY_temp_buffer, "%3.2f", 1.0f);
-		}
+			gxSubMap* submap = m_pCurrentMaterialPtr->getSubMap((gxSubMap::ESUBMAP)x);
+			if(!submap) continue;
 
-		m_pText_tileX = new geTextBox("1.0");
-		m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 40, 50, 16);
-		m_pText_tileX->setGUIObserver(this);
-		m_pText_tileY = new geTextBox("1.0");
-		m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 60, 50, 16);
-		m_pText_tileY->setGUIObserver(this);
+			stSubMapView* submapview = new stSubMapView();
+
+			char tileX_temp_buffer[10];
+			char tileY_temp_buffer[10];
+
+			if(submap->getTexture())
+			{
+				const float* texMat4x4=submap->getTexture()->getTextureMatrix()->getMatrix();
+				sprintf(tileX_temp_buffer, "%3.2f", texMat4x4[0]);
+				sprintf(tileY_temp_buffer, "%3.2f", texMat4x4[5]);
+			}
+			else
+			{
+				sprintf(tileX_temp_buffer, "%3.2f", 1.0f);
+				sprintf(tileY_temp_buffer, "%3.2f", 1.0f);
+			}
+			submapview->m_pText_tileX = new geTextBox("1.0");
+			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 40, 50, 16);
+			submapview->m_pText_tileX->setGUIObserver(this);
+			submapview->m_pText_tileY = new geTextBox("1.0");
+			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 60, 50, 16);
+			submapview->m_pText_tileY->setGUIObserver(this);
+
+			submapview->thumbnail = new geTextureThumbnailExtended();
+			submapview->thumbnail->create(m_pRenderer, this, submap->getTexture(), 260, 10, 70, 70);
+			submapview->thumbnail->setUserData(m_pCurrentMaterialPtr);
+			m_vSubMap.push_back(submapview);
+		}
 
 		m_pColorControl = new geColorControl();
 		m_pColorControl->create(m_pRenderer, this, 10, 10);
 		vector4f diffuse=m_pCurrentMaterialPtr->getDiffuseClr();
 		m_pColorControl->setControlColor(diffuse.x, diffuse.y, diffuse.z, diffuse.w);
 		m_pColorControl->setGUIObserver(this);
-
-		geTextureThumbnailExtended* thumbnail = new geTextureThumbnailExtended();
-		thumbnail->create(m_pRenderer, this, m_pCurrentMaterialPtr->getTexture(), 260, 10, 70, 70);
-		thumbnail->setUserData(m_pCurrentMaterialPtr);
 	}
-	//else
-	//{
-	//	geNullMaterialExtended* thumbnail = new geNullMaterialExtended();
-	//	thumbnail->create(this, NULL, 5, 5, m_cSize.x-10, m_cSize.y-10);
-	//}
 }
 
 void gePropertyMaterial::drawNode()

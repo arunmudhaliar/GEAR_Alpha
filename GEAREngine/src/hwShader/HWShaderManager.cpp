@@ -20,6 +20,14 @@ void HWShaderManager::Reset()
 {
 #if defined (USE_ProgrammablePipeLine)
 	m_cvHWShaderLst.clear();
+
+	std::vector<stHWShaderSnippet*>* submaplist=&m_cvHWShaderSnippets;
+	for(std::vector<stHWShaderSnippet*>::iterator it = submaplist->begin(); it != submaplist->end(); ++it)
+	{
+		stHWShaderSnippet* snippet = *it;
+		GX_DELETE(snippet);
+	}
+	m_cvHWShaderSnippets.clear();
 #endif
 }
 
@@ -27,24 +35,62 @@ void HWShaderManager::LoadDefaultShaders()
 {
 #if defined (USE_ProgrammablePipeLine)
 #if defined(WIN32)
-    if(m_cOnlyDiffuse.loadShader("res/shadersWin32/hwshader/only_diffuse.shader"))
+
+	//load code snippets
+	stHWShaderSnippet* snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertexstartdefine.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/fragmentstartdefine.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/enddefine.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+
+
+    if(m_cOnlyDiffuse.loadShader("res/shadersWin32/hwshader/only_diffuse.shader"))	//0
 		m_cvHWShaderLst.push_back(&m_cOnlyDiffuse);
-    if(m_cDiffuseUnlit.loadShader("res/shadersWin32/hwshader/diffusemapunlit.shader"))
+    if(m_cDiffuseUnlit.loadShader("res/shadersWin32/hwshader/diffusemapunlit.shader"))	//1
 		m_cvHWShaderLst.push_back(&m_cDiffuseUnlit);
-    if(m_cOnlyDiffuseWithColor.loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.shader"))
+    if(m_cOnlyDiffuseWithColor.loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.shader"))	//2
 		m_cvHWShaderLst.push_back(&m_cOnlyDiffuseWithColor);
-    if(m_cGenericShader.loadShader("res/shadersWin32/hwshader/pvLightingShader.shader"))
-		m_cvHWShaderLst.push_back(&m_cGenericShader);
-    if(m_cLightingOnlyFirstPassGenericShader.loadShader("res/shadersWin32/hwshader/pvLightingOnlyShaderFirstPass.shader"))
+    if(m_cLightingOnlyFirstPassGenericShader.loadShader("res/shadersWin32/hwshader/pvLightingOnlyShaderFirstPass.shader"))	//3
 		m_cvHWShaderLst.push_back(&m_cLightingOnlyFirstPassGenericShader);
-	if(m_cLightingOnlyGenericShader.loadShader("res/shadersWin32/hwshader/pvLightingOnlyShader.shader"))
-		m_cvHWShaderLst.push_back(&m_cLightingOnlyGenericShader);
-	if(m_cSpriteGenericShader.loadShader("res/shadersWin32/hwshader/guishader.shader"))
+	if(m_cSpriteGenericShader.loadShader("res/shadersWin32/hwshader/guishader.shader"))	//4
 		m_cvHWShaderLst.push_back(&m_cSpriteGenericShader);
-	if(m_cBlurGenericShader.loadShader("res/shadersWin32/hwshader/blurshader.shader"))
+	if(m_cBlurGenericShader.loadShader("res/shadersWin32/hwshader/blurshader.shader"))	//5
 		m_cvHWShaderLst.push_back(&m_cBlurGenericShader);
 #endif
 #endif
+}
+
+HWShaderManager::stHWShaderSnippet* HWShaderManager::LoadCodeSnippet(const char* filename)
+{
+	//read snippet code
+	int fileSz=0;
+	FILE* fp=fopen(filename, "r");
+	if(fp==NULL) return NULL;
+
+	fseek(fp, 0, SEEK_END);
+	fileSz=ftell(fp);
+	fclose(fp);
+	
+	if(!fileSz) return NULL;
+	
+	//vertex shader source
+	fp=fopen(filename, "r");
+	if(fp==NULL) return NULL;
+
+	stHWShaderSnippet* newSnippetCode = new stHWShaderSnippet();
+
+	newSnippetCode->size=fileSz;
+	newSnippetCode->snippet=new char[newSnippetCode->size];
+	memset((void*)newSnippetCode->snippet, 0, newSnippetCode->size);
+	fread((void*)newSnippetCode->snippet, 1, newSnippetCode->size, fp);
+	fclose(fp);
+	//
+
+	return newSnippetCode;
 }
 
 #if defined (USE_ProgrammablePipeLine)

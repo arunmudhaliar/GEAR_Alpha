@@ -10,9 +10,9 @@ void gePropertyLight::drawNode()
 {
 	drawRect(&m_cVBClientArea);
 
-	geGUIManager::g_pFontArial10_84Ptr->drawString("Diffuse", 40, 7+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
-	geGUIManager::g_pFontArial10_84Ptr->drawString("Ambient", 40, 30+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
-	geGUIManager::g_pFontArial10_84Ptr->drawString("Specular", 40, 57+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString("Diffuse", m_pColorControl->getPos().x+30, 7+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString("Ambient", m_pColorControlAmbient->getPos().x+30, 7+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString("Specular", m_pColorControlSpecular->getPos().x+30, 7+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 	{
@@ -42,6 +42,10 @@ void gePropertyLight::populatePropertyOfLight(object3d* obj)
 	m_pColorControl->setControlColor(diff.x, diff.y, diff.z, diff.w);
 	m_pColorControlAmbient->setControlColor(ambient.x, ambient.y, ambient.z, ambient.w);
 	m_pColorControlSpecular->setControlColor(specular.x, specular.y, specular.z, specular.w);
+
+	m_pHorizontalSlider_ConstantAttenuation->setSliderValue(m_pLightPtr->getConstantAttenuation(), false);
+	m_pHorizontalSlider_LinearAttenuation->setSliderValue(m_pLightPtr->getLinearAttenuation()*100.0f, false);
+	m_pHorizontalSlider_QuadraticAttenuation->setSliderValue(m_pLightPtr->getQuadraticAttenuation()*1000.0f, false);
 }
 
 void gePropertyLight::onTextChange(geGUIBase* textbox)
@@ -73,6 +77,18 @@ void gePropertyLight::onColorChange(geGUIBase* colorControl)
 
 void gePropertyLight::onSliderChange(geGUIBase* slider)
 {
+	if(m_pHorizontalSlider_ConstantAttenuation==slider)
+	{
+		m_pLightPtr->setConstantAttenuation(m_pHorizontalSlider_ConstantAttenuation->getSliderValue());
+	}
+	else if(m_pHorizontalSlider_LinearAttenuation==slider)
+	{
+		m_pLightPtr->setLinearAttenuation(m_pHorizontalSlider_LinearAttenuation->getSliderValue()*0.01f);
+	}
+	else if(m_pHorizontalSlider_QuadraticAttenuation==slider)
+	{
+		m_pLightPtr->setQuadraticAttenuation(m_pHorizontalSlider_QuadraticAttenuation->getSliderValue()*0.001f);
+	}
 }
 
 void gePropertyLight::onButtonClicked(geGUIBase* btn)

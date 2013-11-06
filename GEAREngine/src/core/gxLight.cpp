@@ -26,12 +26,12 @@ void gxLight::update(float dt)
 	object3d::update(dt);
 }
 
-void gxLight::render(gxRenderer* renderer)
+void gxLight::render(gxRenderer* renderer, object3d* light)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
 
-	object3d::render(renderer);
+	object3d::render(renderer, light);
 }
 
 void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)

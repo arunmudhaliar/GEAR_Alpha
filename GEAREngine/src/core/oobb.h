@@ -9,11 +9,11 @@
 
 
 template<class T>
-class OOBB;
+class DllExport OOBB;
 typedef OOBB<float> gxOOBBf;
 
 template<class T>
-class OOBB
+class DllExport OOBB
 {
 public:
 	OOBB<T>()

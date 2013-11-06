@@ -11,7 +11,7 @@
 
 #include "basicIncludes.h"
 
-struct stTexturePacket
+struct DllExport stTexturePacket
 {
 	stTexturePacket()
 	{

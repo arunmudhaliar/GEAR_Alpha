@@ -15,7 +15,7 @@
 #include "vector2.h"
 #include "gxMath.h"
 
-class matrix4x4f
+class DllExport matrix4x4f
 {
 protected:
 	float	m[16];

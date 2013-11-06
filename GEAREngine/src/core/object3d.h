@@ -11,7 +11,7 @@
 #include "../util/gxFile.h"
 #include "../renderer/gxRenderer.h"
 
-class MRootObserver
+class DllExport MRootObserver
 {
 public:
 	virtual void callback_object3dRemovedFromTree(object3d* child){};
@@ -45,7 +45,7 @@ public:
 	virtual void update(float dt);
 
 	void updateAnimationFrameToObject3d(int frame);
-	virtual void render(gxRenderer* renderer);
+	virtual void render(gxRenderer* renderer, object3d* light);
 
 
 	virtual void transformationChangedf();

@@ -43,7 +43,7 @@ public:
 	float* getNormalBuffer()	{	return m_pszNormalBuffer;	}
 
 	virtual void update(float dt);
-	virtual void render(gxRenderer* renderer);
+	virtual void render(gxRenderer* renderer, object3d* light);
 	void renderNormal(gxRenderer* renderer);
 	void renderWithHWShader(gxRenderer* renderer);
 

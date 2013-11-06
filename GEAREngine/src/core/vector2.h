@@ -11,17 +11,18 @@
 #define VECTOR2_H
 
 #include "gxMath.h"
+#include "basicIncludes.h"
 
 template<class T>
-class vector2;
+class DllExport vector2;
 typedef vector2<float> vector2f;
 
 template<class T>
-class vector2;
+class DllExport vector2;
 typedef vector2<int> vector2i;
 
 template<class T>
-class vector2
+class DllExport vector2
 {
 public:
 	T x, y;

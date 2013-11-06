@@ -13,15 +13,15 @@
 
 
 template<class T>
-class gxRect;
+class DllExport gxRect;
 typedef gxRect<float> gxRectf;
 
 template<class T>
-class gxRect;
+class DllExport gxRect;
 typedef gxRect<int> gxRecti;
 
 template<class T>
-class gxRect
+class DllExport gxRect
 {
 public:
     gxRect<T>()

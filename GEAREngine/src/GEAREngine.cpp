@@ -43,14 +43,14 @@ extern DllExport void engine_resize(gxWorld* world, float x, float y, float cx, 
 	world->resizeWorld(x, y, cx, cy);
 }
 
-extern DllExport void engine_render(gxWorld* world)
+extern DllExport void engine_render(gxWorld* world, object3d* light)
 {
-	world->render(world->getRenderer());
+	world->render(world->getRenderer(), light);
 }
 
-void engine_renderSingleObject(gxWorld* world, object3d* obj)
+void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light)
 {
-	world->renderSingleObject(obj);
+	world->renderSingleObject(obj, light);
 }
 
 void read3dFile2(gxFile& file, object3d* obj)

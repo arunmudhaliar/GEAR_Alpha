@@ -83,7 +83,7 @@ void gearScenePreview::onDraw()
 	monoWrapper::mono_engine_update(m_pPreviewWorldPtr, 1.0f);
 
 	m_pPreviewWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-	monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj);
+	monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj, NULL);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
@@ -92,7 +92,7 @@ void gearScenePreview::onDraw()
 	shader->enableProgram();
 	shader->resetAllFlags();
 	std::vector<gxLight*>* lightList = m_pPreviewWorldPtr->getLightList();
-	for(int x=0;x<lightList->size();x++)
+	for(int x=0;x<(int)lightList->size();x++)
 	{
 		gxLight* light = lightList->at(x);
 		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
@@ -101,7 +101,7 @@ void gearScenePreview::onDraw()
 
 		m_pPreviewWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
 		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-		monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj);
+		monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj, light);
 	}
 	shader->disableProgram();
 	glDisable(GL_BLEND);

@@ -27,12 +27,12 @@ public:
 	~gxWorld();
 
 	void update(float dt);
-	void render(gxRenderer* renderer);
+	void render(gxRenderer* renderer, object3d* light);
 
 	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
 	Camera* setDefaultCameraActive();
 
-	void renderSingleObject(object3d* obj);
+	void renderSingleObject(object3d* obj, object3d* light);
 	void resizeWorld(float x, float y, float cx, float cy);
 
 	gxMaterial* getDefaultMaterial()					{	return &m_cDefaultMaterial;		}

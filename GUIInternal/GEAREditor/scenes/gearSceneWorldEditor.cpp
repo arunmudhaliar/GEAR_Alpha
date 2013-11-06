@@ -330,7 +330,7 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 
 	glEnable(GL_DEPTH_TEST);
 	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-	monoWrapper::mono_engine_render(m_pMainWorldPtr);
+	monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
@@ -348,7 +348,7 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 
 		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
 		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-		monoWrapper::mono_engine_render(m_pMainWorldPtr);
+		monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
 	}
 	shader->disableProgram();
 	glDisable(GL_BLEND);

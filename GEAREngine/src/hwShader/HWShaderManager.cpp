@@ -37,13 +37,13 @@ void HWShaderManager::LoadDefaultShaders()
 #if defined(WIN32)
 
 	//load code snippets
-	stHWShaderSnippet* snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertexstartdefine.snippet");
+	stHWShaderSnippet* snippet=LoadCodeSnippet("res/shadersWin32/snippets/matrices_uniform_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/fragmentstartdefine.snippet");
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_inout_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/enddefine.snippet");
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/lightandmaterial_unifrom_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
 

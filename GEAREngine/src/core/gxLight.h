@@ -21,7 +21,7 @@ public:
 	};
 
 	void update(float dt);
-	void render(gxRenderer* renderer);
+	void render(gxRenderer* renderer, object3d* light);
 
 	void renderPass(gxRenderer* renderer, gxHWShader* shader);
 

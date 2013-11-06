@@ -189,6 +189,9 @@
     <ClCompile Include="..\src\core\gxMaterial.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\gxSurfaceShader.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -363,6 +366,9 @@
       <Filter>engine\hwShader</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\gxSkinnedMesh.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxSurfaceShader.h">
       <Filter>engine\core</Filter>
     </ClInclude>
   </ItemGroup>

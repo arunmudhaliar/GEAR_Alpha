@@ -210,8 +210,8 @@ void monoWrapper::bindEngineMethods()
 	g_pMethod_engine_getWorld				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_getWorld", 1);
 	g_pMethod_engine_update					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_update", 2);
 	g_pMethod_engine_resize					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_resize", 5);
-	g_pMethod_engine_render					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_render", 1);
-	g_pMethod_engine_renderSingleObject		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_renderSingleObject", 2);
+	g_pMethod_engine_render					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_render", 2);
+	g_pMethod_engine_renderSingleObject		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_renderSingleObject", 3);
 	g_pMethod_engine_loadAndAppendFBX		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadAndAppendFBX", 2);
 	g_pMethod_engine_loadFBX				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadFBX", 2);
 	g_pMethod_engine_appendObject3dToRoot	=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_appendObject3dToRoot", 2);
@@ -334,23 +334,31 @@ void monoWrapper::mono_engine_resize(gxWorld* world, float x, float y, float cx,
 #endif
 }
 
-void monoWrapper::mono_engine_render(gxWorld* world)
+void monoWrapper::mono_engine_render(gxWorld* world, object3d* light)
 {
 #ifdef USEMONOENGINE
-	void* args[1]={&world};
+	object3d null_obj(999);
+	object3d* lightPtr=light;
+	if(lightPtr==NULL)
+		lightPtr=&null_obj;
+	void* args[2]={&world, &lightPtr};
 	mono_runtime_invoke(g_pMethod_engine_render, NULL, args, NULL);
 #else
-	engine_render(world);
+	engine_render(world, light);
 #endif
 }
 
-void monoWrapper::mono_engine_renderSingleObject(gxWorld* world, object3d* obj)
+void monoWrapper::mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light)
 {
 #ifdef USEMONOENGINE
-	void* args[2]={&world, &obj};
+	object3d null_obj(999);
+	object3d* lightPtr=light;
+	if(lightPtr==NULL)
+		lightPtr=&null_obj;
+	void* args[3]={&world, &obj, &lightPtr};
 	mono_runtime_invoke(g_pMethod_engine_renderSingleObject, NULL, args, NULL);
 #else
-	engine_renderSingleObject(world, obj);
+	engine_renderSingleObject(world, obj, light);
 #endif
 }
 

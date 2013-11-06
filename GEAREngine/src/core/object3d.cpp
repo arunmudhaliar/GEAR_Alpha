@@ -136,7 +136,7 @@ void object3d::updateAnimationFrameToObject3d(int frame)
 	}
 }
 
-void object3d::render(gxRenderer* renderer)
+void object3d::render(gxRenderer* renderer, object3d* light)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
@@ -144,7 +144,7 @@ void object3d::render(gxRenderer* renderer)
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{
 		object3d* obj = *it;
-		obj->render(renderer);
+		obj->render(renderer, light);
 	}
 }
 

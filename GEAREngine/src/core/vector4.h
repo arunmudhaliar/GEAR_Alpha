@@ -13,15 +13,15 @@
 #include "gxMath.h"
 
 template<class T>
-class vector4;
+class DllExport vector4;
 typedef vector4<float> vector4f;
 
 template<class T>
-class vector4;
+class DllExport vector4;
 typedef vector4<int> vector4i;
 
 template<class T>
-class vector4
+class DllExport vector4
 {
 public:
 	T x, y, z, w;

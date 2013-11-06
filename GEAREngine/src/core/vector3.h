@@ -11,17 +11,18 @@
 #define VECTOR3_H
 
 #include "gxMath.h"
+#include "basicIncludes.h"
 
 template<class T>
-class vector3;
+class DllExport vector3;
 typedef vector3<float> vector3f;
 
 template<class T>
-class vector3;
+class DllExport vector3;
 typedef vector3<int> vector3i;
 
 template<class T>
-class vector3
+class DllExport vector3
 {
 public:
 	T x, y, z;

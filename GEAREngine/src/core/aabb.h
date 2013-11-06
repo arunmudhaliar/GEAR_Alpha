@@ -15,15 +15,15 @@
 
 class gxHWShader;
 template<class T>
-class AABB;
+class DllExport AABB;
 typedef AABB<int> gxAABBi;
 
 template<class T>
-class AABB;
+class DllExport AABB;
 typedef AABB<float> gxAABBf;
 
 template<class T>
-class AABB
+class DllExport AABB
 {
 public:
     AABB<T>()

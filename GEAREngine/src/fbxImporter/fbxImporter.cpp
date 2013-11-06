@@ -379,7 +379,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 							}
 
 							boneInfluenceList[index].bone.push_back(currentFbxLimb);
-							boneInfluenceList[index].weight.push_back(weight);
+							boneInfluenceList[index].weight.push_back((float)weight);
 						}
 ///////////////////////////////////
 					}
@@ -424,10 +424,10 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	FbxVector4 row2 = local_tm.GetRow(1);
 	FbxVector4 row3 = local_tm.GetRow(2);
 	FbxVector4 row4 = local_tm.GetRow(3);
-	parent_obj_node->setXAxis(vector3f(row1.mData[0], row1.mData[1], row1.mData[2]));
-	parent_obj_node->setYAxis(vector3f(row2.mData[0], row2.mData[1], row2.mData[2]));
-	parent_obj_node->setZAxis(vector3f(row3.mData[0], row3.mData[1], row3.mData[2]));
-	parent_obj_node->setPosition(vector3f(row4.mData[0], row4.mData[1], row4.mData[2]));
+	parent_obj_node->setXAxis(vector3f((float)row1.mData[0], (float)row1.mData[1], (float)row1.mData[2]));
+	parent_obj_node->setYAxis(vector3f((float)row2.mData[0], (float)row2.mData[1], (float)row2.mData[2]));
+	parent_obj_node->setZAxis(vector3f((float)row3.mData[0], (float)row3.mData[1], (float)row3.mData[2]));
+	parent_obj_node->setPosition(vector3f((float)row4.mData[0], (float)row4.mData[1], (float)row4.mData[2]));
 
 	//*parent_obj_node->getWorldMatrix() = *parent_obj_node * *temp_parent_obj->getWorldMatrix();
 
@@ -505,10 +505,10 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 				for(int m=0;m<nGlobalFrame;m++)
 				{
 					FbxAMatrix local_tm=fbxNode.EvaluateLocalTransform(tt);
-					componentTrack[m].setPosition(local_tm.GetRow(3).mData[0], local_tm.GetRow(3).mData[1], local_tm.GetRow(3).mData[2]);
-					componentTrack[m].setXAxis(vector3f(local_tm.GetRow(0).mData[0], local_tm.GetRow(0).mData[1], local_tm.GetRow(0).mData[2]));
-					componentTrack[m].setYAxis(vector3f(local_tm.GetRow(1).mData[0], local_tm.GetRow(1).mData[1], local_tm.GetRow(1).mData[2]));
-					componentTrack[m].setZAxis(vector3f(local_tm.GetRow(2).mData[0], local_tm.GetRow(2).mData[1], local_tm.GetRow(2).mData[2]));
+					componentTrack[m].setPosition((float)local_tm.GetRow(3).mData[0], (float)local_tm.GetRow(3).mData[1], (float)local_tm.GetRow(3).mData[2]);
+					componentTrack[m].setXAxis(vector3f((float)local_tm.GetRow(0).mData[0], (float)local_tm.GetRow(0).mData[1], (float)local_tm.GetRow(0).mData[2]));
+					componentTrack[m].setYAxis(vector3f((float)local_tm.GetRow(1).mData[0], (float)local_tm.GetRow(1).mData[1], (float)local_tm.GetRow(1).mData[2]));
+					componentTrack[m].setZAxis(vector3f((float)local_tm.GetRow(2).mData[0], (float)local_tm.GetRow(2).mData[1], (float)local_tm.GetRow(2).mData[2]));
 
 					frame_time+=oneFrameTime_inSec;
 					ti=(frame_time*46186158000);
@@ -549,7 +549,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 		for(int x=0;x<fbxMesh.GetControlPointsCount();x++)
 		{
 			nData+=boneInfluenceList[x].bone.size();
-			if(boneInfluenceList[x].bone.size()>nMaxBonePerVert)
+			if((int)boneInfluenceList[x].bone.size()>nMaxBonePerVert)
 				nMaxBonePerVert=boneInfluenceList[x].bone.size();
 		}
 		nMaxBonePerVert=4;	//hack
@@ -591,7 +591,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 	fbxMesh.ComputeBBox();
 	FbxDouble3 bbmin=geometryOffset.MultNormalize(FbxVector4(fbxMesh.BBoxMin));
 	FbxDouble3 bbmax=geometryOffset.MultNormalize(FbxVector4(fbxMesh.BBoxMax));
-	newMesh->getOOBB().set(vector3f(bbmin.mData[0], bbmin.mData[1], bbmin.mData[2]), vector3f(bbmax.mData[0], bbmax.mData[1], bbmax.mData[2]));
+	newMesh->getOOBB().set(vector3f((float)bbmin.mData[0], (float)bbmin.mData[1], (float)bbmin.mData[2]), vector3f((float)bbmax.mData[0], (float)bbmax.mData[1], (float)bbmax.mData[2]));
 
 	//UV sets
 	//fbxMesh.GetTextureUVCount();
@@ -645,8 +645,8 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 					FbxSurfaceLambert* lambert=(FbxSurfaceLambert*)surfaceMaterial;
 					FbxDouble3 diffuse=lambert->Diffuse.Get();
 					FbxDouble3 ambient=lambert->Ambient.Get();
-					material->setDiffuseClr(vector4f(diffuse.mData[0], diffuse.mData[1], diffuse.mData[2], 1.0f));
-					material->setAmbientClr(vector4f(ambient.mData[0], ambient.mData[1], ambient.mData[2], 1.0f));
+					material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
+					material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
 					material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
 
 					FbxProperty diffuseProp = surfaceMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
@@ -711,13 +711,13 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 			{
 				int nReminder = nMaxBonePerVert-boneInfluenceList[vertexIndex].bone.size();
 
-				for(int bb=0;bb<boneInfluenceList[vertexIndex].bone.size();bb++)
+				for(int bb=0;bb<(int)boneInfluenceList[vertexIndex].bone.size();bb++)
 				{
 					FbxNode* influencedBone=boneInfluenceList[vertexIndex].bone[bb];
 					float weight=boneInfluenceList[vertexIndex].weight[bb];
 
 					int si=0;
-					for(si=0;si<boneList->bonelst.size();si++)
+					for(si=0;si<(int)boneList->bonelst.size();si++)
 					{
 						if(boneList->bonelst[si]==influencedBone)
 							break;
@@ -760,7 +760,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 			continue;
 
 		int* triIndexPtr=triInfoArray[m].allocateMemory(vTriList[m].arrayList.size());
-		for(int n=0;n<vTriList[m].arrayList.size();n++)
+		for(int n=0;n<(int)vTriList[m].arrayList.size();n++)
 		{
 			triIndexPtr[n]=vTriList[m].arrayList[n];
 		}

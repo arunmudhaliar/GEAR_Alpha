@@ -28,11 +28,6 @@ varying vec2 vOUT_UVCoord1;
 varying vec2 vOUT_UVCoord2;
 varying vec2 vOUT_UVCoord3;
 
-attribute vec4 a_vertex_coord_v4;
-attribute vec2 a_uv_coord0_v2;
-uniform mat4 u_mvp_m4x4;
-varying vec2 v_uv_coord0_v2;
-
 void main()
 {
 	vOUT_UVCoord0 = vIN_UVCoord0;

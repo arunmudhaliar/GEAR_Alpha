@@ -6,7 +6,7 @@
 #include "../util/gxFile.h"
 
 class object3d;
-class gxAnimationTrack
+class DllExport gxAnimationTrack
 {
 public:
 	gxAnimationTrack();

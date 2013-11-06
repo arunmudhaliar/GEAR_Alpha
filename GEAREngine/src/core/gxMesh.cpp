@@ -45,7 +45,7 @@ void gxMesh::update(float dt)
 	object3d::update(dt);
 }
 
-void gxMesh::render(gxRenderer* renderer)
+void gxMesh::render(gxRenderer* renderer, object3d* light)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
@@ -56,7 +56,7 @@ void gxMesh::render(gxRenderer* renderer)
 	renderNormal(renderer);
 #endif
 
-	object3d::render(renderer);
+	object3d::render(renderer, light);
 }
 
 void gxMesh::renderNormal(gxRenderer* renderer)

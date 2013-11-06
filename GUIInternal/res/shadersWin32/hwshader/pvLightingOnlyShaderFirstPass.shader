@@ -14,6 +14,7 @@ struct Light
     float   spot_cutoff;
     float   spot_exponent;
 };
+uniform Light light;
 
 struct Material
 {
@@ -22,6 +23,7 @@ struct Material
     vec4 specular;
     float shininess;
 };
+uniform Material material;
 
 uniform mat4 GEAR_MV;
 uniform mat4 GEAR_MVP;
@@ -42,9 +44,6 @@ varying vec2 vOUT_UVCoord0;
 varying vec2 vOUT_UVCoord1;
 varying vec2 vOUT_UVCoord2;
 varying vec2 vOUT_UVCoord3;
-
-uniform Light light;
-uniform Material material;
 
 vec4 pointLight ()
 {

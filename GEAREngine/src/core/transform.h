@@ -4,7 +4,7 @@
 #include "matrix4x4f.h"
 #include "vector3.h"
 
-class transform : public matrix4x4f
+class DllExport transform : public matrix4x4f
 {
 public:
 	transform():matrix4x4f()

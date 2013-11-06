@@ -85,6 +85,7 @@
     <ClCompile Include="..\src\core\gxMaterial.cpp" />
     <ClCompile Include="..\src\core\gxMesh.cpp" />
     <ClCompile Include="..\src\core\gxSkinnedMesh.cpp" />
+    <ClCompile Include="..\src\core\gxSurfaceShader.cpp" />
     <ClCompile Include="..\src\core\gxWorld.cpp" />
     <ClCompile Include="..\src\core\object3d.cpp" />
     <ClCompile Include="..\src\core\TextureManager.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="..\src\core\gxMetaStructures.h" />
     <ClInclude Include="..\src\core\gxSkinnedMesh.h" />
     <ClInclude Include="..\src\core\gxSubMaterialMap.h" />
+    <ClInclude Include="..\src\core\gxSurfaceShader.h" />
     <ClInclude Include="..\src\core\gxTexture.h" />
     <ClInclude Include="..\src\core\gxTriInfo.h" />
     <ClInclude Include="..\src\core\gxWorld.h" />

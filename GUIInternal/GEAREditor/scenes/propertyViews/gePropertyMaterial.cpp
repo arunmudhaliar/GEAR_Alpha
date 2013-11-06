@@ -38,14 +38,16 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 
 			gxMaterial* material = new gxMaterial();
 			material->read(file_meta);
-			//load sub maps
-			for(int x=0;x<gxSubMap::MAP_MAX;x++)
-			{
-				gxSubMap* submap = material->getSubMap((gxSubMap::ESUBMAP)x);
-				if(submap)
-					submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
-			}
 			file_meta.CloseFile();
+
+			//load sub maps
+			std::vector<gxSubMap*>* maplist=material->getSubMapList();
+			for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
+			{
+				gxSubMap* map = *it;
+				map->loadTextureFromMeta(*world->getTextureManager(), map->getTextureCRC());
+			}
+
 
 			m_pTriInfoPtr->setMaterial(material);
 			world->getMaterialList()->push_back(m_pTriInfoPtr->getMaterial());
@@ -80,19 +82,18 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 		text_material->create(m_pRenderer, this, m_pCurrentMaterialPtr->getMaterialName(), 50, 10, 200, 16);
 		
 		//m_vSubMap
-		for(int x=0;x<gxSubMap::MAP_MAX;x++)
+		std::vector<gxSubMap*>* maplist=m_pCurrentMaterialPtr->getSubMapList();
+		for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
 		{
-			gxSubMap* submap = m_pCurrentMaterialPtr->getSubMap((gxSubMap::ESUBMAP)x);
-			if(!submap) continue;
-
+			gxSubMap* map = *it;
 			stSubMapView* submapview = new stSubMapView();
 
 			char tileX_temp_buffer[10];
 			char tileY_temp_buffer[10];
 
-			if(submap->getTexture())
+			if(map->getTexture())
 			{
-				const float* texMat4x4=submap->getTexture()->getTextureMatrix()->getMatrix();
+				const float* texMat4x4=map->getTexture()->getTextureMatrix()->getMatrix();
 				sprintf(tileX_temp_buffer, "%3.2f", texMat4x4[0]);
 				sprintf(tileY_temp_buffer, "%3.2f", texMat4x4[5]);
 			}
@@ -109,7 +110,7 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 			submapview->m_pText_tileY->setGUIObserver(this);
 
 			submapview->thumbnail = new geTextureThumbnailExtended();
-			submapview->thumbnail->create(m_pRenderer, this, submap->getTexture(), 260, 10, 70, 70);
+			submapview->thumbnail->create(m_pRenderer, this, map->getTexture(), 260, 10, 70, 70);
 			submapview->thumbnail->setUserData(m_pCurrentMaterialPtr);
 			m_vSubMap.push_back(submapview);
 		}

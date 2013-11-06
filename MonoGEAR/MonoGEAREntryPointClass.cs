@@ -63,7 +63,7 @@ namespace MonoGEAR
         static extern void engine_setMetaFolder(IntPtr world, string metaFolder);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr engine_loadTextureFromFile(IntPtr world, IntPtr material, string filename);
+        static extern IntPtr engine_loadTextureFromFile(IntPtr world, IntPtr material, string filename, int submap);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool engine_removeObject3d(IntPtr world, IntPtr obj);

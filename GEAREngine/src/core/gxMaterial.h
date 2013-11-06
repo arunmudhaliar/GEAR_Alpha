@@ -17,13 +17,13 @@ public:
 	gxSubMap();
 	~gxSubMap();
 
-	enum ESUBMAP
-	{
-		MAP_DIFFUSE,
-		MAP_NORMAL,
-		MAP_SPECULAR,
-		MAP_MAX
-	};
+	//enum ESUBMAP
+	//{
+	//	MAP_DIFFUSE,
+	//	MAP_NORMAL,
+	//	MAP_SPECULAR,
+	//	MAP_MAX
+	//};
 	
 	void setTextureName(const char* name)	{	GX_STRCPY(m_szTextureName, name);	}
 	//void setTextureType(ESUBMAP type)		{	m_eType=type;		}
@@ -72,7 +72,9 @@ public:
 	gxTexture* loadTextureFromDirectory(CTextureManager& textureManager, const char* directory);
 #endif
 
-	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename, gxSubMap::ESUBMAP eType=gxSubMap::MAP_DIFFUSE);
+	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap);	//-1 will add a map to the list
+
+	void appendSubMap(gxSubMap* map);
 
 	//void setTextureName(const char* textureName);
 	bool appendDependency(int crc);
@@ -86,8 +88,9 @@ public:
 
 	static gxMaterial* createNewMaterial();
 
-	void setSubMap(gxSubMap* submap, gxSubMap::ESUBMAP eType);
-	gxSubMap* getSubMap(gxSubMap::ESUBMAP eType);
+	//void setSubMap(gxSubMap* submap, gxSubMap::ESUBMAP eType);
+	gxSubMap* getSubMap(int index);
+	std::vector<gxSubMap*>* getSubMapList()	{	return &m_vSubMap;	}
 
 private:
 	vector4f m_cAmbient;
@@ -105,7 +108,7 @@ private:
 	//int m_iTextureFileCRC;
 
 	gxHWShader* m_pShader;
-	gxSubMap* m_pszSubMap[gxSubMap::MAP_MAX];
+	std::vector<gxSubMap*> m_vSubMap;//[gxSubMap::MAP_MAX];
 };
 
 #endif

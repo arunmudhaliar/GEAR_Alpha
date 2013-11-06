@@ -62,18 +62,16 @@ gxMaterial::gxMaterial()
 {
 	m_cDiffuse.set(0.5f, 0.5f, 0.5f, 1.0f);
 	m_iFileCRC=0;
-	for(int x=0;x<gxSubMap::MAP_MAX;x++)
-	{
-		m_pszSubMap[x]=NULL;
-	}
 }
 
 gxMaterial::~gxMaterial()
 {
-	for(int x=0;x<gxSubMap::MAP_MAX;x++)
+	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
 	{
-		GX_DELETE(m_pszSubMap[x]);
+		gxSubMap* map = *it;
+		GX_DELETE(map);
 	}
+	m_vSubMap.clear();
 }
 
 //bool isAlphaOrBlended()
@@ -140,18 +138,38 @@ gxTexture* gxMaterial::loadTextureFromDirectory(CTextureManager& textureManager,
 }
 #endif
 
-gxTexture* gxMaterial::loadTextureFromFile(CTextureManager& textureManager, const char* filename, gxSubMap::ESUBMAP eType)
+//void gxMaterial::setSubMap(gxSubMap* submap, gxSubMap::ESUBMAP eType)
+//{
+//	GX_DELETE(m_pszSubMap[eType]);
+//	m_pszSubMap[eType]=submap;
+//}
+void gxMaterial::appendSubMap(gxSubMap* map)
 {
-	gxSubMap* submap = new gxSubMap();
-	setSubMap(submap, eType);
-	return submap->load(textureManager, filename);
+	m_vSubMap.push_back(map);
 }
 
+gxSubMap* gxMaterial::getSubMap(int index)
+{
+	if(index>=(int)m_vSubMap.size()) return NULL;
 
-//void gxMaterial::setTextureName(const char* textureName)
-//{
-//	GX_STRCPY(m_szTextureName, textureName);
-//}
+	return m_vSubMap[index];
+}
+
+gxTexture* gxMaterial::loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap)
+{
+	gxSubMap* map=NULL;
+	if(submap==-1)
+	{
+		map = new gxSubMap();
+		appendSubMap(map);
+	}
+	else
+	{
+		map = m_vSubMap[submap];
+	}
+
+	return map->load(textureManager, filename);
+}
 
 bool gxMaterial::appendDependency(int crc)
 {
@@ -174,20 +192,14 @@ void gxMaterial::write(gxFile& file)
 	file.Write(m_fShininess);
 	file.Write(m_bTwoSided);
 	file.Write(m_szMaterialName);
-	for(int x=0;x<gxSubMap::MAP_MAX;x++)
+	file.Write((int)m_vSubMap.size());
+	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
 	{
-		gxSubMap* submap=m_pszSubMap[x];
-		if(submap)
-		{
-			file.Write(true);
-			file.Write(submap->getTextureName());
-			file.Write(submap->getTextureCRC());
-		}
-		else
-		{
-			file.Write(false);
-		}
+		gxSubMap* map = *it;
+		file.Write(map->getTextureName());
+		file.Write(map->getTextureCRC());
 	}
+
 	file.Write(m_vDependencyCRCList.size());
 	for(int x=0;x<m_vDependencyCRCList.size();x++)
 	{
@@ -208,21 +220,20 @@ void gxMaterial::read(gxFile& file)
 	GX_STRCPY(m_szMaterialName, temp);
 	GX_DELETE_ARY(temp);
 
-	for(int x=0;x<gxSubMap::MAP_MAX;x++)
+	int nsubmap=0;
+	file.Read(nsubmap);
+	for(int x=0;x<nsubmap;x++)
 	{
-		bool bMap=false;
-		file.Read(bMap);
-		if(!bMap) continue;
-
 		char* temp=file.ReadString();
 		int texcrc;
 		file.Read(texcrc);
 		gxSubMap* subMap = new gxSubMap();
 		subMap->setTextureName(temp);
 		subMap->setTextureCRC(texcrc);
-		setSubMap(subMap, (gxSubMap::ESUBMAP)x);
+		m_vSubMap.push_back(subMap);
 		GX_DELETE_ARY(temp);
 	}
+
 	int nDep=0;
 	file.Read(nDep);
 	for(int x=0;x<nDep;x++)
@@ -243,15 +254,4 @@ gxMaterial* gxMaterial::createNewMaterial()
 	material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
 
 	return material;
-}
-
-void gxMaterial::setSubMap(gxSubMap* submap, gxSubMap::ESUBMAP eType)
-{
-	GX_DELETE(m_pszSubMap[eType]);
-	m_pszSubMap[eType]=submap;
-}
-
-gxSubMap* gxMaterial::getSubMap(gxSubMap::ESUBMAP eType)
-{
-	return m_pszSubMap[eType];
 }

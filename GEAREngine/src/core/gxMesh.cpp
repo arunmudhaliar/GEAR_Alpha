@@ -198,7 +198,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	if(!triInfo->getMaterial()) return false;
 
 	gxSubMap* subMap=NULL;
-	subMap=triInfo->getMaterial()->getSubMap((gxSubMap::ESUBMAP)stage);
+	subMap=triInfo->getMaterial()->getSubMap(stage);
 
 	if(!subMap)	return false;
 	if(!subMap->getTexture()) return false;
@@ -233,7 +233,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	bool bUse1x1Texture=true;
 	if(triInfo->getMaterial())
 	{
-		subMap=triInfo->getMaterial()->getSubMap((gxSubMap::ESUBMAP)stage);
+		subMap=triInfo->getMaterial()->getSubMap(stage);
 		if(subMap && subMap->getTexture())
 			bUse1x1Texture=false;
 	}

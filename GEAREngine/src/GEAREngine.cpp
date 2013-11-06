@@ -109,11 +109,11 @@ void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 				gxMaterial* material = new gxMaterial();
 				material->read(file_meta);
 				//load sub maps
-				for(int sm=0;sm<gxSubMap::MAP_MAX;sm++)
+				std::vector<gxSubMap*>* maplist=material->getSubMapList();
+				for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
 				{
-					gxSubMap* submap = material->getSubMap((gxSubMap::ESUBMAP)sm);
-					if(submap)
-						submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
+					gxSubMap* submap = *it;
+					submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
 				}
 				//check if the material name already exists in our list or not
 				std::vector<gxMaterial*>* materialList = world->getMaterialList();
@@ -380,9 +380,9 @@ extern DllExport void engine_setMetaFolder(gxWorld* world, const char* metaFolde
 	world->setMetaDataFolder(metaFolder);
 }
 
-extern gxTexture* engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename)
+extern gxTexture* engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename, int submap)
 {
-	return material->loadTextureFromFile(*world->getTextureManager(), filename);
+	return material->loadTextureFromFile(*world->getTextureManager(), filename, submap);
 }
 
 extern bool engine_removeObject3d(gxWorld* world, object3d* obj)

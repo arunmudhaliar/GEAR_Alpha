@@ -30,7 +30,7 @@ public:
 			gxMaterial* material = (gxMaterial*)getUserData();
 			if(material)
 			{
-				m_pTexturePtr=monoWrapper::mono_engine_loadTextureFromFile(monoWrapper::mono_engine_getWorld(0), material, absolutePath);
+				m_pTexturePtr=monoWrapper::mono_engine_loadTextureFromFile(monoWrapper::mono_engine_getWorld(0), material, absolutePath, 0);
 			}
 		//	object3d* obj = engine_loadAndAppendFBX(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
 		//	createTVNode(rootNode, obj, droppedDataObject->getName());

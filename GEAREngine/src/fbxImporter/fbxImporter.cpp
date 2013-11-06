@@ -663,7 +663,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 							gxSubMap* submap = new gxSubMap();
 							submap->setTextureName(gxUtil::getFileNameFromPath(texture->GetFileName()));
 
-							material->setSubMap(submap, gxSubMap::MAP_DIFFUSE);
+							material->appendSubMap(submap);
 						}
 					}
 

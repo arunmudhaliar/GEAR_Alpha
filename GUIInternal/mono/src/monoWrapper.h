@@ -50,7 +50,7 @@ public:
 	static void mono_engine_mouseWheel(gxWorld* world, int zDelta, int x, int y, int flag);
 	static void mono_engine_mouseMove(gxWorld* world, int x, int y, int flag);
 	static void mono_engine_setMetaFolder(gxWorld* world, const char* metaFolder);
-	static gxTexture* mono_engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename);
+	static gxTexture* mono_engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename, int submap);
 	static bool mono_engine_removeObject3d(gxWorld* world, object3d* obj);
 	static bool mono_engine_destroyObject3d(gxWorld* world, object3d* obj);
 
@@ -66,29 +66,6 @@ private:
 	static MonoClass*		g_pMonoobject3d;
 
 	//ENGIINE INTERFACES
-	/*
-	DllExport void engine_init(int nWorldToCreate);
-	DllExport gxWorld* engine_getWorld(int index);
-
-	DllExport void engine_update(gxWorld* world, float dt);
-	DllExport void engine_resize(gxWorld* world, float x, float y, float cx, float cy);
-	DllExport void engine_render(gxWorld* world);
-	DllExport void engine_renderSingleObject(gxWorld* world, object3d* obj);
-	DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename);
-	DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename);
-	DllExport object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
-
-	DllExport void engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag);
-	DllExport void engine_mouseLButtonUp(gxWorld* world, int x, int y, int flag);
-	DllExport void engine_mouseRButtonDown(gxWorld* world, int x, int y, int flag);
-	DllExport void engine_mouseRButtonUp(gxWorld* world, int x, int y, int flag);
-	DllExport void engine_mouseWheel(gxWorld* world, int zDelta, int x, int y, int flag);
-	DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag);
-	DllExport void engine_setMetaFolder(gxWorld* world, const char* metaFolder);
-	DllExport gxTexture* engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename);
-	DllExport bool engine_removeObject3d(gxWorld* world, object3d* obj);
-	*/
-
 	static MonoMethod* g_monogear_engine_test_function_for_mono;
 	static MonoMethod* g_mono_game_start;
 	static MonoMethod* g_mono_game_run;

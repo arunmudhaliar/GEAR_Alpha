@@ -38,7 +38,7 @@ extern "C" {
 	DllExport void engine_mouseWheel(gxWorld* world, int zDelta, int x, int y, int flag);
 	DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag);
 	DllExport void engine_setMetaFolder(gxWorld* world, const char* metaFolder);
-	DllExport gxTexture* engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename);
+	DllExport gxTexture* engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename, int submap);
 	DllExport bool engine_removeObject3d(gxWorld* world, object3d* obj);
 	DllExport bool engine_destroyObject3d(gxWorld* world, object3d* obj);
 

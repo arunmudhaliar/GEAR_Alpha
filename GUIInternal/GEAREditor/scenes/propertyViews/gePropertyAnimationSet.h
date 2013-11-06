@@ -72,8 +72,22 @@ public:
 		if(btn==m_pButtonSetAnimation && m_pButtonSetAnimation->isButtonPressed())
 		{
 			gxAnimation* animationController = m_pOwnerObj->createAnimationController();
-			m_pOwnerObj->applyAnimationSetRecursive(m_pAnimSetPtr);
-			animationController->play(m_pAnimSetPtr);
+			if(animationController->getActiveAnimationSet()==m_pAnimSetPtr)
+			{
+				if(animationController->isPlaying())
+				{
+					animationController->stop();
+				}
+				else
+				{
+					animationController->play(m_pAnimSetPtr);
+				}
+			}
+			else
+			{
+				m_pOwnerObj->applyAnimationSetRecursive(m_pAnimSetPtr);
+				animationController->play(m_pAnimSetPtr);
+			}
 		}
 	}
 

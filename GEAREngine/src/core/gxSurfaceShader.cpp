@@ -1,5 +1,66 @@
 #include "gxSurfaceShader.h"
 
+gxSubMap::gxSubMap()
+{
+	memset(m_szTextureName, 0, sizeof(m_szTextureName));
+	m_iTextureCRC=0;
+	m_pTexture=NULL;
+}
+
+gxSubMap::~gxSubMap()
+{
+	GX_DELETE(m_pTexture);
+}
+
+gxTexture* gxSubMap::load(CTextureManager& textureManager, const char* filename)
+{
+	char metaInfoFileName[256];
+	const char* onlyFilename = gxUtil::getFileNameFromPath(filename);
+	
+	setTextureName(onlyFilename);
+	sprintf(metaInfoFileName, "%s.meta", filename);
+
+	gxFile metaInfoFile;
+	if(metaInfoFile.OpenFile(metaInfoFileName))
+	{
+		int crc=0;
+		metaInfoFile.Read(crc);
+		metaInfoFile.CloseFile();
+		return loadTextureFromMeta(textureManager, crc);
+	}
+
+	return NULL;
+}
+
+gxTexture* gxSubMap::loadTextureFromMeta(CTextureManager& textureManager, int crc)
+{
+	char metaDataFileName[256];
+	sprintf(metaDataFileName, "%x", crc);
+
+	stTexturePacket* texturePack=textureManager.LoadTexture(metaDataFileName);
+	if(texturePack)
+	{
+		//delete old texture instance
+		GX_DELETE(m_pTexture);
+
+		m_pTexture = new gxTexture();
+		m_pTexture->setTexture(texturePack);
+		m_pTexture->setFileCRC(crc);
+		if(texturePack->bAlphaTex)
+		{
+			m_pTexture->setTextureType(gxTexture::TEX_ALPHA);
+		}
+		else
+		{
+			m_pTexture->setTextureType(gxTexture::TEX_NORMAL);
+		}
+	}
+	return m_pTexture;
+}
+
+//============================================================================================================================================
+//============================================================================================================================================
+//============================================================================================================================================
 bool gxSurfaceShader::findQuat(std::string::const_iterator& start, std::string::const_iterator& end, bool bStrict)
 {
 	while(start!=end)
@@ -264,7 +325,8 @@ bool gxSurfaceShader::parseNameInsideQuats(std::string::const_iterator& start, s
 
 bool gxSurfaceShader::parseColorProperty(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
 {
-	std::string str;
+	std::string _keyword;
+	std::string _name;
 	std::string::const_iterator it=start;
 	while(it!=end)
 	{
@@ -274,17 +336,22 @@ bool gxSurfaceShader::parseColorProperty(std::string::const_iterator& start, std
 			{
 				if(findOpeningRoundBrace(it, end))
 				{
-					if(parseNameInsideQuats(it, end, str))	//find the first "
+					if(parseNameInsideQuats(it, end, _name))	//find the first "
 					{
 						if(findComma(it, end))
 						{
-							if(parseKeyWord(it, end, str) && findClosingRoundBrace(it, end))
+							if(parseKeyWord(it, end, _keyword) && findClosingRoundBrace(it, end))
 							{
 								if(findEqualTo(it, end))
 								{
 									std::vector<std::string> args;
 									if(parseArgInsideRoundBrace(it, end, args, 4))
 									{
+										stShaderProperty_Color* newcolor = new stShaderProperty_Color();
+										newcolor->name=_name;
+										newcolor->color.set(atof(args.at(0).c_str()), atof(args.at(1).c_str()), atof(args.at(2).c_str()), atof(args.at(3).c_str()));
+										m_vColor_Properties.push_back(newcolor);
+
 										start=it;
 										return true;
 									}
@@ -312,7 +379,9 @@ bool gxSurfaceShader::parseColorProperty(std::string::const_iterator& start, std
 
 bool gxSurfaceShader::parseMainTexProperty(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
 {
-	std::string str;
+	std::string _temp;
+	std::string _keyword;
+	std::string _name;
 	std::string::const_iterator it=start;
 	while(it!=end)
 	{
@@ -322,21 +391,25 @@ bool gxSurfaceShader::parseMainTexProperty(std::string::const_iterator& start, s
 			{
 				if(findOpeningRoundBrace(it, end))
 				{
-					if(parseNameInsideQuats(it, end, str))	//find the first "
+					if(parseNameInsideQuats(it, end, _name))	//find the first "
 					{
 						if(findComma(it, end))
 						{
-							if(parseKeyWord(it, end, str) && findClosingRoundBrace(it, end))
+							if(parseKeyWord(it, end, _keyword) && findClosingRoundBrace(it, end))
 							{
 								if(findEqualTo(it, end))
 								{
 									std::vector<std::string> args;
-									if(parseNameInsideQuats(it, end, str))
+									if(parseNameInsideQuats(it, end, _temp))
 									{
 										if(findOpeningCurlyBrace(it, end))
 										{
 											if(findClosingCurlyBrace(it, end))
 											{
+												stShaderProperty_Texture2D* newtex2D = new stShaderProperty_Texture2D();
+												newtex2D->name=_name;
+												//newtex2D->texture_name
+												m_vTex2D_Properties.push_back(newtex2D);
 												start=it;
 												return true;
 											}
@@ -558,7 +631,35 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 	return true;
 }
 
-bool gxSurfaceShader::load(const char* filename)
+gxSurfaceShader::gxSurfaceShader()
+{
+}
+
+gxSurfaceShader::~gxSurfaceShader()
+{
+	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	{
+		gxSubMap* map = *it;
+		GX_DELETE(map);
+	}
+	m_vSubMap.clear();
+
+	for(std::vector<stShaderProperty_Texture2D*>::iterator it = m_vTex2D_Properties.begin(); it != m_vTex2D_Properties.end(); ++it)
+	{
+		stShaderProperty_Texture2D* obj = *it;
+		GX_DELETE(obj);
+	}
+	m_vTex2D_Properties.clear();
+
+	for(std::vector<stShaderProperty_Color*>::iterator it = m_vColor_Properties.begin(); it != m_vColor_Properties.end(); ++it)
+	{
+		stShaderProperty_Color* obj = *it;
+		GX_DELETE(obj);
+	}
+	m_vColor_Properties.clear();
+}
+
+bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 {
 	int fileSz=0;
 	FILE* fp=fopen(filename, "r");
@@ -595,4 +696,32 @@ bool gxSurfaceShader::load(const char* filename)
 	delete [] vsource;
 
 	return bParseRetVal;
+}
+
+void gxSurfaceShader::appendSubMap(gxSubMap* map)
+{
+	m_vSubMap.push_back(map);
+}
+
+gxSubMap* gxSurfaceShader::getSubMap(int index)
+{
+	if(index>=(int)m_vSubMap.size()) return NULL;
+
+	return m_vSubMap[index];
+}
+
+gxTexture* gxSurfaceShader::loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap)
+{
+	gxSubMap* map=NULL;
+	if(submap==-1)
+	{
+		map = new gxSubMap();
+		appendSubMap(map);
+	}
+	else
+	{
+		map = m_vSubMap[submap];
+	}
+
+	return map->load(textureManager, filename);
 }

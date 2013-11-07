@@ -1,63 +1,5 @@
 #include "gxMaterial.h"
 
-gxSubMap::gxSubMap()
-{
-	memset(m_szTextureName, 0, sizeof(m_szTextureName));
-	m_iTextureCRC=0;
-	m_pTexture=NULL;
-}
-
-gxSubMap::~gxSubMap()
-{
-	GX_DELETE(m_pTexture);
-}
-
-gxTexture* gxSubMap::load(CTextureManager& textureManager, const char* filename)
-{
-	char metaInfoFileName[256];
-	const char* onlyFilename = gxUtil::getFileNameFromPath(filename);
-	
-	setTextureName(onlyFilename);
-	sprintf(metaInfoFileName, "%s.meta", filename);
-
-	gxFile metaInfoFile;
-	if(metaInfoFile.OpenFile(metaInfoFileName))
-	{
-		int crc=0;
-		metaInfoFile.Read(crc);
-		metaInfoFile.CloseFile();
-		return loadTextureFromMeta(textureManager, crc);
-	}
-
-	return NULL;
-}
-
-gxTexture* gxSubMap::loadTextureFromMeta(CTextureManager& textureManager, int crc)
-{
-	char metaDataFileName[256];
-	sprintf(metaDataFileName, "%x", crc);
-
-	stTexturePacket* texturePack=textureManager.LoadTexture(metaDataFileName);
-	if(texturePack)
-	{
-		//delete old texture instance
-		GX_DELETE(m_pTexture);
-
-		m_pTexture = new gxTexture();
-		m_pTexture->setTexture(texturePack);
-		m_pTexture->setFileCRC(crc);
-		if(texturePack->bAlphaTex)
-		{
-			m_pTexture->setTextureType(gxTexture::TEX_ALPHA);
-		}
-		else
-		{
-			m_pTexture->setTextureType(gxTexture::TEX_NORMAL);
-		}
-	}
-	return m_pTexture;
-}
-
 gxMaterial::gxMaterial()
 {
 	m_cDiffuse.set(0.5f, 0.5f, 0.5f, 1.0f);
@@ -66,12 +8,6 @@ gxMaterial::gxMaterial()
 
 gxMaterial::~gxMaterial()
 {
-	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
-	{
-		gxSubMap* map = *it;
-		GX_DELETE(map);
-	}
-	m_vSubMap.clear();
 }
 
 //bool isAlphaOrBlended()
@@ -143,33 +79,7 @@ gxTexture* gxMaterial::loadTextureFromDirectory(CTextureManager& textureManager,
 //	GX_DELETE(m_pszSubMap[eType]);
 //	m_pszSubMap[eType]=submap;
 //}
-void gxMaterial::appendSubMap(gxSubMap* map)
-{
-	m_vSubMap.push_back(map);
-}
 
-gxSubMap* gxMaterial::getSubMap(int index)
-{
-	if(index>=(int)m_vSubMap.size()) return NULL;
-
-	return m_vSubMap[index];
-}
-
-gxTexture* gxMaterial::loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap)
-{
-	gxSubMap* map=NULL;
-	if(submap==-1)
-	{
-		map = new gxSubMap();
-		appendSubMap(map);
-	}
-	else
-	{
-		map = m_vSubMap[submap];
-	}
-
-	return map->load(textureManager, filename);
-}
 
 bool gxMaterial::appendDependency(int crc)
 {

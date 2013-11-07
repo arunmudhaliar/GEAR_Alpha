@@ -11,6 +11,7 @@
 #define VECTOR4_H
 
 #include "gxMath.h"
+#include "basicIncludes.h"
 
 template<class T>
 class DllExport vector4;

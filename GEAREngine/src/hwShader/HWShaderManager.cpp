@@ -47,18 +47,17 @@ void HWShaderManager::LoadDefaultShaders()
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
 
-
-    if(m_cOnlyDiffuse.loadShader("res/shadersWin32/hwshader/only_diffuse.shader"))	//0
+    if(m_cOnlyDiffuse.loadShader("res/shadersWin32/hwshader/only_diffuse.glsl"))	//0
 		m_cvHWShaderLst.push_back(&m_cOnlyDiffuse);
-    if(m_cDiffuseUnlit.loadShader("res/shadersWin32/hwshader/diffusemapunlit.shader"))	//1
+    if(m_cDiffuseUnlit.loadShader("res/shadersWin32/hwshader/diffusemapunlit.glsl"))	//1
 		m_cvHWShaderLst.push_back(&m_cDiffuseUnlit);
-    if(m_cOnlyDiffuseWithColor.loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.shader"))	//2
+    if(m_cOnlyDiffuseWithColor.loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.glsl"))	//2
 		m_cvHWShaderLst.push_back(&m_cOnlyDiffuseWithColor);
-    if(m_cLightingOnlyFirstPassGenericShader.loadShader("res/shadersWin32/hwshader/pvLightingOnlyShaderFirstPass.shader"))	//3
+    if(m_cLightingOnlyFirstPassGenericShader.loadShader("res/shadersWin32/hwshader/pvLightingOnlyShaderFirstPass.glsl"))	//3
 		m_cvHWShaderLst.push_back(&m_cLightingOnlyFirstPassGenericShader);
-	if(m_cSpriteGenericShader.loadShader("res/shadersWin32/hwshader/guishader.shader"))	//4
+	if(m_cSpriteGenericShader.loadShader("res/shadersWin32/hwshader/guishader.glsl"))	//4
 		m_cvHWShaderLst.push_back(&m_cSpriteGenericShader);
-	if(m_cBlurGenericShader.loadShader("res/shadersWin32/hwshader/blurshader.shader"))	//5
+	if(m_cBlurGenericShader.loadShader("res/shadersWin32/hwshader/blurshader.glsl"))	//5
 		m_cvHWShaderLst.push_back(&m_cBlurGenericShader);
 #endif
 #endif

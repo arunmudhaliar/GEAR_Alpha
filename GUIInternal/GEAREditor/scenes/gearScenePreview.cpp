@@ -90,7 +90,6 @@ void gearScenePreview::onDraw()
 	HWShaderManager* hwManager = engine_getHWShaderManager();
 	gxHWShader* shader=hwManager->GetHWShader(3);
 	shader->enableProgram();
-	shader->resetAllFlags();
 	std::vector<gxLight*>* lightList = m_pPreviewWorldPtr->getLightList();
 	for(int x=0;x<(int)lightList->size();x++)
 	{

@@ -4,7 +4,6 @@
 #include "vector4.h"
 #include "TextureManager.h"
 #include <algorithm>
-#include "../hwShader/gxHWShader.h"
 #include "gxSurfaceShader.h"
 
 class DllExport gxMaterial : public gxSurfaceShader
@@ -51,8 +50,6 @@ private:
 	char m_szMaterialName[64];
 	std::vector<int> m_vDependencyCRCList;
 	int m_iFileCRC;
-
-	gxHWShader* m_pShader;
 };
 
 #endif

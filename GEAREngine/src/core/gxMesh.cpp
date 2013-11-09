@@ -106,7 +106,6 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 	if(renderer->getRenderPassType()!=gxRenderer::RENDER_LIGHTING_ONLY)
 	{
 		shader->enableProgram();
-		shader->resetAllFlags();
 	}
 
 	glVertexAttribPointer(shader->getAttribLoc("vIN_Position"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());

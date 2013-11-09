@@ -225,8 +225,7 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
 		gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(5);
     
 		shader->enableProgram();
-		shader->resetAllFlags();
-    
+   
 		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, cszTileBuffer);
 		glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
     
@@ -337,7 +336,6 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	HWShaderManager* hwManager = engine_getHWShaderManager();
 	gxHWShader* shader=hwManager->GetHWShader(3);
 	shader->enableProgram();
-	shader->resetAllFlags();
 	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
 	for(int x=0;x<lightList->size();x++)
 	{
@@ -365,7 +363,6 @@ void gearSceneWorldEditor::drawGrid()
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(0);
 		shader->enableProgram();
-		shader->resetAllFlags();
 
 		const float* u_mvp_m4x4=m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix();
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
@@ -423,7 +420,6 @@ void gearSceneWorldEditor::drawSelectedObject()
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(4);
 		shader->enableProgram();
-		shader->resetAllFlags();
 		for(int x=0;x<lightList->size();x++)
 		{
 			gxLight* light=lightList->at(x);
@@ -451,7 +447,6 @@ void gearSceneWorldEditor::drawSelectedObject()
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(2);
 		shader->enableProgram();
-		shader->resetAllFlags();
 
 		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHTING);
@@ -489,7 +484,6 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		shader = engine_getHWShaderManager()->GetHWShader(0);
 		shader->enableProgram();
-		shader->resetAllFlags();
 
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 		//glColor4f(0.25f, 0.4f, 0.62f, 1);

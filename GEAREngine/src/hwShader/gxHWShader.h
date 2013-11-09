@@ -34,28 +34,6 @@ struct stAttribLocation
 class __declspec( dllexport ) gxHWShader
 {
 public:
-
-	enum EHWShaderFlags
-	{
-		OBJBASE_FLAG_USE_TM                     = 0,		//if it is set the object is dynamic
-		//material
-		MATERIAL_FLAG_USE_AMBIENT_MAP			= 2,
-		MATERIAL_FLAG_USE_DIFFUSE_MAP			= 3,
-		MATERIAL_FLAG_USE_SPECULAR_CLR_MAP      = 4,
-		MATERIAL_FLAG_USE_SPECULAR_MAP          = 5,
-		MATERIAL_FLAG_USE_GLOSSINESS_MAP		= 6,
-		MATERIAL_FLAG_USE_SELF_ILLUMINATION_MAP	= 7,
-		MATERIAL_FLAG_USE_OPACITY_MAP			= 8,
-		MATERIAL_FLAG_USE_FILTER_CLR_MAP		= 9,
-		MATERIAL_FLAG_USE_NORMAL_MAP			= 10,
-		MATERIAL_FLAG_USE_REFLECTION_MAP		= 11,
-		MATERIAL_FLAG_USE_REFRACTION_MAP		= 12,
-        //mesh
-        //MESH_FLAG_USE_
-		//lighting
-		OTHER_FLAG_USE_LIGHTING		= 15    //last flag
-	};
-
 	gxHWShader();
 	virtual ~gxHWShader();
 
@@ -65,26 +43,15 @@ public:
 	
 	void attachShader();
 	void detachShader();
-	virtual void bind()=0;
-	virtual void getUniformVars()=0;
 	void destroyShader();
 	void enableProgram();
 	void disableProgram();
-
-	virtual void updateShaderVars(float dt)=0;
-	virtual void inputShaderUniformVars(void* ptr)=0;
-	virtual void inputShaderAttribVars(void* ptr)=0;
-	
-	virtual GLint getUserDefinedUniform(int index)=0;
-	
 	bool validateProgram();
 	
 	GLuint getProgram()			{	return m_cProgram;		}
 	GLuint getVertexShader()	{	return m_cVertShader;	}
 	GLuint getFragmentShader()	{	return m_cFragShader;	}
 	
-	virtual void renderThroughHWShader(object3d* obj, const matrix4x4f* parentTM)=0;
-
 	void showShaderLog(const char* title);
 
 	int getUniformLoc(const char* uvar);
@@ -108,16 +75,8 @@ public:
 	void sendAttrib3fv(const char* name, const float* input);
 	void sendAttrib4fv(const char* name, const float* input);
 	void sendAttrib1f(const char* name, float x);
-
-
-    void resetAllFlags();
-    void setFlag(EHWShaderFlags eFlag, float val);
-    void resetFlag(EHWShaderFlags eFlag);
-    float getFlag(EHWShaderFlags eFlag);
-    float* getFlagPtr() {   return m_cszFlags;  }
     
 private:
-
 	void clearUniformRefVarList();
 	void clearAttribRefVarList();
 
@@ -127,8 +86,6 @@ private:
 
 	std::vector<stUniformLocation*> m_vUniformRefVarList;
 	std::vector<stAttribLocation*> m_vAttribRefVarList;
-
-    float m_cszFlags[16];
 };
 
 #endif

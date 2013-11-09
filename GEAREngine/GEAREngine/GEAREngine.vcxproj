@@ -92,7 +92,6 @@
     <ClCompile Include="..\src\core\transform.cpp" />
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp" />
     <ClCompile Include="..\src\GEAREngine.cpp" />
-    <ClCompile Include="..\src\hwShader\gxGenericShader.cpp" />
     <ClCompile Include="..\src\hwShader\gxHWShader.cpp" />
     <ClCompile Include="..\src\hwShader\HWShaderManager.cpp" />
     <ClCompile Include="..\src\lpng151\png.c" />
@@ -141,7 +140,6 @@
     <ClInclude Include="..\src\core\gxMesh.h" />
     <ClInclude Include="..\src\core\gxMetaStructures.h" />
     <ClInclude Include="..\src\core\gxSkinnedMesh.h" />
-    <ClInclude Include="..\src\core\gxSubMaterialMap.h" />
     <ClInclude Include="..\src\core\gxSurfaceShader.h" />
     <ClInclude Include="..\src\core\gxTexture.h" />
     <ClInclude Include="..\src\core\gxTriInfo.h" />
@@ -159,7 +157,6 @@
     <ClInclude Include="..\src\core\vector4.h" />
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h" />
     <ClInclude Include="..\src\GEAREngine.h" />
-    <ClInclude Include="..\src\hwShader\gxGenericShader.h" />
     <ClInclude Include="..\src\hwShader\gxHWShader.h" />
     <ClInclude Include="..\src\hwShader\HWShaderManager.h" />
     <ClInclude Include="..\src\lpng151\png.h" />

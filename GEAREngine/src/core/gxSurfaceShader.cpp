@@ -633,6 +633,8 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 
 gxSurfaceShader::gxSurfaceShader()
 {
+	m_pLightingShader=NULL;
+	m_pMainShader=NULL;
 }
 
 gxSurfaceShader::~gxSurfaceShader()

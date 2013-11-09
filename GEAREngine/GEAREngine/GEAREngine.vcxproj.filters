@@ -180,9 +180,6 @@
     <ClCompile Include="..\src\core\fbo.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\hwShader\gxGenericShader.cpp">
-      <Filter>engine\hwShader</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\core\gxSkinnedMesh.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
@@ -234,9 +231,6 @@
       <Filter>engine\core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\gxWorld.h">
-      <Filter>engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\core\gxSubMaterialMap.h">
       <Filter>engine\core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\TextureManager.h">
@@ -361,9 +355,6 @@
     </ClInclude>
     <ClInclude Include="..\src\core\oobb.h">
       <Filter>engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\hwShader\gxGenericShader.h">
-      <Filter>engine\hwShader</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\gxSkinnedMesh.h">
       <Filter>engine\core</Filter>

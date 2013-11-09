@@ -1,13 +1,11 @@
 #include "gxHWShader.h"
 //#include "../util/objC_util.h"
 
-gxHWShader::gxHWShader()/*:
-gxShader()*/
+gxHWShader::gxHWShader()
 {
 	m_cProgram=0;
 	m_cVertShader=0;
 	m_cFragShader=0;
-    resetAllFlags();
 }
 
 gxHWShader::~gxHWShader()
@@ -82,7 +80,6 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	GX_DELETE_ARY(fsource);
 
 	attachShader();
-	bind();
 	
 	// Link program
 	if (!linkProgram())
@@ -94,12 +91,8 @@ bool gxHWShader::loadShader(const char* shaderFile)
 		return false;
 	}
 	
-	getUniformVars();
-	
 	validateProgram();
-
     detachShader();
-    
 	disableProgram();
 	
 	return true;
@@ -180,18 +173,6 @@ void gxHWShader::detachShader()
 	clearUniformRefVarList();
 }
 
-//void gxHWShader::bind()
-//{
-//	//must be implemented by derived class
-//	DEBUG_PRINT("must be implemented by derived class");
-//}
-//
-//void gxHWShader::getUniformVars()
-//{
-//	//must be implemented by derived class
-//	DEBUG_PRINT("must be implemented by derived class");
-//}
-
 void gxHWShader::destroyShader()
 {
 	detachShader();
@@ -246,26 +227,6 @@ bool gxHWShader::validateProgram()
 		return false;
 	
 	return true;
-}
-
-void gxHWShader::resetAllFlags()
-{
-    memset(m_cszFlags, 0, sizeof(m_cszFlags));
-}
-
-void gxHWShader::setFlag(EHWShaderFlags eFlag, float val)
-{
-    m_cszFlags[eFlag]=val;
-}
-
-void gxHWShader::resetFlag(EHWShaderFlags eFlag)
-{
-    m_cszFlags[eFlag]=0.0f;
-}
-
-float gxHWShader::getFlag(EHWShaderFlags eFlag)
-{
-    return m_cszFlags[eFlag];
 }
 
 void gxHWShader::showShaderLog(const char* title)

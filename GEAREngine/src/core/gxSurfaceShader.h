@@ -11,6 +11,7 @@
 #include "gxTexture.h"
 #include "../util/gxUtil.h"
 #include "../util/gxFile.h"
+#include "../hwShader/gxHWShader.h"
 
 class DllExport gxSubMap
 {
@@ -78,6 +79,9 @@ protected:
 	std::vector<stShaderProperty_Color*> m_vColor_Properties;
 
 	std::vector<gxSubMap*> m_vSubMap;
+	
+	gxHWShader* m_pLightingShader;
+	gxHWShader* m_pMainShader;
 
 public:
 	gxSurfaceShader();

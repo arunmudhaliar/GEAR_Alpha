@@ -95,7 +95,7 @@ HWShaderManager::stHWShaderSnippet* HWShaderManager::LoadCodeSnippet(const char*
 #if defined (USE_ProgrammablePipeLine)
 gxHWShader* HWShaderManager::GetHWShader(int index)
 {
-	if(index>=m_cvHWShaderLst.size()) return NULL;
+	if(index>=(int)m_cvHWShaderLst.size()) return NULL;
 	return m_cvHWShaderLst[index];
 }
 #endif

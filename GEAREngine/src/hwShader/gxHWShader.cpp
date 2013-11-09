@@ -53,10 +53,6 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	fread((void*)&fsource[strlen(define_fragment)], 1, fileSz, fp);
 	fclose(fp);
 	//
-
-
-	// Create shader program
-	m_cProgram = glCreateProgram();
 	
 	// Create and compile vertex shader
 	if (!compileShader(&m_cVertShader, GL_VERTEX_SHADER, vsource, vSz))
@@ -78,6 +74,9 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	
 	GX_DELETE_ARY(vsource);
 	GX_DELETE_ARY(fsource);
+
+	// Create shader program
+	m_cProgram = glCreateProgram();
 
 	attachShader();
 	

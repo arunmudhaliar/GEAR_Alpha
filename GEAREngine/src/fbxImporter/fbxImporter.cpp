@@ -660,13 +660,13 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 
 							if( !texture ) continue;
 							
-							gxSubMap* submap = new gxSubMap();
-							submap->setTextureName(gxUtil::getFileNameFromPath(texture->GetFileName()));
-
-							material->appendSubMap(submap);
+							stTextureMap* texmap = new stTextureMap();
+							texmap->texturename.assign(gxUtil::getFileNameFromPath(texture->GetFileName()));
+							material->appendTextureMap(texmap);
 						}
 					}
 
+					material->setMainShaderName("Diffuse");
 					triInfoArray[fbxMaterialIndex].setMaterial(material);
 					material->appendDependency(rootObject3d->getFileCRC());
 					materialList->push_back(material);

@@ -28,7 +28,7 @@ public:
 	  geTreeNode(renderer, parent, name, sprite, 10)
 	{
 		m_pColorControl=NULL;
-		setSize(m_cSize.x, 85.0f);
+		setSize(m_cSize.x, 115.0f);
 
 		m_pTriInfoPtr=triinfo;
 		loadClientViewFromMaterial(m_pTriInfoPtr->getMaterial());

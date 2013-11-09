@@ -103,14 +103,14 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 				sprintf(tileY_temp_buffer, "%3.2f", 1.0f);
 			}
 			submapview->m_pText_tileX = new geTextBox("1.0");
-			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 40, 50, 16);
+			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 50, 60, 16);
 			submapview->m_pText_tileX->setGUIObserver(this);
 			submapview->m_pText_tileY = new geTextBox("1.0");
-			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 60, 50, 16);
+			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 70, 60, 16);
 			submapview->m_pText_tileY->setGUIObserver(this);
 
 			submapview->thumbnail = new geTextureThumbnailExtended();
-			submapview->thumbnail->create(m_pRenderer, this, map->getTexture(), 260, 10, 70, 70);
+			submapview->thumbnail->create(m_pRenderer, this, map->getTexture(), 260, 40, 70, 70);
 			submapview->thumbnail->setUserData(m_pCurrentMaterialPtr);
 			m_vSubMap.push_back(submapview);
 		}

@@ -605,12 +605,15 @@ void gearSceneWorldEditor::postWorldRender()
 void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 {
 #if defined USE_FBO
-	m_cMultiPassFBO.ReInitFBO(cx, cy);
-    m_cMultiPassFBO.CreateDepthBuffer();
-    m_cMultiPassFBO.AttachDepthBuffer();
-    m_cMultiPassFBO.CreateTextureBuffer();
-    m_cMultiPassFBO.AttachTextureBuffer(0);
-    m_cMultiPassFBO.UnBindFBO();
+	if(cx>1.0f && cy>1.0f)
+	{
+		m_cMultiPassFBO.ReInitFBO(cx, cy);
+		m_cMultiPassFBO.CreateDepthBuffer();
+		m_cMultiPassFBO.AttachDepthBuffer();
+		m_cMultiPassFBO.CreateTextureBuffer();
+		m_cMultiPassFBO.AttachTextureBuffer(0);
+		m_cMultiPassFBO.UnBindFBO();
+	}
 #endif
 
 	geWindow::onSize(cx, cy, flag);

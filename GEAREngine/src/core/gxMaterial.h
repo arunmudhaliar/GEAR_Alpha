@@ -40,6 +40,9 @@ public:
 
 	static gxMaterial* createNewMaterial();
 
+	void setMainShaderName(const char* name)	{	m_cMainShaderName.assign(name);		}
+	const char* getMainshaderName()				{	return m_cMainShaderName.c_str();	}
+
 private:
 	vector4f m_cAmbient;
 	vector4f m_cDiffuse;
@@ -50,6 +53,7 @@ private:
 	char m_szMaterialName[64];
 	std::vector<int> m_vDependencyCRCList;
 	int m_iFileCRC;
+	std::string m_cMainShaderName;
 };
 
 #endif

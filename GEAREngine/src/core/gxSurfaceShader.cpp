@@ -659,6 +659,13 @@ gxSurfaceShader::~gxSurfaceShader()
 		GX_DELETE(obj);
 	}
 	m_vColor_Properties.clear();
+
+	for(std::vector<stTextureMap*>::iterator it = m_vTextureMap.begin(); it != m_vTextureMap.end(); ++it)
+	{
+		stTextureMap* obj = *it;
+		GX_DELETE(obj);
+	}
+	m_vTextureMap.clear();
 }
 
 bool gxSurfaceShader::loadSurfaceShader(const char* filename)
@@ -698,6 +705,11 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 	delete [] vsource;
 
 	return bParseRetVal;
+}
+
+void gxSurfaceShader::appendTextureMap(stTextureMap* texmap)
+{
+	m_vTextureMap.push_back(texmap);
 }
 
 void gxSurfaceShader::appendSubMap(gxSubMap* map)

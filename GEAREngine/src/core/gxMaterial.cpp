@@ -102,14 +102,15 @@ void gxMaterial::write(gxFile& file)
 	file.Write(m_fShininess);
 	file.Write(m_bTwoSided);
 	file.Write(m_szMaterialName);
-	file.Write((int)m_vSubMap.size());
-	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	file.Write((int)m_vTextureMap.size());
+	for(std::vector<stTextureMap*>::iterator it = m_vTextureMap.begin(); it != m_vTextureMap.end(); ++it)
 	{
-		gxSubMap* map = *it;
-		file.Write(map->getTextureName());
-		file.Write(map->getTextureCRC());
+		stTextureMap* texmap = *it;
+		file.Write(texmap->texturename.c_str());
+		file.Write(texmap->crc);
 	}
 
+	file.Write(m_cMainShaderName.c_str());
 	file.Write(m_vDependencyCRCList.size());
 	for(int x=0;x<m_vDependencyCRCList.size();x++)
 	{
@@ -137,12 +138,17 @@ void gxMaterial::read(gxFile& file)
 		char* temp=file.ReadString();
 		int texcrc;
 		file.Read(texcrc);
-		gxSubMap* subMap = new gxSubMap();
-		subMap->setTextureName(temp);
-		subMap->setTextureCRC(texcrc);
-		m_vSubMap.push_back(subMap);
+
+		stTextureMap* texmap = new stTextureMap();
+		texmap->texturename.assign(temp);
+		texmap->crc=texcrc;
+		m_vTextureMap.push_back(texmap);
 		GX_DELETE_ARY(temp);
 	}
+
+	temp=file.ReadString();
+	setMainShaderName(temp);
+	GX_DELETE_ARY(temp);
 
 	int nDep=0;
 	file.Read(nDep);

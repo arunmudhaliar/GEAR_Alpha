@@ -33,6 +33,16 @@ private:
 	gxTexture* m_pTexture;
 };
 
+struct stTextureMap
+{
+	stTextureMap()
+	{
+		crc=0;
+	}
+	std::string texturename;
+	int crc;
+};
+
 struct stShaderProperty_Color
 {
 	std::string name;
@@ -79,6 +89,7 @@ protected:
 	std::vector<stShaderProperty_Color*> m_vColor_Properties;
 
 	std::vector<gxSubMap*> m_vSubMap;
+	std::vector<stTextureMap*> m_vTextureMap;
 	
 	gxHWShader* m_pLightingShader;
 	gxHWShader* m_pMainShader;
@@ -87,6 +98,8 @@ public:
 	gxSurfaceShader();
 	virtual ~gxSurfaceShader();
 	bool loadSurfaceShader(const char* filename);
+
+	void appendTextureMap(stTextureMap* texmap);
 
 	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap);	//-1 will add a map to the list
 

@@ -40,6 +40,6 @@ varying vec2 vOUT_UVCoord0;
 uniform sampler2D sampler2d_diffuse;
 void main()
 {
-	gl_FragColor = texture2D(sampler2d_diffuse, vOUT_UVCoord0);// * v_destinationcolor_v4;
+	gl_FragColor = texture2D(sampler2d_diffuse, vOUT_UVCoord0);
 }
 #endif

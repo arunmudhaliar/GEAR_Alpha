@@ -46,6 +46,7 @@ public:
 	virtual void render(gxRenderer* renderer, object3d* light);
 	void renderNormal(gxRenderer* renderer);
 	void renderWithHWShader(gxRenderer* renderer);
+	void renderWithHWShader2(gxRenderer* renderer);
 
 	float* allocateVertexBuffer(int nTris);
 	float* allocateColorBuffer(int nTris);

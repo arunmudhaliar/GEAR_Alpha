@@ -665,6 +665,12 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 							material->appendTextureMap(texmap);
 						}
 					}
+					else
+					{
+						stTextureMap* texmap = new stTextureMap();
+						texmap->texturename.assign("no-map");
+						material->appendTextureMap(texmap);
+					}
 
 					material->setMainShaderName("Diffuse");
 					triInfoArray[fbxMaterialIndex].setMaterial(material);

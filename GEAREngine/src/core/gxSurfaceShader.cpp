@@ -1,10 +1,12 @@
 #include "gxSurfaceShader.h"
+#include "../GEAREngine.h"
 
 gxSubMap::gxSubMap()
 {
 	memset(m_szTextureName, 0, sizeof(m_szTextureName));
 	m_iTextureCRC=0;
 	m_pTexture=NULL;
+	m_pShaderPropertyVar=NULL;
 }
 
 gxSubMap::~gxSubMap()
@@ -377,7 +379,7 @@ bool gxSurfaceShader::parseColorProperty(std::string::const_iterator& start, std
 	return false;
 }
 
-bool gxSurfaceShader::parseMainTexProperty(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
+bool gxSurfaceShader::parseTexProperty(std::string::const_iterator& start, std::string::const_iterator& end, const char* _texname, int& depth)
 {
 	std::string _temp;
 	std::string _keyword;
@@ -408,7 +410,13 @@ bool gxSurfaceShader::parseMainTexProperty(std::string::const_iterator& start, s
 											{
 												stShaderProperty_Texture2D* newtex2D = new stShaderProperty_Texture2D();
 												newtex2D->name=_name;
-												//newtex2D->texture_name
+												newtex2D->texture_uv_in_name= "uv_in";
+												newtex2D->texture_uv_in_name+=_texname;
+												newtex2D->texture_uv_out_name= "uv_out";
+												newtex2D->texture_uv_out_name+=_texname;
+												newtex2D->texture_sampler2d_name= "sampler2d";
+												newtex2D->texture_sampler2d_name+= _texname;
+												//
 												m_vTex2D_Properties.push_back(newtex2D);
 												start=it;
 												return true;
@@ -475,7 +483,7 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 				{
 					it=it+pos+strlen("_MainTex");
 					int maintexpropertydepth=-1;
-					if(!parseMainTexProperty(it, end, maintexpropertydepth))
+					if(!parseTexProperty(it, end, "_MainTex", maintexpropertydepth))
 						return false;
 				}
 
@@ -486,7 +494,7 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 				{
 					it=it+pos+strlen("_DecalTex");
 					int maintexpropertydepth=-1;
-					if(!parseMainTexProperty(it, end, maintexpropertydepth))
+					if(!parseTexProperty(it, end, "_DecalTex", maintexpropertydepth))
 						return false;
 				}
 			}
@@ -500,14 +508,22 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 	return true;
 }
 
-bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
+bool gxSurfaceShader::parseSubShader_vertex(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
 {
 	std::string str;
 	std::string::const_iterator it=start;
+
+	std::string::const_iterator shader_start;
+	std::string::const_iterator shader_end;
+
 	while(it!=end)
 	{
 		if(*it=='{')
 		{
+			if(depth==-1)
+			{
+				shader_start=(it+1);
+			}
 			depth++;
 		}
 
@@ -518,6 +534,8 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 				depth--;
 				if(depth<0)
 				{
+					shader_end = (it-1);
+					m_cSubShader.vertex_buffer.assign(shader_start, shader_end);
 					start=++it;
 					return true;
 				}
@@ -529,6 +547,96 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 	}
 
 	return false;
+}
+
+bool gxSurfaceShader::parseSubShader_fragment(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
+{
+	std::string str;
+	std::string::const_iterator it=start;
+
+	std::string::const_iterator shader_start;
+	std::string::const_iterator shader_end;
+
+	while(it!=end)
+	{
+		if(*it=='{')
+		{
+			if(depth==-1)
+			{
+				shader_start=(it+1);
+			}
+			depth++;
+		}
+
+		if(depth>=0)
+		{
+			if(*it=='}')
+			{
+				depth--;
+				if(depth<0)
+				{
+					shader_end = (it-1);
+					m_cSubShader.fragment_buffer.assign(shader_start, shader_end);
+					start=++it;
+					return true;
+				}
+			}
+		}
+
+		if(std::distance(it, end)<=0) return false;
+			it++;
+	}
+
+	return false;
+}
+
+bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
+{
+	std::string str;
+	std::string::const_iterator it=start;
+	while(it!=end)
+	{
+		if(findClosingCurlyBrace(it, end))
+		{
+			--depth;
+			start=it;
+			return true;
+		}
+
+		switch(depth)
+		{
+		case -1:
+			{
+				str.assign(it, end);
+				int pos=str.find("__vertex");
+				if(pos>=0)
+				{
+					it=it+pos+strlen("__vertex");
+					int properties_depth=-1;
+					if(!parseSubShader_vertex(it, end, properties_depth))
+						return false;
+				}
+
+				str.assign(it, end);
+				pos=str.find("__fragment");
+				if(pos>=0)
+				{
+					it=it+pos+strlen("__fragment");
+					int subshader_depth=-1;
+					if(!parseSubShader_fragment(it, end, subshader_depth))
+						return false;
+				}
+			}
+			break;
+		}
+
+		if(std::distance(it, end)<=0) return false;
+		it++;
+	}
+
+	//std::cout << str;
+
+	return true;
 }
 
 bool gxSurfaceShader::parseShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
@@ -584,14 +692,14 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 {
 	std::string str;
 	std::string::const_iterator it=start;
-	while(it!=end)
-	{
-		if(*it=='}')
-		{
-			--depth;
-			start=it;
-			return true;
-		}
+	//while(it!=end)
+	//{
+	//	if(*it=='}')
+	//	{
+	//		--depth;
+	//		start=it;
+	//		return true;
+	//	}
 
 		switch(depth)
 		{
@@ -610,6 +718,7 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 							int shader_depth=-1;
 							if(parseShader(it, end, shader_depth))
 							{
+								return true;
 							}
 							else return false;
 						}
@@ -622,13 +731,13 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 			break;
 		}
 
-		if(std::distance(it, end)<=0) return false;
-		it++;
-	}
+	//	if(std::distance(it, end)<=0) return false;
+	//	it++;
+	//}
 
 	//std::cout << str;
 
-	return true;
+	return false;
 }
 
 gxSurfaceShader::gxSurfaceShader()
@@ -666,6 +775,8 @@ gxSurfaceShader::~gxSurfaceShader()
 		GX_DELETE(obj);
 	}
 	m_vTextureMap.clear();
+
+	m_cMainShaderSource.clear();
 }
 
 bool gxSurfaceShader::loadSurfaceShader(const char* filename)
@@ -696,13 +807,50 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 	bool bParseRetVal=parse(iter, end, depth);
 	if(bParseRetVal)
 	{
-		std::cout << filename << " Parse Success";
+		for(std::vector<stShaderProperty_Texture2D*>::iterator it = m_vTex2D_Properties.begin(); it != m_vTex2D_Properties.end(); ++it)
+		{
+			stShaderProperty_Texture2D* tex2d = *it;
+			gxSubMap* submap = new gxSubMap();
+			submap->setShaderTextureProperty(tex2d);
+			appendSubMap(submap);
+		}
+
+		HWShaderManager* hwShaderManager = engine_getHWShaderManager();
+		m_pMainShader=hwShaderManager->LoadShaderFromBuffer(filename, NULL, 0);
+		if(m_pMainShader)
+		{
+			std::cout << filename << "\n" << "Shader already loaded" << "\n Parse Success.\n";
+			GX_DELETE_ARY(vsource);
+			return true;
+		}
+		//construct the glsl shader
+		m_cMainShaderSource = "#ifdef GEAR_VERTEX_SHADER\n";
+		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(0)->snippet;
+		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
+		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(2)->snippet;
+		m_cMainShaderSource+="\n"+m_cSubShader.vertex_buffer+"\n";
+		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(3)->snippet;
+		m_cMainShaderSource += "#elif defined (GEAR_FRAGMENT_SHADER)\n";
+		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(2)->snippet;
+		m_cMainShaderSource+="\n"+m_cSubShader.fragment_buffer+"\n";
+		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(4)->snippet;
+		m_cMainShaderSource += "#endif\n";
+		//
+
+		m_pMainShader=hwShaderManager->LoadShaderFromBuffer(filename, m_cMainShaderSource.c_str(), m_cMainShaderSource.size());
+		if(!m_pMainShader)
+			std::cout << filename << "\n" << m_cMainShaderSource << "\n Parse Success but GLSL compiler failed.\n";
+		else
+			std::cout << filename << "\n" << m_cMainShaderSource << "\n Parse Success.\n";
+
+		m_cMainShaderSource.clear();
 	}
 	else
 	{
-		std::cout << filename << " Parse Failed";
+		std::cout << filename << " Parse Failed.\n";
 	}
-	delete [] vsource;
+
+	GX_DELETE_ARY(vsource);
 
 	return bParseRetVal;
 }

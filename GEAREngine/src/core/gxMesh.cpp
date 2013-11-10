@@ -51,7 +51,10 @@ void gxMesh::render(gxRenderer* renderer, object3d* light)
 		return;
 
 #if defined (USE_ProgrammablePipeLine)
-	renderWithHWShader(renderer);
+	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
+		renderWithHWShader(renderer);
+	else if(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)
+		renderWithHWShader2(renderer);
 #else
 	renderNormal(renderer);
 #endif
@@ -138,12 +141,6 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 
 		if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
 		{
-			/*
-			uniform float u_shininess_f1;
-			uniform vec4 u_ambient_v4;
-			uniform vec4 u_diffuse_v4;
-			uniform vec4 u_specular_v4;
-			*/
 			if(triInfo->getMaterial())
 			{
 				shader->sendUniform4fv("material.diffuse", &triInfo->getMaterial()->getDiffuseClr().x);
@@ -166,7 +163,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 			for(int m=0;m<m_nUVChannels;m++)
 			{
 				gxUV* uv=&m_pszUVChannels[m];
-				if(/*triInfo->getMaterial() && */applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, "vIN_UVCoord0"))
+				if(applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, "vIN_UVCoord0"))
 				{
 					shader->sendUniform1i("sampler2d_diffuse", nTexUsed);
 					nTexUsed++;
@@ -188,6 +185,58 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 
 	if(renderer->getRenderPassType()!=gxRenderer::RENDER_LIGHTING_ONLY)
 	{
+		shader->disableProgram();
+	}
+}
+
+void gxMesh::renderWithHWShader2(gxRenderer* renderer)
+{
+	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
+    const float* u_mvp_m4x4=cMVP.getMatrix();
+
+	for(int x=0;x<m_nTriInfoArray;x++)
+	{
+		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+		if(!triInfo->getTriList()) continue;
+
+		gxMaterial* material=triInfo->getMaterial();
+		if(!material) continue;
+		gxHWShader* shader=material->getMainShader();
+
+		shader->enableProgram();
+		shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
+
+		glVertexAttribPointer(shader->getAttribLoc("vIN_Position"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
+		glEnableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
+
+		int nTexUsed=0;
+		int cntr=0;
+		std::vector<gxSubMap*>* maplist=material->getSubMapList();
+		gxUV* base_uv=(m_nUVChannels)?&m_pszUVChannels[0]:NULL;
+		stShaderProperty_Texture2D* base_tex_var=NULL;
+		for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it, ++cntr)
+		{
+			gxSubMap* submap = *it;
+			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
+			if(!base_tex_var)
+				base_tex_var=shader_var;
+			gxUV* uv=&m_pszUVChannels[0];	//base uv
+			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, base_tex_var->texture_uv_in_name.c_str()))
+			{
+				shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
+				nTexUsed++;
+			}
+		}
+		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
+		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
+		renderer->m_nDrawCalls++;
+
+		if(base_tex_var)
+		{
+			disableTextureOperations(nTexUsed, shader, base_tex_var->texture_uv_in_name.c_str());
+		}
+
+		glDisableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
 		shader->disableProgram();
 	}
 }

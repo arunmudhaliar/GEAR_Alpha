@@ -29,31 +29,21 @@ public:
 	
 	void Init();
 	void Reset();
-    
     void update(float dt);
 	
 #if defined (USE_ProgrammablePipeLine)
 	gxHWShader* GetHWShader(int index);
 #endif
     
-private:
-	void LoadDefaultShaders();
+	stHWShaderSnippet* getShaderSnippet(int index)	{	return m_cvHWShaderSnippets[index];	}
+	gxHWShader* LoadShaderFromBuffer(const char* name, const char* buffer, int size);
 
 private:
+	void LoadDefaultShaders();
 	stHWShaderSnippet* LoadCodeSnippet(const char* filename);
 	
 #if defined (USE_ProgrammablePipeLine)
-	//default shaders
-	gxHWShader m_cOnlyDiffuse;
-	gxHWShader m_cDiffuseUnlit;
-	gxHWShader m_cOnlyDiffuseWithColor;
-	gxHWShader m_cGenericShader;
-	gxHWShader m_cLightingOnlyGenericShader;
-	gxHWShader m_cLightingOnlyFirstPassGenericShader;
-	gxHWShader m_cSpriteGenericShader;
-	gxHWShader m_cBlurGenericShader;
 	std::vector<gxHWShader*> m_cvHWShaderLst;
-
 	std::vector<stHWShaderSnippet*> m_cvHWShaderSnippets;
 #endif
 };

@@ -19,6 +19,11 @@ void HWShaderManager::Init()
 void HWShaderManager::Reset()
 {
 #if defined (USE_ProgrammablePipeLine)
+	for(std::vector<gxHWShader*>::iterator it = m_cvHWShaderLst.begin(); it != m_cvHWShaderLst.end(); ++it)
+	{
+		gxHWShader* shader = *it;
+		GX_DELETE(shader);
+	}
 	m_cvHWShaderLst.clear();
 
 	std::vector<stHWShaderSnippet*>* submaplist=&m_cvHWShaderSnippets;
@@ -40,27 +45,71 @@ void HWShaderManager::LoadDefaultShaders()
 	stHWShaderSnippet* snippet=LoadCodeSnippet("res/shadersWin32/snippets/matrices_uniform_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_inout_vars.snippet");
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_attrib_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/lightandmaterial_unifrom_vars.snippet");
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_varying_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_main.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/fragment_main.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
 
-    if(m_cOnlyDiffuse.loadShader("res/shadersWin32/hwshader/only_diffuse.glsl"))	//0
-		m_cvHWShaderLst.push_back(&m_cOnlyDiffuse);
-    if(m_cDiffuseUnlit.loadShader("res/shadersWin32/hwshader/diffusemapunlit.glsl"))	//1
-		m_cvHWShaderLst.push_back(&m_cDiffuseUnlit);
-    if(m_cOnlyDiffuseWithColor.loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.glsl"))	//2
-		m_cvHWShaderLst.push_back(&m_cOnlyDiffuseWithColor);
-    if(m_cLightingOnlyFirstPassGenericShader.loadShader("res/shadersWin32/hwshader/pvLightingOnlyShaderFirstPass.glsl"))	//3
-		m_cvHWShaderLst.push_back(&m_cLightingOnlyFirstPassGenericShader);
-	if(m_cSpriteGenericShader.loadShader("res/shadersWin32/hwshader/guishader.glsl"))	//4
-		m_cvHWShaderLst.push_back(&m_cSpriteGenericShader);
-	if(m_cBlurGenericShader.loadShader("res/shadersWin32/hwshader/blurshader.glsl"))	//5
-		m_cvHWShaderLst.push_back(&m_cBlurGenericShader);
+	gxHWShader* pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/diffusemapunlit.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/pvLightingOnlyShaderFirstPass.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/guishader.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/blurshader.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
 #endif
 #endif
+}
+
+gxHWShader* HWShaderManager::LoadShaderFromBuffer(const char* name, const char* buffer, int size)
+{
+	for(std::vector<gxHWShader*>::iterator it = m_cvHWShaderLst.begin(); it != m_cvHWShaderLst.end(); ++it)
+	{
+		gxHWShader* hwshaderNode = *it;
+		if(strcmp(hwshaderNode->getShaderName(), name)==0)
+			return hwshaderNode;
+	}
+
+	if(buffer==NULL || size==0) return NULL;
+
+	gxHWShader* shader = new gxHWShader();
+	if(!shader->loadShaderFromBuffer(name, buffer, size))
+	{
+		GX_DELETE(shader);
+	}
+	m_cvHWShaderLst.push_back(shader);
+	return shader;
 }
 
 HWShaderManager::stHWShaderSnippet* HWShaderManager::LoadCodeSnippet(const char* filename)

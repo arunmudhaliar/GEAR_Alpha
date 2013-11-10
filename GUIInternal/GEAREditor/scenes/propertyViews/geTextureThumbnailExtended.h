@@ -27,10 +27,10 @@ public:
 		if (util::GE_IS_EXTENSION(absolutePath, ".png") || util::GE_IS_EXTENSION(absolutePath, ".PNG") ||
 			util::GE_IS_EXTENSION(absolutePath, ".tga") || util::GE_IS_EXTENSION(absolutePath, ".TGA"))
 		{
-			gxMaterial* material = (gxMaterial*)getUserData();
-			if(material)
+			gxSubMap* map = (gxSubMap*)getUserData();
+			if(map)
 			{
-				m_pTexturePtr=monoWrapper::mono_engine_loadTextureFromFile(monoWrapper::mono_engine_getWorld(0), material, absolutePath, 0);
+				m_pTexturePtr=map->load(*monoWrapper::mono_engine_getWorld(0)->getTextureManager(), absolutePath);
 			}
 		//	object3d* obj = engine_loadAndAppendFBX(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
 		//	createTVNode(rootNode, obj, droppedDataObject->getName());

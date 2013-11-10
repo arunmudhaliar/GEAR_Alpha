@@ -13,6 +13,54 @@
 #include "../util/gxFile.h"
 #include "../hwShader/gxHWShader.h"
 
+struct stTextureMap
+{
+	stTextureMap()
+	{
+		crc=0;
+	}
+	std::string texturename;
+	int crc;
+};
+
+struct stShaderProperty_Color
+{
+	~stShaderProperty_Color()
+	{
+		name.clear();
+	}
+	std::string name;
+	vector4f color;
+};
+
+struct stShaderProperty_Texture2D
+{
+	~stShaderProperty_Texture2D()
+	{
+		name.clear();
+		texture_name.clear();
+		texture_uv_in_name.clear();
+		texture_uv_out_name.clear();
+		texture_sampler2d_name.clear();
+	}
+	std::string name;
+	std::string texture_name;
+	std::string texture_uv_in_name;
+	std::string texture_uv_out_name;
+	std::string texture_sampler2d_name;
+};
+
+struct stSubShader
+{
+	~stSubShader()
+	{
+		vertex_buffer.clear();
+		fragment_buffer.clear();
+	}
+	std::string vertex_buffer;
+	std::string fragment_buffer;
+};
+
 class DllExport gxSubMap
 {
 public:
@@ -27,37 +75,14 @@ public:
 	gxTexture* getTexture()		{	return m_pTexture;	}
 	gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc);
 
+	void setShaderTextureProperty(stShaderProperty_Texture2D* property_tex2D)	{	m_pShaderPropertyVar = property_tex2D;	}
+	stShaderProperty_Texture2D* getShaderTextureProperty()						{	return m_pShaderPropertyVar;			}
+
 private:
 	char m_szTextureName[256];
 	int m_iTextureCRC;
 	gxTexture* m_pTexture;
-};
-
-struct stTextureMap
-{
-	stTextureMap()
-	{
-		crc=0;
-	}
-	std::string texturename;
-	int crc;
-};
-
-struct stShaderProperty_Color
-{
-	std::string name;
-	vector4f color;
-};
-
-struct stShaderProperty_Texture2D
-{
-	std::string name;
-	std::string texture_name;
-};
-
-struct stSubShader
-{
-	std::string buffer;
+	stShaderProperty_Texture2D* m_pShaderPropertyVar;
 };
 
 class DllExport gxSurfaceShader
@@ -77,9 +102,11 @@ private:
 	bool parseArgInsideRoundBrace(std::string::const_iterator& start, std::string::const_iterator& end, std::vector<std::string>& args, int argCount);
 	bool parseNameInsideQuats(std::string::const_iterator& start, std::string::const_iterator& end, std::string& name);
 	bool parseColorProperty(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
-	bool parseMainTexProperty(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
+	bool parseTexProperty(std::string::const_iterator& start, std::string::const_iterator& end, const char* _texname, int& depth);
 	bool parseProperties(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseSubShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
+	bool parseSubShader_vertex(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
+	bool parseSubShader_fragment(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parse(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 
@@ -94,6 +121,8 @@ protected:
 	gxHWShader* m_pLightingShader;
 	gxHWShader* m_pMainShader;
 
+	std::string m_cMainShaderSource;
+
 public:
 	gxSurfaceShader();
 	virtual ~gxSurfaceShader();
@@ -102,9 +131,14 @@ public:
 	void appendTextureMap(stTextureMap* texmap);
 
 	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap);	//-1 will add a map to the list
-
 	void appendSubMap(gxSubMap* map);
 	gxSubMap* getSubMap(int index);
 	std::vector<gxSubMap*>* getSubMapList()	{	return &m_vSubMap;	}
+
+	gxHWShader* getMainShader()		{	return m_pMainShader;	}
+
+	std::vector<stShaderProperty_Texture2D*>* getShaderPropertyList()	{	return &m_vTex2D_Properties;		}
+	stShaderProperty_Texture2D* getShaderProperty_Texture2D(int index)	{	return m_vTex2D_Properties[index];	}
+	stShaderProperty_Color* getShaderProperty_Color(int index)			{	return m_vColor_Properties[index];	}
 };
 #endif

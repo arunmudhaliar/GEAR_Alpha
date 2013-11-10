@@ -14,6 +14,74 @@ gxHWShader::~gxHWShader()
 	clearUniformRefVarList();
 }
 
+bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer, int shaderBuffer_size)
+{
+	char temp[1024];
+	sprintf(temp, "%s.tmp", name);
+	FILE* fp=fopen(temp, "w");
+	fwrite(shaderBuffer, 1, shaderBuffer_size, fp);
+	fclose(fp);
+
+	const char* define_vertex="#define GEAR_VERTEX_SHADER\n";
+	const char* define_fragment="#define GEAR_FRAGMENT_SHADER\n";
+
+	int vSz=shaderBuffer_size+strlen(define_vertex);
+	char* vsource=new char[vSz];
+	memset((void*)vsource, 0, vSz);
+	strcpy(vsource, define_vertex);
+	strncpy(&vsource[strlen(define_vertex)], shaderBuffer, shaderBuffer_size);
+
+	int fSz=shaderBuffer_size+strlen(define_fragment);
+	char* fsource=new char[fSz];
+	memset((void*)fsource, 0, fSz);
+	strcpy(fsource, define_fragment);
+	strncpy(&fsource[strlen(define_fragment)], shaderBuffer, shaderBuffer_size);
+
+	// Create and compile vertex shader
+	if (!compileShader(&m_cVertShader, GL_VERTEX_SHADER, vsource, vSz))
+	{
+		DEBUG_PRINT("Failed to compile vertex shader from buffer");
+		GX_DELETE_ARY(vsource);
+		GX_DELETE_ARY(fsource);
+		return false;
+	}
+	
+	// Create and compile fragment shader
+	if (!compileShader(&m_cFragShader, GL_FRAGMENT_SHADER, fsource, fSz))
+	{
+		DEBUG_PRINT("Failed to compile fragment shader from buffer");
+		GX_DELETE_ARY(vsource);
+		GX_DELETE_ARY(fsource);
+		return false;
+	}
+	
+	GX_DELETE_ARY(vsource);
+	GX_DELETE_ARY(fsource);
+
+	// Create shader program
+	m_cProgram = glCreateProgram();
+
+	attachShader();
+	
+	// Link program
+	if (!linkProgram())
+	{
+		DEBUG_PRINT("Failed to link program: %d from buffer", m_cProgram);
+		destroyShader();
+		GX_DELETE_ARY(vsource);
+		GX_DELETE_ARY(fsource);
+		return false;
+	}
+	
+	validateProgram();
+    detachShader();
+	disableProgram();
+	
+	m_cShaderName.assign(name);
+
+	return true;
+}
+
 bool gxHWShader::loadShader(const char* shaderFile)
 {
 	//read shader code
@@ -94,6 +162,8 @@ bool gxHWShader::loadShader(const char* shaderFile)
     detachShader();
 	disableProgram();
 	
+	m_cShaderName.assign(shaderFile);
+
 	return true;
 }
 

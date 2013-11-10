@@ -38,6 +38,7 @@ public:
 	virtual ~gxHWShader();
 
 	bool loadShader(const char* shaderFile);
+	bool loadShaderFromBuffer(const char* name, const char* shaderBuffer, int shaderBuffer_size);
 	bool compileShader(GLuint* shader, GLenum type, const char* source, int fileSz);
 	bool linkProgram();
 	
@@ -76,6 +77,8 @@ public:
 	void sendAttrib4fv(const char* name, const float* input);
 	void sendAttrib1f(const char* name, float x);
     
+	const char* getShaderName()	{	return m_cShaderName.c_str(); }
+
 private:
 	void clearUniformRefVarList();
 	void clearAttribRefVarList();
@@ -86,6 +89,7 @@ private:
 
 	std::vector<stUniformLocation*> m_vUniformRefVarList;
 	std::vector<stAttribLocation*> m_vAttribRefVarList;
+	std::string m_cShaderName;
 };
 
 #endif

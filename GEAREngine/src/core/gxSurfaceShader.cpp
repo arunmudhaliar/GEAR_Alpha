@@ -266,7 +266,11 @@ bool gxSurfaceShader::parseKeyWord(std::string::const_iterator& start, std::stri
 
 	while(findAnyValidAlphaNumeric(start, end))
 	{
-		//start++;
+		if(*start=='\n' || *start==' ' || *start=='\t')
+		{
+			//start++;
+			break;
+		}
 	}
 
 	name.assign(startPos, start);
@@ -608,7 +612,28 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 		case -1:
 			{
 				str.assign(it, end);
-				int pos=str.find("__vertex");
+				int pos=str.find("__includeModule");
+				if(pos>=0)
+				{
+					it=it+pos+strlen("__includeModule");
+					int properties_depth=-1;
+					if(findOpeningCurlyBrace(it, end))
+					{
+						std::string key;
+						it++;
+						while(parseKeyWord(it, end, key))
+						{
+							m_vIncludeModule.push_back(key);
+							if(findClosingCurlyBrace(it, end) && it!=end)
+								break;
+						}
+					}
+					else
+						return false;
+				}
+
+				str.assign(it, end);
+				pos=str.find("__vertex");
 				if(pos>=0)
 				{
 					it=it+pos+strlen("__vertex");
@@ -633,8 +658,6 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 		if(std::distance(it, end)<=0) return false;
 		it++;
 	}
-
-	//std::cout << str;
 
 	return true;
 }
@@ -667,14 +690,19 @@ bool gxSurfaceShader::parseShader(std::string::const_iterator& start, std::strin
 				}
 
 				str.assign(it, end);
-				pos=str.find("SubShader");
-				if(pos>=0)
+				do
 				{
-					it=it+pos+strlen("SubShader");
-					int subshader_depth=-1;
-					if(!parseSubShader(it, end, subshader_depth))
-						return false;
-				}
+					pos=str.find("SubShader");
+					if(pos>=0)
+					{
+						it=it+pos+strlen("SubShader");
+						int subshader_depth=-1;
+						if(!parseSubShader(it, end, subshader_depth))
+							return false;
+					}
+					str.assign(it, end);
+					pos=str.find("SubShader");
+				}while(pos>=0);
 			}
 			break;
 		}
@@ -683,8 +711,6 @@ bool gxSurfaceShader::parseShader(std::string::const_iterator& start, std::strin
 		it++;
 	}
 
-	//std::cout << str;
-
 	return true;
 }
 
@@ -692,35 +718,25 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 {
 	std::string str;
 	std::string::const_iterator it=start;
-	//while(it!=end)
-	//{
-	//	if(*it=='}')
-	//	{
-	//		--depth;
-	//		start=it;
-	//		return true;
-	//	}
 
-		switch(depth)
+	switch(depth)
+	{
+	case -1:
 		{
-		case -1:
+			str.assign(it, end);
+			int pos=str.find("Shader");
+			if(pos>=0)
 			{
-				str.assign(it, end);
-				int pos=str.find("Shader");
-				if(pos>=0)
-				{
-					it=it+pos+strlen("Shader");
+				it=it+pos+strlen("Shader");
 
-					if(parseNameInsideQuats(it, end, str))
+				if(parseNameInsideQuats(it, end, str))
+				{
+					if(findOpeningCurlyBrace(it, end))
 					{
-						if(findOpeningCurlyBrace(it, end))
+						int shader_depth=-1;
+						if(parseShader(it, end, shader_depth))
 						{
-							int shader_depth=-1;
-							if(parseShader(it, end, shader_depth))
-							{
-								return true;
-							}
-							else return false;
+							return true;
 						}
 						else return false;
 					}
@@ -728,21 +744,16 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 				}
 				else return false;
 			}
-			break;
+			else return false;
 		}
-
-	//	if(std::distance(it, end)<=0) return false;
-	//	it++;
-	//}
-
-	//std::cout << str;
+		break;
+	}
 
 	return false;
 }
 
 gxSurfaceShader::gxSurfaceShader()
 {
-	m_pLightingShader=NULL;
 	m_pMainShader=NULL;
 }
 
@@ -777,6 +788,8 @@ gxSurfaceShader::~gxSurfaceShader()
 	m_vTextureMap.clear();
 
 	m_cMainShaderSource.clear();
+
+	m_vIncludeModule.clear();
 }
 
 bool gxSurfaceShader::loadSurfaceShader(const char* filename)
@@ -824,17 +837,39 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			return true;
 		}
 		//construct the glsl shader
-		m_cMainShaderSource = "#ifdef GEAR_VERTEX_SHADER\n";
+		m_cMainShaderSource = "#version 120\n";
+		m_cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
 		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(0)->snippet;
 		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
+		for(std::vector<std::string>::iterator it = m_vIncludeModule.begin(); it != m_vIncludeModule.end(); ++it)
+		{
+			std::string module = *it;
+			if(module=="PointLightStruct")
+			{
+				m_cMainShaderSource+=hwShaderManager->getShaderSnippet(4)->snippet;
+			}
+			else if(module=="MaterialStruct")
+			{
+				m_cMainShaderSource+=hwShaderManager->getShaderSnippet(5)->snippet;
+			}
+		}
+		m_cMainShaderSource+=m_cSubShader.vertex_buffer+"\n";
 		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(2)->snippet;
-		m_cMainShaderSource+="\n"+m_cSubShader.vertex_buffer+"\n";
-		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(3)->snippet;
 		m_cMainShaderSource += "#elif defined (GEAR_FRAGMENT_SHADER)\n";
-		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(2)->snippet;
-		m_cMainShaderSource+="\n"+m_cSubShader.fragment_buffer+"\n";
-		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(4)->snippet;
+		m_cMainShaderSource+=m_cSubShader.fragment_buffer+"\n";
+		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(3)->snippet;
 		m_cMainShaderSource += "#endif\n";
+		//
+
+		//create the tmp glsl file
+		char temp[1024];
+		sprintf(temp, "%s.tmp.glsl", filename);
+		FILE* fp=fopen(temp, "w");
+		if(fp)
+		{
+			fwrite(m_cMainShaderSource.c_str(), 1, m_cMainShaderSource.size(), fp);
+			fclose(fp);
+		}
 		//
 
 		m_pMainShader=hwShaderManager->LoadShaderFromBuffer(filename, m_cMainShaderSource.c_str(), m_cMainShaderSource.size());

@@ -44,6 +44,7 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 			char mainshaderfilename[1024];
 			sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
 			material->loadSurfaceShader(mainshaderfilename);
+			material->loadLightingShaders();
 
 			//load sub maps
 			std::vector<gxSubMap*>* maplist=material->getSubMapList();

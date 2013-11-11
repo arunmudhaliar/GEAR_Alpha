@@ -1,4 +1,4 @@
-Shader "Test" {
+Shader "Diffuse" {
 Properties {
 	_Color ("Main Color", Color) = (1,1,1,1)
 	_MainTex ("Base (RGB)", Tex2D) = "white" {}

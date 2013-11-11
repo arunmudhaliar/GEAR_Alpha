@@ -48,15 +48,20 @@ void HWShaderManager::LoadDefaultShaders()
 	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_attrib_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_varying_vars.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
 	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_main.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
 	snippet=LoadCodeSnippet("res/shadersWin32/snippets/fragment_main.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/light_unifrom_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/material_unifrom_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+
+
 
 	gxHWShader* pShader=new gxHWShader();
     if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse.glsl"))	//0

@@ -117,10 +117,9 @@ protected:
 
 	std::vector<gxSubMap*> m_vSubMap;
 	std::vector<stTextureMap*> m_vTextureMap;
+	std::vector<std::string> m_vIncludeModule;
 	
-	gxHWShader* m_pLightingShader;
 	gxHWShader* m_pMainShader;
-
 	std::string m_cMainShaderSource;
 
 public:

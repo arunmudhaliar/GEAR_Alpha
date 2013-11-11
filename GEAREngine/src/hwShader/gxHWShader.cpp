@@ -16,12 +16,6 @@ gxHWShader::~gxHWShader()
 
 bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer, int shaderBuffer_size)
 {
-	char temp[1024];
-	sprintf(temp, "%s.tmp", name);
-	FILE* fp=fopen(temp, "w");
-	fwrite(shaderBuffer, 1, shaderBuffer_size, fp);
-	fclose(fp);
-
 	const char* define_vertex="#define GEAR_VERTEX_SHADER\n";
 	const char* define_fragment="#define GEAR_FRAGMENT_SHADER\n";
 

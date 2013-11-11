@@ -1,7 +1,12 @@
 Shader "PointLight-VertexLit" {
 
 SubShader {
-	__includeModule{	PointLightStruct MaterialStruct	}
+__Pass{
+	__includeModule
+	{
+		PointLightStruct
+		MaterialStruct
+	}
 	
 	__vertex{
 		vec4 pointLight()
@@ -69,5 +74,6 @@ SubShader {
 			return vOUT_Color;
 		}
 	}
+}
 }
 }

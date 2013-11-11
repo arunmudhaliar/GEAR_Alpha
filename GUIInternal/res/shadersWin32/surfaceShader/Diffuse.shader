@@ -5,6 +5,7 @@ Properties {
 }
 
 SubShader {
+__Pass{
 	__vertex{
 		attribute vec2 uv_in_MainTex;
 		varying vec2 uv_out_MainTex;
@@ -24,5 +25,6 @@ SubShader {
 			return texture2D(sampler2d_MainTex, uv_out_MainTex);
 		}
 	}
+}
 }
 }

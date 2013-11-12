@@ -612,6 +612,49 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 		case -1:
 			{
 				str.assign(it, end);
+				int pos=0;
+				do
+				{
+					pos=str.find("__Pass");
+					if(pos>=0)
+					{
+						it=it+pos+strlen("__Pass");
+						int pass_depth=-1;
+						if(!parseSubShaderPass(it, end, pass_depth))
+							return false;
+					}
+					str.assign(it, end);
+					pos=str.find("__Pass");
+				}while(pos>=0);
+			}
+			break;
+		}
+
+		if(std::distance(it, end)<=0) return false;
+		it++;
+	}
+
+	return true;
+}
+
+bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
+{
+	std::string str;
+	std::string::const_iterator it=start;
+	while(it!=end)
+	{
+		if(findClosingCurlyBrace(it, end))
+		{
+			--depth;
+			start=it;
+			return true;
+		}
+
+		switch(depth)
+		{
+		case -1:
+			{
+				str.assign(it, end);
 				int pos=str.find("__includeModule");
 				if(pos>=0)
 				{

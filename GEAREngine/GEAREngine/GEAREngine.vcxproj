@@ -113,6 +113,8 @@
     <ClCompile Include="..\src\tga\TGALoader.cpp" />
     <ClCompile Include="..\src\util\gxFile.cpp" />
     <ClCompile Include="..\src\util\gxUtil.cpp" />
+    <ClCompile Include="..\src\util\nvProfiler.cpp" />
+    <ClCompile Include="..\src\util\nvprofiler\tracedisplayogl.cpp" />
     <ClCompile Include="..\src\zlib-1.2.4\adler32.c" />
     <ClCompile Include="..\src\zlib-1.2.4\compress.c" />
     <ClCompile Include="..\src\zlib-1.2.4\crc32.c" />
@@ -172,6 +174,9 @@
     <ClInclude Include="..\src\util\Crc32.h" />
     <ClInclude Include="..\src\util\gxFile.h" />
     <ClInclude Include="..\src\util\gxUtil.h" />
+    <ClInclude Include="..\src\util\nvProfiler.h" />
+    <ClInclude Include="..\src\util\nvprofiler\trace.h" />
+    <ClInclude Include="..\src\util\nvprofiler\tracedisplay.h" />
     <ClInclude Include="..\src\util\pngLoader.h" />
     <ClInclude Include="..\src\zlib-1.2.4\crc32.h" />
     <ClInclude Include="..\src\zlib-1.2.4\deflate.h" />

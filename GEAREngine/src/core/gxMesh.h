@@ -45,8 +45,8 @@ public:
 	virtual void update(float dt);
 	virtual void render(gxRenderer* renderer, object3d* light);
 	void renderNormal(gxRenderer* renderer);
+	void renderWithLight(gxRenderer* renderer, object3d* light);
 	void renderWithHWShader(gxRenderer* renderer);
-	void renderWithHWShader2(gxRenderer* renderer);
 
 	float* allocateVertexBuffer(int nTris);
 	float* allocateColorBuffer(int nTris);

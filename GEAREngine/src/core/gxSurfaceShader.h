@@ -105,6 +105,7 @@ private:
 	bool parseTexProperty(std::string::const_iterator& start, std::string::const_iterator& end, const char* _texname, int& depth);
 	bool parseProperties(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseSubShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
+	bool parseSubShaderPass(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseSubShader_vertex(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseSubShader_fragment(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);

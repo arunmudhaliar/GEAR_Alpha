@@ -45,6 +45,8 @@ public:
 
 	void loadLightingShaders();
 
+	gxSurfaceShader* getLightingSurfaceShader()	{	return &m_cPointLightSurfaceShader;	}
+
 private:
 	vector4f m_cAmbient;
 	vector4f m_cDiffuse;

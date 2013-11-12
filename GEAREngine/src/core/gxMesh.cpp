@@ -52,9 +52,9 @@ void gxMesh::render(gxRenderer* renderer, object3d* light)
 
 #if defined (USE_ProgrammablePipeLine)
 	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
-		renderWithHWShader(renderer);
+		renderWithLight(renderer, light);
 	else if(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)
-		renderWithHWShader2(renderer);
+		renderWithHWShader(renderer);
 #else
 	renderNormal(renderer);
 #endif
@@ -101,95 +101,74 @@ void gxMesh::renderNormal(gxRenderer* renderer)
 	glPopMatrix();
 }
 
-void gxMesh::renderWithHWShader(gxRenderer* renderer)
+void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 {
-	HWShaderManager* hwManager = engine_getHWShaderManager();
-	gxHWShader* shader=(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)?hwManager->GetHWShader(1):hwManager->GetHWShader(3);
-    
-	if(renderer->getRenderPassType()!=gxRenderer::RENDER_LIGHTING_ONLY)
-	{
-		shader->enableProgram();
-	}
+	if(light->getID()!=3)
+		return;
 
-	glVertexAttribPointer(shader->getAttribLoc("vIN_Position"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
-    glEnableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
+	gxLight* light_ob=(gxLight*)light;
 
-	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
-	{
-		glVertexAttribPointer(shader->getAttribLoc("vIN_Normal"), 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
-		glEnableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
+	matrix4x4f cMV = *renderer->getViewMatrix() * *getWorldMatrix();
+	const float* u_modelview_m4x4=cMV.getMatrix();
 
-		matrix4x4f cMV = *renderer->getViewMatrix() * *getWorldMatrix();
-		const float* u_modelview_m4x4=cMV.getMatrix();
-		shader->sendUniformTMfv("GEAR_MV", u_modelview_m4x4, false, 4);
-
-		cMV.noScale();
-		matrix4x4f cMVInverse = cMV.getInverse();
-		cMVInverse.transpose();
-		const float* u_modelview_inverse_m4x4=cMVInverse.getMatrix();
-		shader->sendUniformTMfv("GEAR_NORMAL_MATRIX", u_modelview_m4x4, false, 4);
-	}
+	matrix4x4f noscaleMV(cMV);
+	noscaleMV.noScale();
+	matrix4x4f cMVInverse = noscaleMV.getInverse();
+	cMVInverse.transpose();
+	const float* u_modelview_inverse_m4x4=cMVInverse.getMatrix();
 
 	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
     const float* u_mvp_m4x4=cMVP.getMatrix();
-	shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
 
 	for(int x=0;x<m_nTriInfoArray;x++)
 	{
 		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
 		if(!triInfo->getTriList()) continue;
 
-		if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
+		gxMaterial* material=triInfo->getMaterial();
+		if(!material) continue;
+		gxHWShader* shader=material->getLightingSurfaceShader()->getMainShader();
+		shader->enableProgram();
+
+		light_ob->renderPass(renderer, shader);
+		shader->sendUniformTMfv("GEAR_MV", u_modelview_m4x4, false, 4);
+		shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
+		shader->sendUniformTMfv("GEAR_NORMAL_MATRIX", u_modelview_inverse_m4x4, false, 4);
+
+		glVertexAttribPointer(shader->getAttribLoc("vIN_Position"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
+		glEnableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
+
+		glVertexAttribPointer(shader->getAttribLoc("vIN_Normal"), 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
+		glEnableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
+
+		if(triInfo->getMaterial())
 		{
-			if(triInfo->getMaterial())
-			{
-				shader->sendUniform4fv("material.diffuse", &triInfo->getMaterial()->getDiffuseClr().x);
-				shader->sendUniform4fv("material.ambient", &triInfo->getMaterial()->getAmbientClr().x);
-				shader->sendUniform4fv("material.specular", &triInfo->getMaterial()->getSpecularClr().x);
-				shader->sendUniform1f("material.shininess", 1.0f/*triInfo->getMaterial()->getShininess()*/);
-			}
-			else
-			{
-				shader->sendUniform4f("material.diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
-				shader->sendUniform4f("material.ambient", 0.2f, 0.2f, 0.2f, 1.0f);
-				shader->sendUniform4f("material.specular", 0.2f, 0.2f, 0.2f, 1.0f);
-				shader->sendUniform1f("material.shininess", 1.0f/*triInfo->getMaterial()->getShininess()*/);
-			}
+			shader->sendUniform4fv("material.diffuse", &material->getDiffuseClr().x);
+			shader->sendUniform4fv("material.ambient", &material->getAmbientClr().x);
+			shader->sendUniform4fv("material.specular", &material->getSpecularClr().x);
+			shader->sendUniform1f("material.shininess", 1.0f/*material->getShininess()*/);
+		}
+		else
+		{
+			shader->sendUniform4f("material.diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
+			shader->sendUniform4f("material.ambient", 0.2f, 0.2f, 0.2f, 1.0f);
+			shader->sendUniform4f("material.specular", 0.2f, 0.2f, 0.2f, 1.0f);
+			shader->sendUniform1f("material.shininess", 1.0f/*material->getShininess()*/);
 		}
 
-		int nTexUsed=0;
-		if(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)
-		{
-			for(int m=0;m<m_nUVChannels;m++)
-			{
-				gxUV* uv=&m_pszUVChannels[m];
-				if(applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, "vIN_UVCoord0"))
-				{
-					shader->sendUniform1i("sampler2d_diffuse", nTexUsed);
-					nTexUsed++;
-				}
-			}
-		}
+
 		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
 		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
 		renderer->m_nDrawCalls++;
 
-		disableTextureOperations(nTexUsed, shader, "vIN_UVCoord0");
-	}
-
-	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
-	{
 		glDisableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
-	}
-	glDisableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
+		glDisableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
 
-	if(renderer->getRenderPassType()!=gxRenderer::RENDER_LIGHTING_ONLY)
-	{
 		shader->disableProgram();
 	}
 }
 
-void gxMesh::renderWithHWShader2(gxRenderer* renderer)
+void gxMesh::renderWithHWShader(gxRenderer* renderer)
 {
 	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
     const float* u_mvp_m4x4=cMVP.getMatrix();

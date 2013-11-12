@@ -5,6 +5,9 @@
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 #include "../../resource.h"
 
+#include "../../../GEAREngine/src/util/nvProfiler.h"
+#include "../../../GEAREngine/src/util/nvProfiler.cpp"
+
 //void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight);
 
 gearSceneWorldEditor::gearSceneWorldEditor():
@@ -30,11 +33,18 @@ geWindow("World Editor")
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
 {
+#if USE_NVPROFILER
+	GetNvPmApi()->Shutdown();
+#endif
 	//GE_DELETE(m_pHorizontalSlider_LightAmbient);
 }
 
 void gearSceneWorldEditor::onCreate()
 {
+#if USE_NVPROFILER
+	nvProfiler::InitNVPM(EditorApp::getMainRenderer()->getRenderingContext());
+#endif
+
 	monoWrapper::mono_engine_init(2);
 	m_pMainWorldPtr = monoWrapper::mono_engine_getWorld(0);
 	m_pMainWorldPtr->setWorldObserver(this);
@@ -327,29 +337,68 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	monoWrapper::mono_engine_resize(m_pMainWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glEnable(GL_DEPTH_TEST);
-	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-	monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE);
-	HWShaderManager* hwManager = engine_getHWShaderManager();
-	gxHWShader* shader=hwManager->GetHWShader(3);
-	shader->enableProgram();
-	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
-	for(int x=0;x<lightList->size();x++)
+#if USE_NVPROFILER
+	if(nvProfiler::g_bPerformanceAnalyze)
 	{
-		gxLight* light = lightList->at(x);
-		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
-			continue;
-		light->renderPass(m_pMainWorldPtr->getRenderer(), shader);
+		NVPMUINT unNumPasses = 1;
+		// Get the number of passes we'll need for all experiments
+		GetNvPmApi()->BeginExperiment(nvProfiler::g_hNVPMContext, &unNumPasses);
+		
+		for(int npass=0;npass<unNumPasses; npass++)
+		{
+			GetNvPmApi()->BeginPass(nvProfiler::g_hNVPMContext, npass);
 
-		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
-		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-		monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
+			glEnable(GL_DEPTH_TEST);
+			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+			GetNvPmApi()->BeginObject(nvProfiler::g_hNVPMContext, 0);
+			monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+			GetNvPmApi()->EndObject(nvProfiler::g_hNVPMContext, 0);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE);
+
+			std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
+			for(int x=0;x<lightList->size();x++)
+			{
+				gxLight* light = lightList->at(x);
+				if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+					continue;
+
+				m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+				//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+				GetNvPmApi()->BeginObject(nvProfiler::g_hNVPMContext, 1);
+				monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
+				GetNvPmApi()->EndObject(nvProfiler::g_hNVPMContext, 1);
+			}
+			glDisable(GL_BLEND);
+
+			GetNvPmApi()->EndPass(nvProfiler::g_hNVPMContext, npass);
+		}
+		GetNvPmApi()->EndExperiment(nvProfiler::g_hNVPMContext);
 	}
-	shader->disableProgram();
-	glDisable(GL_BLEND);
+	else
+	{
+		glEnable(GL_DEPTH_TEST);
+		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+		monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
+		for(int x=0;x<lightList->size();x++)
+		{
+			gxLight* light = lightList->at(x);
+			if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+				continue;
+
+			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+			//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+			monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
+		}
+		glDisable(GL_BLEND);
+	}
+#endif
 
 	drawGrid();
 	drawSelectedObject();
@@ -549,6 +598,10 @@ void gearSceneWorldEditor::drawStats()
 		}
 	}
 
+#if USE_NVPROFILER
+	nvProfiler::SampleAndRenderStats();
+#endif
+
 	glEnable(GL_DEPTH_TEST);
 
 	//
@@ -613,6 +666,11 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 		m_cMultiPassFBO.CreateTextureBuffer();
 		m_cMultiPassFBO.AttachTextureBuffer(0);
 		m_cMultiPassFBO.UnBindFBO();
+		
+#if USE_NVPROFILER
+		gTraceDisplay_DisplayW=cx;
+		gTraceDisplay_DisplayH=cy;
+#endif
 	}
 #endif
 
@@ -1013,6 +1071,24 @@ void gearSceneWorldEditor::onSliderChange(geGUIBase* slider)
 
 bool gearSceneWorldEditor::onKeyDown(int charValue, int flag)
 {
+#if USE_NVPROFILER
+	if(charValue==32)
+	{
+		nvProfiler::nvDataProvider->removeAllCounters();
+
+        // Add some SOL and bottleneck counters
+        nvProfiler::nvDataProvider->add("SHD Bottleneck");
+        nvProfiler::nvDataProvider->add("SHD SOL");
+        nvProfiler::nvDataProvider->add("TEX Bottleneck");
+        nvProfiler::nvDataProvider->add("TEX SOL");
+        nvProfiler::nvDataProvider->add("ROP Bottleneck");
+        nvProfiler::nvDataProvider->add("ROP SOL");
+        nvProfiler::nvDataProvider->add("FB Bottleneck");
+        nvProfiler::nvDataProvider->add("FB SOL");
+		nvProfiler::g_bPerformanceAnalyze=true;
+	}
+#endif
+
 	monoWrapper::mono_game_onkeydown(charValue, flag);
 	return geWindow::onKeyDown(charValue, flag);
 }

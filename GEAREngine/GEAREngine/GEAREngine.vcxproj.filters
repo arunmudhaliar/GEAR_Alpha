@@ -40,6 +40,9 @@
     <Filter Include="engine\hwShader">
       <UniqueIdentifier>{10a55d15-3a57-4d5e-afa5-de48c1fe8ad4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\util\nvprofiler">
+      <UniqueIdentifier>{b12e64a1-7931-47cf-aa80-6b65a8bb8da4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp">
@@ -188,6 +191,12 @@
     </ClCompile>
     <ClCompile Include="..\src\core\gxSurfaceShader.cpp">
       <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\util\nvprofiler\tracedisplayogl.cpp">
+      <Filter>engine\util\nvprofiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\util\nvProfiler.cpp">
+      <Filter>engine\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -361,6 +370,15 @@
     </ClInclude>
     <ClInclude Include="..\src\core\gxSurfaceShader.h">
       <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\nvProfiler.h">
+      <Filter>engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\nvprofiler\trace.h">
+      <Filter>engine\util\nvprofiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\nvprofiler\tracedisplay.h">
+      <Filter>engine\util\nvprofiler</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

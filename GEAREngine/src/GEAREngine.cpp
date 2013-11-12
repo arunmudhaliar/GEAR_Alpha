@@ -478,39 +478,3 @@ void GEAREngine::initEngine(int nWorldToCreate)
 		m_cWorlds.push_back(newWorld);
 	}
 }
-
-//void GEAREngine::updateEngine(gxWorld* world, float dt)
-//{
-//	world->update(dt);
-//}
-//
-//void GEAREngine::renderEngine(gxWorld* world)
-//{
-//	world->render();
-//}
-//
-//void GEAREngine::renderSingleObject(gxWorld* world, object3d* obj)
-//{
-//	world->renderSingleObject(obj);
-//}
-//
-//void GEAREngine::resizeEngine(gxWorld* world, float x, float y, float cx, float cy)
-//{
-//	world->resizeWorld(x, y, cx, cy);
-//}
-
-//object3d* GEAREngine::loadFBX(const char* filename)
-//{
-//	fbxImporter importer;
-//	object3d* root_object_node=importer.loadMyFBX(filename);
-//	m_cRootNodes.push_back(root_object_node);
-//
-//	return root_object_node;
-//}
-//
-//Camera* GEAREngine::setDefaultCameraActive()
-//{
-//	m_pActiveCameraPtr=&m_cDefaultCamera;
-//
-//	return m_pActiveCameraPtr;
-//}

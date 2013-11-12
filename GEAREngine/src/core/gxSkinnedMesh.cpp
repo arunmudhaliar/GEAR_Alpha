@@ -61,7 +61,10 @@ void gxSkinnedMesh::render(gxRenderer* renderer, object3d* light)
 		return;
 
 #if defined (USE_ProgrammablePipeLine)
-	renderWithHWShader(renderer);
+	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
+		renderWithLight(renderer, light);
+	else if(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)
+		renderWithHWShader(renderer);
 #else
 	renderNormal(renderer);
 #endif

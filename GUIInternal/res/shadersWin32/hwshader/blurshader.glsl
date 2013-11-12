@@ -16,7 +16,7 @@ void main()
 
 uniform sampler2D u_diffuse_texture;
 varying vec2 v_uvcoord0;
-const float blurSize = 1.0/100.0;
+const float blurSize = 1.0/800.0;
 const float weightSum = (70.0 + 2.0 * (1.0 + 8.0 + 28.0 + 56.0));
 
 void main()

@@ -44,14 +44,11 @@ void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)
 	shader->sendUniform1f("light.linear_attenuation", m_fLinearAttenuation);
 	shader->sendUniform1f("light.quadratic_attenuation", m_fQuadraticAttenuation);
 
-	////matrix4x4f* viewMatrix = renderer->getViewMatrix();
-	//vector3f eye(renderer->getMainCameraEye());
-	//shader->sendUniform3fv("u_eyedirection_v3", &eye.x);
+	vector3f eye(renderer->getMainCameraEye());
+	shader->sendUniform3fv("_WorldSpaceCameraPos", &eye.x);
+	//vector3f lightPos(*renderer->getViewMatrix() * getWorldMatrix()->getPosition());
+	vector3f lightPos(getWorldMatrix()->getPosition());
 
-	vector3f lightPos(*renderer->getViewMatrix() * getWorldMatrix()->getPosition());
-	//float t=lightPos.x;
-	//lightPos.x=-lightPos.y;
-	//lightPos.y=t;
 	shader->sendUniform4f("light.position", lightPos.x, lightPos.y, lightPos.z, 1.0f);
 #endif
 }

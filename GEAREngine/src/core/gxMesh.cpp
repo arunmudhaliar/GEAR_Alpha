@@ -131,9 +131,15 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 		shader->enableProgram();
 
 		light_ob->renderPass(renderer, shader);
-		shader->sendUniformTMfv("GEAR_MV", u_modelview_m4x4, false, 4);
+
+		shader->sendUniformTMfv("GEAR_M", getMatrix(), false, 4);
+		matrix4x4f inv_model=*this;
+		inv_model.inverse();
+		shader->sendUniformTMfv("GEAR_M_INVERSE", inv_model.getMatrix(), false, 4);
+
+		//shader->sendUniformTMfv("GEAR_MV", u_modelview_m4x4, false, 4);
 		shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
-		shader->sendUniformTMfv("GEAR_NORMAL_MATRIX", u_modelview_inverse_m4x4, false, 4);
+		//shader->sendUniformTMfv("GEAR_NORMAL_MATRIX", u_modelview_inverse_m4x4, false, 4);
 
 		glVertexAttribPointer(shader->getAttribLoc("vIN_Position"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
 		glEnableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
@@ -146,14 +152,14 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 			shader->sendUniform4fv("material.diffuse", &material->getDiffuseClr().x);
 			shader->sendUniform4fv("material.ambient", &material->getAmbientClr().x);
 			shader->sendUniform4fv("material.specular", &material->getSpecularClr().x);
-			shader->sendUniform1f("material.shininess", 1.0f/*material->getShininess()*/);
+			shader->sendUniform1f("material.shininess", 10.0f/*material->getShininess()*/);
 		}
 		else
 		{
 			shader->sendUniform4f("material.diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
 			shader->sendUniform4f("material.ambient", 0.2f, 0.2f, 0.2f, 1.0f);
 			shader->sendUniform4f("material.specular", 0.2f, 0.2f, 0.2f, 1.0f);
-			shader->sendUniform1f("material.shininess", 1.0f/*material->getShininess()*/);
+			shader->sendUniform1f("material.shininess", 10.0f/*material->getShininess()*/);
 		}
 
 

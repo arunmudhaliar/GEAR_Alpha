@@ -33,7 +33,7 @@ public:
 	const vector4f& getSpecularColor()	{	return m_cSpecular;	}
 	const vector4f& getAmbientColor()	{	return m_cAmbient;	}
 	ELIGHT_TYPE	getLightType()			{	return m_eType;		}
-	void setLightType(ELIGHT_TYPE eType){	m_eType=m_eType;	}
+	void setLightType(ELIGHT_TYPE eType){	m_eType=eType;		}
 
 	float getConstantAttenuation()	{	return m_fConstantAttenuation;	}
 	float getLinearAttenuation()	{	return m_fLinearAttenuation;	}

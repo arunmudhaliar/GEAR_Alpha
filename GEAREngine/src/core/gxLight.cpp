@@ -49,6 +49,6 @@ void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)
 	//vector3f lightPos(*renderer->getViewMatrix() * getWorldMatrix()->getPosition());
 	vector3f lightPos(getWorldMatrix()->getPosition());
 
-	shader->sendUniform4f("light.position", lightPos.x, lightPos.y, lightPos.z, 1.0f);
+	shader->sendUniform4f("light.position", lightPos.x, lightPos.y, lightPos.z, (m_eType==LIGHT_POINT)?1.0f:0.0f);
 #endif
 }

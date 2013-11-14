@@ -4,36 +4,27 @@ gxMaterial::gxMaterial()
 {
 	m_cDiffuse.set(0.5f, 0.5f, 0.5f, 1.0f);
 	m_iFileCRC=0;
+	m_pSurfaceShaderPtr=NULL;
 }
 
 gxMaterial::~gxMaterial()
 {
+	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	{
+		gxSubMap* map = *it;
+		GX_DELETE(map);
+	}
+	m_vSubMap.clear();
+
+	//clear all the material passes
+	for(std::vector<stMaterialPass*>::iterator it_pass = m_vMaterialPass.begin(); it_pass != m_vMaterialPass.end(); ++it_pass)
+	{
+		stMaterialPass* mpass=*it_pass;
+		GX_DELETE(mpass);
+	}
+	m_vMaterialPass.clear();
+	//
 }
-
-//bool isAlphaOrBlended()
-//{
-//	bool bAlphaOrBlended=false;
-//
-//	//chk on the shader array
-//	for(int x=0;x<gxSubMaterialMap::EMMAP_MAX;x++)
-//	{
-//		gxSubMaterialMap* subMatMap=m_pszSubMap[x];
-
-//		if(!subMatMap) continue;
-//	
-//		if(subMatMap->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
-//		{
-//			bAlphaOrBlended=true;
-//			break;
-//		}
-//	}
-//
-//	//chk if transparency value is other than 1.0f
-//	if(m_fAlpha<1.0f)
-//		bAlphaOrBlended=true;
-//	
-//	return bAlphaOrBlended;
-//}
 
 #if 0
 gxTexture* gxMaterial::loadTextureFromDirectory(CTextureManager& textureManager, const char* directory)
@@ -74,13 +65,6 @@ gxTexture* gxMaterial::loadTextureFromDirectory(CTextureManager& textureManager,
 }
 #endif
 
-//void gxMaterial::setSubMap(gxSubMap* submap, gxSubMap::ESUBMAP eType)
-//{
-//	GX_DELETE(m_pszSubMap[eType]);
-//	m_pszSubMap[eType]=submap;
-//}
-
-
 bool gxMaterial::appendDependency(int crc)
 {
 	if(std::find(m_vDependencyCRCList.begin(), m_vDependencyCRCList.end(), crc)==m_vDependencyCRCList.end())
@@ -102,13 +86,13 @@ void gxMaterial::write(gxFile& file)
 	file.Write(m_fShininess);
 	file.Write(m_bTwoSided);
 	file.Write(m_szMaterialName);
-	file.Write((int)m_vTextureMap.size());
-	for(std::vector<stTextureMap*>::iterator it = m_vTextureMap.begin(); it != m_vTextureMap.end(); ++it)
-	{
-		stTextureMap* texmap = *it;
-		file.Write(texmap->texturename.c_str());
-		file.Write(texmap->crc);
-	}
+	//file.Write((int)m_vTextureMap.size());
+	//for(std::vector<stTextureMap*>::iterator it = m_vTextureMap.begin(); it != m_vTextureMap.end(); ++it)
+	//{
+	//	stTextureMap* texmap = *it;
+	//	file.Write(texmap->texturename.c_str());
+	//	file.Write(texmap->crc);
+	//}
 
 	file.Write(m_cMainShaderName.c_str());
 	file.Write(m_vDependencyCRCList.size());
@@ -131,20 +115,20 @@ void gxMaterial::read(gxFile& file)
 	GX_STRCPY(m_szMaterialName, temp);
 	GX_DELETE_ARY(temp);
 
-	int nsubmap=0;
-	file.Read(nsubmap);
-	for(int x=0;x<nsubmap;x++)
-	{
-		char* temp=file.ReadString();
-		int texcrc;
-		file.Read(texcrc);
+	//int nsubmap=0;
+	//file.Read(nsubmap);
+	//for(int x=0;x<nsubmap;x++)
+	//{
+	//	char* temp=file.ReadString();
+	//	int texcrc;
+	//	file.Read(texcrc);
 
-		stTextureMap* texmap = new stTextureMap();
-		texmap->texturename.assign(temp);
-		texmap->crc=texcrc;
-		m_vTextureMap.push_back(texmap);
-		GX_DELETE_ARY(temp);
-	}
+	//	stTextureMap* texmap = new stTextureMap();
+	//	texmap->texturename.assign(temp);
+	//	texmap->crc=texcrc;
+	//	m_vTextureMap.push_back(texmap);
+	//	GX_DELETE_ARY(temp);
+	//}
 
 	temp=file.ReadString();
 	setMainShaderName(temp);
@@ -170,4 +154,100 @@ gxMaterial* gxMaterial::createNewMaterial()
 	material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
 
 	return material;
+}
+
+void gxMaterial::setSurfaceShader(gxSurfaceShader* surfaceShader)
+{
+	if(m_pSurfaceShaderPtr==surfaceShader || surfaceShader==NULL) return;
+
+	m_pSurfaceShaderPtr=surfaceShader;
+
+	std::vector<stShaderProperty_Texture2D*>* propertylist=m_pSurfaceShaderPtr->getShaderPropertyList();
+	while(m_vSubMap.size()<propertylist->size())
+	{
+		gxSubMap* submap = new gxSubMap();
+		appendSubMap(submap);
+	}
+
+	//remove additional maps from list
+	while(m_vSubMap.size()>propertylist->size())
+	{
+		gxSubMap* submap=m_vSubMap[m_vSubMap.size()-1];
+		m_vSubMap.erase(std::remove(m_vSubMap.begin(), m_vSubMap.end(), submap), m_vSubMap.end());
+		GX_DELETE(submap);
+	}
+	//
+
+	int submap_cntr=0;
+	for(std::vector<stShaderProperty_Texture2D*>::iterator it = propertylist->begin(); it != propertylist->end(); ++it, submap_cntr++)
+	{
+		stShaderProperty_Texture2D* tex2d = *it;
+		gxSubMap* submap = m_vSubMap[submap_cntr];
+		submap->setShaderTextureProperty(tex2d);
+	}
+
+	//clear all the material passes
+	for(std::vector<stMaterialPass*>::iterator it_pass = m_vMaterialPass.begin(); it_pass != m_vMaterialPass.end(); ++it_pass)
+	{
+		stMaterialPass* mpass=*it_pass;
+		GX_DELETE(mpass);
+	}
+	m_vMaterialPass.clear();
+	//
+
+	std::vector<stPass*>* passlist=m_pSurfaceShaderPtr->getShaderPassList();
+	int cntr=0;
+	for(std::vector<stPass*>::iterator it_pass = passlist->begin(); it_pass != passlist->end(); ++it_pass, cntr++)
+	{
+		stPass* currentPass = *it_pass;
+		stMaterialPass* mpass = new stMaterialPass();
+		mpass->pass=currentPass;
+		
+		//check if a tex coord is used in this pass or not
+		for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
+		{
+			gxSubMap* map = *submap_it;
+			//check in vertex shader
+			if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+			{
+				mpass->vUsedSubMap.push_back(map);
+			}
+
+			//check in fragment shader
+			if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+			{
+				mpass->vUsedSubMap.push_back(map);
+			}
+		}
+
+		m_vMaterialPass.push_back(mpass);
+	}
+}
+
+void gxMaterial::appendSubMap(gxSubMap* map)
+{
+	m_vSubMap.push_back(map);
+}
+
+gxSubMap* gxMaterial::getSubMap(int index)
+{
+	if(index>=(int)m_vSubMap.size()) return NULL;
+
+	return m_vSubMap[index];
+}
+
+gxTexture* gxMaterial::loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap)
+{
+	gxSubMap* map=NULL;
+	if(submap==-1)
+	{
+		map = new gxSubMap();
+		appendSubMap(map);
+	}
+	else
+	{
+		map = m_vSubMap[submap];
+	}
+
+	return map->load(textureManager, filename);
 }

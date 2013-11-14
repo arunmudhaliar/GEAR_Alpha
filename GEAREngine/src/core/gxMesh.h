@@ -45,8 +45,8 @@ public:
 
 	virtual void update(float dt);
 	virtual void render(gxRenderer* renderer, object3d* light);
-	void renderNormal(gxRenderer* renderer);
-	void renderWithLight(gxRenderer* renderer, object3d* light);
+	//void renderNormal(gxRenderer* renderer);
+	//void renderWithLight(gxRenderer* renderer, object3d* light);
 	void renderWithHWShader(gxRenderer* renderer, object3d* light);
 
 	float* allocateVertexBuffer(int nTris);
@@ -82,8 +82,8 @@ public:
 
 protected:
 
-	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
-	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxHWShader* shader, const char* texCoordAttribName);
+	//bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
+	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, gxSubMap* submap, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxHWShader* shader, const char* texCoordAttribName);
 	
 	void disableTextureOperations(int nMultiTextureUsed, gxHWShader* shader, const char* texCoordAttribName);
 

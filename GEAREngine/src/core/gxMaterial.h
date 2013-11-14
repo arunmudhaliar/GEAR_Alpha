@@ -6,7 +6,21 @@
 #include <algorithm>
 #include "gxSurfaceShader.h"
 
-class DllExport gxMaterial : public gxSurfaceShader
+struct stMaterialPass
+{
+	stMaterialPass()
+	{
+		pass=NULL;
+	}
+	~stMaterialPass()
+	{
+		vUsedSubMap.clear();
+	}
+	stPass* pass;
+	std::vector<gxSubMap*> vUsedSubMap;
+};
+
+class DllExport gxMaterial //: public gxSurfaceShader
 {
 public:
 	gxMaterial();
@@ -43,6 +57,15 @@ public:
 	void setMainShaderName(const char* name)	{	m_cMainShaderName.assign(name);		}
 	const char* getMainshaderName()				{	return m_cMainShaderName.c_str();	}
 
+	void setSurfaceShader(gxSurfaceShader* surfaceShader);
+	gxSurfaceShader* getSurfaceShader()						{	return m_pSurfaceShaderPtr;			}
+
+	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap);	//-1 will add a map to the list
+	void appendSubMap(gxSubMap* map);
+	gxSubMap* getSubMap(int index);
+	std::vector<gxSubMap*>* getSubMapList()	{	return &m_vSubMap;	}
+	std::vector<stMaterialPass*>* getShaderPassList()	{	return &m_vMaterialPass;	}
+
 private:
 	vector4f m_cAmbient;
 	vector4f m_cDiffuse;
@@ -54,6 +77,9 @@ private:
 	std::vector<int> m_vDependencyCRCList;
 	int m_iFileCRC;
 	std::string m_cMainShaderName;
+	gxSurfaceShader* m_pSurfaceShaderPtr;	//must not delete this pointer
+	std::vector<gxSubMap*> m_vSubMap;
+	std::vector<stMaterialPass*> m_vMaterialPass;
 };
 
 #endif

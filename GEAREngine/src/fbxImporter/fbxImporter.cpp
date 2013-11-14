@@ -649,6 +649,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 					material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
 					material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
 
+#if 0	//moved the maps to surface shader. so we don't need this anymore
 					FbxProperty diffuseProp = surfaceMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
 					if(diffuseProp.IsValid())
 					{
@@ -671,7 +672,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 						texmap->texturename.assign("no-map");
 						material->appendTextureMap(texmap);
 					}
-
+#endif
 					material->setMainShaderName("Diffuse");
 					triInfoArray[fbxMaterialIndex].setMaterial(material);
 					material->appendDependency(rootObject3d->getFileCRC());

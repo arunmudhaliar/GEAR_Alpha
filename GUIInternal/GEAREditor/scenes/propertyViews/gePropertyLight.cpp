@@ -46,6 +46,11 @@ void gePropertyLight::populatePropertyOfLight(object3d* obj)
 	m_pHorizontalSlider_ConstantAttenuation->setSliderValue(m_pLightPtr->getConstantAttenuation(), false);
 	m_pHorizontalSlider_LinearAttenuation->setSliderValue(m_pLightPtr->getLinearAttenuation()*100.0f, false);
 	m_pHorizontalSlider_QuadraticAttenuation->setSliderValue(m_pLightPtr->getQuadraticAttenuation()*1000.0f, false);
+
+	if(m_pLightPtr->getLightType()==gxLight::LIGHT_DIRECTIONAL)
+		m_pLightTypeToolBarDropMenuBtnPtr->setMenuItem("Directional Light");
+	else if(m_pLightPtr->getLightType()==gxLight::LIGHT_POINT)
+		m_pLightTypeToolBarDropMenuBtnPtr->setMenuItem("Point Light");
 }
 
 void gePropertyLight::onTextChange(geGUIBase* textbox)
@@ -93,15 +98,18 @@ void gePropertyLight::onSliderChange(geGUIBase* slider)
 
 void gePropertyLight::onButtonClicked(geGUIBase* btn)
 {
-	if(m_pLightTypeToolBarDropMenuBtnPtr==btn)
-	{
-	}
 }
 
 void gePropertyLight::onCommand(int cmd)
 {
 	if(cmd==0x00005003)
 	{
-		setSize(m_cSize.x, m_cSize.y+=20);
+		m_pLightPtr->setLightType(gxLight::LIGHT_DIRECTIONAL);
+		m_pLightTypeToolBarDropMenuBtnPtr->setMenuItem(cmd);
+	}
+	else if(cmd==0x00005002)
+	{
+		m_pLightPtr->setLightType(gxLight::LIGHT_POINT);
+		m_pLightTypeToolBarDropMenuBtnPtr->setMenuItem(cmd);
 	}
 }

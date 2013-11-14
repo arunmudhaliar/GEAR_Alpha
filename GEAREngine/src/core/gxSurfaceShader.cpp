@@ -665,6 +665,7 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 				pass.vIN_Position = (int)str.find("vIN_Position")>=0;
 				pass.vIN_Normal = (int)str.find("vIN_Normal")>=0;
 				pass.vIN_Color = (int)str.find("vIN_Color")>=0;
+				pass.Tangent = (int)str.find("Tangent")>=0;
 
 				int pos=str.find("__includeModule");
 				if(pos>=0)
@@ -838,7 +839,7 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 			{
 				it=it+pos+strlen("Shader");
 
-				if(parseNameInsideQuats(it, end, str))
+				if(parseNameInsideQuats(it, end, m_cName))
 				{
 					if(findOpeningCurlyBrace(it, end))
 					{
@@ -867,13 +868,6 @@ gxSurfaceShader::gxSurfaceShader()
 
 gxSurfaceShader::~gxSurfaceShader()
 {
-	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
-	{
-		gxSubMap* map = *it;
-		GX_DELETE(map);
-	}
-	m_vSubMap.clear();
-
 	for(std::vector<stShaderProperty_Texture2D*>::iterator it = m_vTex2D_Properties.begin(); it != m_vTex2D_Properties.end(); ++it)
 	{
 		stShaderProperty_Texture2D* obj = *it;
@@ -900,7 +894,7 @@ gxSurfaceShader::~gxSurfaceShader()
 
 bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 {
-	filename="res//shadersWin32//surfaceShader//NormalMap.shader";
+	m_cFileName.assign(gxUtil::getFileNameFromPath(filename));
 	int fileSz=0;
 	FILE* fp=fopen(filename, "r");
 	if(fp==NULL) return false;
@@ -927,14 +921,6 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 	bool bParseRetVal=parse(iter, end, depth);
 	if(bParseRetVal)
 	{
-		for(std::vector<stShaderProperty_Texture2D*>::iterator it = m_vTex2D_Properties.begin(); it != m_vTex2D_Properties.end(); ++it)
-		{
-			stShaderProperty_Texture2D* tex2d = *it;
-			gxSubMap* submap = new gxSubMap();
-			submap->setShaderTextureProperty(tex2d);
-			appendSubMap(submap);
-		}
-
 		HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 
 		int cntr=0;
@@ -947,22 +933,22 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			gxHWShader* pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, NULL, 0);
 			if(pMainShader)
 			{
-				//check if a tex coord is used in this pass or not
-				for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
-				{
-					gxSubMap* map = *submap_it;
-					//check in vertex shader
-					if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
-					{
-						currentPass->usedSubMap.push_back(map);
-					}
+				////check if a tex coord is used in this pass or not
+				//for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
+				//{
+				//	gxSubMap* map = *submap_it;
+				//	//check in vertex shader
+				//	if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+				//	{
+				//		currentPass->usedSubMap.push_back(map);
+				//	}
 
-					//check in fragment shader
-					if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
-					{
-						currentPass->usedSubMap.push_back(map);
-					}
-				}
+				//	//check in fragment shader
+				//	if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+				//	{
+				//		currentPass->usedSubMap.push_back(map);
+				//	}
+				//}
 				m_vShaderProgram.push_back(pMainShader);
 				std::cout << constructed_glsl_filename << "\n" << "Shader already loaded" << "\n Parse Success. Pass(" << cntr << ")\n";
 				continue;
@@ -984,22 +970,22 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 				}
 			}
 
-			//check if a tex coord is used in this pass or not
-			for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
-			{
-				gxSubMap* map = *submap_it;
-				//check in vertex shader
-				if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
-				{
-					currentPass->usedSubMap.push_back(map);
-				}
+			////check if a tex coord is used in this pass or not
+			//for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
+			//{
+			//	gxSubMap* map = *submap_it;
+			//	//check in vertex shader
+			//	if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+			//	{
+			//		currentPass->usedSubMap.push_back(map);
+			//	}
 
-				//check in fragment shader
-				if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
-				{
-					currentPass->usedSubMap.push_back(map);
-				}
-			}
+			//	//check in fragment shader
+			//	if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+			//	{
+			//		currentPass->usedSubMap.push_back(map);
+			//	}
+			//}
 
 			cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
 			cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
@@ -1046,32 +1032,4 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 void gxSurfaceShader::appendTextureMap(stTextureMap* texmap)
 {
 	m_vTextureMap.push_back(texmap);
-}
-
-void gxSurfaceShader::appendSubMap(gxSubMap* map)
-{
-	m_vSubMap.push_back(map);
-}
-
-gxSubMap* gxSurfaceShader::getSubMap(int index)
-{
-	if(index>=(int)m_vSubMap.size()) return NULL;
-
-	return m_vSubMap[index];
-}
-
-gxTexture* gxSurfaceShader::loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap)
-{
-	gxSubMap* map=NULL;
-	if(submap==-1)
-	{
-		map = new gxSubMap();
-		appendSubMap(map);
-	}
-	else
-	{
-		map = m_vSubMap[submap];
-	}
-
-	return map->load(textureManager, filename);
 }

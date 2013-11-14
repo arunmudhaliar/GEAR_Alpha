@@ -54,10 +54,7 @@ void gxMesh::render(gxRenderer* renderer, object3d* light)
 		return;
 
 #if defined (USE_ProgrammablePipeLine)
-	//if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
-	//	renderWithLight(renderer, light);
-	//else if(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)
-		renderWithHWShader(renderer, light);
+	renderWithHWShader(renderer, light);
 #else
 	renderNormal(renderer);
 #endif
@@ -65,6 +62,7 @@ void gxMesh::render(gxRenderer* renderer, object3d* light)
 	object3d::render(renderer, light);
 }
 
+#if 0
 void gxMesh::renderNormal(gxRenderer* renderer)
 {
 	glPushMatrix();
@@ -106,6 +104,7 @@ void gxMesh::renderNormal(gxRenderer* renderer)
 
 void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 {
+
 	if(light->getID()!=3)
 		return;
 
@@ -178,8 +177,9 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 
 		shader->disableProgram();
 	}
-}
 
+}
+#endif
 void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 {
 	int pass=0;
@@ -209,8 +209,11 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 		gxMaterial* material=triInfo->getMaterial();
 		if(!material) continue;
-		gxHWShader* shader=material->getShaderPass(pass);
-		stPass* pass_struct = material->getShaderPassStruct(pass);
+		gxSurfaceShader* surfaceshader=material->getSurfaceShader();
+		if(!surfaceshader) continue;
+
+		gxHWShader* shader=surfaceshader->getShaderPass(pass);
+		stPass* pass_struct = surfaceshader->getShaderPassStruct(pass);
 
 		shader->enableProgram();
 
@@ -243,7 +246,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			glEnableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
 		}
 
-		if(pass_struct->Light)	//need to change to appropriate variable
+		if(pass_struct->Tangent)
 		{
 			glVertexAttribPointer(shader->getAttribLoc("Tangent"), 3, GL_FLOAT, GL_FALSE, 0, getTangentBuffer());
 			glEnableVertexAttribArray(shader->getAttribLoc("Tangent"));
@@ -285,12 +288,14 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		//		nTexUsed++;
 		//	}
 		//}
-		
-		for(std::vector<gxSubMap*>::iterator it = pass_struct->usedSubMap.begin(); it != pass_struct->usedSubMap.end(); ++it, ++cntr)
+		std::vector<stMaterialPass*>* material_pass=material->getShaderPassList();
+		stMaterialPass*	mpass=material_pass->at(pass);
+
+		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, ++cntr)
 		{
 			gxSubMap* submap = *it;
 			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
-			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, shader_var->texture_uv_in_name.c_str()))
+			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, shader_var->texture_uv_in_name.c_str()))
 			{
 				shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
 				nTexUsed++;
@@ -306,7 +311,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		//	disableTextureOperations(nTexUsed, shader, base_tex_var->texture_uv_in_name.c_str());
 		//}
 
-		for(std::vector<gxSubMap*>::iterator it = pass_struct->usedSubMap.begin(); it != pass_struct->usedSubMap.end(); ++it, ++cntr)
+		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, ++cntr)
 		{
 			gxSubMap* submap = *it;
 			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
@@ -320,7 +325,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			glDisableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
 		}
 
-		if(pass_struct->Light)	//need to change to appropriate variable
+		if(pass_struct->Tangent)
 		{
 			glDisableVertexAttribArray(shader->getAttribLoc("Tangent"));
 		}
@@ -329,6 +334,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 	}
 }
 
+#if 0
 bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz)
 {
 	if(!triInfo->getMaterial()) return false;
@@ -360,17 +366,16 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 
 	return true;
 }
+#endif
 
-bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxHWShader* shader, const char* texCoordAttribName)
+bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, gxSubMap* submap, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxHWShader* shader, const char* texCoordAttribName)
 {
 	if(!shader) return false;
 
-	gxSubMap* subMap=NULL;
 	bool bUse1x1Texture=true;
 	if(triInfo->getMaterial())
 	{
-		subMap=triInfo->getMaterial()->getSubMap(stage);
-		if(subMap && subMap->getTexture())
+		if(submap && submap->getTexture())
 			bUse1x1Texture=false;
 	}
 
@@ -391,9 +396,9 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 		glBindTexture(GL_TEXTURE_2D, renderer->getGEARTexture1x1()->iTextureID);	
 	else
 	{
-		glBindTexture(GL_TEXTURE_2D, subMap->getTexture()->getTextureID());	
+		glBindTexture(GL_TEXTURE_2D, submap->getTexture()->getTextureID());	
 		glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
-		if(subMap->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
+		if(submap->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
 		{
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

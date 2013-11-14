@@ -40,19 +40,19 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 			material->read(file_meta);
 			file_meta.CloseFile();
 
+			HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 			//load surface shader
 			char mainshaderfilename[1024];
 			sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
-			material->loadSurfaceShader(mainshaderfilename);
+			material->setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
 
 			//load sub maps
 			std::vector<gxSubMap*>* maplist=material->getSubMapList();
 			for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
 			{
-				gxSubMap* map = *it;
-				map->loadTextureFromMeta(*world->getTextureManager(), map->getTextureCRC());
+				gxSubMap* submap = *it;
+				submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
 			}
-
 
 			m_pTriInfoPtr->setMaterial(material);
 			world->getMaterialList()->push_back(m_pTriInfoPtr->getMaterial());
@@ -61,15 +61,71 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 	}
 }
 
-void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
+void gePropertyMaterial::destroySubMapView()
 {
-	//destroy submapview nodes
+		//destroy submapview nodes
 	for(std::vector<stSubMapView*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
 	{
 		stSubMapView* tvnode = *it;
+		std::vector<geGUIBase*>* childcntrol=getChildControls();
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->m_pText_tileX), m_vControls.end());
+		GE_DELETE(tvnode->m_pText_tileX);
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->m_pText_tileY), m_vControls.end());
+		GE_DELETE(tvnode->m_pText_tileY);
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->thumbnail), m_vControls.end());
+		GE_DELETE(tvnode->thumbnail);
+
 		GE_DELETE(tvnode);
 	}
 	m_vSubMap.clear();
+}
+
+void gePropertyMaterial::loadSubMapView()
+{
+	if(!m_pCurrentMaterialPtr) return;
+
+	//m_vSubMap
+	int cntr=0;
+	std::vector<gxSubMap*>* maplist=m_pCurrentMaterialPtr->getSubMapList();
+	for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it, ++cntr)
+	{
+		gxSubMap* map = *it;
+		stSubMapView* submapview = new stSubMapView();
+
+		char tileX_temp_buffer[10];
+		char tileY_temp_buffer[10];
+
+		if(map->getTexture())
+		{
+			const float* texMat4x4=map->getTexture()->getTextureMatrix()->getMatrix();
+			sprintf(tileX_temp_buffer, "%3.2f", texMat4x4[0]);
+			sprintf(tileY_temp_buffer, "%3.2f", texMat4x4[5]);
+		}
+		else
+		{
+			sprintf(tileX_temp_buffer, "%3.2f", 1.0f);
+			sprintf(tileY_temp_buffer, "%3.2f", 1.0f);
+		}
+		submapview->m_pText_tileX = new geTextBox("1.0");
+		submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 50+cntr*80, 60, 16);
+		submapview->m_pText_tileX->setGUIObserver(this);
+		submapview->m_pText_tileY = new geTextBox("1.0");
+		submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 70+cntr*80, 60, 16);
+		submapview->m_pText_tileY->setGUIObserver(this);
+
+		submapview->thumbnail = new geTextureThumbnailExtended();
+		submapview->thumbnail->create(m_pRenderer, this, map->getTexture(), 260, 40+cntr*80, 70, 70);
+		submapview->thumbnail->setUserData(map);
+		m_vSubMap.push_back(submapview);
+	}
+
+	if(maplist->size())
+		setSize(m_cSize.x, 115.0f+(cntr-1)*80);
+}
+
+void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
+{
+	destroySubMapView();
 
 	//destroy the child views
 	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
@@ -84,7 +140,7 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 	if(m_pCurrentMaterialPtr)
 	{
 		geTextBox* text_material = new geTextBox("MaterialName");
-		text_material->create(m_pRenderer, this, m_pCurrentMaterialPtr->getMaterialName(), 50, 10, 200, 16);
+		text_material->create(m_pRenderer, this, m_pCurrentMaterialPtr->getMaterialName(), 50, 10, 130, 16);
 		
 		m_pColorControl = new geColorControl();
 		m_pColorControl->create(m_pRenderer, this, 10, 10);
@@ -92,43 +148,21 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 		m_pColorControl->setControlColor(diffuse.x, diffuse.y, diffuse.z, diffuse.w);
 		m_pColorControl->setGUIObserver(this);
 
-		//m_vSubMap
-		int cntr=0;
-		std::vector<gxSubMap*>* maplist=m_pCurrentMaterialPtr->getSubMapList();
-		for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it, ++cntr)
+		m_pSurfaceShaderToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "Empty", this);
+		m_pSurfaceShaderToolBarDropMenuBtnPtr->setGUIObserver(this);
+		m_pSurfaceShaderToolBarDropMenuBtnPtr->setPos(text_material->getPos().x+text_material->getSize().x+15, 10);
+
+		HWShaderManager* hWshaderManager=engine_getHWShaderManager();
+		std::vector<gxSurfaceShader*>* surfaceshaderlist=hWshaderManager->getSurfaceShaderList();
+		unsigned int base=0x00006000;
+		for(std::vector<gxSurfaceShader*>::iterator it = surfaceshaderlist->begin(); it != surfaceshaderlist->end(); ++it, base++)
 		{
-			gxSubMap* map = *it;
-			stSubMapView* submapview = new stSubMapView();
-
-			char tileX_temp_buffer[10];
-			char tileY_temp_buffer[10];
-
-			if(map->getTexture())
-			{
-				const float* texMat4x4=map->getTexture()->getTextureMatrix()->getMatrix();
-				sprintf(tileX_temp_buffer, "%3.2f", texMat4x4[0]);
-				sprintf(tileY_temp_buffer, "%3.2f", texMat4x4[5]);
-			}
-			else
-			{
-				sprintf(tileX_temp_buffer, "%3.2f", 1.0f);
-				sprintf(tileY_temp_buffer, "%3.2f", 1.0f);
-			}
-			submapview->m_pText_tileX = new geTextBox("1.0");
-			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 50+cntr*80, 60, 16);
-			submapview->m_pText_tileX->setGUIObserver(this);
-			submapview->m_pText_tileY = new geTextBox("1.0");
-			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 70+cntr*80, 60, 16);
-			submapview->m_pText_tileY->setGUIObserver(this);
-
-			submapview->thumbnail = new geTextureThumbnailExtended();
-			submapview->thumbnail->create(m_pRenderer, this, map->getTexture(), 260, 40+cntr*80, 70, 70);
-			submapview->thumbnail->setUserData(map);
-			m_vSubMap.push_back(submapview);
+			gxSurfaceShader* surfaceshader = *it;
+			m_pSurfaceShaderToolBarDropMenuBtnPtr->appendMenuItem(surfaceshader->getName(), base);
 		}
+		m_pSurfaceShaderToolBarDropMenuBtnPtr->setMenuItem(m_pCurrentMaterialPtr->getMainshaderName());
 
-		if(maplist->size())
-			setSize(m_cSize.x, 115.0f+(cntr-1)*80);
+		loadSubMapView();
 	}
 }
 
@@ -171,5 +205,31 @@ void gePropertyMaterial::onColorChange(geGUIBase* colorControl)
 			m_pColorControl->getControlColor().z,
 			m_pColorControl->getControlColor().z
 			));
+	}
+}
+
+void gePropertyMaterial::onCommand(int cmd)
+{
+	if(cmd>=0x00006000 && cmd<0x00006000+m_pSurfaceShaderToolBarDropMenuBtnPtr->getMenuItemCount())
+	{
+		if(m_pCurrentMaterialPtr)
+		{
+			HWShaderManager* hWshaderManager=engine_getHWShaderManager();
+			std::vector<gxSurfaceShader*>* surfaceshaderlist=hWshaderManager->getSurfaceShaderList();
+			unsigned int base=0x00006000;
+			for(std::vector<gxSurfaceShader*>::iterator it = surfaceshaderlist->begin(); it != surfaceshaderlist->end(); ++it, base++)
+			{
+				gxSurfaceShader* surfaceshader = *it;
+				if(base==cmd)
+				{
+					m_pCurrentMaterialPtr->setMainShaderName(surfaceshader->getName());
+					m_pCurrentMaterialPtr->setSurfaceShader(surfaceshader);
+					m_pSurfaceShaderToolBarDropMenuBtnPtr->setMenuItem(surfaceshader->getName());
+					destroySubMapView();
+					loadSubMapView();
+					break;
+				}
+			}
+		}
 	}
 }

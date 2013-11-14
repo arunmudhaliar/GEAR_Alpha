@@ -18,7 +18,7 @@ geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, g
 
 	setColor(&m_cVBClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
 	m_bImageLoaded=false;
-
+	m_pActiveItemPtr=NULL;
 	//create(parent, name, 0, 0);
 }
 
@@ -53,7 +53,7 @@ void geToolBarDropMenu::draw()
 	}
 	else
 	{
-		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 17, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()-5, m_cSize.x);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 17, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()-4, m_cSize.x);
 	}
 
 	drawTriangle(m_cVBLayoutToggleButtonLine, 0.4f, 0.4f, 0.4f, 1.0f, 3);
@@ -239,4 +239,38 @@ void geToolBarDropMenu::appendMenuItem(const char* name, int menuID, bool bSeper
 	newItem->menuid=menuID;
 	newItem->type=bSeperator?1:0;
 	m_vMenuItems.push_back(newItem);
+}
+
+void geToolBarDropMenu::onSetName()
+{
+	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(m_szName, strlen(m_szName), 0);
+	setSize(width+27, GE_TOOLBAR_HEIGHT);
+}
+
+void geToolBarDropMenu::setMenuItem(int menuID)
+{
+	for(std::vector<stDropMenuItem*>::iterator it = m_vMenuItems.begin(); it != m_vMenuItems.end(); ++it)
+	{
+		stDropMenuItem* menuitem = *it;
+		if(menuitem->menuid==menuID)
+		{
+			setName(menuitem->name);
+			m_pActiveItemPtr=menuitem;
+			break;
+		}
+	}
+}
+
+void geToolBarDropMenu::setMenuItem(const char* itemname)
+{
+	for(std::vector<stDropMenuItem*>::iterator it = m_vMenuItems.begin(); it != m_vMenuItems.end(); ++it)
+	{
+		stDropMenuItem* menuitem = *it;
+		if(strcmp(menuitem->name, itemname)==0)
+		{
+			setName(menuitem->name);
+			m_pActiveItemPtr=menuitem;
+			break;
+		}
+	}
 }

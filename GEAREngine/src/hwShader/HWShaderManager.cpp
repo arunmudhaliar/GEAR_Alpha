@@ -33,7 +33,34 @@ void HWShaderManager::Reset()
 		GX_DELETE(snippet);
 	}
 	m_cvHWShaderSnippets.clear();
+
+	for(std::vector<gxSurfaceShader*>::iterator it = m_cvHWSurfaceShader.begin(); it != m_cvHWSurfaceShader.end(); ++it)
+	{
+		gxSurfaceShader* surfaceshader = *it;
+		GX_DELETE(surfaceshader);
+	}
+	m_cvHWSurfaceShader.clear();
 #endif
+}
+
+gxSurfaceShader* HWShaderManager::LoadSurfaceShader(const char* filename)
+{
+	for(std::vector<gxSurfaceShader*>::iterator it = m_cvHWSurfaceShader.begin(); it != m_cvHWSurfaceShader.end(); ++it)
+	{
+		gxSurfaceShader* surfaceshader = *it;
+		if(strcmp(gxUtil::getFileNameFromPath(filename), surfaceshader->getSurfaceShaderFileName())==0)
+			return surfaceshader;
+	}
+
+	gxSurfaceShader* newShader = new gxSurfaceShader();
+	if(!newShader->loadSurfaceShader(filename))
+	{
+		GX_DELETE(newShader);
+		return NULL;
+	}
+
+	m_cvHWSurfaceShader.push_back(newShader);
+	return newShader;
 }
 
 void HWShaderManager::LoadDefaultShaders()
@@ -61,8 +88,7 @@ void HWShaderManager::LoadDefaultShaders()
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
 
-
-
+	//HW shaders
 	gxHWShader* pShader=new gxHWShader();
     if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse.glsl"))	//0
 		m_cvHWShaderLst.push_back(pShader);
@@ -93,6 +119,11 @@ void HWShaderManager::LoadDefaultShaders()
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
+
+	//surface shaders
+	LoadSurfaceShader("res//shadersWin32//surfaceShader//Diffuse.shader");
+	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMap.shader");
+
 #endif
 #endif
 }

@@ -4,6 +4,7 @@
 #include "../renderer/gxRenderer.h"
 #include <vector>
 #include "gxHWShader.h"
+#include "../core/gxSurfaceShader.h"
 
 class __declspec( dllexport ) HWShaderManager
 {
@@ -38,11 +39,15 @@ public:
 	stHWShaderSnippet* getShaderSnippet(int index)	{	return m_cvHWShaderSnippets[index];	}
 	gxHWShader* LoadShaderFromBuffer(const char* name, const char* buffer, int size);
 
+	gxSurfaceShader* LoadSurfaceShader(const char* filename);
+	std::vector<gxSurfaceShader*>* getSurfaceShaderList()	{	return &m_cvHWSurfaceShader;	}
+
 private:
 	void LoadDefaultShaders();
 	stHWShaderSnippet* LoadCodeSnippet(const char* filename);
 	
 #if defined (USE_ProgrammablePipeLine)
+	std::vector<gxSurfaceShader*> m_cvHWSurfaceShader;
 	std::vector<gxHWShader*> m_cvHWShaderLst;
 	std::vector<stHWShaderSnippet*> m_cvHWShaderSnippets;
 #endif

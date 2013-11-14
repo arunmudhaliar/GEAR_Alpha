@@ -25,6 +25,9 @@ public:
 	void loadImage(const char* filename, int clipx, int clipy);
 
 	void appendMenuItem(const char* name, int menuID, bool bSeperator=false);
+	void setMenuItem(int menuID);
+	void setMenuItem(const char* itemname);
+	int getMenuItemCount()	{	return m_vMenuItems.size();	}
 
 protected:
 	virtual void onPosition(float x, float y, int flag);
@@ -40,6 +43,7 @@ protected:
 
 	virtual void onCancelEngagedControls();
 	//virtual void onAppendChild(geGUIBase* child);
+	virtual void onSetName();
 
 private:
 	stVertexBuffer m_cVBClientArea;
@@ -48,6 +52,7 @@ private:
 	bool m_bImageLoaded;
 	float m_cVBLayoutToggleButtonLine[3*2];
 
+	stDropMenuItem* m_pActiveItemPtr;
 	std::vector<stDropMenuItem*> m_vMenuItems;
 };
 

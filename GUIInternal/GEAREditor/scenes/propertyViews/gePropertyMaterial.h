@@ -9,6 +9,7 @@
 #include "../../gui/geColorControl.h"
 #include "geTextureThumbnailExtended.h"
 #include "geNullMaterialExtended.h"
+#include "../../gui/geToolBarDropMenu.h"
 
 class gePropertyMaterial : public geTreeNode, public MGUIObserver
 {
@@ -71,8 +72,13 @@ public:
 
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
 	virtual void onColorChange(geGUIBase* colorControl);
+	virtual void onCommand(int cmd);
+
+	void destroySubMapView();
+	void loadSubMapView();
 
 	geColorControl* m_pColorControl;
+	geToolBarDropMenu* m_pSurfaceShaderToolBarDropMenuBtnPtr;
 };
 
 #endif

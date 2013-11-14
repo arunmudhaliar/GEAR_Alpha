@@ -109,18 +109,19 @@ void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 				gxMaterial* material = new gxMaterial();
 				material->read(file_meta);
 
+				HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 				//load surface shader
 				char mainshaderfilename[1024];
 				sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
-				material->loadSurfaceShader(mainshaderfilename);
-
-				//load sub maps
+				material->setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
+				
 				std::vector<gxSubMap*>* maplist=material->getSubMapList();
 				for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
 				{
 					gxSubMap* submap = *it;
 					submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
 				}
+
 				//check if the material name already exists in our list or not
 				std::vector<gxMaterial*>* materialList = world->getMaterialList();
 				for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)

@@ -92,6 +92,7 @@ struct stPass
 		vIN_Position=false;
 		vIN_Normal=false;
 		vIN_Color=false;
+		Tangent=false;
 	}
 
 	~stPass()
@@ -99,7 +100,6 @@ struct stPass
 		vertex_buffer.clear();
 		fragment_buffer.clear();
 		vIncludeModule.clear();
-		usedSubMap.clear();
 	}
 
 	bool GEAR_M;
@@ -112,11 +112,11 @@ struct stPass
 	bool vIN_Position;
 	bool vIN_Normal;
 	bool vIN_Color;
+	bool Tangent;
 
 	std::string vertex_buffer;
 	std::string fragment_buffer;
 	std::vector<std::string> vIncludeModule;
-	std::vector<gxSubMap*> usedSubMap;		//used submap in this pass
 };
 
 struct stSubShader
@@ -164,28 +164,25 @@ protected:
 	stSubShader m_cSubShader;
 	std::vector<stShaderProperty_Texture2D*> m_vTex2D_Properties;
 	std::vector<stShaderProperty_Color*> m_vColor_Properties;
-
-	std::vector<gxSubMap*> m_vSubMap;
 	std::vector<stTextureMap*> m_vTextureMap;
-	
 	std::vector<gxHWShader*> m_vShaderProgram;
-
+	std::string m_cName;
+	std::string m_cFileName;
 public:
 	gxSurfaceShader();
 	virtual ~gxSurfaceShader();
+
+	const char* getName()	{	return m_cName.c_str();	}
+	const char* getSurfaceShaderFileName()	{	return m_cFileName.c_str();	}
 	bool loadSurfaceShader(const char* filename);
 
 	void appendTextureMap(stTextureMap* texmap);
-
-	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap);	//-1 will add a map to the list
-	void appendSubMap(gxSubMap* map);
-	gxSubMap* getSubMap(int index);
-	std::vector<gxSubMap*>* getSubMapList()	{	return &m_vSubMap;	}
 
 	int getShaderPassCount()				{	return m_vShaderProgram.size();	}
 	gxHWShader* getShaderPass(int pass)		{	return (pass<m_vShaderProgram.size())?m_vShaderProgram[pass]:NULL;	}
 	stPass* getShaderPassStruct(int pass)	{	return (pass<m_cSubShader.m_vPass.size())?m_cSubShader.m_vPass[pass]:NULL;}
 
+	std::vector<stPass*>* getShaderPassList()	{	return &m_cSubShader.m_vPass;	}
 	std::vector<stShaderProperty_Texture2D*>* getShaderPropertyList()	{	return &m_vTex2D_Properties;		}
 	stShaderProperty_Texture2D* getShaderProperty_Texture2D(int index)	{	return m_vTex2D_Properties[index];	}
 	stShaderProperty_Color* getShaderProperty_Color(int index)			{	return m_vColor_Properties[index];	}

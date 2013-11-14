@@ -58,7 +58,7 @@ __Pass{
  
             localSurface2World[0] = normalize(vec3(GEAR_MODEL_MATRIX * vec4(vec3(Tangent), 0.0)));
             //localSurface2World[0] = normalize(vec3(GEAR_MODEL_MATRIX * vec4(Tangent, 0.0)));
-            localSurface2World[2] = normalize(vec3(vec4(vIN_Normal, 0.0) * GEAR_MODEL_INVERSE));
+            localSurface2World[2] = normalize(vec3(vIN_Normal * GEAR_MODEL_INVERSE));
             localSurface2World[1] = normalize(cross(localSurface2World[2], localSurface2World[0]) * Tangent.w); // factor Tangent.w is specific to Unity
  
 			vOUT_WorldSpaceCameraPos = _WorldSpaceCameraPos;

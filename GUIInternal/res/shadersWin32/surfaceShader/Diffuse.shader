@@ -41,8 +41,8 @@ __Pass{
             mat4 modelMatrix = GEAR_MODEL_MATRIX;
             mat4 modelMatrixInverse = GEAR_MODEL_INVERSE; // unity_Scale.w is unnecessary because we normalize vectors
  
-            vec3 normalDirection = normalize(vec3(vec4(vIN_Normal, 0.0) * modelMatrixInverse));
-            vec3 viewDirection = normalize(vec3(vec4(_WorldSpaceCameraPos, 1.0) - modelMatrix * vIN_Position));
+            vec3 normalDirection = normalize(vec3(vIN_Normal * modelMatrixInverse));
+            vec3 viewDirection = normalize(_WorldSpaceCameraPos - vec3(modelMatrix * vIN_Position));
             vec3 lightDirection;
             float attenuation;
  
@@ -53,7 +53,7 @@ __Pass{
             } 
             else // point or spot light
             {
-               vec3 vertexToLightSource = vec3(light.position - modelMatrix * vIN_Position);
+               vec3 vertexToLightSource = vec3(light.position - (modelMatrix * vIN_Position));
                float distance = length(vertexToLightSource);
                //attenuation = 1.0 / distance; // linear attenuation 
 				attenuation = 1.f / (light.constant_attenuation +

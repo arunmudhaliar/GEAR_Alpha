@@ -8,13 +8,13 @@ object3d(3)
 	setLightType(LIGHT_POINT);
 
 	m_cDiffuse.set(0.7f, 0.7f, 0.7f, 1.0f);
-	m_cAmbient.set(0.3f, 0.3f, 0.3f, 1.0f);
-	m_cSpecular.set(0.3f, 0.3f, 0.3f, 1.0f);
+	m_cAmbient.set(0.0f, 0.0f, 0.0f, 1.0f);
+	m_cSpecular.set(0.0f, 0.0f, 0.0f, 1.0f);
 	setPosition(0, 0, 1);
 
 	m_fConstantAttenuation = 0.1f;
-	m_fLinearAttenuation = 0.01f;
-	m_fQuadraticAttenuation = 0.001f;
+	m_fLinearAttenuation = 0.0025f;
+	m_fQuadraticAttenuation = 0.0006f;
 }
 
 gxLight::~gxLight()

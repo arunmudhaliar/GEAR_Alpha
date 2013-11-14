@@ -176,6 +176,8 @@ void gearSceneWorldEditor::onCreate()
 
 	m_cLightBillBoardSprite.setOffset(0, 0);
 	m_cLightBillBoardSprite.loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+
+	m_tempMaterial.loadSurfaceShader("res//shadersWin32//surfaceShader//NormalMap.shader");
 }
 
 

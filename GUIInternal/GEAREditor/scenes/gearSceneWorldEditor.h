@@ -89,6 +89,8 @@ protected:
 	FBO m_cMultiPassFBO;
 #endif
 	bool m_bEnablePostProcessorBlur;
+
+	gxMaterial m_tempMaterial;
 };
 
 #endif

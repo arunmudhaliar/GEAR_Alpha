@@ -13,6 +13,7 @@
 
 #include <string.h>
 
+#define ROUNDOFF(x) (x < 0.0001f && x > -0.0001f) ? 0.0f : x
 #define GX_STRCPY(dst, src)	strcpy_s(dst, sizeof(dst), src)
 
 #define GX_DELETE(x)		if(x){delete x; x=NULL;}

@@ -13,8 +13,7 @@ __Pass{
 		vec4 pointLight()
 		{
             mat4 modelMatrix = GEAR_M;
-            mat4 modelMatrixInverse = GEAR_M_INVERSE; // unity_Scale.w 
-               // is unnecessary because we normalize vectors
+            mat4 modelMatrixInverse = GEAR_M_INVERSE; // unity_Scale.w is unnecessary because we normalize vectors
  
             vec3 normalDirection = normalize(vec3(vec4(vIN_Normal, 0.0) * modelMatrixInverse));
             vec3 viewDirection = normalize(vec3(vec4(_WorldSpaceCameraPos, 1.0) - modelMatrix * vIN_Position));

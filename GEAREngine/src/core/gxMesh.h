@@ -41,12 +41,13 @@ public:
 	float* getVertexBuffer()	{	return m_pszVertexBuffer;	}
 	float* getColorBuffer()		{	return m_pszColorBuffer;	}
 	float* getNormalBuffer()	{	return m_pszNormalBuffer;	}
+	float* getTangentBuffer()	{	return m_pszTangentBuffer;	}
 
 	virtual void update(float dt);
 	virtual void render(gxRenderer* renderer, object3d* light);
 	void renderNormal(gxRenderer* renderer);
 	void renderWithLight(gxRenderer* renderer, object3d* light);
-	void renderWithHWShader(gxRenderer* renderer);
+	void renderWithHWShader(gxRenderer* renderer, object3d* light);
 
 	float* allocateVertexBuffer(int nTris);
 	float* allocateColorBuffer(int nTris);
@@ -67,7 +68,7 @@ public:
 	}
 
 	gxTriInfo* allocateTriInfoArray(int nCount)		{	m_nTriInfoArray=nCount; m_pszTriInfoArray=new gxTriInfo[nCount]; return m_pszTriInfoArray; }
-
+	bool createTBN_Data();
 
 	int getNoOfTriInfo()							{	return m_nTriInfoArray;				}
 	gxTriInfo* getTriInfo(int index)				{	return &m_pszTriInfoArray[index];	}
@@ -92,6 +93,8 @@ protected:
 	float* m_pszVertexBuffer;
 	float* m_pszColorBuffer;
 	float* m_pszNormalBuffer;
+	float* m_pszTangentBuffer;
+
 	int m_nUVChannels;
 	gxUV* m_pszUVChannels;
 	int m_nTris_For_Internal_Use;

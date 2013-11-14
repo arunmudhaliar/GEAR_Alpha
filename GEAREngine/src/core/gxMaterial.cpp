@@ -171,8 +171,3 @@ gxMaterial* gxMaterial::createNewMaterial()
 
 	return material;
 }
-
-void gxMaterial::loadLightingShaders()
-{
-	m_cPointLightSurfaceShader.loadSurfaceShader(".//res//shadersWin32//surfaceShader//Lighting_Vertexlit.shader");
-}

@@ -10,6 +10,7 @@ gxMesh::gxMesh(int ID):
 	m_pszVertexBuffer=NULL;
 	m_pszColorBuffer=NULL;
 	m_pszNormalBuffer=NULL;
+	m_pszTangentBuffer=NULL;
 	m_nUVChannels=0;
 	m_pszUVChannels=NULL;
 	m_nTris_For_Internal_Use=0;
@@ -24,6 +25,7 @@ gxMesh::gxMesh():
 	m_pszVertexBuffer=NULL;
 	m_pszColorBuffer=NULL;
 	m_pszNormalBuffer=NULL;
+	m_pszTangentBuffer=NULL;
 	m_nUVChannels=0;
 	m_pszUVChannels=NULL;
 	m_nTris_For_Internal_Use=0;
@@ -36,6 +38,7 @@ gxMesh::~gxMesh()
 	GX_DELETE_ARY(m_pszVertexBuffer);
 	GX_DELETE_ARY(m_pszColorBuffer);
 	GX_DELETE_ARY(m_pszNormalBuffer);
+	GX_DELETE_ARY(m_pszTangentBuffer);
 
 	GX_DELETE_ARY(m_pszUVChannels);
 }
@@ -51,10 +54,10 @@ void gxMesh::render(gxRenderer* renderer, object3d* light)
 		return;
 
 #if defined (USE_ProgrammablePipeLine)
-	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
-		renderWithLight(renderer, light);
-	else if(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)
-		renderWithHWShader(renderer);
+	//if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
+	//	renderWithLight(renderer, light);
+	//else if(renderer->getRenderPassType()==gxRenderer::RENDER_NORMAL)
+		renderWithHWShader(renderer, light);
 #else
 	renderNormal(renderer);
 #endif
@@ -127,17 +130,17 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 
 		gxMaterial* material=triInfo->getMaterial();
 		if(!material) continue;
-		gxHWShader* shader=material->getLightingSurfaceShader()->getMainShader();
+		gxHWShader* shader=material->getShaderPass(1);
 		shader->enableProgram();
 
 		light_ob->renderPass(renderer, shader);
 
-		shader->sendUniformTMfv("GEAR_M", getMatrix(), false, 4);
+		shader->sendUniformTMfv("GEAR_MODEL_MATRIX", getMatrix(), false, 4);
 		matrix4x4f inv_model=*this;
 		inv_model.inverse();
-		shader->sendUniformTMfv("GEAR_M_INVERSE", inv_model.getMatrix(), false, 4);
+		shader->sendUniformTMfv("GEAR_MODEL_INVERSE", inv_model.getMatrix(), false, 4);
 
-		//shader->sendUniformTMfv("GEAR_MV", u_modelview_m4x4, false, 4);
+		//shader->sendUniformTMfv("GEAR_MODELVIEW", u_modelview_m4x4, false, 4);
 		shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
 		//shader->sendUniformTMfv("GEAR_NORMAL_MATRIX", u_modelview_inverse_m4x4, false, 4);
 
@@ -146,6 +149,9 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 
 		glVertexAttribPointer(shader->getAttribLoc("vIN_Normal"), 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
 		glEnableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
+
+		glVertexAttribPointer(shader->getAttribLoc("Tangent"), 3, GL_FLOAT, GL_FALSE, 0, getTangentBuffer());
+		glEnableVertexAttribArray(shader->getAttribLoc("Tangent"));
 
 		if(triInfo->getMaterial())
 		{
@@ -174,8 +180,25 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 	}
 }
 
-void gxMesh::renderWithHWShader(gxRenderer* renderer)
+void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 {
+	int pass=0;
+	gxLight* light_ob=NULL;
+	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
+	{
+		pass=1;
+		light_ob=(gxLight*)light;
+	}
+
+	matrix4x4f cMV = *renderer->getViewMatrix() * *getWorldMatrix();
+	const float* u_modelview_m4x4=cMV.getMatrix();
+
+	matrix4x4f noscaleMV(cMV);
+	noscaleMV.noScale();
+	matrix4x4f cMVInverse = noscaleMV.getInverse();
+	cMVInverse.transpose();
+	const float* u_modelview_inverse_m4x4=cMVInverse.getMatrix();
+
 	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
     const float* u_mvp_m4x4=cMVP.getMatrix();
 
@@ -186,42 +209,122 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer)
 
 		gxMaterial* material=triInfo->getMaterial();
 		if(!material) continue;
-		gxHWShader* shader=material->getMainShader();
+		gxHWShader* shader=material->getShaderPass(pass);
+		stPass* pass_struct = material->getShaderPassStruct(pass);
 
 		shader->enableProgram();
-		shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
+
+		if(light_ob)
+			light_ob->renderPass(renderer, shader);
+
+		if(pass_struct->GEAR_MVP)
+		{
+			shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
+		}
+
+		if(pass_struct->GEAR_M)
+		{
+			shader->sendUniformTMfv("GEAR_MODEL_MATRIX", getMatrix(), false, 4);
+		}
+
+		if(pass_struct->GEAR_M_INVERSE)
+		{
+			matrix4x4f inv_model=*this;
+			inv_model.inverse();
+			shader->sendUniformTMfv("GEAR_MODEL_INVERSE", inv_model.getMatrix(), false, 4);
+		}
 
 		glVertexAttribPointer(shader->getAttribLoc("vIN_Position"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
 		glEnableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
 
+		if(pass_struct->Light)
+		{
+			glVertexAttribPointer(shader->getAttribLoc("vIN_Normal"), 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
+			glEnableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
+		}
+
+		if(pass_struct->Light)	//need to change to appropriate variable
+		{
+			glVertexAttribPointer(shader->getAttribLoc("Tangent"), 3, GL_FLOAT, GL_FALSE, 0, getTangentBuffer());
+			glEnableVertexAttribArray(shader->getAttribLoc("Tangent"));
+		}
+
+		if(pass_struct->Material)
+		{
+			if(triInfo->getMaterial())
+			{
+				shader->sendUniform4fv("material.diffuse", &material->getDiffuseClr().x);
+				shader->sendUniform4fv("material.ambient", &material->getAmbientClr().x);
+				shader->sendUniform4fv("material.specular", &material->getSpecularClr().x);
+				shader->sendUniform1f("material.shininess", 10.0f/*material->getShininess()*/);
+			}
+			else
+			{
+				shader->sendUniform4f("material.diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
+				shader->sendUniform4f("material.ambient", 0.2f, 0.2f, 0.2f, 1.0f);
+				shader->sendUniform4f("material.specular", 0.2f, 0.2f, 0.2f, 1.0f);
+				shader->sendUniform1f("material.shininess", 10.0f/*material->getShininess()*/);
+			}
+		}
+
 		int nTexUsed=0;
 		int cntr=0;
-		std::vector<gxSubMap*>* maplist=material->getSubMapList();
+		//std::vector<gxSubMap*>* maplist=material->getSubMapList();
 		gxUV* base_uv=(m_nUVChannels)?&m_pszUVChannels[0]:NULL;
-		stShaderProperty_Texture2D* base_tex_var=NULL;
-		for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it, ++cntr)
+		//stShaderProperty_Texture2D* base_tex_var=NULL;
+		//for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it, ++cntr)
+		//{
+		//	gxSubMap* submap = *it;
+		//	stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
+		//	if(!base_tex_var)
+		//		base_tex_var=shader_var;
+		//	gxUV* uv=&m_pszUVChannels[0];	//base uv
+		//	if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, base_tex_var->texture_uv_in_name.c_str()))
+		//	{
+		//		shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
+		//		nTexUsed++;
+		//	}
+		//}
+		
+		for(std::vector<gxSubMap*>::iterator it = pass_struct->usedSubMap.begin(); it != pass_struct->usedSubMap.end(); ++it, ++cntr)
 		{
 			gxSubMap* submap = *it;
 			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
-			if(!base_tex_var)
-				base_tex_var=shader_var;
-			gxUV* uv=&m_pszUVChannels[0];	//base uv
-			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, base_tex_var->texture_uv_in_name.c_str()))
+			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, shader_var->texture_uv_in_name.c_str()))
 			{
 				shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
 				nTexUsed++;
 			}
 		}
+
 		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
 		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
 		renderer->m_nDrawCalls++;
 
-		if(base_tex_var)
+		//if(base_tex_var)
+		//{
+		//	disableTextureOperations(nTexUsed, shader, base_tex_var->texture_uv_in_name.c_str());
+		//}
+
+		for(std::vector<gxSubMap*>::iterator it = pass_struct->usedSubMap.begin(); it != pass_struct->usedSubMap.end(); ++it, ++cntr)
 		{
-			disableTextureOperations(nTexUsed, shader, base_tex_var->texture_uv_in_name.c_str());
+			gxSubMap* submap = *it;
+			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
+			disableTextureOperations(nTexUsed, shader, shader_var->texture_uv_in_name.c_str());
 		}
 
 		glDisableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
+
+		if(pass_struct->Light)
+		{
+			glDisableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
+		}
+
+		if(pass_struct->Light)	//need to change to appropriate variable
+		{
+			glDisableVertexAttribArray(shader->getAttribLoc("Tangent"));
+		}
+
 		shader->disableProgram();
 	}
 }
@@ -343,6 +446,117 @@ float* gxMesh::allocateNormalBuffer(int nTris)
 	GX_DELETE_ARY(m_pszNormalBuffer);
 	m_pszNormalBuffer = new float[nTris*3*3];
 	return m_pszNormalBuffer;
+}
+
+
+bool gxMesh::createTBN_Data()
+{
+	float* diffuse_uv_coordPtr=NULL;
+	float* tangent_coord=NULL;
+	gxUV* base_uv=(m_nUVChannels)?&m_pszUVChannels[0]:NULL;
+
+	if(!base_uv || !m_pszNormalBuffer)
+		return false;
+
+	diffuse_uv_coordPtr = base_uv->m_pszfGLTexCoordList;
+	if(!diffuse_uv_coordPtr)
+		return false;
+
+	//Allocate memory for the additional coords
+	GX_DELETE_ARY(m_pszTangentBuffer);
+	m_pszTangentBuffer = new float[m_nTris_For_Internal_Use*3*3];
+	tangent_coord = m_pszTangentBuffer;
+	
+	float* v=getVertexBuffer();
+	float* tc=diffuse_uv_coordPtr;
+
+	float* ac1= NULL;
+	float* ac2= NULL;
+	float* ac3= NULL;
+
+	vector3f dv2v1;
+	vector3f dv3v1;
+	vector2f dc2c1TB;
+	vector2f dc3c1TB;
+
+	int aIterator=0;
+	for(int x=0;x<m_nTriInfoArray;x++)
+	{
+		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+		if(!triInfo->getTriList()) continue;
+
+		for(int y=0;y<triInfo->getVerticesCount()/3;y++)
+		{
+			vector3f v1(v[aIterator*9+0], v[aIterator*9+1], v[aIterator*9+2]);
+			vector3f v2(v[aIterator*9+3], v[aIterator*9+4], v[aIterator*9+5]);
+			vector3f v3(v[aIterator*9+6], v[aIterator*9+7], v[aIterator*9+8]);
+
+			dv2v1 = v2-v1;
+			dv3v1 = v3-v1;
+
+			vector2f st1(tc[aIterator*6+0], tc[aIterator*6+1]);
+			vector2f st2(tc[aIterator*6+2], tc[aIterator*6+3]);
+			vector2f st3(tc[aIterator*6+4], tc[aIterator*6+5]);
+
+			dc2c1TB = st2-st1;
+			dc3c1TB = st3-st1;
+
+			float den = dc2c1TB.x * dc3c1TB.y - dc3c1TB.x * dc2c1TB.y;
+
+			ac1=&tangent_coord[aIterator*9+0];
+			//ac2=&aMesh->iGLAdditionalCoordList2[aIterator*9+0];
+			//ac3=&aMesh->iGLAdditionalCoordList3[aIterator*9+0];
+
+			if (ROUNDOFF(den)==0.0f)	
+			{
+				//make the identity matrix
+				ac1[0]=/*ac2[0]=ac3[0]=*/1.0f;	ac1[1]=/*ac2[1]=ac3[1]=*/0.0f;	ac1[2]=/*ac2[2]=ac3[2]=*/0.0f;
+				ac1[3]=/*ac2[3]=ac3[3]=*/0.0f;	ac1[4]=/*ac2[4]=ac3[4]=*/1.0f;	ac1[5]=/*ac2[5]=ac3[5]=*/0.0f;
+				ac1[6]=/*ac2[6]=ac3[6]=*/0.0f;	ac1[7]=/*ac2[7]=ac3[7]=*/0.0f;	ac1[8]=/*ac2[8]=ac3[8]=*/1.0f;
+			}
+			else
+			{
+				// Calculate the reciprocal value once and for all (to achieve speed)
+				float fScale1 = 1.0f/den;
+
+				// T and B are calculated just as the equation in the article states
+				vector3f T, B, N;
+				T = vector3f((dc3c1TB.y * dv2v1.x - dc2c1TB.y * dv3v1.x) * fScale1,
+					(dc3c1TB.y * dv2v1.y - dc2c1TB.y * dv3v1.y) * fScale1,
+					(dc3c1TB.y * dv2v1.z - dc2c1TB.y * dv3v1.z) * fScale1);
+
+				B = vector3f((-dc3c1TB.x * dv2v1.x + dc2c1TB.x * dv3v1.x) * fScale1,
+					(-dc3c1TB.x * dv2v1.y + dc2c1TB.x * dv3v1.y) * fScale1,
+					(-dc3c1TB.x * dv2v1.z + dc2c1TB.x * dv3v1.z) * fScale1);
+
+				// The normal N is calculated as the cross product between T and B
+				N = T.cross(B);
+
+				// Calculate the reciprocal value once and for all (to achieve speed)
+				float fScale2 = 1.0f/((T.x * B.y * N.z - T.z * B.y * N.x) + (B.x * N.y * T.z - B.z * N.y * T.x) + (N.x * T.y * B.z - N.z * T.y * B.x));
+
+
+				//T
+				vector3f X(B.cross(N).x*fScale2, -N.cross(T).x*fScale2, T.cross(B).x*fScale2);
+				X.normalize();
+				ac1[0]=ac1[3]=ac1[6]=X.x;	ac1[1]=ac1[4]=ac1[7]=X.y;	ac1[2]=ac1[5]=ac1[8]=X.z;
+
+				////B
+				//gxPoint3f Y(-B.Cross(N).y*fScale2, N.Cross(T).y*fScale2, -T.Cross(B).y*fScale2);
+				//Y.Normalize();
+				//ac2[0]=ac2[3]=ac2[6]=Y.x;	ac2[1]=ac2[4]=ac2[7]=Y.y;	ac2[2]=ac2[5]=ac2[8]=Y.z;
+
+				////N
+				//gxPoint3f Z(B.Cross(N).z*fScale2, -N.Cross(T).z*fScale2, T.Cross(B).z*fScale2);
+				//Z.Normalize();
+				//ac3[0]=ac3[3]=ac3[6]=Z.x;	ac3[1]=ac3[4]=ac3[7]=Z.y;	ac3[2]=ac3[5]=ac3[8]=Z.z;
+			}
+
+			aIterator++;
+		}
+	}
+
+	return true;
 }
 
 int gxMesh::getVerticesCount()
@@ -483,6 +697,8 @@ void gxMesh::read(gxFile& file)
 		m_pszUVChannels[x].m_pszfGLTexCoordList =new float[m_nTris_For_Internal_Use*3*2];
 		file.ReadBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
 	}
+
+	createTBN_Data();
 }
 
 void gxMesh::transformationChangedf()

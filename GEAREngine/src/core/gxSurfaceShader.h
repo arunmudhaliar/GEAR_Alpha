@@ -35,6 +35,10 @@ struct stShaderProperty_Color
 
 struct stShaderProperty_Texture2D
 {
+	stShaderProperty_Texture2D()
+	{
+	}
+
 	~stShaderProperty_Texture2D()
 	{
 		name.clear();
@@ -48,17 +52,6 @@ struct stShaderProperty_Texture2D
 	std::string texture_uv_in_name;
 	std::string texture_uv_out_name;
 	std::string texture_sampler2d_name;
-};
-
-struct stSubShader
-{
-	~stSubShader()
-	{
-		vertex_buffer.clear();
-		fragment_buffer.clear();
-	}
-	std::string vertex_buffer;
-	std::string fragment_buffer;
 };
 
 class DllExport gxSubMap
@@ -85,6 +78,61 @@ private:
 	stShaderProperty_Texture2D* m_pShaderPropertyVar;
 };
 
+struct stPass
+{
+	stPass()
+	{
+		GEAR_M=false;
+		GEAR_M_INVERSE=false;
+		GEAR_MV=false;
+		GEAR_MVP=false;
+		GEAR_NORMAL_MATRIX=false;
+		Light=false;
+		Material=false;
+		vIN_Position=false;
+		vIN_Normal=false;
+		vIN_Color=false;
+	}
+
+	~stPass()
+	{
+		vertex_buffer.clear();
+		fragment_buffer.clear();
+		vIncludeModule.clear();
+		usedSubMap.clear();
+	}
+
+	bool GEAR_M;
+	bool GEAR_M_INVERSE;
+	bool GEAR_MV;
+	bool GEAR_MVP;
+	bool GEAR_NORMAL_MATRIX;
+	bool Light;
+	bool Material;
+	bool vIN_Position;
+	bool vIN_Normal;
+	bool vIN_Color;
+
+	std::string vertex_buffer;
+	std::string fragment_buffer;
+	std::vector<std::string> vIncludeModule;
+	std::vector<gxSubMap*> usedSubMap;		//used submap in this pass
+};
+
+struct stSubShader
+{
+	~stSubShader()
+	{
+		for(std::vector<stPass*>::iterator it = m_vPass.begin(); it != m_vPass.end(); ++it)
+		{
+			stPass* pass = *it;
+			GX_DELETE(pass);
+		}
+		m_vPass.clear();
+	}
+
+	std::vector<stPass*> m_vPass;
+};
 class DllExport gxSurfaceShader
 {
 private:
@@ -105,9 +153,10 @@ private:
 	bool parseTexProperty(std::string::const_iterator& start, std::string::const_iterator& end, const char* _texname, int& depth);
 	bool parseProperties(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseSubShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
-	bool parseSubShaderPass(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
-	bool parseSubShader_vertex(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
-	bool parseSubShader_fragment(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
+	bool parseSubShaderPass(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth);
+	bool findEndingCurlyBraseOfModule(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
+	bool parseSubShader_vertex(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth);
+	bool parseSubShader_fragment(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth);
 	bool parseShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parse(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 
@@ -118,10 +167,8 @@ protected:
 
 	std::vector<gxSubMap*> m_vSubMap;
 	std::vector<stTextureMap*> m_vTextureMap;
-	std::vector<std::string> m_vIncludeModule;
 	
-	gxHWShader* m_pMainShader;
-	std::string m_cMainShaderSource;
+	std::vector<gxHWShader*> m_vShaderProgram;
 
 public:
 	gxSurfaceShader();
@@ -135,7 +182,9 @@ public:
 	gxSubMap* getSubMap(int index);
 	std::vector<gxSubMap*>* getSubMapList()	{	return &m_vSubMap;	}
 
-	gxHWShader* getMainShader()		{	return m_pMainShader;	}
+	int getShaderPassCount()				{	return m_vShaderProgram.size();	}
+	gxHWShader* getShaderPass(int pass)		{	return (pass<m_vShaderProgram.size())?m_vShaderProgram[pass]:NULL;	}
+	stPass* getShaderPassStruct(int pass)	{	return (pass<m_cSubShader.m_vPass.size())?m_cSubShader.m_vPass[pass]:NULL;}
 
 	std::vector<stShaderProperty_Texture2D*>* getShaderPropertyList()	{	return &m_vTex2D_Properties;		}
 	stShaderProperty_Texture2D* getShaderProperty_Texture2D(int index)	{	return m_vTex2D_Properties[index];	}

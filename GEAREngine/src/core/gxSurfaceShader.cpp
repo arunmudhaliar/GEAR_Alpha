@@ -501,6 +501,17 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 					if(!parseTexProperty(it, end, "_DecalTex", maintexpropertydepth))
 						return false;
 				}
+
+				//_BumpMap
+				str.assign(it, end);
+				pos=str.find("_BumpMap");
+				if(pos>=0)
+				{
+					it=it+pos+strlen("_BumpMap");
+					int maintexpropertydepth=-1;
+					if(!parseTexProperty(it, end, "_BumpMap", maintexpropertydepth))
+						return false;
+				}
 			}
 			break;
 		}
@@ -509,10 +520,10 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 		it++;
 	}
 
-	return true;
+	return false;
 }
 
-bool gxSurfaceShader::parseSubShader_vertex(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
+bool gxSurfaceShader::parseSubShader_vertex(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth)
 {
 	std::string str;
 	std::string::const_iterator it=start;
@@ -539,7 +550,7 @@ bool gxSurfaceShader::parseSubShader_vertex(std::string::const_iterator& start, 
 				if(depth<0)
 				{
 					shader_end = (it-1);
-					m_cSubShader.vertex_buffer.assign(shader_start, shader_end);
+					pass.vertex_buffer.assign(shader_start, shader_end);
 					start=++it;
 					return true;
 				}
@@ -553,7 +564,7 @@ bool gxSurfaceShader::parseSubShader_vertex(std::string::const_iterator& start, 
 	return false;
 }
 
-bool gxSurfaceShader::parseSubShader_fragment(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
+bool gxSurfaceShader::parseSubShader_fragment(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth)
 {
 	std::string str;
 	std::string::const_iterator it=start;
@@ -580,7 +591,7 @@ bool gxSurfaceShader::parseSubShader_fragment(std::string::const_iterator& start
 				if(depth<0)
 				{
 					shader_end = (it-1);
-					m_cSubShader.fragment_buffer.assign(shader_start, shader_end);
+					pass.fragment_buffer.assign(shader_start, shader_end);
 					start=++it;
 					return true;
 				}
@@ -589,6 +600,117 @@ bool gxSurfaceShader::parseSubShader_fragment(std::string::const_iterator& start
 
 		if(std::distance(it, end)<=0) return false;
 			it++;
+	}
+
+	return false;
+}
+
+bool gxSurfaceShader::findEndingCurlyBraseOfModule(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
+{
+	std::string str;
+	std::string::const_iterator it=start;
+
+	while(it!=end)
+	{
+		if(*it=='{')
+		{
+			depth++;
+		}
+
+		if(depth>=0)
+		{
+			if(*it=='}')
+			{
+				depth--;
+				if(depth<0)
+				{
+					end=++it;
+					return true;
+				}
+			}
+		}
+
+		if(std::distance(it, end)<=0) return false;
+			it++;
+	}
+
+	return false;
+}
+
+bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth)
+{
+	std::string str;
+	std::string::const_iterator it=start;
+	while(it!=end)
+	{
+		if(findClosingCurlyBrace(it, end))
+		{
+			--depth;
+			start=it;
+			return true;
+		}
+
+		switch(depth)
+		{
+		case -1:
+			{
+				str.assign(it, end);
+				pass.GEAR_M = (int)str.find("GEAR_MODEL_MATRIX")>=0;
+				pass.GEAR_M_INVERSE = (int)str.find("GEAR_MODEL_INVERSE")>=0;
+				pass.GEAR_MV = (int)str.find("GEAR_MODELVIEW")>=0;
+				pass.GEAR_MVP = (int)str.find("GEAR_MVP")>=0;
+				pass.GEAR_NORMAL_MATRIX = (int)str.find("GEAR_NORMAL_MATRIX")>=0;
+				pass.Light = (int)str.find("light.position")>=0;
+				pass.Material = (int)str.find("material.diffuse")>=0 || (int)str.find("material.specular")>=0;
+				pass.vIN_Position = (int)str.find("vIN_Position")>=0;
+				pass.vIN_Normal = (int)str.find("vIN_Normal")>=0;
+				pass.vIN_Color = (int)str.find("vIN_Color")>=0;
+
+				int pos=str.find("__includeModule");
+				if(pos>=0)
+				{
+					it=it+pos+strlen("__includeModule");
+					int properties_depth=-1;
+					if(findOpeningCurlyBrace(it, end))
+					{
+						std::string key;
+						it++;
+						while(parseKeyWord(it, end, key))
+						{
+							pass.vIncludeModule.push_back(key);
+							if(findClosingCurlyBrace(it, end) && it!=end)
+								break;
+						}
+					}
+					else
+						return false;
+				}
+
+				str.assign(it, end);
+				pos=str.find("__vertex");
+				if(pos>=0)
+				{
+					it=it+pos+strlen("__vertex");
+					int properties_depth=-1;
+					if(!parseSubShader_vertex(it, end, pass, properties_depth))
+						return false;
+				}
+
+				str.assign(it, end);
+				pos=str.find("__fragment");
+				if(pos>=0)
+				{
+					it=it+pos+strlen("__fragment");
+					int subshader_depth=-1;
+					if(!parseSubShader_fragment(it, end, pass, subshader_depth))
+						return false;
+				}
+			}
+			break;
+		}
+
+		if(std::distance(it, end)<=0) return false;
+		it++;
 	}
 
 	return false;
@@ -620,8 +742,20 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 					{
 						it=it+pos+strlen("__Pass");
 						int pass_depth=-1;
-						if(!parseSubShaderPass(it, end, pass_depth))
-							return false;
+
+						int temp=-1;
+						std::string::const_iterator temp_end=end;
+						if(findEndingCurlyBraseOfModule(it, temp_end, temp))
+						{
+							stPass* newPass = new stPass();
+							if(!parseSubShaderPass(it, temp_end, *newPass, pass_depth))
+							{
+								GX_DELETE(newPass);
+								return false;
+							}
+							m_cSubShader.m_vPass.push_back(newPass);
+						}
+						else return false;
 					}
 					str.assign(it, end);
 					pos=str.find("__Pass");
@@ -634,75 +768,7 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 		it++;
 	}
 
-	return true;
-}
-
-bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
-{
-	std::string str;
-	std::string::const_iterator it=start;
-	while(it!=end)
-	{
-		if(findClosingCurlyBrace(it, end))
-		{
-			--depth;
-			start=it;
-			return true;
-		}
-
-		switch(depth)
-		{
-		case -1:
-			{
-				str.assign(it, end);
-				int pos=str.find("__includeModule");
-				if(pos>=0)
-				{
-					it=it+pos+strlen("__includeModule");
-					int properties_depth=-1;
-					if(findOpeningCurlyBrace(it, end))
-					{
-						std::string key;
-						it++;
-						while(parseKeyWord(it, end, key))
-						{
-							m_vIncludeModule.push_back(key);
-							if(findClosingCurlyBrace(it, end) && it!=end)
-								break;
-						}
-					}
-					else
-						return false;
-				}
-
-				str.assign(it, end);
-				pos=str.find("__vertex");
-				if(pos>=0)
-				{
-					it=it+pos+strlen("__vertex");
-					int properties_depth=-1;
-					if(!parseSubShader_vertex(it, end, properties_depth))
-						return false;
-				}
-
-				str.assign(it, end);
-				pos=str.find("__fragment");
-				if(pos>=0)
-				{
-					it=it+pos+strlen("__fragment");
-					int subshader_depth=-1;
-					if(!parseSubShader_fragment(it, end, subshader_depth))
-						return false;
-				}
-			}
-			break;
-		}
-
-		if(std::distance(it, end)<=0) return false;
-		it++;
-	}
-
-	return true;
+	return false;
 }
 
 bool gxSurfaceShader::parseShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
@@ -754,7 +820,7 @@ bool gxSurfaceShader::parseShader(std::string::const_iterator& start, std::strin
 		it++;
 	}
 
-	return true;
+	return false;
 }
 
 bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
@@ -797,7 +863,6 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 
 gxSurfaceShader::gxSurfaceShader()
 {
-	m_pMainShader=NULL;
 }
 
 gxSurfaceShader::~gxSurfaceShader()
@@ -830,13 +895,12 @@ gxSurfaceShader::~gxSurfaceShader()
 	}
 	m_vTextureMap.clear();
 
-	m_cMainShaderSource.clear();
-
-	m_vIncludeModule.clear();
+	m_vShaderProgram.clear();
 }
 
 bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 {
+	filename="res//shadersWin32//surfaceShader//NormalMap.shader";
 	int fileSz=0;
 	FILE* fp=fopen(filename, "r");
 	if(fp==NULL) return false;
@@ -872,56 +936,102 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 		}
 
 		HWShaderManager* hwShaderManager = engine_getHWShaderManager();
-		m_pMainShader=hwShaderManager->LoadShaderFromBuffer(filename, NULL, 0);
-		if(m_pMainShader)
+
+		int cntr=0;
+		for(std::vector<stPass*>::iterator it_pass = m_cSubShader.m_vPass.begin(); it_pass != m_cSubShader.m_vPass.end(); ++it_pass, cntr++)
 		{
-			std::cout << filename << "\n" << "Shader already loaded" << "\n Parse Success.\n";
-			GX_DELETE_ARY(vsource);
-			return true;
-		}
-		//construct the glsl shader
-		m_cMainShaderSource = "#version 120\n";
-		m_cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
-		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(0)->snippet;
-		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
-		for(std::vector<std::string>::iterator it = m_vIncludeModule.begin(); it != m_vIncludeModule.end(); ++it)
-		{
-			std::string module = *it;
-			if(module=="PointLightStruct")
+			stPass* currentPass = *it_pass;
+
+			char constructed_glsl_filename[1024];
+			sprintf(constructed_glsl_filename, "%s.pass%d.glsl", filename, cntr);
+			gxHWShader* pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, NULL, 0);
+			if(pMainShader)
 			{
-				m_cMainShaderSource+=hwShaderManager->getShaderSnippet(4)->snippet;
+				//check if a tex coord is used in this pass or not
+				for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
+				{
+					gxSubMap* map = *submap_it;
+					//check in vertex shader
+					if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+					{
+						currentPass->usedSubMap.push_back(map);
+					}
+
+					//check in fragment shader
+					if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+					{
+						currentPass->usedSubMap.push_back(map);
+					}
+				}
+				m_vShaderProgram.push_back(pMainShader);
+				std::cout << constructed_glsl_filename << "\n" << "Shader already loaded" << "\n Parse Success. Pass(" << cntr << ")\n";
+				continue;
 			}
-			else if(module=="MaterialStruct")
+
+			//construct the glsl shader
+			std::string cMainShaderSource = "#version 120\n";
+			cMainShaderSource+=hwShaderManager->getShaderSnippet(0)->snippet;
+			for(std::vector<std::string>::iterator it = currentPass->vIncludeModule.begin(); it != currentPass->vIncludeModule.end(); ++it)
 			{
-				m_cMainShaderSource+=hwShaderManager->getShaderSnippet(5)->snippet;
+				std::string module = *it;
+				if(module=="PointLightStruct")
+				{
+					cMainShaderSource+=hwShaderManager->getShaderSnippet(4)->snippet;
+				}
+				else if(module=="MaterialStruct")
+				{
+					cMainShaderSource+=hwShaderManager->getShaderSnippet(5)->snippet;
+				}
 			}
+
+			//check if a tex coord is used in this pass or not
+			for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
+			{
+				gxSubMap* map = *submap_it;
+				//check in vertex shader
+				if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+				{
+					currentPass->usedSubMap.push_back(map);
+				}
+
+				//check in fragment shader
+				if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+				{
+					currentPass->usedSubMap.push_back(map);
+				}
+			}
+
+			cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
+			cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
+			cMainShaderSource+=currentPass->vertex_buffer+"\n";
+			cMainShaderSource+=hwShaderManager->getShaderSnippet(2)->snippet;
+			cMainShaderSource += "#elif defined (GEAR_FRAGMENT_SHADER)\n";
+			cMainShaderSource+=currentPass->fragment_buffer+"\n";
+			cMainShaderSource+=hwShaderManager->getShaderSnippet(3)->snippet;
+			cMainShaderSource += "#endif\n";
+
+
+			//create the tmp glsl file
+			FILE* fp=fopen(constructed_glsl_filename, "w");
+			if(fp)
+			{
+				fwrite(cMainShaderSource.c_str(), 1, cMainShaderSource.size(), fp);
+				fclose(fp);
+			}
+			//
+
+			pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, cMainShaderSource.c_str(), cMainShaderSource.size());
+			if(!pMainShader)
+				std::cout << constructed_glsl_filename << "\nParse Success but GLSL compiler failed. Pass(" << cntr << ")\n";
+			else
+			{
+				m_vShaderProgram.push_back(pMainShader);
+				std::cout << constructed_glsl_filename << "\nParse Success. Pass(" << cntr << ")\n";
+			}
+
+			cMainShaderSource.clear();
 		}
-		m_cMainShaderSource+=m_cSubShader.vertex_buffer+"\n";
-		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(2)->snippet;
-		m_cMainShaderSource += "#elif defined (GEAR_FRAGMENT_SHADER)\n";
-		m_cMainShaderSource+=m_cSubShader.fragment_buffer+"\n";
-		m_cMainShaderSource+=hwShaderManager->getShaderSnippet(3)->snippet;
-		m_cMainShaderSource += "#endif\n";
 		//
-
-		//create the tmp glsl file
-		char temp[1024];
-		sprintf(temp, "%s.tmp.glsl", filename);
-		FILE* fp=fopen(temp, "w");
-		if(fp)
-		{
-			fwrite(m_cMainShaderSource.c_str(), 1, m_cMainShaderSource.size(), fp);
-			fclose(fp);
-		}
-		//
-
-		m_pMainShader=hwShaderManager->LoadShaderFromBuffer(filename, m_cMainShaderSource.c_str(), m_cMainShaderSource.size());
-		if(!m_pMainShader)
-			std::cout << filename << "\n" << m_cMainShaderSource << "\n Parse Success but GLSL compiler failed.\n";
-		else
-			std::cout << filename << "\n" << m_cMainShaderSource << "\n Parse Success.\n";
-
-		m_cMainShaderSource.clear();
 	}
 	else
 	{

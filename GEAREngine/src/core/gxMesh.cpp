@@ -227,12 +227,12 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 		if(pass_struct->GEAR_M)
 		{
-			shader->sendUniformTMfv("GEAR_MODEL_MATRIX", getMatrix(), false, 4);
+			shader->sendUniformTMfv("GEAR_MODEL_MATRIX", getWorldMatrix()->getMatrix(), false, 4);
 		}
 
 		if(pass_struct->GEAR_M_INVERSE)
 		{
-			matrix4x4f inv_model=*this;
+			matrix4x4f inv_model=*getWorldMatrix();
 			inv_model.inverse();
 			shader->sendUniformTMfv("GEAR_MODEL_INVERSE", inv_model.getMatrix(), false, 4);
 		}

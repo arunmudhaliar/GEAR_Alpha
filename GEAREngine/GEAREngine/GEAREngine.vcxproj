@@ -37,16 +37,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\include;../src/zlib-1.2.4;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\include;../src/zlib-1.2.4;D:\GITREPO\GEARREPO\openal\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\lib\vs2010\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\lib\vs2010\x86;D:\GITREPO\GEARREPO\openal\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\include;../src/zlib-1.2.4;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\include;../src/zlib-1.2.4;D:\GITREPO\GEARREPO\openal\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\lib\vs2010\x86;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -56,7 +58,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;fbxsdk-2013.3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;fbxsdk-2013.3.lib;glew32.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,10 +73,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;fbxsdk-2013.3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;fbxsdk-2013.3.lib;glew32.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\audio\SoundEngine.cpp" />
+    <ClCompile Include="..\src\audio\SoundSample.cpp" />
+    <ClCompile Include="..\src\audio\SoundSource.cpp" />
     <ClCompile Include="..\src\core\Camera.cpp" />
     <ClCompile Include="..\src\core\fbo.cpp" />
     <ClCompile Include="..\src\core\gxAnimation.cpp" />
@@ -128,6 +133,9 @@
     <ClCompile Include="..\src\zlib-1.2.4\zutil.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\audio\SoundEngine.h" />
+    <ClInclude Include="..\src\audio\SoundSample.h" />
+    <ClInclude Include="..\src\audio\SoundSource.h" />
     <ClInclude Include="..\src\core\aabb.h" />
     <ClInclude Include="..\src\core\basicIncludes.h" />
     <ClInclude Include="..\src\core\Camera.h" />

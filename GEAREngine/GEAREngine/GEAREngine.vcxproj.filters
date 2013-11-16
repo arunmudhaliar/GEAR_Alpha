@@ -43,6 +43,9 @@
     <Filter Include="engine\util\nvprofiler">
       <UniqueIdentifier>{b12e64a1-7931-47cf-aa80-6b65a8bb8da4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\audio">
+      <UniqueIdentifier>{25fa0766-be0d-4335-8e21-356eef902857}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp">
@@ -197,6 +200,15 @@
     </ClCompile>
     <ClCompile Include="..\src\util\nvProfiler.cpp">
       <Filter>engine\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\SoundEngine.cpp">
+      <Filter>engine\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\SoundSample.cpp">
+      <Filter>engine\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\SoundSource.cpp">
+      <Filter>engine\audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -379,6 +391,15 @@
     </ClInclude>
     <ClInclude Include="..\src\util\nvprofiler\tracedisplay.h">
       <Filter>engine\util\nvprofiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\audio\SoundEngine.h">
+      <Filter>engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\audio\SoundSample.h">
+      <Filter>engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\audio\SoundSource.h">
+      <Filter>engine\audio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

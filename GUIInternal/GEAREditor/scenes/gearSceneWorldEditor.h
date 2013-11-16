@@ -13,6 +13,8 @@
 #include "../../../GEAREngine/src/core/fbo.h"
 #endif
 
+#include "../../../GEAREngine/src/audio/SoundEngine.h"
+
 class gearSceneWorldEditor : public geWindow, public MWorldObserver, public MGUIObserver
 {
 public:
@@ -90,6 +92,7 @@ protected:
 	FBO m_cMultiPassFBO;
 #endif
 	bool m_bEnablePostProcessorBlur;
+	SoundEngine m_cSoundEngine;
 };
 
 #endif

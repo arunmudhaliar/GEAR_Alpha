@@ -10,6 +10,7 @@
 #include "gxDebug.h"
 //#include <gl/GLU.h>
 
+#define USE_OPENAL
 
 #include <string.h>
 

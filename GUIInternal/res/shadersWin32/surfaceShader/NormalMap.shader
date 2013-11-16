@@ -59,7 +59,7 @@ __Pass{
             localSurface2World[0] = normalize(vec3(GEAR_MODEL_MATRIX * vec4(vec3(Tangent), 0.0)));
             //localSurface2World[0] = normalize(vec3(GEAR_MODEL_MATRIX * vec4(Tangent, 0.0)));
             localSurface2World[2] = normalize(vec3(vIN_Normal * GEAR_MODEL_INVERSE));
-            localSurface2World[1] = normalize(cross(localSurface2World[2], localSurface2World[0]) * Tangent.w); // factor Tangent.w is specific to Unity
+            localSurface2World[1] = normalize(cross(localSurface2World[2], localSurface2World[0]) /** Tangent.w*/); // factor Tangent.w is specific to Unity
  
 			vOUT_WorldSpaceCameraPos = _WorldSpaceCameraPos;
             vOUT_Position = GEAR_MODEL_MATRIX * vIN_Position;
@@ -87,7 +87,7 @@ __Pass{
 			//vec3 localCoords = 2.0 * encodedNormal.rgb - vec3(1.0);	//for GL-ES
 			vec3 localCoords = encodedNormal.rgb;	//for GL-ES
             //vec3 localCoords = vec3(2.0 * encodedNormal.ag - vec2(1.0), 0.0);
-            //localCoords.z = sqrt(1.0 - dot(localCoords, localCoords));
+            //localCoords.z = sqrt(dot(localCoords, localCoords));
                // approximation without sqrt: localCoords.z = 
                // 1.0 - 0.5 * dot(localCoords, localCoords);
             vec3 normalDirection = normalize(localSurface2World * localCoords);
@@ -123,7 +123,7 @@ __Pass{
             {
                specularReflection = attenuation * vec3(light.specular) * vec3(material.specular) * pow(max(0.0, dot(reflect(-lightDirection, normalDirection), viewDirection)), material.shininess);
 			}
- 
+
             return vec4(ambientLighting + diffuseReflection + specularReflection, 1.0);
 		}
 	}

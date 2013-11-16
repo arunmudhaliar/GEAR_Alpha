@@ -122,6 +122,7 @@ void HWShaderManager::LoadDefaultShaders()
 
 	//surface shaders
 	LoadSurfaceShader("res//shadersWin32//surfaceShader//Diffuse.shader");
+	LoadSurfaceShader("res//shadersWin32//surfaceShader//Diffuse_vlit.shader");
 	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMap.shader");
 
 #endif

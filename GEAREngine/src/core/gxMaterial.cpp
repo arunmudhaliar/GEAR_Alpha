@@ -86,13 +86,13 @@ void gxMaterial::write(gxFile& file)
 	file.Write(m_fShininess);
 	file.Write(m_bTwoSided);
 	file.Write(m_szMaterialName);
-	//file.Write((int)m_vTextureMap.size());
-	//for(std::vector<stTextureMap*>::iterator it = m_vTextureMap.begin(); it != m_vTextureMap.end(); ++it)
-	//{
-	//	stTextureMap* texmap = *it;
-	//	file.Write(texmap->texturename.c_str());
-	//	file.Write(texmap->crc);
-	//}
+	file.Write((int)m_vSubMap.size());
+	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	{
+		gxSubMap* submap = *it;
+		file.Write(submap->getTextureName());
+		file.Write(submap->getTextureCRC());
+	}
 
 	file.Write(m_cMainShaderName.c_str());
 	file.Write(m_vDependencyCRCList.size());
@@ -108,6 +108,10 @@ void gxMaterial::read(gxFile& file)
 	file.ReadBuffer((unsigned char*)&m_cAmbient, sizeof(m_cAmbient));
 	file.ReadBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
 	file.ReadBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
+
+	m_cAmbient.zero();
+	m_cSpecular.zero();
+
 	file.Read(m_fAlpha);
 	file.Read(m_fShininess);
 	file.Read(m_bTwoSided);	
@@ -115,20 +119,20 @@ void gxMaterial::read(gxFile& file)
 	GX_STRCPY(m_szMaterialName, temp);
 	GX_DELETE_ARY(temp);
 
-	//int nsubmap=0;
-	//file.Read(nsubmap);
-	//for(int x=0;x<nsubmap;x++)
-	//{
-	//	char* temp=file.ReadString();
-	//	int texcrc;
-	//	file.Read(texcrc);
+	int nsubmap=0;
+	file.Read(nsubmap);
+	for(int x=0;x<nsubmap;x++)
+	{
+		char* temp=file.ReadString();
+		int texcrc;
+		file.Read(texcrc);
 
-	//	stTextureMap* texmap = new stTextureMap();
-	//	texmap->texturename.assign(temp);
-	//	texmap->crc=texcrc;
-	//	m_vTextureMap.push_back(texmap);
-	//	GX_DELETE_ARY(temp);
-	//}
+		gxSubMap* submap = new gxSubMap();
+		submap->setTextureName(temp);
+		submap->setTextureCRC(texcrc);
+		m_vSubMap.push_back(submap);
+		GX_DELETE_ARY(temp);
+	}
 
 	temp=file.ReadString();
 	setMainShaderName(temp);

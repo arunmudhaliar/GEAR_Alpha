@@ -1,4 +1,4 @@
-Shader "Diffuse" {
+Shader "Diffuse-Vlit" {
 Properties {
 	_Color ("Main Color", Color) = (1,1,1,1)
 	_MainTex ("Base (RGB)", Tex2D) = "white" {}
@@ -35,27 +35,14 @@ __Pass{
 	}
 	
 	__vertex{
-		 
-		varying vec4 vOUT_Position;
-		varying vec4 vOUT_Normal;
-		vec4 vertex_function()
-		{
-			vOUT_Position = GEAR_MODEL_MATRIX * vIN_Position;
-			vOUT_Normal = vIN_Normal;
-			return GEAR_MVP * vIN_Position;
-		}
-	}
-
-	__fragment{
-		uniform vec3 _WorldSpaceCameraPos;
-		varying vec4 vOUT_Position;
-		varying vec4 vOUT_Normal;
+		uniform vec3 _WorldSpaceCameraPos; 
 		vec4 pointLight()
 		{
+            mat4 modelMatrix = GEAR_MODEL_MATRIX;
             mat4 modelMatrixInverse = GEAR_MODEL_INVERSE; // unity_Scale.w is unnecessary because we normalize vectors
  
-            vec3 normalDirection = normalize(vec3(vOUT_Normal * modelMatrixInverse));
-            vec3 viewDirection = normalize(_WorldSpaceCameraPos - vec3(vOUT_Position));
+            vec3 normalDirection = normalize(vec3(vIN_Normal * modelMatrixInverse));
+            vec3 viewDirection = normalize(_WorldSpaceCameraPos - vec3(modelMatrix * vIN_Position));
             vec3 lightDirection;
             float attenuation;
  
@@ -66,7 +53,7 @@ __Pass{
             } 
             else // point or spot light
             {
-               vec3 vertexToLightSource = vec3(light.position - vOUT_Position);
+               vec3 vertexToLightSource = vec3(light.position - (modelMatrix * vIN_Position));
                float distance = length(vertexToLightSource);
                //attenuation = 1.0 / distance; // linear attenuation 
 				attenuation = 1.f / (light.constant_attenuation +
@@ -94,9 +81,19 @@ __Pass{
 			return vec4(diffuseColor + specularColor, 1.0);
 		}
 		
+		varying vec4 vOUT_Color;
+		vec4 vertex_function()
+		{
+			vOUT_Color=pointLight();
+			return GEAR_MVP * vIN_Position;
+		}
+	}
+
+	__fragment{
+		varying vec4 vOUT_Color;
 		vec4 fragment_function()
 		{
-			return pointLight();
+			return vOUT_Color;
 		}
 	}
 }

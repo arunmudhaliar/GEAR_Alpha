@@ -73,6 +73,7 @@ protected:
 	bool m_bTransformThroughLocalAxis;
 	geToolBarButton* m_pLocalOrGlobalAxis;
 	geToolBarButton* m_pTBGridView;
+	geToolBarButton* m_pTBOnlyLightPass;
 
 	geToolBarButton* m_pPlayButton;
 	geToolBarButton* m_pPauseButton;

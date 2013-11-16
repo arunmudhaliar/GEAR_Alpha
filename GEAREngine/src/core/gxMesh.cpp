@@ -259,7 +259,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 				shader->sendUniform4fv("material.diffuse", &material->getDiffuseClr().x);
 				shader->sendUniform4fv("material.ambient", &material->getAmbientClr().x);
 				shader->sendUniform4fv("material.specular", &material->getSpecularClr().x);
-				shader->sendUniform1f("material.shininess", 10.0f/*material->getShininess()*/);
+				shader->sendUniform1f("material.shininess", 2.0f/*material->getShininess()*/);
 			}
 			else
 			{
@@ -456,6 +456,9 @@ float* gxMesh::allocateNormalBuffer(int nTris)
 
 bool gxMesh::createTBN_Data()
 {
+	//need to use the below mentioned url
+	//http://www.terathon.com/code/tangent.html
+
 	float* diffuse_uv_coordPtr=NULL;
 	float* tangent_coord=NULL;
 	gxUV* base_uv=(m_nUVChannels)?&m_pszUVChannels[0]:NULL;
@@ -485,12 +488,12 @@ bool gxMesh::createTBN_Data()
 	vector2f dc3c1TB;
 
 	int aIterator=0;
-	for(int x=0;x<m_nTriInfoArray;x++)
-	{
-		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
-		if(!triInfo->getTriList()) continue;
+	//for(int x=0;x<m_nTriInfoArray;x++)
+	//{
+	//	gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+	//	if(!triInfo->getTriList()) continue;
 
-		for(int y=0;y<triInfo->getVerticesCount()/3;y++)
+		for(int y=0;y<m_nTris_For_Internal_Use;y++)
 		{
 			vector3f v1(v[aIterator*9+0], v[aIterator*9+1], v[aIterator*9+2]);
 			vector3f v2(v[aIterator*9+3], v[aIterator*9+4], v[aIterator*9+5]);
@@ -559,7 +562,7 @@ bool gxMesh::createTBN_Data()
 
 			aIterator++;
 		}
-	}
+	//}
 
 	return true;
 }

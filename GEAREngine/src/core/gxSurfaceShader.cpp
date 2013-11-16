@@ -25,10 +25,9 @@ gxTexture* gxSubMap::load(CTextureManager& textureManager, const char* filename)
 	gxFile metaInfoFile;
 	if(metaInfoFile.OpenFile(metaInfoFileName))
 	{
-		int crc=0;
-		metaInfoFile.Read(crc);
+		metaInfoFile.Read(m_iTextureCRC);
 		metaInfoFile.CloseFile();
-		return loadTextureFromMeta(textureManager, crc);
+		return loadTextureFromMeta(textureManager, m_iTextureCRC);
 	}
 
 	return NULL;

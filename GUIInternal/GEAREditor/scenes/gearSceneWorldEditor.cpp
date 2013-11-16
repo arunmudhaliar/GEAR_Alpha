@@ -23,6 +23,7 @@ geWindow("World Editor")
 
 	m_pPlayButton = NULL;
 	m_pPauseButton = NULL;
+	m_pTBOnlyLightPass = NULL;
 	m_bMonoGameInitialized=false;
 
 	m_pTranslateGizmo = NULL;
@@ -112,6 +113,14 @@ void gearSceneWorldEditor::onCreate()
 	m_pHorizontalSlider_TimeScale->create(m_pRenderer, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
 	m_pHorizontalSlider_TimeScale->setSliderValue(1.0f);
 	getToolBar()->appendToolBarControl(m_pHorizontalSlider_TimeScale);
+
+	geToolBarSeperator* seperator5 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40);
+	getToolBar()->appendToolBarControl(seperator5);
+
+	m_pTBOnlyLightPass=new geToolBarButton(m_pRenderer, "onlylightpass", getToolBar());
+	m_pTBOnlyLightPass->loadImage("res//icons16x16.png", 153, 342);
+	m_pTBOnlyLightPass->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pTBOnlyLightPass);
 
 	//create grid
 	float startX=-500.0f;
@@ -379,12 +388,14 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	else
 	{
 		glEnable(GL_DEPTH_TEST);
-		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-		monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+		if(!m_pTBOnlyLightPass->isButtonPressed())
+		{
+			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+			monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+		}
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);
-
 		std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
 		for(int x=0;x<lightList->size();x++)
 		{

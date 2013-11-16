@@ -702,6 +702,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 
 			FbxVector4 normal;
 			fbxMesh.GetPolygonVertexNormal(x, y, normal);
+			normal=geometryOffset.MultNormalize(normal);
 			//normal=transform.MultNormalize(normal);
 			normal.Normalize();
 			//vertex
@@ -752,6 +753,12 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 		}
 	}
 
+	//create the tangent buffer
+	if(uvSetNames.GetCount())
+	{
+		createTangentBuffer(newMesh, fbxMesh, geometryOffset, uvSetNames.GetStringAt(0));
+	}
+
 	int nCount=(nMaterialCount>0)?nMaterialCount:1;
 
 	if(nMaterialCount==0)
@@ -778,6 +785,138 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 	return newMesh;
 }
 
+void fbxImporter::createTangentBuffer(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, char* uvname)
+{
+	int vertexCount=fbxMesh.GetControlPointsCount();
+	vector3f *tan1 = new vector3f[vertexCount * 2];
+	FbxVector4 *normalbuffer = new FbxVector4[vertexCount];
+	FbxVector4 *tangentbuffer = new FbxVector4[vertexCount];
+	int *normalbufferCount = new int[vertexCount];
+    vector3f *tan2 = tan1 + vertexCount;
+    ZeroMemory(tan1, vertexCount * sizeof(vector3f) * 2);
+    ZeroMemory(normalbuffer, vertexCount * sizeof(FbxVector4));
+    ZeroMemory(normalbufferCount, vertexCount * sizeof(int));
+    ZeroMemory(tangentbuffer, vertexCount * sizeof(FbxVector4));
+
+	for (long x = 0; x < fbxMesh.GetPolygonCount(); x++)
+    {
+		int vertexIndex0=fbxMesh.GetPolygonVertex(x, 0);
+		int vertexIndex1=fbxMesh.GetPolygonVertex(x, 1);
+		int vertexIndex2=fbxMesh.GetPolygonVertex(x, 2);
+
+		FbxVector4 v1=fbxMesh.GetControlPointAt(vertexIndex0);
+		v1=geometryOffset.MultNormalize(v1);
+		FbxVector4 v2=fbxMesh.GetControlPointAt(vertexIndex1);
+		v2=geometryOffset.MultNormalize(v2);
+		FbxVector4 v3=fbxMesh.GetControlPointAt(vertexIndex2);
+		v3=geometryOffset.MultNormalize(v3);
+
+		FbxVector4 n1;
+		fbxMesh.GetPolygonVertexNormal(x, 0, n1);
+		n1=geometryOffset.MultNormalize(n1);
+		n1.Normalize();
+		normalbuffer[vertexIndex0]+=n1;
+		normalbufferCount[vertexIndex0]++;
+
+		FbxVector4 n2;
+		fbxMesh.GetPolygonVertexNormal(x, 1, n2);
+		n2=geometryOffset.MultNormalize(n2);
+		n2.Normalize();
+		normalbuffer[vertexIndex1]+=n2;
+		normalbufferCount[vertexIndex1]++;
+
+		FbxVector4 n3;
+		fbxMesh.GetPolygonVertexNormal(x, 2, n3);
+		n3=geometryOffset.MultNormalize(n3);
+		n3.Normalize();
+		normalbuffer[vertexIndex2]+=n3;
+		normalbufferCount[vertexIndex2]++;
+
+		FbxVector2 w1;
+		fbxMesh.GetPolygonVertexUV(x, 0, uvname, w1);
+		w1.mData[1]=1.0f-(float)w1.mData[1];
+		FbxVector2 w2;
+		fbxMesh.GetPolygonVertexUV(x, 1, uvname, w2);
+		w2.mData[1]=1.0f-(float)w2.mData[1];
+		FbxVector2 w3;
+		fbxMesh.GetPolygonVertexUV(x, 2, uvname, w3);
+		w3.mData[1]=1.0f-(float)w3.mData[1];
+
+		float x1 = v2.mData[0] - v1.mData[0];
+		float x2 = v3.mData[0] - v1.mData[0];
+		float y1 = v2.mData[1] - v1.mData[1];
+		float y2 = v3.mData[1] - v1.mData[1];
+		float z1 = v2.mData[2] - v1.mData[2];
+		float z2 = v3.mData[2] - v1.mData[2];
+        
+		float s1 = w2.mData[0] - w1.mData[0];
+		float s2 = w3.mData[0] - w1.mData[0];
+		float t1 = w2.mData[1] - w1.mData[1];
+		float t2 = w3.mData[1] - w1.mData[1];
+        
+		float r = 1.0F / (s1 * t2 - s2 * t1);
+		vector3f sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
+				(t2 * z1 - t1 * z2) * r);
+		vector3f tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
+				(s1 * z2 - s2 * z1) * r);
+
+		tan1[vertexIndex0] += sdir;
+		tan1[vertexIndex1] += sdir;
+		tan1[vertexIndex2] += sdir;
+        
+		tan2[vertexIndex0] += tdir;
+		tan2[vertexIndex1] += tdir;
+		tan2[vertexIndex2] += tdir;
+	}
+
+	for (long a = 0; a < vertexCount; a++)
+    {
+        FbxVector4& temp = normalbuffer[a]/normalbufferCount[a];
+		temp.Normalize();
+		vector3f n(temp.mData[0], temp.mData[1], temp.mData[2]);
+        vector3f& t = tan1[a];
+        
+        // Gram-Schmidt orthogonalize
+		vector3f ortho_val(t - n * n.dot(t));
+		ortho_val.normalize();
+
+		tangentbuffer[a].mData[0] = ortho_val.x;
+		tangentbuffer[a].mData[1] = ortho_val.y;
+		tangentbuffer[a].mData[2] = ortho_val.z;
+        
+        // Calculate handedness
+		tangentbuffer[a].mData[3] = (((n.cross(t)).dot(tan2[a])) < 0.0F) ? -1.0F : 1.0F;
+    }
+
+	float* meshtangentBuffer = newMesh->allocateTangentBuffer(fbxMesh.GetPolygonCount());
+	for(int x=0;x<fbxMesh.GetPolygonCount();x++)
+	{
+		int vertexIndices[]={
+			x*3+0,
+			x*3+1,
+			x*3+2
+		};
+
+		for(int y=0;y<fbxMesh.GetPolygonSize(x);y++)
+		{
+			int vertexIndex=fbxMesh.GetPolygonVertex(x, y);
+
+			FbxVector4 t=tangentbuffer[vertexIndex];
+
+			meshtangentBuffer[vertexIndices[y]*4+0]=(float)t.mData[0];
+			meshtangentBuffer[vertexIndices[y]*4+1]=(float)t.mData[1];
+			meshtangentBuffer[vertexIndices[y]*4+2]=(float)t.mData[2];
+			meshtangentBuffer[vertexIndices[y]*4+3]=(float)t.mData[3];
+		}
+	}
+
+
+	delete [] tan1;
+	delete [] normalbuffer;
+	delete [] tangentbuffer;
+	delete [] normalbufferCount;
+
+}
 
 void fbxImporter::triangulateFBXRecursive(FbxGeometryConverter &fbxConverter, FbxNode &fbxNode)
 {

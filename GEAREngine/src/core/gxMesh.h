@@ -52,6 +52,7 @@ public:
 	float* allocateVertexBuffer(int nTris);
 	float* allocateColorBuffer(int nTris);
 	float* allocateNormalBuffer(int nTris);
+	float* allocateTangentBuffer(int nTris);
 
 	gxUV* allocateUVChannels(int nChannel, int nTris)
 	{

@@ -43,6 +43,8 @@ public:
 	void importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList, stBoneList* boneList);
 	gxMesh* importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d, stBoneInfluence* boneInfluenceList, stBoneList* boneList);
 
+	void createTangentBuffer(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, char* uvname);
+
 	FbxNode* findRoot(FbxNode *fbxNode);
 	void pushAllNodes(stBoneList* boneList, FbxNode *fbxNode, int& index);
 	void populateBonesToMeshNode(stBoneList* boneList, object3d* obj, object3d* rootNode);

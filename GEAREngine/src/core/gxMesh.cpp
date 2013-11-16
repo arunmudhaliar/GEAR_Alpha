@@ -248,7 +248,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 		if(pass_struct->Tangent)
 		{
-			glVertexAttribPointer(shader->getAttribLoc("Tangent"), 3, GL_FLOAT, GL_FALSE, 0, getTangentBuffer());
+			glVertexAttribPointer(shader->getAttribLoc("Tangent"), 4, GL_FLOAT, GL_FALSE, 0, getTangentBuffer());
 			glEnableVertexAttribArray(shader->getAttribLoc("Tangent"));
 		}
 
@@ -453,6 +453,12 @@ float* gxMesh::allocateNormalBuffer(int nTris)
 	return m_pszNormalBuffer;
 }
 
+float* gxMesh::allocateTangentBuffer(int nTris)
+{
+	GX_DELETE_ARY(m_pszTangentBuffer);
+	m_pszTangentBuffer = new float[nTris*3*4];
+	return m_pszTangentBuffer;
+}
 
 bool gxMesh::createTBN_Data()
 {
@@ -625,6 +631,16 @@ void gxMesh::writeMeshData(gxFile& file)
 		file.Write(false);
 	}
 
+	if(m_pszTangentBuffer)
+	{
+		file.Write(true);
+		file.WriteBuffer((unsigned char*)m_pszTangentBuffer, sizeof(float)*m_nTris_For_Internal_Use*3*4);
+	}
+	else
+	{
+		file.Write(false);
+	}
+
 	file.Write(m_nUVChannels);
 	for(int x=0;x<m_nUVChannels;x++)
 	{
@@ -694,6 +710,14 @@ void gxMesh::read(gxFile& file)
 		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
 	}
 
+	bool bTangentBuffer=false;
+	file.Read(bTangentBuffer);
+	if(bTangentBuffer)
+	{
+		float* buffer=allocateTangentBuffer(m_nTris_For_Internal_Use);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*4);
+	}
+
 
 	file.Read(m_nUVChannels);
 	if(m_nUVChannels)
@@ -706,7 +730,7 @@ void gxMesh::read(gxFile& file)
 		file.ReadBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
 	}
 
-	createTBN_Data();
+	//createTBN_Data();
 }
 
 void gxMesh::transformationChangedf()

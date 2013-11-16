@@ -36,6 +36,7 @@ public:
 	~vector3<T>(){}
 	
 	vector3<T> operator+(const vector3<T>& v)	{	return vector3<T>(x+v.x, y+v.y, z+v.z);	}
+	void operator+=(const vector3<T>& v)		{	x+=v.x; y+=v.y; z+=v.z;	}
 	vector3<T> operator-(const vector3<T>& v)	{	return vector3<T>(x-v.x, y-v.y, z-v.z);	}
 	vector3<T> operator-()						{	return vector3<T>(-x, -y, -z);	}
 	

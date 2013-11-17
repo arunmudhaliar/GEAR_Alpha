@@ -173,6 +173,7 @@ void gxMaterial::setSurfaceShader(gxSurfaceShader* surfaceShader)
 		appendSubMap(submap);
 	}
 
+#if REMOVE_ADDITIONAL_MAPS_FROM_LIST
 	//remove additional maps from list
 	while(m_vSubMap.size()>propertylist->size())
 	{
@@ -181,6 +182,7 @@ void gxMaterial::setSurfaceShader(gxSurfaceShader* surfaceShader)
 		GX_DELETE(submap);
 	}
 	//
+#endif
 
 	int submap_cntr=0;
 	for(std::vector<stShaderProperty_Texture2D*>::iterator it = propertylist->begin(); it != propertylist->end(); ++it, submap_cntr++)

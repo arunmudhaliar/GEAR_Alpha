@@ -24,7 +24,7 @@ extern "C" {
 	DllExport gxWorld* engine_getWorld(int index);
 
 	DllExport void engine_update(gxWorld* world, float dt);
-	DllExport void engine_resize(gxWorld* world, float x, float y, float cx, float cy);
+	DllExport void engine_resize(gxWorld* world, float x, float y, float cx, float cy, float nearplane, float farplane);
 	DllExport void engine_render(gxWorld* world, object3d* light);
 	DllExport void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light);
 	DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename);

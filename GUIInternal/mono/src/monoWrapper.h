@@ -36,7 +36,7 @@ public:
 	static gxWorld* mono_engine_getWorld(int index);
 
 	static void mono_engine_update(gxWorld* world, float dt);
-	static void mono_engine_resize(gxWorld* world, float x, float y, float cx, float cy);
+	static void mono_engine_resize(gxWorld* world, float x, float y, float cx, float cy, float nearplane, float farplane);
 	static void mono_engine_render(gxWorld* world, object3d* light);
 	static void mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light);
 	static object3d* mono_engine_loadAndAppendFBX(gxWorld* world, const char* filename);

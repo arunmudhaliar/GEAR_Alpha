@@ -4,6 +4,8 @@
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
 #include "../gui/geTextBox.h"
+#include "../../../GEAREngine/src/core/gxMaterial.h"
+#include "../../../GEAREngine/src/core/object3d.h"
 
 class gearSceneFileView : public geWindow, public MTreeViewObserver, public MGUIObserver
 {
@@ -29,11 +31,14 @@ protected:
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
 private:
 	void destroyTVUserData(geGUIBase* parent);
+	void loadPreviewObjects();
 
 	Sprite2Dx m_cszSprites[5];
 	geTreeView m_cFileTreeView;
 	geTextBox* m_pSerachStringTextBoxPtr;
 	char m_szDirectoryPath[512];
+
+	object3d* m_pPreviewObj_Cube;
 };
 
 #endif

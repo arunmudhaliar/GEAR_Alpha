@@ -87,7 +87,7 @@ __Pass{
 			//vec3 localCoords = 2.0 * encodedNormal.rgb - vec3(1.0);	//for GL-ES
 			vec3 localCoords = encodedNormal.rgb;	//for GL-ES
             //vec3 localCoords = vec3(2.0 * encodedNormal.ag - vec2(1.0), 0.0);
-            //localCoords.z = sqrt(dot(localCoords, localCoords));
+            localCoords.z = sqrt(dot(localCoords, localCoords));
                // approximation without sqrt: localCoords.z = 
                // 1.0 - 0.5 * dot(localCoords, localCoords);
             vec3 normalDirection = normalize(localSurface2World * localCoords);

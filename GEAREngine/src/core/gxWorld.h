@@ -33,7 +33,7 @@ public:
 	Camera* setDefaultCameraActive();
 
 	void renderSingleObject(object3d* obj, object3d* light);
-	void resizeWorld(float x, float y, float cx, float cy);
+	void resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane);
 
 	gxMaterial* getDefaultMaterial()					{	return &m_cDefaultMaterial;		}
 	std::vector<gxMaterial*>* getMaterialList()			{	return &m_cMaterialList;		}

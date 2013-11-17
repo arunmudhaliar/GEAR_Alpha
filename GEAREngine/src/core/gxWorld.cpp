@@ -80,12 +80,12 @@ void gxWorld::renderSingleObject(object3d* obj, object3d* light)
 	obj->render(&m_cRenderer, light);
 }
 
-void gxWorld::resizeWorld(float x, float y, float cx, float cy)
+void gxWorld::resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane)
 {
 	m_cRenderer.setViewPort(x, y, cx, cy);
 	if(m_pActiveCameraPtr)
 	{	
-		m_pActiveCameraPtr->setUpCameraPerspective(cx, cy, 45.0f, 10.0f, 100000.0f);
+		m_pActiveCameraPtr->setUpCameraPerspective(cx, cy, 45.0f, nearplane, farplane);
 	}
 }
 

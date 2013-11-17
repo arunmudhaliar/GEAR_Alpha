@@ -16,9 +16,11 @@ gearScenePreview::~gearScenePreview()
 void gearScenePreview::onCreate()
 {
 	m_pPreviewWorldPtr=monoWrapper::mono_engine_getWorld(1);
-	object3d* light=engine_createLight(m_pPreviewWorldPtr, "Point Light", gxLight::LIGHT_POINT);
+	object3d* light=engine_createLight(m_pPreviewWorldPtr, "Light", gxLight::LIGHT_POINT);
 	((gxLight*)light)->setDiffuseColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
-	((gxLight*)light)->setAmbientColor(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
+	((gxLight*)light)->setAmbientColor(vector4f(0.0f, 0.0f, 0.0f, 1.0f));
+	((gxLight*)light)->setConstantAttenuation(0.5f);
+	light->updatePositionf(0, -10, 0);
 }
 
 void gearScenePreview::draw()
@@ -27,7 +29,7 @@ void gearScenePreview::draw()
 
 	if(!m_pSelectedObj) return;
 
-	monoWrapper::mono_engine_resize(m_pPreviewWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);
+	monoWrapper::mono_engine_resize(m_pPreviewWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/, 1.0f, 10000.0f);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);

@@ -27,11 +27,13 @@ gearSceneFileView::gearSceneFileView():
 geWindow("File View")
 {
 	m_pSerachStringTextBoxPtr=NULL;
+	m_pPreviewObj_Cube=NULL;
 	memset(m_szDirectoryPath, 0, sizeof(m_szDirectoryPath));
 }
 
 gearSceneFileView::~gearSceneFileView()
 {
+	GE_DELETE(m_pPreviewObj_Cube);
 	destroyTVUserData(m_cFileTreeView.getRoot());
 }
 
@@ -58,6 +60,7 @@ void gearSceneFileView::onCreate()
 	m_cszSprites[4].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[4].setClip(110, 238, 16, 16);
 
+	loadPreviewObjects();
 }
 
 void gearSceneFileView::onDraw()
@@ -116,14 +119,43 @@ void deleteAnmationFromObject3d(object3d* obj3d)
 	}
 }
 
+void gearSceneFileView::loadPreviewObjects()
+{
+	//cube
+	gxFile file_meta;
+	object3d* obj=NULL;
+	if(file_meta.OpenFile("res//preview//cube.preview"))
+	{
+		stMetaHeader metaHeader;
+		file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+		int objID=0;
+		file_meta.Read(objID);
+
+		object3d* tempObj=NULL;
+		if(objID!=100)
+		{
+			tempObj = new object3d(objID);
+			tempObj->read(file_meta);
+			read3dFile(file_meta, tempObj);
+			obj=tempObj;
+			obj->transformationChangedf();
+		}
+		file_meta.CloseFile();
+	}
+	deleteAnmationFromObject3d(obj);
+	m_pPreviewObj_Cube=obj;
+	//
+}
+
 void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
 {
 	object3d* obj=(object3d*)((assetUserData*)tvnode->getUserData())->getAssetObjectPtr();
 	if(obj==NULL)
 	{
 		const char* absolutePath=((assetUserData*)tvnode->getUserData())->getAssetAbsolutePath();
-		if(util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX") ||
-			util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
+		char crcFile[1024];
+		if(absolutePath)
 		{
 			char metaInfoFileName[256];
 			sprintf(metaInfoFileName, "%s.meta",absolutePath);
@@ -135,33 +167,98 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				metaInfoFile.Read(crc);
 				metaInfoFile.CloseFile();
 
-				char crcFile[1024];
 				sprintf(crcFile, "%s/MetaData/%x", EditorApp::getProjectHomeDirectory(), crc);
+			}
+		}
 
-				gxFile file_meta;
+		if(util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX") ||
+			util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
+		{
+			gxFile file_meta;
+			if(file_meta.OpenFile(crcFile))
+			{
+				stMetaHeader metaHeader;
+				file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+				int objID=0;
+				file_meta.Read(objID);
+
+				object3d* tempObj=NULL;
+				if(objID!=100)
+				{
+					tempObj = new object3d(objID);
+					tempObj->read(file_meta);
+					read3dFile(file_meta, tempObj);
+					obj=tempObj;
+					obj->transformationChangedf();
+				}
+				file_meta.CloseFile();
+			}
+			deleteAnmationFromObject3d(obj);
+
+			((assetUserData*)tvnode->getUserData())->setAssetObjectPtr(obj, assetUserData::ASSET_MESH_OBJECT);
+		}
+		else if(util::GE_IS_EXTENSION(absolutePath, ".mat") || util::GE_IS_EXTENSION(absolutePath, ".MAT"))
+		{
+			gxFile file_meta;
+			int crc32=AssetImporter::calcCRC32((unsigned char*)absolutePath);
+
+			gxMaterial* matchingMaterial=NULL;
+			//check if the material name already exists in our list or not
+			gxWorld* world=monoWrapper::mono_engine_getWorld(0);
+			std::vector<gxMaterial*>* materialList = world->getMaterialList();
+			for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+			{
+				gxMaterial* material_in_list = *it;
+				if(material_in_list->getFileCRC()==crc32)
+				{
+					//match found, so assing and delete the new material object
+					matchingMaterial=material_in_list;
+					gxMesh* mesh=(gxMesh*)m_pPreviewObj_Cube->getChild(0);
+					gxTriInfo* triinfo = mesh->getTriInfo(0);
+					triinfo->setMaterial(matchingMaterial);
+					obj=m_pPreviewObj_Cube;
+				}
+			}
+
+			if(!matchingMaterial)
+			{
+				sprintf(crcFile, "%s/MetaData/%x", EditorApp::getProjectHomeDirectory(), crc32);
 				if(file_meta.OpenFile(crcFile))
 				{
 					stMetaHeader metaHeader;
 					file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
 
-					int objID=0;
-					file_meta.Read(objID);
-
-					object3d* tempObj=NULL;
-					if(objID!=100)
-					{
-						tempObj = new object3d(objID);
-						tempObj->read(file_meta);
-						read3dFile(file_meta, tempObj);
-						obj=tempObj;
-						obj->transformationChangedf();
-					}
+					gxMaterial* material = new gxMaterial();
+					material->read(file_meta);
 					file_meta.CloseFile();
-				}
-				deleteAnmationFromObject3d(obj);
-			}
 
-			((assetUserData*)tvnode->getUserData())->setAssetObjectPtr(obj, assetUserData::ASSET_MESH_OBJECT);
+					HWShaderManager* hwShaderManager = engine_getHWShaderManager();
+					//load surface shader
+					char mainshaderfilename[1024];
+					sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
+					material->setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
+
+					//load sub maps
+					std::vector<gxSubMap*>* maplist=material->getSubMapList();
+					for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
+					{
+						gxSubMap* submap = *it;
+						gxWorld* world=monoWrapper::mono_engine_getWorld(0);
+						submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
+					}
+
+					gxMesh* mesh=(gxMesh*)m_pPreviewObj_Cube->getChild(0);
+					gxTriInfo* triinfo = mesh->getTriInfo(0);
+					triinfo->setMaterial(material);
+					world->getMaterialList()->push_back(triinfo->getMaterial());
+					obj=m_pPreviewObj_Cube;
+				}
+			}
+			else
+			{
+
+			}
 		}
 	}
 	EditorApp::getScenePreview()->selectedObject3D(obj);

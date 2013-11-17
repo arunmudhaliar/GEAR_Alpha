@@ -22,7 +22,7 @@ namespace MonoGEAR
         static extern void engine_update(IntPtr world, float dt);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern void engine_resize(IntPtr world, float x, float y, float cx, float cy);
+        static extern void engine_resize(IntPtr world, float x, float y, float cx, float cy, float nearplane, float farplane);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void engine_render(IntPtr world, IntPtr light);

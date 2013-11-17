@@ -38,9 +38,9 @@ extern DllExport void engine_update(gxWorld* world, float dt)
 	world->update(dt);
 }
 
-extern DllExport void engine_resize(gxWorld* world, float x, float y, float cx, float cy)
+extern DllExport void engine_resize(gxWorld* world, float x, float y, float cx, float cy, float nearplane, float farplane)
 {
-	world->resizeWorld(x, y, cx, cy);
+	world->resizeWorld(x, y, cx, cy, nearplane, farplane);
 }
 
 extern DllExport void engine_render(gxWorld* world, object3d* light)

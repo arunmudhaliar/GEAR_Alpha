@@ -186,7 +186,7 @@ void monoWrapper::bindEngineMethods()
 	g_pMethod_engine_init					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_init", 1);
 	g_pMethod_engine_getWorld				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_getWorld", 1);
 	g_pMethod_engine_update					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_update", 2);
-	g_pMethod_engine_resize					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_resize", 5);
+	g_pMethod_engine_resize					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_resize", 7);
 	g_pMethod_engine_render					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_render", 2);
 	g_pMethod_engine_renderSingleObject		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_renderSingleObject", 3);
 	g_pMethod_engine_loadAndAppendFBX		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadAndAppendFBX", 2);
@@ -301,13 +301,13 @@ void monoWrapper::mono_engine_update(gxWorld* world, float dt)
 #endif
 }
 
-void monoWrapper::mono_engine_resize(gxWorld* world, float x, float y, float cx, float cy)
+void monoWrapper::mono_engine_resize(gxWorld* world, float x, float y, float cx, float cy, float nearplane, float farplane)
 {
 #ifdef USEMONOENGINE
-	void* args[5]={&world, &x, &y, &cx, &cy};
+	void* args[7]={&world, &x, &y, &cx, &cy, &nearplane, &farplane};
 	mono_runtime_invoke(g_pMethod_engine_resize, NULL, args, NULL);
 #else
-	engine_resize(world, x, y, cx, cy);
+	engine_resize(world, x, y, cx, cy, nearplane, farplane);
 #endif
 }
 

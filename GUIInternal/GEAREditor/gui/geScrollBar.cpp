@@ -1,7 +1,7 @@
 #include "geScrollBar.h"
 
 geScrollBar::geScrollBar():
-	geGUIBase(56, "scrollBar")
+	geGUIBase(GEGUI_SCROLLBAR, "scrollBar")
 {
 	m_fHeightRatio=1.0f;
 	m_fScrollGrabberYPos=0.0f;

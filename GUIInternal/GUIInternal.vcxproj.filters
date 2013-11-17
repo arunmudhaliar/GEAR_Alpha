@@ -270,6 +270,9 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyBlurProcessor.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geWindowColumn.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -400,6 +403,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyBlurProcessor.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geWindowColumn.cpp">
+      <Filter>GEAREditor\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

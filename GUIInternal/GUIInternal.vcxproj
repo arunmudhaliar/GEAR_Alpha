@@ -109,6 +109,7 @@
     <ClInclude Include="GEAREditor\gui\geToolBarSeperator.h" />
     <ClInclude Include="GEAREditor\gui\geTreeView.h" />
     <ClInclude Include="GEAREditor\gui\geWindow.h" />
+    <ClInclude Include="GEAREditor\gui\geWindowColumn.h" />
     <ClInclude Include="GEAREditor\renderer\glincludes.h" />
     <ClInclude Include="GEAREditor\renderer\matrix4x4f.h" />
     <ClInclude Include="GEAREditor\renderer\renderer.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="GEAREditor\gui\geToolBarDropMenu.cpp" />
     <ClCompile Include="GEAREditor\gui\geTreeView.cpp" />
     <ClCompile Include="GEAREditor\gui\geWindow.cpp" />
+    <ClCompile Include="GEAREditor\gui\geWindowColumn.cpp" />
     <ClCompile Include="GEAREditor\renderer\renderer.cpp" />
     <ClCompile Include="GEAREditor\renderer\rendererGL10.cpp" />
     <ClCompile Include="GEAREditor\renderer\rendererGL20.cpp" />

@@ -1,6 +1,80 @@
 #include "gePropertyLight.h"
 #include "../../EditorApp.h"
 
+gePropertyLight::gePropertyLight(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
+	geTreeNode(renderer, parent, name, sprite, 10)
+{
+	setSize(m_cSize.x, 130.0f);
+
+	//diffuse
+	m_pColorControl = new geColorControl();
+	m_pColorControl->create(renderer, this, 10, 10);
+	m_pColorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pColorControl->setGUIObserver(this);
+
+	m_pLightTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "LightType", this);
+	m_pLightTypeToolBarDropMenuBtnPtr->setGUIObserver(this);
+	m_pLightTypeToolBarDropMenuBtnPtr->setPos(10, 35);
+
+	m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00005003);
+	m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Point Light", 0x00005002);
+	//m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Spot Light", 0x00005003);
+
+	//ambient
+	m_pColorControlAmbient = new geColorControl();
+	m_pColorControlAmbient->create(renderer, this, 100, 10);
+	m_pColorControlAmbient->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pColorControlAmbient->setGUIObserver(this);
+
+
+	//specular
+	m_pColorControlSpecular = new geColorControl();
+	m_pColorControlSpecular->create(renderer, this, 190, 10);
+	m_pColorControlSpecular->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pColorControlSpecular->setGUIObserver(this);
+
+
+	//attenuations
+	m_pHorizontalSlider_ConstantAttenuation = new geHorizontalSlider();
+	m_pHorizontalSlider_ConstantAttenuation->create(m_pRenderer, this, "slider", 10, 65, 130);
+	m_pHorizontalSlider_ConstantAttenuation->setSliderValue(1.0f);
+	m_pHorizontalSlider_ConstantAttenuation->setGUIObserver(this);
+
+	m_pHorizontalSlider_LinearAttenuation = new geHorizontalSlider();
+	m_pHorizontalSlider_LinearAttenuation->create(m_pRenderer, this, "slider", 10, 85, 130);
+	m_pHorizontalSlider_LinearAttenuation->setSliderValue(1.0f);
+	m_pHorizontalSlider_LinearAttenuation->setGUIObserver(this);
+
+	m_pHorizontalSlider_QuadraticAttenuation = new geHorizontalSlider();
+	m_pHorizontalSlider_QuadraticAttenuation->create(m_pRenderer, this, "slider", 10, 105, 130);
+	m_pHorizontalSlider_QuadraticAttenuation->setSliderValue(1.0f);
+	m_pHorizontalSlider_QuadraticAttenuation->setGUIObserver(this);
+
+	//window column
+	geWindowColumn* pWindowColumn = new geWindowColumn();
+	pWindowColumn->create(m_pRenderer, this, 40, 300.0f, 0.4f);
+	stWindowColumnRow* row = pWindowColumn->addRow("Type");
+	pWindowColumn->addControl(row, m_pLightTypeToolBarDropMenuBtnPtr, 30.0f);
+	row = pWindowColumn->addRow("Constant Attenuation");
+	pWindowColumn->addControl(row, m_pHorizontalSlider_ConstantAttenuation, 20.0f);
+	row = pWindowColumn->addRow("Linear Attenuation");
+	pWindowColumn->addControl(row, m_pHorizontalSlider_LinearAttenuation, 20.0f);
+	row = pWindowColumn->addRow("Quadratic Attenuation");
+	pWindowColumn->addControl(row, m_pHorizontalSlider_QuadraticAttenuation, 20.0f);
+	//
+
+	m_pLightPtr=NULL;
+
+	setNodeColor(0.21f, 0.21f, 0.21f);
+	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
+	setColor(&m_cVBClientArea, 0.21f, 0.21f, 0.21f, 1.0f);
+}
+
+gePropertyLight::~gePropertyLight()
+{
+
+}
+
 void gePropertyLight::onDragDrop(int x, int y, MDataObject* dropObject)
 {
 
@@ -27,6 +101,8 @@ void gePropertyLight::drawNode()
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
 	}
+
+	//m_pWindowColumn->draw();
 
 	if(m_pSprite)
 		m_pSprite->draw();

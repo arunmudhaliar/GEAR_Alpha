@@ -75,7 +75,7 @@ void gePropertyLight::onColorChange(geGUIBase* colorControl)
 	}
 	else if(colorControl==m_pColorControlSpecular)
 	{
-		geVector4f newClr(m_pColorControlAmbient->getControlColor());
+		geVector4f newClr(m_pColorControlSpecular->getControlColor());
 		m_pLightPtr->setSpecularColor(vector4f(newClr.x, newClr.y, newClr.z, newClr.w));
 	}
 }

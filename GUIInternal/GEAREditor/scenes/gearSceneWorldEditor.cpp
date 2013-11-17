@@ -393,12 +393,13 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	else
 	{
 		glEnable(GL_DEPTH_TEST);
+		//glDepthFunc(GL_LESS);
 		if(!m_pTBOnlyLightPass->isButtonPressed())
 		{
 			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 			monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
 		}
-
+		//glDepthFunc(GL_LEQUAL);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);
 		std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();

@@ -109,8 +109,11 @@ void gxMaterial::read(gxFile& file)
 	file.ReadBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
 	file.ReadBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
 
-	m_cAmbient.zero();
-	m_cSpecular.zero();
+	m_cAmbient.set(1.0f, 1.0f, 1.0f, 1.0f);
+	m_cSpecular.set(1.0f, 1.0f, 1.0f, 1.0f);
+
+	//m_cAmbient.zero();
+	//m_cSpecular.zero();
 
 	file.Read(m_fAlpha);
 	file.Read(m_fShininess);

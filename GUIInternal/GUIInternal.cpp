@@ -168,8 +168,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 		{
-			monoWrapper::initMono();
-			monoWrapper::mono_engine_test_function_for_mono();
+			monoWrapper::initDebugConsole();
+			monoWrapper::loadMonoModules();
 
 			m_cDropTargetInterfacePtr=NULL;
 			if(DialogBox(hInst, MAKEINTRESOURCE(IDD_PROJ_DLG), hWnd, reinterpret_cast<DLGPROC>(Proj_DlgProc))==0)
@@ -178,6 +178,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
+				monoWrapper::reInitMono();
+				monoWrapper::mono_engine_test_function_for_mono();
+
 				m_cEditorApp.init(hWnd, hInst);
 				OleInitialize(NULL);
 
@@ -229,6 +232,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if((LOWORD(wParam)==SIZE_MAXIMIZED || LOWORD(wParam)==SIZE_RESTORED) && m_cEditorApp.isInitialized())
 			{
+				monoWrapper::reInitMono();
 				m_cEditorApp.importAssetToMetaData(hWnd, hInst);
 				EditorApp::getSceneProject()->populateProjectView();
 				EditorApp::getSceneFileView()->populateFileView();
@@ -288,7 +292,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				OleUninitialize();
 			}
+
 			monoWrapper::destroyMono();
+			monoWrapper::destroyDebugConsole();
+
 			PostQuitMessage(0);
 		}
 		break;

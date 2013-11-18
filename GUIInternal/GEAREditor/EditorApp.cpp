@@ -211,10 +211,6 @@ LRESULT CALLBACK	Proj_AssetImportDlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPA
 bool EditorApp::importAssetToMetaData(HWND hWnd, HINSTANCE hInst)
 {
 	HWND hWndprogress=CreateDialog(hInst, MAKEINTRESOURCE(IDD_ASSET_IMPORT_PROGRESS_DLG), hWnd, reinterpret_cast<DLGPROC>(Proj_AssetImportDlgProc));
-	//ShowWindow(hWndprogress, SW_SHOW);
-	//AssetImporter assetImporter;
-	//assetImporter.importAssets(EditorApp::getProjectHomeDirectory(), hWndprogress, IDC_ASSET_PROGRESS_BAR, IDC_ASSET_FILE_STATIC);
-
 	return true;
 }
 

@@ -1,7 +1,16 @@
 #include "monoWrapper.h"
-//#include <cstdlib>
-//#include <cstdio>
-//#include <fstream>
+
+#include <sys/types.h>
+#include <assert.h>
+#include <dirent.h>
+#include <direct.h>
+#include <limits.h>
+#include <stdio.h>
+#include <string.h>
+#include <CommCtrl.h>
+#include "../../GEAREditor/util/geDefines.h"
+#include "../../GEAREditor/EditorApp.h"
+
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
@@ -42,80 +51,36 @@ MonoMethod* monoWrapper::g_pMethod_engine_destroyObject3d = NULL;
 
 MonoMethod* monoWrapper::g_mono_object3d_onObject3dChildAppend = NULL;
 MonoMethod* monoWrapper::g_mono_object3d_onObject3dChildRemove = NULL;
-	
-void monoWrapper::initMono()
+
+void monoWrapper::loadMonoModules()
 {
 #ifndef USEMONOENGINE
 	return;
 #endif
 
-	initDebugConsole();
-	//AllocConsole();
-
- //   HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
- //   int hCrt = _open_osfhandle((long) handle_out, _O_TEXT);
- //   FILE* hf_out = _fdopen(hCrt, "w");
- //   setvbuf(hf_out, NULL, _IONBF, 1);
- //   *stdout = *hf_out;
-
- //   HANDLE handle_in = GetStdHandle(STD_INPUT_HANDLE);
- //   hCrt = _open_osfhandle((long) handle_in, _O_TEXT);
- //   FILE* hf_in = _fdopen(hCrt, "r");
- //   setvbuf(hf_in, NULL, _IONBF, 128);
- //   *stdin = *hf_in;
-
-//	FILE *fp;
- //    char *command;
-	// char path[256];
-     /* command contains the command string (a character array) */
-
-     /* If you want to read output from command */
-     //fp = _popen("C:\\Mono-2.10.6\\bin\\mcs.bat D:\\MYPROJECTS\\TEMP_PROJ\\TestProj\\monotest\\scripts\\LineObject.cs D:\\MYPROJECTS\\TEMP_PROJ\\TestProj\\monotest\\scripts\\testScript.cs -o D:\\MYPROJECTS\\TEMP_PROJ\\TestProj\\monotest\\scripts\\output.exe","r"); 
-    //fp = _popen("start C:\\Mono-2.10.6\\bin\\mcs.bat -v","rt"); 
-    //fp = _popen("C:\\Mono-2.10.6\\bin\\mono.exe -v","rt"); 
-    // fp = _popen("cmd","rt"); 
-     /* read output from command */
-     
-    //printf("%s", path);
-     
-	 //fclose(fp);
-
-	/*
-	 * Load the default Mono configuration file, this is needed
-	 * if you are planning on using the dllmaps defined on the
-	 * system configuration
-	 */
-
 	mono_set_dirs("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc"); 
 	mono_config_parse(NULL);
+	g_pMonoDomain = mono_jit_init("system");
+}
 
-	/*
-	 * mono_jit_init() creates a domain: each assembly is
-	 * loaded and run in a MonoDomain.
-	 */
-
-	//	MonoDomain *domain1 = mono_jit_init ("system");
-#if _DEBUG
-	const char* executableFile="./Debug/MonoGEAR.exe";
-#else
-	const char* executableFile="./Release/MonoGEAR.exe";
+void monoWrapper::reInitMono()
+{
+#ifndef USEMONOENGINE
+	return;
 #endif
-	//executableFile="D:\\MYPROJECTS\\TEMP_PROJ\\TestProj\\monotest\\test.exe";
+	//destroyMono();
 
-	g_pMonoDomain = mono_jit_init(executableFile);
-	//MonoDomain *domain = mono_jit_init_version ("test", "v2.0.50727");
+	std::vector<std::string> csharpfileslist;
+	traverseForCSharpFiles(EditorApp::getProjectHomeDirectory(), &csharpfileslist);
+	compileCSharpScripts(&csharpfileslist);
+	csharpfileslist.clear();
 
-	/*
-	 * Optionally, add an internal call that your startup.exe
-	 * code can call, this will bridge startup.exe to Mono
-	 */
-	//mono_add_internal_call ("test::globalFoo", getMessage);
+#if _DEBUG
+	const char* executableFile="./Debug/out.exe";
+#else
+	const char* executableFile="./Release/out.exe";
+#endif
 
-	/*
-	 * Open the executable, and run the Main method declared
-	 * in the executable
-	 */
-	//"D:\\MYPROJECTS\\TEMP_PROJ\\TestProj\\monotest\\scripts\\out.exe"
 	g_pMonoAssembly = mono_domain_assembly_open(g_pMonoDomain, executableFile);
 
 	//if (!assembly)
@@ -136,18 +101,7 @@ void monoWrapper::initMono()
 	bindEngineMethods();
  //   /* execute the default argument-less constructor */
 	mono_runtime_object_init(g_pMonoGEAREntryPointClass_Instance_Variable);
-
-	//int argc =1;
-	//char *args[1];
- //   args[0] = "Test Param"; 
-
-	//int retVal = mono_jit_exec(g_pMonoDomain, g_pMonoAssembly, argc, args);
-	//retVal=1;
-
-
-	//FreeConsole();
 }
-
 
 void monoWrapper::initDebugConsole()
 {
@@ -214,8 +168,11 @@ void monoWrapper::updateMono()
 void monoWrapper::destroyMono()
 {
 #ifdef USEMONOENGINE
-	mono_jit_cleanup(g_pMonoDomain);
-	destroyDebugConsole();
+	if(g_pMonoDomain)
+	{
+		mono_jit_cleanup(g_pMonoDomain);
+		g_pMonoDomain=NULL;
+	}
 #endif
 }
 
@@ -500,3 +457,143 @@ void monoWrapper::mono_object3d_onObject3dChildRemove(object3d* parent, object3d
 	mono_runtime_invoke(g_mono_object3d_onObject3dChildRemove, NULL, args, NULL);
 #endif
 }
+
+int monoWrapper::traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist)
+{
+    DIR *dir;
+    char buffer[PATH_MAX + 2];
+    char *p = buffer;
+    const char *src;
+    char *end = &buffer[PATH_MAX];
+    int ok;
+
+    /* Copy directory name to buffer */
+    src = dirname;
+    while (p < end  &&  *src != '\0') {
+        *p++ = *src++;
+    }
+    *p = '\0';
+
+    /* Open directory stream */
+    dir = opendir (dirname);
+    if (dir != NULL) {
+        struct dirent *ent;
+
+        /* Print all files and directories within the directory */
+        while ((ent = readdir (dir)) != NULL) {
+            char *q = p;
+            char c;
+
+            /* Get final character of directory name */
+            if (buffer < q) {
+                c = q[-1];
+            } else {
+                c = ':';
+            }
+
+            /* Append directory separator if not already there */
+            if (c != ':'  &&  c != '/'  &&  c != '\\') {
+                *q++ = '/';
+            }
+
+            /* Append file name */
+            src = ent->d_name;
+            while (q < end  &&  *src != '\0') {
+                *q++ = *src++;
+            }
+            *q = '\0';
+
+            /* Decide what to do with the directory entry */
+            switch (ent->d_type) {
+            case DT_REG:
+                {
+					if(util::GE_IS_EXTENSION(buffer, ".cs") || util::GE_IS_EXTENSION(buffer, ".CS"))
+					{
+						csharpfilelist->push_back(buffer);
+					}
+				}
+                break;
+
+            case DT_DIR:
+                /* Scan sub-directory recursively */
+                if (strcmp (ent->d_name, ".") != 0  &&  strcmp (ent->d_name, "..") != 0)
+				{
+                    traverseForCSharpFiles(buffer, csharpfilelist);
+                }
+                break;
+
+            default:
+                /* Do not device entries */
+                /*NOP*/;
+            }
+
+        }
+
+        closedir (dir);
+        ok = 1;
+
+    } else {
+        /* Could not open directory */
+        printf ("Cannot open directory %s\n", dirname);
+        ok = 0;
+    }
+
+    return ok;
+}
+
+bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
+{
+	std::string command_buffer;
+	command_buffer = "gmcs ";
+
+	for(std::vector<std::string>::iterator it = list->begin(); it != list->end(); ++it)
+	{
+		std::string csharpfile = *it;
+		command_buffer += csharpfile +" ";
+	}
+
+	//command_buffer += "-o "+EditorApp::getProjectHomeDirectory()+"/MetaData/out.exe";
+
+#if _DEBUG
+	command_buffer += "-v -o Debug//out.exe";
+#else
+	command_buffer += "-v -o Release//out.exe";
+#endif
+
+	char responsebuffer[4096];
+	exec_cmd(command_buffer.c_str(), responsebuffer);
+	printf("\n================GMCS COMPILATION RESULT===============\n");
+	printf(responsebuffer);
+	printf("\n======================================================\n");
+
+	return true;
+}
+
+char monoWrapper::exec_cmd(char const *cmd, char *buf)
+{
+	char output[1024], start[1024];
+	char *s;
+	FILE *fpo;
+	int size;
+	int ret;
+	if((fpo = _popen(cmd, "r") )== NULL)
+	{
+		sprintf(start, "error");
+		size = 6;
+	}
+	else
+	{
+		sprintf(start, "");
+		size =0;
+		while((s =fgets(output, 1024, fpo)) != NULL)
+		{
+			strcat(start, output);
+			size += (strlen(output)+1);
+			if(output == NULL)
+				break;
+		}
+	}
+	strcpy(buf, start);
+	ret = _pclose(fpo);
+	return (ret);
+}/* exec_cmd */

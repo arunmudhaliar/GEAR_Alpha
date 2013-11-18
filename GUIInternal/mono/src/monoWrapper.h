@@ -11,7 +11,8 @@
 class monoWrapper
 {
 public:
-	static void initMono();
+	static void loadMonoModules();
+	static void reInitMono();
 	static void updateMono();
 	static void destroyMono();
 	
@@ -56,6 +57,10 @@ public:
 
 	static void mono_object3d_onObject3dChildAppend(object3d* parent, object3d* child);
 	static void mono_object3d_onObject3dChildRemove(object3d* parent, object3d* child);
+
+	static int monoWrapper::traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist);
+	static bool compileCSharpScripts(std::vector<std::string>* csharpfilelist);
+	static char monoWrapper::exec_cmd(char const *cmd, char *buf);
 
 private:
 	static MonoObject*		g_pMonoGEAREntryPointClass_Instance_Variable;

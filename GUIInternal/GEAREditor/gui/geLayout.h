@@ -30,8 +30,9 @@ public:
 
 	void create(rendererGL10* renderer, geLayout* pParentLayout, float x, float y, float cx, float cy);
 
-	void setWindow(geWindow* window);
-	geWindow* getWindow()	{	return m_pWindowPointer;	}
+	void appendWindow(geWindow* window);
+	geWindow* getActiveWindow()	{	return m_pActiveWindowPointer;	}
+	void setActiveWindow(int index)	{	m_pActiveWindowPointer=m_vChildWindows[index];	}
 
 	void resize(double xScale, double yScale);
 
@@ -90,7 +91,7 @@ protected:
 
 private:
 	stVertexBuffer m_cVBClientArea;
-	geWindow* m_pWindowPointer;
+	geWindow* m_pActiveWindowPointer;
 	geVector2f m_cMousePreviousPos;
 
 	std::vector<geWindow*> m_vChildWindows;

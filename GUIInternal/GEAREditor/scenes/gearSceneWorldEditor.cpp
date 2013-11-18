@@ -199,7 +199,6 @@ vector3f i1, i2, testSpehere;
 
 void gearSceneWorldEditor::draw()
 {
-	drawTitleAndToolBar();
 	drawLightsOnMultiPass();
 
 	//drawBasePass();

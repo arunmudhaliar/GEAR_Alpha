@@ -13,6 +13,7 @@
 #include "scenes\gearSceneProject.h"
 #include "scenes\gearScenePropertyEditor.h"
 #include "scenes\gearSceneWorldEditor.h"
+#include "scenes\gearSceneConsole.h"
 
 class EditorApp
 {

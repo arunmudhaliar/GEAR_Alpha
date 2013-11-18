@@ -44,9 +44,11 @@ public:
 	virtual geVector2f getAbsolutePositionOnScreen();
 
 	geToolBar* getToolBar()	{	return m_pToolBar;	}
-protected:
-	void drawTitleAndToolBar();
 
+	void drawTitleAndToolBar(float xoff, float yoff, bool bActiveWindow, bool bFirstWindow);
+	float getTitleWidth()	{	return m_fTitleWidth;	}
+
+protected:
 	virtual void onCreate();
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);
@@ -70,6 +72,8 @@ private:
 
 	bool m_bCanMove;
 	float m_cVBLayoutToggleButtonLine[6*2];
+
+	float m_fTitleWidth	;
 };
 
 #endif

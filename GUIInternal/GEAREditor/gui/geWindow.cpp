@@ -19,6 +19,12 @@ void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float 
 {
 	createBase(renderer, parent);
 
+	m_fTitleWidth=0;
+	for(int index=0;index<strlen(m_szName);index++)
+	{
+		m_fTitleWidth+=geGUIManager::g_pFontArial10_84Ptr->getCharWidth(m_szName[index]);
+	}
+
 	m_bCanMove=false;
 	m_pIamOnLayout=NULL;
 	setPos(x, y);
@@ -34,13 +40,6 @@ void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float 
 	}
 
 	onCreate();
-
-
-	//m_cButton.create(this, "button1", 100, 200);
-
-	//m_cTreeView.create(this, "treeView");
-
-	//m_cPushButton.create(this, "check", 170, 200);
 }
 
 void geWindow::show()
@@ -73,58 +72,39 @@ void geWindow::setClientColor(float r, float g, float b, float a)
 	setColor(&m_cVBClientArea, r, g, b, a);
 }
 
-void geWindow::drawTitleAndToolBar()
+void geWindow::drawTitleAndToolBar(float xoff, float yoff, bool bActiveWindow, bool bFirstWindow)
 {
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef(m_cPos.x, m_cPos.y, 0);
-	drawRect(&m_cVBTitle);
-
-	float cursorPos=0;
-	for(int index=0;index<strlen(m_szName);index++)
+	glTranslatef(m_cPos.x+xoff, m_cPos.y+yoff, 0);
+	if(bFirstWindow)
 	{
-		float temp=cursorPos;
-		cursorPos+=geGUIManager::g_pFontArial10_84Ptr->getCharWidth(m_szName[index]);
+		drawRect(&m_cVBTitle);
 	}
 
-	drawRoundedRectangle(1, 3, cursorPos+30, GE_WND_TITLE_HEIGHT-3, 5);
+	if(bActiveWindow)
+		drawRoundedRectangle(1, 3, m_fTitleWidth+30, GE_WND_TITLE_HEIGHT-3, 5);
 	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	//drawTriangle(&m_cVBLayoutToggleButtonLine[3*0], 0.05f, 0.05f, 0.05f, 1.0f, 3);
-	if(m_pToolBar)
+	if(m_pToolBar && bActiveWindow)
+	{
+		glTranslatef(-xoff, -yoff, 0);
 		m_pToolBar->draw();
+	}
 	glPopMatrix();
 }
 
 void geWindow::draw()
 {
-	drawTitleAndToolBar();
-
 	glViewport(m_cPos.x+m_pIamOnLayout->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+m_pIamOnLayout->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);	
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
-	glLoadIdentity();
-	gluOrtho2D((int)0, (int)(m_cSize.x/*+2.0f*/), (int)(m_cSize.y-getTopMarginOffsetHeight()/*+2.0f*/), (int)0);
-	glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		gluOrtho2D((int)0, (int)(m_cSize.x/*+2.0f*/), (int)(m_cSize.y-getTopMarginOffsetHeight()/*+2.0f*/), (int)0);
+		glMatrixMode(GL_MODELVIEW);
 
-	glPushMatrix();
-	//glTranslatef(m_cPos.x, m_cPos.y, /*m_pRenderer->getViewPortSz().y-(m_cSize.y+m_cPos.y),*/ 0);
-
-
-	drawRect(&m_cVBClientArea);
-
-	onDraw();
-	////geGUIManager::g_pFontArial10_84Ptr->setRGBA(0.7f, 0.7f, 0.7f);
-	////geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial10_84Ptr->getLineHeight());
-
-	////glTranslatef(0, -getTopMarginOffsetHeight(), 0);
-	//m_cButton.draw();
-	//m_cPushButton.draw();
-
-	//m_cTreeView.draw();
-
-	////float gradientRVal=m_cVBClientArea.m_cszVertexColorList[0]*1.5f;
-	////drawLine(m_cVBClientAreaLine, gradientRVal, gradientRVal, gradientRVal, 1.0f);
-
+		drawRect(&m_cVBClientArea);
+		onDraw();
 	glPopMatrix();
 }
 

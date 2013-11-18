@@ -273,6 +273,9 @@
     <ClInclude Include="GEAREditor\gui\geWindowColumn.h">
       <Filter>GEAREditor\gui</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearSceneConsole.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -406,6 +409,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\gui\geWindowColumn.cpp">
       <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearSceneConsole.cpp">
+      <Filter>GEAREditor\scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

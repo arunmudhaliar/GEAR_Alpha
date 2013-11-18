@@ -69,11 +69,18 @@ void EditorApp::init(HWND hWnd, HINSTANCE hInst)
 	geLayout* propertyEditorLayout=projectLayout->createRight(propertyEditorWnd);	
 	setScenePropertyEditor(propertyEditorWnd);
 
+	gearSceneConsole* consoleWindow = new gearSceneConsole();
+	consoleWindow->create(m_pRendererGL10, NULL, 0, 0, 300, 200, true);
+	m_cGUIManager.appendWindow(consoleWindow);
+	propertyEditorLayout->appendWindow(consoleWindow);
+	propertyEditorLayout->setActiveWindow(0);
+
 	gearSceneHierarchy* hierarchyWnd = new gearSceneHierarchy();
 	hierarchyWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250, true);
 	m_cGUIManager.appendWindow(hierarchyWnd);
 	geLayout* hierarchyLayout=projectLayout->createTop(hierarchyWnd, 0.45f);
 	setSceneHierarchy(hierarchyWnd);
+	//hierarchyLayout->appendWindow(
 
 	gearSceneFileView* fileViewWnd = new gearSceneFileView();
 	fileViewWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250, true);

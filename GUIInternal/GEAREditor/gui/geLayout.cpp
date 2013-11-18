@@ -3,6 +3,7 @@
 geLayout::geLayout(const char* name):
 	geGUIBase(GEGUI_LAYOUT, name)
 {
+	m_pActiveWindowPointer=NULL;
 }
 
 geLayout:: ~geLayout()
@@ -40,7 +41,7 @@ void geLayout::create(rendererGL10* renderer, geLayout* pParentLayout, float x, 
 {
 	m_pRenderer=renderer;
 	m_pParentLayout=pParentLayout;
-	m_pWindowPointer = NULL;
+	m_pActiveWindowPointer = NULL;
 	setPos(x, y);
 	setSize(cx, cy);
 	setColor(&m_cVBClientArea, 1.0f, 0.09f, 0.09f, 1.0f);
@@ -77,17 +78,17 @@ void geLayout::appendBottomChildLayout(geLayout* childLayout)
 	m_vChildBottomLayouts.push_back(childLayout);
 }
 
-void geLayout::setWindow(geWindow* window)
+void geLayout::appendWindow(geWindow* window)
 {
-	m_pWindowPointer=window;
-	m_pWindowPointer->setIamOnLayout(this);
-	m_pWindowPointer->setParent(this);
-	//m_pWindowPointer->setParent(this);
+	m_pActiveWindowPointer=window;
+	m_pActiveWindowPointer->setIamOnLayout(this);
+	m_pActiveWindowPointer->setParent(this);
+
 	//reposition the window
-	m_pWindowPointer->setPos(BORDER_LAYOUT_OFFSET+LEFT_LAYOUT_MARGIN, BORDER_LAYOUT_OFFSET);
+	m_pActiveWindowPointer->setPos(BORDER_LAYOUT_OFFSET+LEFT_LAYOUT_MARGIN, BORDER_LAYOUT_OFFSET);
 
 	//resize the window
-	m_pWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), getSize().y-((BORDER_LAYOUT_OFFSET<<1)+LEFT_LAYOUT_MARGIN));
+	m_pActiveWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), getSize().y-((BORDER_LAYOUT_OFFSET<<1)+LEFT_LAYOUT_MARGIN));
 
 	m_vChildWindows.push_back(window);
 }
@@ -103,7 +104,23 @@ void geLayout::draw()
 		glMatrixMode(GL_MODELVIEW);
 		drawLine(m_cVBClientAreaLine, 0.13f, 0.13f, 0.13f, 1.0f, 3, false); 
 
-		m_pWindowPointer->draw();
+		float _temp_pos=0;
+		for(std::vector<geWindow*>::iterator it = m_vChildWindows.begin(); it != m_vChildWindows.end(); ++it)
+		{
+			geWindow* wnd = *it;
+			if(m_pActiveWindowPointer==wnd)
+			{
+				wnd->drawTitleAndToolBar(_temp_pos, 0.0f, true, (*m_vChildWindows.begin()==wnd));
+				_temp_pos+=31;	//30+1 for rounded rectangle
+			}
+			else
+			{
+				wnd->drawTitleAndToolBar(_temp_pos, 0.0f, false, (*m_vChildWindows.begin()==wnd));
+				_temp_pos+=20;
+			}
+			_temp_pos+=(wnd->getTitleWidth());
+		}
+		m_pActiveWindowPointer->draw();
 	}
 
 	//draw childs
@@ -131,13 +148,13 @@ void geLayout::draw()
 
 void geLayout::onPosition(float x, float y, int flag)
 {
-	if(m_pWindowPointer)
+	if(m_pActiveWindowPointer)
 	{
 		//reposition the window
-		m_pWindowPointer->setPos(BORDER_LAYOUT_OFFSET+LEFT_LAYOUT_MARGIN, BORDER_LAYOUT_OFFSET);
+		m_pActiveWindowPointer->setPos(BORDER_LAYOUT_OFFSET+LEFT_LAYOUT_MARGIN, BORDER_LAYOUT_OFFSET);
 
 		//resize the window
-		//m_pWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), getSize().y-(BORDER_LAYOUT_OFFSET<<1));
+		//m_pActiveWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), getSize().y-(BORDER_LAYOUT_OFFSET<<1));
 	}
 }
 
@@ -176,14 +193,14 @@ geLayout* geLayout::dropWindowOnMe(geWindow* window)
 {
 	if(m_pParentLayout!=NULL /*&& isPointInsideWindow(window->getPos().x, window->getPos().y)*/)
 	{
-		if(m_pWindowPointer==window)
+		if(m_pActiveWindowPointer==window)
 		{
 			//reposition the window
-			m_pWindowPointer->setPos(BORDER_LAYOUT_OFFSET+LEFT_LAYOUT_MARGIN, BORDER_LAYOUT_OFFSET);
+			m_pActiveWindowPointer->setPos(BORDER_LAYOUT_OFFSET+LEFT_LAYOUT_MARGIN, BORDER_LAYOUT_OFFSET);
 
 			////resize the window
-			//m_pWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), getSize().y-(BORDER_LAYOUT_OFFSET<<1));
-			//m_pWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), m_pWindowPointer->getSize().y);
+			//m_pActiveWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), getSize().y-(BORDER_LAYOUT_OFFSET<<1));
+			//m_pActiveWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), m_pActiveWindowPointer->getSize().y);
 			return NULL;
 		}
 	}
@@ -219,13 +236,13 @@ void geLayout::onSize(float cx, float cy, int flag)
 	};
 	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 
-	if(m_pWindowPointer)
+	if(m_pActiveWindowPointer)
 	{
 		//reposition the window
-		m_pWindowPointer->setPos(BORDER_LAYOUT_OFFSET+LEFT_LAYOUT_MARGIN, BORDER_LAYOUT_OFFSET);
+		m_pActiveWindowPointer->setPos(BORDER_LAYOUT_OFFSET+LEFT_LAYOUT_MARGIN, BORDER_LAYOUT_OFFSET);
 
 		////resize the window
-		m_pWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), getSize().y-((BORDER_LAYOUT_OFFSET<<1)+LEFT_LAYOUT_MARGIN));
+		m_pActiveWindowPointer->setSize(getSize().x-(BORDER_LAYOUT_OFFSET<<1), getSize().y-((BORDER_LAYOUT_OFFSET<<1)+LEFT_LAYOUT_MARGIN));
 
 	}
 }
@@ -304,7 +321,7 @@ geLayout* geLayout::createLeft(geWindow* window, float ratio)
 		pLayout->appendLeftChildLayout(this);
 	}
 
-	pLayout->setWindow(window);
+	pLayout->appendWindow(window);
 
 	return pLayout;
 }
@@ -336,7 +353,7 @@ geLayout* geLayout::createRight(geWindow* window, float ratio)
 		pLayout->appendRightChildLayout(this);
 	}
 
-	pLayout->setWindow(window);
+	pLayout->appendWindow(window);
 
 	return pLayout;
 }
@@ -369,7 +386,7 @@ geLayout* geLayout::createTop(geWindow* window, float ratio)
 		pLayout->appendTopChildLayout(this);
 	}
 
-	pLayout->setWindow(window);
+	pLayout->appendWindow(window);
 
 	return pLayout;
 }
@@ -401,7 +418,7 @@ geLayout* geLayout::createBottom(geWindow* window, float ratio)
 		pLayout->appendBottomChildLayout(this);
 	}
 
-	pLayout->setWindow(window);
+	pLayout->appendWindow(window);
 
 	return pLayout;
 }
@@ -413,46 +430,57 @@ geLayout* geLayout::createAsParent(geWindow* window)
 	pLayout->setLayoutDirection(LAYOUT_PARENT);
 	this->setSize(this->getSize().x,  this->getSize().y);
 	appendLeftChildLayout(pLayout);
-	pLayout->setWindow(window);
+	pLayout->appendWindow(window);
 
 	return pLayout;
 }
 
 bool geLayout::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	//m_pWindowPointer->clearVarsAfterWindowMoved();
-	//m_pWindowPointer->selectWindow(x-getPos().x, y-getPos().y);
-	m_cMousePreviousPos.set(x, y);
+	if(y<GE_WND_TITLE_HEIGHT)
+	{
+		float _temp_pos=0;
+		for(std::vector<geWindow*>::iterator it = m_vChildWindows.begin(); it != m_vChildWindows.end(); ++it)
+		{
+			geWindow* wnd = *it;
+			float start_x=_temp_pos;
+			if(m_pActiveWindowPointer==wnd)
+			{
+				_temp_pos+=31;	//30+1 for rounded rectangle
+			}
+			else
+			{
+				_temp_pos+=20;
+			}
 
+			_temp_pos+=(wnd->getTitleWidth());
+
+			float end_x=_temp_pos;
+			if(x>start_x && x<end_x)
+			{
+				if(m_pActiveWindowPointer!=wnd)
+				{
+					m_pActiveWindowPointer=wnd;
+				}
+			}
+
+
+		}
+	}
+
+	m_cMousePreviousPos.set(x, y);
 	return false;
 }
 
 bool geLayout::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	//if(m_pWindowPointer && m_pWindowPointer->isMovable())
-	//{
-	//	m_pWindowPointer->clearVarsAfterWindowMoved();
-	//	dropWindowOnMe(m_pWindowPointer);
-	//}
-
 	m_cMousePreviousPos.set(x, y);
-
 	return true;
 }
 
 bool geLayout::onMouseMove(float x, float y, int flag)
 {
-	//if(flag&0x0001)	//MK_LBUTTON
-	//{
-	//	if(m_pWindowPointer && m_pWindowPointer->isMovable())
-	//	{
-	//		geVector2f diff(geVector2f(x, y)-m_cMousePreviousPos);
-	//		m_pWindowPointer->setPos(m_pWindowPointer->getPos()+diff);
-	//	}
-	//}
-
 	m_cMousePreviousPos.set(x, y);
-
 	return false;
 }
 
@@ -830,5 +858,5 @@ void geLayout::onMouseExitClientArea()
 
 void geLayout::onCancelEngagedControls()
 {
-	m_pWindowPointer->CancelEngagedControls();
+	m_pActiveWindowPointer->CancelEngagedControls();
 }

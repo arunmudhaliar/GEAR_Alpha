@@ -25,8 +25,6 @@ void gearScenePreview::onCreate()
 
 void gearScenePreview::draw()
 {
-	drawTitleAndToolBar();
-
 	if(!m_pSelectedObj) return;
 
 	monoWrapper::mono_engine_resize(m_pPreviewWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/, 1.0f, 10000.0f);

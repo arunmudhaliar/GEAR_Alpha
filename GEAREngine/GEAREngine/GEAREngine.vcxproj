@@ -47,7 +47,7 @@
     <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\include;../src/zlib-1.2.4;D:\GITREPO\GEARREPO\openal\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\lib\vs2010\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\lib\vs2010\x86;D:\GITREPO\GEARREPO\openal\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

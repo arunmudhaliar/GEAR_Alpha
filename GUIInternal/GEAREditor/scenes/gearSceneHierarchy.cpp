@@ -31,7 +31,7 @@ void gearSceneHierarchy::onCreate()
 
 	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00004003);
 	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Point Light", 0x00004002);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("", 0, true);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("", 0, NULL, true);
 	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Create Object on Selected Node", 0x00004001);
 	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Create Object", 0x00004000);
 

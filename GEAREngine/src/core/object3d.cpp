@@ -68,6 +68,7 @@ object3d::object3d(int objID):
 	m_pAnimationTrack=NULL;
 	m_iFileCRC=0;
 	setRootObserverOfTree(NULL);
+	m_pPhysics_RigidBodyPtr=NULL;
 }
 
 object3d::~object3d()
@@ -107,6 +108,27 @@ void object3d::setObject3dObserverRecursive(MObject3dObserver* observer)
 
 void object3d::update(float dt)
 {
+	if(m_pPhysics_RigidBodyPtr)
+	{
+		matrix4x4f worldmatrix;
+		btTransform physics_tm;
+		m_pPhysics_RigidBodyPtr->getMotionState()->getWorldTransform(physics_tm);
+		
+		object3d* parent=getParent();
+		if(parent)
+		{
+			physics_tm.getOpenGLMatrix(worldmatrix.getOGLMatrix());
+			matrix4x4f* p = this;
+			*p = worldmatrix * (parent->getWorldMatrix()->getInverse());
+			//m_cWorldMatrix = *(parent->getWorldMatrix()) * *this;
+		}
+		else
+		{
+			physics_tm.getOpenGLMatrix(getOGLMatrix());
+			transformationChangedf();
+		}
+	}
+
 	if(m_pAnimationController)
 	{
 		m_pAnimationController->update(dt);

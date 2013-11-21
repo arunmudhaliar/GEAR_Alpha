@@ -8,6 +8,7 @@
 #include "../renderer/gxRenderer.h"
 #include "gxMaterial.h"
 #include "TextureManager.h"
+#include "physicsEngine.h"
 
 class MWorldObserver
 {
@@ -75,6 +76,8 @@ public:
 	std::vector<gxLight*>* getLightList()	{	return &m_vLightList;		}
 	gxLight* getLight(int index)			{	return m_vLightList[index];	}
 
+	physicsEngine* getPhysicsEngine()		{	return &m_cPhysicsEngine;	}
+
 	void callback_object3dRemovedFromTree(object3d* child);
 	void callback_object3dAppendToTree(object3d* child);
 	void callback_object3dDestroyedFromTree(object3d* child);
@@ -92,6 +95,7 @@ private:
 	CTextureManager m_cTextureManager;
 	char m_szMetaDataFolder[512];
 	MWorldObserver* m_pObserverPtr;	//must not delete this pointer
+	physicsEngine m_cPhysicsEngine;
 };
 
 #endif

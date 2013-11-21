@@ -22,6 +22,8 @@ gxWorld::gxWorld():
 
 	m_cTextureManager.LoadDefaultTextures();
 	m_cRenderer.setGEARTexture1x1(m_cTextureManager.getGEARTexture1x1());
+
+	m_cPhysicsEngine.initPhysics();
 }
 
 gxWorld::~gxWorld()
@@ -51,6 +53,8 @@ void gxWorld::update(float dt)
 	{
 		m_pActiveCameraPtr->updateCamera();
 	}
+
+	m_cPhysicsEngine.update(dt);
 
 	object3d::update(dt);
 }

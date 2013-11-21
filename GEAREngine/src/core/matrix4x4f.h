@@ -88,8 +88,9 @@ public:
 		setScale(scale.x, scale.y, scale.z);
     }
 
-    const float* getMatrix() const {   return m;   }
-    
+    const float* getMatrix() const	{   return m;   }
+    float* getOGLMatrix()			{   return m;   }
+   
 	matrix4x4f operator*(const matrix4x4f& matrix) const
 	{
 		matrix4x4f dest;

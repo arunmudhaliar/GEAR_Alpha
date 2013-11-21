@@ -144,14 +144,57 @@ bool calculatePosOfMyChild(geGUIBase* compareme, geGUIBase* parent, int& x, int&
 
 void geToolBarDropMenu::onButtonClicked()
 {
-	HMENU hPopupMenu = CreatePopupMenu();
 	for(int x=0;x<m_vMenuItems.size();x++)
 	{
 		stDropMenuItem* item=m_vMenuItems[x];
+		item->menu_handle=NULL;
+		item->sub_menu_handle=NULL;
+	}
+
+	HMENU hPopupMenu = CreatePopupMenu();
+	for(int x=m_vMenuItems.size()-1;x>=0;x--)
+	{
+		stDropMenuItem* item=m_vMenuItems[x];
+		MENUITEMINFO minfo;
+		ZeroMemory(&minfo, sizeof(MENUITEMINFO));
+		minfo.cbSize = sizeof(MENUITEMINFO);
+		minfo.fState = MFS_ENABLED;
+		HMENU hCurrentPopupMenu=hPopupMenu;
+		if(item->parent)
+		{
+			if(item->parent->sub_menu_handle==NULL)
+			{
+				item->parent->sub_menu_handle=CreatePopupMenu();
+			}
+			hCurrentPopupMenu=item->parent->sub_menu_handle;
+		}
+
+		item->menu_handle=hCurrentPopupMenu;
 		if(item->type==0)
-			InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, item->menuid, item->name);
+		{
+			//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, item->menuid, item->name);
+			minfo.wID = item->menuid;
+			minfo.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA; 
+			//MIIM_SUBMENU
+			if(item->sub_menu_handle!=NULL)
+			{
+				minfo.hSubMenu=item->sub_menu_handle;
+				minfo.fMask|=MIIM_SUBMENU;
+			}
+
+			minfo.fType = MFT_STRING;
+			minfo.dwTypeData = item->name;
+			minfo.cch = strlen(item->name);
+			InsertMenuItem(hCurrentPopupMenu, 0, true, &minfo);
+		}
 		else if(item->type==1)
-			InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+		{
+			//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+			minfo.wID = 0;
+			minfo.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA; 
+			minfo.fType = MFT_SEPARATOR;
+			InsertMenuItem(hCurrentPopupMenu, 0, true, &minfo);
+		}
 	}
 	//
 	geGUIBase* baseGUI=this;
@@ -232,13 +275,16 @@ void geToolBarDropMenu::onCancelEngagedControls()
 	//setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.3f);
 }
 
-void geToolBarDropMenu::appendMenuItem(const char* name, int menuID, bool bSeperator)
+geToolBarDropMenu::stDropMenuItem* geToolBarDropMenu::appendMenuItem(const char* name, int menuID, stDropMenuItem* parent, bool bSeperator)
 {
 	stDropMenuItem* newItem = new stDropMenuItem();
 	strcpy(newItem->name, name);
 	newItem->menuid=menuID;
+	newItem->parent=(parent)?parent:NULL;
 	newItem->type=bSeperator?1:0;
 	m_vMenuItems.push_back(newItem);
+
+	return newItem;
 }
 
 void geToolBarDropMenu::onSetName()

@@ -10,6 +10,7 @@ geWindow("Property Editor")
 	m_pAnimationParentNode=NULL;
 	m_pSaveMetaDataParentNode=NULL;
 	m_pLightParentNode=NULL;
+	m_pAddComponentParentNode=NULL;
 
 	m_pPostProcessorBlurShaderNode=NULL;
 
@@ -18,6 +19,7 @@ geWindow("Property Editor")
 	m_pMaterialPropertyNode=NULL;
 	m_pSaveMetaDataPropertyNode=NULL;
 	m_pLightPropertyNode=NULL;
+	m_pAddComponentProperty=NULL;
 
 	m_pBlurProcessorPropertyNode=NULL;
 }
@@ -32,6 +34,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	GE_DELETE(m_pAnimationParentNode);
 	GE_DELETE(m_pSaveMetaDataParentNode);
 	GE_DELETE(m_pLightParentNode);
+	GE_DELETE(m_pAddComponentParentNode);
 	GE_DELETE(m_pPostProcessorBlurShaderNode);
 }
 
@@ -66,6 +69,9 @@ void gearScenePropertyEditor::onCreate()
 	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pRenderer, m_pSaveMetaDataParentNode, "", NULL);
 	m_pLightParentNode = new geTreeNode(m_pRenderer, rootNode, "Light", &m_cszSprites[5], 0);
 	m_pLightPropertyNode = new gePropertyLight(m_pRenderer, m_pLightParentNode, "", NULL);
+	m_pAddComponentParentNode = new geTreeNode(m_pRenderer, rootNode, "Add Component", &m_cszSprites[5], 0);
+	m_pAddComponentProperty = new gePropertyAddComponent(m_pRenderer, m_pAddComponentParentNode, "", NULL);
+
 	m_pPostProcessorBlurShaderNode = new geTreeNode(m_pRenderer, rootNode, "Blur Processor", &m_cszSprites[5], 0);
 	m_pBlurProcessorPropertyNode = new gePropertyBlurProcessor(m_pRenderer, m_pPostProcessorBlurShaderNode, "", NULL);
 
@@ -119,6 +125,7 @@ void gearScenePropertyEditor::removeAllProperties()
 	rootNode->removeTVChild(m_pAnimationParentNode);
 	rootNode->removeTVChild(m_pSaveMetaDataParentNode);
 	rootNode->removeTVChild(m_pLightParentNode);
+	rootNode->removeTVChild(m_pAddComponentParentNode);
 	rootNode->removeTVChild(m_pPostProcessorBlurShaderNode);
 
 	//material
@@ -209,6 +216,9 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	//m_pBlurProcessorPropertyNode->populatePropertyOfBlurShader(NULL);
 	//rootNode->appnendTVChild(m_pPostProcessorBlurShaderNode);
 	////
+
+	m_pAddComponentProperty->populatePropertyOfObject(obj);
+	rootNode->appnendTVChild(m_pAddComponentParentNode);
 
 	m_cPropertiesTreeView.refreshTreeView();
 	m_cPropertiesTreeView.resetSelectedNodePtr();

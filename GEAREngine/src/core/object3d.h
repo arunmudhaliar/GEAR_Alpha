@@ -105,6 +105,7 @@ public:
 	MRootObserver* getRootObserverOfThisTree()				{	return m_pRootObserver;			}
 
 	void setRigidBody(btRigidBody* rb)			{	m_pPhysics_RigidBodyPtr = rb;	}
+	btRigidBody* getRigidBody()					{	return m_pPhysics_RigidBodyPtr;	}
 
 protected:
 	void clearAnimTrackOnAllNodes();

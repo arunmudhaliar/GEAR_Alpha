@@ -340,7 +340,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 			FbxSkin*		skinDeformer = (FbxSkin *)fbxMesh->GetDeformer(0, FbxDeformer::eSkin);
 			FbxSkin::EType	skinningType = skinDeformer->GetSkinningType();
 
-			if(skinningType == FbxSkin::eLinear || skinningType == FbxSkin::eRigid)
+			if(skinningType == FbxSkin::eLinear || skinningType == FbxSkin::eRigid || skinningType == FbxSkin::eDualQuaternion)
 			{
 				int vc=fbxMesh->GetControlPointsCount();
 				stBoneInfluence* boneInfluenceList = new stBoneInfluence[vc];

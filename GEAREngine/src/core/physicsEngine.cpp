@@ -79,10 +79,10 @@ void physicsEngine::update(float dt)
 {
 	m_dynamicsWorld->stepSimulation(dt);
 }
-
+//http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=2961
 void physicsEngine::addRigidBody(object3d* obj)
 {
-	vector3f sz(obj->getOOBB().m_max - obj->getOOBB().m_min);
+	vector3f sz((obj->getOOBB().m_max - obj->getOOBB().m_min)*0.5f);
 
 	btBoxShape* colShape = new btBoxShape(btVector3(sz.x, sz.y, sz.z));
 	//btCollisionShape* colShape = new btSphereShape(btScalar(1.));
@@ -97,12 +97,60 @@ void physicsEngine::addRigidBody(object3d* obj)
 	//rigidbody is dynamic if and only if mass is non zero, otherwise static
 	bool isDynamic = (mass != 0.f);
 
-	btVector3 localInertia(0,0,0);
+	vector3f pos(obj->getWorldMatrix()->getPosition());
+
+	btVector3 localInertia(pos.x, pos.y, pos.z);
 	if (isDynamic)
 		colShape->calculateLocalInertia(mass,localInertia);
 
+	startTransform.setFromOpenGLMatrix(obj->getWorldMatrix()->getOGLMatrix());
+
+	//vector3f center_oobb(obj->getOOBB().m_min+sz);
+	//vector3f offset_center(obj->getWorldMatrix()->getPosition()-center_oobb);
+	//btTransform centeroffTransform;
+	//centeroffTransform.setIdentity();
+	//centeroffTransform.setOrigin(btVector3(offset_center.x, offset_center.y, offset_center.z));
+
+	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,colShape,localInertia);
+	btRigidBody* body = new btRigidBody(rbInfo);
+	
+	obj->setRigidBody(body);
+	m_dynamicsWorld->addRigidBody(body);
+}
+
+void physicsEngine::addBoxCollider(object3d* obj)
+{
+	vector3f sz((obj->getOOBB().m_max - obj->getOOBB().m_min)*0.5f);
+
+	btBoxShape* colShape = new btBoxShape(btVector3(sz.x, sz.y, sz.z));
+	//btCollisionShape* colShape = new btSphereShape(btScalar(1.));
+	m_collisionShapes.push_back(colShape);
+
+	/// Create Dynamic Objects
+	btTransform startTransform;
+	startTransform.setIdentity();
+
+	btScalar	mass(0.f);
+
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool isDynamic = (mass != 0.f);
+
 	vector3f pos(obj->getWorldMatrix()->getPosition());
-	startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+
+	btVector3 localInertia(pos.x, pos.y, pos.z);
+	if (isDynamic)
+		colShape->calculateLocalInertia(mass,localInertia);
+
+	startTransform.setFromOpenGLMatrix(obj->getWorldMatrix()->getOGLMatrix());
+	//startTransform.setOrigin(btVector3(0, 0, 0));
+
+	//vector3f center_oobb(obj->getOOBB().m_min+sz);
+	//vector3f offset_center(obj->getWorldMatrix()->getPosition()-center_oobb);
+	//btTransform centeroffTransform;
+	//centeroffTransform.setIdentity();
+	//centeroffTransform.setOrigin(btVector3(offset_center.x, offset_center.y, offset_center.z));
 
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);

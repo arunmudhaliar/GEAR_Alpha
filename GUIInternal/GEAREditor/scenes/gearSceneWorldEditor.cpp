@@ -552,7 +552,10 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 		//glColor4f(0.25f, 0.4f, 0.62f, 1);
-		shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
+		if(m_pSelectedObj->getRigidBody())
+			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
+		else
+			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
 
 		m_pSelectedObj->getOOBB().draw(shader);
 		glDisable(GL_COLOR_MATERIAL);

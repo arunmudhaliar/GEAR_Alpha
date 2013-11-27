@@ -20,6 +20,7 @@ public:
 	void update(float dt);
 
 	void addRigidBody(object3d* obj);
+	void addBoxCollider(object3d* obj);
 
 private:
 	//keep the collision shapes, for deletion/cleanup

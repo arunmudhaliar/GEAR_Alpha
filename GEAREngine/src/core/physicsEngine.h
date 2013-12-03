@@ -3,6 +3,7 @@
 
 ///btBulletDynamicsCommon.h is the main Bullet include file, contains most common include files.
 #include "../physics/btBulletDynamicsCommon.h"
+#include "../physics/debug/GLDebugDrawer.h"
 #include <vector>
 
 #include "object3d.h"
@@ -18,6 +19,7 @@ public:
 	void exitPhysics();
 
 	void update(float dt);
+	void render();
 
 	void addRigidBody(object3d* obj);
 	void addBoxCollider(object3d* obj);
@@ -30,5 +32,6 @@ private:
 	btConstraintSolver*	m_solver;
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
 	btDiscreteDynamicsWorld* m_dynamicsWorld;
+	GLDebugDrawer m_cDebugDraw;
 };
 #endif

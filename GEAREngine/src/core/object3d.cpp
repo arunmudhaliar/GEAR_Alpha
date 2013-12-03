@@ -112,9 +112,12 @@ void object3d::update(float dt)
 	{
 		matrix4x4f worldmatrix;
 		btTransform physics_tm;
+		//physics_tm=m_pPhysics_RigidBodyPtr->getWorldTransform();
 		m_pPhysics_RigidBodyPtr->getMotionState()->getWorldTransform(physics_tm);
-		
+		//physics_tm=m_pPhysics_RigidBodyPtr->getCenterOfMassTransform();
+
 		object3d* parent=getParent();
+
 		if(parent)
 		{
 			physics_tm.getOpenGLMatrix(worldmatrix.getOGLMatrix());

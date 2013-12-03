@@ -36,7 +36,8 @@ void physicsEngine::initPhysics()
 	m_solver = new btSequentialImpulseConstraintSolver;
 
 	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher,m_broadphase,m_solver,m_collisionConfiguration);
-	//m_dynamicsWorld->setDebugDrawer(&gDebugDraw);
+	m_dynamicsWorld->setDebugDrawer(&m_cDebugDraw);
+	m_cDebugDraw.setDebugMode(btIDebugDraw::DBG_DrawAabb);
 	
 	m_dynamicsWorld->setGravity(btVector3(0, 0, -10));
 
@@ -82,11 +83,18 @@ void physicsEngine::update(float dt)
 //http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=2961
 void physicsEngine::addRigidBody(object3d* obj)
 {
-	vector3f sz((obj->getOOBB().m_max - obj->getOOBB().m_min)*0.5f);
+	vector3f max_v(obj->getOOBB().m_max);
+	vector3f min_v(obj->getOOBB().m_min);
+	vector3f sz((max_v - min_v)*0.5f);
+	vector3f center_oobb(min_v+sz);
 
+	btCompoundShape* compoundcolShape = new btCompoundShape;
 	btBoxShape* colShape = new btBoxShape(btVector3(sz.x, sz.y, sz.z));
-	//btCollisionShape* colShape = new btSphereShape(btScalar(1.));
-	m_collisionShapes.push_back(colShape);
+	btTransform localTransform;
+	localTransform.setIdentity();
+	localTransform.setOrigin(btVector3(center_oobb.x, center_oobb.y, center_oobb.z));
+	compoundcolShape->addChildShape(localTransform, colShape);
+	m_collisionShapes.push_back(compoundcolShape);
 
 	/// Create Dynamic Objects
 	btTransform startTransform;
@@ -98,35 +106,39 @@ void physicsEngine::addRigidBody(object3d* obj)
 	bool isDynamic = (mass != 0.f);
 
 	vector3f pos(obj->getWorldMatrix()->getPosition());
-
 	btVector3 localInertia(pos.x, pos.y, pos.z);
 	if (isDynamic)
 		colShape->calculateLocalInertia(mass,localInertia);
 
 	startTransform.setFromOpenGLMatrix(obj->getWorldMatrix()->getOGLMatrix());
-
-	//vector3f center_oobb(obj->getOOBB().m_min+sz);
-	//vector3f offset_center(obj->getWorldMatrix()->getPosition()-center_oobb);
-	//btTransform centeroffTransform;
-	//centeroffTransform.setIdentity();
-	//centeroffTransform.setOrigin(btVector3(offset_center.x, offset_center.y, offset_center.z));
-
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,colShape,localInertia);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,compoundcolShape,localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
 	
 	obj->setRigidBody(body);
 	m_dynamicsWorld->addRigidBody(body);
 }
 
+void physicsEngine::render()
+{
+	m_dynamicsWorld->debugDrawWorld();
+}
+
 void physicsEngine::addBoxCollider(object3d* obj)
 {
-	vector3f sz((obj->getOOBB().m_max - obj->getOOBB().m_min)*0.5f);
+	vector3f max_v(obj->getOOBB().m_max);
+	vector3f min_v(obj->getOOBB().m_min);
+	vector3f sz((max_v - min_v)*0.5f);
+	vector3f center_oobb(min_v+sz);
 
+	btCompoundShape* compoundcolShape = new btCompoundShape;
 	btBoxShape* colShape = new btBoxShape(btVector3(sz.x, sz.y, sz.z));
-	//btCollisionShape* colShape = new btSphereShape(btScalar(1.));
-	m_collisionShapes.push_back(colShape);
+	btTransform localTransform;
+	localTransform.setIdentity();
+	localTransform.setOrigin(btVector3(center_oobb.x, center_oobb.y, center_oobb.z));
+	compoundcolShape->addChildShape(localTransform, colShape);
+	m_collisionShapes.push_back(compoundcolShape);
 
 	/// Create Dynamic Objects
 	btTransform startTransform;
@@ -138,23 +150,14 @@ void physicsEngine::addBoxCollider(object3d* obj)
 	bool isDynamic = (mass != 0.f);
 
 	vector3f pos(obj->getWorldMatrix()->getPosition());
-
 	btVector3 localInertia(pos.x, pos.y, pos.z);
 	if (isDynamic)
 		colShape->calculateLocalInertia(mass,localInertia);
 
 	startTransform.setFromOpenGLMatrix(obj->getWorldMatrix()->getOGLMatrix());
-	//startTransform.setOrigin(btVector3(0, 0, 0));
-
-	//vector3f center_oobb(obj->getOOBB().m_min+sz);
-	//vector3f offset_center(obj->getWorldMatrix()->getPosition()-center_oobb);
-	//btTransform centeroffTransform;
-	//centeroffTransform.setIdentity();
-	//centeroffTransform.setOrigin(btVector3(offset_center.x, offset_center.y, offset_center.z));
-
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,colShape,localInertia);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,compoundcolShape,localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
 	
 	obj->setRigidBody(body);

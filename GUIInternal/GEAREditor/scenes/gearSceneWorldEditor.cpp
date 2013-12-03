@@ -216,6 +216,7 @@ void gearSceneWorldEditor::draw()
 	//glPushMatrix();
 	onDraw();
 
+	
 	//glPopMatrix();
 
 #if defined USE_FBO
@@ -225,6 +226,18 @@ void gearSceneWorldEditor::draw()
 #endif
 
 	drawStats();
+
+	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45, 1, 1, 1000);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadMatrixf(monoWrapper::mono_engine_getWorld(0)->getRenderer()->getViewMatrix()->getMatrix());
+
+	monoWrapper::mono_engine_getWorld(0)->getPhysicsEngine()->render();
+	glPopMatrix();
 }
 
 void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float cy)
@@ -527,22 +540,24 @@ void gearSceneWorldEditor::drawSelectedObject()
 		//localScale.normalize();
 		//localTM.setScale(localScale);
 		//glPushMatrix();
-		const float* u_mvp_m4x4=NULL;
-		if(m_bTransformThroughLocalAxis)
+		const float* u_mvp_m4x4_local=NULL;
+		const float* u_mvp_m4x4_world=NULL;
+		//if(m_bTransformThroughLocalAxis)
 		{
-			//glMultMatrixf(m_pSelectedObj->getWorldMatrix()->getMatrix());
-			u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * *m_pSelectedObj->getWorldMatrix()).getMatrix();
-			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+			u_mvp_m4x4_local = (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * *m_pSelectedObj->getWorldMatrix()).getMatrix();
 		}
-		else
+		//else
 		{
 			matrix4x4f globalAxisTM;
 			globalAxisTM.setPosition(m_pSelectedObj->getWorldMatrix()->getPosition());
-			u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * globalAxisTM).getMatrix();
-			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+			u_mvp_m4x4_world = (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * globalAxisTM).getMatrix();
 		}
 
 		glEnable(GL_COLOR_MATERIAL);
+		if(m_bTransformThroughLocalAxis)
+			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
+		else
+			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_world, false, 4);
 		geUtil::drawGizmo(distance_frm_cam, shader, m_iAxisSelected);
 
 		shader->disableProgram();
@@ -550,7 +565,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 		shader = engine_getHWShaderManager()->GetHWShader(0);
 		shader->enableProgram();
 
-		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 		//glColor4f(0.25f, 0.4f, 0.62f, 1);
 		if(m_pSelectedObj->getRigidBody())
 			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);

@@ -248,6 +248,11 @@
     <ClCompile Include="..\src\physics\BulletSoftBody\btSoftRigidCollisionAlgorithm.cpp" />
     <ClCompile Include="..\src\physics\BulletSoftBody\btSoftRigidDynamicsWorld.cpp" />
     <ClCompile Include="..\src\physics\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\src\physics\debug\DemoApplication.cpp" />
+    <ClCompile Include="..\src\physics\debug\GLDebugDrawer.cpp" />
+    <ClCompile Include="..\src\physics\debug\GLDebugFont.cpp" />
+    <ClCompile Include="..\src\physics\debug\GlutStuff.cpp" />
+    <ClCompile Include="..\src\physics\debug\GL_ShapeDrawer.cpp" />
     <ClCompile Include="..\src\physics\LinearMath\btAlignedAllocator.cpp" />
     <ClCompile Include="..\src\physics\LinearMath\btConvexHull.cpp" />
     <ClCompile Include="..\src\physics\LinearMath\btConvexHullComputer.cpp" />
@@ -505,6 +510,11 @@
     <ClInclude Include="..\src\physics\BulletSoftBody\btSoftRigidDynamicsWorld.h" />
     <ClInclude Include="..\src\physics\BulletSoftBody\btSoftSoftCollisionAlgorithm.h" />
     <ClInclude Include="..\src\physics\BulletSoftBody\btSparseSDF.h" />
+    <ClInclude Include="..\src\physics\debug\DemoApplication.h" />
+    <ClInclude Include="..\src\physics\debug\GLDebugDrawer.h" />
+    <ClInclude Include="..\src\physics\debug\GLDebugFont.h" />
+    <ClInclude Include="..\src\physics\debug\GlutStuff.h" />
+    <ClInclude Include="..\src\physics\debug\GL_ShapeDrawer.h" />
     <ClInclude Include="..\src\physics\LinearMath\btAabbUtil2.h" />
     <ClInclude Include="..\src\physics\LinearMath\btAlignedAllocator.h" />
     <ClInclude Include="..\src\physics\LinearMath\btAlignedObjectArray.h" />

@@ -78,6 +78,8 @@ void read3dFile2(gxFile& file, object3d* obj)
 
 		tempObj->setObject3dObserver(g_Object3dObserver);
 		tempObj->read(file);
+		//tempObj->calculateInitialAABB();
+		tempObj->transformationChangedf();
 		obj->appendChild(tempObj);
 		read3dFile2(file, tempObj);
 	}
@@ -268,9 +270,22 @@ extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* f
 				file_meta.Read(objID);
 
 				object3d* tempObj=NULL;
-				if(objID!=100)
+
+				if(objID==100)
+				{
+					tempObj = new gxMesh();
+				}
+				else if(objID==101)
+				{
+					tempObj = new gxSkinnedMesh();
+				}
+				else
 				{
 					tempObj = new object3d(objID);
+				}
+
+				if(tempObj)
+				{
 					tempObj->setObject3dObserver(g_Object3dObserver);
 					tempObj->read(file_meta);
 					world->appendChild(tempObj);
@@ -278,6 +293,7 @@ extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* f
 					obj=tempObj;
 					loadMaterialFromObject3d(world, obj);
 					loadAnmationFromObject3d(world, obj, crc);
+					//obj->calculateInitialAABB();
 					obj->transformationChangedf();
 					root_object_node=obj;
 

@@ -184,9 +184,20 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				file_meta.Read(objID);
 
 				object3d* tempObj=NULL;
-				if(objID!=100)
+				if(objID==100)
+				{
+					tempObj = new gxMesh();
+				}
+				else if(objID==101)
+				{
+					tempObj = new gxSkinnedMesh();
+				}
+				else
 				{
 					tempObj = new object3d(objID);
+				}
+				if(tempObj)
+				{
 					tempObj->read(file_meta);
 					read3dFile(file_meta, tempObj);
 					obj=tempObj;

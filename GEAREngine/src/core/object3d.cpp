@@ -210,6 +210,8 @@ void object3d::transformationChangedf()
 	else
 		m_cWorldMatrix = *this;
 
+	//calculateAABB();
+
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{
 		object3d* obj = *it;
@@ -217,13 +219,55 @@ void object3d::transformationChangedf()
 	}
 }
 
+void object3d::calculateInitialAABB()
+{
+	//vector3f aabb_min(*this % m_cOOBB.m_min);
+	//vector3f aabb_max(*this % m_cOOBB.m_max);
+
+	//float min_x,min_y,min_z;
+	//float max_x,max_y,max_z;
+
+	//min_x=min_y=min_z=1e16f;
+	//max_x=max_y=max_z=-1e16f;
+	//if(min_x>aabb_min.x)		min_x	= aabb_min.x;
+	//if(min_y>aabb_min.y)		min_y	= aabb_min.y;
+	//if(min_z>aabb_min.z)		min_z	= aabb_min.z;
+
+	//if(max_x<aabb_max.x)		max_x	= aabb_max.x;
+	//if(max_y<aabb_max.y)		max_y	= aabb_max.y;
+	//if(max_z<aabb_max.z)		max_z	= aabb_max.z;
+
+	//m_cAABB.set(vector3f(min_x, min_y, min_z), vector3f(max_x, max_y, max_z));
+}
+
 void object3d::calculateAABB()
 {
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
-	{
-		object3d* obj = *it;
-		obj->calculateAABB();
-	}
+	//if(m_cChilds.size()==0)
+	//	return;
+
+	//float min_x,min_y,min_z;
+	//float max_x,max_y,max_z;
+
+	//min_x=min_y=min_z=1e16f;
+	//max_x=max_y=max_z=-1e16f;
+
+	//for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	//{
+	//	object3d* obj = *it;
+	//	obj->calculateAABB();
+	//	vector3f aabb_min(obj->getAABB().m_min);
+	//	vector3f aabb_max(obj->getAABB().m_max);
+
+	//	if(min_x>aabb_min.x)		min_x	= aabb_min.x;
+	//	if(min_y>aabb_min.y)		min_y	= aabb_min.y;
+	//	if(min_z>aabb_min.z)		min_z	= aabb_min.z;
+
+	//	if(max_x<aabb_max.x)		max_x	= aabb_max.x;
+	//	if(max_y<aabb_max.y)		max_y	= aabb_max.y;
+	//	if(max_z<aabb_max.z)		max_z	= aabb_max.z;
+	//}
+
+	//m_cAABB.set(vector3f(min_x, min_y, min_z), vector3f(max_x, max_y, max_z));
 }
 
 object3d* object3d::appendChild(object3d* child)

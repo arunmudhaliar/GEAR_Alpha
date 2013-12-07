@@ -52,6 +52,7 @@ public:
 	virtual void transformationChangedf();
 
 	virtual void calculateAABB();
+	void calculateInitialAABB();
 
 	int getID()				{	return m_iObjectID;	}
 	const char* getName()	{	return m_cszName;	}

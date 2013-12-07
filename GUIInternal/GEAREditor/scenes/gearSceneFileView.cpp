@@ -316,12 +316,20 @@ bool gearSceneFileView::onMouseMove(float x, float y, int flag)
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return;
 
-	geTreeNode* selectedNode=m_cFileTreeView.getSelectedNode();
-	if((flag&MK_LBUTTON) && selectedNode)
+	std::vector<geTreeNode*>* selectedNodeList=m_cFileTreeView.getSelectedNodeList();
+	if((flag&MK_LBUTTON) && selectedNodeList->size())
 	{
 		if(/*m_cFileTreeView.getScrollBar()->isScrollBarVisible() && */m_cFileTreeView.getScrollBar()->isScrollBarGrabbed()/* && x>m_cSize.x-SCROLLBAR_SIZE*/)
 			return  true;
-		MDataObject* dataObject = new MDataObject(selectedNode, this);
+		std::vector<geGUIBase*>* newlist = new std::vector<geGUIBase*>();
+
+		for(std::vector<geTreeNode*>::iterator it = selectedNodeList->begin(); it != selectedNodeList->end(); ++it)
+		{
+			geTreeNode* node = *it;
+			newlist->push_back(node);
+		}
+
+		MDataObject* dataObject = new MDataObject(newlist, this);
 		MDropSource* dropSource = new MDropSource();
 
 		DWORD lpd=0;
@@ -349,47 +357,52 @@ void gearSceneFileView::onTextChange(geGUIBase* textBox)
 void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
 {
 	geTreeNode* rootNode = m_cFileTreeView.getRoot();
-	geGUIBase* droppedDataObject = dropObject->getActualData();
 
-	if(dropObject->getSourcePtr()==EditorApp::getSceneHierarchy())
+	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
+	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 	{
-		if(DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INPUT_DLG), EditorApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(Proj_InputDlgProc))==IDCANCEL)
-		{
-			return;
-		}
-		object3d* obj=(object3d*)droppedDataObject->getUserData();
-		//create prefab
-		char prefabFileName[512];
-		sprintf(prefabFileName, "%s.prefab", g_cszPrefabName);
-		char absolutepath[512];
-		sprintf(absolutepath, "%s/%s", m_szDirectoryPath, prefabFileName);
-		int crc32 = AssetImporter::calcCRC32((unsigned char*)absolutepath);
-		gxFile prefabFile;
-		if(prefabFile.OpenFile(absolutepath, gxFile::FILE_w))
-		{
-			prefabFile.CloseFile();
+		geGUIBase* droppedDataObject = *it;
 
-			struct stat fst;
-			memset(&fst, 0, sizeof(fst));
-			if(stat(absolutepath, &fst)==0) 
+		if(dropObject->getSourcePtr()==EditorApp::getSceneHierarchy())
+		{
+			if(DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INPUT_DLG), EditorApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(Proj_InputDlgProc))==IDCANCEL)
 			{
-				char crcFileName[512];
-				sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc32);
+				continue;
+			}
+			object3d* obj=(object3d*)droppedDataObject->getUserData();
+			//create prefab
+			char prefabFileName[512];
+			sprintf(prefabFileName, "%s.prefab", g_cszPrefabName);
+			char absolutepath[512];
+			sprintf(absolutepath, "%s/%s", m_szDirectoryPath, prefabFileName);
+			int crc32 = AssetImporter::calcCRC32((unsigned char*)absolutepath);
+			gxFile prefabFile;
+			if(prefabFile.OpenFile(absolutepath, gxFile::FILE_w))
+			{
+				prefabFile.CloseFile();
 
-				obj->setFileCRC(crc32);
-				if(AssetImporter::saveObject3DToMetaData(crcFileName, obj, fst))
+				struct stat fst;
+				memset(&fst, 0, sizeof(fst));
+				if(stat(absolutepath, &fst)==0) 
 				{
-					//create the meta-info file
-					gxFile metaInfoFile;
-					char metaInfoFileName[512];
-					sprintf(metaInfoFileName, "%s/%s.meta", m_szDirectoryPath, prefabFileName);
-					if(metaInfoFile.OpenFile(metaInfoFileName, gxFile::FILE_w))
-					{
-						metaInfoFile.Write(crc32);
-						metaInfoFile.CloseFile();
+					char crcFileName[512];
+					sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc32);
 
-						//repopulate the file view
-						populateFiles(m_szDirectoryPath);
+					obj->setFileCRC(crc32);
+					if(AssetImporter::saveObject3DToMetaData(crcFileName, obj, fst))
+					{
+						//create the meta-info file
+						gxFile metaInfoFile;
+						char metaInfoFileName[512];
+						sprintf(metaInfoFileName, "%s/%s.meta", m_szDirectoryPath, prefabFileName);
+						if(metaInfoFile.OpenFile(metaInfoFileName, gxFile::FILE_w))
+						{
+							metaInfoFile.Write(crc32);
+							metaInfoFile.CloseFile();
+
+							//repopulate the file view
+							populateFiles(m_szDirectoryPath);
+						}
 					}
 				}
 			}

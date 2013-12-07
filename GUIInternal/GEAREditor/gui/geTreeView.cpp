@@ -428,7 +428,7 @@ geTreeView::geTreeView():
 	m_pRootNode=NULL;
 	m_fVirtualYPos=0.0f;
 	m_pTVObserver=NULL;
-	m_pSelectedNodePtr=NULL;
+	//m_pSelectedNodePtr=NULL;
 }
 
 geTreeView::geTreeView(const char* name):
@@ -437,12 +437,13 @@ geTreeView::geTreeView(const char* name):
 	m_pRootNode=NULL;
 	m_fVirtualYPos=0.0f;
 	m_pTVObserver=NULL;
-	m_pSelectedNodePtr=NULL;
+	//m_pSelectedNodePtr=NULL;
 }
 
 geTreeView::~geTreeView()
 {
 	GE_DELETE(m_pRootNode);
+	m_cSelectedNodes.clear();
 }
 
 void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* name, MTreeViewObserver* pObserver)
@@ -459,7 +460,7 @@ void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* n
 
 	m_pRootNode = new geTreeNode(renderer, NULL, "root", NULL);
 	m_pRootNode->setParentTreeView(this);
-	m_pSelectedNodePtr=NULL;
+	//m_pSelectedNodePtr=NULL;
 }
 
 void geTreeView::draw()
@@ -539,17 +540,40 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 			m_fOffsetCacheForMouseMove.set(xoff+m_pRootNode->getXOffset(), yoff+GE_TREEVIEWNODE_CY);
 			selectedNode->MouseLButtonDown(x-xoff+m_pRootNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, nFlag);
 
-			if(m_pSelectedNodePtr)
-				m_pSelectedNodePtr->unselectNode();
-			if(selectedNode)
-				selectedNode->selectNode();
-
-			if(selectedNode && selectedNode!=m_pSelectedNodePtr)
+			bool bAlreadySelected=false;
+			for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
 			{
+				geTreeNode* node = *it;
+				if(node==selectedNode)
+				{
+					bAlreadySelected=true;
+					break;
+				}
+			}
 
+			if(nFlag&MK_CONTROL)
+			{
+				selectedNode->selectNode();
+				if(!bAlreadySelected)
+					m_cSelectedNodes.push_back(selectedNode);
+			}
+			else
+			{
+				for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+				{
+					geTreeNode* node = *it;
+					node->unselectNode();
+				}
+				m_cSelectedNodes.clear();
+
+				selectedNode->selectNode();
+				m_cSelectedNodes.push_back(selectedNode);
+			}
+
+			if(!bAlreadySelected)
+			{
 				m_pTVObserver->onTVSelectionChange(selectedNode, this);
-			}			
-			m_pSelectedNodePtr=selectedNode;
+			}
 		}
 
 		
@@ -667,8 +691,12 @@ void geTreeView::onScrollBarChange(geScrollBar* scrollbar)
 
 void geTreeView::onFocusLost()
 {
-	if(m_pSelectedNodePtr)
-		m_pSelectedNodePtr->deFocus();
+	for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+	{
+		geTreeNode* node = *it;
+		node->deFocus();
+	}
+
 	geGUIBase::onFocusLost();
 }
 
@@ -680,7 +708,7 @@ void geTreeView::clearAndDestroyAll()
 
 	m_pRootNode = new geTreeNode(m_pRenderer, NULL, "root", NULL);
 	m_pRootNode->setParentTreeView(this);
-	m_pSelectedNodePtr=NULL;
+	m_cSelectedNodes.clear();
 }
 
 void geTreeView::refreshTreeView()
@@ -702,52 +730,52 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 	//38-up
 	//40-down
 
-	if(charValue==38)
-	{
-		geTreeNode* topNode=NULL;
-		if(m_pSelectedNodePtr)
-		{
-			topNode=m_pSelectedNodePtr->getTopNode();
-			if(topNode==NULL)
-			{
-				return geGUIBase::onKeyDown(charValue, flag);
-			}
-			else
-			{
-				if(topNode!=m_pSelectedNodePtr)
-				{
-					m_pSelectedNodePtr->unselectNode();
-					m_pSelectedNodePtr=topNode;
-					m_pSelectedNodePtr->selectNode();
-					m_pTVObserver->onTVSelectionChange(topNode, this);
-					return geGUIBase::onKeyDown(charValue, flag);
-				}
-			}
-		}
-	}
-	else if(charValue==40)
-	{
-		geTreeNode* bottomNode=NULL;
-		if(m_pSelectedNodePtr)
-		{
-			bottomNode=m_pSelectedNodePtr->getBottomNode();
-			if(bottomNode==NULL)
-			{
-				return geGUIBase::onKeyDown(charValue, flag);
-			}
-			else
-			{
-				if(bottomNode!=m_pSelectedNodePtr)
-				{
-					m_pSelectedNodePtr->unselectNode();
-					m_pSelectedNodePtr=bottomNode;
-					m_pSelectedNodePtr->selectNode();
-					m_pTVObserver->onTVSelectionChange(bottomNode, this);
-					return geGUIBase::onKeyDown(charValue, flag);
-				}
-			}
-		}
-	}
+	//if(charValue==38)
+	//{
+	//	geTreeNode* topNode=NULL;
+	//	if(m_pSelectedNodePtr)
+	//	{
+	//		topNode=m_pSelectedNodePtr->getTopNode();
+	//		if(topNode==NULL)
+	//		{
+	//			return geGUIBase::onKeyDown(charValue, flag);
+	//		}
+	//		else
+	//		{
+	//			if(topNode!=m_pSelectedNodePtr)
+	//			{
+	//				m_pSelectedNodePtr->unselectNode();
+	//				m_pSelectedNodePtr=topNode;
+	//				m_pSelectedNodePtr->selectNode();
+	//				m_pTVObserver->onTVSelectionChange(topNode, this);
+	//				return geGUIBase::onKeyDown(charValue, flag);
+	//			}
+	//		}
+	//	}
+	//}
+	//else if(charValue==40)
+	//{
+	//	geTreeNode* bottomNode=NULL;
+	//	if(m_pSelectedNodePtr)
+	//	{
+	//		bottomNode=m_pSelectedNodePtr->getBottomNode();
+	//		if(bottomNode==NULL)
+	//		{
+	//			return geGUIBase::onKeyDown(charValue, flag);
+	//		}
+	//		else
+	//		{
+	//			if(bottomNode!=m_pSelectedNodePtr)
+	//			{
+	//				m_pSelectedNodePtr->unselectNode();
+	//				m_pSelectedNodePtr=bottomNode;
+	//				m_pSelectedNodePtr->selectNode();
+	//				m_pTVObserver->onTVSelectionChange(bottomNode, this);
+	//				return geGUIBase::onKeyDown(charValue, flag);
+	//			}
+	//		}
+	//	}
+	//}
 
 	return geGUIBase::onKeyDown(charValue, flag);
 }
@@ -755,4 +783,17 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 bool geTreeView::onKeyUp(int charValue, int flag)
 {
 	return geGUIBase::onKeyUp(charValue, flag);
+}
+
+geTreeNode* geTreeView::getSelectedNode()
+{
+	if(m_cSelectedNodes.size())
+		return m_cSelectedNodes.at(m_cSelectedNodes.size()-1);
+	else
+		return NULL;
+}
+
+void geTreeView::resetSelectedNodePtr()
+{
+	m_cSelectedNodes.clear();
 }

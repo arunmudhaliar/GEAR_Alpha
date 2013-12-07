@@ -52,7 +52,7 @@ gePropertyLight::gePropertyLight(rendererGL10* renderer, geGUIBase* parent, cons
 
 	//window column
 	geWindowColumn* pWindowColumn = new geWindowColumn();
-	pWindowColumn->create(m_pRenderer, this, 40, 300.0f, 0.4f);
+	pWindowColumn->create(m_pRenderer, this, 40, 300.0f, 10.0f, 0.4f);
 	stWindowColumnRow* row = pWindowColumn->addRow("Type");
 	pWindowColumn->addControl(row, m_pLightTypeToolBarDropMenuBtnPtr, 30.0f);
 	row = pWindowColumn->addRow("Constant Attenuation");

@@ -67,13 +67,34 @@ bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return;
 
-	geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
+	std::vector<geTreeNode*>* selectedNodeList=m_cGameObjectsTreeView.getSelectedNodeList();
+	//geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
 	geTreeNode* nodeAtMousePos=m_cGameObjectsTreeView.getTVNode(x, y);
-	if((flag&MK_LBUTTON) && selectedNode && selectedNode==nodeAtMousePos)
+
+	bool bMouseClickedOnList=false;
+	for(std::vector<geTreeNode*>::iterator it = selectedNodeList->begin(); it != selectedNodeList->end(); ++it)
+	{
+		geTreeNode* node = *it;
+		if(node==nodeAtMousePos)
+		{
+			bMouseClickedOnList=true;
+			break;
+		}
+	}
+
+	if((flag&MK_LBUTTON) && bMouseClickedOnList)
 	{
 		if(m_cGameObjectsTreeView.getScrollBar()->isScrollBarGrabbed())
 			return true;
-		MDataObject* dataObject = new MDataObject(selectedNode, this);
+
+		std::vector<geGUIBase*>* newlist = new std::vector<geGUIBase*>();
+		for(std::vector<geTreeNode*>::iterator it = selectedNodeList->begin(); it != selectedNodeList->end(); ++it)
+		{
+			geTreeNode* node = *it;
+			newlist->push_back(node);
+		}
+
+		MDataObject* dataObject = new MDataObject(newlist, this);
 		MDropSource* dropSource = new MDropSource();
 
 		DWORD lpd=0;
@@ -94,55 +115,59 @@ void gearSceneHierarchy::onDragEnter(int x, int y)
 void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 {
 	geTreeNode* rootNode = m_cGameObjectsTreeView.getRoot();
-	geGUIBase* droppedDataObject = dropObject->getActualData();
+	geTreeNode* selectedNode=m_cGameObjectsTreeView.getTVNode(x, y/*-getTopMarginOffsetHeight()*/);
 
-	if(dropObject->getSourcePtr()==EditorApp::getSceneFileView())
+	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
+	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 	{
-		const char* absolutePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
+		geGUIBase* droppedDataObject = *it;
+		if(dropObject->getSourcePtr()==EditorApp::getSceneFileView())
+		{
+			const char* absolutePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
 
-		if (util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX") ||
-			util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
-		{
-			object3d* obj = monoWrapper::mono_engine_loadAndAppendFBX(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
-		}
-	}
-	else if(dropObject->getSourcePtr()==this)
-	{
-		geTreeNode* selectedNode=m_cGameObjectsTreeView.getTVNode(x, y/*-getTopMarginOffsetHeight()*/);
-		if(selectedNode && !droppedDataObject->isNodeExistsInTree(selectedNode))
-		{
-			object3d* selectedObj=(object3d*)selectedNode->getUserData();
-			object3d* droppedObj=(object3d*)droppedDataObject->getUserData();
-		
-			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
+			if (util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX") ||
+				util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
 			{
-				selectedObj->appendChild(droppedObj);
+				object3d* obj = monoWrapper::mono_engine_loadAndAppendFBX(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
 			}
 		}
-		else if(selectedNode==NULL)
+		else if(dropObject->getSourcePtr()==this)
 		{
-			//add to the root node
-			object3d* droppedObj=(object3d*)droppedDataObject->getUserData();
-		
-			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
-			{
-				monoWrapper::mono_engine_appendObject3dToRoot(monoWrapper::mono_engine_getWorld(0), droppedObj);
-			}
-		}
-	}
-	else if(dropObject->getSourcePtr()==EditorApp::getScenePropertyEditor())
-	{
-		if(droppedDataObject->getParent() && droppedDataObject->getParent()==EditorApp::getScenePropertyEditor()->getAnimationParentNode())
-		{
-			gxAnimationSet* animSet=(gxAnimationSet*)droppedDataObject->getUserData();
-			geTreeNode* selectedNode=m_cGameObjectsTreeView.getTVNode(x, y);
-			if(selectedNode)
+			if(selectedNode && !droppedDataObject->isNodeExistsInTree(selectedNode))
 			{
 				object3d* selectedObj=(object3d*)selectedNode->getUserData();
-				gxAnimation* animationController = selectedObj->createAnimationController();	//wont create new if there is already an animatiion controller exists
-				animationController->appendAnimationSet(animSet);
-				selectedObj->applyAnimationSetRecursive(animationController->getAnimationSetList()->size()-1);
-				animationController->play(animationController->getAnimationSetList()->size()-1);
+				object3d* droppedObj=(object3d*)droppedDataObject->getUserData();
+		
+				if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
+				{
+					selectedObj->appendChild(droppedObj);
+				}
+			}
+			else if(selectedNode==NULL)
+			{
+				//add to the root node
+				object3d* droppedObj=(object3d*)droppedDataObject->getUserData();
+		
+				if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
+				{
+					monoWrapper::mono_engine_appendObject3dToRoot(monoWrapper::mono_engine_getWorld(0), droppedObj);
+				}
+			}
+		}
+		else if(dropObject->getSourcePtr()==EditorApp::getScenePropertyEditor())
+		{
+			if(droppedDataObject->getParent() && droppedDataObject->getParent()==EditorApp::getScenePropertyEditor()->getAnimationParentNode())
+			{
+				gxAnimationSet* animSet=(gxAnimationSet*)droppedDataObject->getUserData();
+				//geTreeNode* selectedNode=m_cGameObjectsTreeView.getTVNode(x, y);
+				if(selectedNode)
+				{
+					object3d* selectedObj=(object3d*)selectedNode->getUserData();
+					gxAnimation* animationController = selectedObj->createAnimationController();	//wont create new if there is already an animatiion controller exists
+					animationController->appendAnimationSet(animSet);
+					selectedObj->applyAnimationSetRecursive(animationController->getAnimationSetList()->size()-1);
+					animationController->play(animationController->getAnimationSetList()->size()-1);
+				}
 			}
 		}
 	}

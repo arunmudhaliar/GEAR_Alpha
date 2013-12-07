@@ -199,6 +199,7 @@
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyLight.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.cpp" />
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyTransform.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geColorDlg.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geSecondryView.cpp" />

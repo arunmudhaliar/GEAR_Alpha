@@ -56,11 +56,12 @@ geWindowColumn::~geWindowColumn()
 	m_vRow.clear();
 }
 
-void geWindowColumn::create(rendererGL10* renderer, geGUIBase* parent, int y, float minimum_coloumn_width, float ratio)
+void geWindowColumn::create(rendererGL10* renderer, geGUIBase* parent, int y, float minimum_coloumn_width, float minimum_space_between_controls, float ratio)
 {
 	createBase(renderer, parent);
 	//m_pRenderer=renderer;
 	m_fMinimumColumnWidth=minimum_coloumn_width;
+	m_fMinimumSpaceBetweenControls=minimum_space_between_controls;
 
 	setPos(0, y);
 	setSize(parent->getSize().x, 1);
@@ -92,7 +93,7 @@ void geWindowColumn::addControl(stWindowColumnRow* row, geGUIBase* cntrl, float 
 	for(std::vector<geGUIBase*>::iterator it = controllist->begin(); it != controllist->end(); ++it)
 	{
 		geGUIBase* obj = *it;
-		start_xpos+=(obj->getPos().x+obj->getSize().x);
+		start_xpos+=(m_fMinimumSpaceBetweenControls + obj->getSize().x);
 	}
 
 	float control_y=cntrl->getPos().y;
@@ -130,7 +131,7 @@ void geWindowColumn::onSize(float cx, float cy, int flag)
 		{
 			geGUIBase* cntrl = *it;
 			cntrl->setPos(start_xpos, row->getYPoistion());
-			start_xpos+=(cntrl->getPos().x+cntrl->getSize().x);
+			start_xpos+=(m_fMinimumSpaceBetweenControls + cntrl->getSize().x);
 		}
 
 		//ypos+=row->getHeight();

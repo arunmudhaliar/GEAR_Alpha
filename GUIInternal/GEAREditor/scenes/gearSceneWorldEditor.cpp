@@ -413,13 +413,21 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 		}
 		//glDepthFunc(GL_LEQUAL);
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE);
+		glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
+		//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
+		//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
+		//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
 		std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
 		for(int x=0;x<lightList->size();x++)
 		{
 			gxLight* light = lightList->at(x);
 			if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 				continue;
+
+			//if(x==0)
+			//	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
+			//else
+			//	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
 
 			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
 			//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
@@ -984,11 +992,11 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 						else if(bRotateGizmo)
 						{
 							if(m_iAxisSelected==1)
-								m_pSelectedObj->rotateLocalXf(transformed.x);
+								m_pSelectedObj->rotateLocalXf(-0.5f*dy);
 							else if(m_iAxisSelected==2)
-								m_pSelectedObj->rotateLocalYf(transformed.y);
+								m_pSelectedObj->rotateLocalYf(-0.5f*dy);
 							else if(m_iAxisSelected==3)
-								m_pSelectedObj->rotateLocalZf(transformed.z);
+								m_pSelectedObj->rotateLocalZf(-0.5f*dx);
 						}
 						else if(bScaleGizmo)
 						{

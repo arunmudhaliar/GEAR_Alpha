@@ -419,6 +419,9 @@
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyAddComponent.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyTransform.cpp">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GUIInternal.rc">

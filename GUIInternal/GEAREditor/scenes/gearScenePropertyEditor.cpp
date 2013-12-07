@@ -100,7 +100,10 @@ bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 
 		if(selectedNode->getParent()==m_pAnimationParentNode)
 		{
-			MDataObject* dataObject = new MDataObject(selectedNode, this);
+			std::vector<geGUIBase*>* newlist = new std::vector<geGUIBase*>();
+			newlist->push_back(selectedNode);
+
+			MDataObject* dataObject = new MDataObject(newlist, this);
 			MDropSource* dropSource = new MDropSource();
 
 			DWORD lpd=0;

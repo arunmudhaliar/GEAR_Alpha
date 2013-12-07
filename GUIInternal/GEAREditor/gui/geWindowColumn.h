@@ -26,7 +26,7 @@ public:
 	geWindowColumn();
 	virtual ~geWindowColumn();
 
-	void create(rendererGL10* renderer, geGUIBase* parent, int y, float minimum_coloumn_width, float ratio=0.5f);
+	void create(rendererGL10* renderer, geGUIBase* parent, int y, float minimum_coloumn_width, float minimum_space_between_controls, float ratio=0.5f);
 	stWindowColumnRow* addRow(const char* name);
 	void addControl(stWindowColumnRow* row, geGUIBase* cntrl, float override_height=0.0f);
 
@@ -40,6 +40,7 @@ private:
 	float m_cszColumnRatio;
 	float m_fHeight;
 	float m_fMinimumColumnWidth;
+	float m_fMinimumSpaceBetweenControls;
 };
 
 #endif

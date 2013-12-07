@@ -81,11 +81,17 @@ class MDataObject : public IDataObject
 {
 public:
 
-	MDataObject(geGUIBase* actualDataObject, geGUIBase* sourceObject)
+	MDataObject(std::vector<geGUIBase*>* actualDataObjectList, geGUIBase* sourceObject)
 	{
-		m_pActualDataObjectPtr=actualDataObject;
+		m_vpActualDataObjectPtrList=actualDataObjectList;
 		m_pSourceObjectPtr=sourceObject;
 		m_lRefCount=1;
+	}
+
+	~MDataObject()
+	{
+		m_vpActualDataObjectPtrList->clear();
+		GE_DELETE(m_vpActualDataObjectPtrList);
 	}
 
 	virtual /* [local] */ HRESULT STDMETHODCALLTYPE GetData( 
@@ -192,14 +198,15 @@ public:
 		}
 	}
 
-	geGUIBase* getActualData()	{	return m_pActualDataObjectPtr;	}
-	geGUIBase* getSourcePtr()	{	return m_pSourceObjectPtr;		}
+	std::vector<geGUIBase*>* getActualDataList()	{	return m_vpActualDataObjectPtrList;	}
+	geGUIBase* getSourcePtr()						{	return m_pSourceObjectPtr;			}
 
 private:
 	// any private members and functions
     LONG m_lRefCount;
-	geGUIBase* m_pActualDataObjectPtr;
+	//geGUIBase* m_pActualDataObjectPtr;
 	geGUIBase* m_pSourceObjectPtr;
+	std::vector<geGUIBase*>* m_vpActualDataObjectPtrList;
 };
 
 #endif

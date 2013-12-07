@@ -3,60 +3,64 @@
 
 void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 {
-	geGUIBase* droppedDataObject = dropObject->getActualData();
-	const char* absolutePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
-
-	if (util::GE_IS_EXTENSION(absolutePath, ".mat") || util::GE_IS_EXTENSION(absolutePath, ".MAT"))
+	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
+	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 	{
-		int crc32=AssetImporter::calcCRC32((unsigned char*)absolutePath);
+		geGUIBase* droppedDataObject = *it;
+		const char* absolutePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
 
-		gxMaterial* matchingMaterial=NULL;
-		//check if the material name already exists in our list or not
-		gxWorld* world=monoWrapper::mono_engine_getWorld(0);
-		std::vector<gxMaterial*>* materialList = world->getMaterialList();
-		for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+		if (util::GE_IS_EXTENSION(absolutePath, ".mat") || util::GE_IS_EXTENSION(absolutePath, ".MAT"))
 		{
-			gxMaterial* material_in_list = *it;
-			if(material_in_list->getFileCRC()==crc32)
+			int crc32=AssetImporter::calcCRC32((unsigned char*)absolutePath);
+
+			gxMaterial* matchingMaterial=NULL;
+			//check if the material name already exists in our list or not
+			gxWorld* world=monoWrapper::mono_engine_getWorld(0);
+			std::vector<gxMaterial*>* materialList = world->getMaterialList();
+			for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
 			{
-				//match found, so assing and delete the new material object
-				matchingMaterial=material_in_list;
-				m_pTriInfoPtr->setMaterial(matchingMaterial);
-				loadClientViewFromMaterial(matchingMaterial);
-				return;
-			}
-		}
-
-		//if material not found in world then load from meta
-		char crcFile[1024];
-		sprintf(crcFile, "%s/%x", world->getMetaDataFolder(), crc32);
-		gxFile file_meta;
-		if(file_meta.OpenFile(crcFile))
-		{
-			stMetaHeader metaHeader;
-			file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
-
-			gxMaterial* material = new gxMaterial();
-			material->read(file_meta);
-			file_meta.CloseFile();
-
-			HWShaderManager* hwShaderManager = engine_getHWShaderManager();
-			//load surface shader
-			char mainshaderfilename[1024];
-			sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
-			material->setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
-
-			//load sub maps
-			std::vector<gxSubMap*>* maplist=material->getSubMapList();
-			for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
-			{
-				gxSubMap* submap = *it;
-				submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
+				gxMaterial* material_in_list = *it;
+				if(material_in_list->getFileCRC()==crc32)
+				{
+					//match found, so assing and delete the new material object
+					matchingMaterial=material_in_list;
+					m_pTriInfoPtr->setMaterial(matchingMaterial);
+					loadClientViewFromMaterial(matchingMaterial);
+					return;
+				}
 			}
 
-			m_pTriInfoPtr->setMaterial(material);
-			world->getMaterialList()->push_back(m_pTriInfoPtr->getMaterial());
-			loadClientViewFromMaterial(material);
+			//if material not found in world then load from meta
+			char crcFile[1024];
+			sprintf(crcFile, "%s/%x", world->getMetaDataFolder(), crc32);
+			gxFile file_meta;
+			if(file_meta.OpenFile(crcFile))
+			{
+				stMetaHeader metaHeader;
+				file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+				gxMaterial* material = new gxMaterial();
+				material->read(file_meta);
+				file_meta.CloseFile();
+
+				HWShaderManager* hwShaderManager = engine_getHWShaderManager();
+				//load surface shader
+				char mainshaderfilename[1024];
+				sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
+				material->setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
+
+				//load sub maps
+				std::vector<gxSubMap*>* maplist=material->getSubMapList();
+				for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
+				{
+					gxSubMap* submap = *it;
+					submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
+				}
+
+				m_pTriInfoPtr->setMaterial(material);
+				world->getMaterialList()->push_back(m_pTriInfoPtr->getMaterial());
+				loadClientViewFromMaterial(material);
+			}
 		}
 	}
 }

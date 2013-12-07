@@ -102,8 +102,10 @@ public:
 	void clearAndDestroyAll();
 	void refreshTreeView();
 
-	geTreeNode* getSelectedNode()	{	return m_pSelectedNodePtr;	}
-	void resetSelectedNodePtr()		{	m_pSelectedNodePtr=NULL;	}
+	geTreeNode* getSelectedNode();
+	void resetSelectedNodePtr();
+
+	std::vector<geTreeNode*>* getSelectedNodeList()		{	return &m_cSelectedNodes;	}
 
 	geScrollBar* getScrollBar()		{	return &m_cVerticalScrollBar;	}
 
@@ -135,9 +137,10 @@ private:
 	geTreeNode* m_pRootNode;
 	geScrollBar m_cVerticalScrollBar;
 	float m_fVirtualYPos;
-	geTreeNode* m_pSelectedNodePtr;
+	//geTreeNode* m_pSelectedNodePtr;
 	MTreeViewObserver* m_pTVObserver;
 	geVector2f m_fOffsetCacheForMouseMove;
+	std::vector<geTreeNode*> m_cSelectedNodes;
 };
 
 class MTreeViewObserver

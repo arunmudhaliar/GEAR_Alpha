@@ -21,11 +21,13 @@ public:
 	}
 };
 
-class gxWorld : public object3d
+class DllExport gxWorld : public object3d
 {
 public:
 	gxWorld();
 	~gxWorld();
+
+	void resetWorld();
 
 	void update(float dt);
 	void render(gxRenderer* renderer, object3d* light);
@@ -81,6 +83,12 @@ public:
 	void callback_object3dRemovedFromTree(object3d* child);
 	void callback_object3dAppendToTree(object3d* child);
 	void callback_object3dDestroyedFromTree(object3d* child);
+
+	object3d* loadAndAppendFBX(const char* filename);
+	void populateBonesToMeshNode(object3d* obj, object3d* rootNode);
+	void loadAnmationFromObject3d(object3d* obj3d, int crc);
+	void loadMaterialFromObject3d(object3d* obj3d);
+	void read3dFile2(gxFile& file, object3d* obj);
 
 private:
 	std::vector<gxMaterial*> m_cMaterialList;

@@ -28,6 +28,17 @@ public:
 	virtual void onObject3dDestroy(object3d* obj)=0;
 };
 
+class MEngineObserver
+{
+public:
+	virtual void onAppendToWorld(object3d* world, object3d* obj)
+	{
+	}
+	virtual void onRemoveFromWorld(object3d* world, object3d* obj)
+	{
+	}
+};
+
 class gxAnimation;
 class gxAnimationSet;
 class DllExport object3d : public transform, public MRootObserver
@@ -102,6 +113,8 @@ public:
 	void setObject3dObserver(MObject3dObserver* observer)	{	m_pObject3dObserver = observer;	}
 	void setObject3dObserverRecursive(MObject3dObserver* observer);
 
+	void setEngineObserver(MEngineObserver* observer)	{	m_pEngineObserver = observer;	}
+
 	void setRootObserverOfTree(MRootObserver* rootObserver)	{	m_pRootObserver=rootObserver;	}
 	MRootObserver* getRootObserverOfThisTree()				{	return m_pRootObserver;			}
 
@@ -124,6 +137,7 @@ protected:
 	void* m_pEditorUserDataPtr;				//must not delete this pointer
 	MObject3dObserver* m_pObject3dObserver;	//must not delete this pointer
 	MRootObserver* m_pRootObserver;			//must not delete this pointer
+	MEngineObserver* m_pEngineObserver;		//must not delete this pointer
 	btRigidBody* m_pPhysics_RigidBodyPtr;	//must not delete this pointer
 };
 

@@ -206,6 +206,8 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				file_meta.CloseFile();
 			}
 			deleteAnmationFromObject3d(obj);
+			gxWorld* world=monoWrapper::mono_engine_getWorld(0);
+			world->loadMaterialFromObject3d(obj);
 
 			((assetUserData*)tvnode->getUserData())->setAssetObjectPtr(obj, assetUserData::ASSET_MESH_OBJECT);
 		}

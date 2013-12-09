@@ -24,6 +24,7 @@ void gearSceneHierarchy::onCreate()
 	engine_setEngineObserver(this);
 	engine_setObject3dObserver(this);
 	EditorApp::getSceneWorldEditor()->getMainWorld()->setObject3dObserver(this);
+	EditorApp::getSceneWorldEditor()->getMainWorld()->setEngineObserver(this);
 
 	m_pCreateToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "Create", getToolBar());
 	m_pCreateToolBarDropMenuBtnPtr->setGUIObserver(this);
@@ -224,11 +225,11 @@ void gearSceneHierarchy::destroyTVUserData(geGUIBase* parent)
 	}
 }
 
-void gearSceneHierarchy::onAppendToWorld(gxWorld* world, object3d* obj)
+void gearSceneHierarchy::onAppendToWorld(object3d* world, object3d* obj)
 {
 }
 
-void gearSceneHierarchy::onRemoveFromWorld(gxWorld* world, object3d* obj)
+void gearSceneHierarchy::onRemoveFromWorld(object3d* world, object3d* obj)
 {
 }
 

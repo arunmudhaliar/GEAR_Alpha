@@ -7,6 +7,7 @@ geWindow("Preview")
 {
 	m_pSelectedObj=NULL;
 	m_pPreviewWorldPtr=NULL;
+	m_bStopFollowCam=false;
 }
 
 gearScenePreview::~gearScenePreview()
@@ -18,9 +19,9 @@ void gearScenePreview::onCreate()
 	m_pPreviewWorldPtr=monoWrapper::mono_engine_getWorld(1);
 	object3d* light=engine_createLight(m_pPreviewWorldPtr, "Light", gxLight::LIGHT_POINT);
 	((gxLight*)light)->setDiffuseColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
-	((gxLight*)light)->setAmbientColor(vector4f(0.0f, 0.0f, 0.0f, 1.0f));
+	((gxLight*)light)->setAmbientColor(vector4f(0.1f, 0.1f, 0.1f, 1.0f));
 	((gxLight*)light)->setConstantAttenuation(0.5f);
-	light->updatePositionf(0, -10, 0);
+	light->updatePositionf(-1, -10, 1);
 }
 
 void gearScenePreview::draw()
@@ -104,7 +105,7 @@ void gearScenePreview::onDraw()
 
 void gearScenePreview::followObject(float dt, object3d* chasedObj)
 {
-	if(dt>0.1f) return;
+	if(dt>0.1f || m_bStopFollowCam) return;
 	if(chasedObj==NULL) return;
 
 	Camera* cam=m_pPreviewWorldPtr->getActiveCamera();
@@ -114,6 +115,7 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	vector3f	eyeOff;
 	float speed=10.0f;
 	
+	//lookAtOff = chasedObj->getChild(0)->getOOBB().getCenter();
 	lookAtOff = CAMERA_LOOKAT_OFFSET;
 	eyeOff = vector3f(0, -(chasedObj->getChild(0)->getOOBB().getLongestAxis()*0.5f)*4.0f, 0);
 
@@ -125,7 +127,12 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
     vector3f    lenV(transformedEye-chasingObjPos);
     float        len=lenV.length();
 	
-    if(len<=0.01f) return;
+    if(len<=0.01f)
+	{
+		m_bStopFollowCam=true;
+		return;
+	}
+
     if(len>4000.0f)
     {
         float factor=4000.0f/len;

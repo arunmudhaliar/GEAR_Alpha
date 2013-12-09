@@ -60,6 +60,12 @@ public:
 		return (T)MAX(diff.x,MAX(diff.y, diff.z));
 	}
 
+	vector3<T> getCenter()
+	{
+		vector3<T> diff(m_max-m_min);
+		return vector3<T>(m_min+diff*0.5f);
+	}
+
 	void draw(gxHWShader* shader, bool bDrawBox=false)
 	{
 		float lineAry[]={

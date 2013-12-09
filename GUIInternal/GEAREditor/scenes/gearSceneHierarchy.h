@@ -16,8 +16,8 @@ public:
 	//void setSceneWorldEditor(gearSceneWorldEditor* pSceneWorldEditorPtr	)	{	m_pSceneWorldEditorPtr=pSceneWorldEditorPtr;	}
 
 	//engine observer
-	virtual void onAppendToWorld(gxWorld* world, object3d* obj);
-	virtual void onRemoveFromWorld(gxWorld* world, object3d* obj);
+	virtual void onAppendToWorld(object3d* world, object3d* obj);
+	virtual void onRemoveFromWorld(object3d* world, object3d* obj);
 
 	//object3d observer
 	virtual void onObject3dChildAppend(object3d* child);

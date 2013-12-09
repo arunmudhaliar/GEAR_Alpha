@@ -242,6 +242,7 @@ void populateBonesToMeshNode(object3d* obj, object3d* rootNode)
 
 extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename)
 {
+	/*
 	object3d* root_object_node=NULL;
 	if (gxUtil::GX_IS_EXTENSION(filename, ".fbx") || gxUtil::GX_IS_EXTENSION(filename, ".FBX") ||
 		gxUtil::GX_IS_EXTENSION(filename, ".prefab") || gxUtil::GX_IS_EXTENSION(filename, ".PREFAB"))
@@ -309,6 +310,9 @@ extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* f
 	populateBonesToMeshNode(root_object_node, root_object_node);
 
 	return root_object_node;
+	*/
+
+	return world->loadAndAppendFBX(filename);
 }
 
 

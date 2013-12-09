@@ -7,17 +7,6 @@
 
 #define CREATE_MATERIAL_FOR_MESH_IF_NOT_FOUND_IN_METAFILE	0
 
-class MEngineObserver
-{
-public:
-	virtual void onAppendToWorld(gxWorld* world, object3d* obj)
-	{
-	}
-	virtual void onRemoveFromWorld(gxWorld* world, object3d* obj)
-	{
-	}
-};
-
 extern "C" {
 	DllExport void engine_test_function_for_mono();
 	DllExport void engine_init(int nWorldToCreate);

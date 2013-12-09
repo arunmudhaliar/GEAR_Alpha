@@ -69,6 +69,7 @@ object3d::object3d(int objID):
 	m_iFileCRC=0;
 	setRootObserverOfTree(NULL);
 	m_pPhysics_RigidBodyPtr=NULL;
+	m_pEngineObserver = NULL;
 }
 
 object3d::~object3d()
@@ -103,7 +104,6 @@ void object3d::setObject3dObserverRecursive(MObject3dObserver* observer)
 		object3d* obj = *it;
 		obj->setObject3dObserverRecursive(observer);
 	}
-	m_cChilds.clear();
 }
 
 void object3d::update(float dt)

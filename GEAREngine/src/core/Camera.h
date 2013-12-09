@@ -9,7 +9,7 @@
 #include "object3d.h"
 #include "../renderer/gxRenderer.h"
 
-class Camera : public object3d
+class DllExport Camera : public object3d
 {
 public:
 	Camera();

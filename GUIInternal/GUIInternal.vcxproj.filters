@@ -279,6 +279,9 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyAddComponent.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geStaticTextBox.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -421,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyTransform.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geStaticTextBox.cpp">
+      <Filter>GEAREditor\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

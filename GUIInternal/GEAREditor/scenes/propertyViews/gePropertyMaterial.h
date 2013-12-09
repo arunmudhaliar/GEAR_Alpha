@@ -10,6 +10,7 @@
 #include "geTextureThumbnailExtended.h"
 #include "geNullMaterialExtended.h"
 #include "../../gui/geToolBarDropMenu.h"
+#include "../../gui/geStaticTextBox.h"
 
 class gePropertyMaterial : public geTreeNode, public MGUIObserver
 {
@@ -19,6 +20,8 @@ public:
 
 	struct stSubMapView
 	{
+		geStaticTextBox* m_pMapName;
+		geStaticTextBox* m_pTiling;
 		geTextBox* m_pText_tileX;
 		geTextBox* m_pText_tileY;
 		geTextureThumbnailExtended* thumbnail;

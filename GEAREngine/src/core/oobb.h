@@ -50,6 +50,16 @@ public:
         m_max.set(aabb.m_max.x, aabb.m_max.y, aabb.m_max.z);
 	}
 
+	T getLongestAxis()
+	{
+		vector3<T> diff(m_max-m_min);
+		diff.x=ABS(diff.x);
+		diff.y=ABS(diff.y);
+		diff.z=ABS(diff.z);
+
+		return (T)MAX(diff.x,MAX(diff.y, diff.z));
+	}
+
 	void draw(gxHWShader* shader, bool bDrawBox=false)
 	{
 		float lineAry[]={

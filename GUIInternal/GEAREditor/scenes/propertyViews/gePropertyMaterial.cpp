@@ -67,7 +67,7 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 
 void gePropertyMaterial::destroySubMapView()
 {
-		//destroy submapview nodes
+	//destroy submapview nodes
 	for(std::vector<stSubMapView*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
 	{
 		stSubMapView* tvnode = *it;
@@ -78,6 +78,10 @@ void gePropertyMaterial::destroySubMapView()
 		GE_DELETE(tvnode->m_pText_tileY);
 		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->thumbnail), m_vControls.end());
 		GE_DELETE(tvnode->thumbnail);
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->m_pMapName), m_vControls.end());
+		GE_DELETE(tvnode->m_pMapName);
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->m_pTiling), m_vControls.end());
+		GE_DELETE(tvnode->m_pTiling);
 
 		GE_DELETE(tvnode);
 	}
@@ -113,16 +117,26 @@ void gePropertyMaterial::loadSubMapView()
 				sprintf(tileX_temp_buffer, "%3.2f", 1.0f);
 				sprintf(tileY_temp_buffer, "%3.2f", 1.0f);
 			}
+
+			submapview->m_pTiling = new geStaticTextBox("");
+			submapview->m_pTiling->create(m_pRenderer, this, "Tiling", 100, 50+cntr*80, -5, geGUIManager::g_pFontArial10_80Ptr);
+			submapview->m_pTiling->setGUIObserver(this);
+
 			submapview->m_pText_tileX = new geTextBox("1.0");
-			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 50+cntr*80, 60, 16);
+			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 70+cntr*80, 60, 16);
 			submapview->m_pText_tileX->setGUIObserver(this);
 			submapview->m_pText_tileY = new geTextBox("1.0");
-			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 70+cntr*80, 60, 16);
+			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 90+cntr*80, 60, 16);
 			submapview->m_pText_tileY->setGUIObserver(this);
+
+			submapview->m_pMapName = new geStaticTextBox("");
+			submapview->m_pMapName->create(m_pRenderer, this, map->getShaderTextureProperty()->name.c_str(), 10, 40+cntr*80, -5, geGUIManager::g_pFontArial10_80Ptr);
+			submapview->m_pMapName->setGUIObserver(this);
 
 			submapview->thumbnail = new geTextureThumbnailExtended();
 			submapview->thumbnail->create(m_pRenderer, this, map->getTexture(), 260, 40+cntr*80, 70, 70);
 			submapview->thumbnail->setUserData(map);
+
 			m_vSubMap.push_back(submapview);
 		}
 

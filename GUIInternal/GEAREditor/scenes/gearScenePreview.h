@@ -5,6 +5,10 @@
 #include "../gui/geTreeView.h"
 #include "../../mono/src/monoWrapper.h"
 
+#define CAM_SPEED	3.0f
+#define CAMERA_LOOKAT_OFFSET vector3f(0, 0, 0)
+#define CAMERA_EYE_OFFSET	vector3f(-75, 0, 0)
+
 class gearScenePreview : public geWindow
 {
 public:
@@ -26,6 +30,9 @@ protected:
 
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
+
+private:
+	void followObject(float dt, object3d* chasedObj);
 
 	object3d* m_pSelectedObj;
 	gxWorld* m_pPreviewWorldPtr;	//1th world. Must not delete this pointer

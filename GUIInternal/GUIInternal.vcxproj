@@ -105,6 +105,7 @@
     <ClInclude Include="GEAREditor\gui\geLayoutManager.h" />
     <ClInclude Include="GEAREditor\gui\gePushButton.h" />
     <ClInclude Include="GEAREditor\gui\geScrollBar.h" />
+    <ClInclude Include="GEAREditor\gui\geStaticTextBox.h" />
     <ClInclude Include="GEAREditor\gui\geTextBox.h" />
     <ClInclude Include="GEAREditor\gui\geTextureThumbnail.h" />
     <ClInclude Include="GEAREditor\gui\geToolBar.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="GEAREditor\gui\geLayoutManager.cpp" />
     <ClCompile Include="GEAREditor\gui\gePushButton.cpp" />
     <ClCompile Include="GEAREditor\gui\geScrollBar.cpp" />
+    <ClCompile Include="GEAREditor\gui\geStaticTextBox.cpp" />
     <ClCompile Include="GEAREditor\gui\geTextBox.cpp" />
     <ClCompile Include="GEAREditor\gui\geTextureThumbnail.cpp" />
     <ClCompile Include="GEAREditor\gui\geToolBar.cpp" />

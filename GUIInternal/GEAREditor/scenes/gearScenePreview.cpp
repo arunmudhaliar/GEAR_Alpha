@@ -80,13 +80,14 @@ void gearScenePreview::draw()
 
 void gearScenePreview::onDraw()
 {
-	monoWrapper::mono_engine_update(m_pPreviewWorldPtr, 1.0f);
+	monoWrapper::mono_engine_update(m_pPreviewWorldPtr, Timer::getDtinSec());
+	followObject(Timer::getDtinSec(), m_pSelectedObj);
 
 	m_pPreviewWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 	monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj, NULL);
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE);
+	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
 	std::vector<gxLight*>* lightList = m_pPreviewWorldPtr->getLightList();
 	for(int x=0;x<(int)lightList->size();x++)
 	{
@@ -99,6 +100,53 @@ void gearScenePreview::onDraw()
 		monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj, light);
 	}
 	glDisable(GL_BLEND);
+}
+
+void gearScenePreview::followObject(float dt, object3d* chasedObj)
+{
+	if(dt>0.1f) return;
+	if(chasedObj==NULL) return;
+
+	Camera* cam=m_pPreviewWorldPtr->getActiveCamera();
+	matrix4x4f* chasingObj=(matrix4x4f*)cam;
+    //matrix4x4f* chasedObj=(matrix4x4f*)this;
+    vector3f   lookAtOff;
+	vector3f	eyeOff;
+	float speed=10.0f;
+	
+	lookAtOff = CAMERA_LOOKAT_OFFSET;
+	eyeOff = vector3f(0, -(chasedObj->getChild(0)->getOOBB().getLongestAxis()*0.5f)*4.0f, 0);
+
+	vector3f    transformedEye((*chasedObj) * eyeOff);
+    vector3f    transformedLookAt((*chasedObj) * lookAtOff);
+	
+	vector3f    chasingObjPos(chasingObj->getPosition());
+    vector3f    chasedObjPos(chasedObj->getPosition());
+    vector3f    lenV(transformedEye-chasingObjPos);
+    float        len=lenV.length();
+	
+    if(len<=0.01f) return;
+    if(len>4000.0f)
+    {
+        float factor=4000.0f/len;
+        lenV=lenV*factor;
+    }
+	
+    vector3f    updatedPos(chasingObjPos+lenV*(speed*dt));
+    vector3f forward(updatedPos-transformedLookAt);
+    forward.normalize();
+    vector3f up(0, 0, 1);
+    vector3f left(up.cross(forward));
+    left.normalize();
+    up=forward.cross(left);
+    up.normalize();
+	
+	chasingObj->setXAxis(left);
+	chasingObj->setYAxis(up);
+	chasingObj->setZAxis(forward);
+	chasingObj->setPosition(updatedPos);
+	
+	cam->updateCamera();
 }
 
 bool gearScenePreview::onMouseLButtonDown(float x, float y, int nFlag)

@@ -30,6 +30,7 @@ geWindow("World Editor")
 	m_pRotateGizmo = NULL;
 	m_pScaleGizmo = NULL;
 	m_bEnablePostProcessorBlur=false;
+	m_iLastGLError=0;
 }
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
@@ -199,25 +200,16 @@ vector3f i1, i2, testSpehere;
 
 void gearSceneWorldEditor::draw()
 {
+#ifdef LOG_GLERROR
+	int err=glGetError();
+	if(err!=GL_NO_ERROR)
+	{
+		printf("glGetError 0x%x\n", err);
+	}
+#endif
+
 	drawLightsOnMultiPass();
-
-	//drawBasePass();
-	//glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
-	//GLfloat lightpos[] = {-1, 1, 1, 0.0f};
-	//glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-	//float af=m_pHorizontalSlider_LightAmbient->getSliderValue();
-	//float ambient[]   = {af,af,af,1.0f};
-	//float diffuse[]   = {1.0f, 1.0f, 1.0f, 1.0f};
-	//glLightfv(GL_LIGHT0, GL_AMBIENT, ambient );
- //   glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse );
-
-
-	//glPushMatrix();
 	onDraw();
-
-	
-	//glPopMatrix();
 
 #if defined USE_FBO
 	//if(bMultiPass)
@@ -435,6 +427,37 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 		}
 		glDisable(GL_BLEND);
 	}
+#else
+	glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LESS);
+	if(!m_pTBOnlyLightPass->isButtonPressed())
+	{
+		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+		monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+	}
+	//glDepthFunc(GL_LEQUAL);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
+	//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
+	//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
+	//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
+	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
+	for(int x=0;x<lightList->size();x++)
+	{
+		gxLight* light = lightList->at(x);
+		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			continue;
+
+		//if(x==0)
+		//	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
+		//else
+		//	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+
+		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+		monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
+	}
+	glDisable(GL_BLEND);
 #endif
 
 	drawGrid();
@@ -628,6 +651,11 @@ void gearSceneWorldEditor::drawStats()
 	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*8, m_cSize.x);
 	sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
 	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*9, m_cSize.x);
+	int last_gl_err=glGetError();
+	if(last_gl_err!=GL_NO_ERROR)
+		m_iLastGLError=last_gl_err;
+	sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*10, m_cSize.x);
 
 	geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
 	if(selectedNodeInHirarchy)
@@ -636,7 +664,7 @@ void gearSceneWorldEditor::drawStats()
 		if(obj && obj->getAnimationController())
 		{
 			sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
-			geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*10, m_cSize.x);
+			geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*11, m_cSize.x);
 		}
 	}
 

@@ -1,7 +1,7 @@
 #ifndef NVPROFILER_H
 #define NVPROFILER_H
 
-#define USE_NVPROFILER	1
+#define USE_NVPROFILER	0
 
 #if USE_NVPROFILER
 #include <Windows.h>

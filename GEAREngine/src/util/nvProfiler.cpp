@@ -1,5 +1,6 @@
 #include "nvProfiler.h"
 
+#if USE_NVPROFILER
 NVPMContext nvProfiler::g_hNVPMContext;
 bool nvProfiler::G_bNVPMInitialized;
 bool nvProfiler::g_bPerformanceAnalyze;
@@ -16,4 +17,4 @@ COGLTraceDisplay nvProfiler::analysisTraceDisplay;
 
 nvProfiler::NVDataProvider nvProfiler::g_nvDataProvider;
 nvProfiler::NVDataProvider* nvProfiler::nvDataProvider;
-
+#endif

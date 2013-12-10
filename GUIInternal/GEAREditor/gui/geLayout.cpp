@@ -44,7 +44,7 @@ void geLayout::create(rendererGL10* renderer, geLayout* pParentLayout, float x, 
 	m_pActiveWindowPointer = NULL;
 	setPos(x, y);
 	setSize(cx, cy);
-	setColor(&m_cVBClientArea, 1.0f, 0.09f, 0.09f, 1.0f);
+	setColor(&m_cVBClientArea, 0.12f, 0.12f, 0.12f, 1.0f);
 	setSizable(true);
 }
 
@@ -95,6 +95,14 @@ void geLayout::appendWindow(geWindow* window)
 
 void geLayout::draw()
 {
+#ifdef LOG_GLERROR
+	int err=glGetError();
+	if(err!=GL_NO_ERROR)
+	{
+		printf("glGetError 0x%x\n", err);
+	}
+#endif
+
 	if(m_pParentLayout!=NULL)
 	{
 		glViewport(m_cPos.x+(BORDER_LAYOUT_OFFSET>>1), m_pRenderer->getViewPortSz().y-(m_cSize.y+m_cPos.y+(BORDER_LAYOUT_OFFSET>>1)), m_cSize.x-(BORDER_LAYOUT_OFFSET), m_cSize.y-(BORDER_LAYOUT_OFFSET));	
@@ -103,6 +111,7 @@ void geLayout::draw()
 		gluOrtho2D(0.0f, (int)(m_cSize.x-(BORDER_LAYOUT_OFFSET)), (int)(m_cSize.y-(BORDER_LAYOUT_OFFSET)), 0.0f);
 		glMatrixMode(GL_MODELVIEW);
 		drawLine(m_cVBClientAreaLine, 0.13f, 0.13f, 0.13f, 1.0f, 3, false); 
+		//drawRect(&m_cVBClientArea);
 
 		float _temp_pos=0;
 		for(std::vector<geWindow*>::iterator it = m_vChildWindows.begin(); it != m_vChildWindows.end(); ++it)

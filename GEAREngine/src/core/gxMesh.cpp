@@ -291,7 +291,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		std::vector<stMaterialPass*>* material_pass=material->getShaderPassList();
 		stMaterialPass*	mpass=material_pass->at(pass);
 
-		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, ++cntr)
+		for(std::vector<gxSubMap*>::reverse_iterator it = mpass->vUsedSubMap.rbegin(); it != mpass->vUsedSubMap.rend(); ++it, ++cntr)
 		{
 			gxSubMap* submap = *it;
 			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
@@ -305,17 +305,17 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
 		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
 		renderer->m_nDrawCalls++;
-
 		//if(base_tex_var)
 		//{
 		//	disableTextureOperations(nTexUsed, shader, base_tex_var->texture_uv_in_name.c_str());
 		//}
 
-		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, ++cntr)
+		cntr=0;
+		for(std::vector<gxSubMap*>::reverse_iterator it = mpass->vUsedSubMap.rbegin(); it != mpass->vUsedSubMap.rend(); ++it, cntr++)
 		{
 			gxSubMap* submap = *it;
 			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
-			disableTextureOperations(nTexUsed, shader, shader_var->texture_uv_in_name.c_str());
+			disableTextureOperations(cntr, shader, shader_var->texture_uv_in_name.c_str());
 		}
 
 		glDisableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
@@ -408,14 +408,16 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	return true;
 }
 
-void gxMesh::disableTextureOperations(int nMultiTextureUsed, gxHWShader* shader, const char* texCoordAttribName)
+void gxMesh::disableTextureOperations(int stage, gxHWShader* shader, const char* texCoordAttribName)
 {
 #if defined (USE_ProgrammablePipeLine)
-	if(nMultiTextureUsed && shader)
+	if(shader)
 	{
+		//glActiveTexture(GL_TEXTURE0+stage);
 		glDisableVertexAttribArray(shader->getAttribLoc(texCoordAttribName));
 		//glDisable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		//glDisable(GL_TEXTURE_2D);
 	}
 #else
 	//Disabling all texture operations

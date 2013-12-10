@@ -50,6 +50,14 @@ void gearSceneHierarchy::onCreate()
 
 void gearSceneHierarchy::onDraw()
 {
+#ifdef LOG_GLERROR
+	int err=glGetError();
+	if(err!=GL_NO_ERROR)
+	{
+		printf("glGetError 0x%x\n", err);
+	}
+#endif
+
 	m_cGameObjectsTreeView.draw();
 
 	//m_cPushButton.draw();

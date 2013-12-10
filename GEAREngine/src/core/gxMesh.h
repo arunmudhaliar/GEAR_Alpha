@@ -86,7 +86,7 @@ protected:
 	//bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz);
 	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, gxSubMap* submap, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxHWShader* shader, const char* texCoordAttribName);
 	
-	void disableTextureOperations(int nMultiTextureUsed, gxHWShader* shader, const char* texCoordAttribName);
+	void disableTextureOperations(int stage, gxHWShader* shader, const char* texCoordAttribName);
 
 	int m_nTriInfoArray;
 	gxTriInfo* m_pszTriInfoArray;

@@ -98,14 +98,14 @@ void geWindow::draw()
 {
 	glViewport(m_cPos.x+m_pIamOnLayout->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+m_pIamOnLayout->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);	
 	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
+	//glPushMatrix();
 		glLoadIdentity();
 		gluOrtho2D((int)0, (int)(m_cSize.x/*+2.0f*/), (int)(m_cSize.y-getTopMarginOffsetHeight()/*+2.0f*/), (int)0);
 		glMatrixMode(GL_MODELVIEW);
 
 		drawRect(&m_cVBClientArea);
 		onDraw();
-	glPopMatrix();
+	//glPopMatrix();
 }
 
 

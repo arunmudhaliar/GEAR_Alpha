@@ -93,6 +93,7 @@ protected:
 #endif
 	bool m_bEnablePostProcessorBlur;
 	SoundEngine m_cSoundEngine;
+	int m_iLastGLError;
 };
 
 #endif

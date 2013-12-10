@@ -17,6 +17,14 @@ void gearSceneConsole::onCreate()
 
 void gearSceneConsole::onDraw()
 {
+#ifdef LOG_GLERROR
+	int err=glGetError();
+	if(err!=GL_NO_ERROR)
+	{
+		printf("glGetError 0x%x\n", err);
+	}
+#endif
+
 	m_cFileTreeView.draw();
 }
 

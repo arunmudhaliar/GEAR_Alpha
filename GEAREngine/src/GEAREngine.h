@@ -36,6 +36,7 @@ extern "C" {
 
 	DllExport object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name);
 	DllExport object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType);
+	DllExport object3d* engine_createCamera(object3d* parentObj, const char* name);
 
 	DllExport HWShaderManager* engine_getHWShaderManager();
 	DllExport void engine_destroy();

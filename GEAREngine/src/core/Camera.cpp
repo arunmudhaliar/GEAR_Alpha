@@ -5,6 +5,7 @@ Camera::Camera():
 {
 	//m_pCurrentCamPtr=NULL;
 	m_pRendererPtr=NULL;
+	m_pCameraStructPtr=NULL;
 }
 
 Camera::~Camera()
@@ -44,44 +45,32 @@ void Camera::updateCamera()
 	m_cViewProjectionMatrix = m_cProjMatrix * m_cInvTranfMatrix;
 }
 
-void Camera::setUpCameraPerspective(float cx, float cy, float fov, float nearValue, float farValue)
+void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearValue, float farValue*/)
 {
 	if(cx==0.0f || cy==0.0f)	return;
 
 	float aspect=cx/cy;
-	m_fFOV=fov;
-	m_fNear=nearValue;
-	m_fFar=farValue;
+	m_fFOV=m_pCameraStructPtr->getFOV();
+	m_fNear=m_pCameraStructPtr->getNear();
+	m_fFar=m_pCameraStructPtr->getFar();
 
 	m_cProjMatrix.setPerspective(m_fFOV, aspect, m_fNear, m_fFar);
 	
-	//if(m_pRendererPtr->GetScreenOrientation()==Renderer::SCREEN_LANDSCAPE)
-	//{
-	//	Matrix4X4f rot;
-	//	rot.SetRotationMatrix(-90, 0, 0, 1);
-	//	
-	//	Matrix4X4f* p=m_pProjMatrix;
-	//	*p = ((*m_pProjMatrix) * rot);
-	//}
-
 	m_pRendererPtr->setProjectionMatrixToGL(&m_cProjMatrix);
 	updateCamera();
 }
 
-/*
+
 void Camera::setCamera(gxCamera* camera)
 {
 	if(!camera) return;
 
-	m_pCurrentCamPtr = camera;
-	if(!camera->getNear())
-		camera->setNear(1.0f);
+	m_pCameraStructPtr = camera;
 	copy((matrix4x4f)*camera);
 
-	//update the cam
-	updateCamera();
+	setUpCameraPerspective(m_pRendererPtr->getViewPortSz().x, m_pRendererPtr->getViewPortSz().y/*, camera->getFOV(), camera->getNear(), camera->getFar()*/);
 }
-*/
+
 
 vector3f Camera::getCameraSpaceLoc(const vector3f& point)
 {

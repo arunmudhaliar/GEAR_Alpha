@@ -39,6 +39,13 @@ public:
 	}
 };
 
+#define OBJECT3D_OBJECT			0
+#define OBJECT3D_MESH			100
+#define OBJECT3D_SKINNED_MESH	101
+#define OBJECT3D_LIGHT			3
+#define OBJECT3D_CAMERA			102
+#define OBJECT3D_WORLD			999
+
 class gxAnimation;
 class gxAnimationSet;
 class DllExport object3d : public transform, public MRootObserver

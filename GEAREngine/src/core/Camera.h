@@ -6,6 +6,7 @@
 //#include "gxCamera.h"
 //#include "frustum.h"
 
+#include "gxCamera.h"
 #include "object3d.h"
 #include "../renderer/gxRenderer.h"
 
@@ -21,9 +22,9 @@ public:
 	void		processCamera(matrix4x4f* matrix=NULL);
 	void		updateCamera();
 	//void		setUpViewPort(GXint aWidth=1, GXint aHeight=1);
-	void		setUpCameraPerspective(float cx, float cy, float fov, float nearValue, float farValue);
-	//void		setCamera(gxCamera* aCamera);
-	//gxCamera*	getCameraStructure()						{	return m_pCurrentCamPtr;	}
+	void		setUpCameraPerspective(float cx, float cy/*, float fov, float nearValue, float farValue*/);
+	void		setCamera(gxCamera* aCamera);
+	gxCamera*	getCameraStructure()						{	return m_pCameraStructPtr;	}
 
 	void		extractFrustumPlanes();
 	virtual void		transformationChangedf();
@@ -49,6 +50,7 @@ private:
 	float m_fFOV;	//in angles
 	float m_fNear;
 	float m_fFar;
+	gxCamera* m_pCameraStructPtr;
 };
 
 #endif

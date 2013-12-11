@@ -98,6 +98,7 @@ private:
 	gxRenderer m_cRenderer;
 	Camera* m_pActiveCameraPtr;	//must not delete this pointer
 	Camera m_cDefaultCamera;
+	gxCamera m_cDefaultCameraStruct;
 
 	gxMaterial m_cDefaultMaterial;
 	CTextureManager m_cTextureManager;

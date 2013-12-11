@@ -17,7 +17,7 @@ gxMesh::gxMesh(int ID):
 }
 
 gxMesh::gxMesh():
-	object3d(100)
+	object3d(OBJECT3D_MESH)
 {
 	m_nTriInfoArray=0;
 	m_pszTriInfoArray=NULL;
@@ -105,7 +105,7 @@ void gxMesh::renderNormal(gxRenderer* renderer)
 void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 {
 
-	if(light->getID()!=3)
+	if(light->getID()!=OBJECT3D_LIGHT)
 		return;
 
 	gxLight* light_ob=(gxLight*)light;

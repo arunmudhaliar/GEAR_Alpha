@@ -11,6 +11,7 @@ geWindow("Property Editor")
 	m_pSaveMetaDataParentNode=NULL;
 	m_pLightParentNode=NULL;
 	m_pAddComponentParentNode=NULL;
+	m_pCameraParentNode = NULL;
 
 	m_pPostProcessorBlurShaderNode=NULL;
 
@@ -20,6 +21,7 @@ geWindow("Property Editor")
 	m_pSaveMetaDataPropertyNode=NULL;
 	m_pLightPropertyNode=NULL;
 	m_pAddComponentProperty=NULL;
+	m_pCameraPropertyNode=NULL;
 
 	m_pBlurProcessorPropertyNode=NULL;
 }
@@ -36,6 +38,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	GE_DELETE(m_pLightParentNode);
 	GE_DELETE(m_pAddComponentParentNode);
 	GE_DELETE(m_pPostProcessorBlurShaderNode);
+	GE_DELETE(m_pCameraParentNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -71,6 +74,9 @@ void gearScenePropertyEditor::onCreate()
 	m_pLightPropertyNode = new gePropertyLight(m_pRenderer, m_pLightParentNode, "", NULL);
 	m_pAddComponentParentNode = new geTreeNode(m_pRenderer, rootNode, "Add Component", &m_cszSprites[5], 0);
 	m_pAddComponentProperty = new gePropertyAddComponent(m_pRenderer, m_pAddComponentParentNode, "", NULL);
+
+	m_pCameraParentNode = new geTreeNode(m_pRenderer, rootNode, "Camera", &m_cszSprites[5], 0);
+	m_pCameraPropertyNode = new gePropertyCamera(m_pRenderer, m_pCameraParentNode, "", NULL);
 
 	m_pPostProcessorBlurShaderNode = new geTreeNode(m_pRenderer, rootNode, "Blur Processor", &m_cszSprites[5], 0);
 	m_pBlurProcessorPropertyNode = new gePropertyBlurProcessor(m_pRenderer, m_pPostProcessorBlurShaderNode, "", NULL);
@@ -138,6 +144,7 @@ void gearScenePropertyEditor::removeAllProperties()
 	rootNode->removeTVChild(m_pLightParentNode);
 	rootNode->removeTVChild(m_pAddComponentParentNode);
 	rootNode->removeTVChild(m_pPostProcessorBlurShaderNode);
+	rootNode->removeTVChild(m_pCameraParentNode);
 
 	//material
 	if(m_pMaterialParent)
@@ -183,7 +190,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	//material
 	if(m_pMaterialParent)
 		m_pMaterialParent->destroyAllTVChilds();
-	if(obj->getID()==100 || obj->getID()==101)	//mesh
+	if(obj->getID()==OBJECT3D_MESH || obj->getID()==OBJECT3D_SKINNED_MESH)	//mesh
 	{
 		gxMesh* mesh=(gxMesh*)obj;
 
@@ -196,10 +203,15 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 
 		rootNode->appnendTVChild(m_pMaterialParent);
 	}
-	else if(obj->getID()==3)
+	else if(obj->getID()==OBJECT3D_LIGHT)
 	{
 		m_pLightPropertyNode->populatePropertyOfLight(obj);
 		rootNode->appnendTVChild(m_pLightParentNode);
+	}
+	else if(obj->getID()==OBJECT3D_CAMERA)
+	{
+		m_pCameraPropertyNode->populatePropertyOfCamera(obj);
+		rootNode->appnendTVChild(m_pCameraParentNode);
 	}
 
 	//animation

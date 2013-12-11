@@ -2,7 +2,7 @@
 #include "../GEAREngine.h"
 
 gxLight::gxLight():
-object3d(3)
+object3d(OBJECT3D_LIGHT)
 {
 	setName("Point Light");
 	setLightType(LIGHT_POINT);

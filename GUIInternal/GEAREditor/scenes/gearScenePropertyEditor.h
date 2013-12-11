@@ -13,6 +13,7 @@
 #include "propertyViews\gePropertyLight.h"
 #include "propertyViews\gePropertyBlurProcessor.h"
 #include "propertyViews\gePropertyAddComponent.h"
+#include "propertyViews\gePropertyCamera.h"
 
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {
@@ -46,6 +47,7 @@ private:
 	geTreeNode* m_pSaveMetaDataParentNode;
 	geTreeNode* m_pLightParentNode;
 	geTreeNode* m_pAddComponentParentNode;
+	geTreeNode* m_pCameraParentNode;
 
 	//post processors
 	geTreeNode* m_pPostProcessorBlurShaderNode;
@@ -57,6 +59,7 @@ private:
 	gePropertySaveMetaData* m_pSaveMetaDataPropertyNode;
 	gePropertyLight* m_pLightPropertyNode;
 	gePropertyAddComponent* m_pAddComponentProperty;
+	gePropertyCamera* m_pCameraPropertyNode;
 
 	//post processors
 	gePropertyBlurProcessor* m_pBlurProcessorPropertyNode;

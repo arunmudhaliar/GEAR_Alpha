@@ -30,11 +30,13 @@ void gearSceneHierarchy::onCreate()
 	m_pCreateToolBarDropMenuBtnPtr->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pCreateToolBarDropMenuBtnPtr);
 
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00004003);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Point Light", 0x00004002);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("", 0, NULL, true);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Create Object on Selected Node", 0x00004001);
 	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Create Object", 0x00004000);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Create Object on Selected Node", 0x00004001);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("", 0, NULL, true);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Point Light", 0x00004002);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00004003);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("", 0, NULL, true);
+	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Camera", 0x00004004);
 
 	m_cGameObjectsTreeView.create(m_pRenderer, this, "gameObjectsTV", this);
 
@@ -359,6 +361,11 @@ void gearSceneHierarchy::onCommand(int cmd)
 		case 0x00004003:
 			{
 			object3d* light=engine_createLight(monoWrapper::mono_engine_getWorld(0), "Directional Light", gxLight::LIGHT_DIRECTIONAL);
+			}
+			break;
+		case 0x00004004:
+			{
+			object3d* camera=engine_createCamera(monoWrapper::mono_engine_getWorld(0), "Camera");
 			}
 			break;
 	}

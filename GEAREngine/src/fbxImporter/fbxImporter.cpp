@@ -282,7 +282,7 @@ FbxNode* fbxImporter::findRoot(FbxNode *fbxNode)
 
 void fbxImporter::populateBonesToMeshNode(stBoneList* boneList, object3d* obj, object3d* rootNode)
 {
-	if(obj->getID()==101)
+	if(obj->getID()==OBJECT3D_SKINNED_MESH)
 	{
 		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj;
 		int index=0;

@@ -63,11 +63,11 @@ void read3dFile2(gxFile& file, object3d* obj)
 		int objID=0;
 		file.Read(objID);
 		object3d* tempObj=NULL;
-		if(objID==100)
+		if(objID==OBJECT3D_MESH)
 		{
 			tempObj = new gxMesh();
 		}
-		else if(objID==101)
+		else if(objID==OBJECT3D_SKINNED_MESH)
 		{
 			tempObj = new gxSkinnedMesh();
 		}
@@ -87,7 +87,7 @@ void read3dFile2(gxFile& file, object3d* obj)
 
 void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 {
-	if(obj3d->getID()==100 || obj3d->getID()==101)
+	if(obj3d->getID()==OBJECT3D_MESH || obj3d->getID()==OBJECT3D_SKINNED_MESH)
 	{
 		gxMesh* mesh = (gxMesh*)obj3d;
 		for(int x=0;x<mesh->getNoOfTriInfo();x++)
@@ -224,7 +224,7 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d, int crc)
 
 void populateBonesToMeshNode(object3d* obj, object3d* rootNode)
 {
-	if(obj->getID()==101)
+	if(obj->getID()==OBJECT3D_SKINNED_MESH)
 	{
 		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj;
 		int index=0;
@@ -272,11 +272,11 @@ extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* f
 
 				object3d* tempObj=NULL;
 
-				if(objID==100)
+				if(objID==OBJECT3D_MESH)
 				{
 					tempObj = new gxMesh();
 				}
-				else if(objID==101)
+				else if(objID==OBJECT3D_SKINNED_MESH)
 				{
 					tempObj = new gxSkinnedMesh();
 				}
@@ -454,6 +454,15 @@ extern DllExport object3d* engine_createLight(object3d* parentObj, const char* n
 	light->setLightType(eType);
 	parentObj->appendChild(light);
 	return light;
+}
+
+extern DllExport object3d* engine_createCamera(object3d* parentObj, const char* name)
+{
+	gxCamera* camera = new gxCamera();
+	camera->setObject3dObserver(g_Object3dObserver);
+	camera->setName(name);
+	parentObj->appendChild(camera);
+	return camera;
 }
 
 extern DllExport HWShaderManager* engine_getHWShaderManager()

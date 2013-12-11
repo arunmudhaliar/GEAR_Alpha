@@ -86,6 +86,7 @@
     <ClCompile Include="..\src\core\gxAnimation.cpp" />
     <ClCompile Include="..\src\core\gxAnimationSet.cpp" />
     <ClCompile Include="..\src\core\gxAnimationTrack.cpp" />
+    <ClCompile Include="..\src\core\gxCamera.cpp" />
     <ClCompile Include="..\src\core\gxDebug.cpp" />
     <ClCompile Include="..\src\core\gxLight.cpp" />
     <ClCompile Include="..\src\core\gxMaterial.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="..\src\core\gxAnimation.h" />
     <ClInclude Include="..\src\core\gxAnimationSet.h" />
     <ClInclude Include="..\src\core\gxAnimationTrack.h" />
+    <ClInclude Include="..\src\core\gxCamera.h" />
     <ClInclude Include="..\src\core\gxDebug.h" />
     <ClInclude Include="..\src\core\gxLight.h" />
     <ClInclude Include="..\src\core\gxMaterial.h" />

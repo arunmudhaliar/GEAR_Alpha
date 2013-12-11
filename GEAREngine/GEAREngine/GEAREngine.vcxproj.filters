@@ -654,6 +654,9 @@
     <ClCompile Include="..\src\physics\debug\GL_ShapeDrawer.cpp">
       <Filter>engine\physics\debug</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\gxCamera.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -1561,6 +1564,9 @@
     </ClInclude>
     <ClInclude Include="..\src\physics\debug\GL_ShapeDrawer.h">
       <Filter>engine\physics\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxCamera.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

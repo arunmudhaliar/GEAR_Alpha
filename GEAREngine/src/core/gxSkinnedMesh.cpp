@@ -1,7 +1,7 @@
 #include "gxSkinnedMesh.h"
 
 gxSkinnedMesh::gxSkinnedMesh():
-gxMesh(101)
+gxMesh(OBJECT3D_SKINNED_MESH)
 {
 	m_pszBoneIndexBuffer=NULL;
 	m_pszWeightBuffer=NULL;

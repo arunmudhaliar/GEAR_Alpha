@@ -54,7 +54,10 @@ void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearV
 	m_fNear=m_pCameraStructPtr->getNear();
 	m_fFar=m_pCameraStructPtr->getFar();
 
-	m_cProjMatrix.setPerspective(m_fFOV, aspect, m_fNear, m_fFar);
+	if(m_pCameraStructPtr->getProjectionType()==gxCamera::PERSPECTIVE_PROJECTION)
+		m_cProjMatrix.setPerspective(m_fFOV, aspect, m_fNear, m_fFar);
+	else
+		m_cProjMatrix.setOrtho(m_pRendererPtr->getViewPortRect().m_pos.x, m_pRendererPtr->getViewPortSz().x, m_pRendererPtr->getViewPortRect().m_pos.y, m_pRendererPtr->getViewPortSz().y, m_fNear, m_fFar);
 	
 	m_pRendererPtr->setProjectionMatrixToGL(&m_cProjMatrix);
 	updateCamera();

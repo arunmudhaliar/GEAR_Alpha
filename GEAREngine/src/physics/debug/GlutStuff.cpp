@@ -71,7 +71,7 @@ static void glutDisplayCallback(void)
 	gDemoApplication->displayCallback();
 }
 
-
+/*
 int glutmain(int argc, char **argv,int width,int height,const char* title,DemoApplication* demoApp) {
     
 	gDemoApplication = demoApp;
@@ -115,6 +115,6 @@ CGLSetParameter(cgl_context, kCGLCPSwapInterval, &swap_interval);
     glutMainLoop();
     return 0;
 }
-
+*/
 
 #endif //_WINDOWS

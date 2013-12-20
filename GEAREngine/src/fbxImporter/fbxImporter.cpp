@@ -746,7 +746,8 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 			for(int m=0;m<uvSetNames.GetCount();m++)
 			{
 				FbxVector2 uv;
-				fbxMesh.GetPolygonVertexUV(x, y, uvSetNames.GetStringAt(m), uv);
+				bool pUnmapped;
+				fbxMesh.GetPolygonVertexUV(x, y, uvSetNames.GetStringAt(m), uv, pUnmapped);
 				uvChannels[m].m_pszfGLTexCoordList[vertexIndices[y]*2+0]=(float)uv.mData[0];
 				uvChannels[m].m_pszfGLTexCoordList[vertexIndices[y]*2+1]=1.0f-(float)uv.mData[1];
 			}
@@ -832,14 +833,15 @@ void fbxImporter::createTangentBuffer(gxMesh* newMesh, FbxMesh &fbxMesh, const F
 		normalbuffer[vertexIndex2]+=n3;
 		normalbufferCount[vertexIndex2]++;
 
+		bool pUnmapped;
 		FbxVector2 w1;
-		fbxMesh.GetPolygonVertexUV(x, 0, uvname, w1);
+		fbxMesh.GetPolygonVertexUV(x, 0, uvname, w1, pUnmapped);
 		w1.mData[1]=1.0f-(float)w1.mData[1];
 		FbxVector2 w2;
-		fbxMesh.GetPolygonVertexUV(x, 1, uvname, w2);
+		fbxMesh.GetPolygonVertexUV(x, 1, uvname, w2, pUnmapped);
 		w2.mData[1]=1.0f-(float)w2.mData[1];
 		FbxVector2 w3;
-		fbxMesh.GetPolygonVertexUV(x, 2, uvname, w3);
+		fbxMesh.GetPolygonVertexUV(x, 2, uvname, w3, pUnmapped);
 		w3.mData[1]=1.0f-(float)w3.mData[1];
 
 		float x1 = v2.mData[0] - v1.mData[0];

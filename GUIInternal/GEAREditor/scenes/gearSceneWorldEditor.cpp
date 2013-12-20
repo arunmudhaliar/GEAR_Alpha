@@ -187,9 +187,9 @@ void gearSceneWorldEditor::onCreate()
 	m_cLightBillBoardSprite.setOffset(0, 0);
 	m_cLightBillBoardSprite.loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 
-	m_cSoundEngine.init();
-	m_cSoundEngine.createListener();
-	SoundSource* snd=m_cSoundEngine.load("res//sounds//ingame_level5_44_16_s.sx");
+	//m_cSoundEngine.init();
+	//m_cSoundEngine.createListener();
+	//SoundSource* snd=m_cSoundEngine.load("res//sounds//ingame_level5_44_16_s.sx");
 	//snd->play();
 }
 

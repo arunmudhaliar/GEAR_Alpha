@@ -24,6 +24,7 @@ public:
 	virtual void draw();
 	virtual void drawNode();
 
+	int getTVNodeChildCount();
 
 
 	void openNode()		{	m_bNodeOpen=true;	}
@@ -137,7 +138,7 @@ private:
 	geTreeNode* m_pRootNode;
 	geScrollBar m_cVerticalScrollBar;
 	float m_fVirtualYPos;
-	//geTreeNode* m_pSelectedNodePtr;
+	geTreeNode* m_pCurrentSelectedNodePtr;	//
 	MTreeViewObserver* m_pTVObserver;
 	geVector2f m_fOffsetCacheForMouseMove;
 	std::vector<geTreeNode*> m_cSelectedNodes;

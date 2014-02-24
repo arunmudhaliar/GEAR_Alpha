@@ -338,10 +338,10 @@ geTreeNode* geTreeNode::getParentBottomNextNode(geTreeNode* childnodeToCheck)
 					return (geTreeNode*)tvnode_bottomNode;
 				}
 
-				return ((geTreeNode*)getParent())->getParentBottomNextNode((geTreeNode*)tvnode_bottomNode);
-				//if(tvnode_bottomNode==NULL)
-				//	return childnodeToCheck;
-				//return (geTreeNode*)tvnode_bottomNode;//tvnode;//((geTreeNode*)tvnode->getParent())->getParentBottomNextNode((geTreeNode*)tvnode);
+				//return ((geTreeNode*)getParent())->getParentBottomNextNode((geTreeNode*)tvnode_bottomNode);
+				if(tvnode_bottomNode==NULL)
+					return ((geTreeNode*)getParent())->getParentBottomNextNode((geTreeNode*)this);
+				return (geTreeNode*)tvnode_bottomNode;//tvnode;//((geTreeNode*)tvnode->getParent())->getParentBottomNextNode((geTreeNode*)tvnode);
 			}
 			tvnode_bottomNode=tvnode;
 		}
@@ -350,7 +350,7 @@ geTreeNode* geTreeNode::getParentBottomNextNode(geTreeNode* childnodeToCheck)
 
 geTreeNode* geTreeNode::getBottomNode()
 {
-	if(isOpenNode())
+	if(isOpenNode() && m_vControls.size())
 	{
 		geTreeNode* tvnode_nextNode=NULL;
 		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
@@ -421,6 +421,21 @@ geTreeNode* geTreeNode::getBottomNode()
 	return NULL;
 }
 
+int geTreeNode::getTVNodeChildCount()
+{
+	int cnt=0;
+	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	{
+		geGUIBase* tvnode = *it;
+		if(tvnode->getGUIID()==GEGUI_TREEVIEW_NODE)
+		{
+			cnt++;
+		}
+	}
+
+	return cnt;
+}
+
 /////////////////////////////////////////////////////////////////
 geTreeView::geTreeView():
 	geGUIBase(GEGUI_TREEVIEW, "TreeView")
@@ -428,7 +443,7 @@ geTreeView::geTreeView():
 	m_pRootNode=NULL;
 	m_fVirtualYPos=0.0f;
 	m_pTVObserver=NULL;
-	//m_pSelectedNodePtr=NULL;
+	m_pCurrentSelectedNodePtr=NULL;
 }
 
 geTreeView::geTreeView(const char* name):
@@ -437,7 +452,7 @@ geTreeView::geTreeView(const char* name):
 	m_pRootNode=NULL;
 	m_fVirtualYPos=0.0f;
 	m_pTVObserver=NULL;
-	//m_pSelectedNodePtr=NULL;
+	m_pCurrentSelectedNodePtr=NULL;
 }
 
 geTreeView::~geTreeView()
@@ -460,7 +475,7 @@ void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* n
 
 	m_pRootNode = new geTreeNode(renderer, NULL, "root", NULL);
 	m_pRootNode->setParentTreeView(this);
-	//m_pSelectedNodePtr=NULL;
+	m_pCurrentSelectedNodePtr=NULL;
 }
 
 void geTreeView::draw()
@@ -572,6 +587,7 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 
 			if(!bAlreadySelected)
 			{
+				m_pCurrentSelectedNodePtr=selectedNode;
 				m_pTVObserver->onTVSelectionChange(selectedNode, this);
 			}
 		}
@@ -727,55 +743,110 @@ void geTreeView::refreshTreeView()
 
 bool geTreeView::onKeyDown(int charValue, int flag)
 {
+	//37-left
 	//38-up
+	//39-right
 	//40-down
 
-	//if(charValue==38)
-	//{
-	//	geTreeNode* topNode=NULL;
-	//	if(m_pSelectedNodePtr)
-	//	{
-	//		topNode=m_pSelectedNodePtr->getTopNode();
-	//		if(topNode==NULL)
-	//		{
-	//			return geGUIBase::onKeyDown(charValue, flag);
-	//		}
-	//		else
-	//		{
-	//			if(topNode!=m_pSelectedNodePtr)
-	//			{
-	//				m_pSelectedNodePtr->unselectNode();
-	//				m_pSelectedNodePtr=topNode;
-	//				m_pSelectedNodePtr->selectNode();
-	//				m_pTVObserver->onTVSelectionChange(topNode, this);
-	//				return geGUIBase::onKeyDown(charValue, flag);
-	//			}
-	//		}
-	//	}
-	//}
-	//else if(charValue==40)
-	//{
-	//	geTreeNode* bottomNode=NULL;
-	//	if(m_pSelectedNodePtr)
-	//	{
-	//		bottomNode=m_pSelectedNodePtr->getBottomNode();
-	//		if(bottomNode==NULL)
-	//		{
-	//			return geGUIBase::onKeyDown(charValue, flag);
-	//		}
-	//		else
-	//		{
-	//			if(bottomNode!=m_pSelectedNodePtr)
-	//			{
-	//				m_pSelectedNodePtr->unselectNode();
-	//				m_pSelectedNodePtr=bottomNode;
-	//				m_pSelectedNodePtr->selectNode();
-	//				m_pTVObserver->onTVSelectionChange(bottomNode, this);
-	//				return geGUIBase::onKeyDown(charValue, flag);
-	//			}
-	//		}
-	//	}
-	//}
+	geTreeNode* pSelectedNodePtr = m_pCurrentSelectedNodePtr;
+	if(charValue==38)
+	{
+		geTreeNode* topNode=NULL;
+		if(pSelectedNodePtr)
+		{
+			topNode=pSelectedNodePtr->getTopNode();
+			if(topNode==NULL)
+			{
+				return geGUIBase::onKeyDown(charValue, flag);
+			}
+			else
+			{
+				if(topNode!=pSelectedNodePtr)
+				{
+					pSelectedNodePtr->unselectNode();
+					pSelectedNodePtr=topNode;
+					pSelectedNodePtr->selectNode();
+					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
+					m_pTVObserver->onTVSelectionChange(topNode, this);
+					return geGUIBase::onKeyDown(charValue, flag);
+				}
+			}
+		}
+	}
+	else if(charValue==40)
+	{
+		geTreeNode* bottomNode=NULL;
+		if(pSelectedNodePtr)
+		{
+			bottomNode=pSelectedNodePtr->getBottomNode();
+			if(bottomNode==NULL)
+			{
+				return geGUIBase::onKeyDown(charValue, flag);
+			}
+			else
+			{
+				if(bottomNode!=pSelectedNodePtr)
+				{
+					pSelectedNodePtr->unselectNode();
+					pSelectedNodePtr=bottomNode;
+					pSelectedNodePtr->selectNode();
+					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
+					m_pTVObserver->onTVSelectionChange(bottomNode, this);
+					return geGUIBase::onKeyDown(charValue, flag);
+				}
+			}
+		}
+	}
+	else if(charValue==37)
+	{
+		if(pSelectedNodePtr)
+		{
+			if(pSelectedNodePtr->isOpenNode()/* && pSelectedNodePtr->getChildControls()->size()*/)
+				pSelectedNodePtr->closeNode();
+			else
+			{
+				geTreeNode* parentNode = (geTreeNode*)pSelectedNodePtr->getParent();
+				if(parentNode && parentNode!=getRoot())
+				{
+					pSelectedNodePtr->unselectNode();
+					pSelectedNodePtr=parentNode;
+					pSelectedNodePtr->selectNode();
+					pSelectedNodePtr->closeNode();
+					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
+					m_pTVObserver->onTVSelectionChange(parentNode, this);
+				}
+			}
+		}
+	}
+	else if(charValue==39)
+	{
+		if(pSelectedNodePtr)
+		{
+			if(!pSelectedNodePtr->isOpenNode())
+			{
+				pSelectedNodePtr->openNode();
+				if(pSelectedNodePtr->getTVNodeChildCount())
+				{
+					pSelectedNodePtr->unselectNode();
+					//find the first treenode child
+					for(std::vector<geGUIBase*>::iterator it = pSelectedNodePtr->getChildControls()->begin(); it != pSelectedNodePtr->getChildControls()->end(); ++it)
+					{
+						geGUIBase* tvnode = *it;
+						if(tvnode->getGUIID()==GEGUI_TREEVIEW_NODE)
+						{
+							pSelectedNodePtr=(geTreeNode*)tvnode;
+							break;
+						}
+					}
+					//
+					pSelectedNodePtr->selectNode();
+					//pSelectedNodePtr->closeNode();
+					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
+					m_pTVObserver->onTVSelectionChange(pSelectedNodePtr, this);
+				}
+			}
+		}
+	}
 
 	return geGUIBase::onKeyDown(charValue, flag);
 }

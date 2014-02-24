@@ -600,7 +600,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 		//glColor4f(0.25f, 0.4f, 0.62f, 1);
 		if(m_pSelectedObj->getRigidBody())
-			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
+			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.0f, 0.62f, 1.0f);
 		else
 			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
 

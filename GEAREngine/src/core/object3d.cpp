@@ -110,20 +110,17 @@ void object3d::update(float dt)
 {
 	if(m_pPhysics_RigidBodyPtr)
 	{
-		matrix4x4f worldmatrix;
 		btTransform physics_tm;
-		//physics_tm=m_pPhysics_RigidBodyPtr->getWorldTransform();
-		m_pPhysics_RigidBodyPtr->getMotionState()->getWorldTransform(physics_tm);
-		//physics_tm=m_pPhysics_RigidBodyPtr->getCenterOfMassTransform();
-
-		object3d* parent=getParent();
+		physics_tm=m_pPhysics_RigidBodyPtr->getWorldTransform();
+		object3d* parent=getParent();	//we need to get the root parent instead of immediate parent.
 
 		if(parent)
 		{
-			physics_tm.getOpenGLMatrix(worldmatrix.getOGLMatrix());
+			physics_tm.getOpenGLMatrix(m_cWorldMatrix.getOGLMatrix());
 			matrix4x4f* p = this;
-			*p = worldmatrix * (parent->getWorldMatrix()->getInverse());
-			//m_cWorldMatrix = *(parent->getWorldMatrix()) * *this;
+			*p = (parent->getWorldMatrix()->getInverse()) * m_cWorldMatrix;
+
+			transformationChangedf();
 		}
 		else
 		{
@@ -205,11 +202,13 @@ bool object3d::removeChild(object3d* child)
 void object3d::transformationChangedf()
 {
 	object3d* parent=getParent();
-	if(parent)
-		m_cWorldMatrix = *(parent->getWorldMatrix()) * *this;
-	else
-		m_cWorldMatrix = *this;
-
+	if(!m_pPhysics_RigidBodyPtr)
+	{
+		if(parent)
+			m_cWorldMatrix = *(parent->getWorldMatrix()) * *this;
+		else
+			m_cWorldMatrix = *this;
+	}
 	//calculateAABB();
 
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)

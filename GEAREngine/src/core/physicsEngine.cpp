@@ -37,7 +37,7 @@ void physicsEngine::initPhysics()
 
 	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher,m_broadphase,m_solver,m_collisionConfiguration);
 	m_dynamicsWorld->setDebugDrawer(&m_cDebugDraw);
-	m_cDebugDraw.setDebugMode(btIDebugDraw::DBG_DrawAabb);
+	m_cDebugDraw.setDebugMode(btIDebugDraw::DBG_DrawAabb | btIDebugDraw::DBG_DrawWireframe);
 	
 	m_dynamicsWorld->setGravity(btVector3(0, 0, -10));
 
@@ -83,13 +83,14 @@ void physicsEngine::update(float dt)
 //http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=2961
 void physicsEngine::addRigidBody(object3d* obj)
 {
-	vector3f max_v(obj->getOOBB().m_max);
-	vector3f min_v(obj->getOOBB().m_min);
-	vector3f sz((max_v - min_v)*0.5f);
-	vector3f center_oobb(min_v+sz);
+	vector3f wpos(obj->getWorldMatrix()->getPosition());
+	vector3f max_v(/**obj->getWorldMatrix() % */(obj->getOOBB().m_max));
+	vector3f min_v(/**obj->getWorldMatrix() % */(obj->getOOBB().m_min));
+	vector3f hsz((max_v - min_v)*0.5f);
+	vector3f center_oobb(min_v+hsz);
 
 	btCompoundShape* compoundcolShape = new btCompoundShape;
-	btBoxShape* colShape = new btBoxShape(btVector3(sz.x, sz.y, sz.z));
+	btBoxShape* colShape = new btBoxShape(btVector3(hsz.x, hsz.y, hsz.z));
 	btTransform localTransform;
 	localTransform.setIdentity();
 	localTransform.setOrigin(btVector3(center_oobb.x, center_oobb.y, center_oobb.z));
@@ -129,11 +130,11 @@ void physicsEngine::addBoxCollider(object3d* obj)
 {
 	vector3f max_v(obj->getOOBB().m_max);
 	vector3f min_v(obj->getOOBB().m_min);
-	vector3f sz((max_v - min_v)*0.5f);
-	vector3f center_oobb(min_v+sz);
+	vector3f hsz((max_v - min_v)*0.5f);
+	vector3f center_oobb(min_v+hsz);
 
 	btCompoundShape* compoundcolShape = new btCompoundShape;
-	btBoxShape* colShape = new btBoxShape(btVector3(sz.x, sz.y, sz.z));
+	btBoxShape* colShape = new btBoxShape(btVector3(hsz.x, hsz.y, hsz.z));
 	btTransform localTransform;
 	localTransform.setIdentity();
 	localTransform.setOrigin(btVector3(center_oobb.x, center_oobb.y, center_oobb.z));

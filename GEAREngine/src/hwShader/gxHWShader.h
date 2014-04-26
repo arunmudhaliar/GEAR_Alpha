@@ -5,6 +5,7 @@
 #include "../core/gxDebug.h"
 #include <vector>
 #include "../core/object3d.h"
+#include <iostream>	//included to support 'std::string' in android
 
 class object3d;
 struct stUniformLocation
@@ -31,7 +32,7 @@ struct stAttribLocation
 	char attrib_ref_name[64];	//uniform vars in shaders must not exceed 64 charachters
 };
 
-class __declspec( dllexport ) gxHWShader
+class DllExport gxHWShader
 {
 public:
 	gxHWShader();

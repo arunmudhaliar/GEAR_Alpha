@@ -11,7 +11,7 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 
 		if (util::GE_IS_EXTENSION(absolutePath, ".mat") || util::GE_IS_EXTENSION(absolutePath, ".MAT"))
 		{
-			int crc32=AssetImporter::calcCRC32((unsigned char*)absolutePath);
+			int crc32=AssetImporter::calcCRC32((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(absolutePath));
 
 			gxMaterial* matchingMaterial=NULL;
 			//check if the material name already exists in our list or not

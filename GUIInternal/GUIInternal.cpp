@@ -15,6 +15,7 @@
 #include "GEAREditor\win32\MDropSource.h"
 #include "GEAREditor\win32\eventHook.h"
 #include "GEAREditor\secondryViews\geColorDlg.h"
+#include <direct.h>
 
 #ifdef _DEBUG
 #include <crtdbg.h>
@@ -211,6 +212,55 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//geColorDlg* view = new geColorDlg(NULL);
 				//view->showView(hWnd);
 				//GE_DELETE(view);
+			}
+			break;
+		case ID_PROJECT_BUILDFORANDROID:
+			{
+				if(_mkdir(".//Temp")==0)
+				{
+					//created a new metaDirectory
+				}
+				if(_mkdir(".//Temp//helloworldproject")==0)
+				{
+					//created a new metaDirectory
+				}
+
+				std::string command_buffer;
+				command_buffer = "C://ANDROID_SDK//adt-bundle-windows-x86//sdk//tools//android.bat ";
+				command_buffer += "create project --target 2 ";
+				command_buffer += "--name helloworld ";
+				command_buffer += "--path .//Temp//helloworldproject ";
+				command_buffer += "--activity helloworldactivity ";
+				command_buffer += "--package com.helloworld.myandroid";
+
+				char responsebuffer[1024*10];
+				printf("\n================ANDROID BUILD ENGINE===============\n");
+				printf("\nCreating project\n");
+				monoWrapper::exec_cmd(command_buffer.c_str(), responsebuffer);
+				printf(responsebuffer);
+
+				printf("\Building project\n");
+				#if _DEBUG
+				//monoWrapper::exec_cmd("ant -DVersion.Code=100 -DVersion.Name=1.0.0 set-version-using-commandline-args -buildfile .//Temp//helloworldproject//build.xml", responsebuffer);
+				monoWrapper::exec_cmd("ant -DVersion.Code=100 -DVersion.Name=1.0.0 set-version-using-commandline-args debug -buildfile .//Temp//helloworldproject//build.xml", responsebuffer);
+				//monoWrapper::exec_cmd("ant debug -buildfile .//Temp//helloworldproject//build.xml", responsebuffer);
+				#else
+				monoWrapper::exec_cmd("ant -DVersion.Code=100 -DVersion.Name=1.0.0 set-version-using-commandline-args release -buildfile .//Temp//helloworldproject//build.xml", responsebuffer);
+				#endif
+				printf(responsebuffer);
+
+				printf("\Pushing to device\n");
+				#if _DEBUG
+				monoWrapper::exec_cmd("C://ANDROID_SDK//adt-bundle-windows-x86//sdk//platform-tools//adb.exe -d install -r .//Temp//helloworldproject//bin//helloworld-debug.apk", responsebuffer);
+				#else
+				monoWrapper::exec_cmd("C://ANDROID_SDK//adt-bundle-windows-x86//sdk//platform-tools//adb.exe -d install -r .//Temp//helloworldproject//bin//helloworld-release-unsigned.apk", responsebuffer);
+				#endif
+				printf(responsebuffer);
+
+				printf("\Executing on device\n");
+				monoWrapper::exec_cmd("C://ANDROID_SDK//adt-bundle-windows-x86//sdk//platform-tools//adb.exe shell am start -n com.helloworld.myandroid/com.helloworld.myandroid.helloworldactivity", responsebuffer);
+				printf(responsebuffer);
+				printf("\n======================================================\n");
 			}
 			break;
 		case IDM_EXIT:
@@ -499,6 +549,14 @@ char* browseFolder(HWND hWndParent)
     }
 
 	OleUninitialize();
+
+	//win32 to unix style path
+	for(int x=0;x<strlen(return_buffer);x++)
+	{
+		if(return_buffer[x]=='\\')
+			return_buffer[x]='/';
+	}
+	//
 
 	return return_buffer;
 }

@@ -123,14 +123,18 @@ void gePropertyTransform::populatePropertyOfTransform(object3d* obj)
 	float Pitch;
 	float Roll;
 
-	//decompose(
-	getRotation(Yaw, Pitch, Roll, obj->getMatrix());
+	Quaternion quat;
+	quat=Quaternion::fromRotationMatrix(obj->getMatrix());
+	quat.getEuler(Yaw, Pitch, Roll);
+
+	Quaternion aa= quat.getQuaternion(Yaw, Pitch, Roll);
+	//getRotation(Yaw, Pitch, Roll, obj->getMatrix());
 
 	sprintf(buffer, "%6.2f", Pitch);
 	m_pszTextBoxRotation[0]->setName(buffer);
-	sprintf(buffer, "%6.2f", Roll);
-	m_pszTextBoxRotation[1]->setName(buffer);
 	sprintf(buffer, "%6.2f", Yaw);
+	m_pszTextBoxRotation[1]->setName(buffer);
+	sprintf(buffer, "%6.2f", Roll);
 	m_pszTextBoxRotation[2]->setName(buffer);
 }
 

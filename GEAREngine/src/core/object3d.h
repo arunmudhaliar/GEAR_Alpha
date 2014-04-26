@@ -10,7 +10,9 @@
 #include "gxAnimation.h"
 #include "../util/gxFile.h"
 #include "../renderer/gxRenderer.h"
+#if USE_BULLET
 #include "../physics/btBulletDynamicsCommon.h"
+#endif
 
 class DllExport MRootObserver
 {
@@ -125,8 +127,10 @@ public:
 	void setRootObserverOfTree(MRootObserver* rootObserver)	{	m_pRootObserver=rootObserver;	}
 	MRootObserver* getRootObserverOfThisTree()				{	return m_pRootObserver;			}
 
+#if USE_BULLET
 	void setRigidBody(btRigidBody* rb)			{	m_pPhysics_RigidBodyPtr = rb;	}
 	btRigidBody* getRigidBody()					{	return m_pPhysics_RigidBodyPtr;	}
+#endif
 
 protected:
 	void clearAnimTrackOnAllNodes();
@@ -145,7 +149,9 @@ protected:
 	MObject3dObserver* m_pObject3dObserver;	//must not delete this pointer
 	MRootObserver* m_pRootObserver;			//must not delete this pointer
 	MEngineObserver* m_pEngineObserver;		//must not delete this pointer
+#if USE_BULLET
 	btRigidBody* m_pPhysics_RigidBodyPtr;	//must not delete this pointer
+#endif
 };
 
 extern "C" {

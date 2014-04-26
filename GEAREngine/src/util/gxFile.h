@@ -3,9 +3,16 @@
 
 #include <stdio.h>
 
-//#include <fstream>
+#ifdef ANDROID
+	typedef long long __int64;
+#endif
 
+//#include <fstream>
+#ifdef _WIN32
 class __declspec( dllexport ) gxFile
+#else
+class gxFile
+#endif
 {
 public:
 	enum EFILEMODE

@@ -34,7 +34,7 @@ FbxMatrix fbxImporter::getFBXGeometryTransform(FbxNode &fbxNode)
 	return fbxGeometry;
 }
 
-object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList)
+object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList, const char* projecthomedirectory)
 {
 	object3d* return_object3d=NULL;
 	int crc=0;
@@ -60,7 +60,7 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 		}
 		//fbxImporter->SetFileFormat(fbxFileFormat);
       
-		crc = Crc32::Calc((unsigned char*)filePath);
+		crc = Crc32::Calc((unsigned char*)&filePath[strlen(projecthomedirectory)+strlen("/Assets")]);
 #if defined(_WIN32)
 		memset(m_cszNormalizedFilePath, 0, sizeof(m_cszNormalizedFilePath));
 		// normalize the file path because FBX can't handle relative paths.

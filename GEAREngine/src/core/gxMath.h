@@ -2,6 +2,7 @@
 #define GXMATH_H
 
 #include <stdlib.h>
+#include <math.h>
 
 
 #ifndef M_PI      // may already been defined

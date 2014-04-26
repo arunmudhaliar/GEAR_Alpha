@@ -38,7 +38,7 @@ public:
 
 	FbxMatrix getFBXGeometryTransform(FbxNode &fbxNode);
 
-	object3d* loadMyFBX(const char *filePath, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList);
+	object3d* loadMyFBX(const char *filePath, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList, const char* projecthomedirectory);
 	object3d* importFBXScene(const char* filePath, FbxManager &fbxManager, FbxScene &fbxScene, std::vector<gxMaterial*>* materialList, std::vector<gxAnimationSet*>* animationSetList, int fileCRC);
 	void importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList, stBoneList* boneList);
 	gxMesh* importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d, stBoneInfluence* boneInfluenceList, stBoneList* boneList);

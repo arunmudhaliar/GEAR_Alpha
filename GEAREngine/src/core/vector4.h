@@ -57,7 +57,7 @@ public:
 		return (x*x+y*y+z*z+w*w);
 	}
 
-	T length()					{	return pxMath::SQRT(lengthSquared());				}
+	T length()					{	return gxMath::SQRT(lengthSquared());				}
 	T dot(const vector4<T>& v)	{	return x*v.x + y*v.y + z*v.z + w*v.w;	}
 	
 	//vector4<T> cross(const vector4<T>& v)

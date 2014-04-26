@@ -32,9 +32,9 @@ public:
 	const vector4f& getDiffuseClr()		{	return m_cDiffuse;	}
 	const vector4f& getSpecularClr()	{	return m_cSpecular;	}
 
-	void setAmbientClr(vector4f& clr)		{	m_cAmbient=clr;		}
-	void setDiffuseClr(vector4f& clr)		{	m_cDiffuse=clr;		}
-	void setSpecularClr(vector4f& clr)		{	m_cSpecular=clr;	}
+	void setAmbientClr(vector4f clr)		{	m_cAmbient=clr;		}
+	void setDiffuseClr(vector4f clr)		{	m_cDiffuse=clr;		}
+	void setSpecularClr(vector4f clr)		{	m_cSpecular=clr;	}
 
 	float getShininess()				{	return m_fShininess;	}
 

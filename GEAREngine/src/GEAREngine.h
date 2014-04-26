@@ -1,14 +1,14 @@
 #ifndef GEARENGINE_H
 #define GEARENGINE_H
 
-#include "core\gxWorld.h"
-#include "renderer\gxRenderer.h"
-#include "hwShader\HWShaderManager.h"
+#include "core/gxWorld.h"
+#include "renderer/gxRenderer.h"
+#include "hwShader/HWShaderManager.h"
 
 #define CREATE_MATERIAL_FOR_MESH_IF_NOT_FOUND_IN_METAFILE	0
 
 extern "C" {
-	DllExport void engine_test_function_for_mono();
+	DllExport int engine_test_function_for_mono();
 	DllExport void engine_init(int nWorldToCreate);
 	DllExport gxWorld* engine_getWorld(int index);
 
@@ -17,7 +17,7 @@ extern "C" {
 	DllExport void engine_render(gxWorld* world, object3d* light);
 	DllExport void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light);
 	DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename);
-	DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename);
+	DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory);
 	DllExport object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
 
 	DllExport void engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag);

@@ -1,3 +1,4 @@
+#ifdef USE_BULLET
 #ifndef PHYSICSENGINE_H
 #define PHYSICSENGINE_H
 
@@ -35,3 +36,5 @@ private:
 	GLDebugDrawer m_cDebugDraw;
 };
 #endif
+
+#endif	//#ifdef USE_BULLET

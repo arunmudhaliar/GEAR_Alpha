@@ -80,14 +80,11 @@ stTexturePacket* CTextureManager::LoadTexture(const char* aFileName)
 
     //texture loading utility
     glEnable(GL_TEXTURE_2D);
-#if defined(WIN32)
 	//texID=read_png_file(aFileName, alpha_tex, aNewTexturePacket->m_cWidth, aNewTexturePacket->m_cHeight, aNewTexturePacket->m_cBpp);
 	char metaDataFile[512];
 	sprintf(metaDataFile, "%s/%s", m_szMetaDataFolder, aFileName);
 	texID=read_texture2D_from_metafile(metaDataFile, alpha_tex, aNewTexturePacket->m_cWidth, aNewTexturePacket->m_cHeight, aNewTexturePacket->m_cBpp);
-#else
-    texID=objC_util::loadTexture2(aFileName, alpha_tex, aNewTexturePacket->m_cWidth, aNewTexturePacket->m_cHeight, aNewTexturePacket->m_cBpp);
-#endif
+
     aNewTexturePacket->bAlphaTex=alpha_tex;
     glDisable(GL_TEXTURE_2D);
 

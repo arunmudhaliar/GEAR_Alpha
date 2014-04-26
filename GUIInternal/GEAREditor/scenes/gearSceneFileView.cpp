@@ -222,7 +222,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		else if(util::GE_IS_EXTENSION(absolutePath, ".mat") || util::GE_IS_EXTENSION(absolutePath, ".MAT"))
 		{
 			gxFile file_meta;
-			int crc32=AssetImporter::calcCRC32((unsigned char*)absolutePath);
+			int crc32=AssetImporter::calcCRC32((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(absolutePath));
 
 			gxMaterial* matchingMaterial=NULL;
 			//check if the material name already exists in our list or not
@@ -396,7 +396,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
 			sprintf(prefabFileName, "%s.prefab", g_cszPrefabName);
 			char absolutepath[512];
 			sprintf(absolutepath, "%s/%s", m_szDirectoryPath, prefabFileName);
-			int crc32 = AssetImporter::calcCRC32((unsigned char*)absolutepath);
+			int crc32 = AssetImporter::calcCRC32((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(absolutepath));
 			gxFile prefabFile;
 			if(prefabFile.OpenFile(absolutepath, gxFile::FILE_w))
 			{

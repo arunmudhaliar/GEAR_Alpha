@@ -10,7 +10,7 @@ namespace MonoGEAR
     public class MonoGEAREntryPointClass
     {
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern void engine_test_function_for_mono();
+        static extern int engine_test_function_for_mono();
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void engine_init(int nWorldToCreate);
@@ -38,7 +38,7 @@ namespace MonoGEAR
 
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr engine_loadFBX(IntPtr world, string filename);
+        static extern IntPtr engine_loadFBX(IntPtr world, string filename, string projecthomedirectory);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void engine_mouseLButtonDown(IntPtr world, int x, int y, int flag);
@@ -78,13 +78,16 @@ namespace MonoGEAR
         public static void Main(string[] args)
         {
             //for testing engine_init(1);
+            string str = Path.GetFullPath("C:/MYPROJECTS/GEAR_PROJECTS\\animation/Assets/csharp/test.txt");
+            str=str.Replace("\\", "/");
+            str = str;
         }
 
-        public static void monogear_engine_test_function_for_mono()
+        public static int monogear_engine_test_function_for_mono()
         {
             Console.WriteLine("monogear_engine_test_function_for_mono called from C#");
 
-            engine_test_function_for_mono();
+            return engine_test_function_for_mono();
         }
 
 

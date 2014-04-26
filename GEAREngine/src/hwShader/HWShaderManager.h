@@ -6,7 +6,7 @@
 #include "gxHWShader.h"
 #include "../core/gxSurfaceShader.h"
 
-class __declspec( dllexport ) HWShaderManager
+class DllExport HWShaderManager
 {
 public:
 

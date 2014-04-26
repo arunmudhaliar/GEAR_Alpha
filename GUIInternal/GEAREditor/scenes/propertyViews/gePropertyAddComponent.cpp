@@ -34,16 +34,20 @@ void gePropertyAddComponent::onCommand(int cmd)
 	}
 	else if(cmd==0x00005201)
 	{
+#if USE_BULLET
 		if(m_pObject3dPtr)
 		{
 			monoWrapper::mono_engine_getWorld(0)->getPhysicsEngine()->addRigidBody(m_pObject3dPtr);
 		}
+#endif
 	}
 	else if(cmd==0x00005202)
 	{
+#if USE_BULLET
 		if(m_pObject3dPtr)
 		{
 			monoWrapper::mono_engine_getWorld(0)->getPhysicsEngine()->addBoxCollider(m_pObject3dPtr);
 		}
+#endif
 	}
 }

@@ -68,6 +68,7 @@ public:
 
 	void draw(gxHWShader* shader, bool bDrawBox=false)
 	{
+#ifdef _WIN32
 		float lineAry[]={
 			m_min.x, m_min.y, m_min.z,		//0
 			m_min.x, m_min.y, m_max.z,		//1
@@ -177,6 +178,8 @@ public:
 		}
 		glDisableClientState(GL_VERTEX_ARRAY);
 #endif
+
+#endif	//#ifdef _WIN32
 	}
 
 	vector3<T> m_min;

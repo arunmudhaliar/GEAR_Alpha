@@ -68,7 +68,9 @@ object3d::object3d(int objID):
 	m_pAnimationTrack=NULL;
 	m_iFileCRC=0;
 	setRootObserverOfTree(NULL);
+#if USE_BULLET
 	m_pPhysics_RigidBodyPtr=NULL;
+#endif
 	m_pEngineObserver = NULL;
 }
 
@@ -108,6 +110,7 @@ void object3d::setObject3dObserverRecursive(MObject3dObserver* observer)
 
 void object3d::update(float dt)
 {
+#if USE_BULLET
 	if(m_pPhysics_RigidBodyPtr)
 	{
 		btTransform physics_tm;
@@ -128,6 +131,7 @@ void object3d::update(float dt)
 			transformationChangedf();
 		}
 	}
+#endif
 
 	if(m_pAnimationController)
 	{
@@ -202,7 +206,9 @@ bool object3d::removeChild(object3d* child)
 void object3d::transformationChangedf()
 {
 	object3d* parent=getParent();
+#if USE_BULLET
 	if(!m_pPhysics_RigidBodyPtr)
+#endif
 	{
 		if(parent)
 			m_cWorldMatrix = *(parent->getWorldMatrix()) * *this;
@@ -210,6 +216,7 @@ void object3d::transformationChangedf()
 			m_cWorldMatrix = *this;
 	}
 	//calculateAABB();
+
 
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{

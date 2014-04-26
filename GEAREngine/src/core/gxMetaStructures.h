@@ -1,6 +1,10 @@
 #ifndef GXMETASTRUCTURES_H
 #define GXMETASTRUCTURES_H
 
+#ifdef ANDROID
+	typedef long long __int64;
+#endif
+
 enum EMETA_FILETYPE
 {
 	eMetaUnknown		=	9000,

@@ -39,6 +39,7 @@ public:
 	bool makeCurrent();
 
 	HGLRC getRenderingContext()	{	return m_hRC;	}
+	HWND getWindowHandle()		{	return m_hWnd;	}
 
 private:
 

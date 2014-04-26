@@ -9,3 +9,6 @@ http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-16-shadow-mapping
 
 GI
 http://www.kevinbeason.com/smallpt/
+
+//harware skinning
+http://www.antongerdelan.net/opengl/

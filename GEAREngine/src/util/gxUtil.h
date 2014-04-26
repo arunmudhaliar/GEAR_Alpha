@@ -4,12 +4,12 @@
 #include <string.h>
 #include "../core/vector3.h"
 
-class __declspec( dllexport ) gxUtil
+class DllExport gxUtil
 {
 public:
 	static const char* getFolderPathFromFileName(const char* filename)
 	{
-		strcpy_s(g_directoryPath, sizeof(g_directoryPath), filename);
+		GX_STRCPY(g_directoryPath, filename);
 		for(int x=strlen(g_directoryPath)-1;x>=0;x--)
 		{
 			if(g_directoryPath[x]=='\\' || g_directoryPath[x]=='/')

@@ -3,10 +3,14 @@
 #include <sys/types.h>
 #include <assert.h>
 #include <dirent.h>
+#ifdef _WIN32
 #include <direct.h>
+#endif
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifdef _WIN32
 #include <CommCtrl.h>
 #include "../../GEAREditor/util/geDefines.h"
 #include "../../GEAREditor/EditorApp.h"
@@ -15,6 +19,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <Windows.h>
+#endif
 
 MonoObject*		monoWrapper::g_pMonoGEAREntryPointClass_Instance_Variable = NULL;
 MonoDomain*		monoWrapper::g_pMonoDomain = NULL;
@@ -58,7 +63,12 @@ void monoWrapper::loadMonoModules()
 	return;
 #endif
 
+#ifdef _WIN32
 	mono_set_dirs("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc"); 
+#else
+	mono_set_dirs("/storage/emulated/0/gear/", "/storage/emulated/0/gear/");
+#endif
+
 	mono_config_parse(NULL);
 	g_pMonoDomain = mono_jit_init("system");
 }
@@ -69,7 +79,7 @@ void monoWrapper::reInitMono()
 	return;
 #endif
 	//destroyMono();
-
+#ifdef _WIN32
 	std::vector<std::string> csharpfileslist;
 	traverseForCSharpFiles(EditorApp::getProjectHomeDirectory(), &csharpfileslist);
 	compileCSharpScripts(&csharpfileslist);
@@ -79,6 +89,9 @@ void monoWrapper::reInitMono()
 	const char* executableFile="./Debug/out.exe";
 #else
 	const char* executableFile="./Release/out.exe";
+#endif
+#else
+	const char* executableFile="/storage/emulated/0/gear/out.exe";
 #endif
 
 	g_pMonoAssembly = mono_domain_assembly_open(g_pMonoDomain, executableFile);
@@ -103,6 +116,7 @@ void monoWrapper::reInitMono()
 	mono_runtime_object_init(g_pMonoGEAREntryPointClass_Instance_Variable);
 }
 
+#ifdef _WIN32
 void monoWrapper::initDebugConsole()
 {
 	AllocConsole();
@@ -124,6 +138,7 @@ void monoWrapper::destroyDebugConsole()
 {
 	FreeConsole();
 }
+#endif
 
 void monoWrapper::bindEngineMethods()
 {
@@ -144,7 +159,7 @@ void monoWrapper::bindEngineMethods()
 	g_pMethod_engine_render					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_render", 2);
 	g_pMethod_engine_renderSingleObject		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_renderSingleObject", 3);
 	g_pMethod_engine_loadAndAppendFBX		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadAndAppendFBX", 2);
-	g_pMethod_engine_loadFBX				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadFBX", 2);
+	g_pMethod_engine_loadFBX				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadFBX", 3);
 	g_pMethod_engine_appendObject3dToRoot	=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_appendObject3dToRoot", 2);
 	g_pMethod_engine_mouseLButtonDown		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseLButtonDown", 4);
 	g_pMethod_engine_mouseLButtonUp			=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseLButtonUp", 4);
@@ -218,11 +233,16 @@ bool monoWrapper::mono_game_onkeyup(int charValue, int flag)
 
 //MONO ENGINE WRAPPERS
 
-void monoWrapper::mono_engine_test_function_for_mono()
+int monoWrapper::mono_engine_test_function_for_mono()
 {
 #ifdef USEMONOENGINE
-	mono_runtime_invoke(g_monogear_engine_test_function_for_mono, NULL, NULL, NULL);
+	MonoObject* returnValue=mono_runtime_invoke(g_monogear_engine_test_function_for_mono, NULL, NULL, NULL);
+	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
+
+	//don't know this casting is right or wrong		- arun-check
+	return (int)underlyingType;
 #endif
+	return 0;
 }
 
 void monoWrapper::mono_engine_init(int nWorldToCreate)
@@ -308,15 +328,15 @@ object3d* monoWrapper::mono_engine_loadAndAppendFBX(gxWorld* world, const char* 
 #endif
 }
 
-object3d* monoWrapper::mono_engine_loadFBX(gxWorld* world, const char* filename)
+object3d* monoWrapper::mono_engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory)
 {
 #ifdef USEMONOENGINE
-	void* args[2]={&world, mono_string_new(g_pMonoDomain, filename)};
+	void* args[3]={&world, mono_string_new(g_pMonoDomain, filename), mono_string_new(g_pMonoDomain, projecthomedirectory)};
 	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_loadFBX, NULL, args, NULL);
 	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
 	return (object3d*)underlyingType;
 #else
-	return engine_loadFBX(world, filename);
+	return engine_loadFBX(world, filename, projecthomedirectory);
 #endif
 }
 
@@ -458,6 +478,7 @@ void monoWrapper::mono_object3d_onObject3dChildRemove(object3d* parent, object3d
 #endif
 }
 
+#ifdef _WIN32
 int monoWrapper::traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist)
 {
     DIR *dir;
@@ -571,7 +592,7 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 
 char monoWrapper::exec_cmd(char const *cmd, char *buf)
 {
-	char output[1024], start[1024];
+	char output[1024*10], start[1024*10];
 	char *s;
 	FILE *fpo;
 	int size;
@@ -597,3 +618,4 @@ char monoWrapper::exec_cmd(char const *cmd, char *buf)
 	ret = _pclose(fpo);
 	return (ret);
 }/* exec_cmd */
+#endif

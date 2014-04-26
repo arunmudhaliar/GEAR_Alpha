@@ -17,12 +17,12 @@ public:
 	static void destroyMono();
 	
 	static void bindEngineMethods();
-
+#ifdef _WIN32
 	static void initDebugConsole();
 	static void destroyDebugConsole();
-
+#endif
 	//MONO C# test function
-	static void mono_engine_test_function_for_mono();
+	static int mono_engine_test_function_for_mono();
 	//
 
 	//MONO GAME WRAPPERS
@@ -41,7 +41,7 @@ public:
 	static void mono_engine_render(gxWorld* world, object3d* light);
 	static void mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light);
 	static object3d* mono_engine_loadAndAppendFBX(gxWorld* world, const char* filename);
-	static object3d* mono_engine_loadFBX(gxWorld* world, const char* filename);
+	static object3d* mono_engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory);
 	static object3d* mono_engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
 
 	static void mono_engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag);
@@ -58,9 +58,11 @@ public:
 	static void mono_object3d_onObject3dChildAppend(object3d* parent, object3d* child);
 	static void mono_object3d_onObject3dChildRemove(object3d* parent, object3d* child);
 
-	static int monoWrapper::traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist);
+#ifdef _WIN32
+	static int traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist);
 	static bool compileCSharpScripts(std::vector<std::string>* csharpfilelist);
-	static char monoWrapper::exec_cmd(char const *cmd, char *buf);
+	static char exec_cmd(char const *cmd, char *buf);
+#endif
 
 private:
 	static MonoObject*		g_pMonoGEAREntryPointClass_Instance_Variable;

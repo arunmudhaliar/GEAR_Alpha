@@ -1,9 +1,12 @@
 #include "gxWorld.h"
-#include "../fbxImporter/fbxImporter.h"
+//#ifdef _WIN32
+//#include "../fbxImporter/fbxImporter.h"
+//#endif
 #include "../util/gxUtil.h"
 #include "../core/gxMetaStructures.h"
 #include "../hwShader/HWShaderManager.h"
 #include "../GEAREngine.h"
+#include "gxSkinnedMesh.h"
 //#include "../GEAREngine.cpp"
 
 gxWorld::gxWorld():
@@ -27,7 +30,9 @@ gxWorld::gxWorld():
 	m_cTextureManager.LoadDefaultTextures();
 	m_cRenderer.setGEARTexture1x1(m_cTextureManager.getGEARTexture1x1());
 
+#ifdef USE_BULLET
 	m_cPhysicsEngine.initPhysics();
+#endif
 }
 
 gxWorld::~gxWorld()
@@ -37,7 +42,9 @@ gxWorld::~gxWorld()
 
 void gxWorld::resetWorld()
 {
+#ifdef USE_BULLET
 	m_cPhysicsEngine.clientResetScene();
+#endif
 
 	for(std::vector<gxMaterial*>::iterator it = m_cMaterialList.begin(); it != m_cMaterialList.end(); ++it)
 	{
@@ -65,7 +72,9 @@ void gxWorld::update(float dt)
 		m_pActiveCameraPtr->updateCamera();
 	}
 
+#ifdef USE_BULLET
 	m_cPhysicsEngine.update(dt);
+#endif
 
 	object3d::update(dt);
 }

@@ -1,6 +1,12 @@
 #include "GEAREngine.h"
+#ifdef _WIN32
 #include "fbxImporter\fbxImporter.h"
-#include "core\gxMetaStructures.h"
+#endif
+#include "core/object3d.h"
+#include "core/gxMesh.h"
+#include "core/gxSkinnedMesh.h"
+
+#include "core/gxMetaStructures.h"
 
 extern "C" {
 static GEAREngine g_cGEAREngine;
@@ -18,8 +24,9 @@ extern DllExport void engine_setObject3dObserver(MObject3dObserver* observer)
 	g_Object3dObserver=observer;
 }
 
-extern DllExport void engine_test_function_for_mono()
+extern DllExport int engine_test_function_for_mono()
 {
+	return 100;
 }
 
 extern DllExport void engine_init(int nWorldToCreate)
@@ -316,11 +323,15 @@ extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* f
 }
 
 
-extern DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename)
+extern DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory)
 {
+#ifdef _WIN32
 	fbxImporter importer;
-	object3d* root_object_node=importer.loadMyFBX(filename, world->getMaterialList(), world->getAnimationSetList());
+	object3d* root_object_node=importer.loadMyFBX(filename, world->getMaterialList(), world->getAnimationSetList(), projecthomedirectory);
 	return root_object_node;
+#else
+	return NULL;
+#endif
 }
 
 extern DllExport object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj)
@@ -361,6 +372,7 @@ extern DllExport void engine_mouseWheel(gxWorld* world, int zDelta, int x, int y
 
 extern DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 {
+#ifdef _WIN32
 	Camera* camera=world->getActiveCamera();
 
 	int xx=x;
@@ -400,6 +412,7 @@ extern DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 	//DEBUG_PRINT("%f, %f\n", delta.x, delta.y);
 	g_cMousePrevPos.x=xx;
 	g_cMousePrevPos.y=yy;
+#endif
 }
 
 extern DllExport void engine_setMetaFolder(gxWorld* world, const char* metaFolder)

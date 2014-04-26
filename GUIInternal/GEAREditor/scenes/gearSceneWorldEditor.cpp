@@ -219,6 +219,7 @@ void gearSceneWorldEditor::draw()
 
 	drawStats();
 
+#if USE_BULLET
 	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
@@ -230,6 +231,7 @@ void gearSceneWorldEditor::draw()
 
 	monoWrapper::mono_engine_getWorld(0)->getPhysicsEngine()->render();
 	glPopMatrix();
+#endif
 }
 
 void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float cy)
@@ -436,6 +438,9 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 		monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
 	}
+
+	glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
 	//glDepthFunc(GL_LEQUAL);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
@@ -459,6 +464,8 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 		monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
 	}
 	glDisable(GL_BLEND);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
 #endif
 
 	drawGrid();
@@ -599,9 +606,11 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 		//glColor4f(0.25f, 0.4f, 0.62f, 1);
+#if USE_BULLET
 		if(m_pSelectedObj->getRigidBody())
 			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.0f, 0.62f, 1.0f);
 		else
+#endif
 			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
 
 		m_pSelectedObj->getOOBB().draw(shader);

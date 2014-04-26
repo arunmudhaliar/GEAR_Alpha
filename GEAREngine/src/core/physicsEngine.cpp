@@ -1,3 +1,4 @@
+#ifdef USE_BULLET
 #include "physicsEngine.h"
 #include "gxMesh.h"
 
@@ -164,3 +165,5 @@ void physicsEngine::addBoxCollider(object3d* obj)
 	obj->setRigidBody(body);
 	m_dynamicsWorld->addRigidBody(body);
 }
+
+#endif

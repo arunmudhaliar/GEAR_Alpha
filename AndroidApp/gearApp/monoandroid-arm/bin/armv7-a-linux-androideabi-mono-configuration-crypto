@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /Users/amudaliar/MONOTEST/monoandroid-arm/bin/mono $MONO_OPTIONS /Users/amudaliar/MONOTEST/monoandroid-arm/lib/mono/mono-configuration-crypto/4.0/mono-configuration-crypto.exe "$@"

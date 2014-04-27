@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /Users/amudaliar/MONOTEST/monoandroid-arm/bin/pedump $MONO_OPTIONS --verify metadata,code "$@"

@@ -161,12 +161,12 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 	object3d* obj=(object3d*)((assetUserData*)tvnode->getUserData())->getAssetObjectPtr();
 	if(obj==NULL)
 	{
-		const char* absolutePath=((assetUserData*)tvnode->getUserData())->getAssetAbsolutePath();
+		const char* relativePath=((assetUserData*)tvnode->getUserData())->getAssetAbsolutePath();
 		char crcFile[1024];
-		if(absolutePath)
+		if(relativePath)
 		{
-			char metaInfoFileName[256];
-			sprintf(metaInfoFileName, "%s.meta",absolutePath);
+			char metaInfoFileName[1024];
+			sprintf(metaInfoFileName, "%s/Assets%s.meta", EditorApp::getProjectHomeDirectory(), relativePath);
 
 			gxFile metaInfoFile;
 			if(metaInfoFile.OpenFile(metaInfoFileName))
@@ -179,8 +179,8 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			}
 		}
 
-		if(util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX") ||
-			util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
+		if(util::GE_IS_EXTENSION(relativePath, ".fbx") || util::GE_IS_EXTENSION(relativePath, ".FBX") ||
+			util::GE_IS_EXTENSION(relativePath, ".prefab") || util::GE_IS_EXTENSION(relativePath, ".PREFAB"))
 		{
 			gxFile file_meta;
 			if(file_meta.OpenFile(crcFile))
@@ -219,10 +219,10 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 
 			((assetUserData*)tvnode->getUserData())->setAssetObjectPtr(obj, assetUserData::ASSET_MESH_OBJECT);
 		}
-		else if(util::GE_IS_EXTENSION(absolutePath, ".mat") || util::GE_IS_EXTENSION(absolutePath, ".MAT"))
+		else if(util::GE_IS_EXTENSION(relativePath, ".mat") || util::GE_IS_EXTENSION(relativePath, ".MAT"))
 		{
 			gxFile file_meta;
-			int crc32=AssetImporter::calcCRC32((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(absolutePath));
+			int crc32=AssetImporter::calcCRC32((unsigned char*)relativePath);
 
 			gxMaterial* matchingMaterial=NULL;
 			//check if the material name already exists in our list or not
@@ -546,7 +546,7 @@ static int find_files(rendererGL10* renderer, const char *dirname, const char* s
 							sprite=&spriteArray[1];
 
 						geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, sprite);
-						assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, buffer, NULL);
+						assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer), NULL);
 						newtvNode->setUserData(userdata);
 						newtvNode->closeNode();
 					}

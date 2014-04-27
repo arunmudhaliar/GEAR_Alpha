@@ -1,6 +1,6 @@
 #include "fbxImporter.h"
 #include "../util/gxUtil.h"
-#include "../util/Crc32.h"
+#include "../util/gxCrc32.h"
 
 
 #include <assert.h>
@@ -60,7 +60,7 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 		}
 		//fbxImporter->SetFileFormat(fbxFileFormat);
       
-		crc = Crc32::Calc((unsigned char*)&filePath[strlen(projecthomedirectory)+strlen("/Assets")]);
+		crc = gxCrc32::Calc((unsigned char*)&filePath[strlen(projecthomedirectory)+strlen("/Assets")]);
 #if defined(_WIN32)
 		memset(m_cszNormalizedFilePath, 0, sizeof(m_cszNormalizedFilePath));
 		// normalize the file path because FBX can't handle relative paths.

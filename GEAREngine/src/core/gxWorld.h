@@ -89,6 +89,7 @@ public:
 	void callback_object3dDestroyedFromTree(object3d* child);
 
 	object3d* loadAndAppendFBX(const char* filename);
+	object3d* loadAndAppendFBXForDevice(const char* filename);
 	void populateBonesToMeshNode(object3d* obj, object3d* rootNode);
 	void loadAnmationFromObject3d(object3d* obj3d, int crc);
 	void loadMaterialFromObject3d(object3d* obj3d);

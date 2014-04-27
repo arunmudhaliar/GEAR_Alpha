@@ -4,7 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef _WIN32
 class __declspec( dllexport ) gxCrc32
+#else
+class gxCrc32
+#endif
 	{
 	public:
 		static const unsigned int CrcSeed = 0xFFFFFFFF;

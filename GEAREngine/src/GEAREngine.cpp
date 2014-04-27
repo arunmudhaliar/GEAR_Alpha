@@ -247,81 +247,16 @@ void populateBonesToMeshNode(object3d* obj, object3d* rootNode)
 	}
 }
 
-extern DllExport object3d* engine_loadAndAppendFBX(gxWorld* world, const char* filename)
+extern DllExport object3d* engine_loadAndAppendMesh(gxWorld* world, const char* filename)
 {
-	/*
-	object3d* root_object_node=NULL;
-	if (gxUtil::GX_IS_EXTENSION(filename, ".fbx") || gxUtil::GX_IS_EXTENSION(filename, ".FBX") ||
-		gxUtil::GX_IS_EXTENSION(filename, ".prefab") || gxUtil::GX_IS_EXTENSION(filename, ".PREFAB"))
-	{
-		object3d* obj = NULL;
-		char metaInfoFileName[256];
-		sprintf(metaInfoFileName, "%s.meta",filename);
-
-		gxFile metaInfoFile;
-		if(metaInfoFile.OpenFile(metaInfoFileName))
-		{
-			int crc=0;
-			metaInfoFile.Read(crc);
-			metaInfoFile.CloseFile();
-
-			char crcFile[1024];
-			sprintf(crcFile, "%s/%x", world->getMetaDataFolder(), crc);
-
-			gxFile file_meta;
-			if(file_meta.OpenFile(crcFile))
-			{
-				stMetaHeader metaHeader;
-				file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
-
-				int objID=0;
-				file_meta.Read(objID);
-
-				object3d* tempObj=NULL;
-
-				if(objID==OBJECT3D_MESH)
-				{
-					tempObj = new gxMesh();
-				}
-				else if(objID==OBJECT3D_SKINNED_MESH)
-				{
-					tempObj = new gxSkinnedMesh();
-				}
-				else
-				{
-					tempObj = new object3d(objID);
-				}
-
-				if(tempObj)
-				{
-					tempObj->setObject3dObserver(g_Object3dObserver);
-					tempObj->read(file_meta);
-					world->appendChild(tempObj);
-					read3dFile2(file_meta, tempObj);
-					obj=tempObj;
-					loadMaterialFromObject3d(world, obj);
-					loadAnmationFromObject3d(world, obj, crc);
-					//obj->calculateInitialAABB();
-					obj->transformationChangedf();
-					root_object_node=obj;
-
-
-					if(g_EngineObserver)
-						g_EngineObserver->onAppendToWorld(world, obj);
-				}
-				file_meta.CloseFile();
-			}
-		}
-	}
-
-	populateBonesToMeshNode(root_object_node, root_object_node);
-
-	return root_object_node;
-	*/
-
-	return world->loadAndAppendFBX(filename);
+//#ifdef _WIN32
+//	return world->loadAndAppendFBX(filename);
+//#elif defined(ANDROID)
+	return world->loadAndAppendFBXForDevice(filename);
+//#else
+//	return NULL;
+//#endif
 }
-
 
 extern DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory)
 {

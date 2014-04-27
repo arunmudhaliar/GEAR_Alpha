@@ -125,7 +125,64 @@ void HWShaderManager::LoadDefaultShaders()
 	LoadSurfaceShader("res//shadersWin32//surfaceShader//Diffuse_vlit.shader");
 	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMap.shader");
 	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMapSpecular.shader");
+#elif defined(ANDROID)
+		//load code snippets
+	stHWShaderSnippet* snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/matrices_uniform_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/vertex_attrib_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/vertex_main.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/fragment_main.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/light_unifrom_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/material_unifrom_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
 
+	//HW shaders
+	gxHWShader* pShader=new gxHWShader();
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/only_diffuse.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/diffusemapunlit.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/only_diffuse_with_color_pointer.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/pvLightingOnlyShaderFirstPass.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/guishader.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/blurshader.glsl"))	//0
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+
+	//surface shaders
+	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//Diffuse.shader");
+	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//Diffuse_vlit.shader");
+	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//NormalMap.shader");
+	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//NormalMapSpecular.shader");
 #endif
 #endif
 }
@@ -170,11 +227,17 @@ HWShaderManager::stHWShaderSnippet* HWShaderManager::LoadCodeSnippet(const char*
 	stHWShaderSnippet* newSnippetCode = new stHWShaderSnippet();
 
 	newSnippetCode->size=fileSz;
-	newSnippetCode->snippet=new char[newSnippetCode->size];
+	newSnippetCode->snippet=new char[newSnippetCode->size+1];
 	memset((void*)newSnippetCode->snippet, 0, newSnippetCode->size);
 	fread((void*)newSnippetCode->snippet, 1, newSnippetCode->size, fp);
 	fclose(fp);
+	newSnippetCode->snippet[newSnippetCode->size]='\0';
 	//
+
+#if DEBUG
+	DEBUG_PRINT("SNIPPET:\n%s", newSnippetCode->snippet);
+	DEBUG_PRINT("%s loaded", filename);
+#endif
 
 	return newSnippetCode;
 }

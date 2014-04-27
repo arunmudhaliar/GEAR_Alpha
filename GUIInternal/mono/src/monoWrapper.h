@@ -34,13 +34,14 @@ public:
 
 	//MONO ENGINE WRAPPERS
 	static void mono_engine_init(int nWorldToCreate);
+	static void mono_engine_init_for_mono_android();	//shouldn't call this function before 'mono_engine_init'
 	static gxWorld* mono_engine_getWorld(int index);
 
 	static void mono_engine_update(gxWorld* world, float dt);
 	static void mono_engine_resize(gxWorld* world, float x, float y, float cx, float cy, float nearplane, float farplane);
 	static void mono_engine_render(gxWorld* world, object3d* light);
 	static void mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light);
-	static object3d* mono_engine_loadAndAppendFBX(gxWorld* world, const char* filename);
+	//static object3d* mono_engine_loadAndAppendFBX(gxWorld* world, const char* filename);
 	static object3d* mono_engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory);
 	static object3d* mono_engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
 
@@ -80,12 +81,13 @@ private:
 	static MonoMethod* g_mono_game_onkeyup;
 
 	static MonoMethod* g_pMethod_engine_init;
+	static MonoMethod* g_pMethod_engine_init_for_mono_android;	
 	static MonoMethod* g_pMethod_engine_getWorld;
 	static MonoMethod* g_pMethod_engine_update;
 	static MonoMethod* g_pMethod_engine_resize;
 	static MonoMethod* g_pMethod_engine_render;
 	static MonoMethod* g_pMethod_engine_renderSingleObject;
-	static MonoMethod* g_pMethod_engine_loadAndAppendFBX;
+	//static MonoMethod* g_pMethod_engine_loadAndAppendFBX;
 	static MonoMethod* g_pMethod_engine_loadFBX;
 	static MonoMethod* g_pMethod_engine_appendObject3dToRoot;
 	static MonoMethod* g_pMethod_engine_mouseLButtonDown;

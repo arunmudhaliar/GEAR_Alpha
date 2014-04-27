@@ -7,7 +7,10 @@
 #include "../hwShader/HWShaderManager.h"
 #include "../GEAREngine.h"
 #include "gxSkinnedMesh.h"
+#include "../util/gxCrc32.h"
+//#include "../util/Crc32.h"
 //#include "../GEAREngine.cpp"
+//class Crc32;
 
 gxWorld::gxWorld():
 	object3d(OBJECT3D_WORLD)
@@ -22,7 +25,7 @@ gxWorld::gxWorld():
 	//vector3f v(1, -1, -1);
 	//m_pActiveCameraPtr->setDirection(&v);
 	m_pActiveCameraPtr->setCamera(&m_cDefaultCameraStruct);
-	m_pActiveCameraPtr->updateLocalPositionf(0, 0, 300);
+	//m_pActiveCameraPtr->updateLocalPositionf(0, 0, -290);
 
 	m_cDefaultMaterial.setMaterialName("Default");
 	m_cMaterialList.push_back(&m_cDefaultMaterial);
@@ -205,7 +208,13 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 				HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 				//load surface shader
 				char mainshaderfilename[1024];
+#ifdef _WIN32
 				sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
+#elif defined(ANDROID)
+				sprintf(mainshaderfilename, "//storage//emulated//0//gear//shadersAndroid//surfaceShader//%s.shader", material->getMainshaderName());
+#else
+				//not implemented
+#endif
 				material->setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
 				
 				std::vector<gxSubMap*>* maplist=material->getSubMapList();
@@ -426,6 +435,68 @@ object3d* gxWorld::loadAndAppendFBX(const char* filename)
 				}
 				file_meta.CloseFile();
 			}
+		}
+	}
+
+	populateBonesToMeshNode(root_object_node, root_object_node);
+
+	return root_object_node;
+}
+
+object3d* gxWorld::loadAndAppendFBXForDevice(const char* filename)
+{
+	object3d* root_object_node=NULL;
+	if (gxUtil::GX_IS_EXTENSION(filename, ".fbx") || gxUtil::GX_IS_EXTENSION(filename, ".FBX") ||
+		gxUtil::GX_IS_EXTENSION(filename, ".prefab") || gxUtil::GX_IS_EXTENSION(filename, ".PREFAB"))
+	{
+		object3d* obj = NULL;
+		int crc=gxCrc32::Calc((unsigned char*)filename);
+
+		char crcFile[1024];
+		sprintf(crcFile, "%s/%x", getMetaDataFolder(), crc);
+
+		gxFile file_meta;
+		if(file_meta.OpenFile(crcFile))
+		{
+			stMetaHeader metaHeader;
+			file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+			int objID=0;
+			file_meta.Read(objID);
+
+			object3d* tempObj=NULL;
+
+			if(objID==100)
+			{
+				tempObj = new gxMesh();
+			}
+			else if(objID==101)
+			{
+				tempObj = new gxSkinnedMesh();
+			}
+			else
+			{
+				tempObj = new object3d(objID);
+			}
+
+			if(tempObj)
+			{
+				tempObj->setObject3dObserver(m_pObject3dObserver);
+				tempObj->read(file_meta);
+				appendChild(tempObj);
+				read3dFile2(file_meta, tempObj);
+				obj=tempObj;
+				loadMaterialFromObject3d(obj);
+				loadAnmationFromObject3d(obj, crc);
+				//obj->calculateInitialAABB();
+				obj->transformationChangedf();
+				root_object_node=obj;
+
+
+				if(m_pEngineObserver)
+					m_pEngineObserver->onAppendToWorld(this, obj);
+			}
+			file_meta.CloseFile();
 		}
 	}
 

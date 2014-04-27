@@ -3,7 +3,7 @@
 #include "../../GEAREngine/src/util/gxFile.h"
 #include "../../GEAREngine/src/lpng151/png.h"
 #include "../../GEAREngine/src/tga/Tga.h"
-#include "../../GEAREngine/src/util/Crc32.h"
+#include "../../GEAREngine/src/util/gxCrc32.h"
 #include "../../GEAREngine/src/fbxImporter/fbxImporter.h"
 #include "../../GEAREngine/src/util/gxUtil.cpp"
 
@@ -221,7 +221,8 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 						memset(&fst, 0, sizeof(fst));
 						if(stat(buffer, &fst)==0) 
 						{
-							int crc32=Crc32::Calc((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer));
+							const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer);
+							int crc32=gxCrc32::Calc((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer));
 							char crcFileName[512];
 							sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc32);
 
@@ -430,7 +431,7 @@ int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMate
 	char temp_buffer[1024];
 	GX_STRCPY(temp_buffer, gxUtil::getFolderPathFromFileName(fbx_file_name));
 	sprintf(buffer, "%s/%s.mat", temp_buffer, material->getMaterialName());
-	int crc32=Crc32::Calc((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer));
+	int crc32=gxCrc32::Calc((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer));
 	gxFile materialFile;
 	if(materialFile.OpenFile(buffer))
 	{
@@ -745,7 +746,7 @@ int AssetImporter::import_png_to_metadata(const char* png_file_name, const char*
 
 int AssetImporter::calcCRC32(unsigned char* data)
 {
-	return Crc32::Calc(data);
+	return gxCrc32::Calc(data);
 }
 
 const char* AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(const char* path)

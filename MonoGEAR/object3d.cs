@@ -55,7 +55,7 @@ namespace MonoGEAR
 
         public static object3d create(string name)
         {
-            return new object3d(MonoGEAREntryPointClass.engine_loadAndAppendFBX(MonoGEAREntryPointClass.engine_getWorld(0), name));
+            return new object3d(MonoGEAREntryPointClass.engine_loadAndAppendMesh(MonoGEAREntryPointClass.engine_getWorld(0), name));
         }
 
         public static bool destroy(object3d obj)

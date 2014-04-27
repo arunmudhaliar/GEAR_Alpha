@@ -295,13 +295,15 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		{
 			gxSubMap* submap = *it;
 			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
-#ifdef TEXENV_ISSUE
-			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, shader_var->texture_uv_in_name.c_str()))
+			int texenv1=0;
+#ifdef _WIN32
+			texenv1=GL_TEXTURE_ENV_MODE;
+#endif
+			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, texenv1, GL_REPLACE, 2, shader, shader_var->texture_uv_in_name.c_str()))
 			{
 				shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
 				nTexUsed++;
 			}
-#endif
 		}
 
 		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
@@ -399,7 +401,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	else
 	{
 		glBindTexture(GL_TEXTURE_2D, submap->getTexture()->getTextureID());	
-#ifdef TEXENV_ISSUE
+#if defined(TEXENV_ISSUE) && defined(_WIN32)
 		glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
 #endif
 		if(submap->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)

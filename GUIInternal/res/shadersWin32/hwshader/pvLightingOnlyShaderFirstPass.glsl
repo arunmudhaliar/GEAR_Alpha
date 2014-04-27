@@ -1,5 +1,4 @@
 #ifdef GEAR_VERTEX_SHADER
-#version 120
 
 struct Light
 {

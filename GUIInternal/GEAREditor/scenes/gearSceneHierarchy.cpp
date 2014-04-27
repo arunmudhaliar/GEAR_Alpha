@@ -139,7 +139,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 			if (util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX") ||
 				util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
 			{
-				object3d* obj = monoWrapper::mono_engine_loadAndAppendFBX(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
+				object3d* obj = engine_loadAndAppendMesh(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
 			}
 		}
 		else if(dropObject->getSourcePtr()==this)

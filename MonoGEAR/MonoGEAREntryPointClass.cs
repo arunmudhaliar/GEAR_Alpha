@@ -31,7 +31,7 @@ namespace MonoGEAR
         static extern void engine_renderSingleObject(IntPtr world, IntPtr obj, IntPtr light);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr engine_loadAndAppendFBX(IntPtr world, string filename);
+        public static extern IntPtr engine_loadAndAppendMesh(IntPtr world, string filename);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr engine_appendObject3dToRoot(IntPtr world, IntPtr obj);

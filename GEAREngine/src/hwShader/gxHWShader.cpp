@@ -89,7 +89,7 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	
 	if(!fileSz) return false;
 	
-	const char* define_vertex="#define GEAR_VERTEX_SHADER\n";
+	const char* define_vertex="#version 120\n#define GEAR_VERTEX_SHADER\n";
 	const char* define_fragment="#define GEAR_FRAGMENT_SHADER\n";
 
 	//vertex shader source

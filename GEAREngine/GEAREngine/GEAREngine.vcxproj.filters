@@ -28,9 +28,6 @@
     <Filter Include="engine\lpng151">
       <UniqueIdentifier>{fa148161-c150-4ef7-869a-336e68cc4070}</UniqueIdentifier>
     </Filter>
-    <Filter Include="engine\zlib-1.2.4">
-      <UniqueIdentifier>{274408b9-94b1-49e6-a336-9b31bb84290b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="engine\util">
       <UniqueIdentifier>{e721c1e5-080f-43fd-8755-b8f72115e64b}</UniqueIdentifier>
     </Filter>
@@ -51,6 +48,9 @@
     </Filter>
     <Filter Include="engine\physics\debug">
       <UniqueIdentifier>{75332d01-afc0-4586-9c0c-d95ed7a0526d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\zlib">
+      <UniqueIdentifier>{4b6221e7-7fae-453d-ba6c-01273589d8b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -74,39 +74,6 @@
     </ClCompile>
     <ClCompile Include="..\src\core\TextureManager.cpp">
       <Filter>engine\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\adler32.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\compress.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\crc32.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\deflate.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\infback.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\inffast.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\inflate.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\inftrees.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\trees.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\uncompr.c">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\zlib-1.2.4\zutil.c">
-      <Filter>engine\zlib-1.2.4</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lpng151\png.c">
       <Filter>engine\lpng151</Filter>
@@ -657,6 +624,42 @@
     <ClCompile Include="..\src\core\gxCamera.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\adler32.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\compress.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\crc32.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\deflate.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\infback.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\inffast.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\inflate.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\inftrees.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\trees.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\uncompr.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\zlib-1.2.4\zutil.c">
+      <Filter>engine\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\util\gxCrc32.cpp">
+      <Filter>engine\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -716,36 +719,6 @@
     <ClInclude Include="..\src\core\vector4.h">
       <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\crc32.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\deflate.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\inffast.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\inffixed.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\inflate.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\inftrees.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\trees.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\zconf.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\zlib.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\zlib-1.2.4\zutil.h">
-      <Filter>engine\zlib-1.2.4</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\lpng151\png.h">
       <Filter>engine\lpng151</Filter>
     </ClInclude>
@@ -778,9 +751,6 @@
     </ClInclude>
     <ClInclude Include="..\src\core\gxMetaStructures.h">
       <Filter>engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\util\Crc32.h">
-      <Filter>engine\util</Filter>
     </ClInclude>
     <ClInclude Include="..\src\tga\Tga.h">
       <Filter>engine\tga</Filter>
@@ -1567,6 +1537,39 @@
     </ClInclude>
     <ClInclude Include="..\src\core\gxCamera.h">
       <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\gxCrc32.h">
+      <Filter>engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\crc32.h">
+      <Filter>engine\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\deflate.h">
+      <Filter>engine\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\inffast.h">
+      <Filter>engine\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\inffixed.h">
+      <Filter>engine\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\inflate.h">
+      <Filter>engine\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\inftrees.h">
+      <Filter>engine\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\trees.h">
+      <Filter>engine\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\zconf.h">
+      <Filter>engine\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\zlib.h">
+      <Filter>engine\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\zlib-1.2.4\zutil.h">
+      <Filter>engine\zlib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

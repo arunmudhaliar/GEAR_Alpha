@@ -35,12 +35,13 @@ MonoMethod* monoWrapper::g_mono_game_onkeydown = NULL;
 MonoMethod* monoWrapper::g_mono_game_onkeyup = NULL;
 
 MonoMethod* monoWrapper::g_pMethod_engine_init = NULL;
+MonoMethod* monoWrapper::g_pMethod_engine_init_for_mono_android = NULL;	
 MonoMethod* monoWrapper::g_pMethod_engine_getWorld = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_update = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_resize = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_render = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_renderSingleObject = NULL;
-MonoMethod* monoWrapper::g_pMethod_engine_loadAndAppendFBX = NULL;
+//MonoMethod* monoWrapper::g_pMethod_engine_loadAndAppendFBX = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_loadFBX = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_appendObject3dToRoot = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_mouseLButtonDown = NULL;
@@ -153,12 +154,13 @@ void monoWrapper::bindEngineMethods()
 	g_mono_game_onkeyup						=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "mono_game_onkeyup", 2);
 
 	g_pMethod_engine_init					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_init", 1);
+	g_pMethod_engine_init_for_mono_android	=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "monogear_engine_init_for_mono_android", 0);
 	g_pMethod_engine_getWorld				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_getWorld", 1);
 	g_pMethod_engine_update					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_update", 2);
 	g_pMethod_engine_resize					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_resize", 7);
 	g_pMethod_engine_render					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_render", 2);
 	g_pMethod_engine_renderSingleObject		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_renderSingleObject", 3);
-	g_pMethod_engine_loadAndAppendFBX		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadAndAppendFBX", 2);
+	//g_pMethod_engine_loadAndAppendFBX		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadAndAppendFBX", 2);
 	g_pMethod_engine_loadFBX				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadFBX", 3);
 	g_pMethod_engine_appendObject3dToRoot	=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_appendObject3dToRoot", 2);
 	g_pMethod_engine_mouseLButtonDown		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseLButtonDown", 4);
@@ -255,6 +257,13 @@ void monoWrapper::mono_engine_init(int nWorldToCreate)
 #endif
 }
 
+void monoWrapper::mono_engine_init_for_mono_android()
+{
+#ifdef USEMONOENGINE
+	mono_runtime_invoke(g_pMethod_engine_init_for_mono_android, NULL, NULL, NULL);
+#endif
+}
+
 gxWorld* monoWrapper::mono_engine_getWorld(int index)
 {
 #ifdef USEMONOENGINE
@@ -316,17 +325,17 @@ void monoWrapper::mono_engine_renderSingleObject(gxWorld* world, object3d* obj, 
 #endif
 }
 
-object3d* monoWrapper::mono_engine_loadAndAppendFBX(gxWorld* world, const char* filename)
-{
-#ifdef USEMONOENGINE
-	void* args[2]={&world, mono_string_new(g_pMonoDomain, filename)};
-	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_loadAndAppendFBX, NULL, args, NULL);
-	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
-	return (object3d*)underlyingType;
-#else
-	return engine_loadAndAppendFBX(world, filename);
-#endif
-}
+//object3d* monoWrapper::mono_engine_loadAndAppendFBX(gxWorld* world, const char* filename)
+//{
+//#ifdef USEMONOENGINE
+//	void* args[2]={&world, mono_string_new(g_pMonoDomain, filename)};
+//	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_loadAndAppendFBX, NULL, args, NULL);
+//	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
+//	return (object3d*)underlyingType;
+//#else
+//	return engine_loadAndAppendFBX(world, filename);
+//#endif
+//}
 
 object3d* monoWrapper::mono_engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory)
 {

@@ -264,6 +264,7 @@
     <ClCompile Include="..\src\physics\LinearMath\btVector3.cpp" />
     <ClCompile Include="..\src\renderer\gxRenderer.cpp" />
     <ClCompile Include="..\src\tga\TGALoader.cpp" />
+    <ClCompile Include="..\src\util\gxCrc32.cpp" />
     <ClCompile Include="..\src\util\gxFile.cpp" />
     <ClCompile Include="..\src\util\gxUtil.cpp" />
     <ClCompile Include="..\src\util\nvProfiler.cpp" />
@@ -567,7 +568,7 @@
     <ClInclude Include="..\src\renderer\glew.h" />
     <ClInclude Include="..\src\renderer\gxRenderer.h" />
     <ClInclude Include="..\src\tga\Tga.h" />
-    <ClInclude Include="..\src\util\Crc32.h" />
+    <ClInclude Include="..\src\util\gxCrc32.h" />
     <ClInclude Include="..\src\util\gxFile.h" />
     <ClInclude Include="..\src\util\gxUtil.h" />
     <ClInclude Include="..\src\util\nvProfiler.h" />

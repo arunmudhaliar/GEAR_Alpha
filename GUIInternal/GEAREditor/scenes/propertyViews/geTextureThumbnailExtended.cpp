@@ -9,3 +9,30 @@ bool geTextureThumbnailExtended::onMouseLButtonDown(float x, float y, int nFlag)
 
 	return true;
 }
+
+void geTextureThumbnailExtended::onDragDrop(int x, int y, MDataObject* dropObject)
+{
+	//geTreeNode* rootNode = m_cGameObjectsTreeView.getRoot();
+	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
+	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
+	{
+		geGUIBase* droppedDataObject = *it;
+		const char* relativePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
+
+		if (util::GE_IS_EXTENSION(relativePath, ".png") || util::GE_IS_EXTENSION(relativePath, ".PNG") ||
+			util::GE_IS_EXTENSION(relativePath, ".tga") || util::GE_IS_EXTENSION(relativePath, ".TGA"))
+		{
+			gxSubMap* map = (gxSubMap*)getUserData();
+			if(map)
+			{
+				char absolutepath[1024];
+				sprintf(absolutepath, "%s/Assets%s", EditorApp::getProjectHomeDirectory(), relativePath);
+				m_pTexturePtr=map->load(*monoWrapper::mono_engine_getWorld(0)->getTextureManager(), absolutepath);
+			}
+		//	object3d* obj = engine_loadAndAppendFBX(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
+		//	createTVNode(rootNode, obj, droppedDataObject->getName());
+		}
+	}
+	//rootNode->traverseSetWidth(m_cSize.x);
+	//m_cGameObjectsTreeView.refreshTreeView();
+}

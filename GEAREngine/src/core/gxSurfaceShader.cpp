@@ -68,7 +68,7 @@ bool gxSurfaceShader::findQuat(std::string::const_iterator& start, std::string::
 	{
 		if(bStrict)
 		{
-			bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+			bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 			if(!bWS && *start!='"')
 				return false;
 		}
@@ -87,7 +87,7 @@ bool gxSurfaceShader::findOpeningRoundBrace(std::string::const_iterator& start, 
 {
 	while(start!=end)
 	{
-		bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && *start!='(')
 			return false;
 
@@ -106,7 +106,7 @@ bool gxSurfaceShader::findClosingRoundBrace(std::string::const_iterator& start, 
 {
 	while(start!=end)
 	{
-		bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && *start!=')')
 			return false;
 
@@ -125,7 +125,7 @@ bool gxSurfaceShader::findOpeningCurlyBrace(std::string::const_iterator& start, 
 {
 	while(start!=end)
 	{
-		bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && *start!='{')
 			return false;
 
@@ -144,7 +144,7 @@ bool gxSurfaceShader::findClosingCurlyBrace(std::string::const_iterator& start, 
 {
 	while(start!=end)
 	{
-		bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && *start!='}')
 			return false;
 
@@ -162,7 +162,7 @@ bool gxSurfaceShader::findComma(std::string::const_iterator& start, std::string:
 {
 	while(start!=end)
 	{
-		bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && *start!=',')
 			return false;
 
@@ -181,7 +181,7 @@ bool gxSurfaceShader::findEqualTo(std::string::const_iterator& start, std::strin
 {
 	while(start!=end)
 	{
-		bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && *start!='=')
 			return false;
 
@@ -201,7 +201,7 @@ bool gxSurfaceShader::findAnyValidCharForName(std::string::const_iterator& start
 	while(start!=end)
 	{
 		bool bValidChar=((*start>=65 && *start<=90) || (*start>=97 && *start<=122) || *start=='_');
-		bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && !bValidChar)
 			return false;
 
@@ -221,7 +221,7 @@ bool gxSurfaceShader::findAnyValidAlphaNumeric(std::string::const_iterator& star
 	while(start!=end)
 	{
 		bool bValidChar=((*start>=65 && *start<=90) || (*start>=97 && *start<=122) || (*start>=48 && *start<=57));
-		bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && !bValidChar)
 			return false;
 
@@ -241,7 +241,7 @@ bool gxSurfaceShader::findAnyValidNumeric(std::string::const_iterator& start, st
 	while(start!=end)
 	{
 		bool bValidChar=(*start>=48 && *start<=57);
-		bool bWS=(*start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && !bValidChar)
 			return false;
 
@@ -265,7 +265,7 @@ bool gxSurfaceShader::parseKeyWord(std::string::const_iterator& start, std::stri
 
 	while(findAnyValidAlphaNumeric(start, end))
 	{
-		if(*start=='\n' || *start==' ' || *start=='\t')
+		if(*start=='\r' || *start=='\n' || *start==' ' || *start=='\t')
 		{
 			//start++;
 			break;
@@ -949,21 +949,21 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 				//	}
 				//}
 				m_vShaderProgram.push_back(pMainShader);
-				std::cout << constructed_glsl_filename << "\n" << "Shader already loaded" << "\n Parse Success. Pass(" << cntr << ")\n";
+				DEBUG_PRINT("%s\nShader already loaded\n Parse Success. Pass(%d)\n", constructed_glsl_filename, cntr);
 				continue;
 			}
 
 			//construct the glsl shader
-			std::string cMainShaderSource = "#version 120\n";
+			std::string cMainShaderSource = "";//"#version 120\n";
 			cMainShaderSource+=hwShaderManager->getShaderSnippet(0)->snippet;
 			for(std::vector<std::string>::iterator it = currentPass->vIncludeModule.begin(); it != currentPass->vIncludeModule.end(); ++it)
 			{
 				std::string module = *it;
-				if(module=="PointLightStruct")
+				if(module.compare(0, strlen("PointLightStruct"), "PointLightStruct") == 0)
 				{
 					cMainShaderSource+=hwShaderManager->getShaderSnippet(4)->snippet;
 				}
-				else if(module=="MaterialStruct")
+				else if(module.compare(0, strlen("MaterialStruct"), "MaterialStruct") == 0)
 				{
 					cMainShaderSource+=hwShaderManager->getShaderSnippet(5)->snippet;
 				}
@@ -1007,11 +1007,11 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 
 			pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, cMainShaderSource.c_str(), cMainShaderSource.size());
 			if(!pMainShader)
-				std::cout << constructed_glsl_filename << "\nParse Success but GLSL compiler failed. Pass(" << cntr << ")\n";
+				DEBUG_PRINT("%s\nParse Success but GLSL compiler failed. Pass(%d)\n", constructed_glsl_filename, cntr);
 			else
 			{
 				m_vShaderProgram.push_back(pMainShader);
-				std::cout << constructed_glsl_filename << "\nParse Success. Pass(" << cntr << ")\n";
+				DEBUG_PRINT("%s\nParse Success. Pass(%d)\n", constructed_glsl_filename, cntr);
 			}
 
 			cMainShaderSource.clear();
@@ -1020,7 +1020,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 	}
 	else
 	{
-		std::cout << filename << " Parse Failed.\n";
+		DEBUG_PRINT("%s Parse Failed.\n", filename);
 	}
 
 	GX_DELETE_ARY(vsource);

@@ -7,11 +7,11 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 	{
 		geGUIBase* droppedDataObject = *it;
-		const char* absolutePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
+		const char* relativePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
 
-		if (util::GE_IS_EXTENSION(absolutePath, ".mat") || util::GE_IS_EXTENSION(absolutePath, ".MAT"))
+		if (util::GE_IS_EXTENSION(relativePath, ".mat") || util::GE_IS_EXTENSION(relativePath, ".MAT"))
 		{
-			int crc32=AssetImporter::calcCRC32((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(absolutePath));
+			int crc32=AssetImporter::calcCRC32((unsigned char*)relativePath);
 
 			gxMaterial* matchingMaterial=NULL;
 			//check if the material name already exists in our list or not

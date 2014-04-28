@@ -439,8 +439,8 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 		monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
 	}
 
-	glDisable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
+	//glDisable(GL_DEPTH_TEST);
+		//glDepthMask(GL_FALSE);
 	//glDepthFunc(GL_LEQUAL);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
@@ -464,8 +464,8 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 		monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
 	}
 	glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
+		//glDepthMask(GL_TRUE);
+		//glEnable(GL_DEPTH_TEST);
 #endif
 
 	drawGrid();

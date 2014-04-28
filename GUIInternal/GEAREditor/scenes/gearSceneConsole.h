@@ -14,6 +14,12 @@ public:
 	~gearSceneConsole();
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
+	void onButtonClicked(geGUIBase* btn);
+
+	void appendConsoleRunRootNode();
+	void appendConsoleMsg(const char* msg);
+	void clearConsoleCurrentRun();
+	void clearConsoleAllRun();
 
 protected:
 	virtual void onCreate();
@@ -26,7 +32,10 @@ protected:
 
 private:
 
-	geTreeView m_cFileTreeView;
+	geToolBarButton* m_pClearBtn;
+	geToolBarButton* m_pClearAllBtn;
+	geTreeView m_cConsoleTreeView;
+	geTreeNode* m_pCurrentBuildRootNodePtr;
 };
 
 #endif

@@ -32,7 +32,8 @@ public:
 
 	void appendWindow(geWindow* window);
 	geWindow* getActiveWindow()	{	return m_pActiveWindowPointer;	}
-	void setActiveWindow(int index)	{	m_pActiveWindowPointer=m_vChildWindows[index];	}
+	void setActiveWindow(int index);
+	void setActiveWindow(geWindow* wnd);
 
 	void resize(double xScale, double yScale);
 

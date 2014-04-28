@@ -27,7 +27,7 @@ void geLayoutManager::create(rendererGL10* renderer, float x, float y, float cx,
 	setPos(x, y);
 	setSize(cx, cy);
 
-	m_pRootLayout = new geLayout();
+	m_pRootLayout = new geLayout("layout");
 	m_pRootLayout->create(renderer, NULL, x, y, cx, cy);
 	m_pRootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
 

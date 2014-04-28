@@ -80,7 +80,7 @@ void geLayout::appendBottomChildLayout(geLayout* childLayout)
 
 void geLayout::appendWindow(geWindow* window)
 {
-	m_pActiveWindowPointer=window;
+	setActiveWindow(window);
 	m_pActiveWindowPointer->setIamOnLayout(this);
 	m_pActiveWindowPointer->setParent(this);
 
@@ -313,7 +313,7 @@ geLayout* geLayout::createLeft(geWindow* window, float ratio)
 		pParentOfNewLayout=getRightMostParentLayout();
 	}
 	
-	geLayout* pLayout = new geLayout();
+	geLayout* pLayout = new geLayout("layout");
 	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x, this->getPos().y, this->getSize().x*ratio,  this->getSize().y);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?LEFT_TO_PARENT:RIGHT_TO_PARENT);
 
@@ -346,7 +346,7 @@ geLayout* geLayout::createRight(geWindow* window, float ratio)
 		pParentOfNewLayout=getLeftMostParentLayout();
 	}
 
-	geLayout* pLayout = new geLayout();
+	geLayout* pLayout = new geLayout("layout");
 	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x+this->getSize().x*(1.0f-ratio), this->getPos().y, this->getSize().x*ratio,  this->getSize().y);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?RIGHT_TO_PARENT:LEFT_TO_PARENT);
 
@@ -378,7 +378,7 @@ geLayout* geLayout::createTop(geWindow* window, float ratio)
 		pParentOfNewLayout=getBottomMostParentLayout();
 	}
 
-	geLayout* pLayout = new geLayout();
+	geLayout* pLayout = new geLayout("layout");
 	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y*ratio);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?TOP_TO_PARENT:BOTTOM_TO_PARENT);
 
@@ -411,7 +411,7 @@ geLayout* geLayout::createBottom(geWindow* window, float ratio)
 		pParentOfNewLayout=getTopMostParentLayout();
 	}
 
-	geLayout* pLayout = new geLayout();
+	geLayout* pLayout = new geLayout("layout");
 	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x, this->getPos().y+this->getSize().y*(1.0f-ratio), this->getSize().x,  this->getSize().y*ratio);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?BOTTOM_TO_PARENT:TOP_TO_PARENT);
 
@@ -434,7 +434,7 @@ geLayout* geLayout::createBottom(geWindow* window, float ratio)
 
 geLayout* geLayout::createAsParent(geWindow* window)
 {
-	geLayout* pLayout = new geLayout();
+	geLayout* pLayout = new geLayout("layout");
 	pLayout->create(m_pRenderer, this, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y);
 	pLayout->setLayoutDirection(LAYOUT_PARENT);
 	this->setSize(this->getSize().x,  this->getSize().y);
@@ -469,11 +469,9 @@ bool geLayout::onMouseLButtonDown(float x, float y, int nFlag)
 			{
 				if(m_pActiveWindowPointer!=wnd)
 				{
-					m_pActiveWindowPointer=wnd;
+					setActiveWindow(wnd);
 				}
 			}
-
-
 		}
 	}
 
@@ -523,6 +521,17 @@ void geLayout::traverseMouseMoveEvent(int x, int y, int flag)
 		geLayout* obj = *it;
 		obj->traverseMouseMoveEvent(x, y, flag);
 	}
+}
+
+void geLayout::setActiveWindow(int index)
+{
+	setActiveWindow(m_vChildWindows[index]);
+}
+
+void geLayout::setActiveWindow(geWindow* wnd)
+{
+	m_pActiveWindowPointer=wnd;
+	setActiveWindowPtrOnlyForLayout(m_pActiveWindowPointer);
 }
 
 geLayout* geLayout::selectLayout(int x, int y)

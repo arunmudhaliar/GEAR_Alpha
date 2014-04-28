@@ -243,6 +243,11 @@ void gearSceneHierarchy::onRemoveFromWorld(object3d* world, object3d* obj)
 {
 }
 
+void gearSceneHierarchy::onConsoleLogFromMono(const char* msg)
+{
+	EditorApp::getSceneConsole()->appendConsoleMsg(msg);
+}
+
 void gearSceneHierarchy::onObject3dChildAppend(object3d* child)
 {
 	object3d* parent_obj=child->getParent();

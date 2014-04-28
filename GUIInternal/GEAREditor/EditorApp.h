@@ -57,6 +57,7 @@ public:
 	static void setSceneProject(gearSceneProject* ptr);
 	static void setScenePropertyEditor(gearScenePropertyEditor* ptr);
 	static void setSceneWorldEditor(gearSceneWorldEditor* ptr);
+	static void setSceneConsole(gearSceneConsole* ptr);
 
 	static gearSceneFileView* getSceneFileView();
 	static gearSceneHierarchy* getSceneHierarchy();
@@ -64,6 +65,8 @@ public:
 	static gearSceneProject* getSceneProject();
 	static gearScenePropertyEditor* getScenePropertyEditor();
 	static gearSceneWorldEditor* getSceneWorldEditor();
+	static gearSceneConsole* getSceneConsole();
+
 	static HWND getMainWindowHandle()	{	return g_hWnd;	}
 
 	static rendererGL10* getMainRenderer()	{	return g_pMainRenderer;	}
@@ -89,6 +92,7 @@ private:
 	static gearSceneProject* g_pSceneProjectPtr;
 	static gearScenePropertyEditor* g_pScenePropertyEditorPtr;
 	static gearSceneWorldEditor* g_pSceneWorldEditorPtr;
+	static gearSceneConsole* g_pSceneConsolePtr;
 };
 
 #endif

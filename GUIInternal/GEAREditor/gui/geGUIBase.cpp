@@ -11,6 +11,7 @@ geGUIBase::geGUIBase()
 	setMouseBoundCheck(true);
 	m_pUserData=NULL;
 	m_pGUIObserver = NULL;
+	m_pActiveWindowPtrOnlyForLayout=NULL;
 }
 
 geGUIBase::geGUIBase(unsigned short uGUIID, const char* name):
@@ -29,6 +30,7 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name):
 		STRCPY(m_szName, name);
 	}
 	m_pGUIObserver=NULL;
+	m_pActiveWindowPtrOnlyForLayout=NULL;
 }
 
 geGUIBase::~geGUIBase()
@@ -262,12 +264,21 @@ bool geGUIBase::MouseLButtonDown(float x, float y, int nFlag)
 	{
 		if(!commandUsed)
 		{
-			for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+			if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 			{
-				geGUIBase* obj = *it;
-				commandUsed=obj->MouseLButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+				commandUsed=getActiveWindowPtrOnlyForLayout()->MouseLButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
 				if(commandUsed)
 					return commandUsed;
+			}
+			else
+			{
+				for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+				{
+					geGUIBase* obj = *it;
+					commandUsed=obj->MouseLButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+					if(commandUsed)
+						return commandUsed;
+				}
 			}
 		}
 
@@ -287,10 +298,17 @@ void geGUIBase::MouseLButtonUp(float x, float y, int nFlag)
 	bool bHandled=false;
 	if(isPointInsideWindow(x, y) || !isMouseBoundCheckEnabled())
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 		{
-			geGUIBase* obj = *it;
-			obj->MouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+			getActiveWindowPtrOnlyForLayout()->MouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+		}
+		else
+		{
+			for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+			{
+				geGUIBase* obj = *it;
+				obj->MouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+			}
 		}
 
 		//if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight()))
@@ -321,10 +339,17 @@ void geGUIBase::MouseRButtonUp(float x, float y, int nFlag)
 
 bool geGUIBase::MouseMove(float x, float y, int flag)
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
-		geGUIBase* obj = *it;
-		obj->MouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
+		getActiveWindowPtrOnlyForLayout()->MouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
+	}
+	else
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			obj->MouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
+		}
 	}
 
 	return onMouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
@@ -348,12 +373,18 @@ bool geGUIBase::MouseMove(float x, float y, int flag)
 
 void geGUIBase::MouseWheel(int zDelta, int x, int y, int flag)
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
-		geGUIBase* obj = *it;
-		obj->MouseWheel(zDelta, x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
+		getActiveWindowPtrOnlyForLayout()->MouseWheel(zDelta, x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
 	}
-
+	else
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			obj->MouseWheel(zDelta, x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
+		}
+	}
 	onMouseWheel(zDelta, x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
 }
 
@@ -480,12 +511,18 @@ void geGUIBase::DragEnter(int x, int y)
 {
 	if(isPointInsideWindow(x, y))
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 		{
-			geGUIBase* obj = *it;
-			obj->DragEnter(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight());
+			getActiveWindowPtrOnlyForLayout()->DragEnter(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight());
 		}
-
+		else
+		{
+			for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+			{
+				geGUIBase* obj = *it;
+				obj->DragEnter(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight());
+			}
+		}
 		onDragEnter(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight());
 	}
 }
@@ -494,24 +531,36 @@ void geGUIBase::DragDrop(int x, int y, MDataObject* dropObject)
 {
 	if(isPointInsideWindow(x, y) /*|| !isMouseBoundCheckEnabled()*/)
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 		{
-			geGUIBase* obj = *it;
-			obj->DragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
+			getActiveWindowPtrOnlyForLayout()->DragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
 		}
-
+		else
+		{
+			for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+			{
+				geGUIBase* obj = *it;
+				obj->DragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
+			}
+		}
 		onDragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
 	}
 }
 
 void geGUIBase::DragLeave()
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
-		geGUIBase* obj = *it;
-		obj->DragLeave();
+		getActiveWindowPtrOnlyForLayout()->DragLeave();
 	}
-
+	else
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			obj->DragLeave();
+		}
+	}
 	onDragLeave();
 }
 
@@ -533,25 +582,39 @@ void geGUIBase::onAppendChild(geGUIBase* child)
 
 bool geGUIBase::KeyDown(int charValue, int flag)
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
-		geGUIBase* obj = *it;
-		if(obj->KeyDown(charValue, flag))
+		if(getActiveWindowPtrOnlyForLayout()->KeyDown(charValue, flag))
 			return true;
 	}
-
+	else
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			if(obj->KeyDown(charValue, flag))
+				return true;
+		}
+	}
 	return onKeyDown(charValue, flag);
 }
 
 bool geGUIBase::KeyUp(int charValue, int flag)
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
-		geGUIBase* obj = *it;
-		if(obj->KeyUp(charValue, flag))
+		if(getActiveWindowPtrOnlyForLayout()->KeyUp(charValue, flag))
 			return true;
 	}
-
+	else
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			if(obj->KeyUp(charValue, flag))
+				return true;
+		}
+	}
 	return onKeyUp(charValue, flag);
 }
 
@@ -575,24 +638,37 @@ bool geGUIBase::isNodeExistsInTree(geGUIBase* node)
 	if(this==node)
 		return true;
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack: no need to implement this, but for consistency purpose i kept
 	{
-		geGUIBase* obj = *it;
-		if(obj->isNodeExistsInTree(node))
+		if(getActiveWindowPtrOnlyForLayout()->isNodeExistsInTree(node))
 			return true;
 	}
-
+	else
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			if(obj->isNodeExistsInTree(node))
+				return true;
+		}
+	}
 	return false;
 }
 
 void geGUIBase::DoCommand(int cmd)
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack: no need to implement this, but for consistency purpose i kept
 	{
-		geGUIBase* obj = *it;
-		obj->DoCommand(cmd);
+		getActiveWindowPtrOnlyForLayout()->DoCommand(cmd);
 	}
-
+	else
+	{
+		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		{
+			geGUIBase* obj = *it;
+			obj->DoCommand(cmd);
+		}
+	}
 	return onCommand(cmd);
 }
 

@@ -1110,6 +1110,7 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 	{
 		if(m_pPlayButton->isButtonPressed())
 		{
+			EditorApp::getSceneConsole()->appendConsoleRunRootNode();
 			monoWrapper::mono_game_start();
 			m_bMonoGameInitialized=true;
 		}

@@ -49,6 +49,9 @@
     <Filter Include="GEAREditor\secondryViews">
       <UniqueIdentifier>{fd20962a-b448-4e62-9c93-01e54d0725ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GEAREditor\scenes\settingsViews">
+      <UniqueIdentifier>{be95fd8f-043d-4853-b43c-7c5dfaa5984a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -285,6 +288,12 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyCamera.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearSceneSettings.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsAndroid.h">
+      <Filter>GEAREditor\scenes\settingsViews</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -433,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyCamera.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearSceneSettings.cpp">
+      <Filter>GEAREditor\scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

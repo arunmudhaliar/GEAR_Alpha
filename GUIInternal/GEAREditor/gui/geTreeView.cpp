@@ -741,6 +741,11 @@ void geTreeView::refreshTreeView()
 	}
 }
 
+void geTreeView::quick_refreshTreeViewForOnlyVerticalScrollBar(float deltaheight)
+{
+	m_cVerticalScrollBar.setConetentHeight(m_cVerticalScrollBar.getContentHeight()+deltaheight);
+}
+
 bool geTreeView::onKeyDown(int charValue, int flag)
 {
 	//37-left

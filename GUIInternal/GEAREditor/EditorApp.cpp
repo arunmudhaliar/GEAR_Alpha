@@ -8,6 +8,7 @@
 #include "scenes\gearScenePropertyEditor.h"
 #include "scenes\gearSceneWorldEditor.h"
 #include "scenes\gearSceneFileView.h"
+#include "scenes\gearSceneSettings.h"
 #include "AssetImporter.h"
 
 #include "../stdafx.h"
@@ -23,6 +24,7 @@ gearScenePreview* EditorApp::g_pScenePreviewPtr=NULL;
 gearSceneProject* EditorApp::g_pSceneProjectPtr=NULL;
 gearScenePropertyEditor* EditorApp::g_pScenePropertyEditorPtr=NULL;
 gearSceneWorldEditor* EditorApp::g_pSceneWorldEditorPtr=NULL;
+gearSceneConsole* EditorApp::g_pSceneConsolePtr=NULL;
 rendererGL10* EditorApp::g_pMainRenderer=NULL;
 
 EditorApp::EditorApp()
@@ -73,6 +75,13 @@ void EditorApp::init(HWND hWnd, HINSTANCE hInst)
 	consoleWindow->create(m_pRendererGL10, NULL, 0, 0, 300, 200, true);
 	m_cGUIManager.appendWindow(consoleWindow);
 	propertyEditorLayout->appendWindow(consoleWindow);
+	setSceneConsole(consoleWindow);
+
+	gearSceneSettings* settingsWindow = new gearSceneSettings();
+	settingsWindow->create(m_pRendererGL10, NULL, 0, 0, 300, 500, true);
+	m_cGUIManager.appendWindow(settingsWindow);
+	propertyEditorLayout->appendWindow(settingsWindow);
+
 	propertyEditorLayout->setActiveWindow(0);
 
 	gearSceneHierarchy* hierarchyWnd = new gearSceneHierarchy();
@@ -254,6 +263,11 @@ gearSceneWorldEditor* EditorApp::getSceneWorldEditor()
 	return g_pSceneWorldEditorPtr;
 }
 
+gearSceneConsole* EditorApp::getSceneConsole()
+{
+	return g_pSceneConsolePtr;
+}
+
 void EditorApp::setSceneFileView(gearSceneFileView* ptr)
 {
 	g_pSceneFileViewPtr=ptr;
@@ -282,6 +296,11 @@ void EditorApp::setScenePropertyEditor(gearScenePropertyEditor* ptr)
 void EditorApp::setSceneWorldEditor(gearSceneWorldEditor* ptr)
 {
 	g_pSceneWorldEditorPtr = ptr;
+}
+
+void EditorApp::setSceneConsole(gearSceneConsole* ptr)
+{
+	g_pSceneConsolePtr=ptr;
 }
 
 bool EditorApp::KeyDown(int charValue, int flag)

@@ -102,6 +102,7 @@ public:
 
 	void clearAndDestroyAll();
 	void refreshTreeView();
+	void quick_refreshTreeViewForOnlyVerticalScrollBar(float deltaheight);	//wont be accurate
 
 	geTreeNode* getSelectedNode();
 	void resetSelectedNodePtr();

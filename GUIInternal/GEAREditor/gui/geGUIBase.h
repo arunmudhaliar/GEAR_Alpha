@@ -126,6 +126,11 @@ public:
 
 	bool isNodeExistsInTree(geGUIBase* node);
 
+	//layout hack
+	void setActiveWindowPtrOnlyForLayout(geGUIBase* wnd)	{	m_pActiveWindowPtrOnlyForLayout = wnd;	}
+	geGUIBase* getActiveWindowPtrOnlyForLayout()			{	return m_pActiveWindowPtrOnlyForLayout;	}
+	//
+
 protected:
 
 	virtual void onCreate();
@@ -193,6 +198,10 @@ protected:
 	void* m_pUserData;
 	MGUIObserver* m_pGUIObserver;
 	rendererGL10* m_pRenderer;
+
+	//hack for layout
+	geGUIBase* m_pActiveWindowPtrOnlyForLayout;	//valid only if object is a layout
+	//
 };
 
 class MGUIObserver

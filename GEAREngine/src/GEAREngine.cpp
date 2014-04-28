@@ -60,6 +60,18 @@ void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light)
 	world->renderSingleObject(obj, light);
 }
 
+void engine_consoleLog(const char* msg)
+{
+#ifdef _WIN32
+	if(g_EngineObserver)
+		g_EngineObserver->onConsoleLogFromMono(msg);
+#elif defined(ANDROID)
+	DEBUG_PRINT(msg);
+#else
+	DEBUG_PRINT(msg);
+#endif
+}
+
 void read3dFile2(gxFile& file, object3d* obj)
 {
 	int nChild=0;

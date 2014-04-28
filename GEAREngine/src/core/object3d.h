@@ -39,6 +39,9 @@ public:
 	virtual void onRemoveFromWorld(object3d* world, object3d* obj)
 	{
 	}
+	virtual void onConsoleLogFromMono(const char* msg)
+	{
+	}
 };
 
 #define OBJECT3D_OBJECT			0

@@ -33,7 +33,7 @@ protected:
 
 private:
 
-	time_t m_pCurrentRunElapsedTime;
+	unsigned long m_uCurrentRunElapsedTime;
 	geToolBarButton* m_pClearBtn;
 	geToolBarButton* m_pClearAllBtn;
 	geTreeView m_cConsoleTreeView;

@@ -127,3 +127,14 @@ double Timer::getCurrentTimeInSec()
 	return (double)_getTime()/1000.0;
 #endif
 }
+
+unsigned long Timer::getCurrentTimeInMilliSec()
+{
+#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
+	return CFAbsoluteTimeGetCurrent()*1000;
+#elif defined(WIN32)
+	return timeGetTime();
+#elif defined(ANDROID)
+	return _getTime();
+#endif
+}

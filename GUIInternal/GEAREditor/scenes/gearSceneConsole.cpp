@@ -1,4 +1,5 @@
 #include "gearSceneConsole.h"
+#include "../core/Timer.h"
 
 gearSceneConsole::gearSceneConsole():
 geWindow("Console View")
@@ -6,6 +7,7 @@ geWindow("Console View")
 	m_pCurrentBuildRootNodePtr=NULL;
 	m_pClearBtn=NULL;
 	m_pClearAllBtn=NULL;
+	m_uCurrentRunElapsedTime=0;
 }
 
 gearSceneConsole::~gearSceneConsole()
@@ -25,6 +27,7 @@ void gearSceneConsole::onCreate()
 	m_pClearAllBtn=new geToolBarButton(m_pRenderer, "Clear All", getToolBar());
 	m_pClearAllBtn->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pClearAllBtn);
+	m_uCurrentRunElapsedTime=Timer::getCurrentTimeInMilliSec();
 }
 
 void gearSceneConsole::onDraw()
@@ -86,28 +89,30 @@ void gearSceneConsole::appendConsoleRunRootNode()
 	m_cConsoleTreeView.refreshTreeView();
 
 	//reset the timer
-	m_pCurrentRunElapsedTime=time(NULL);
+	m_uCurrentRunElapsedTime=Timer::getCurrentTimeInMilliSec();
 }
 
 void gearSceneConsole::appendConsoleMsg(const char* msg)
 {
 	geTreeNode* newtvConsoleNode;
 
-	//
-	time_t now=time(NULL)-m_pCurrentRunElapsedTime;
-    struct tm *tmp = gmtime(&now);
-	char msg_buffer[256];
-	//sprintf(msg_buffer, "%d:%d:%d %s", tmp->tm_hour, tmp->tm_min, tmp->tm_sec, msg)
-	sprintf(msg_buffer, "%s", msg);
-	//
-
 	if(m_pCurrentBuildRootNodePtr)
 	{
+		//
+		unsigned long now=Timer::getCurrentTimeInMilliSec()-m_uCurrentRunElapsedTime;
+		char msg_buffer[256];
+		sprintf(msg_buffer, "(%d) %s", now, msg);
+		//
 		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL);
 	}
 	else
 	{
 		appendConsoleRunRootNode();
+		//
+		unsigned long now=Timer::getCurrentTimeInMilliSec()-m_uCurrentRunElapsedTime;
+		char msg_buffer[256];
+		sprintf(msg_buffer, "(%d) %s", now, msg);
+		//
 		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL);
 	}
 
@@ -134,6 +139,8 @@ void gearSceneConsole::clearConsoleCurrentRun()
 		char buffer[32];
 		sprintf(buffer, "#%d Run (%d)", m_cConsoleTreeView.getRoot()->getTVNodeChildCount(), m_pCurrentBuildRootNodePtr->getTVNodeChildCount());
 		m_pCurrentBuildRootNodePtr->setName(buffer);
+		//reset the timer
+		m_uCurrentRunElapsedTime=Timer::getCurrentTimeInMilliSec();
 	}
 }
 

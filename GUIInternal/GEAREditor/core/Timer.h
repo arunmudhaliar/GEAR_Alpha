@@ -25,6 +25,7 @@ public:
 	static float getElapsedTime()	{	return m_fElapsedTime;	}
 	
 	static double getCurrentTimeInSec();
+	static unsigned long getCurrentTimeInMilliSec();
 	
 	static float	m_fFPS;			//frames
 	static float	m_fDT;			//in sec

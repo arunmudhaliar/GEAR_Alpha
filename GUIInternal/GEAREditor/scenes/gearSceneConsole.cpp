@@ -84,19 +84,31 @@ void gearSceneConsole::appendConsoleRunRootNode()
 	m_pCurrentBuildRootNodePtr = new geTreeNode(m_pRenderer, m_cConsoleTreeView.getRoot(), buffer, NULL);
 	m_pCurrentBuildRootNodePtr->traverseSetWidth(m_cSize.x);
 	m_cConsoleTreeView.refreshTreeView();
+
+	//reset the timer
+	m_pCurrentRunElapsedTime=time(NULL);
 }
 
 void gearSceneConsole::appendConsoleMsg(const char* msg)
 {
 	geTreeNode* newtvConsoleNode;
+
+	//
+	time_t now=time(NULL)-m_pCurrentRunElapsedTime;
+    struct tm *tmp = gmtime(&now);
+	char msg_buffer[256];
+	//sprintf(msg_buffer, "%d:%d:%d %s", tmp->tm_hour, tmp->tm_min, tmp->tm_sec, msg)
+	sprintf(msg_buffer, "%s", msg);
+	//
+
 	if(m_pCurrentBuildRootNodePtr)
 	{
-		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg, NULL);
+		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL);
 	}
 	else
 	{
 		appendConsoleRunRootNode();
-		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg, NULL);
+		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL);
 	}
 
 	char buffer[32];

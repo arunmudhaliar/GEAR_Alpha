@@ -6,6 +6,7 @@
 #include "../gui/geTextBox.h"
 #include "../../../GEAREngine/src/core/gxMaterial.h"
 #include "../../../GEAREngine/src/core/object3d.h"
+#include <time.h>
 
 class gearSceneConsole : public geWindow, public MTreeViewObserver, public MGUIObserver
 {
@@ -32,6 +33,7 @@ protected:
 
 private:
 
+	time_t m_pCurrentRunElapsedTime;
 	geToolBarButton* m_pClearBtn;
 	geToolBarButton* m_pClearAllBtn;
 	geTreeView m_cConsoleTreeView;

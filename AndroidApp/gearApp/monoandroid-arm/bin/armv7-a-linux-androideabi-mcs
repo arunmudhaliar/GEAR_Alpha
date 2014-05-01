@@ -1,2 +1,0 @@
-#!/bin/sh
-exec /Users/amudaliar/MONOTEST/monoandroid-arm/bin/mono $MONO_OPTIONS /Users/amudaliar/MONOTEST/monoandroid-arm/lib/mono/2.0/mcs.exe -lib:/Users/amudaliar/MONOTEST/monoandroid-arm/lib/mono/2.0 -lib:/Users/amudaliar/MONOTEST/monoandroid-arm/lib/mono/3.5 "$@"

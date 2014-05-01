@@ -1,2 +1,0 @@
-#!/bin/sh
-exec /Users/amudaliar/MONOTEST/monoandroid-arm/bin/mono $MONO_OPTIONS /Users/amudaliar/MONOTEST/monoandroid-arm/lib/mono/4.0/gacutil.exe "$@"

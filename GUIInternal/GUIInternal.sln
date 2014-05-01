@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGEAR", "..\MonoGEAR\Mon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpProjectMaker", "..\CSharpProjectMaker\CSharpProjectMaker.csproj", "{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidProjectMaker", "..\AndroidProjectMaker\AndroidProjectMaker.csproj", "{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -66,6 +68,16 @@ Global
 		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|Win32.ActiveCfg = Release|x86
 		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|x86.ActiveCfg = Release|x86
 		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|x86.Build.0 = Release|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Debug|Win32.ActiveCfg = Debug|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Debug|x86.ActiveCfg = Debug|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Debug|x86.Build.0 = Debug|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Release|Mixed Platforms.Build.0 = Release|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Release|Win32.ActiveCfg = Release|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Release|x86.ActiveCfg = Release|x86
+		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

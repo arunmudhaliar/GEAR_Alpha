@@ -294,6 +294,9 @@
     <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsAndroid.h">
       <Filter>GEAREditor\scenes\settingsViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyOpenOnEditor.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -445,6 +448,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\gearSceneSettings.cpp">
       <Filter>GEAREditor\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyOpenOnEditor.cpp">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

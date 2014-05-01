@@ -21,8 +21,26 @@ public:
 		//m_pPushBtn_Object3dVisible->setGUIObserver(this);
 
 		char buffer[1024];
+		//ant home
 		memset(buffer, 0, sizeof(buffer));
-		int ret=GetEnvironmentVariable("ANDROID_ROOT", buffer, sizeof(buffer));
+		int ret=GetEnvironmentVariable("ANT_HOME", buffer, sizeof(buffer));
+		if(ret==0)
+		{
+			if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
+			{
+				m_pTextBoxAntRoot = new geTextBox("ANT_HOME environment variable not set.");
+				m_pTextBoxAntRoot->create(renderer, this, "ANT_HOME environment variable not set.", 0, 0, 300, 16);
+			}
+		}
+		else
+		{
+			m_pTextBoxAntRoot = new geTextBox(buffer);
+			m_pTextBoxAntRoot->create(renderer, this, buffer, 0, 0, 300, 16);
+		}
+
+		//android root
+		memset(buffer, 0, sizeof(buffer));
+		ret=GetEnvironmentVariable("ANDROID_ROOT", buffer, sizeof(buffer));
 		if(ret==0)
 		{
 			if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
@@ -36,7 +54,6 @@ public:
 			m_pTextBoxAndroidRoot = new geTextBox(buffer);
 			m_pTextBoxAndroidRoot->create(renderer, this, buffer, 0, 0, 300, 16);
 		}
-
 		//package name
 		m_pTextBoxBundleIdentifier = new geTextBox("com.example.app");
 		m_pTextBoxBundleIdentifier->create(renderer, this, "com.example.app", 0, 0, 300, 16);
@@ -52,7 +69,9 @@ public:
 		//window column
 		geWindowColumn* pWindowColumn = new geWindowColumn();
 		pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.35f);
-		stWindowColumnRow* row = pWindowColumn->addRow("ANDROID_ROOT");
+		stWindowColumnRow* row = pWindowColumn->addRow("ANT_HOME");
+		pWindowColumn->addControl(row, m_pTextBoxAntRoot);
+		row = pWindowColumn->addRow("ANDROID_ROOT");
 		pWindowColumn->addControl(row, m_pTextBoxAndroidRoot);
 		row = pWindowColumn->addRow("Bundle identifier");
 		pWindowColumn->addControl(row, m_pTextBoxBundleIdentifier);
@@ -101,6 +120,7 @@ public:
 	}
 
 private:
+	geTextBox* m_pTextBoxAntRoot;
 	geTextBox* m_pTextBoxAndroidRoot;
 	geTextBox* m_pTextBoxBundleIdentifier;
 	geTextBox* m_pTextBoxBundleVersion;

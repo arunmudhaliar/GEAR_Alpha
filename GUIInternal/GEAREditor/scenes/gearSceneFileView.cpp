@@ -281,6 +281,10 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 
 			}
 		}
+		else if(util::GE_IS_EXTENSION(relativePath, ".cs") || util::GE_IS_EXTENSION(relativePath, ".CS"))
+		{
+			EditorApp::getScenePropertyEditor()->populatePropertyOfOpenInEditor();
+		}
 	}
 	EditorApp::getScenePreview()->selectedObject3D(obj);
 }

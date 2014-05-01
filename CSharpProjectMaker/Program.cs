@@ -16,6 +16,8 @@ namespace CSharpProjectMaker
                 return;
             }
 
+            Console.WriteLine("CSharpProjectMaker Version 1.0.0");
+
             Guid guid = Guid.NewGuid();
             create_sln(args[0], args[1], guid);
             create_csproj(args[0], args[1], guid);
@@ -28,7 +30,7 @@ namespace CSharpProjectMaker
             stream.WriteLine();
             stream.WriteLine("Microsoft Visual Studio Solution File, Format Version 11.00");
             stream.WriteLine("# Visual Studio 2010");
-            stream.WriteLine("Project(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"testApp\", \"" + slnfilename + ".csproj\", \"{" + guid + "}\"");
+            stream.WriteLine("Project(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"" + slnfilename + "\", \"" + slnfilename + ".csproj\", \"{" + guid + "}\"");
             stream.WriteLine("EndProject");
             stream.WriteLine("Global");
             stream.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
@@ -62,8 +64,8 @@ namespace CSharpProjectMaker
             stream.WriteLine("\t\t<SchemaVersion>2.0</SchemaVersion>");
             stream.WriteLine("\t\t<ProjectGuid>{" + guid + "}</ProjectGuid>");
             stream.WriteLine("\t\t<OutputType>Exe</OutputType>");
-            stream.WriteLine("\t\t<RootNamespace>testApp</RootNamespace>");
-            stream.WriteLine("\t\t<AssemblyName>testApp</AssemblyName>");
+            stream.WriteLine("\t\t<RootNamespace>MonoGEAR</RootNamespace>");
+            stream.WriteLine("\t\t<AssemblyName>" + cs_projfilename + "</AssemblyName>");
             stream.WriteLine("\t\t<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>");
             stream.WriteLine("\t</PropertyGroup>");
 
@@ -98,7 +100,7 @@ namespace CSharpProjectMaker
             stream.WriteLine("\t</ItemGroup>");
             stream.WriteLine("\t<ItemGroup>");
 
-            traverseFolderFor_CS_Files(workingdir, stream);
+            traverseFolderFor_CS_Files(workingdir, workingdir, stream);
 
             stream.WriteLine("\t</ItemGroup>");
             stream.WriteLine("\t<Import Project=\"$(MSBuildBinPath)\\Microsoft.CSharp.targets\" />");
@@ -109,26 +111,21 @@ namespace CSharpProjectMaker
 
         }
 
-        static void traverseFolderFor_CS_Files(string path, StreamWriter stream)
+        static void traverseFolderFor_CS_Files(string path, string workingdirectory, StreamWriter stream)
         {
             //search for bitmap files
             string[] files = Directory.GetFiles(path, "*.cs");
             foreach (string file in files)
             {
-                stream.WriteLine("\t\t<Compile Include=\"" + file + "\" />");
-                //FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read);
-                //BinaryReader reader = new BinaryReader(stream);
-                //clipinfo.read(reader);
-                //reader.Close();
-                //TreeNode node = roottvnode.Nodes.Add(file, Path.GetFileName(file));
-                //node.Tag = clipinfo;
+                string relativefilepath=file.Replace(workingdirectory+"\\", "");
+                stream.WriteLine("\t\t<Compile Include=\"" + relativefilepath + "\" />");
             }
 
             //search for folders
             string[] dirs = Directory.GetDirectories(path, "*.*", SearchOption.TopDirectoryOnly);
             foreach (string dir in dirs)
             {
-                traverseFolderFor_CS_Files(dir, stream);
+                traverseFolderFor_CS_Files(dir, workingdirectory, stream);
             }
 
         }

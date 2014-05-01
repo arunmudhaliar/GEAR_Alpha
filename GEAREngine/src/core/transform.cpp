@@ -33,6 +33,22 @@ extern "C" {
 	{
 		t->rotateLocalZf(aAngleInDeg);
 	}
+
+	extern DllExport void transform_rotateWorldXf(transform* t, float aAngleInDeg)
+	{
+		t->rotateWorldXf(aAngleInDeg);
+	}
+
+	extern DllExport void transform_rotateWorldYf(transform* t, float aAngleInDeg)
+	{
+		t->rotateWorldYf(aAngleInDeg);
+	}
+
+	extern DllExport void transform_rotateWorldZf(transform* t, float aAngleInDeg)
+	{
+		t->rotateWorldZf(aAngleInDeg);
+	}
+
 	extern DllExport void transform_setPosition(transform* t, float x, float y, float z)
 	{
 		t->setPosition(x, y, z);

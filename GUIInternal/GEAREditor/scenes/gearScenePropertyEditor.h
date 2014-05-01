@@ -14,6 +14,7 @@
 #include "propertyViews\gePropertyBlurProcessor.h"
 #include "propertyViews\gePropertyAddComponent.h"
 #include "propertyViews\gePropertyCamera.h"
+#include "propertyViews\gePropertyOpenOnEditor.h"
 
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {
@@ -26,6 +27,7 @@ public:
 	void removeAllProperties();
 	void populatePropertyOfObject(object3d* obj);
 	void populatePropertyOfBlurShader(gxHWShader* blurShader);
+	void populatePropertyOfOpenInEditor();
 
 	geTreeNode* getMaterialParentNode()		{	return m_pMaterialParent;		}
 	geTreeNode* getAnimationParentNode()	{	return m_pAnimationParentNode;	}
@@ -49,10 +51,6 @@ private:
 	geTreeNode* m_pAddComponentParentNode;
 	geTreeNode* m_pCameraParentNode;
 
-	//post processors
-	geTreeNode* m_pPostProcessorBlurShaderNode;
-
-
 	gePropertyObject3d* m_pObject3dPropertyNode;
 	gePropertyTransform* m_pTransformPropertyNode;
 	gePropertyMaterial* m_pMaterialPropertyNode;
@@ -61,7 +59,12 @@ private:
 	gePropertyAddComponent* m_pAddComponentProperty;
 	gePropertyCamera* m_pCameraPropertyNode;
 
+	//open on editor
+	geTreeNode* m_pOpenOnEditorParentNode;
+	gePropertyOpenOnEditor* m_pPropertyOpenOnEditor;
+
 	//post processors
+	geTreeNode* m_pPostProcessorBlurShaderNode;
 	gePropertyBlurProcessor* m_pBlurProcessorPropertyNode;
 };
 

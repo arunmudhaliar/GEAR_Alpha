@@ -24,6 +24,9 @@ geWindow("Property Editor")
 	m_pCameraPropertyNode=NULL;
 
 	m_pBlurProcessorPropertyNode=NULL;
+
+	m_pOpenOnEditorParentNode=NULL;
+	m_pPropertyOpenOnEditor=NULL;
 }
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
@@ -39,6 +42,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	GE_DELETE(m_pAddComponentParentNode);
 	GE_DELETE(m_pPostProcessorBlurShaderNode);
 	GE_DELETE(m_pCameraParentNode);
+	GE_DELETE(m_pOpenOnEditorParentNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -80,6 +84,9 @@ void gearScenePropertyEditor::onCreate()
 
 	m_pPostProcessorBlurShaderNode = new geTreeNode(m_pRenderer, rootNode, "Blur Processor", &m_cszSprites[5], 0);
 	m_pBlurProcessorPropertyNode = new gePropertyBlurProcessor(m_pRenderer, m_pPostProcessorBlurShaderNode, "", NULL);
+
+	m_pOpenOnEditorParentNode = new geTreeNode(m_pRenderer, rootNode, "Script Editor", &m_cszSprites[5], 0);
+	m_pPropertyOpenOnEditor = new gePropertyOpenOnEditor(m_pRenderer, m_pOpenOnEditorParentNode, "", NULL);
 
 	removeAllProperties();
 }
@@ -146,6 +153,8 @@ void gearScenePropertyEditor::removeAllProperties()
 	rootNode->removeTVChild(m_pPostProcessorBlurShaderNode);
 	rootNode->removeTVChild(m_pCameraParentNode);
 
+	rootNode->removeTVChild(m_pOpenOnEditorParentNode);
+
 	//material
 	if(m_pMaterialParent)
 		m_pMaterialParent->destroyAllTVChilds();
@@ -163,6 +172,17 @@ void gearScenePropertyEditor::populatePropertyOfBlurShader(gxHWShader* blurShade
 	//blur
 	m_pBlurProcessorPropertyNode->populatePropertyOfBlurShader(blurShader);
 	rootNode->appnendTVChild(m_pPostProcessorBlurShaderNode);
+
+	m_cPropertiesTreeView.refreshTreeView();
+	m_cPropertiesTreeView.resetSelectedNodePtr();
+}
+
+void gearScenePropertyEditor::populatePropertyOfOpenInEditor()
+{
+	removeAllProperties();
+
+	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	rootNode->appnendTVChild(m_pOpenOnEditorParentNode);
 
 	m_cPropertiesTreeView.refreshTreeView();
 	m_cPropertiesTreeView.resetSelectedNodePtr();

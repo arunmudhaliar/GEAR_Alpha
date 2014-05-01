@@ -283,6 +283,9 @@ extern "C" {
 	DllExport void transform_rotateLocalXf(transform* t, float aAngleInDeg);
 	DllExport void transform_rotateLocalYf(transform* t, float aAngleInDeg);
 	DllExport void transform_rotateLocalZf(transform* t, float aAngleInDeg);
+	DllExport void transform_rotateWorldXf(transform* t, float aAngleInDeg);
+	DllExport void transform_rotateWorldYf(transform* t, float aAngleInDeg);
+	DllExport void transform_rotateWorldZf(transform* t, float aAngleInDeg);
 	DllExport void transform_setPosition(transform* t, float x, float y, float z);
 	DllExport float transform_getX(transform* t);
 	DllExport float transform_getY(transform* t);

@@ -1,10 +1,16 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
+LOCAL_MODULE    := monomodule
+LOCAL_SRC_FILES := ../monoandroid-arm/lib/libmonosgen-2.0.a
+LOCAL_EXPORT_C_INCLUDES := monoandroid-arm/include/mono-2.0
+include $(PREBUILT_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
 LOCAL_MODULE    := GEAREngine.dll
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/../../../GEAREngine/src/physics $(LOCAL_PATH)/../../../GEAREngine/src
 LOCAL_LDLIBS := -llog -landroid -lEGL -lGLESv2 -lOpenSLES
-
+LOCAL_STATIC_LIBRARIES := monomodule
 LOCAL_SRC_FILES := \
 	../../../GEAREngine/src/zlib-1.2.4/adler32.c \
 	../../../GEAREngine/src/zlib-1.2.4/compress.c \
@@ -40,6 +46,7 @@ LOCAL_SRC_FILES := \
 	../../../GEAREngine/src/core/transform.cpp     \
 	../../../GEAREngine/src/hwShader/gxHWShader.cpp     \
 	../../../GEAREngine/src/hwShader/HWShaderManager.cpp     \
+	../../../GEAREngine/src/mono/src/monoWrapper.cpp     \
 	../../../GEAREngine/src/renderer/gxRenderer.cpp     \
 	../../../GEAREngine/src/tga/TGALoader.cpp     \
 	../../../GEAREngine/src/util/gxCrc32.cpp     \

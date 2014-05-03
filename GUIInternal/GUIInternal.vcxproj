@@ -40,7 +40,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Mono-2.10.6\include\mono-2.0;../GEAREngine/src/zlib-1.2.4;C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\include;..\openal\include;..\GEAREngine\src\physics;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Mono-2.10.6\lib\mono\4.0;C:\Mono-2.10.6\lib;C:\Mono-2.10.6\bin;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);..\openal\lib;C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\lib\vs2010\x86\$(Configuration)</LibraryPath>
+    <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);..\openal\lib;C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\lib\vs2010\x86\$(Configuration)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -84,8 +84,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="GUIInternal.ico" />
-    <None Include="mono\mono.def" />
-    <None Include="mono\mono.exp" />
     <None Include="ReadMe.txt" />
     <None Include="small.ico" />
   </ItemGroup>
@@ -162,7 +160,6 @@
     <ClInclude Include="GEAREditor\win32\MDropSource.h" />
     <ClInclude Include="GUIInternal.h" />
     <ClInclude Include="MDragGropInterface.h" />
-    <ClInclude Include="mono\src\monoWrapper.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -217,7 +214,6 @@
     <ClCompile Include="GEAREditor\SpriteManager\Sprite2Dx.cpp" />
     <ClCompile Include="GEAREditor\util\FontManager.cpp" />
     <ClCompile Include="GUIInternal.cpp" />
-    <ClCompile Include="mono\src\monoWrapper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -225,9 +221,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GUIInternal.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="mono\mono.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

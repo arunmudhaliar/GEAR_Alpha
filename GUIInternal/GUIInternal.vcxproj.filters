@@ -28,12 +28,6 @@
     <Filter Include="GEAREditor\win32">
       <UniqueIdentifier>{6286d2ac-a984-4c3e-89c9-5081a0cf55ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mono">
-      <UniqueIdentifier>{2c3f7542-a583-4857-9b44-b863d83fd7a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="mono\src">
-      <UniqueIdentifier>{6d88e032-6be1-4d99-89ca-6bbd87400b3a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GEAREditor\core">
       <UniqueIdentifier>{6cffc933-9ea0-4c9a-9049-d4e3e2a5dd43}</UniqueIdentifier>
     </Filter>
@@ -60,12 +54,6 @@
     </None>
     <None Include="GUIInternal.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="mono\mono.def">
-      <Filter>mono</Filter>
-    </None>
-    <None Include="mono\mono.exp">
-      <Filter>mono</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -137,9 +125,6 @@
     </ClInclude>
     <ClInclude Include="GEAREditor\gui\geButton.h">
       <Filter>GEAREditor\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="mono\src\monoWrapper.h">
-      <Filter>mono\src</Filter>
     </ClInclude>
     <ClInclude Include="GEAREditor\gui\geTreeView.h">
       <Filter>GEAREditor\gui</Filter>
@@ -341,9 +326,6 @@
     <ClCompile Include="GEAREditor\gui\geButton.cpp">
       <Filter>GEAREditor\gui</Filter>
     </ClCompile>
-    <ClCompile Include="mono\src\monoWrapper.cpp">
-      <Filter>mono\src</Filter>
-    </ClCompile>
     <ClCompile Include="GEAREditor\gui\geTreeView.cpp">
       <Filter>GEAREditor\gui</Filter>
     </ClCompile>
@@ -457,10 +439,5 @@
     <ResourceCompile Include="GUIInternal.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="mono\mono.lib">
-      <Filter>mono</Filter>
-    </Library>
   </ItemGroup>
 </Project>

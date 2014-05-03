@@ -44,8 +44,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Mono-2.10.6\include\mono-2.0;../GEAREngine/src/zlib-1.2.4;C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\include;D:\GITREPO\GEARREPO\openal\include;D:\GITREPO\GEARREPO\GEAREngine\src\physics;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Mono-2.10.6\lib\mono\4.0;C:\Mono-2.10.6\lib;C:\Mono-2.10.6\bin;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);D:\GITREPO\GEARREPO\openal\lib</LibraryPath>
+    <IncludePath>C:\Mono-2.10.6\include\mono-2.0;../GEAREngine/src/zlib-1.2.4;C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\include;..\openal\include;..\GEAREngine\src\physics;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);..\openal\lib;C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\lib\vs2010\x86\$(Configuration)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

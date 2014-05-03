@@ -44,10 +44,10 @@
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\include;../src/zlib-1.2.4;D:\GITREPO\GEARREPO\openal\include;D:\GITREPO\GEARREPO\GEAREngine\src\physics;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Mono-2.10.6\include\mono-2.0;C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\include;../src/zlib-1.2.4;..\..\openal\include;..\src\physics;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2013.3\lib\vs2010\x86;D:\GITREPO\GEARREPO\openal\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Mono-2.10.6\lib\mono\4.0;C:\Mono-2.10.6\lib;C:\Mono-2.10.6\bin;C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\lib\vs2010\x86\$(Configuration);..\..\openal\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -68,13 +68,13 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USE_ProgrammablePipeLine;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USEMONOENGINE;USE_ProgrammablePipeLine;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;fbxsdk-2013.3.lib;glew32.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;libfbxsdk.lib;glew32.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

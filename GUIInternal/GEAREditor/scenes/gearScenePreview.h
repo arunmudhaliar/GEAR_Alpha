@@ -3,7 +3,7 @@
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
-#include "../../mono/src/monoWrapper.h"
+#include "../../../GEAREngine/src/mono/src/monoWrapper.h"
 
 #define CAM_SPEED	3.0f
 #define CAMERA_LOOKAT_OFFSET vector3f(0, 0, 0)

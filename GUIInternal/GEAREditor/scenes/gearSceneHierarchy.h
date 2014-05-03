@@ -3,7 +3,7 @@
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
-#include "../../mono/src/monoWrapper.h"
+#include "../../../GEAREngine/src/mono/src/monoWrapper.h"
 #include "../gui/geToolBarDropMenu.h"
 
 class gearSceneHierarchy : public geWindow, public MEngineObserver, public MObject3dObserver, public MTreeViewObserver, public MGUIObserver

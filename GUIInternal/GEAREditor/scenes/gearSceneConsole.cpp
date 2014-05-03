@@ -7,6 +7,7 @@ geWindow("Console View")
 	m_pCurrentBuildRootNodePtr=NULL;
 	m_pClearBtn=NULL;
 	m_pClearAllBtn=NULL;
+	m_pDontLogBtn=NULL;
 	m_uCurrentRunElapsedTime=0;
 }
 
@@ -27,6 +28,12 @@ void gearSceneConsole::onCreate()
 	m_pClearAllBtn=new geToolBarButton(m_pRenderer, "Clear All", getToolBar());
 	m_pClearAllBtn->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pClearAllBtn);
+
+	//don't log all btn
+	m_pDontLogBtn=new geToolBarButton(m_pRenderer, "Don't Log", getToolBar());
+	m_pDontLogBtn->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pDontLogBtn);
+
 	m_uCurrentRunElapsedTime=Timer::getCurrentTimeInMilliSec();
 }
 
@@ -70,6 +77,9 @@ void gearSceneConsole::onMouseWheel(int zDelta, int x, int y, int flag)
 //==============================CONSOLE FUNC=========================
 void gearSceneConsole::appendConsoleRunRootNode()
 {
+	//if(m_pDontLogBtn->isButtonPressed())
+	//	return;
+
 	char buffer[32];
 	sprintf(buffer, "#%d Run (0)", m_cConsoleTreeView.getRoot()->getTVNodeChildCount());
 
@@ -94,6 +104,9 @@ void gearSceneConsole::appendConsoleRunRootNode()
 
 void gearSceneConsole::appendConsoleMsg(const char* msg)
 {
+	if(m_pDontLogBtn->isButtonPressed())
+		return;
+
 	geTreeNode* newtvConsoleNode;
 
 	if(m_pCurrentBuildRootNodePtr)

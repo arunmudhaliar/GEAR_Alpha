@@ -3,7 +3,7 @@
 
 #include "../../gui/geTextureThumbnail.h"
 #include "../assetUserData.h"
-#include "../../../mono/src/monoWrapper.h"
+#include "../../../../GEAREngine/src/mono/src/monoWrapper.h"
 
 class geNullMaterialExtended : public geTextureThumbnail
 {

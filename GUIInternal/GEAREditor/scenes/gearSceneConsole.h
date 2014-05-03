@@ -36,6 +36,7 @@ private:
 	unsigned long m_uCurrentRunElapsedTime;
 	geToolBarButton* m_pClearBtn;
 	geToolBarButton* m_pClearAllBtn;
+	geToolBarButton* m_pDontLogBtn;
 	geTreeView m_cConsoleTreeView;
 	geTreeNode* m_pCurrentBuildRootNodePtr;
 };

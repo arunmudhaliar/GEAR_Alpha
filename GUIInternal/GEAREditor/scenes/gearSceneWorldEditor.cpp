@@ -1116,7 +1116,16 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 		}
 		else
 		{
+			m_pPauseButton->buttonNormal();
 			m_bMonoGameInitialized=false;
+		}
+	}
+	else if(m_pPauseButton==btn)
+	{
+		if(m_pPauseButton->isButtonPressed() && !m_pPlayButton->isButtonPressed())
+		{
+			//reset the button if not in play mode
+			m_pPauseButton->buttonNormal();
 		}
 	}
 	else if(m_pTranslateGizmo==btn)

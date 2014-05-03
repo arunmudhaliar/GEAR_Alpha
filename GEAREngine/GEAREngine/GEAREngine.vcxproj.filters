@@ -52,6 +52,9 @@
     <Filter Include="engine\zlib">
       <UniqueIdentifier>{4b6221e7-7fae-453d-ba6c-01273589d8b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\mono">
+      <UniqueIdentifier>{bbea2c65-a6b3-41e1-bfbd-63dd406e2226}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp">
@@ -659,6 +662,9 @@
     </ClCompile>
     <ClCompile Include="..\src\util\gxCrc32.cpp">
       <Filter>engine\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mono\src\monoWrapper.cpp">
+      <Filter>engine\mono</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1571,6 +1577,9 @@
     <ClInclude Include="..\src\zlib-1.2.4\zutil.h">
       <Filter>engine\zlib</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\mono\src\monoWrapper.h">
+      <Filter>engine\mono</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\physics\CMakeLists.txt">
@@ -1579,5 +1588,16 @@
     <None Include="..\src\physics\Makefile.am">
       <Filter>engine\physics</Filter>
     </None>
+    <None Include="..\src\mono\mono.def">
+      <Filter>engine\mono</Filter>
+    </None>
+    <None Include="..\src\mono\mono.exp">
+      <Filter>engine\mono</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\src\mono\mono.lib">
+      <Filter>engine\mono</Filter>
+    </Library>
   </ItemGroup>
 </Project>

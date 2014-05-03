@@ -37,10 +37,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\include;../src/zlib-1.2.4;..\..\openal\include;..\src\physics;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Mono-2.10.6\include\mono-2.0;C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\include;../src/zlib-1.2.4;..\..\openal\include;..\src\physics;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\lib\vs2010\x86\$(Configuration);..\..\openal\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Mono-2.10.6\lib\mono\4.0;C:\Mono-2.10.6\lib;C:\Mono-2.10.6\bin;C:\Program Files\Autodesk\FBX\FBX SDK\2014.2\lib\vs2010\x86\$(Configuration);..\..\openal\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -54,7 +54,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_ProgrammablePipeLine;_WINDLL;GLUT_DISABLE_ATEXIT_HACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USEMONOENGINE;USE_ProgrammablePipeLine;_WINDLL;GLUT_DISABLE_ATEXIT_HACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -117,6 +117,7 @@
     <ClCompile Include="..\src\lpng151\pngwrite.c" />
     <ClCompile Include="..\src\lpng151\pngwtran.c" />
     <ClCompile Include="..\src\lpng151\pngwutil.c" />
+    <ClCompile Include="..\src\mono\src\monoWrapper.cpp" />
     <ClCompile Include="..\src\physics\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp" />
     <ClCompile Include="..\src\physics\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp" />
     <ClCompile Include="..\src\physics\BulletCollision\BroadphaseCollision\btCollisionAlgorithm.cpp" />
@@ -327,6 +328,7 @@
     <ClInclude Include="..\src\lpng151\pnglibconf.h" />
     <ClInclude Include="..\src\lpng151\pngpriv.h" />
     <ClInclude Include="..\src\lpng151\pngstruct.h" />
+    <ClInclude Include="..\src\mono\src\monoWrapper.h" />
     <ClInclude Include="..\src\physics\btBulletCollisionCommon.h" />
     <ClInclude Include="..\src\physics\btBulletDynamicsCommon.h" />
     <ClInclude Include="..\src\physics\Bullet-C-Api.h" />
@@ -587,8 +589,13 @@
     <ClInclude Include="..\src\zlib-1.2.4\zutil.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\src\mono\mono.def" />
+    <None Include="..\src\mono\mono.exp" />
     <None Include="..\src\physics\CMakeLists.txt" />
     <None Include="..\src\physics\Makefile.am" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\src\mono\mono.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

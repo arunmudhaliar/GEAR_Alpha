@@ -7,7 +7,7 @@
 #define  LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__))
 
 #include "../../../GEAREngine/src/GEAREngine.h"
-#include "../../../GUIInternal/mono/src/monoWrapper.h"
+#include "../../../GEAREngine/src/mono/src/monoWrapper.h"
 
 #include <android/native_activity.h>
 #include <android_native_app_glue.h>

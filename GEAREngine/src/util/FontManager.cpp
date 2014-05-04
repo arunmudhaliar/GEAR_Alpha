@@ -7,12 +7,12 @@
 //
 
 #include "FontManager.h"
-#include "objC_util.h"
 
-#if defined (USE_ProgrammablePipeLine_test)
-gxFont::gxFont(gxFontShader* pFontShaderPtr)
+#if defined (USE_ProgrammablePipeLine)
+gxFont::gxFont(gxHWShader* pFontShaderPtr, gxRenderer* m_pRendererPtr)
 {
     m_pFontShaderPtr=pFontShaderPtr;
+	m_pRendererPtr=m_pRendererPtr;
 #else
     gxFont::gxFont()
     {
@@ -43,17 +43,17 @@ void gxFont::reset()
         m_iTexID=0;
     }
     
-    GE_DELETE_ARY(m_pszCharOffsetX);
-    GE_DELETE_ARY(m_pszCharOffsetY);
-    GE_DELETE_ARY(m_pszCharW);
-    GE_DELETE_ARY(m_pszCharH);
-    GE_DELETE_ARY(m_pszCharD);
+    GX_DELETE_ARY(m_pszCharOffsetX);
+    GX_DELETE_ARY(m_pszCharOffsetY);
+    GX_DELETE_ARY(m_pszCharW);
+    GX_DELETE_ARY(m_pszCharH);
+    GX_DELETE_ARY(m_pszCharD);
     
-    GE_DELETE_ARY(m_pszU);
-    GE_DELETE_ARY(m_pszV);
-    GE_DELETE_ARY(m_pszU_width);
-    GE_DELETE_ARY(m_pszU_height);
-#if defined (USE_ProgrammablePipeLine_test)
+    GX_DELETE_ARY(m_pszU);
+    GX_DELETE_ARY(m_pszV);
+    GX_DELETE_ARY(m_pszU_width);
+    GX_DELETE_ARY(m_pszU_height);
+#if defined (USE_ProgrammablePipeLine)
     m_pFontShaderPtr=NULL;
 #endif
     
@@ -103,10 +103,43 @@ bool gxFont::load(gxFile& file)
     
     file.Read(m_iLineHeight);
     file.ReadBuffer(buffer, m_iBitmapHeight*m_iBitmapWidth*2);
-    m_iTexID=objC_util::loadBuffer(buffer, true, m_iBitmapWidth, m_iBitmapHeight, 16);
-    GE_DELETE_ARY(buffer);
+    m_iTexID=loadBuffer(buffer, true, m_iBitmapWidth, m_iBitmapHeight, 16);
+    GX_DELETE_ARY(buffer);
     
     return true;
+}
+
+unsigned int gxFont::loadBuffer(unsigned char* buffer, bool bAlpha, unsigned int width, unsigned int height, unsigned int bpp)
+{
+    unsigned int texID=0;
+	glEnable(GL_TEXTURE_2D);
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_2D, texID);
+        
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); 
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    switch (bpp) {
+        case 16:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, width, height, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, buffer);
+            break;
+        case 32:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+            break;
+        default:
+            break;
+    }
+        
+        
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glDisable(GL_TEXTURE_2D);
+        
+#if defined (LOG_DEBUG_ENGINE)
+    DEBUG_PRINT("texture loaded from buffer - w=%d, h=%d", width, height);
+#endif 	
+        
+        
+    return texID;
 }
 
 void gxFont::draw()
@@ -127,7 +160,7 @@ void gxFont::draw()
 		0,      65536,
 	};
 
-#if defined (USE_ProgrammablePipeLine_test)
+#if defined (USE_ProgrammablePipeLine)
 #else
 #if ARUN_COMMENTED
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -281,29 +314,31 @@ int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
         cntr++;
     }
     
-#if defined (USE_ProgrammablePipeLine_test)
+#if defined (USE_ProgrammablePipeLine)
     m_pFontShaderPtr->enableProgram();
-    m_pFontShaderPtr->resetAllFlags();
+    //m_pFontShaderPtr->resetAllFlags();
     
     glVertexAttribPointer(m_pFontShaderPtr->getAttribLoc("a_vertex_coord_v4"), 2, GL_SHORT, GL_FALSE, 0, m_cszVertCoordList);
     glEnableVertexAttribArray(m_pFontShaderPtr->getAttribLoc("a_vertex_coord_v4"));
     
+	glActiveTexture(GL_TEXTURE0);
     glVertexAttribPointer(m_pFontShaderPtr->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, m_cszTexCoordList);
     glEnableVertexAttribArray(m_pFontShaderPtr->getAttribLoc("a_uv_coord0_v2"));
     
+
     //glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, m_iTexID);	
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+    glBlendFunc(GL_ONE, GL_ONE);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     matrix4x4f transformTM;
     
     if(bShadowed)
     {
-        transformTM.setPosition(x+1, y+1+m_fYOffset, -1.0f);
-        transformTM= *objectBase::getRenderer()->getOrthoProjectionMatrix() * transformTM;
+        transformTM.setPosition(x+1, y+1+m_fYOffset, 0.0f);
+        transformTM= *m_pRendererPtr->getOrthoProjectionMatrix() * transformTM;
         const float* u_mvp_m4x4_shadow=transformTM.getMatrix();
         m_pFontShaderPtr->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_shadow, false, 4);
         float shadow_color[]={0.0f, 0.0f, 0.0f, 0.7f};
@@ -313,8 +348,8 @@ int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
         transformTM.identity(); //reset the matrix
     }
     
-    transformTM.setPosition(x, y+m_fYOffset, -1.0f);
-    transformTM= *objectBase::getRenderer()->getOrthoProjectionMatrix() * transformTM;
+    transformTM.setPosition(x, y+m_fYOffset, 0.0f);
+    transformTM= *m_pRendererPtr->getOrthoProjectionMatrix() * transformTM;
     const float* u_mvp_m4x4=transformTM.getMatrix();
     m_pFontShaderPtr->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
     m_pFontShaderPtr->sendUniform4fv("u_color_v4", m_cszRGBA);
@@ -322,9 +357,11 @@ int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     
     glDisable(GL_BLEND);
     glDisableVertexAttribArray(m_pFontShaderPtr->getAttribLoc("a_uv_coord0_v2"));
-    //glDisable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
     glDisableVertexAttribArray(m_pFontShaderPtr->getAttribLoc("a_vertex_coord_v4"));
+	
+	//glDisable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     
     m_pFontShaderPtr->disableProgram();
 #else
@@ -994,7 +1031,7 @@ bool gxFont::canNeglectNextWord(const char* str, int cx, int nChar, int iCurInde
 
 FontManager::FontManager()
 {
-
+	m_pRendererPtr=NULL;
 }
 
 FontManager::~FontManager()
@@ -1002,15 +1039,21 @@ FontManager::~FontManager()
 	reset(false);
 }
 
-void FontManager::init(rendererBase::ERENDERER technique)
+void FontManager::init()
 {
-#if defined (USE_ProgrammablePipeLine_test)
-    if(technique==rendererBase::gl_programmable_pipeline)
+#if defined (USE_ProgrammablePipeLine)
+    //if(technique==rendererBase::gl_programmable_pipeline)
     {
 #if defined(WIN32)
-        m_cFontShader.loadShader("shadersWin32/fontShader.vsh", "shadersWin32/fontShader.fsh");
+        if(m_cFontShader.loadShader("res/shadersWin32/hwshader/fontshader.glsl"))
+		{
+			DEBUG_PRINT("res/shadersWin32/hwshader/fontshader.glsl loaded");
+		}
 #else
-        m_cFontShader.loadShader("shaders/fontShader.vsh", "shaders/fontShader.fsh");
+        if(m_cFontShader.loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/fontshader.glsl"))
+		{
+			DEBUG_PRINT("/storage/emulated/0/gear/shadersAndroid/hwshader/fontshader.glsl loaded");
+		}
 #endif
     }
 #endif
@@ -1022,15 +1065,25 @@ void FontManager::reset(bool reload)
     {
         gxFont* font=m_cvFontList[x];
         if(reload)font->setDeleteGLTexture(!reload);
-        GE_DELETE(font);
+        GX_DELETE(font);
     }
     m_cvFontList.clear();
 }
 
+void FontManager::setRenderer(gxRenderer* renderer)
+{
+	m_pRendererPtr=renderer;
+	for(int x=0;x<m_cvFontList.size();x++)
+    {
+        gxFont* font=m_cvFontList[x];
+		font->setRenderer(m_pRendererPtr);
+    }
+}
+
 gxFont* FontManager::loadFont(const char* filename)
 {
-#if defined (USE_ProgrammablePipeLine_test)
-    gxFont* newFont=new gxFont(&m_cFontShader);
+#if defined (USE_ProgrammablePipeLine)
+    gxFont* newFont=new gxFont(&m_cFontShader, m_pRendererPtr);
 #else
     gxFont* newFont=new gxFont();
 #endif

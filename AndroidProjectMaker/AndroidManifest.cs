@@ -49,7 +49,8 @@ namespace AndroidProjectMaker
             stream.WriteLine("This will take care of integrating with our NDK code. -->");
             stream.WriteLine("<activity android:name=\"" + bundleidentifier + ".MainActivity\"");
             stream.WriteLine("android:label=\"@string/app_name\"");
-            stream.WriteLine("android:configChanges=\"orientation|keyboardHidden\">");
+            stream.WriteLine("android:configChanges=\"orientation|keyboardHidden\"");
+            stream.WriteLine("android:screenOrientation=\"landscape\">");
             stream.WriteLine("<!-- Tell NativeActivity the name of or .so -->");
             stream.WriteLine("<meta-data android:name=\"android.app.lib_name\"");
             stream.WriteLine("android:value=\"gearapp\" />");

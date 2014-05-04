@@ -1,8 +1,8 @@
 #include "geGUIManager.h"
 
-FontManager geGUIManager::g_cFontManager;
-gxFont* geGUIManager::g_pFontArial10_84Ptr=NULL;
-gxFont* geGUIManager::g_pFontArial10_80Ptr=NULL;
+geFontManager geGUIManager::g_cFontManager;
+geFont* geGUIManager::g_pFontArial10_84Ptr=NULL;
+geFont* geGUIManager::g_pFontArial10_80Ptr=NULL;
 CGETextureManager geGUIManager::g_cTextureManager;
 
 geGUIManager::geGUIManager()
@@ -21,7 +21,7 @@ geGUIManager::~geGUIManager()
 
 void geGUIManager::init(rendererGL10* renderer)
 {
-	g_cFontManager.init(rendererBase::gl_fixed_pipeline);
+	g_cFontManager.init();
 	g_pFontArial10_84Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_84.ecf");
 	g_pFontArial10_80Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_80.ecf");
 

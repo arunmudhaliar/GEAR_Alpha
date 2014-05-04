@@ -1,9 +1,16 @@
 #ifndef OBJECT3D_H
 #define OBJECT3D_H
 
+//#define USE_BXLIST
+
 #include "transform.h"
+#ifdef USE_BXLIST
+#include "../util/bxLinkedList.h"
+#else
 #include <vector>
 #include <algorithm>
+#endif
+
 #include "basicIncludes.h"
 #include "aabb.h"
 #include "oobb.h"
@@ -13,6 +20,9 @@
 #if USE_BULLET
 #include "../physics/btBulletDynamicsCommon.h"
 #endif
+
+
+
 
 class DllExport MRootObserver
 {
@@ -83,7 +93,12 @@ public:
 
 	object3d* appendChild(object3d* child);
 	bool removeChild(object3d* child);
+
+#ifdef USE_BXLIST
+	bxLinkedList<object3d*>* getChildList()	{	return &m_cChilds;	}
+#else
 	std::vector<object3d*>* getChildList()	{	return &m_cChilds;	}
+#endif
 
 	int getChildCount()				{	return m_cChilds.size();	}
 	object3d* getChild(int index)	{	return m_cChilds[index];	}
@@ -142,7 +157,11 @@ protected:
 	int m_iObjectID;
 	object3d* m_pParentPtr;
 	unsigned int m_eBaseFlags;
+#ifdef USE_BXLIST
+	bxLinkedList<object3d*> m_cChilds;
+#else
 	std::vector<object3d*> m_cChilds;
+#endif
 	gxAABBf m_cAABB;
 	gxOOBBf m_cOOBB;
 	gxAnimation* m_pAnimationController;

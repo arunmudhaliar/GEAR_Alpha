@@ -105,9 +105,6 @@
     <ClInclude Include="GEAREditor\util\geDefines.h">
       <Filter>GEAREditor\util</Filter>
     </ClInclude>
-    <ClInclude Include="GEAREditor\util\FontManager.h">
-      <Filter>GEAREditor\util</Filter>
-    </ClInclude>
     <ClInclude Include="GEAREditor\util\objC_util.h">
       <Filter>GEAREditor\util</Filter>
     </ClInclude>
@@ -282,6 +279,9 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyOpenOnEditor.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\util\geFontManager.h">
+      <Filter>GEAREditor\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -307,9 +307,6 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\gui\geGUIManager.cpp">
       <Filter>GEAREditor\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="GEAREditor\util\FontManager.cpp">
-      <Filter>GEAREditor\util</Filter>
     </ClCompile>
     <ClCompile Include="GEAREditor\gui\geToolBar.cpp">
       <Filter>GEAREditor\gui</Filter>
@@ -433,6 +430,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyOpenOnEditor.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\util\geFontManager.cpp">
+      <Filter>GEAREditor\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

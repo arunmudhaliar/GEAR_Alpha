@@ -146,9 +146,9 @@
     <ClInclude Include="GEAREditor\secondryViews\geTextureDlg.h" />
     <ClInclude Include="GEAREditor\SpriteManager\Sprite.h" />
     <ClInclude Include="GEAREditor\SpriteManager\Sprite2Dx.h" />
-    <ClInclude Include="GEAREditor\util\FontManager.h" />
     <ClInclude Include="GEAREditor\util\geCrc32.h" />
     <ClInclude Include="GEAREditor\util\geDefines.h" />
+    <ClInclude Include="GEAREditor\util\geFontManager.h" />
     <ClInclude Include="GEAREditor\util\geUtil.h" />
     <ClInclude Include="GEAREditor\util\geVector3.h" />
     <ClInclude Include="GEAREditor\util\geVector4.h" />
@@ -212,7 +212,7 @@
     <ClCompile Include="GEAREditor\secondryViews\geTextureDlg.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite2Dx.cpp" />
-    <ClCompile Include="GEAREditor\util\FontManager.cpp" />
+    <ClCompile Include="GEAREditor\util\geFontManager.cpp" />
     <ClCompile Include="GUIInternal.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

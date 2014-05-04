@@ -8,6 +8,7 @@
 
 #include "../../../GEAREngine/src/GEAREngine.h"
 #include "../../../GEAREngine/src/mono/src/monoWrapper.h"
+#include "../../../GEAREngine/src/util/FontManager.h"
 
 #include <android/native_activity.h>
 #include <android_native_app_glue.h>
@@ -45,6 +46,8 @@ struct engine {
     struct saved_state state;
 };
 
+FontManager g_cFontManager;
+gxFont* g_pFontPtr=NULL;
 
 extern "C" {
 	jint JNI_OnLoad(JavaVM* vm, void* reserved);
@@ -64,7 +67,7 @@ JNIEXPORT jint JNICALL Java_com_gearengine_gearapp_MainActivity_mainlib(JNIEnv *
 	return 0;
 }
 
-static int gear_start_app()
+static int gear_start_app(struct engine* engine)
 {
 	monoWrapper::loadMonoModules();
 	monoWrapper::reInitMono();
@@ -81,8 +84,16 @@ static int gear_start_app()
 	monoWrapper::mono_engine_init(1);
 	monoWrapper::mono_engine_init_for_mono_android();
 
+	monoWrapper::mono_engine_resize(monoWrapper::mono_engine_getWorld(0), 0, 0, engine->width, engine->height, 10.0f, 100000.0f);
+
 	HWShaderManager* hwmanager = engine_getHWShaderManager();
 	hwmanager->Init();
+
+
+	g_cFontManager.init();
+	g_cFontManager.setRenderer(monoWrapper::mono_engine_getWorld(0)->getRenderer());
+	g_pFontPtr=g_cFontManager.loadFont("//storage//emulated//0//gear//fonts//arial_iphone10_84.ecf");
+
 	monoWrapper::mono_game_start();
 
 	return 0;
@@ -104,6 +115,7 @@ static int engine_init_display(struct engine* engine) {
             EGL_BLUE_SIZE, 8,
             EGL_GREEN_SIZE, 8,
             EGL_RED_SIZE, 8,
+            EGL_DEPTH_SIZE, 8,
             EGL_NONE
     };
     EGLint w, h, dummy, format;
@@ -152,6 +164,10 @@ static int engine_init_display(struct engine* engine) {
     engine->height = h;
     engine->state.angle = 0;
 
+//	//set viewport
+//	monoWrapper::mono_engine_getWorld(0)->getRenderer()->setViewPort(0, 0, w, h);
+
+
     // Initialize GL state.
     //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
     glEnable(GL_CULL_FACE);
@@ -173,11 +189,17 @@ static void engine_draw_frame(struct engine* engine) {
 
 	monoWrapper::mono_engine_update(monoWrapper::mono_engine_getWorld(0), 1.0f);
 	monoWrapper::mono_game_run(1.0f);
-	monoWrapper::mono_engine_resize(monoWrapper::mono_engine_getWorld(0), 0, 0, 1000, 1000, 10.0f, 100000.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	monoWrapper::mono_engine_render(monoWrapper::mono_engine_getWorld(0), NULL);
 
+	if(g_pFontPtr)
+	{
+		glDisable(GL_CULL_FACE);
+		g_pFontPtr->setRGBA(1, 1, 1);
+		g_pFontPtr->drawString("HelloWorld", 0, g_pFontPtr->getLineHeight()+10, 200);
+		glEnable(GL_CULL_FACE);
+	}
     eglSwapBuffers(engine->display, engine->surface);
 }
 
@@ -210,6 +232,7 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
         engine->animating = 1;
         engine->state.x = AMotionEvent_getX(event, 0);
         engine->state.y = AMotionEvent_getY(event, 0);
+		engine_mouseMove(monoWrapper::mono_engine_getWorld(0), engine->state.x, engine->state.y, 0);
         return 1;
     }
     return 0;
@@ -232,7 +255,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             if (engine->app->window != NULL) {
                 engine_init_display(engine);
                 //ENGINE ENTRY POINT
-                gear_start_app();
+                gear_start_app(engine);
                 //
                 engine_draw_frame(engine);
             }

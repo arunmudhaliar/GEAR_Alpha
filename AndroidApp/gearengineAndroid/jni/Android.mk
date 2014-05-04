@@ -49,6 +49,7 @@ LOCAL_SRC_FILES := \
 	../../../GEAREngine/src/mono/src/monoWrapper.cpp     \
 	../../../GEAREngine/src/renderer/gxRenderer.cpp     \
 	../../../GEAREngine/src/tga/TGALoader.cpp     \
+	../../../GEAREngine/src/util/FontManager.cpp     \
 	../../../GEAREngine/src/util/gxCrc32.cpp     \
 	../../../GEAREngine/src/util/gxFile.cpp     \
 	../../../GEAREngine/src/util/gxUtil.cpp

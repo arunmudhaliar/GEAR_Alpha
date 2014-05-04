@@ -19,8 +19,26 @@ public:
 
 	~gxUV()
 	{
+		if(m_cVBO_texID)
+			deleteVBOTexCoord();
 		m_pMaterialPtr=NULL;
 		GX_DELETE_ARY(m_pszfGLTexCoordList);
+	}
+
+	void buildVBOTexCoord(int nTris)
+	{
+		if(!m_pszfGLTexCoordList) return;
+        
+		glGenBuffers(1, &m_cVBO_texID);					// Get A Valid Name
+		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_texID);	// Bind The Buffer
+		glBufferData(GL_ARRAY_BUFFER, nTris*3*2*sizeof(float), m_pszfGLTexCoordList, GL_STATIC_DRAW);
+	}
+
+	void deleteVBOTexCoord()
+	{
+		if(m_cVBO_texID)
+			glDeleteBuffers(1, &m_cVBO_texID);
+		m_cVBO_texID=0;
 	}
 
 	int			m_iMatIDFromFile;
@@ -42,6 +60,16 @@ public:
 	float* getColorBuffer()		{	return m_pszColorBuffer;	}
 	float* getNormalBuffer()	{	return m_pszNormalBuffer;	}
 	float* getTangentBuffer()	{	return m_pszTangentBuffer;	}
+
+	//vbo
+    bool isVBO()    {   return m_bVBO;  }
+    void buildVBO();
+	void deleteVBO();
+    
+    unsigned int getVBOVertexID()   {   return m_cVBO_vertID;   }
+    unsigned int getVBOColorID()    {   return m_cVBO_clrID;    }
+    unsigned int getVBONormalID()   {   return m_cVBO_nrmlID;   }
+	unsigned int getVBOTangentID()  {   return m_cVBO_tangentID;    }
 
 	virtual void update(float dt);
 	virtual void render(gxRenderer* renderer, object3d* light);
@@ -95,6 +123,14 @@ protected:
 	float* m_pszColorBuffer;
 	float* m_pszNormalBuffer;
 	float* m_pszTangentBuffer;
+
+	//for VBO
+	bool  m_bVBO;
+	unsigned int m_cVBO_vertID;
+	unsigned int m_cVBO_clrID;
+	unsigned int m_cVBO_nrmlID;
+	unsigned int m_cVBO_tangentID;
+
 
 	int m_nUVChannels;
 	gxUV* m_pszUVChannels;

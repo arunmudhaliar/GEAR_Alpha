@@ -6,6 +6,21 @@ gxHWShader::gxHWShader()
 	m_cProgram=0;
 	m_cVertShader=0;
 	m_cFragShader=0;
+
+	//predefined vars
+	m_cUnifrom_GEAR_MVP=-1;
+	m_cUnifrom_GEAR_MODEL_MATRIX=-1;
+	m_cUnifrom_GEAR_MODEL_INVERSE=-1;
+	m_cUnifrom_material_diffuse=-1;
+	m_cUnifrom_material_ambient=-1;
+	m_cUnifrom_material_specular=-1;
+	m_cUnifrom_material_shininess=-1;
+
+	m_cAttrib_vIN_Position=-1;
+	m_cAttrib_vIN_Normal=-1;
+	m_cAttrib_Tangent=-1;
+	//
+
 }
 
 gxHWShader::~gxHWShader()
@@ -483,4 +498,123 @@ void gxHWShader::sendAttrib1f(const char* name, float x)
 {
 	int loc=getAttribLoc(name);
 	glVertexAttrib1f(loc, x);
+}
+
+//predefined vars
+void gxHWShader::sendUniform_GEAR_MVP(const float* input)
+{
+	if(m_cUnifrom_GEAR_MVP!=-1)
+	{
+		glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input);
+	}
+	else
+	{
+		m_cUnifrom_GEAR_MVP = getUniformLoc("GEAR_MVP");
+		glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input);
+	}
+}
+
+void gxHWShader::sendUniform_GEAR_MODEL_MATRIX(const float* input)
+{
+	if(m_cUnifrom_GEAR_MODEL_MATRIX!=-1)
+	{
+		glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input);
+	}
+	else
+	{
+		m_cUnifrom_GEAR_MODEL_MATRIX = getUniformLoc("GEAR_MODEL_MATRIX");
+		glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input);
+	}
+}
+
+void gxHWShader::sendUniform_GEAR_MODEL_INVERSE(const float* input)
+{
+	if(m_cUnifrom_GEAR_MODEL_INVERSE!=-1)
+	{
+		glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input);
+	}
+	else
+	{
+		m_cUnifrom_GEAR_MODEL_INVERSE = getUniformLoc("GEAR_MODEL_INVERSE");
+		glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input);
+	}
+}
+
+void gxHWShader::sendUniform_material_diffuse(const float* input)
+{
+	if(m_cUnifrom_material_diffuse!=-1)
+	{
+		glUniformMatrix4fv(m_cUnifrom_material_diffuse, 1, false, input);
+	}
+	else
+	{
+		m_cUnifrom_material_diffuse = getUniformLoc("material.diffuse");
+		glUniform4fv(m_cUnifrom_material_diffuse, 1, input);
+	}
+}
+
+void gxHWShader::sendUniform_material_ambient(const float* input)
+{
+	if(m_cUnifrom_material_ambient!=-1)
+	{
+		glUniformMatrix4fv(m_cUnifrom_material_ambient, 1, false, input);
+	}
+	else
+	{
+		m_cUnifrom_material_ambient = getUniformLoc("material.ambient");
+		glUniform4fv(m_cUnifrom_material_ambient, 1, input);
+	}
+}
+
+void gxHWShader::sendUniform_material_specular(const float* input)
+{
+	if(m_cUnifrom_material_specular!=-1)
+	{
+		glUniformMatrix4fv(m_cUnifrom_material_specular, 1, false, input);
+	}
+	else
+	{
+		m_cUnifrom_material_specular = getUniformLoc("material.specular");
+		glUniform4fv(m_cUnifrom_material_specular, 1, input);
+	}
+}
+
+void gxHWShader::sendUniform_material_shininess(float input)
+{
+	if(m_cUnifrom_material_shininess!=-1)
+	{
+		glUniform1f(m_cUnifrom_material_shininess, input);
+	}
+	else
+	{
+		m_cUnifrom_material_shininess = getUniformLoc("material.shininess");
+		glUniform1f(m_cUnifrom_material_shininess, input);
+	}
+}
+
+int gxHWShader::getAttrib_vIN_Position()
+{
+	if(m_cAttrib_vIN_Position==-1)
+	{
+		m_cAttrib_vIN_Position=getAttribLoc("vIN_Position");
+	}
+	return m_cAttrib_vIN_Position;
+}
+
+int gxHWShader::getAttrib_vIN_Normal()
+{
+	if(m_cAttrib_vIN_Normal==-1)
+	{
+		m_cAttrib_vIN_Normal=getAttribLoc("vIN_Normal");
+	}
+	return m_cAttrib_vIN_Normal;
+}
+
+int gxHWShader::getAttrib_Tangent()
+{
+	if(m_cAttrib_Tangent==-1)
+	{
+		m_cAttrib_Tangent=getAttribLoc("Tangent");
+	}
+	return m_cAttrib_Tangent;
 }

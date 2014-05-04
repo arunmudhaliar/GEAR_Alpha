@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "geWindow.h"
-#include "../util/FontManager.h"
+#include "../util/geFontManager.h"
 #include "geLayoutManager.h"
 #include "../core/geTextureManager.h"
 
@@ -47,9 +47,9 @@ private:
 
 	geLayoutManager m_cLayoutManager;
 public:
-	static FontManager g_cFontManager;
-	static gxFont* g_pFontArial10_84Ptr;
-	static gxFont* g_pFontArial10_80Ptr;
+	static geFontManager g_cFontManager;
+	static geFont* g_pFontArial10_84Ptr;
+	static geFont* g_pFontArial10_80Ptr;
 	static CGETextureManager g_cTextureManager;
 };
 

@@ -80,6 +80,19 @@ public:
     
 	const char* getShaderName()	{	return m_cShaderName.c_str(); }
 
+	//predefined vars
+	void sendUniform_GEAR_MVP(const float* input);
+	void sendUniform_GEAR_MODEL_MATRIX(const float* input);
+	void sendUniform_GEAR_MODEL_INVERSE(const float* input);
+	void sendUniform_material_diffuse(const float* input);
+	void sendUniform_material_ambient(const float* input);
+	void sendUniform_material_specular(const float* input);
+	void sendUniform_material_shininess(float input);
+
+	int getAttrib_vIN_Position();
+	int getAttrib_vIN_Normal();
+	int getAttrib_Tangent();
+
 private:
 	void clearUniformRefVarList();
 	void clearAttribRefVarList();
@@ -91,6 +104,19 @@ private:
 	std::vector<stUniformLocation*> m_vUniformRefVarList;
 	std::vector<stAttribLocation*> m_vAttribRefVarList;
 	std::string m_cShaderName;
+
+	//predefined vars
+	int m_cUnifrom_GEAR_MVP;
+	int m_cUnifrom_GEAR_MODEL_MATRIX;
+	int m_cUnifrom_GEAR_MODEL_INVERSE;
+	int m_cUnifrom_material_diffuse;
+	int m_cUnifrom_material_ambient;
+	int m_cUnifrom_material_specular;
+	int m_cUnifrom_material_shininess;
+
+	int m_cAttrib_vIN_Position;
+	int m_cAttrib_vIN_Normal;
+	int m_cAttrib_Tangent;
 };
 
 #endif

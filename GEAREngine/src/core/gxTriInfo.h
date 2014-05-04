@@ -13,10 +13,12 @@ public:
 		m_pTriList=NULL;
 		m_pMaterialPtr=NULL;
 		m_iMaterialCRC = 0;
+		m_uVBO_trilstID=0;
 	}
 
 	~gxTriInfo()
 	{
+		deleteVBOTriList();
 		m_nVertices=0;
 		GX_DELETE_ARY(m_pTriList);
 	}
@@ -57,6 +59,24 @@ public:
 	}
 
 	int getMaterialCRCFromFileReadInfo()	{	return m_iMaterialCRC;	}
+	unsigned int getVBOTriListID()			{	return m_uVBO_trilstID;	}
+
+	void deleteVBOTriList()
+	{
+		if(m_uVBO_trilstID!=0)
+		{
+			glDeleteBuffers(1, &m_uVBO_trilstID);
+			m_uVBO_trilstID=0;
+		}
+	}
+
+	void buildVBOTriList()
+	{
+		glGenBuffers(1, &m_uVBO_trilstID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBO_trilstID);  
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_nVertices * sizeof(int), (char*)m_pTriList, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
 
 private:
 	gxMaterial* m_pMaterialPtr;	//must not delete this pointer
@@ -64,6 +84,7 @@ private:
 	int m_nVertices;
 	int* m_pTriList;
 	int m_iMaterialCRC;
+	unsigned int m_uVBO_trilstID;
 };
 
 #endif

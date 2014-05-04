@@ -2,7 +2,7 @@
 #define GESTATICTEXTBOX_H
 
 #include "geGUIBase.h"
-#include "../util/FontManager.h"
+#include "../util/geFontManager.h"
 
 class geStaticTextBox : public geGUIBase
 {
@@ -13,7 +13,7 @@ public:
 public:
 	virtual ~geStaticTextBox();
 
-	void create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float yoffset, gxFont* pFont);
+	void create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float yoffset, geFont* pFont);
 	virtual void draw();
 
 protected:
@@ -26,7 +26,7 @@ private:
 	stVertexBuffer m_cVBClientArea;
 	stVertexBuffer m_cVBSelectionArea;
 	float m_cVBClientAreaLine[10];
-	gxFont* m_pFont;
+	geFont* m_pFont;
 	float m_fYOffset;
 };
 

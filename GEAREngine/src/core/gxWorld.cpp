@@ -70,10 +70,14 @@ void gxWorld::resetWorld()
 
 void gxWorld::update(float dt)
 {
+#ifdef _WIN32	//arun:special case
+	//this can be removed from here since transformationchanged func will call camera update
 	if(m_pActiveCameraPtr)
 	{
 		m_pActiveCameraPtr->updateCamera();
 	}
+	//
+#endif
 
 #ifdef USE_BULLET
 	m_cPhysicsEngine.update(dt);
@@ -254,12 +258,22 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 		}
 	}
 
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=obj3d->getChildList()->getHead();
+    while(node)
+    {
+		object3d* childobj=node->getData();
+		loadMaterialFromObject3d(childobj);
+        node=node->getNext();
+	}
+#else
 	std::vector<object3d*>* childList=obj3d->getChildList();
 	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
 	{
 		object3d* childobj = *it;
 		loadMaterialFromObject3d(childobj);
 	}
+#endif
 }
 
 void gxWorld::loadAnmationFromObject3d(object3d* obj3d, int crc)
@@ -314,12 +328,22 @@ void gxWorld::loadAnmationFromObject3d(object3d* obj3d, int crc)
 		reinsertFromWorldList.clear();
 	}
 
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=obj3d->getChildList()->getHead();
+    while(node)
+    {
+		object3d* childobj=node->getData();
+		loadAnmationFromObject3d(childobj, crc);
+        node=node->getNext();
+	}
+#else
 	std::vector<object3d*>* childList=obj3d->getChildList();
 	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
 	{
 		object3d* childobj = *it;
 		loadAnmationFromObject3d(childobj, crc);
 	}
+#endif
 }
 
 void gxWorld::populateBonesToMeshNode(object3d* obj, object3d* rootNode)
@@ -332,12 +356,22 @@ void gxWorld::populateBonesToMeshNode(object3d* obj, object3d* rootNode)
 		skinMesh->populateBoneList(rootNode, index);
 	}
 
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=obj->getChildList()->getHead();
+    while(node)
+    {
+		object3d* childobj=node->getData();
+		populateBonesToMeshNode(childobj, rootNode);
+        node=node->getNext();
+	}
+#else
 	std::vector<object3d*>* childlist=obj->getChildList();
 	for(std::vector<object3d*>::iterator it = childlist->begin(); it != childlist->end(); ++it)
 	{
 		object3d* childobj = *it;
 		populateBonesToMeshNode(childobj, rootNode);
 	}
+#endif
 }
 
 void gxWorld::read3dFile2(gxFile& file, object3d* obj)

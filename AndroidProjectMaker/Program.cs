@@ -99,6 +99,17 @@ namespace AndroidProjectMaker
                 return -88;
             }
 
+#if !DEBUG
+            g_cGUI_mainform.setMessage("JarSigner");
+            command_buffer = "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore " + rootDirectory + "//TempAndroid//bin//debug.keystore  -storepass android " + rootDirectory + "//TempAndroid//bin//" + app_name + "-release-unsigned.apk androiddebugkey";
+            ExecuteCommandSync(command_buffer);
+            if (g_iExitCode != 0)
+            {
+                g_cGUI_mainform.setMessage("Error while signing the apk");
+                return -87;
+            }
+#endif
+
             g_cGUI_mainform.setMessage("Pushing to device");
             //Pushing to device
 #if DEBUG
@@ -111,7 +122,7 @@ namespace AndroidProjectMaker
             {
                 ExecuteCommandSync("adb kill-server");
                 g_cGUI_mainform.setMessage("USB device error while pushing apk to device.");
-                return -87;
+                return -86;
             }
             ExecuteCommandSync("adb kill-server");
 
@@ -124,7 +135,7 @@ namespace AndroidProjectMaker
             {
                 ExecuteCommandSync("adb kill-server");
                 g_cGUI_mainform.setMessage("Error opening the application on device.");
-                return -86;
+                return -85;
             }
             ExecuteCommandSync("adb kill-server");
 

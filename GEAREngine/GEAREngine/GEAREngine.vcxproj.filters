@@ -666,6 +666,9 @@
     <ClCompile Include="..\src\mono\src\monoWrapper.cpp">
       <Filter>engine\mono</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\util\FontManager.cpp">
+      <Filter>engine\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -1579,6 +1582,12 @@
     </ClInclude>
     <ClInclude Include="..\src\mono\src\monoWrapper.h">
       <Filter>engine\mono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\FontManager.h">
+      <Filter>engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\bxLinkedList.h">
+      <Filter>engine\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

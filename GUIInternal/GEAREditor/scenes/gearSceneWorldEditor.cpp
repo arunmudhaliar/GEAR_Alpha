@@ -49,6 +49,7 @@ void gearSceneWorldEditor::onCreate()
 
 	monoWrapper::mono_engine_init(2);
 	m_pMainWorldPtr = monoWrapper::mono_engine_getWorld(0);
+
 	m_pMainWorldPtr->setWorldObserver(this);
 
 	char metaDataFolder[512];
@@ -312,7 +313,7 @@ void gearSceneWorldEditor::onDraw()
 {
 	if(m_pPlayButton->isButtonPressed() && !m_pPauseButton->isButtonPressed())
 	{
-		monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
+		//monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 		if(m_bMonoGameInitialized)
 			monoWrapper::mono_game_run(Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 	}

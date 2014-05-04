@@ -290,12 +290,22 @@ void fbxImporter::populateBonesToMeshNode(stBoneList* boneList, object3d* obj, o
 		skinMesh->populateBoneList(rootNode, index);
 	}
 
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=obj->getChildList()->getHead();
+    while(node)
+    {
+		object3d* childobj=node->getData();
+		populateBonesToMeshNode(boneList, childobj, rootNode);
+        node=node->getNext();
+	}
+#else
 	std::vector<object3d*>* childlist=obj->getChildList();
 	for(std::vector<object3d*>::iterator it = childlist->begin(); it != childlist->end(); ++it)
 	{
 		object3d* childobj = *it;
 		populateBonesToMeshNode(boneList, childobj, rootNode);
 	}
+#endif
 }
 
 void fbxImporter::pushAllNodes(stBoneList* boneList, FbxNode *fbxNode, int& index)

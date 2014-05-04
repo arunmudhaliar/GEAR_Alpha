@@ -173,12 +173,22 @@ void loadMaterialFromObject3d(gxWorld* world, object3d* obj3d)
 		}
 	}
 
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=obj3d->getChildList()->getHead();
+    while(node)
+    {
+		object3d* childobj=node->getData();
+		loadMaterialFromObject3d(world, childobj);
+        node=node->getNext();
+	}
+#else
 	std::vector<object3d*>* childList=obj3d->getChildList();
 	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
 	{
 		object3d* childobj = *it;
 		loadMaterialFromObject3d(world, childobj);
 	}
+#endif
 }
 
 void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d, int crc)
@@ -233,12 +243,22 @@ void loadAnmationFromObject3d(gxWorld* world, object3d* obj3d, int crc)
 		reinsertFromWorldList.clear();
 	}
 
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=obj3d->getChildList()->getHead();
+    while(node)
+    {
+		object3d* childobj=node->getData();
+		loadAnmationFromObject3d(world, childobj, crc);
+        node=node->getNext();
+	}
+#else
 	std::vector<object3d*>* childList=obj3d->getChildList();
 	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
 	{
 		object3d* childobj = *it;
 		loadAnmationFromObject3d(world, childobj, crc);
 	}
+#endif
 }
 
 void populateBonesToMeshNode(object3d* obj, object3d* rootNode)
@@ -251,12 +271,22 @@ void populateBonesToMeshNode(object3d* obj, object3d* rootNode)
 		skinMesh->populateBoneList(rootNode, index);
 	}
 
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=obj->getChildList()->getHead();
+    while(node)
+    {
+		object3d* childobj=node->getData();
+		populateBonesToMeshNode(childobj, rootNode);
+        node=node->getNext();
+	}
+#else
 	std::vector<object3d*>* childlist=obj->getChildList();
 	for(std::vector<object3d*>::iterator it = childlist->begin(); it != childlist->end(); ++it)
 	{
 		object3d* childobj = *it;
 		populateBonesToMeshNode(childobj, rootNode);
 	}
+#endif
 }
 
 extern DllExport object3d* engine_loadAndAppendMesh(gxWorld* world, const char* filename)
@@ -319,7 +349,6 @@ extern DllExport void engine_mouseWheel(gxWorld* world, int zDelta, int x, int y
 
 extern DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 {
-#ifdef _WIN32
 	Camera* camera=world->getActiveCamera();
 
 	int xx=x;
@@ -334,7 +363,7 @@ extern DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 	if(g_cMousePrevPos.x>xPos)		aDirX=1;
 	if(g_cMousePrevPos.y>yPos)		aDirY=-1;
 
-
+#ifdef _WIN32
 	if(flag&MK_MBUTTON /*&& !(flag&MK_CONTROL)*/)
 	{
 		float d=camera->getPosition().length();
@@ -344,6 +373,7 @@ extern DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 			camera->updateLocalPositionf((d/500.0f)*Pos_dx*aDirX, (d/500.0f)*Pos_dy*aDirY, 0);
 	}
 	else if(flag&MK_RBUTTON /*&& flag&MK_CONTROL*/)
+#endif
 	{
 
 		vector3f aUP(0, 0, 1);
@@ -359,7 +389,7 @@ extern DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 	//DEBUG_PRINT("%f, %f\n", delta.x, delta.y);
 	g_cMousePrevPos.x=xx;
 	g_cMousePrevPos.y=yy;
-#endif
+
 }
 
 extern DllExport void engine_setMetaFolder(gxWorld* world, const char* metaFolder)

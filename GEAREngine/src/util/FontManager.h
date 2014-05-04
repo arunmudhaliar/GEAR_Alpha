@@ -9,17 +9,15 @@
 #define FONTMANAGER_H
 
 #include <vector>
-#include "../renderer/glincludes.h"
-#include "../../../GEAREngine/src/util/gxFile.h"
-#include "../renderer/renderer.h"
-#include "geDefines.h"
-#if defined (USE_ProgrammablePipeLine_test)
-#include "../hwShader/gxFontShader.h"
+#include "../renderer/gxRenderer.h"
+#include "../util/gxFile.h"
+#if defined (USE_ProgrammablePipeLine)
+#include "../hwShader/gxHWShader.h"
 #endif
 
 #define DEBUG_KERNING   0.0f
 
-class gxFont
+class DllExport gxFont
 {
 public:
     enum ALIGNMENT
@@ -30,8 +28,8 @@ public:
         ALIGN_JUSTIFY
     };
     
-#if defined (USE_ProgrammablePipeLine_test)
-    gxFont(gxFontShader* pFontShaderPtr);
+#if defined (USE_ProgrammablePipeLine)
+    gxFont(gxHWShader* pFontShaderPtr, gxRenderer* m_pRendererPtr);
 #else
     gxFont();
 #endif
@@ -61,9 +59,10 @@ public:
     }
     
     void setYOffset(float offy) {   m_fYOffset=offy;    }
-    
+
 private:
-    
+	unsigned int loadBuffer(unsigned char* buffer, bool bAlpha, unsigned int width, unsigned int height, unsigned int bpp);
+
     void drawOnBuffer_left(const char* str, int cx, int cy, unsigned int& nChar, short* vertexCoordBuffer, float* textureCoordBuffer, unsigned int& nLines, unsigned short* linebuffer) const;
     bool canNeglectNextWord(const char* str, int cx, int nChar, int iCurIndex, float raster_pos_x) const;
 
@@ -104,26 +103,33 @@ private:
     bool m_bDeleteGLTexture;
     float m_cszRGBA[4];
     float m_fYOffset;   //for small adjustments
-#if defined (USE_ProgrammablePipeLine_test)
-    gxFontShader* m_pFontShaderPtr;
+#if defined (USE_ProgrammablePipeLine)
+    gxHWShader* m_pFontShaderPtr;
+	gxRenderer* m_pRendererPtr;
+public:
+	gxRenderer* getRenderer()	{	return m_pRendererPtr;	}
+	void setRenderer(gxRenderer* renderer)	{	m_pRendererPtr=renderer;	}
 #endif
 };
 
-class FontManager
+class DllExport FontManager
 {
 public:
     FontManager();
     ~FontManager();
     
-    void init(rendererBase::ERENDERER technique);
+    void init();
     void reset(bool reload);
     gxFont* loadFont(const char* filename);
     gxFont* getFont(int index)                {   return m_cvFontList[index]; }
 
 private:
     std::vector<gxFont*> m_cvFontList;
-#if defined (USE_ProgrammablePipeLine_test)
-    gxFontShader m_cFontShader;
+#if defined (USE_ProgrammablePipeLine)
+    gxHWShader m_cFontShader;
+	gxRenderer* m_pRendererPtr;
+public:
+	void setRenderer(gxRenderer* renderer);
 #endif
 };
 

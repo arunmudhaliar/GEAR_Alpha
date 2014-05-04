@@ -17,6 +17,7 @@ gearScenePreview::~gearScenePreview()
 void gearScenePreview::onCreate()
 {
 	m_pPreviewWorldPtr=monoWrapper::mono_engine_getWorld(1);
+	m_pPreviewWorldPtr->getActiveCamera()->getCameraStructure()->setNear(1.0f);
 	object3d* light=engine_createLight(m_pPreviewWorldPtr, "Light", gxLight::LIGHT_POINT);
 	((gxLight*)light)->setDiffuseColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
 	((gxLight*)light)->setAmbientColor(vector4f(0.1f, 0.1f, 0.1f, 1.0f));

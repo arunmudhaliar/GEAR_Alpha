@@ -19,7 +19,7 @@ geStaticTextBox::~geStaticTextBox()
 {
 }
 
-void geStaticTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float yoffset, gxFont* pFont)
+void geStaticTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float yoffset, geFont* pFont)
 {
 	createBase(renderer, parent);
 

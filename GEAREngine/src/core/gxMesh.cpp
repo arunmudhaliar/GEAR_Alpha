@@ -14,6 +14,12 @@ gxMesh::gxMesh(int ID):
 	m_nUVChannels=0;
 	m_pszUVChannels=NULL;
 	m_nTris_For_Internal_Use=0;
+
+	m_bVBO=0;
+    m_cVBO_vertID=0;
+	m_cVBO_clrID=0;
+	m_cVBO_nrmlID=0;
+	m_cVBO_tangentID=0;
 }
 
 gxMesh::gxMesh():
@@ -29,10 +35,19 @@ gxMesh::gxMesh():
 	m_nUVChannels=0;
 	m_pszUVChannels=NULL;
 	m_nTris_For_Internal_Use=0;
+
+	m_bVBO=0;
+    m_cVBO_vertID=0;
+	m_cVBO_clrID=0;
+	m_cVBO_nrmlID=0;
+	m_cVBO_tangentID=0;
 }
 
 gxMesh::~gxMesh()
 {
+	if(m_bVBO)
+		deleteVBO();
+
 	m_nTriInfoArray=0;
 	GX_DELETE_ARY(m_pszTriInfoArray);
 	GX_DELETE_ARY(m_pszVertexBuffer);
@@ -41,6 +56,78 @@ gxMesh::~gxMesh()
 	GX_DELETE_ARY(m_pszTangentBuffer);
 
 	GX_DELETE_ARY(m_pszUVChannels);
+}
+
+void gxMesh::buildVBO()
+{
+	for (int x=0; x<m_nTriInfoArray; x++)
+	{
+		gxTriInfo* subTriLst=&m_pszTriInfoArray[x];
+		subTriLst->buildVBOTriList();
+	}
+
+	// Generate And Bind The Vertex Buffer
+	glGenBuffers(1, &m_cVBO_vertID);					// Get A Valid Name
+	glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID);		// Bind The Buffer
+	glBufferData(GL_ARRAY_BUFFER, m_nTris_For_Internal_Use*3*3*sizeof(float), m_pszVertexBuffer, GL_STATIC_DRAW);
+
+	// Generate And Bind The Color Coordinate Buffer
+	if(m_pszColorBuffer)
+	{
+		glGenBuffers(1, &m_cVBO_clrID);					// Get A Valid Name
+		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_clrID);		// Bind The Buffer
+		glBufferData(GL_ARRAY_BUFFER, m_nTris_For_Internal_Use*3*3*sizeof(float), m_pszColorBuffer, GL_STATIC_DRAW);
+	}
+
+	// Generate And Bind The Normal Coordinate Buffer
+	if(m_pszNormalBuffer)
+	{
+		glGenBuffers(1, &m_cVBO_nrmlID);					// Get A Valid Name
+		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_nrmlID);		// Bind The Buffer
+		glBufferData(GL_ARRAY_BUFFER, m_nTris_For_Internal_Use*3*3*sizeof(float), m_pszNormalBuffer, GL_STATIC_DRAW);
+	}
+
+	// Generate And Bind The Tangent Coordinate Buffer
+	if(m_pszTangentBuffer)
+	{
+		glGenBuffers(1, &m_cVBO_tangentID);					// Get A Valid Name
+		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_tangentID);		// Bind The Buffer
+		glBufferData(GL_ARRAY_BUFFER, m_nTris_For_Internal_Use*3*4*sizeof(float), m_pszTangentBuffer, GL_STATIC_DRAW);
+	}
+
+	// Generate And Bind The Texture Coordinate Buffer
+    for(int x=0;x<m_nUVChannels;x++)
+    {
+        gxUV* uv=&m_pszUVChannels[x];
+        if(!uv) continue;
+
+		uv->buildVBOTexCoord(m_nTris_For_Internal_Use);
+    }
+
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+    m_bVBO=true;
+}
+
+void gxMesh::deleteVBO()
+{
+	if(m_cVBO_vertID)
+		glDeleteBuffers(1, &m_cVBO_vertID);
+ 
+	if(m_cVBO_clrID)
+		glDeleteBuffers(1, &m_cVBO_clrID);
+
+	if(m_cVBO_nrmlID)
+		glDeleteBuffers(1, &m_cVBO_nrmlID);
+
+	if(m_cVBO_tangentID)
+		glDeleteBuffers(1, &m_cVBO_tangentID);
+
+  //  for(int x=0;x<m_nUVChannels;x++)
+  //  {
+  //      gxUV* uv=&m_pszUVChannels[x];
+  //      if(!uv) continue;
+		//uv->deleteVBOTexCoord();
+  //  }
 }
 
 void gxMesh::update(float dt)
@@ -222,51 +309,98 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 		if(pass_struct->GEAR_MVP)
 		{
-			shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
+			//shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
+			shader->sendUniform_GEAR_MVP(u_mvp_m4x4);
 		}
 
 		if(pass_struct->GEAR_M)
 		{
-			shader->sendUniformTMfv("GEAR_MODEL_MATRIX", getWorldMatrix()->getMatrix(), false, 4);
+			//shader->sendUniformTMfv("GEAR_MODEL_MATRIX", getWorldMatrix()->getMatrix(), false, 4);
+			shader->sendUniform_GEAR_MODEL_MATRIX(getWorldMatrix()->getMatrix());
 		}
 
 		if(pass_struct->GEAR_M_INVERSE)
 		{
 			matrix4x4f inv_model=*getWorldMatrix();
 			inv_model.inverse();
-			shader->sendUniformTMfv("GEAR_MODEL_INVERSE", inv_model.getMatrix(), false, 4);
+			//shader->sendUniformTMfv("GEAR_MODEL_INVERSE", inv_model.getMatrix(), false, 4);
+			shader->sendUniform_GEAR_MODEL_INVERSE(inv_model.getMatrix());
 		}
 
-		glVertexAttribPointer(shader->getAttribLoc("vIN_Position"), 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
-		glEnableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
+		int vIN_Position=shader->getAttrib_vIN_Position();
+		int vIN_Normal=-1;
+		int Tangent=-1;
+
+		if(m_bVBO)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID);
+			glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		}
+		else
+		{
+			glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
+		}
+		glEnableVertexAttribArray(vIN_Position);
 
 		if(pass_struct->Light)
 		{
-			glVertexAttribPointer(shader->getAttribLoc("vIN_Normal"), 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
-			glEnableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
+			vIN_Normal=shader->getAttrib_vIN_Normal();
+			if(m_bVBO)
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_nrmlID);
+				glVertexAttribPointer(vIN_Normal, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			}
+			else
+			{
+				glVertexAttribPointer(vIN_Normal, 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
+			}
+			glEnableVertexAttribArray(vIN_Normal);
 		}
 
 		if(pass_struct->Tangent)
 		{
-			glVertexAttribPointer(shader->getAttribLoc("Tangent"), 4, GL_FLOAT, GL_FALSE, 0, getTangentBuffer());
-			glEnableVertexAttribArray(shader->getAttribLoc("Tangent"));
+			Tangent=shader->getAttrib_Tangent();
+			if(m_bVBO)
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_tangentID);
+				glVertexAttribPointer(Tangent, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+			}
+			else
+			{
+				glVertexAttribPointer(Tangent, 4, GL_FLOAT, GL_FALSE, 0, getTangentBuffer());
+			}
+			glEnableVertexAttribArray(Tangent);
 		}
 
 		if(pass_struct->Material)
 		{
 			if(triInfo->getMaterial())
 			{
-				shader->sendUniform4fv("material.diffuse", &material->getDiffuseClr().x);
-				shader->sendUniform4fv("material.ambient", &material->getAmbientClr().x);
-				shader->sendUniform4fv("material.specular", &material->getSpecularClr().x);
-				shader->sendUniform1f("material.shininess", 2.0f/*material->getShininess()*/);
+				shader->sendUniform_material_diffuse(&material->getDiffuseClr().x);
+				shader->sendUniform_material_ambient(&material->getAmbientClr().x);
+				shader->sendUniform_material_specular(&material->getSpecularClr().x);
+				shader->sendUniform_material_shininess(2.0f);
+
+				//shader->sendUniform4fv("material.diffuse", &material->getDiffuseClr().x);
+				//shader->sendUniform4fv("material.ambient", &material->getAmbientClr().x);
+				//shader->sendUniform4fv("material.specular", &material->getSpecularClr().x);
+				//shader->sendUniform1f("material.shininess", 2.0f/*material->getShininess()*/);
 			}
 			else
 			{
-				shader->sendUniform4f("material.diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
-				shader->sendUniform4f("material.ambient", 0.2f, 0.2f, 0.2f, 1.0f);
-				shader->sendUniform4f("material.specular", 0.2f, 0.2f, 0.2f, 1.0f);
-				shader->sendUniform1f("material.shininess", 10.0f/*material->getShininess()*/);
+				float diffuse[]={0.5f, 0.5f, 0.5f, 1.0f};
+				float ambient[]={0.2f, 0.2f, 0.2f, 1.0f};
+				float specular[]={0.2f, 0.2f, 0.2f, 1.0f};
+
+				shader->sendUniform_material_diffuse(diffuse);
+				shader->sendUniform_material_ambient(ambient);
+				shader->sendUniform_material_specular(specular);
+				shader->sendUniform_material_shininess(10.0f);
+
+				//shader->sendUniform4f("material.diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
+				//shader->sendUniform4f("material.ambient", 0.2f, 0.2f, 0.2f, 1.0f);
+				//shader->sendUniform4f("material.specular", 0.2f, 0.2f, 0.2f, 1.0f);
+				//shader->sendUniform1f("material.shininess", 10.0f/*material->getShininess()*/);
 			}
 		}
 
@@ -306,7 +440,16 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			}
 		}
 
-		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
+		if(m_bVBO)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triInfo->getVBOTriListID());
+			glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, NULL);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		}
+		else
+		{
+			glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
+		}
 		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
 		renderer->m_nDrawCalls++;
 		//if(base_tex_var)
@@ -322,16 +465,21 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			disableTextureOperations(cntr, shader, shader_var->texture_uv_in_name.c_str());
 		}
 
-		glDisableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
+		glDisableVertexAttribArray(vIN_Position);
 
 		if(pass_struct->Light)
 		{
-			glDisableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
+			glDisableVertexAttribArray(vIN_Normal);
 		}
 
 		if(pass_struct->Tangent)
 		{
-			glDisableVertexAttribArray(shader->getAttribLoc("Tangent"));
+			glDisableVertexAttribArray(Tangent);
+		}
+
+		if(m_bVBO)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER,0);
 		}
 
 		shader->disableProgram();
@@ -385,12 +533,12 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 
 	gxHWShader* hwShader=(gxHWShader*)shader;
     glActiveTexture(GL_TEXTURE0+stage);
-    //if(m_bVBO)
-    //{
-    //    glBindBuffer(GL_ARRAY_BUFFER, uv->m_cVBO_texID);
-    //    glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, 0);
-    //}
-    //else
+    if(m_bVBO)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, uv->m_cVBO_texID);
+        glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, 0);
+    }
+    else
     {
         glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, uv->m_pszfGLTexCoordList);
     }
@@ -665,11 +813,22 @@ void gxMesh::write(gxFile& file)
 	writeMeshData(file);
 
 	file.Write((int)m_cChilds.size());
+
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=m_cChilds.getHead();
+    while(node)
+    {
+		object3d* obj=node->getData();
+		obj->write(file);
+        node=node->getNext();
+	}
+#else
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->write(file);
 	}
+#endif
 }
 
 void gxMesh::read(gxFile& file)
@@ -738,6 +897,7 @@ void gxMesh::read(gxFile& file)
 		file.ReadBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
 	}
 
+	buildVBO();
 	//createTBN_Data();
 }
 

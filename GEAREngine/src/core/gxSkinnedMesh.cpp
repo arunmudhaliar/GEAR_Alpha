@@ -118,12 +118,22 @@ void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
 	m_pszBoneOffsetList[m_iPrivateIterator]=bone->getWorldMatrix()->getPosition();
 	m_iPrivateIterator++;
 
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=bone->getChildList()->getHead();
+    while(node)
+    {
+		object3d* childobj=node->getData();
+		populateBoneList(childobj, index);
+        node=node->getNext();
+	}
+#else
 	std::vector<object3d*>* childList = bone->getChildList();
 	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
 	{
 		object3d* childobj = *it;
 		populateBoneList(childobj, index);
 	}
+#endif
 }
 
 float* gxSkinnedMesh::allocateAndCopyVertexCopyBuffer()
@@ -164,11 +174,22 @@ void gxSkinnedMesh::write(gxFile& file)
 	//
 
 	file.Write((int)m_cChilds.size());
+
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=m_cChilds.getHead();
+    while(node)
+    {
+		object3d* obj=node->getData();
+		obj->write(file);
+        node=node->getNext();
+	}
+#else
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->write(file);
 	}
+#endif
 }
 
 void gxSkinnedMesh::read(gxFile& file)

@@ -15,3 +15,6 @@ http://www.antongerdelan.net/opengl/
 
 Created dev Branch
 Set dev to main branch
+
+//stack trace on crash
+http://oroboro.com/stack-trace-on-crash/

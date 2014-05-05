@@ -62,10 +62,15 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 	bool alpha_tex=false;
 
     //texture loading utility
-    glEnable(GL_TEXTURE_2D);
 	texID=read_png_file(aFileName, alpha_tex, aNewTexturePacket->m_cWidth, aNewTexturePacket->m_cHeight, aNewTexturePacket->m_cBpp);
     aNewTexturePacket->bAlphaTex=alpha_tex;
-    glDisable(GL_TEXTURE_2D);
+
+	if(texID==0)
+	{
+		printf("%s not found", aFileName);
+		delete aNewTexturePacket;
+		return NULL;
+	}
 
     if(texID>0)
     {

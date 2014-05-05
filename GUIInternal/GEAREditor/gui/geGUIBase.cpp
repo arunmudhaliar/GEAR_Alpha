@@ -216,6 +216,7 @@ void geGUIBase::drawRect(stVertexBuffer* vbuffer, float* textureCoord, unsigned 
 	{
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glEnable(GL_TEXTURE_2D);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texID);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glTexCoordPointer(2, GL_FLOAT, 0, textureCoord);

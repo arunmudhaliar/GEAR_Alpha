@@ -23,7 +23,7 @@ __Pass{
 
 		vec4 fragment_function()
 		{
-			return texture2D(sampler2d_MainTex, uv_out_MainTex);
+			return vec4(texture2D(sampler2d_MainTex, uv_out_MainTex).rgb, 1);
 		}
 	}
 }

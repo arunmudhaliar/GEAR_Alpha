@@ -162,6 +162,7 @@ int read_png_file(const char* file_name, bool& bAlpha, unsigned int& cx, unsigne
 
     unsigned int texID=0;
 	glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &texID);
 	glBindTexture(GL_TEXTURE_2D, texID);
         
@@ -185,6 +186,7 @@ int read_png_file(const char* file_name, bool& bAlpha, unsigned int& cx, unsigne
 	}
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);
 
 

@@ -113,6 +113,7 @@ unsigned int geFont::loadBuffer(unsigned char* buffer, bool bAlpha, unsigned int
 {
     unsigned int texID=0;
 	glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &texID);
 	glBindTexture(GL_TEXTURE_2D, texID);
         
@@ -132,6 +133,7 @@ unsigned int geFont::loadBuffer(unsigned char* buffer, bool bAlpha, unsigned int
         
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);
         
 #if defined (LOG_DEBUG_ENGINE)
@@ -366,12 +368,13 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     
     //glActiveTexture(GL_TEXTURE0);
     //glClientActiveTexture(GL_TEXTURE0);
-    glTexCoordPointer(2, GL_FLOAT, 0, m_cszTexCoordList);
     glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_iTexID);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, m_cszTexCoordList);
     
     //arun_commenting_alphatest glEnable(GL_ALPHA_TEST);
     //arun_commenting_alphatest glAlphaFuncx(GL_GREATER, 6553); //0.1f
@@ -400,7 +403,7 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     //arun_commenting_alphatest glDisable(GL_ALPHA_TEST);
     
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    //glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
     glDisableClientState(GL_VERTEX_ARRAY);
 #endif

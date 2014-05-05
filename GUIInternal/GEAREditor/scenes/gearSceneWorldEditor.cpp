@@ -266,7 +266,7 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
 		glActiveTexture(GL_TEXTURE0);
 		glVertexAttribPointer(shader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, cszTileTexBuffer);
 		glEnableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
-		glEnable(GL_TEXTURE_2D);
+		//arun:texissue glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, t);	
 
 		shader->sendUniform1i("u_diffuse_texture", 0);
@@ -279,7 +279,7 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
     
 		//Disable all texture ops
 		glDisableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
-		glDisable(GL_TEXTURE_2D);
+		//arun:texissue glDisable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
     
 		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
@@ -302,7 +302,8 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
 		glBindTexture(GL_TEXTURE_2D, t);
 		//glTranslatef(0, 0, 0);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-		//glBindTexture(GL_TEXTURE_2D, 0);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);

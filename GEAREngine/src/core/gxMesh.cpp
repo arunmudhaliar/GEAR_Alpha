@@ -304,7 +304,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 		shader->enableProgram();
 
-		if(light_ob)
+		if(light_ob && pass_struct->Light)
 			light_ob->renderPass(renderer, shader);
 
 		if(pass_struct->GEAR_MVP)
@@ -425,7 +425,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		std::vector<stMaterialPass*>* material_pass=material->getShaderPassList();
 		stMaterialPass*	mpass=material_pass->at(pass);
 
-		for(std::vector<gxSubMap*>::reverse_iterator it = mpass->vUsedSubMap.rbegin(); it != mpass->vUsedSubMap.rend(); ++it, ++cntr)
+		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, ++cntr)
 		{
 			gxSubMap* submap = *it;
 			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
@@ -458,7 +458,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		//}
 
 		cntr=0;
-		for(std::vector<gxSubMap*>::reverse_iterator it = mpass->vUsedSubMap.rbegin(); it != mpass->vUsedSubMap.rend(); ++it, cntr++)
+		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, cntr++)
 		{
 			gxSubMap* submap = *it;
 			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
@@ -533,17 +533,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 
 	gxHWShader* hwShader=(gxHWShader*)shader;
     glActiveTexture(GL_TEXTURE0+stage);
-    if(m_bVBO)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, uv->m_cVBO_texID);
-        glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, 0);
-    }
-    else
-    {
-        glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, uv->m_pszfGLTexCoordList);
-    }
-	glEnableVertexAttribArray(hwShader->getAttribLoc(texCoordAttribName));
-	//glEnable(GL_TEXTURE_2D);
+
 	if(bUse1x1Texture)
 		glBindTexture(GL_TEXTURE_2D, renderer->getGEARTexture1x1()->iTextureID);	
 	else
@@ -559,6 +549,19 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 		}
 	}
 
+    if(m_bVBO)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, uv->m_cVBO_texID);
+        glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, 0);
+    }
+    else
+    {
+        glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, uv->m_pszfGLTexCoordList);
+    }
+	glEnableVertexAttribArray(hwShader->getAttribLoc(texCoordAttribName));
+	//glEnable(GL_TEXTURE_2D);
+
+
 	return true;
 }
 
@@ -567,7 +570,7 @@ void gxMesh::disableTextureOperations(int stage, gxHWShader* shader, const char*
 #if defined (USE_ProgrammablePipeLine)
 	if(shader)
 	{
-		//glActiveTexture(GL_TEXTURE0+stage);
+		glActiveTexture(GL_TEXTURE0+stage);
 		glDisableVertexAttribArray(shader->getAttribLoc(texCoordAttribName));
 		//glDisable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);

@@ -88,6 +88,13 @@ stTexturePacket* CTextureManager::LoadTexture(const char* aFileName)
     aNewTexturePacket->bAlphaTex=alpha_tex;
     glDisable(GL_TEXTURE_2D);
 
+	if(texID==0)
+	{
+		DEBUG_PRINT("%s not found", metaDataFile);
+		GX_DELETE(aNewTexturePacket);
+		return NULL;
+	}
+
     if(texID>0)
     {
         m_iTotalTextureMemory+=(unsigned int)(aNewTexturePacket->m_cWidth*aNewTexturePacket->m_cHeight*aNewTexturePacket->m_cBpp);

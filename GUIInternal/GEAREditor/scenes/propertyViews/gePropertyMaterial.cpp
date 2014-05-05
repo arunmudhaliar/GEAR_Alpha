@@ -70,20 +70,20 @@ void gePropertyMaterial::destroySubMapView()
 	//destroy submapview nodes
 	for(std::vector<stSubMapView*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
 	{
-		stSubMapView* tvnode = *it;
+		stSubMapView* submapview = *it;
 		std::vector<geGUIBase*>* childcntrol=getChildControls();
-		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->m_pText_tileX), m_vControls.end());
-		GE_DELETE(tvnode->m_pText_tileX);
-		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->m_pText_tileY), m_vControls.end());
-		GE_DELETE(tvnode->m_pText_tileY);
-		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->thumbnail), m_vControls.end());
-		GE_DELETE(tvnode->thumbnail);
-		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->m_pMapName), m_vControls.end());
-		GE_DELETE(tvnode->m_pMapName);
-		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), tvnode->m_pTiling), m_vControls.end());
-		GE_DELETE(tvnode->m_pTiling);
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), submapview->m_pText_tileX), m_vControls.end());
+		GE_DELETE(submapview->m_pText_tileX);
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), submapview->m_pText_tileY), m_vControls.end());
+		GE_DELETE(submapview->m_pText_tileY);
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), submapview->thumbnail), m_vControls.end());
+		GE_DELETE(submapview->thumbnail);
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), submapview->m_pMapName), m_vControls.end());
+		GE_DELETE(submapview->m_pMapName);
+		m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), submapview->m_pTiling), m_vControls.end());
+		GE_DELETE(submapview->m_pTiling);
 
-		GE_DELETE(tvnode);
+		GE_DELETE(submapview);
 	}
 	m_vSubMap.clear();
 }
@@ -98,10 +98,25 @@ void gePropertyMaterial::loadSubMapView()
 	for(std::vector<stMaterialPass*>::iterator mpass_it = mpasslist->begin(); mpass_it != mpasslist->end(); ++mpass_it)
 	{
 		stMaterialPass* mpass = *mpass_it;
-		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, ++cntr)
+		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it)
 		{
 			gxSubMap* map = *it;
-			stSubMapView* submapview = new stSubMapView();
+			bool bFound=false;
+			for(std::vector<stSubMapView*>::iterator sit = m_vSubMap.begin(); sit != m_vSubMap.end(); ++sit)
+			{
+				stSubMapView* submapview = *sit;
+				if(submapview->m_pSubMapPtr==map)
+				{
+					bFound=true;
+					break;
+				}
+			}
+
+			if(bFound)
+				continue;
+
+
+			stSubMapView* submapview = new stSubMapView(map);
 
 			char tileX_temp_buffer[10];
 			char tileY_temp_buffer[10];
@@ -138,6 +153,7 @@ void gePropertyMaterial::loadSubMapView()
 			submapview->thumbnail->setUserData(map);
 
 			m_vSubMap.push_back(submapview);
+			cntr++;
 		}
 
 		if(cntr)

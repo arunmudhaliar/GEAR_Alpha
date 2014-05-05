@@ -23,8 +23,9 @@ void Sprite2Dx::draw(gxHWShader* shader)
     glVertexAttribPointer(shader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, m_cszTexCoord);
 	glEnableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
 	
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, m_cTexture.getTextureID());	
+	//arun:texissue glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_cTexture.getTextureID());
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (isRenderFlag(RENDER_FORCE_NO_MODULATION)&&m_fAlpha==1.0f)?GL_REPLACE:GL_MODULATE);
 
 	if(m_cTexture.getTextureType()==geTexture::TEX_ALPHA && !isRenderFlag(RENDER_FORCE_NO_ALPHA))
@@ -50,7 +51,7 @@ void Sprite2Dx::draw(gxHWShader* shader)
 		glDisableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
 		//glDisable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
+		//arun:texissue glDisable(GL_TEXTURE_2D);
 	}
 	
 	glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
@@ -63,15 +64,17 @@ void Sprite2Dx::draw(/*const matrix4x4f& parentTM, */geVector2f* pos)
     
 	if (m_cTexture.getTextureType() != geTexture::TEX_UNDEFINED)
 	{
-		//glActiveTexture(GL_TEXTURE0);
-		//glClientActiveTexture(GL_TEXTURE0);
-		glTexCoordPointer(2, GL_FLOAT, 0, m_cszTexCoord);
+		glActiveTexture(GL_TEXTURE0);
+		//glClientActiveTexture(GL_TEXTURE0);	
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, m_cTexture.getTextureID());
-		//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (isRenderFlag(RENDER_FORCE_NO_MODULATION)&&m_fAlpha==1.0f)?GL_REPLACE:GL_MODULATE);
+
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		
+		glTexCoordPointer(2, GL_FLOAT, 0, m_cszTexCoord);
+		//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
 		if(m_cTexture.getTextureType()==geTexture::TEX_ALPHA && !isRenderFlag(RENDER_FORCE_NO_ALPHA))
 		{
  			glEnable(GL_BLEND);
@@ -112,6 +115,7 @@ void Sprite2Dx::draw(/*const matrix4x4f& parentTM, */geVector2f* pos)
 		glDisable(GL_BLEND);
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		//glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 	}
 	

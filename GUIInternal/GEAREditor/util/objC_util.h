@@ -186,6 +186,7 @@ public:
         
         unsigned int texID=0;
 		glEnable(GL_TEXTURE_2D);
+		glActiveTexture(GL_TEXTURE0);
 		glGenTextures(1, &texID);
 		glBindTexture(GL_TEXTURE_2D, texID);
         
@@ -257,6 +258,7 @@ public:
         
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
         
         if(buffer) free(buffer);

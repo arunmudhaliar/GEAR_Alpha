@@ -20,11 +20,22 @@ public:
 
 	struct stSubMapView
 	{
+		stSubMapView(gxSubMap* submap)
+		{
+			m_pMapName=NULL;
+			m_pTiling=NULL;
+			m_pText_tileX=NULL;
+			m_pText_tileY=NULL;
+			thumbnail=NULL;
+			m_pSubMapPtr=submap;	//for checking purpose
+		}
+
 		geStaticTextBox* m_pMapName;
 		geStaticTextBox* m_pTiling;
 		geTextBox* m_pText_tileX;
 		geTextBox* m_pText_tileY;
 		geTextureThumbnailExtended* thumbnail;
+		gxSubMap* m_pSubMapPtr;	//for checking purpose
 	};
 	std::vector<stSubMapView*> m_vSubMap;
 

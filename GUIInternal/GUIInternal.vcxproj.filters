@@ -282,6 +282,9 @@
     <ClInclude Include="GEAREditor\util\geFontManager.h">
       <Filter>GEAREditor\util</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsGlobal.h">
+      <Filter>GEAREditor\scenes\settingsViews</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

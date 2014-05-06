@@ -16,6 +16,8 @@ public:
 
 	//void setFileViewScenePtr(gearSceneFileView* fileView)	{	m_pFileViewScenePtr=fileView;	
 	void populateProjectView();
+	geTreeNode* getSelectedNode()	{	return m_cAssetTreeView.getSelectedNode();	}
+
 protected:
 	virtual void onCreate();
 	virtual void onDraw();

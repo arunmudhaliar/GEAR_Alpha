@@ -5,6 +5,9 @@ geWindow("Settings View")
 {
 	m_pSettingsAndroidParentNode=NULL;
 	m_pSettingsAndroid=NULL;
+
+	m_pSettingsGlobalParentNode=NULL;
+	m_pSettingsGlobal=NULL;
 }
 
 gearSceneSettings::~gearSceneSettings()
@@ -20,6 +23,8 @@ void gearSceneSettings::onCreate()
 	m_pSettingsAndroidParentNode = new geTreeNode(m_pRenderer, rootNode, "Android", NULL, 0);
 	m_pSettingsAndroid = new geSettingsAndroid(m_pRenderer, m_pSettingsAndroidParentNode, "", NULL);
 
+	m_pSettingsGlobalParentNode = new geTreeNode(m_pRenderer, rootNode, "Global", NULL, 0);
+	m_pSettingsGlobal = new geSettingsGlobal(m_pRenderer, m_pSettingsGlobalParentNode, "", NULL);
 }
 
 void gearSceneSettings::onDraw()

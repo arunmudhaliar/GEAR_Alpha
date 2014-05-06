@@ -41,6 +41,7 @@ gxWorld::gxWorld():
 gxWorld::~gxWorld()
 {
 	resetWorld();
+	m_cMaterialList.clear();	//since our Default material may reside inside: check resetWorld()
 }
 
 void gxWorld::resetWorld()
@@ -57,6 +58,9 @@ void gxWorld::resetWorld()
 		GX_DELETE(material);
 	}
 	m_cMaterialList.clear();
+	//repush our Default Material;
+	m_cMaterialList.push_back(&m_cDefaultMaterial);	//must be removed on the world destructor
+	//
 
 	for(std::vector<gxAnimationSet*>::iterator it = m_vAnimationSetList.begin(); it != m_vAnimationSetList.end(); ++it)
 	{
@@ -66,6 +70,15 @@ void gxWorld::resetWorld()
 	m_vAnimationSetList.clear();
 
 	m_vLightList.clear();
+
+	//destroy all child
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		GX_DELETE(obj);
+	}
+	m_cChilds.clear();
+	//
 }
 
 void gxWorld::update(float dt)

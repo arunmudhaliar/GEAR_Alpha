@@ -141,6 +141,7 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyTransform.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.h" />
     <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsAndroid.h" />
+    <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsGlobal.h" />
     <ClInclude Include="GEAREditor\secondryViews\geColorDlg.h" />
     <ClInclude Include="GEAREditor\secondryViews\geSecondryView.h" />
     <ClInclude Include="GEAREditor\secondryViews\geTextureDlg.h" />

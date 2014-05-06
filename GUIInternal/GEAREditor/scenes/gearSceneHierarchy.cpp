@@ -8,6 +8,7 @@ gearSceneHierarchy::gearSceneHierarchy():
 geWindow("Hierarchy")
 {
 	m_pCreateToolBarDropMenuBtnPtr = NULL;
+	m_pClearBtn=NULL;
 }
 
 gearSceneHierarchy::~gearSceneHierarchy()
@@ -37,6 +38,11 @@ void gearSceneHierarchy::onCreate()
 	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00004003);
 	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("", 0, NULL, true);
 	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Camera", 0x00004004);
+
+	//clear btn
+	m_pClearBtn=new geToolBarButton(m_pRenderer, "Clear All", getToolBar());
+	m_pClearBtn->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pClearBtn);
 
 	m_cGameObjectsTreeView.create(m_pRenderer, this, "gameObjectsTV", this);
 
@@ -312,22 +318,31 @@ bool gearSceneHierarchy::onKeyUp(int charValue, int flag)
 
 void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 {
-	if(m_pCreateToolBarDropMenuBtnPtr==btn)
+	if(m_pClearBtn==btn)
 	{
-		//HMENU hPopupMenu = CreatePopupMenu();
-		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004003, "Directional Light");
-		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004002, "Point Light");
-		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-		//geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
-		//int disableFlag = (selectedNode)?0:MF_DISABLED;
-		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING | disableFlag, 0x00004001, "Create Object on Selected Node");
-		//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");
+		if(m_pClearBtn->isButtonPressed())
+		{
+			//if(MessageBox(EditorApp::getMainWindowHandle(),"Are you sure to reset the world.","Warning",MB_YESNO|MB_ICONWARNING)==IDYES)
+			{
+				monoWrapper::mono_engine_getWorld(0)->resetWorld();
+				monoWrapper::mono_engine_getWorld(1)->resetWorld();
 
-		//POINT pt;
-		//pt.x=btn->getPositionOnScreen().x;
-		//pt.y=-btn->getPositionOnScreen().y;
-		//ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
-		//TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+				m_cGameObjectsTreeView.clearAndDestroyAll();
+				m_cGameObjectsTreeView.resetSelectedNodePtr();
+
+				EditorApp::getSceneWorldEditor()->selectedObject3D(NULL);
+				EditorApp::getScenePropertyEditor()->populatePropertyOfObject(NULL);
+				geTreeNode* selectedProjectFile = EditorApp::getSceneProject()->getSelectedNode();
+				EditorApp::getSceneFileView()->populateFileView();
+				//if(selectedProjectFile)
+				//{
+				//	EditorApp::getSceneFileView()->populateFiles(((assetUserData*)selectedProjectFile->getUserData())->getAssetAbsolutePath());
+				//}
+
+				//EditorApp::getScenePreview()->selectedObject3D(NULL);	//for safety
+			}
+			m_pClearBtn->buttonNormal();
+		}
 	}
 }
 

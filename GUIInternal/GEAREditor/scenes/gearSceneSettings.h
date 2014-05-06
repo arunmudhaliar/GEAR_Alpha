@@ -5,6 +5,7 @@
 #include "../gui/geTreeView.h"
 #include "../gui/geTextBox.h"
 #include "settingsViews/geSettingsAndroid.h"
+#include "settingsViews/geSettingsGlobal.h"
 
 class gearSceneSettings : public geWindow, public MTreeViewObserver, public MGUIObserver
 {
@@ -29,6 +30,9 @@ private:
 
 	geTreeNode* m_pSettingsAndroidParentNode;
 	geSettingsAndroid* m_pSettingsAndroid;
+
+	geTreeNode* m_pSettingsGlobalParentNode;
+	geSettingsGlobal* m_pSettingsGlobal;
 };
 
 #endif

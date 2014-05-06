@@ -53,9 +53,7 @@ private:
 	geTreeView m_cGameObjectsTreeView;
 	Sprite2Dx m_cszSprites[5];
 	geToolBarDropMenu* m_pCreateToolBarDropMenuBtnPtr;
-//	gearSceneWorldEditor* m_pSceneWorldEditorPtr;	//must not delete this pointer
-	//geButton m_cButton;
-	//gePushButton m_cPushButton;
+	geToolBarButton* m_pClearBtn;
 };
 
 #endif

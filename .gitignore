@@ -29,3 +29,13 @@
 *.manifest
 
 *.ipch
+TempAndroid
+Debug
+Release
+.metadata
+.org.eclipse.jdt.core.external.folders
+bin
+gen
+libs
+obj
+.settings

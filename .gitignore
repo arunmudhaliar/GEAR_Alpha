@@ -39,3 +39,8 @@ gen
 libs
 obj
 .settings
+*.DS_Store
+*.user
+*.suo
+*.sdf
+/GUIInternal/recentProjects

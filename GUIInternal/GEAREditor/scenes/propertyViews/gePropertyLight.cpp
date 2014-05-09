@@ -67,7 +67,8 @@ gePropertyLight::gePropertyLight(rendererGL10* renderer, geGUIBase* parent, cons
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
-	setColor(&m_cVBClientArea, 0.21f, 0.21f, 0.21f, 1.0f);
+	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
+	applyPrimaryColorToVBClientArea();
 }
 
 gePropertyLight::~gePropertyLight()

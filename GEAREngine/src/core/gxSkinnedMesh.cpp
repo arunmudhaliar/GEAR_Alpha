@@ -48,7 +48,7 @@ void gxSkinnedMesh::update(float dt)
 			finalVertex.z+=deformVertex.z*weight;
 		}
 
-		finalVertex=finalVertex-this->getParent()->getWorldMatrix()->getPosition();
+		//finalVertex=finalVertex-this->getParent()->getWorldMatrix()->getPosition();
 		m_pszVertexBuffer[x*3+0]=finalVertex.x;
 		m_pszVertexBuffer[x*3+1]=finalVertex.y;
 		m_pszVertexBuffer[x*3+2]=finalVertex.z;
@@ -112,7 +112,7 @@ void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
 	m_pszBoneList[m_iPrivateIterator]=bone;
 	if(bone!=this /*&& bone!=this->getParent()*/)
 	{
-		//*(matrix4x4f*)bone = *bone * this->getWorldMatrix()->getInverse();
+		*(matrix4x4f*)bone = *bone * this->getWorldMatrix()->getInverse();
 	}
 	m_pszInvBoneTMList[m_iPrivateIterator]=bone->getWorldMatrix()->getInverse();
 	m_pszBoneOffsetList[m_iPrivateIterator]=bone->getWorldMatrix()->getPosition();

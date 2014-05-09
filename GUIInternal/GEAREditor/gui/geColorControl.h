@@ -28,7 +28,6 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 
 private:
-	stVertexBuffer m_cVBClientArea;
 	float m_cVBClientAreaLine[10];
 	geVector4f m_cColor;
 };

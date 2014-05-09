@@ -39,7 +39,6 @@ protected:
 	float getVirtualEndBound(int& index);
 
 private:
-	stVertexBuffer m_cVBClientArea;
 	stVertexBuffer m_cVBSelectionArea;
 	float m_cVBClientAreaLine[10];
 	float m_cVBCursorLine[4];

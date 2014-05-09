@@ -44,7 +44,10 @@ void geLayout::create(rendererGL10* renderer, geLayout* pParentLayout, float x, 
 	m_pActiveWindowPointer = NULL;
 	setPos(x, y);
 	setSize(cx, cy);
-	setColor(&m_cVBClientArea, 0.12f, 0.12f, 0.12f, 1.0f);
+
+	setClientAreaPrimaryActiveForeColor(0.12f, 0.12f, 0.12f, 1.0f);
+	applyPrimaryColorToVBClientArea();
+
 	setSizable(true);
 }
 

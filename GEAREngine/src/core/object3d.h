@@ -119,6 +119,9 @@ public:
 
 	//animation
 	gxAnimation* createAnimationController();
+	void resetAnimationControllerAndAssignItToObject(object3d* obj);	//only used for FBX import: assigns the animation controller to new object and clears its pointer
+	void setAnimationController(gxAnimation* controller);
+
 	gxAnimation* getAnimationController()				{	return m_pAnimationController;	}
 	gxAnimationSet* applyAnimationSetRecursive(int index);
 	gxAnimationSet* applyAnimationSetRecursive(gxAnimationSet* animset);

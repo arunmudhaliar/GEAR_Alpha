@@ -4,8 +4,6 @@
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
 #include "../gui/geTextBox.h"
-#include "../../../GEAREngine/src/core/gxMaterial.h"
-#include "../../../GEAREngine/src/core/object3d.h"
 #include <time.h>
 
 class gearSceneConsole : public geWindow, public MTreeViewObserver, public MGUIObserver
@@ -32,7 +30,7 @@ protected:
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 private:
-
+	Sprite2Dx m_cszSprites[10];
 	unsigned long m_uCurrentRunElapsedTime;
 	geToolBarButton* m_pClearBtn;
 	geToolBarButton* m_pClearAllBtn;

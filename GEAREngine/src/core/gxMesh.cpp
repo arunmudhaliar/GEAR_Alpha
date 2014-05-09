@@ -900,7 +900,8 @@ void gxMesh::read(gxFile& file)
 		file.ReadBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
 	}
 
-	buildVBO();
+	if(getID()==OBJECT3D_MESH)
+		buildVBO();
 	//createTBN_Data();
 }
 

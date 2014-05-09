@@ -531,6 +531,66 @@ void gearSceneWorldEditor::drawGrid()
 	//
 }
 
+void gearSceneWorldEditor::drawCameraFrustum(gxCamera* camera, gxHWShader* shader)
+{
+	gxFrustumf* frustum=camera->getFrustum();
+
+	float lineAry[]={
+		frustum->m_cFrustumVert[0].x, frustum->m_cFrustumVert[0].y, frustum->m_cFrustumVert[0].z,		//0	near
+		frustum->m_cFrustumVert[1].x, frustum->m_cFrustumVert[1].y, frustum->m_cFrustumVert[1].z,		//1
+		frustum->m_cFrustumVert[2].x, frustum->m_cFrustumVert[2].y, frustum->m_cFrustumVert[2].z,		//2
+		frustum->m_cFrustumVert[3].x, frustum->m_cFrustumVert[3].y, frustum->m_cFrustumVert[3].z,		//3
+
+		frustum->m_cFrustumVert[4].x, frustum->m_cFrustumVert[4].y, frustum->m_cFrustumVert[4].z,		//4	far
+		frustum->m_cFrustumVert[5].x, frustum->m_cFrustumVert[5].y, frustum->m_cFrustumVert[5].z,		//5
+		frustum->m_cFrustumVert[6].x, frustum->m_cFrustumVert[6].y, frustum->m_cFrustumVert[6].z,		//6
+		frustum->m_cFrustumVert[7].x, frustum->m_cFrustumVert[7].y, frustum->m_cFrustumVert[7].z,		//7
+
+		frustum->m_cFrustumVert[0].x, frustum->m_cFrustumVert[0].y, frustum->m_cFrustumVert[0].z,		//0	near
+		frustum->m_cFrustumVert[4].x, frustum->m_cFrustumVert[4].y, frustum->m_cFrustumVert[4].z,		//4	far
+
+		frustum->m_cFrustumVert[1].x, frustum->m_cFrustumVert[1].y, frustum->m_cFrustumVert[1].z,		//1
+		frustum->m_cFrustumVert[5].x, frustum->m_cFrustumVert[5].y, frustum->m_cFrustumVert[5].z,		//5
+
+		frustum->m_cFrustumVert[2].x, frustum->m_cFrustumVert[2].y, frustum->m_cFrustumVert[2].z,		//2
+		frustum->m_cFrustumVert[6].x, frustum->m_cFrustumVert[6].y, frustum->m_cFrustumVert[6].z,		//6
+
+		frustum->m_cFrustumVert[3].x, frustum->m_cFrustumVert[3].y, frustum->m_cFrustumVert[3].z,		//3
+		frustum->m_cFrustumVert[7].x, frustum->m_cFrustumVert[7].y, frustum->m_cFrustumVert[7].z,		//7
+	};
+
+	unsigned int mode=GL_LINE_LOOP;
+
+#if defined (USE_ProgrammablePipeLine)
+        glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+		//near
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, lineAry);
+		glDrawArrays(mode, 0, 4);
+
+		//far
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, &lineAry[12]);
+		glDrawArrays(mode, 0, 4);
+
+		//side lines
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, &lineAry[24+6*0]);
+		glDrawArrays(mode, 0, 2);
+
+		//side lines
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, &lineAry[24+6*1]);
+		glDrawArrays(mode, 0, 2);
+
+		//side lines
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, &lineAry[24+6*2]);
+		glDrawArrays(mode, 0, 2);
+
+		//side lines
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 3, GL_FLOAT, GL_FALSE, 0, &lineAry[24+6*3]);
+		glDrawArrays(mode, 0, 2);
+
+		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
+#endif
+}
+
 void gearSceneWorldEditor::drawSelectedObject()
 {
 	//lights
@@ -616,6 +676,13 @@ void gearSceneWorldEditor::drawSelectedObject()
 			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
 
 		m_pSelectedObj->getOOBB().draw(shader);
+
+		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA)
+		{
+			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.6f, 0.6f, 1.0f);
+			drawCameraFrustum((gxCamera*)m_pSelectedObj, shader);
+		}
+
 		glDisable(GL_COLOR_MATERIAL);
 
 		shader->disableProgram();

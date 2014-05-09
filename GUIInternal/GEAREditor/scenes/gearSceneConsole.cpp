@@ -1,5 +1,6 @@
 #include "gearSceneConsole.h"
 #include "../core/Timer.h"
+#include "../gui/geGUIManager.h"
 
 gearSceneConsole::gearSceneConsole():
 geWindow("Console View")
@@ -17,6 +18,9 @@ gearSceneConsole::~gearSceneConsole()
 
 void gearSceneConsole::onCreate()
 {
+	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[0].setClip(110, 258, 16, 16);
+
 	m_cConsoleTreeView.create(m_pRenderer, this, "AssetsFileTV", this);
 
 	//clear btn
@@ -94,7 +98,7 @@ void gearSceneConsole::appendConsoleRunRootNode()
 		}
 	}
 
-	m_pCurrentBuildRootNodePtr = new geTreeNode(m_pRenderer, m_cConsoleTreeView.getRoot(), buffer, NULL);
+	m_pCurrentBuildRootNodePtr = new geTreeNode(m_pRenderer, m_cConsoleTreeView.getRoot(), buffer, &m_cszSprites[0]);
 	m_pCurrentBuildRootNodePtr->traverseSetWidth(m_cSize.x);
 	m_cConsoleTreeView.refreshTreeView();
 

@@ -20,7 +20,8 @@ void geHorizontalSlider::create(rendererGL10* renderer, geGUIBase* parent, const
 	setPos(x, y);
 
 	STRCPY(m_szName, name);
-	setColor(&m_cVBClientArea, 0.21f, 0.21f, 0.21f, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.4f);
+	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
+	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.4f);
 	setColor(&m_cVBGrabberArea, 0.6f, 0.6f, 0.6f, 1.0f, EGRADIENT_VERTICAL_UP, 0.5f);
 
 	m_fSliderPos=0.0f;
@@ -124,7 +125,8 @@ void geHorizontalSlider::setSliderValue(float value, bool bCallObserver)
 		return;
 
 	m_fSliderPos=value;
-	setColor(&m_cVBClientArea, m_fSliderPos, m_fSliderPos, m_fSliderPos, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.4f);
+	setClientAreaPrimaryActiveForeColor(m_fSliderPos, m_fSliderPos, m_fSliderPos, 1.0f);
+	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.4f);
 	if(bCallObserver)
 		onSliderChange(m_fSliderPos);
 }

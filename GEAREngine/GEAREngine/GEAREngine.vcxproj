@@ -291,6 +291,7 @@
     <ClInclude Include="..\src\core\basicIncludes.h" />
     <ClInclude Include="..\src\core\Camera.h" />
     <ClInclude Include="..\src\core\fbo.h" />
+    <ClInclude Include="..\src\core\frustum.h" />
     <ClInclude Include="..\src\core\gxAnimation.h" />
     <ClInclude Include="..\src\core\gxAnimationSet.h" />
     <ClInclude Include="..\src\core\gxAnimationTrack.h" />
@@ -310,6 +311,7 @@
     <ClInclude Include="..\src\core\object3d.h" />
     <ClInclude Include="..\src\core\oobb.h" />
     <ClInclude Include="..\src\core\physicsEngine.h" />
+    <ClInclude Include="..\src\core\plane.h" />
     <ClInclude Include="..\src\core\quaternion.h" />
     <ClInclude Include="..\src\core\rect.h" />
     <ClInclude Include="..\src\core\stTexturePacket.h" />

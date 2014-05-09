@@ -46,7 +46,6 @@ protected:
 	virtual void onCommand(int cmd);
 
 private:
-	stVertexBuffer m_cVBClientArea;
 	geLayout* m_pSelectedLayout;
 	geLayout* m_pRootLayout;
 	geVector2f m_cPrevScale;

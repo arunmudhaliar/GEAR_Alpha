@@ -19,13 +19,15 @@ void geColorControl::create(rendererGL10* renderer, geGUIBase* parent, float x, 
 	setSize(16, 16);
 	setPos(x, y);
 
-	setColor(&m_cVBClientArea, 0.21f, 0.21f, 0.21f, 1.0f);
+	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
+	applyPrimaryColorToVBClientArea();
 }
 
 void geColorControl::setControlColor(float r, float g, float b, float a)
 {
 	m_cColor.set(r, g, b, a);
-	setColor(&m_cVBClientArea, r, g, b, a);
+	setClientAreaPrimaryActiveForeColor(r, g, b, a);
+	applyPrimaryColorToVBClientArea();
 	if(m_pGUIObserver)
 		m_pGUIObserver->onColorChange(this);
 }

@@ -67,7 +67,6 @@ protected:
 	virtual void onMouseExitClientArea();
 
 //private:
-	stVertexBuffer m_cVBClientArea;
 	float m_cVBClientAreaLine[8];
 };
 

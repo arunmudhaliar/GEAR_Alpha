@@ -49,7 +49,6 @@ protected:
 	virtual void onSetName();
 
 private:
-	stVertexBuffer m_cVBClientArea;
 	float m_cVBClientAreaLine[4];
 	Sprite2Dx m_cSprite;
 	bool m_bImageLoaded;

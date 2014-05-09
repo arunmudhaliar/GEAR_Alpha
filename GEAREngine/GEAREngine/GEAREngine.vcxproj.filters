@@ -1589,6 +1589,12 @@
     <ClInclude Include="..\src\util\bxLinkedList.h">
       <Filter>engine\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\core\plane.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\frustum.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\physics\CMakeLists.txt">

@@ -60,6 +60,8 @@ public:
 
 	void setColor(stVertexBuffer* vbuffer, float r, float g, float b, float a, ESTYLE_GRADIENT eGradientStyle=EGRADIENT_NONE, float gradientScale=0.5f);
 	void setColor(stVertexBuffer* vbuffer, int index, float r, float g, float b, float a);
+	void applyPrimaryColorToVBClientArea(ESTYLE_GRADIENT eGradientStyle=EGRADIENT_NONE, float gradientScale=0.5f);
+	void applySecondryColorToVBClientArea(ESTYLE_GRADIENT eGradientStyle=EGRADIENT_NONE, float gradientScale=0.5f);
 
 	bool isPointInsideWindow(float x, float y);
 	bool isPointInsideClientArea(float x, float y);
@@ -130,6 +132,9 @@ public:
 	void setActiveWindowPtrOnlyForLayout(geGUIBase* wnd)	{	m_pActiveWindowPtrOnlyForLayout = wnd;	}
 	geGUIBase* getActiveWindowPtrOnlyForLayout()			{	return m_pActiveWindowPtrOnlyForLayout;	}
 	//
+	stVertexBuffer* getVertexBuffer()	{	return &m_cVBClientArea;	}
+	void setClientAreaPrimaryActiveForeColor(float r, float g, float b, float a=1.0f);
+	void setClientAreaSecondryActiveForeColor(float r, float g, float b, float a=1.0f);
 
 protected:
 
@@ -202,6 +207,11 @@ protected:
 	//hack for layout
 	geGUIBase* m_pActiveWindowPtrOnlyForLayout;	//valid only if object is a layout
 	//
+
+	float m_fszClientAreaPrimaryActiveForeColor[4];
+	float m_fszClientAreaSecondryActiveForeColor[4];
+	
+	stVertexBuffer m_cVBClientArea;
 };
 
 class MGUIObserver

@@ -28,7 +28,6 @@ protected:
 	virtual void onSliderChange(float sliderValue);
 
 private:
-	stVertexBuffer m_cVBClientArea;
 	stVertexBuffer m_cVBGrabberArea;
 	float m_cVBClientAreaLine[10];
 	float m_fSliderPos;

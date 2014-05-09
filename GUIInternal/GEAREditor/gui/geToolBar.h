@@ -33,7 +33,6 @@ protected:
 	//virtual void onAppendChild(geGUIBase* child);
 
 private:
-	stVertexBuffer m_cVBClientArea;
 	float m_cVBClientAreaLine[4];
 	Sprite2Dx m_cSprite;
 	bool m_bImageLoaded;
@@ -58,7 +57,6 @@ public:
 	virtual void onAppendChild(geGUIBase* child);
 
 private:
-	stVertexBuffer m_cVBClientArea;
 	std::vector<geToolBarButton*> m_vToolBarButtons;
 };
 

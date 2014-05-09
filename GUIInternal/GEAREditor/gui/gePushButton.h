@@ -36,7 +36,6 @@ protected:
 
 	virtual void onButtonClicked();
 
-	stVertexBuffer m_cVBClientArea;
 	stVertexBuffer m_cVBCheckMark;
 	float m_cVBClientAreaLine[8];
 	bool m_bCheck;

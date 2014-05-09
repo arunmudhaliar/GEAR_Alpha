@@ -18,7 +18,8 @@ void geTextureThumbnail::create(rendererGL10* renderer, geGUIBase* parent, gxTex
 	setSize(cx, cy);
 	setPos(x, y);
 
-	setColor(&m_cVBClientArea, 0.21f, 0.21f, 0.21f, 1.0f);
+	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
+	applyPrimaryColorToVBClientArea();
 
 	m_pTexturePtr=texture;
 }

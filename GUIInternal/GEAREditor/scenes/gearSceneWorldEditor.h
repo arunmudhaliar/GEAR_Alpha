@@ -32,6 +32,9 @@ public:
 	void onButtonClicked(geGUIBase* btn);
 	void onSliderChange(geGUIBase* slider);
 
+private:
+	void drawCameraFrustum(gxCamera* camera, gxHWShader* shader);
+
 protected:
 	virtual void onCreate();
 	virtual void onDraw();

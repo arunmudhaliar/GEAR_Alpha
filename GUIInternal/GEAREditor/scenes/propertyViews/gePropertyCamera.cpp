@@ -32,7 +32,7 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 	m_pHorizontalSlider_Far->setGUIObserver(this);
 
 	m_pButtonApplyMainCamera = new geButton("");
-	m_pButtonApplyMainCamera->create(renderer, this, "Apply Main Camera", 15, 10);
+	m_pButtonApplyMainCamera->create(renderer, this, "Set as main camera", 15, 10);
 	m_pButtonApplyMainCamera->setGUIObserver(this);
 
 	//window column
@@ -55,7 +55,8 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
-	setColor(&m_cVBClientArea, 0.21f, 0.21f, 0.21f, 1.0f);
+	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
+	applyPrimaryColorToVBClientArea();
 }
 
 gePropertyCamera::~gePropertyCamera()

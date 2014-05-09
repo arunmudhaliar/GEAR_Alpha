@@ -19,8 +19,12 @@ void geScrollBar::create(rendererGL10* renderer, geGUIBase* parent, MScrollBarOb
 	m_pObserverPtr=observer;
 
 	setPos(parent->getSize().x-SCROLLBAR_SIZE, 0);
-	setColor(&m_cVBClientArea, 0.1f, 0.1f, 0.1f, 1.0f);
+
+	setClientAreaPrimaryActiveForeColor(0.1f, 0.1f, 0.1f, 1.0f);
+	applyPrimaryColorToVBClientArea();
+	setClientAreaSecondryActiveForeColor(0.12f, 0.12f, 0.12f, 1.0f);
 	setColor(&m_cVBGrabberClientArea, 0.3f, 0.3f, 0.3f, 1.0f, EGRADIENT_HORIZONTAL_LEFT, 0.4f);
+
 	//setSize(parent->getSize());
 	setSizable(true);
 	m_fHeightRatio=1.0f;
@@ -80,18 +84,18 @@ void geScrollBar::onSize(float cx, float cy, int flag)
 void geScrollBar::onMouseEnterClientArea()
 {
 	if(m_fHeightRatio<1.0f)
-		setColor(&m_cVBClientArea, 0.12f, 0.12f, 0.12f, 1.0f);
+		applySecondryColorToVBClientArea();
 }
 
 void geScrollBar::onMouseExitClientArea()
 {
 	if(m_fHeightRatio<1.0f)
-		setColor(&m_cVBClientArea, 0.1f, 0.1f, 0.1f, 1.0f);
+		applyPrimaryColorToVBClientArea();
 }
 
 void geScrollBar::onCancelEngagedControls()
 {
-	setColor(&m_cVBClientArea, 0.1f, 0.1f, 0.1f, 1.0f);
+	applyPrimaryColorToVBClientArea();
 	//m_bGrabbed=false;
 
 	geGUIBase::onCancelEngagedControls();

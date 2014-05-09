@@ -64,7 +64,6 @@ protected:
 private:
 
 	stVertexBuffer m_cVBTitle;
-	stVertexBuffer m_cVBClientArea;
 	float m_cVBClientAreaLine[8];	//Check This in openGL side
 
 	geLayout* m_pIamOnLayout;

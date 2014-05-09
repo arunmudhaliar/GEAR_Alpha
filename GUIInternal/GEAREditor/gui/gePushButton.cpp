@@ -29,8 +29,10 @@ void gePushButton::create(rendererGL10* renderer, geGUIBase* parent, const char*
 	setPos(x, y);
 
 	STRCPY(m_szName, name);
-	setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.3f);
+	setClientAreaPrimaryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
+	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 	setColor(&m_cVBCheckMark, 0.7, 0.7, 0.7, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.5f/**/);
+
 	m_bMouseHover=false;
 	m_bCheck=false;
 }
@@ -116,10 +118,10 @@ void gePushButton::onButtonStateChanged(EBUTTON_STATE eFromState)
 	switch(m_eState)
 	{
 	case BTN_STATE_NORMAL:
-		setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.3f);
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 		break;
 	case BTN_STATE_PRESSED:
-		setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.3f);
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.3f);
 		break;
 	}
 
@@ -132,7 +134,7 @@ void gePushButton::onMouseEnterClientArea()
 	if(m_eState==BTN_STATE_PRESSED)
 	{
 		buttonHover();
-		setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.3f);
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.3f);
 	}
 }
 
@@ -141,7 +143,7 @@ void gePushButton::onMouseExitClientArea()
 	if(m_eState>=BTN_STATE_PRESSED)
 	{
 		buttonUnHover();
-		setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.3f);
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 	}
 }
 

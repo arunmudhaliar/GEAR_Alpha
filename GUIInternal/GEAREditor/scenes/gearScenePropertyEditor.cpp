@@ -60,9 +60,13 @@ void gearScenePropertyEditor::onCreate()
 	m_cszSprites[4].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[4].setClip(151, 48, 16, 16);
 	m_cszSprites[5].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[5].setClip(256, 382, 16, 16);
+	m_cszSprites[5].setClip(110, 404, 16, 16);
 	m_cszSprites[6].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[6].setClip(26, 298, 16, 16);
+	m_cszSprites[7].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[7].setClip(130, 404, 16, 16);
+	m_cszSprites[8].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[8].setClip(110, 342, 16, 16);
 
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 
@@ -76,10 +80,10 @@ void gearScenePropertyEditor::onCreate()
 	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pRenderer, m_pSaveMetaDataParentNode, "", NULL);
 	m_pLightParentNode = new geTreeNode(m_pRenderer, rootNode, "Light", &m_cszSprites[5], 0);
 	m_pLightPropertyNode = new gePropertyLight(m_pRenderer, m_pLightParentNode, "", NULL);
-	m_pAddComponentParentNode = new geTreeNode(m_pRenderer, rootNode, "Add Component", &m_cszSprites[5], 0);
+	m_pAddComponentParentNode = new geTreeNode(m_pRenderer, rootNode, "Add Component", &m_cszSprites[8], 0);
 	m_pAddComponentProperty = new gePropertyAddComponent(m_pRenderer, m_pAddComponentParentNode, "", NULL);
 
-	m_pCameraParentNode = new geTreeNode(m_pRenderer, rootNode, "Camera", &m_cszSprites[5], 0);
+	m_pCameraParentNode = new geTreeNode(m_pRenderer, rootNode, "Camera", &m_cszSprites[7], 0);
 	m_pCameraPropertyNode = new gePropertyCamera(m_pRenderer, m_pCameraParentNode, "", NULL);
 
 	m_pPostProcessorBlurShaderNode = new geTreeNode(m_pRenderer, rootNode, "Blur Processor", &m_cszSprites[5], 0);

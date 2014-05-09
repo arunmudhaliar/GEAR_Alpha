@@ -27,7 +27,10 @@ geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* na
 		setPos(m_fXOffSet, GE_TREEVIEWNODE_CY);
 	}
 	setSize(70, GE_TREEVIEWNODE_CY);
-	setColor(&m_cVBClientArea, 0.12f, 0.12f, 0.12f, 1.0f);
+
+	setClientAreaPrimaryActiveForeColor(0.12f, 0.12f, 0.12f, 1.0f);
+	applyPrimaryColorToVBClientArea();
+
 	openNode();
 
 	int h=GE_TREEVIEWNODE_CY-4;

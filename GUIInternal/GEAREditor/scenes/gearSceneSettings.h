@@ -25,6 +25,7 @@ protected:
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 private:
+	Sprite2Dx m_cszSprites[10];
 
 	geTreeView m_cSettingsTreeView;
 

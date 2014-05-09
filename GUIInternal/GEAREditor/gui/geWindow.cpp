@@ -69,7 +69,8 @@ void geWindow::setTitleColor(float r, float g, float b, float a)
 
 void geWindow::setClientColor(float r, float g, float b, float a)
 {
-	setColor(&m_cVBClientArea, r, g, b, a);
+	setClientAreaPrimaryActiveForeColor(r, g, b, a);
+	applyPrimaryColorToVBClientArea();
 }
 
 void geWindow::drawTitleAndToolBar(float xoff, float yoff, bool bActiveWindow, bool bFirstWindow)

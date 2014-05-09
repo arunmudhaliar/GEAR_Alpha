@@ -514,7 +514,11 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 				double frame_time=0;
 				for(int m=0;m<nGlobalFrame;m++)
 				{
-					FbxAMatrix local_tm=fbxNode.EvaluateLocalTransform(tt);
+					FbxAMatrix local_tm;
+					if(parent_obj_node->getID()!=OBJECT3D_SKINNED_MESH)
+						local_tm=fbxNode.EvaluateLocalTransform(tt);
+					else
+						local_tm=fbxNode.EvaluateGlobalTransform(tt);
 					componentTrack[m].setPosition((float)local_tm.GetRow(3).mData[0], (float)local_tm.GetRow(3).mData[1], (float)local_tm.GetRow(3).mData[2]);
 					componentTrack[m].setXAxis(vector3f((float)local_tm.GetRow(0).mData[0], (float)local_tm.GetRow(0).mData[1], (float)local_tm.GetRow(0).mData[2]));
 					componentTrack[m].setYAxis(vector3f((float)local_tm.GetRow(1).mData[0], (float)local_tm.GetRow(1).mData[1], (float)local_tm.GetRow(1).mData[2]));

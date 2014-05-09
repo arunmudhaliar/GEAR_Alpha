@@ -39,6 +39,7 @@ private:
 	char m_szDirectoryPath[512];
 
 	object3d* m_pPreviewObj_Cube;
+	gxMaterial m_cPreviewMaterial;
 };
 
 #endif

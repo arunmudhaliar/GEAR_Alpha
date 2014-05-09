@@ -67,7 +67,6 @@ public:
 
 protected:
 	Sprite2Dx* m_pSprite;
-	stVertexBuffer m_cVBClientArea;
 
 	//std::vector<geTreeNode*> m_vChilds;
 

@@ -19,10 +19,14 @@ public:
 		m_pButtonSave = new geButton("");
 		m_pButtonSave->create(renderer, this, "Save Meta", 15, 10);
 		m_pButtonSave->setGUIObserver(this);
+		m_pButtonSave->setClientAreaPrimaryActiveForeColor(0.6f, 0.43f, 0.25f, 1.0f);
+		m_pButtonSave->setClientAreaSecondryActiveForeColor(0.6f, 0.43f, 0.25f, 1.0f);
+		m_pButtonSave->applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 
 		setNodeColor(0.21f, 0.21f, 0.21f);
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
-		setColor(&m_cVBClientArea, 0.21f, 0.21f, 0.21f, 1.0f);
+		setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
+		applyPrimaryColorToVBClientArea();
 	}
 
 	virtual ~gePropertySaveMetaData()

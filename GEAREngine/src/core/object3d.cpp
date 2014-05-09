@@ -380,6 +380,23 @@ gxAnimation* object3d::createAnimationController()
 	return m_pAnimationController;
 }
 
+void object3d::resetAnimationControllerAndAssignItToObject(object3d* obj)
+{
+	obj->setAnimationController(getAnimationController());
+	setAnimationController(NULL);
+}
+
+void object3d::setAnimationController(gxAnimation* controller)
+{
+	//if(m_pAnimationController)
+	//{
+	//	DEBUG_PRINT("WARNING resetting an existing Animation controller");
+	//	GX_DELETE(m_pAnimationController);
+	//}
+
+	m_pAnimationController=controller;
+}
+
 void object3d::setAnimationTrack(gxAnimationTrack* track)
 {
 	m_pAnimationTrack=track;

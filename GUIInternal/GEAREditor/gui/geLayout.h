@@ -91,7 +91,6 @@ protected:
 	virtual void onCancelEngagedControls();
 
 private:
-	stVertexBuffer m_cVBClientArea;
 	geWindow* m_pActiveWindowPointer;
 	geVector2f m_cMousePreviousPos;
 

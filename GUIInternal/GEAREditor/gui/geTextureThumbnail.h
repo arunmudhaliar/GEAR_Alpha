@@ -26,10 +26,8 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 
 	gxTexture* m_pTexturePtr;
+
 private:
-
-	stVertexBuffer m_cVBClientArea;
-
 	float m_cszTextureCoord[8];
 	float m_cVBClientAreaLine[10];
 };

@@ -30,7 +30,9 @@ void geStaticTextBox::create(rendererGL10* renderer, geGUIBase* parent, const ch
 	setPos(x, y);
 
 	STRCPY(m_szName, name);
-	setColor(&m_cVBClientArea, 0.21f, 0.21f, 0.21f, 1.0f);
+
+	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
+	applyPrimaryColorToVBClientArea();
 	setColor(&m_cVBSelectionArea, 0.24f, 0.38f, 0.57f, 1.0f);
 }
 

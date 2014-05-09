@@ -154,6 +154,17 @@ void gearSceneFileView::loadPreviewObjects()
 	deleteAnmationFromObject3d(obj);
 	m_pPreviewObj_Cube=obj;
 	//
+
+	//Material
+	if(file_meta.OpenFile("res//preview//Material.mat.preview"))
+	{
+		stMetaHeader metaHeader;
+		file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+		m_cPreviewMaterial.read(file_meta);
+		file_meta.CloseFile();
+	}
+	//
 }
 
 void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
@@ -284,6 +295,35 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		else if(util::GE_IS_EXTENSION(relativePath, ".cs") || util::GE_IS_EXTENSION(relativePath, ".CS"))
 		{
 			EditorApp::getScenePropertyEditor()->populatePropertyOfOpenInEditor();
+		}
+		else if(util::GE_IS_EXTENSION(relativePath, ".png") || util::GE_IS_EXTENSION(relativePath, ".PNG")
+			|| util::GE_IS_EXTENSION(relativePath, ".tga") || util::GE_IS_EXTENSION(relativePath, ".TGA"))
+		{
+			HWShaderManager* hwShaderManager = engine_getHWShaderManager();
+			//load surface shader
+			char mainshaderfilename[1024];
+			sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", m_cPreviewMaterial.getMainshaderName());
+			m_cPreviewMaterial.setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
+
+			gxWorld* world=monoWrapper::mono_engine_getWorld(0);
+			//load sub maps
+			std::vector<gxSubMap*>* maplist=m_cPreviewMaterial.getSubMapList();
+			for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
+			{
+				gxSubMap* submap = *it;
+				int crc32=AssetImporter::calcCRC32((unsigned char*)relativePath);
+				submap->setTextureCRC(crc32);
+				submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
+			}
+
+			gxMesh* mesh=(gxMesh*)m_pPreviewObj_Cube->getChild(0);
+			gxTriInfo* triinfo = mesh->getTriInfo(0);
+			triinfo->setMaterial(&m_cPreviewMaterial);
+			//world->getMaterialList()->push_back(triinfo->getMaterial());
+			obj=m_pPreviewObj_Cube;
+			//gxWorld* world=monoWrapper::mono_engine_getWorld(0);
+			//m_cPreviewMaterial.loadTextureFromFile(*world->getTextureManager()
+			//EditorApp::getScenePropertyEditor()->populatePropertyOfOpenInEditor();
 		}
 	}
 	EditorApp::getScenePreview()->selectedObject3D(obj);

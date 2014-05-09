@@ -16,7 +16,10 @@ geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, g
 	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(width+27, GE_TOOLBAR_HEIGHT);
 
-	setColor(&m_cVBClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
+	setClientAreaPrimaryActiveForeColor(0.2f, 0.2f, 0.2f, 1.0f);
+	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
+	setClientAreaSecondryActiveForeColor(0.4, 0.4, 0.4, 1.0f);
+
 	m_bImageLoaded=false;
 	m_pActiveItemPtr=NULL;
 	//create(parent, name, 0, 0);
@@ -98,11 +101,10 @@ void geToolBarDropMenu::onButtonStateChanged(EBUTTON_STATE eFromState)
 	switch(m_eState)
 	{
 	case BTN_STATE_NORMAL:
-		setColor(&m_cVBClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
 		break;
 	case BTN_STATE_PRESSED:
-		setColor(&m_cVBClientArea, 0.4, 0.4, 0.4, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.45f);
-
+		applySecondryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.45f);
 		break;
 	}
 }

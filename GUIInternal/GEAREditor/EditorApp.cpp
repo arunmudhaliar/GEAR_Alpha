@@ -78,7 +78,7 @@ void EditorApp::init(HWND hWnd, HINSTANCE hInst)
 	setSceneConsole(consoleWindow);
 
 	gearSceneSettings* settingsWindow = new gearSceneSettings();
-	settingsWindow->create(m_pRendererGL10, NULL, 0, 0, 300, 500, true);
+	settingsWindow->create(m_pRendererGL10, NULL, 0, 0, 300, 500);
 	m_cGUIManager.appendWindow(settingsWindow);
 	propertyEditorLayout->appendWindow(settingsWindow);
 

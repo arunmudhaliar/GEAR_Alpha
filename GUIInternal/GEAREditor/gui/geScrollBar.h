@@ -48,7 +48,6 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 
 private:
-	stVertexBuffer m_cVBClientArea;
 	stVertexBuffer m_cVBGrabberClientArea;
 	float m_fHeightRatio;
 

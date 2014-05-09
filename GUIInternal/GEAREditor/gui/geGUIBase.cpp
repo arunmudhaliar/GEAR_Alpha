@@ -12,6 +12,8 @@ geGUIBase::geGUIBase()
 	m_pUserData=NULL;
 	m_pGUIObserver = NULL;
 	m_pActiveWindowPtrOnlyForLayout=NULL;
+	setClientAreaPrimaryActiveForeColor(1.0f, 1.0f, 1.0f);
+	setClientAreaSecondryActiveForeColor(0.5f, 0.5f, 0.5f);
 }
 
 geGUIBase::geGUIBase(unsigned short uGUIID, const char* name):
@@ -31,6 +33,9 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name):
 	}
 	m_pGUIObserver=NULL;
 	m_pActiveWindowPtrOnlyForLayout=NULL;
+
+	setClientAreaPrimaryActiveForeColor(1.0f, 1.0f, 1.0f);
+	setClientAreaSecondryActiveForeColor(0.5f, 0.5f, 0.5f);
 }
 
 geGUIBase::~geGUIBase()
@@ -115,6 +120,26 @@ void geGUIBase::resizeComplete()
 	onResizeComplete();
 }
 
+void geGUIBase::applyPrimaryColorToVBClientArea(ESTYLE_GRADIENT eGradientStyle, float gradientScale)
+{
+	setColor(&m_cVBClientArea, m_fszClientAreaPrimaryActiveForeColor[0],
+								m_fszClientAreaPrimaryActiveForeColor[1],
+								m_fszClientAreaPrimaryActiveForeColor[2],
+								m_fszClientAreaPrimaryActiveForeColor[3],
+								eGradientStyle,
+								gradientScale);
+}
+
+void geGUIBase::applySecondryColorToVBClientArea(ESTYLE_GRADIENT eGradientStyle, float gradientScale)
+{
+	setColor(&m_cVBClientArea, m_fszClientAreaSecondryActiveForeColor[0],
+								m_fszClientAreaSecondryActiveForeColor[1],
+								m_fszClientAreaSecondryActiveForeColor[2],
+								m_fszClientAreaSecondryActiveForeColor[3],
+								eGradientStyle,
+								gradientScale);
+}
+
 void geGUIBase::setColor(stVertexBuffer* vbuffer, float r, float g, float b, float a, ESTYLE_GRADIENT eGradientStyle, float gradientScale)
 {
 	switch(eGradientStyle)
@@ -164,6 +189,22 @@ void geGUIBase::setColor(stVertexBuffer* vbuffer, float r, float g, float b, flo
 		}
 		break;
 	}
+}
+
+void geGUIBase::setClientAreaPrimaryActiveForeColor(float r, float g, float b, float a)
+{
+	m_fszClientAreaPrimaryActiveForeColor[0]=r;
+	m_fszClientAreaPrimaryActiveForeColor[1]=g;
+	m_fszClientAreaPrimaryActiveForeColor[2]=b;
+	m_fszClientAreaPrimaryActiveForeColor[3]=a;
+}
+
+void geGUIBase::setClientAreaSecondryActiveForeColor(float r, float g, float b, float a)
+{
+	m_fszClientAreaSecondryActiveForeColor[0]=r;
+	m_fszClientAreaSecondryActiveForeColor[1]=g;
+	m_fszClientAreaSecondryActiveForeColor[2]=b;
+	m_fszClientAreaSecondryActiveForeColor[3]=a;
 }
 
 void geGUIBase::setColor(stVertexBuffer* vbuffer, int index, float r, float g, float b, float a)

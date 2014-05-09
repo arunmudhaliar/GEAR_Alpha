@@ -16,15 +16,20 @@ gearSceneSettings::~gearSceneSettings()
 
 void gearSceneSettings::onCreate()
 {
+	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[0].setClip(6, 256, 16, 16);
+	m_cszSprites[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[1].setClip(173, 321, 16, 16);
+
 	m_cSettingsTreeView.create(m_pRenderer, this, "SettingsTV", this);
 
 	geTreeNode* rootNode=m_cSettingsTreeView.getRoot();
 
-	m_pSettingsAndroidParentNode = new geTreeNode(m_pRenderer, rootNode, "Android", NULL, 0);
-	m_pSettingsAndroid = new geSettingsAndroid(m_pRenderer, m_pSettingsAndroidParentNode, "", NULL);
-
-	m_pSettingsGlobalParentNode = new geTreeNode(m_pRenderer, rootNode, "Global", NULL, 0);
+	m_pSettingsGlobalParentNode = new geTreeNode(m_pRenderer, rootNode, "Global", &m_cszSprites[0], 0);
 	m_pSettingsGlobal = new geSettingsGlobal(m_pRenderer, m_pSettingsGlobalParentNode, "", NULL);
+
+	m_pSettingsAndroidParentNode = new geTreeNode(m_pRenderer, rootNode, "Android", &m_cszSprites[1], 0);
+	m_pSettingsAndroid = new geSettingsAndroid(m_pRenderer, m_pSettingsAndroidParentNode, "", NULL);
 }
 
 void gearSceneSettings::onDraw()

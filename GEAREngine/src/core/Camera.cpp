@@ -183,6 +183,8 @@ void Camera::calculateAABB()
 	
 	m_cAABB.set(min, max);
 	*/
+
+	object3d::calculateAABB();
 }
 
 void Camera::drawFrustum()

@@ -66,8 +66,6 @@ public:
 		return m_szMetaDataFolder;
 	}
 
-	void calculateAABB();
-
 	CTextureManager* getTextureManager()	{	return &m_cTextureManager;	}
 #if 0
 	void loadTextures(object3d* obj, const char* fbxFileName);

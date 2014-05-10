@@ -82,6 +82,7 @@
     <ClCompile Include="..\src\audio\SoundSample.cpp" />
     <ClCompile Include="..\src\audio\SoundSource.cpp" />
     <ClCompile Include="..\src\core\Camera.cpp" />
+    <ClCompile Include="..\src\core\COctree.cpp" />
     <ClCompile Include="..\src\core\fbo.cpp" />
     <ClCompile Include="..\src\core\gxAnimation.cpp" />
     <ClCompile Include="..\src\core\gxAnimationSet.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="..\src\core\aabb.h" />
     <ClInclude Include="..\src\core\basicIncludes.h" />
     <ClInclude Include="..\src\core\Camera.h" />
+    <ClInclude Include="..\src\core\COctree.h" />
     <ClInclude Include="..\src\core\fbo.h" />
     <ClInclude Include="..\src\core\frustum.h" />
     <ClInclude Include="..\src\core\gxAnimation.h" />
@@ -576,6 +578,7 @@
     <ClInclude Include="..\src\util\bxLinkedList.h" />
     <ClInclude Include="..\src\util\FontManager.h" />
     <ClInclude Include="..\src\util\gxCrc32.h" />
+    <ClInclude Include="..\src\util\gxExpandableArray.h" />
     <ClInclude Include="..\src\util\gxFile.h" />
     <ClInclude Include="..\src\util\gxUtil.h" />
     <ClInclude Include="..\src\util\nvProfiler.h" />

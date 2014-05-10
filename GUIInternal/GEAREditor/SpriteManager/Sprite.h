@@ -83,7 +83,7 @@ public:
     
     virtual void transformationChangedf()
     {    }
-    
+
 	void setBlendMode(EBLENDFLAG eFlag)		{	m_eBlendFlag=eFlag;	}
 	EBLENDFLAG getBlendMode()				{	return m_eBlendFlag;	}
 

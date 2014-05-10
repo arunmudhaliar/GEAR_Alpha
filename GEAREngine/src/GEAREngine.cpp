@@ -97,8 +97,7 @@ void read3dFile2(gxFile& file, object3d* obj)
 
 		tempObj->setObject3dObserver(g_Object3dObserver);
 		tempObj->read(file);
-		//tempObj->calculateInitialAABB();
-		tempObj->transformationChangedf();
+		//arun:transform tempObj->transformationChangedf();
 		obj->appendChild(tempObj);
 		read3dFile2(file, tempObj);
 	}

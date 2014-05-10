@@ -107,7 +107,6 @@ public:
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);
 	void writeMeshData(gxFile& file);
-	virtual void transformationChangedf();
 
 protected:
 

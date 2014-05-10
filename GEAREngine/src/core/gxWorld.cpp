@@ -165,11 +165,6 @@ Camera* gxWorld::setDefaultCameraActive()
 	return m_pActiveCameraPtr;
 }
 
-void gxWorld::calculateAABB()
-{
-	object3d::calculateAABB();
-}
-
 void gxWorld::callback_object3dRemovedFromTree(object3d* child)
 {
 	if(child->getID()==OBJECT3D_LIGHT)
@@ -412,8 +407,6 @@ void gxWorld::read3dFile2(gxFile& file, object3d* obj)
 
 		tempObj->setObject3dObserver(m_pObject3dObserver);
 		tempObj->read(file);
-		//tempObj->calculateInitialAABB();
-		tempObj->transformationChangedf();
 		obj->appendChild(tempObj);
 		read3dFile2(file, tempObj);
 	}
@@ -472,10 +465,7 @@ object3d* gxWorld::loadAndAppendFBX(const char* filename)
 					obj=tempObj;
 					loadMaterialFromObject3d(obj);
 					loadAnmationFromObject3d(obj, crc);
-					//obj->calculateInitialAABB();
-					obj->transformationChangedf();
 					root_object_node=obj;
-
 
 					if(m_pEngineObserver)
 						m_pEngineObserver->onAppendToWorld(this, obj);
@@ -485,6 +475,7 @@ object3d* gxWorld::loadAndAppendFBX(const char* filename)
 		}
 	}
 
+	transformationChangedf();
 	populateBonesToMeshNode(root_object_node, root_object_node);
 
 	return root_object_node;
@@ -535,10 +526,7 @@ object3d* gxWorld::loadAndAppendFBXForDevice(const char* filename)
 				obj=tempObj;
 				loadMaterialFromObject3d(obj);
 				loadAnmationFromObject3d(obj, crc);
-				//obj->calculateInitialAABB();
-				obj->transformationChangedf();
 				root_object_node=obj;
-
 
 				if(m_pEngineObserver)
 					m_pEngineObserver->onAppendToWorld(this, obj);
@@ -547,6 +535,7 @@ object3d* gxWorld::loadAndAppendFBXForDevice(const char* filename)
 		}
 	}
 
+	transformationChangedf();
 	populateBonesToMeshNode(root_object_node, root_object_node);
 
 	return root_object_node;

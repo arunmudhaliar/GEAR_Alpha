@@ -81,11 +81,8 @@ public:
 	void updateAnimationFrameToObject3d(int frame);
 	virtual void render(gxRenderer* renderer, object3d* light);
 
-
 	virtual void transformationChangedf();
-
 	virtual void calculateAABB();
-	void calculateInitialAABB();
 
 	int getID()				{	return m_iObjectID;	}
 	const char* getName()	{	return m_cszName;	}
@@ -153,6 +150,9 @@ public:
 	btRigidBody* getRigidBody()					{	return m_pPhysics_RigidBodyPtr;	}
 #endif
 
+	void setVisited(bool flag)	{	m_bVisited=flag;	}
+	bool isVisited()			{	return m_bVisited;	}
+
 protected:
 	void clearAnimTrackOnAllNodes();
 
@@ -177,6 +177,7 @@ protected:
 #if USE_BULLET
 	btRigidBody* m_pPhysics_RigidBodyPtr;	//must not delete this pointer
 #endif
+	bool m_bVisited;
 };
 
 extern "C" {

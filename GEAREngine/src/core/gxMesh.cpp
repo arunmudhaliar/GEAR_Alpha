@@ -904,8 +904,3 @@ void gxMesh::read(gxFile& file)
 		buildVBO();
 	//createTBN_Data();
 }
-
-void gxMesh::transformationChangedf()
-{
-	object3d::transformationChangedf();
-}

@@ -69,9 +69,7 @@ public:
         scaleTM.setScale(scale, scale, scale);
         //multiply with transform matrix
 		matrix4x4f* p=this;
-		*p = (scaleTM * (*this));
-		
-		//transformationChangedf();    
+		*p = (scaleTM * (*this));   
     }
 
 	void scaleX(float scale)
@@ -111,8 +109,6 @@ public:
 		//multiply with transform matrix
 		matrix4x4f* p=this;
 		*p = (aRotMat * (*this));
-		
-		//transformationChangedf();
 	}
 	
 	void rotateWorldYf(float aAngleInDeg)
@@ -123,8 +119,6 @@ public:
 		//multiply with transform matrix
 		matrix4x4f* p=this;
 		*p = (aRotMat * (*this));
-		
-		//transformationChangedf();
 	}
 	
 	void rotateWorldZf(float aAngleInDeg)
@@ -135,8 +129,6 @@ public:
 		//multiply with transform matrix
 		matrix4x4f* p=this;
 		*p = (aRotMat * (*this));
-		
-		//transformationChangedf();
 	}
 	
 	void rotateLocalXf(float aAngleInDeg)

@@ -669,6 +669,9 @@
     <ClCompile Include="..\src\util\FontManager.cpp">
       <Filter>engine\util</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\COctree.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -1594,6 +1597,12 @@
     </ClInclude>
     <ClInclude Include="..\src\core\frustum.h">
       <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\COctree.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\gxExpandableArray.h">
+      <Filter>engine\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

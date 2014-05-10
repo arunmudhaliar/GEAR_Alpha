@@ -677,6 +677,11 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		m_pSelectedObj->getOOBB().draw(shader);
 
+		shader->sendUniformTMfv("u_mvp_m4x4", m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix(), false, 4);
+		shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.4f, 0.62f, 1.0f);
+		m_pSelectedObj->getAABB().draw(shader);
+		m_pMainWorldPtr->getAABB().draw(shader);
+
 		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA)
 		{
 			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.6f, 0.6f, 1.0f);
@@ -1129,6 +1134,9 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 								m_pSelectedObj->updatePositionf(0, 0, diff_in_world.z);
 						}
 					}
+
+					if(bTranslateGizmo || bRotateGizmo || bScaleGizmo)
+						m_pMainWorldPtr->transformationChangedf();
 
 					m_cMousePrevPosInWorld = current_pos_in_world;
 				}

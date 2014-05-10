@@ -72,6 +72,7 @@ object3d::object3d(int objID):
 	m_pPhysics_RigidBodyPtr=NULL;
 #endif
 	m_pEngineObserver = NULL;
+	m_bVisited=false;
 }
 
 object3d::~object3d()
@@ -246,6 +247,7 @@ bool object3d::removeChild(object3d* child)
 			m_pRootObserver->callback_object3dRemovedFromTree(child);
 		child->setParent(NULL);
 		//child->setAnimationTrack(NULL);	nned to test fully
+		transformationChangedf();
 		return true;
 	}
 	else
@@ -283,7 +285,6 @@ void object3d::transformationChangedf()
 		else
 			m_cWorldMatrix = *this;
 	}
-	//calculateAABB();
 
 
 #ifdef USE_BXLIST
@@ -301,57 +302,84 @@ void object3d::transformationChangedf()
 		obj->transformationChangedf();
 	}
 #endif
-}
 
-void object3d::calculateInitialAABB()
-{
-	//vector3f aabb_min(*this % m_cOOBB.m_min);
-	//vector3f aabb_max(*this % m_cOOBB.m_max);
-
-	//float min_x,min_y,min_z;
-	//float max_x,max_y,max_z;
-
-	//min_x=min_y=min_z=1e16f;
-	//max_x=max_y=max_z=-1e16f;
-	//if(min_x>aabb_min.x)		min_x	= aabb_min.x;
-	//if(min_y>aabb_min.y)		min_y	= aabb_min.y;
-	//if(min_z>aabb_min.z)		min_z	= aabb_min.z;
-
-	//if(max_x<aabb_max.x)		max_x	= aabb_max.x;
-	//if(max_y<aabb_max.y)		max_y	= aabb_max.y;
-	//if(max_z<aabb_max.z)		max_z	= aabb_max.z;
-
-	//m_cAABB.set(vector3f(min_x, min_y, min_z), vector3f(max_x, max_y, max_z));
+	calculateAABB();
 }
 
 void object3d::calculateAABB()
 {
-	//if(m_cChilds.size()==0)
-	//	return;
+	float min_x,min_y,min_z;
+	float max_x,max_y,max_z;
+	min_x=min_y=min_z=1e16f;
+	max_x=max_y=max_z=-1e16f;
+	
+	vector3f bound_vertices[8];
 
-	//float min_x,min_y,min_z;
-	//float max_x,max_y,max_z;
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
 
-	//min_x=min_y=min_z=1e16f;
-	//max_x=max_y=max_z=-1e16f;
+		vector3f aabb_min(obj->getAABB().m_min);
+		vector3f aabb_max(obj->getAABB().m_max);
+		//vector3f diif(aabb_max-aabb_min);
+		//if(diif.lengthSquared()==0.0f) continue;
 
-	//for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
-	//{
-	//	object3d* obj = *it;
-	//	obj->calculateAABB();
-	//	vector3f aabb_min(obj->getAABB().m_min);
-	//	vector3f aabb_max(obj->getAABB().m_max);
+		bound_vertices[0].set(vector3f(aabb_min.x, aabb_min.y, aabb_min.z));
+		bound_vertices[1].set(vector3f(aabb_min.x, aabb_min.y, aabb_max.z));
+		bound_vertices[2].set(vector3f(aabb_max.x, aabb_min.y, aabb_max.z));
+		bound_vertices[3].set(vector3f(aabb_max.x, aabb_min.y, aabb_min.z));
+		bound_vertices[4].set(vector3f(aabb_min.x, aabb_max.y, aabb_min.z));
+		bound_vertices[5].set(vector3f(aabb_min.x, aabb_max.y, aabb_max.z));
+		bound_vertices[6].set(vector3f(aabb_max.x, aabb_max.y, aabb_max.z));
+		bound_vertices[7].set(vector3f(aabb_max.x, aabb_max.y, aabb_min.z));
 
-	//	if(min_x>aabb_min.x)		min_x	= aabb_min.x;
-	//	if(min_y>aabb_min.y)		min_y	= aabb_min.y;
-	//	if(min_z>aabb_min.z)		min_z	= aabb_min.z;
+		//m_min.x, m_min.y, m_min.z,		//0
+		//m_min.x, m_min.y, m_max.z,		//1
+		//m_max.x, m_min.y, m_max.z,		//2
+		//m_max.x, m_min.y, m_min.z,		//3
+		//m_min.x, m_max.y, m_min.z,		//4
+		//m_min.x, m_max.y, m_max.z,		//5
+		//m_max.x, m_max.y, m_max.z,		//6	
+		//m_max.x, m_max.y, m_min.z,		//7
 
-	//	if(max_x<aabb_max.x)		max_x	= aabb_max.x;
-	//	if(max_y<aabb_max.y)		max_y	= aabb_max.y;
-	//	if(max_z<aabb_max.z)		max_z	= aabb_max.z;
-	//}
+		for(int x=0;x<8;x++)
+		{
+			if(min_x>bound_vertices[x].x)		min_x	= bound_vertices[x].x;
+			if(min_y>bound_vertices[x].y)		min_y	= bound_vertices[x].y;
+			if(min_z>bound_vertices[x].z)		min_z	= bound_vertices[x].z;
 
-	//m_cAABB.set(vector3f(min_x, min_y, min_z), vector3f(max_x, max_y, max_z));
+			if(max_x<bound_vertices[x].x)		max_x	= bound_vertices[x].x;
+			if(max_y<bound_vertices[x].y)		max_y	= bound_vertices[x].y;
+			if(max_z<bound_vertices[x].z)		max_z	= bound_vertices[x].z;
+		}
+	}
+
+	if(getID()!=OBJECT3D_WORLD)
+	{
+		vector3f oobb_min(getOOBB().m_min);
+		vector3f oobb_max(getOOBB().m_max);
+
+		bound_vertices[0].set(*this->getWorldMatrix() * vector3f(oobb_min.x, oobb_min.y, oobb_min.z));
+		bound_vertices[1].set(*this->getWorldMatrix() * vector3f(oobb_min.x, oobb_min.y, oobb_max.z));
+		bound_vertices[2].set(*this->getWorldMatrix() * vector3f(oobb_max.x, oobb_min.y, oobb_max.z));
+		bound_vertices[3].set(*this->getWorldMatrix() * vector3f(oobb_max.x, oobb_min.y, oobb_min.z));
+		bound_vertices[4].set(*this->getWorldMatrix() * vector3f(oobb_min.x, oobb_max.y, oobb_min.z));
+		bound_vertices[5].set(*this->getWorldMatrix() * vector3f(oobb_min.x, oobb_max.y, oobb_max.z));
+		bound_vertices[6].set(*this->getWorldMatrix() * vector3f(oobb_max.x, oobb_max.y, oobb_max.z));
+		bound_vertices[7].set(*this->getWorldMatrix() * vector3f(oobb_max.x, oobb_max.y, oobb_min.z));
+
+		for(int x=0;x<8;x++)
+		{
+			if(min_x>bound_vertices[x].x)		min_x	= bound_vertices[x].x;
+			if(min_y>bound_vertices[x].y)		min_y	= bound_vertices[x].y;
+			if(min_z>bound_vertices[x].z)		min_z	= bound_vertices[x].z;
+
+			if(max_x<bound_vertices[x].x)		max_x	= bound_vertices[x].x;
+			if(max_y<bound_vertices[x].y)		max_y	= bound_vertices[x].y;
+			if(max_z<bound_vertices[x].z)		max_z	= bound_vertices[x].z;
+		}
+	}
+	m_cAABB.set(vector3f(min_x, min_y, min_z), vector3f(max_x, max_y, max_z));
 }
 
 object3d* object3d::appendChild(object3d* child)
@@ -368,7 +396,9 @@ object3d* object3d::appendChild(object3d* child)
 #else
 	m_cChilds.push_back(child);
 #endif
+
 	child->transformationChangedf();
+	transformationChangedf();
 	return child;
 }
 

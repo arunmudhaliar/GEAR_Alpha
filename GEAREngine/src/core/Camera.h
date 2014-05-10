@@ -34,7 +34,7 @@ public:
 	void		drawFrustum();
     //void render(const matrix4x4f* parentTM);
 
-	//gxFrustumf&	getFrustum()						{	return m_cFrustum;			}
+	gxFrustumf&	getFrustum()						{	return m_cFrustum;			}
 	const matrix4x4f*	getProjectionMatrix()		{	return &m_cProjMatrix;		}
 	const matrix4x4f*	getInverseTMViewMatrix()	{	return &m_cInvTranfMatrix;	}
 	const matrix4x4f*	getViewMatrix()				{	return &m_cInvTranfMatrix;	}
@@ -46,7 +46,7 @@ private:
 	matrix4x4f	m_cInvTranfMatrix;
 	matrix4x4f	m_cViewProjectionMatrix;
 
-	//gxFrustumf	m_cFrustum;
+	gxFrustumf	m_cFrustum;
 	float m_fFOV;	//in angles
 	float m_fNear;
 	float m_fFar;

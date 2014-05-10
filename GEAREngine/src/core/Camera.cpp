@@ -60,6 +60,7 @@ void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearV
 		m_cProjMatrix.setOrtho(m_pRendererPtr->getViewPortRect().m_pos.x, m_pRendererPtr->getViewPortSz().x, m_pRendererPtr->getViewPortRect().m_pos.y, m_pRendererPtr->getViewPortSz().y, m_fNear, m_fFar);
 	
 	m_pRendererPtr->setProjectionMatrixToGL(&m_cProjMatrix);
+	extractFrustumPlanes();
 	updateCamera();
 }
 
@@ -89,10 +90,9 @@ void Camera::transformationChangedf()
 
 void Camera::extractFrustumPlanes()
 {
-	/*
 	matrix4x4f clipMatrix;
 	
-	clipMatrix	= m_cProjMatrix * m_cInvTranfMatrix;
+	clipMatrix	= m_cProjMatrix;/* * m_cInvTranfMatrix;*/
 	//right plane
 	m_cFrustum.m_cPlanes[gxFrustumf::RIGHT_PLANE].normal.x	= clipMatrix[3]-clipMatrix[0];
 	m_cFrustum.m_cPlanes[gxFrustumf::RIGHT_PLANE].normal.y	= clipMatrix[7]-clipMatrix[4];
@@ -146,13 +146,11 @@ void Camera::extractFrustumPlanes()
 	m_cFrustum.m_cFrustumVert[3]	= gxPlane3f::intersectionPoint(m_cFrustum.m_cPlanes[gxFrustumf::NEAR_PLANE], m_cFrustum.m_cPlanes[gxFrustumf::TOP_PLANE],		m_cFrustum.m_cPlanes[gxFrustumf::LEFT_PLANE]);
 	
 	calculateAABB();
-	*/
 }
 
 void Camera::calculateAABB()
 {
-	/*
-    objectBase::calculateAABB();
+    object3d::calculateAABB();
 
 	vector3f	min;
 	vector3f	max;
@@ -160,8 +158,8 @@ void Camera::calculateAABB()
 	{
 		if(i==0)
 		{
-			min	= m_cFrustum.m_cFrustumVert[i];
-			max	= m_cFrustum.m_cFrustumVert[i];
+			min	= *this->getWorldMatrix() * m_cFrustum.m_cFrustumVert[i];
+			max	= *this->getWorldMatrix() * m_cFrustum.m_cFrustumVert[i];
 		}
 		else
 		{
@@ -182,9 +180,6 @@ void Camera::calculateAABB()
 	}//for
 	
 	m_cAABB.set(min, max);
-	*/
-
-	object3d::calculateAABB();
 }
 
 void Camera::drawFrustum()

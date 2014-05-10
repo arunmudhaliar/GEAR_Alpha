@@ -99,7 +99,7 @@ void gxWorld::update(float dt)
 	object3d::update(dt);
 }
 
-void gxWorld::render(gxRenderer* renderer, object3d* light)
+void gxWorld::render(gxRenderer* renderer, object3d* lightPtr)
 {
 	if(m_pActiveCameraPtr)
 	{
@@ -110,18 +110,69 @@ void gxWorld::render(gxRenderer* renderer, object3d* light)
 	renderer->m_nDrawCalls=0;
 
 	if(m_pObserverPtr)m_pObserverPtr->preWorldRender();
-	object3d::render(renderer, light);
+
+	glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LESS);
+	//if(!m_pTBOnlyLightPass->isButtonPressed())
+	{
+		getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+		object3d::render(renderer, NULL);
+	}
+
+	//glDisable(GL_DEPTH_TEST);
+		//glDepthMask(GL_FALSE);
+	//glDepthFunc(GL_LEQUAL);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
+	//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
+	//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
+	//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
+	std::vector<gxLight*>* lightList = getLightList();
+	for(int x=0;x<lightList->size();x++)
+	{
+		gxLight* light = lightList->at(x);
+		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			continue;
+
+		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+		object3d::render(renderer, light);
+	}
+	glDisable(GL_BLEND);
+	//glDepthMask(GL_TRUE);
+	//glEnable(GL_DEPTH_TEST);
+
 	if(m_pObserverPtr)m_pObserverPtr->postWorldRender();
 }
 
-void gxWorld::renderSingleObject(object3d* obj, object3d* light)
+void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr)
 {
 	if(m_pActiveCameraPtr)
 	{
 		m_pActiveCameraPtr->processCamera();
 	}
 
-	obj->render(&m_cRenderer, light);
+	glEnable(GL_DEPTH_TEST);
+	getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+	obj->render(&m_cRenderer, NULL);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
+	//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
+	//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
+	//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
+	std::vector<gxLight*>* lightList = getLightList();
+	for(int x=0;x<lightList->size();x++)
+	{
+		gxLight* light = lightList->at(x);
+		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			continue;
+
+		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+		obj->render(&m_cRenderer, light);
+	}
+	glDisable(GL_BLEND);
 }
 
 void gxWorld::resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane)

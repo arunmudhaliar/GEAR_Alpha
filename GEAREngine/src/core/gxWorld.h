@@ -32,12 +32,12 @@ public:
 	void resetWorld();
 
 	void update(float dt);
-	void render(gxRenderer* renderer, object3d* light);
+	void render(gxRenderer* renderer, object3d* lightPtr);
 
 	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
 	Camera* setDefaultCameraActive();
 
-	void renderSingleObject(object3d* obj, object3d* light);
+	void renderSingleObject(object3d* obj, object3d* lightPtr);
 	void resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane);
 
 	gxMaterial* getDefaultMaterial()					{	return &m_cDefaultMaterial;		}

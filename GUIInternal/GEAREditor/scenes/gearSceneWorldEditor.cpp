@@ -433,41 +433,42 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 		glDisable(GL_BLEND);
 	}
 #else
-	glEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_LESS);
-	if(!m_pTBOnlyLightPass->isButtonPressed())
-	{
-		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-		monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
-	}
+	monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+	//glEnable(GL_DEPTH_TEST);
+	////glDepthFunc(GL_LESS);
+	//if(!m_pTBOnlyLightPass->isButtonPressed())
+	//{
+	//	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+	//	monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+	//}
 
-	//glDisable(GL_DEPTH_TEST);
-		//glDepthMask(GL_FALSE);
-	//glDepthFunc(GL_LEQUAL);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
-	//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
-	//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
-	//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
-	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
-	for(int x=0;x<lightList->size();x++)
-	{
-		gxLight* light = lightList->at(x);
-		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
-			continue;
+	////glDisable(GL_DEPTH_TEST);
+	//	//glDepthMask(GL_FALSE);
+	////glDepthFunc(GL_LEQUAL);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
+	////glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
+	////glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
+	////glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
+	//std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
+	//for(int x=0;x<lightList->size();x++)
+	//{
+	//	gxLight* light = lightList->at(x);
+	//	if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+	//		continue;
 
-		//if(x==0)
-		//	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-		//else
-		//	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+	//	//if(x==0)
+	//	//	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
+	//	//else
+	//	//	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
 
-		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
-		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-		monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
-	}
-	glDisable(GL_BLEND);
-		//glDepthMask(GL_TRUE);
-		//glEnable(GL_DEPTH_TEST);
+	//	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+	//	//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+	//	monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
+	//}
+	//glDisable(GL_BLEND);
+	//	//glDepthMask(GL_TRUE);
+	//	//glEnable(GL_DEPTH_TEST);
 #endif
 
 	drawGrid();
@@ -684,6 +685,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA)
 		{
+			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.6f, 0.6f, 1.0f);
 			drawCameraFrustum((gxCamera*)m_pSelectedObj, shader);
 		}

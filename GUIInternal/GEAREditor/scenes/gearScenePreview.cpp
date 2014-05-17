@@ -96,6 +96,14 @@ void gearScenePreview::onDraw()
 	monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj, NULL);
 }
 
+void gearScenePreview::selectedObject3D(object3d* obj)
+{
+	m_pSelectedObj=obj;
+	if(m_pSelectedObj)
+		m_pSelectedObj->identity();
+	m_bStopFollowCam=false;	
+}
+
 void gearScenePreview::followObject(float dt, object3d* chasedObj)
 {
 	if(dt>0.1f || m_bStopFollowCam) return;
@@ -152,30 +160,72 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 bool gearScenePreview::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	monoWrapper::mono_engine_mouseLButtonDown(m_pPreviewWorldPtr, x, y, nFlag);
+	m_cPrevMousePos.set(x, y);
 	return true;
 }
 
 bool gearScenePreview::onMouseLButtonUp(float x, float y, int nFlag)
 {
 	monoWrapper::mono_engine_mouseLButtonUp(m_pPreviewWorldPtr, x, y, nFlag);
+	m_cPrevMousePos.set(x, y);
 	return true;
 }
 
 bool gearScenePreview::onMouseRButtonDown(float x, float y, int nFlag)
 {
 	monoWrapper::mono_engine_mouseRButtonDown(m_pPreviewWorldPtr, x, y, nFlag);
+	m_cPrevMousePos.set(x, y);
 	return true;
 }
 
 void gearScenePreview::onMouseRButtonUp(float x, float y, int nFlag)
 {
 	monoWrapper::mono_engine_mouseRButtonUp(m_pPreviewWorldPtr, x, y, nFlag);
+	m_cPrevMousePos.set(x, y);
 }
 
 bool gearScenePreview::onMouseMove(float x, float y, int flag)
 {
-	monoWrapper::mono_engine_mouseMove(m_pPreviewWorldPtr, x, y, flag);
+	//monoWrapper::mono_engine_mouseMove(m_pPreviewWorldPtr, x, y, flag);
+	if(!m_pSelectedObj)
+		return true;
 
+	int xx=x;
+	int yy=y;
+	int xPos = xx;
+	int yPos = yy;
+	int Pos_dx	= abs(xPos-m_cPrevMousePos.x);
+	int Pos_dy	= abs(yPos-m_cPrevMousePos.y);
+
+	int aDirX=-1;
+	int aDirY=1;
+	if(m_cPrevMousePos.x>xPos)		aDirX=1;
+	if(m_cPrevMousePos.y>yPos)		aDirY=-1;
+
+#ifdef _WIN32
+	/*if(flag&MK_MBUTTON)
+	{
+		float d=m_pSelectedObj->getPosition().length();
+		if(flag&MK_SHIFT)
+			m_pSelectedObj->updateLocalPositionf((d/5000.0f)*Pos_dx*aDirX, (d/5000.0f)*Pos_dy*aDirY, 0);
+		else
+			m_pSelectedObj->updateLocalPositionf((d/500.0f)*Pos_dx*aDirX, (d/500.0f)*Pos_dy*aDirY, 0);
+	}
+	else*/ if(flag&MK_RBUTTON)
+#endif
+	{
+
+		vector3f aUP(0, 0, 1);
+		//aUP=camera->getYAxis();
+		vector3f aVect(0, 0, 0);
+		//aVect=m_cPickObjectCenter;	//can modify this later to rotate around mesh center
+		Camera* cam=m_pPreviewWorldPtr->getActiveCamera();
+
+		m_pSelectedObj->rotateArb(0.5f*Pos_dx*-aDirX, &aUP.x, aVect);
+		vector3f left=cam->getXAxis();
+		m_pSelectedObj->rotateArb(0.5f*Pos_dy*aDirY, &left.x, aVect);
+	}
+	m_cPrevMousePos.set(x, y);
 	return true;
 }
 

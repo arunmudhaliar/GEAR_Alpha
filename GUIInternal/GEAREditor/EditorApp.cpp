@@ -25,6 +25,8 @@ gearSceneProject* EditorApp::g_pSceneProjectPtr=NULL;
 gearScenePropertyEditor* EditorApp::g_pScenePropertyEditorPtr=NULL;
 gearSceneWorldEditor* EditorApp::g_pSceneWorldEditorPtr=NULL;
 gearSceneConsole* EditorApp::g_pSceneConsolePtr=NULL;
+gePropertyOctree* EditorApp::g_pPropertyOctreePtr=NULL;
+
 rendererGL10* EditorApp::g_pMainRenderer=NULL;
 
 EditorApp::EditorApp()
@@ -268,6 +270,11 @@ gearSceneConsole* EditorApp::getSceneConsole()
 	return g_pSceneConsolePtr;
 }
 
+gePropertyOctree* EditorApp::getPropertyOctree()
+{
+	return g_pPropertyOctreePtr;
+}
+
 void EditorApp::setSceneFileView(gearSceneFileView* ptr)
 {
 	g_pSceneFileViewPtr=ptr;
@@ -301,6 +308,11 @@ void EditorApp::setSceneWorldEditor(gearSceneWorldEditor* ptr)
 void EditorApp::setSceneConsole(gearSceneConsole* ptr)
 {
 	g_pSceneConsolePtr=ptr;
+}
+
+void EditorApp::setPropertyOctree(gePropertyOctree* ptr)
+{
+	g_pPropertyOctreePtr=ptr;
 }
 
 bool EditorApp::KeyDown(int charValue, int flag)

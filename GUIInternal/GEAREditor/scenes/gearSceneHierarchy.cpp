@@ -260,7 +260,10 @@ void gearSceneHierarchy::recreateOctree()
 	gxWorld* world=monoWrapper::mono_engine_getWorld(0);
 	if(world->getOctree())
 		world->getOctree()->resetCollidedTransformObjList();
-	world->createOctree(1, 4);
+
+	int nTransformPerNodes, nLevels;
+	EditorApp::getPropertyOctree()->getOctreeVars(nTransformPerNodes, nLevels);
+	world->createOctree(nTransformPerNodes, nLevels);
 }
 
 void gearSceneHierarchy::onConsoleLogFromMono(const char* msg)

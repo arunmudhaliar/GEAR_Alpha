@@ -233,7 +233,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				EditorApp::getScenePropertyEditor()->populatePropertyOfObject(cam_struct);
 			}
 			break;
-
+		case ID_EDIT_OCTREEPROPERTY:
+			{
+				EditorApp::getScenePropertyEditor()->populatePropertyOfOctree();
+			}
+			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;

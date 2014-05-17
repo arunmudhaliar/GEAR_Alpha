@@ -27,6 +27,9 @@ geWindow("Property Editor")
 
 	m_pOpenOnEditorParentNode=NULL;
 	m_pPropertyOpenOnEditor=NULL;
+
+	m_pOctreeParentNode = NULL;
+	m_pPropertyOctree = NULL;
 }
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
@@ -43,6 +46,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	GE_DELETE(m_pPostProcessorBlurShaderNode);
 	GE_DELETE(m_pCameraParentNode);
 	GE_DELETE(m_pOpenOnEditorParentNode);
+	GE_DELETE(m_pOctreeParentNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -91,6 +95,9 @@ void gearScenePropertyEditor::onCreate()
 
 	m_pOpenOnEditorParentNode = new geTreeNode(m_pRenderer, rootNode, "Script Editor", &m_cszSprites[5], 0);
 	m_pPropertyOpenOnEditor = new gePropertyOpenOnEditor(m_pRenderer, m_pOpenOnEditorParentNode, "", NULL);
+
+	m_pOctreeParentNode = new geTreeNode(m_pRenderer, rootNode, "Octree", &m_cszSprites[5], 0);
+	m_pPropertyOctree = new gePropertyOctree(m_pRenderer, m_pOctreeParentNode, "", NULL);
 
 	removeAllProperties();
 }
@@ -158,6 +165,7 @@ void gearScenePropertyEditor::removeAllProperties()
 	rootNode->removeTVChild(m_pCameraParentNode);
 
 	rootNode->removeTVChild(m_pOpenOnEditorParentNode);
+	rootNode->removeTVChild(m_pOctreeParentNode);
 
 	//material
 	if(m_pMaterialParent)
@@ -187,6 +195,17 @@ void gearScenePropertyEditor::populatePropertyOfOpenInEditor()
 
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 	rootNode->appnendTVChild(m_pOpenOnEditorParentNode);
+
+	m_cPropertiesTreeView.refreshTreeView();
+	m_cPropertiesTreeView.resetSelectedNodePtr();
+}
+
+void gearScenePropertyEditor::populatePropertyOfOctree()
+{
+	removeAllProperties();
+
+	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	rootNode->appnendTVChild(m_pOctreeParentNode);
 
 	m_cPropertiesTreeView.refreshTreeView();
 	m_cPropertiesTreeView.resetSelectedNodePtr();

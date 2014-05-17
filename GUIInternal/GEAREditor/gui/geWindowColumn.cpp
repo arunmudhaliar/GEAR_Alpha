@@ -39,6 +39,11 @@ float stWindowColumnRow::getHeight()
 	return height;
 }
 
+void stWindowColumnRow::setName(const char* name)
+{
+	cName.assign(name);
+}
+
 //=====================================================================
 geWindowColumn::geWindowColumn():
 geGUIBase(GEGUI_WINDOW_COLUMN, "window column")

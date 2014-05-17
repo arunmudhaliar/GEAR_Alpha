@@ -285,6 +285,9 @@
     <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsGlobal.h">
       <Filter>GEAREditor\scenes\settingsViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyOctree.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -436,6 +439,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\util\geFontManager.cpp">
       <Filter>GEAREditor\util</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyOctree.cpp">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

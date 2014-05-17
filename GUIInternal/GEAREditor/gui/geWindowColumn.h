@@ -13,6 +13,7 @@ struct stWindowColumnRow
 	float getYPoistion()	{	return yposition;	}
 	std::vector<geGUIBase*>* getControlList()	{	return &cControls;	}
 	const char* getName()	{	return cName.c_str();	}
+	void setName(const char* name);
 private:
 	std::string cName;
 	std::vector<geGUIBase*> cControls;

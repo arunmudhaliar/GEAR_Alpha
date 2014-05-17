@@ -15,6 +15,8 @@
 #include "scenes\gearSceneWorldEditor.h"
 #include "scenes\gearSceneConsole.h"
 
+#include "scenes\propertyViews\gePropertyOctree.h"
+
 class EditorApp
 {
 public:
@@ -67,8 +69,10 @@ public:
 	static gearSceneWorldEditor* getSceneWorldEditor();
 	static gearSceneConsole* getSceneConsole();
 
-	static HWND getMainWindowHandle()	{	return g_hWnd;	}
+	static void setPropertyOctree(gePropertyOctree* ptr);
+	static gePropertyOctree* getPropertyOctree();
 
+	static HWND getMainWindowHandle()	{	return g_hWnd;	}
 	static rendererGL10* getMainRenderer()	{	return g_pMainRenderer;	}
 
 	bool isInitialized()	{	return m_bInitialised;	}
@@ -93,6 +97,8 @@ private:
 	static gearScenePropertyEditor* g_pScenePropertyEditorPtr;
 	static gearSceneWorldEditor* g_pSceneWorldEditorPtr;
 	static gearSceneConsole* g_pSceneConsolePtr;
+
+	static gePropertyOctree* g_pPropertyOctreePtr;
 };
 
 #endif

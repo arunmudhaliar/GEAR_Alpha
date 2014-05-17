@@ -16,7 +16,7 @@ public:
 	~gearScenePreview();
 
 	void draw();
-	void selectedObject3D(object3d* obj)	{	m_pSelectedObj=obj;	m_bStopFollowCam=false;	}
+	void selectedObject3D(object3d* obj);
 	object3d* getSelectedObject3D()			{	return m_pSelectedObj;	}
 
 protected:
@@ -37,6 +37,7 @@ private:
 	object3d* m_pSelectedObj;
 	gxWorld* m_pPreviewWorldPtr;	//1th world. Must not delete this pointer
 	bool m_bStopFollowCam;
+	vector2i m_cPrevMousePos;
 };
 
 #endif

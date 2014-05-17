@@ -906,7 +906,7 @@ bool gearSceneWorldEditor::onMouseLButtonUp(float x, float y, int nFlag)
 		return true;
 	}
 
-	if(m_iAxisSelected!=-1)
+	if(m_iAxisSelected>0)
 		EditorApp::getSceneHierarchy()->recreateOctree();
 
 	m_iAxisSelected=-1;

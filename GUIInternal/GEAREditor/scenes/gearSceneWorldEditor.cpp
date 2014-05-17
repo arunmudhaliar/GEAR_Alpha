@@ -401,74 +401,10 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	}
 	else
 	{
-		glEnable(GL_DEPTH_TEST);
-		//glDepthFunc(GL_LESS);
-		if(!m_pTBOnlyLightPass->isButtonPressed())
-		{
-			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-			monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
-		}
-		//glDepthFunc(GL_LEQUAL);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
-		//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
-		//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
-		//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
-		std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
-		for(int x=0;x<lightList->size();x++)
-		{
-			gxLight* light = lightList->at(x);
-			if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
-				continue;
-
-			//if(x==0)
-			//	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-			//else
-			//	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
-
-			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
-			//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-			monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
-		}
-		glDisable(GL_BLEND);
+		monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
 	}
 #else
 	monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
-	//glEnable(GL_DEPTH_TEST);
-	////glDepthFunc(GL_LESS);
-	//if(!m_pTBOnlyLightPass->isButtonPressed())
-	//{
-	//	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-	//	monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
-	//}
-
-	////glDisable(GL_DEPTH_TEST);
-	//	//glDepthMask(GL_FALSE);
-	////glDepthFunc(GL_LEQUAL);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
-	////glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
-	////glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
-	////glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
-	//std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
-	//for(int x=0;x<lightList->size();x++)
-	//{
-	//	gxLight* light = lightList->at(x);
-	//	if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
-	//		continue;
-
-	//	//if(x==0)
-	//	//	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-	//	//else
-	//	//	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
-
-	//	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
-	//	//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-	//	monoWrapper::mono_engine_render(m_pMainWorldPtr, light);
-	//}
-	//glDisable(GL_BLEND);
-	//	//glDepthMask(GL_TRUE);
-	//	//glEnable(GL_DEPTH_TEST);
 #endif
 
 	drawGrid();
@@ -510,24 +446,6 @@ void gearSceneWorldEditor::drawGrid()
 
 		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 		shader->disableProgram();
-
-		//glColor4f(0.2f, 0.2f, 0.2f, 1.0f);
-		//glEnableClientState(GL_VERTEX_ARRAY);
-		//glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnYAxis[0].x);
-		//glDrawArrays(GL_LINES, 0, 90*2);
-		//glVertexPointer(2, GL_FLOAT, 0, &m_cGridOnXAxis[0].x);
-		//glDrawArrays(GL_LINES, 0, 90*2);
-	
-		//glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-
-		//glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnYAxis[0].x);
-		//glDrawArrays(GL_LINES, 0, 9*2);
-		//glVertexPointer(2, GL_FLOAT, 0, &m_cThickGridOnXAxis[0].x);
-		//glDrawArrays(GL_LINES, 0, 9*2);
-
-		//glVertexPointer(2, GL_FLOAT, 0, &m_cGridOuterBox[0].x);
-		//glDrawArrays(GL_LINE_LOOP, 0, 4);
-		//glDisableClientState(GL_VERTEX_ARRAY);
 	}
 	//
 }
@@ -680,8 +598,12 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		shader->sendUniformTMfv("u_mvp_m4x4", m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix(), false, 4);
 		shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.4f, 0.62f, 1.0f);
-		m_pSelectedObj->getAABB().draw(shader);
-		m_pMainWorldPtr->getAABB().draw(shader);
+		//m_pSelectedObj->getAABB().draw(shader);
+		//m_pMainWorldPtr->getAABB().draw(shader);
+		if(m_pMainWorldPtr->getOctree())
+		{
+			m_pMainWorldPtr->getOctree()->drawOctree(m_pMainWorldPtr->getOctree()->getRoot(), shader);
+		}
 
 		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA)
 		{
@@ -983,6 +905,9 @@ bool gearSceneWorldEditor::onMouseLButtonUp(float x, float y, int nFlag)
 	{
 		return true;
 	}
+
+	if(m_iAxisSelected!=-1)
+		EditorApp::getSceneHierarchy()->recreateOctree();
 
 	m_iAxisSelected=-1;
 	monoWrapper::mono_engine_mouseLButtonUp(m_pMainWorldPtr, x, y, nFlag);

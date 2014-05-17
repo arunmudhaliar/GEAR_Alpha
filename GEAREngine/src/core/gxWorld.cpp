@@ -36,10 +36,18 @@ gxWorld::gxWorld():
 #ifdef USE_BULLET
 	m_cPhysicsEngine.initPhysics();
 #endif
+
+	m_pOctree=NULL;
 }
 
 gxWorld::~gxWorld()
 {
+	if(m_pOctree)
+	{
+		m_pOctree->reset();
+		GX_DELETE(m_pOctree);
+	}
+
 	resetWorld();
 	m_cMaterialList.clear();	//since our Default material may reside inside: check resetWorld()
 }
@@ -96,6 +104,17 @@ void gxWorld::update(float dt)
 	m_cPhysicsEngine.update(dt);
 #endif
 
+	//collide with octree
+	if(m_pOctree)
+	{
+		m_pActiveCameraPtr->extractFrustumPlanes();
+		
+		m_pOctree->resetCollidedTransformObjList();
+		//m_pOctree->CheckOverlapWithOctree(m_pOctree->GetRoot(), GetCurrentCamera());
+		m_pOctree->checkFrustumOverlapWithOctree(m_pOctree->getRoot(), &m_pActiveCameraPtr->getFrustum());
+		//DEBUG_PRINT("octree item %d", m_pOctree->GetCollidedTransformObjList()->GetCount());
+	}
+
 	object3d::update(dt);
 }
 
@@ -111,36 +130,74 @@ void gxWorld::render(gxRenderer* renderer, object3d* lightPtr)
 
 	if(m_pObserverPtr)m_pObserverPtr->preWorldRender();
 
+
+	////////////////////////////////
 	glEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_LESS);
-	//if(!m_pTBOnlyLightPass->isButtonPressed())
+	
+
+	if(m_pOctree)
+	{
+		//render octree
+		ExpandableArray<object3d*>* list=m_pOctree->getCollidedObjList();
+		ExpandableArrayNode<object3d*>* collidedtransformObjNode=list->GetRoot();
+		
+		int count=list->GetCount();
+		while(collidedtransformObjNode && count--)
+		{
+			getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+
+			object3d* obj = collidedtransformObjNode->GetData();
+			obj->render(renderer, NULL);
+
+			getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
+			std::vector<gxLight*>* lightList = getLightList();
+			for(int x=0;x<lightList->size();x++)
+			{
+				gxLight* light = lightList->at(x);
+				if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+					continue;
+				
+				//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+				obj->render(renderer, light);
+			}
+			glDisable(GL_BLEND);
+
+			collidedtransformObjNode=collidedtransformObjNode->GetNext();
+		}
+		//
+		//m_pOctree->drawOctree(m_pOctree->getRoot());
+	}
+	else
 	{
 		getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 		object3d::render(renderer, NULL);
-	}
 
-	//glDisable(GL_DEPTH_TEST);
+		//glDisable(GL_DEPTH_TEST);
 		//glDepthMask(GL_FALSE);
-	//glDepthFunc(GL_LEQUAL);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
-	//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
-	//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
-	//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
-	std::vector<gxLight*>* lightList = getLightList();
-	for(int x=0;x<lightList->size();x++)
-	{
-		gxLight* light = lightList->at(x);
-		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
-			continue;
-
+		//glDepthFunc(GL_LEQUAL);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);		//really good result	(2x Multiplicative)
+		//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
+		//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
+		//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
 		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
-		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-		object3d::render(renderer, light);
+		std::vector<gxLight*>* lightList = getLightList();
+		for(int x=0;x<lightList->size();x++)
+		{
+			gxLight* light = lightList->at(x);
+			if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+				continue;
+
+			//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+			object3d::render(renderer, light);
+		}
+		glDisable(GL_BLEND);
+		//glDepthMask(GL_TRUE);
+		//glEnable(GL_DEPTH_TEST);
 	}
-	glDisable(GL_BLEND);
-	//glDepthMask(GL_TRUE);
-	//glEnable(GL_DEPTH_TEST);
+	////////////////////////////////
 
 	if(m_pObserverPtr)m_pObserverPtr->postWorldRender();
 }
@@ -208,6 +265,17 @@ void gxWorld::loadTextures(object3d* obj, const char* fbxFileName)
 	}
 }
 #endif
+
+void gxWorld::createOctree(int minTransformObj, int maxLevel)
+{
+	if(m_pOctree)
+	{
+		m_pOctree->reset();
+		GX_DELETE(m_pOctree);
+	}
+	m_pOctree			= new COctree();
+	m_pOctree->createOctree(this, minTransformObj, maxLevel);
+}
 
 Camera* gxWorld::setDefaultCameraActive()
 {
@@ -517,9 +585,6 @@ object3d* gxWorld::loadAndAppendFBX(const char* filename)
 					loadMaterialFromObject3d(obj);
 					loadAnmationFromObject3d(obj, crc);
 					root_object_node=obj;
-
-					if(m_pEngineObserver)
-						m_pEngineObserver->onAppendToWorld(this, obj);
 				}
 				file_meta.CloseFile();
 			}
@@ -527,6 +592,10 @@ object3d* gxWorld::loadAndAppendFBX(const char* filename)
 	}
 
 	transformationChangedf();
+
+	if(m_pEngineObserver)
+		m_pEngineObserver->onAppendToWorld(this, root_object_node);
+
 	populateBonesToMeshNode(root_object_node, root_object_node);
 
 	return root_object_node;
@@ -578,15 +647,16 @@ object3d* gxWorld::loadAndAppendFBXForDevice(const char* filename)
 				loadMaterialFromObject3d(obj);
 				loadAnmationFromObject3d(obj, crc);
 				root_object_node=obj;
-
-				if(m_pEngineObserver)
-					m_pEngineObserver->onAppendToWorld(this, obj);
 			}
 			file_meta.CloseFile();
 		}
 	}
 
 	transformationChangedf();
+
+	if(m_pEngineObserver)
+			m_pEngineObserver->onAppendToWorld(this, root_object_node);
+
 	populateBonesToMeshNode(root_object_node, root_object_node);
 
 	return root_object_node;

@@ -247,10 +247,20 @@ void gearSceneHierarchy::destroyTVUserData(geGUIBase* parent)
 
 void gearSceneHierarchy::onAppendToWorld(object3d* world, object3d* obj)
 {
+	recreateOctree();
 }
 
 void gearSceneHierarchy::onRemoveFromWorld(object3d* world, object3d* obj)
 {
+	recreateOctree();
+}
+
+void gearSceneHierarchy::recreateOctree()
+{
+	gxWorld* world=monoWrapper::mono_engine_getWorld(0);
+	if(world->getOctree())
+		world->getOctree()->resetCollidedTransformObjList();
+	world->createOctree(1, 4);
 }
 
 void gearSceneHierarchy::onConsoleLogFromMono(const char* msg)

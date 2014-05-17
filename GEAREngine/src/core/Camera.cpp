@@ -92,7 +92,7 @@ void Camera::extractFrustumPlanes()
 {
 	matrix4x4f clipMatrix;
 	
-	clipMatrix	= m_cProjMatrix;/* * m_cInvTranfMatrix;*/
+	clipMatrix	= m_cProjMatrix * m_cInvTranfMatrix;/**/
 	//right plane
 	m_cFrustum.m_cPlanes[gxFrustumf::RIGHT_PLANE].normal.x	= clipMatrix[3]-clipMatrix[0];
 	m_cFrustum.m_cPlanes[gxFrustumf::RIGHT_PLANE].normal.y	= clipMatrix[7]-clipMatrix[4];

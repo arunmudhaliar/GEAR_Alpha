@@ -11,6 +11,7 @@
 #ifdef USE_BULLET
 #include "physicsEngine.h"
 #endif
+#include "COctree.h"
 
 class MWorldObserver
 {
@@ -23,6 +24,7 @@ public:
 	}
 };
 
+class COctree;
 class DllExport gxWorld : public object3d
 {
 public:
@@ -43,6 +45,9 @@ public:
 	gxMaterial* getDefaultMaterial()					{	return &m_cDefaultMaterial;		}
 	std::vector<gxMaterial*>* getMaterialList()			{	return &m_cMaterialList;		}
 	std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &m_vAnimationSetList;	}
+
+	void createOctree(int minTransformObj, int maxLevel);
+	COctree* getOctree()	{	return m_pOctree;	}
 
 	bool appendAnimationSetToWorld(gxAnimationSet* animset)
 	{
@@ -110,6 +115,7 @@ private:
 #ifdef USE_BULLET
 	physicsEngine m_cPhysicsEngine;
 #endif
+	COctree* m_pOctree;
 };
 
 #endif

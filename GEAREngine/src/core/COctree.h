@@ -5,10 +5,10 @@
 #include "frustum.h"
 #include "../util/gxExpandableArray.h"
 
-//class gxWorld;
+class gxWorld;
 
 #define MAX_OCTREECHILD	8
-class OctreeNode
+class DllExport OctreeNode
 {
 public:
 	OctreeNode();
@@ -35,7 +35,7 @@ private:
 	float m_fRadius;
 };
 
-class COctree
+class DllExport COctree
 {
 public:
 	COctree();
@@ -46,7 +46,7 @@ public:
 	void overlapWithChildNodes(OctreeNode* node);
 	void reset();
 	OctreeNode* getRoot()	{	return m_pRootNode;	}
-	void drawOctree(OctreeNode* node);
+	void drawOctree(OctreeNode* node, gxHWShader* shader);
 	void resetCollidedTransformObjList();
 	void checkOverlapWithOctree(OctreeNode* node, object3d* obj);
 	void checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustum);

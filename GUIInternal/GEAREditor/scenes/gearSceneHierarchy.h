@@ -31,6 +31,8 @@ public:
 
 	geGUIBase* getSelectedTreeNode();
 
+	void recreateOctree();
+
 protected:
 	virtual void onCreate();
 	virtual void onDraw();

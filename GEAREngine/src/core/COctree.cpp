@@ -334,12 +334,25 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 		checkFrustumOverlapWithOctree(node->getChild(x), frustum);
 }
 
-void COctree::drawOctree(OctreeNode* node)
+void COctree::drawOctree(OctreeNode* node, gxHWShader* shader)
 {
 	if(!node) return;
 
 #if defined (USE_ProgrammablePipeLine)
-    
+    float r=(float)node->getLevel()/(float)m_nMaxLevel;
+	if(node->getLevel()<m_nMaxLevel)
+	{
+		shader->sendUniform4f("u_diffuse_v4", r, 0.0f, 0.0f, 1.0f);
+		node->getAABB().draw(shader);
+	}
+	else
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		shader->sendUniform4f("u_diffuse_v4", r, 0.0f, 0.0f, 0.8f);
+		node->getAABB().draw(shader);
+		glDisable(GL_BLEND);
+	}
 #else
 	glDisable(GL_LIGHTING);
 	float r=(float)node->getLevel()/(float)m_nMaxLevel;
@@ -359,5 +372,5 @@ void COctree::drawOctree(OctreeNode* node)
 #endif
     
 	for(int x=0;x<MAX_OCTREECHILD;x++)
-		drawOctree(node->getChild(x));
+		drawOctree(node->getChild(x), shader);
 }

@@ -39,12 +39,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Mono-2.10.6\include\mono-2.0;../GEAREngine/src/zlib-1.2.4;..\openal\include;..\GEAREngine\src\physics;../FBXSDK/2014.2/include;$(IncludePath)</IncludePath>
+    <IncludePath>../Mono-2.10.6/include/mono-2.0;../GEAREngine/src/zlib-1.2.4;..\openal\include;..\GEAREngine\src\physics;../FBXSDK/2014.2/include;$(IncludePath)</IncludePath>
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);..\openal\lib;../FBXSDK/2014.2/lib/vs2010/x86/$(Configuration)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Mono-2.10.6\include\mono-2.0;../GEAREngine/src/zlib-1.2.4;..\openal\include;..\GEAREngine\src\physics;../FBXSDK/2014.2/include;$(IncludePath)</IncludePath>
+    <IncludePath>../Mono-2.10.6/include/mono-2.0;../GEAREngine/src/zlib-1.2.4;..\openal\include;..\GEAREngine\src\physics;../FBXSDK/2014.2/include;$(IncludePath)</IncludePath>
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);..\openal\lib;../FBXSDK/2014.2/lib/vs2010/x86/$(Configuration)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

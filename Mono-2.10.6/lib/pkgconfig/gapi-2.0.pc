@@ -1,0 +1,6 @@
+prefix=C:/Mono-2.10.6
+
+
+Name: GAPI
+Description: GObject .NET API Wrapping Tool
+Version: 2.12.11

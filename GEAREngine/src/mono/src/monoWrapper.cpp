@@ -65,7 +65,8 @@ void monoWrapper::loadMonoModules()
 #endif
 
 #ifdef _WIN32
-	mono_set_dirs("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc"); 
+	//mono_set_dirs("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc"); 
+	mono_set_dirs("../Mono-2.10.6/lib", "../Mono-2.10.6/etc");
 #else
 	mono_set_dirs("/storage/emulated/0/gear/", "/storage/emulated/0/gear/");
 #endif

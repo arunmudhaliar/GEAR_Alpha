@@ -53,7 +53,7 @@ namespace MonoGEAR
             //m_vComponents.Add(new object3d(IntPtr.Zero));
         }
 
-        public static object3d create(string name)
+        public static object3d load(string name)
         {
             return new object3d(MonoGEAREntryPointClass.engine_loadAndAppendMesh(MonoGEAREntryPointClass.engine_getWorld(0), name));
         }

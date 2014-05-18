@@ -32,6 +32,9 @@ namespace MonoGEAR
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr engine_loadAndAppendMesh(IntPtr world, string filename);
+		
+        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr engine_loadAndAppendFBXForDevice(IntPtr world, string filename);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr engine_appendObject3dToRoot(IntPtr world, IntPtr obj);
@@ -74,30 +77,101 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr engine_createEmptyObject3d(IntPtr parentObj, string name);
 
+        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void engine_consoleLog(string msg);
+
+        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr engine_createLight(IntPtr parentObj, string name, int eType);
+
+        public MonoGEAREntryPointClass()
+        {
+        }
 
         public static void Main(string[] args)
         {
-            //for testing engine_init(1);
-            string str = Path.GetFullPath("C:/MYPROJECTS/GEAR_PROJECTS\\animation/Assets/csharp/test.txt");
-            str=str.Replace("\\", "/");
-            str = str;
+			Console.WriteLine("monogear_engine Main() called from C#");
         }
 
         public static int monogear_engine_test_function_for_mono()
         {
             Console.WriteLine("monogear_engine_test_function_for_mono called from C#");
 
-            return engine_test_function_for_mono();
+            return 200;//engine_test_function_for_mono();
         }
 
+		public static void monogear_engine_init_for_mono_android()
+        {
+			engine_setMetaFolder(MonoGEAREntryPointClass.engine_getWorld(0), "/storage/emulated/0/gear/MetaData");
+        }
 
         /// <summary>
         /// MONOGEAR GAME LOOP
         /// </summary>
 
-        object3d m_pRootObject3d;
+        object3d m_pRootObject3d1;
+        object3d m_pRootObject3d2;
+        object3d m_pRootObject3d3;
+        object3d m_pRootObject3d4;
+        object3d m_pRootObject3d5;
+        object3d m_pRootObject3d6;
+        object3d m_pRootObject3d7;
+        object3d m_pRootObject3d8;
+        object3d m_pRootObject3d9;
+
+        object3d m_pRootObject3d10;
+        object3d m_pRootObject3d11;
+        object3d m_pRootObject3d12;
+        object3d m_pRootObject3d13;
+
+        object3d m_pRootObjectLight0;
+
         public void mono_game_start()
         {
+#if _DISABLEALL
+#if _DISABLE
+            m_pRootObject3d1 = object3d.load("/cube.fbx");
+            m_pRootObject3d1.updatePositionf(0, 100, 0);
+
+            m_pRootObject3d2 = object3d.load("/cube.fbx");
+            m_pRootObject3d2.updatePositionf(0, -100, 0);
+
+            m_pRootObject3d3 = object3d.load("/cube.fbx");
+            m_pRootObject3d3.updatePositionf(0, 0, 50);
+
+            m_pRootObject3d4 = object3d.load("/cube.fbx");
+            m_pRootObject3d4.updatePositionf(0, 0, -50);
+#else
+            engine_consoleLog("from mono");
+            m_pRootObject3d5 = object3d.load("/PrefabName.prefab");
+
+            m_pRootObject3d6 = object3d.load("/PrefabName.prefab");
+            m_pRootObject3d6.updatePositionf(0, 150, 0);
+
+            m_pRootObject3d7 = object3d.load("/PrefabName.prefab");
+            m_pRootObject3d7.updatePositionf(0, -150, 0);
+
+            m_pRootObject3d8 = object3d.load("/PrefabName.prefab");
+            m_pRootObject3d8.updatePositionf(0, 0, 110);
+
+            m_pRootObject3d9 = object3d.load("/PrefabName.prefab");
+            m_pRootObject3d9.updatePositionf(0, 0, -110);
+
+            m_pRootObject3d10 = object3d.load("/PrefabName.prefab");
+            m_pRootObject3d10.updatePositionf(150, 0, 0);
+
+            m_pRootObject3d11 = object3d.load("/PrefabName.prefab");
+            m_pRootObject3d11.updatePositionf(-150, 0, 0);
+
+            m_pRootObject3d12 = object3d.load("/PrefabName.prefab");
+            m_pRootObject3d12.updatePositionf(0, 110, 0);
+
+            m_pRootObject3d13 = object3d.load("/PrefabName.prefab");
+            m_pRootObject3d13.updatePositionf(0, -110, -110);
+
+            m_pRootObjectLight0 = gxLight.createLight("light", gxLight.ELIGHT_TYPE.LIGHT_DIRECTIONAL);
+            m_pRootObjectLight0.updatePositionf(0, 50, 70);
+#endif
+#endif
             /*
             object3d zombie_bodymesh = object3d.create(Resource.getResourcePath("for_arun/zombie_bodymesh.FBX"));
             object3d zombie_idle = object3d.create(Resource.getResourcePath("for_arun/zombie@idle.FBX"));
@@ -153,6 +227,22 @@ namespace MonoGEAR
 
         public void mono_game_run(float dt)
         {
+#if _DISABLEALL
+#if _DISABLE
+			engine_consoleLog("from mono");
+            m_pRootObject3d1.rotateWorldZf(100.0f * dt);
+            m_pRootObject3d2.rotateWorldZf(-100.0f * dt);
+            m_pRootObject3d3.rotateWorldYf(200.0f * dt);
+            m_pRootObject3d4.rotateWorldYf(-200.0f * dt);
+#else
+            m_pRootObjectLight0.rotateWorldZf(100.0f * dt);
+
+            //m_pRootObject3d6.rotateWorldZf(100.0f * dt);
+            //m_pRootObject3d7.rotateWorldZf(-100.0f * dt);
+            //m_pRootObject3d8.rotateWorldYf(200.0f * dt);
+            //m_pRootObject3d9.rotateWorldYf(-200.0f * dt);
+#endif
+#endif
         }
 
         public bool mono_game_onkeydown(int charValue, int flag)

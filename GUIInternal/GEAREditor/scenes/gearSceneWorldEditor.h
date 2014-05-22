@@ -32,7 +32,7 @@ public:
 	void onButtonClicked(geGUIBase* btn);
 	void onSliderChange(geGUIBase* slider);
 
-	void startFollowCam()	{	m_bStopFollowCam=false;	}
+	void startFollowCam();
 
 private:
 	void drawCameraFrustum(gxCamera* camera, gxHWShader* shader);

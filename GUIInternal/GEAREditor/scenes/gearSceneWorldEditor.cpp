@@ -766,6 +766,13 @@ void gearSceneWorldEditor::postWorldRender()
 	//glEnable(GL_DEPTH_TEST);
 }
 
+void gearSceneWorldEditor::startFollowCam()
+{
+	if(m_pSelectedObj==NULL) return;
+
+	m_bStopFollowCam=false;
+}
+
 void gearSceneWorldEditor::followObject(float dt, object3d* chasedObj)
 {
 	if(dt>0.1f || m_bStopFollowCam) return;
@@ -1279,7 +1286,7 @@ bool gearSceneWorldEditor::onKeyDown(int charValue, int flag)
 
 	if(charValue==70)
 	{
-		m_bStopFollowCam=false;
+		startFollowCam();
 	}
 
 	monoWrapper::mono_game_onkeydown(charValue, flag);

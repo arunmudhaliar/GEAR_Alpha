@@ -92,7 +92,7 @@ bool COctree::createOctree(gxWorld* world, int minTransformObj/* =4 */, int maxL
 
 void COctree::pushToRootNode(object3d* obj)
 {
-	if(obj && obj->getID()==OBJECT3D_MESH)
+	if(obj && (obj->getID()==OBJECT3D_MESH || obj->getID()==OBJECT3D_SKINNED_MESH))
 		m_pRootNode->appendObject(obj);
 
 	std::vector<object3d*>* list=obj->getChildList();

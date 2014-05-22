@@ -187,7 +187,7 @@ LRESULT CALLBACK geSecondryView::SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WP
 			geSecondryView* viewPtr = (geSecondryView*)((CREATESTRUCT*)lParam)->lpCreateParams;
 			SetWindowLongPtr(hWndDlg, GWLP_USERDATA, (LONG)viewPtr);
 			viewPtr->createRenderer(hWndDlg);
-			glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
+			//glClearColor(0.15f, 0.15f, 0.15f, 1.0f);	//no need for this clear color here
 			return 0;
 		}
 		break;

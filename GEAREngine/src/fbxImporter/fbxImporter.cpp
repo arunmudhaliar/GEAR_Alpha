@@ -657,10 +657,12 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 					material->setMaterialName(surfaceMaterial->GetName());
 
 					FbxSurfaceLambert* lambert=(FbxSurfaceLambert*)surfaceMaterial;
-					FbxDouble3 diffuse=lambert->Diffuse.Get();
-					FbxDouble3 ambient=lambert->Ambient.Get();
-					material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
-					material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
+					//FbxDouble3 diffuse=lambert->Diffuse.Get();
+					//FbxDouble3 ambient=lambert->Ambient.Get();
+					//material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
+					//material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
+					material->setDiffuseClr(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
+					material->setAmbientClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
 					material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
 
 #if 0	//moved the maps to surface shader. so we don't need this anymore

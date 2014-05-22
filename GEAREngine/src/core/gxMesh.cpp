@@ -549,16 +549,19 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 		}
 	}
 
-    if(m_bVBO)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, uv->m_cVBO_texID);
-        glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, 0);
-    }
-    else
-    {
-        glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, uv->m_pszfGLTexCoordList);
-    }
-	glEnableVertexAttribArray(hwShader->getAttribLoc(texCoordAttribName));
+	if(uv)
+	{
+		if(m_bVBO)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, uv->m_cVBO_texID);
+			glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+		else
+		{
+			glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, uv->m_pszfGLTexCoordList);
+		}
+		glEnableVertexAttribArray(hwShader->getAttribLoc(texCoordAttribName));
+	}
 	//glEnable(GL_TEXTURE_2D);
 
 

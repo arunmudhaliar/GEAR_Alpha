@@ -24,6 +24,8 @@ geWindow("World Editor")
 	m_pPlayButton = NULL;
 	m_pPauseButton = NULL;
 	m_pTBOnlyLightPass = NULL;
+	m_pTBShowOOBB = NULL;
+	m_pTBShowOctree = NULL;
 	m_bMonoGameInitialized=false;
 
 	m_pTranslateGizmo = NULL;
@@ -31,6 +33,7 @@ geWindow("World Editor")
 	m_pScaleGizmo = NULL;
 	m_bEnablePostProcessorBlur=false;
 	m_iLastGLError=0;
+	m_bStopFollowCam=true;
 }
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
@@ -81,7 +84,8 @@ void gearSceneWorldEditor::onCreate()
 
 	m_pHorizontalSlider_LightAmbient = new geHorizontalSlider();
 	m_pHorizontalSlider_LightAmbient->create(m_pRenderer, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
-	m_pHorizontalSlider_LightAmbient->setSliderValue(0.2f);
+	m_pHorizontalSlider_LightAmbient->setGUIObserver(this);
+	m_pHorizontalSlider_LightAmbient->setSliderValue(0.4f);
 	getToolBar()->appendToolBarControl(m_pHorizontalSlider_LightAmbient);
 
 	geToolBarSeperator* seperator = new geToolBarSeperator(m_pRenderer, getToolBar(), 20);
@@ -91,6 +95,8 @@ void gearSceneWorldEditor::onCreate()
 
 	m_pTBGridView=new geToolBarButton(m_pRenderer, "grid", getToolBar());
 	m_pTBGridView->loadImage("res//icons16x16.png", 112, 384);
+	//m_pTBGridView->setClientAreaSecondryActiveForeColor(0.5f, 0.3f, 0.2f, 1.0f);
+	//m_pTBGridView->applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 	m_pTBGridView->buttonPressed();
 	getToolBar()->appendToolBarControl(m_pTBGridView);
 
@@ -123,6 +129,16 @@ void gearSceneWorldEditor::onCreate()
 	m_pTBOnlyLightPass->loadImage("res//icons16x16.png", 153, 342);
 	m_pTBOnlyLightPass->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pTBOnlyLightPass);
+
+	m_pTBShowOOBB=new geToolBarButton(m_pRenderer, "showoobb", getToolBar());
+	m_pTBShowOOBB->loadImage("res//icons16x16.png", 133, 258);
+	m_pTBShowOOBB->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pTBShowOOBB);
+
+	m_pTBShowOctree=new geToolBarButton(m_pRenderer, "showoctree", getToolBar());
+	m_pTBShowOctree->loadImage("res//icons16x16.png", 70, 69);
+	m_pTBShowOctree->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(m_pTBShowOctree);
 
 	//create grid
 	float startX=-500.0f;
@@ -312,9 +328,11 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
 
 void gearSceneWorldEditor::onDraw()
 {
+	followObject(Timer::getDtinSec(), m_pSelectedObj);
+
+	monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 	if(m_pPlayButton->isButtonPressed() && !m_pPauseButton->isButtonPressed())
 	{
-		monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 		if(m_bMonoGameInitialized)
 			monoWrapper::mono_game_run(Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 	}
@@ -409,6 +427,7 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 
 	drawGrid();
 	drawSelectedObject();
+	drawOctree();
 	m_cMultiPassFBO.UnBindFBO();
 }
 
@@ -593,16 +612,16 @@ void gearSceneWorldEditor::drawSelectedObject()
 		else
 #endif
 			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
-
-		m_pSelectedObj->getOOBB().draw(shader);
-
-		shader->sendUniformTMfv("u_mvp_m4x4", m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix(), false, 4);
-		shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.4f, 0.62f, 1.0f);
-		//m_pSelectedObj->getAABB().draw(shader);
-		//m_pMainWorldPtr->getAABB().draw(shader);
-		if(m_pMainWorldPtr->getOctree())
+		if(m_pTBShowOOBB->isButtonPressed())
 		{
-			m_pMainWorldPtr->getOctree()->drawOctree(m_pMainWorldPtr->getOctree()->getRoot(), shader);
+			m_pSelectedObj->getOOBB().draw(shader);
+		}
+		else
+		{
+			shader->sendUniformTMfv("u_mvp_m4x4", m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix(), false, 4);
+			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.4f, 0.62f, 1.0f);
+			m_pSelectedObj->getAABB().draw(shader);
+			//m_pMainWorldPtr->getAABB().draw(shader);
 		}
 
 		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA)
@@ -620,6 +639,20 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHTING);
+	}
+}
+
+void gearSceneWorldEditor::drawOctree()
+{
+	if(m_pTBShowOctree->isButtonPressed() && m_pMainWorldPtr->getOctree())
+	{
+		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(0);
+		shader->enableProgram();
+
+		shader->sendUniformTMfv("u_mvp_m4x4", m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix(), false, 4);
+		m_pMainWorldPtr->getOctree()->drawOctree(m_pMainWorldPtr->getOctree()->getRoot(), shader);
+		
+		shader->disableProgram();
 	}
 }
 
@@ -731,6 +764,58 @@ void gearSceneWorldEditor::postWorldRender()
 	//glutWireSphere(0.1f, 3, 3);
 	//glPopMatrix();
 	//glEnable(GL_DEPTH_TEST);
+}
+
+void gearSceneWorldEditor::followObject(float dt, object3d* chasedObj)
+{
+	if(dt>0.1f || m_bStopFollowCam) return;
+	if(chasedObj==NULL) return;
+	gxWorld* world = monoWrapper::mono_engine_getWorld(0);
+	Camera* cam=world->getActiveCamera();
+	matrix4x4f* chasingObj=(matrix4x4f*)cam;
+	vector3f	eyeOff;
+	vector3f	chasedObjectCenter(chasedObj->getAABB().getCenter());
+	float		speed=10.0f;
+
+	vector3f direction(cam->getWorldMatrix()->getPosition()-chasedObjectCenter);
+	direction.normalize();
+	eyeOff = direction*(chasedObj->getAABB().getLongestAxis()*0.5f + cam->getCameraStructure()->getNear())*4.0f;
+
+	vector3f    transformedEye(chasedObjectCenter + eyeOff);
+	vector3f    transformedLookAt(chasedObjectCenter);
+	
+	vector3f    chasingObjPos(cam->getWorldMatrix()->getPosition());
+    vector3f    chasedObjPos(chasedObjectCenter);
+    vector3f    lenV(transformedEye-chasingObjPos);
+    float		len=lenV.length();
+	
+    if(len<=0.01f)
+	{
+		m_bStopFollowCam=true;
+		return;
+	}
+
+    if(len>4000.0f)
+    {
+        float factor=4000.0f/len;
+        lenV=lenV*factor;
+    }
+	
+    vector3f    updatedPos(chasingObjPos+lenV*(speed*dt));
+    vector3f forward(updatedPos-transformedLookAt);
+    forward.normalize();
+    vector3f up(0, 0, 1);
+    vector3f left(up.cross(forward));
+    left.normalize();
+    up=forward.cross(left);
+    up.normalize();
+	
+	chasingObj->setXAxis(left);
+	chasingObj->setYAxis(up);
+	chasingObj->setZAxis(forward);
+	chasingObj->setPosition(updatedPos);
+	
+	cam->updateCamera();
 }
 
 void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
@@ -964,9 +1049,12 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 		if(m_pSelectedObj)
 			aVect=m_pSelectedObj->getWorldMatrix()->getPosition();	//can modify this later to rotate around mesh center
 
-		camera->rotateArb(-0.5f*dx, &aUP.x, aVect);
+		float factor=1.0f;
+		if(flag&MK_SHIFT)
+			factor=0.01f;
+		camera->rotateArb(-0.5f*dx*factor, &aUP.x, aVect);
 		vector3f left=camera->getXAxis();
-		camera->rotateArb(-0.5f*dy, &left.x, aVect);
+		camera->rotateArb(-0.5f*dy*factor, &left.x, aVect);
 	}
 	else if(flag&MK_LBUTTON)
 	{
@@ -1080,14 +1168,16 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 void gearSceneWorldEditor::onMouseWheel(int zDelta, int x, int y, int flag)
 {
 	if(!isPointInsideClientArea(x, y)) return;
+
+	m_bStopFollowCam=true;
 	//monoWrapper::mono_engine_mouseWheel(m_pMainWorldPtr, zDelta, x, y, flag);
 	Camera* camera=m_pMainWorldPtr->getActiveCamera();
 	int dir = (zDelta<0)?1:-1;
 	vector3f aCamForwardDir(camera->getZAxis());
 	float d=camera->getPosition().length();
 	float factor=20.0f;
-	//if(nFlags&MK_SHIFT)
-	//	factor=500.0f;
+	if(flag&MK_SHIFT)
+		factor=500.0f;
 	aCamForwardDir.x=aCamForwardDir.x*(d/factor)*(dir);
 	aCamForwardDir.y=aCamForwardDir.y*(d/factor)*(dir);
 	aCamForwardDir.z=aCamForwardDir.z*(d/factor)*(dir);
@@ -1160,7 +1250,11 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 
 void gearSceneWorldEditor::onSliderChange(geGUIBase* slider)
 {
-
+	if(slider==m_pHorizontalSlider_LightAmbient)
+	{
+		float val=0.1f+m_pHorizontalSlider_LightAmbient->getSliderValue()*0.13f;
+		glClearColor(val, val, val, 1.0f);
+	}
 }
 
 bool gearSceneWorldEditor::onKeyDown(int charValue, int flag)
@@ -1182,6 +1276,11 @@ bool gearSceneWorldEditor::onKeyDown(int charValue, int flag)
 		nvProfiler::g_bPerformanceAnalyze=true;
 	}
 #endif
+
+	if(charValue==70)
+	{
+		m_bStopFollowCam=false;
+	}
 
 	monoWrapper::mono_game_onkeydown(charValue, flag);
 	return geWindow::onKeyDown(charValue, flag);

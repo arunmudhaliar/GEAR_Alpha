@@ -320,6 +320,10 @@ bool gearSceneHierarchy::onKeyDown(int charValue, int flag)
 			}
 		}
 	}
+	else if(charValue==70)	//F key
+	{
+		EditorApp::getSceneWorldEditor()->startFollowCam();
+	}
 
 	return geWindow::onKeyDown(charValue, flag);
 }

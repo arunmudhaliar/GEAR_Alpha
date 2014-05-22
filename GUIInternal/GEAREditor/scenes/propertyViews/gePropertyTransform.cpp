@@ -105,19 +105,19 @@ void gePropertyTransform::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tr
 void gePropertyTransform::populatePropertyOfTransform(object3d* obj)
 {
 	m_pObject3dPtr=obj;
-	char buffer[9];
-	sprintf(buffer, "%6.2f", obj->getMatrix()[12]);
+	char buffer[32];
+	sprintf(buffer, "%12.4f", obj->getMatrix()[12]);
 	m_pszTextBoxTranslation[0]->setName(buffer);
-	sprintf(buffer, "%6.2f", obj->getMatrix()[13]);
+	sprintf(buffer, "%12.4f", obj->getMatrix()[13]);
 	m_pszTextBoxTranslation[1]->setName(buffer);
-	sprintf(buffer, "%6.2f", obj->getMatrix()[14]);
+	sprintf(buffer, "%12.4f", obj->getMatrix()[14]);
 	m_pszTextBoxTranslation[2]->setName(buffer);
 
-	sprintf(buffer, "%6.2f", obj->getMatrix()[0]);
+	sprintf(buffer, "%12.4f", obj->getMatrix()[0]);
 	m_pszTextBoxScale[0]->setName(buffer);
-	sprintf(buffer, "%6.2f", obj->getMatrix()[5]);
+	sprintf(buffer, "%12.4f", obj->getMatrix()[5]);
 	m_pszTextBoxScale[1]->setName(buffer);
-	sprintf(buffer, "%6.2f", obj->getMatrix()[10]);
+	sprintf(buffer, "%12.4f", obj->getMatrix()[10]);
 	m_pszTextBoxScale[2]->setName(buffer);
 
 	float Yaw;
@@ -131,11 +131,11 @@ void gePropertyTransform::populatePropertyOfTransform(object3d* obj)
 	Quaternion aa= quat.getQuaternion(Yaw, Pitch, Roll);
 	//getRotation(Yaw, Pitch, Roll, obj->getMatrix());
 
-	sprintf(buffer, "%6.2f", Pitch);
+	sprintf(buffer, "%12.4f", Pitch);
 	m_pszTextBoxRotation[0]->setName(buffer);
-	sprintf(buffer, "%6.2f", Yaw);
+	sprintf(buffer, "%12.4f", Yaw);
 	m_pszTextBoxRotation[1]->setName(buffer);
-	sprintf(buffer, "%6.2f", Roll);
+	sprintf(buffer, "%12.4f", Roll);
 	m_pszTextBoxRotation[2]->setName(buffer);
 }
 

@@ -118,13 +118,13 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	
 	//lookAtOff = chasedObj->getChild(0)->getOOBB().getCenter();
 	lookAtOff = CAMERA_LOOKAT_OFFSET;
-	eyeOff = vector3f(0, -(chasedObj->getChild(0)->getOOBB().getLongestAxis()*0.5f)*4.0f, 0);
+	eyeOff = vector3f(0, -(chasedObj->getAABB().getLongestAxis()*0.5f)*4.0f, 0);
 
 	vector3f    transformedEye((*chasedObj) * eyeOff);
     vector3f    transformedLookAt((*chasedObj) * lookAtOff);
 	
 	vector3f    chasingObjPos(chasingObj->getPosition());
-    vector3f    chasedObjPos(chasedObj->getPosition());
+    vector3f    chasedObjPos(chasedObj->getAABB().getCenter());
     vector3f    lenV(transformedEye-chasingObjPos);
     float        len=lenV.length();
 	

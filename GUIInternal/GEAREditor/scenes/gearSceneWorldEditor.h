@@ -32,6 +32,8 @@ public:
 	void onButtonClicked(geGUIBase* btn);
 	void onSliderChange(geGUIBase* slider);
 
+	void startFollowCam()	{	m_bStopFollowCam=false;	}
+
 private:
 	void drawCameraFrustum(gxCamera* camera, gxHWShader* shader);
 
@@ -56,8 +58,11 @@ protected:
 	void drawFBO(GLuint t, float x, float y, float cx, float cy);
 	void drawGrid();
 	void drawSelectedObject();
+	void drawOctree();
 	void drawStats();
 	void drawLightsOnMultiPass();
+
+	void followObject(float dt, object3d* chasedObj);
 
 	object3d* m_pSelectedObj;
 	gxWorld* m_pMainWorldPtr;	//0th world. Must not delete this pointer
@@ -79,6 +84,8 @@ protected:
 	geToolBarButton* m_pLocalOrGlobalAxis;
 	geToolBarButton* m_pTBGridView;
 	geToolBarButton* m_pTBOnlyLightPass;
+	geToolBarButton* m_pTBShowOOBB;
+	geToolBarButton* m_pTBShowOctree;
 
 	geToolBarButton* m_pPlayButton;
 	geToolBarButton* m_pPauseButton;
@@ -97,6 +104,8 @@ protected:
 	bool m_bEnablePostProcessorBlur;
 	SoundEngine m_cSoundEngine;
 	int m_iLastGLError;
+
+	bool m_bStopFollowCam;
 };
 
 #endif

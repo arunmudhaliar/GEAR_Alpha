@@ -13,16 +13,14 @@
 #include "gxMath.h"
 #include "basicIncludes.h"
 
-template<class T>
-class DllExport vector3;
-typedef vector3<float> vector3f;
+template<class T> class vector3;
+typedef DECLSPEC vector3<float> vector3f;
+
+template<class T> class vector3;
+typedef DECLSPEC vector3<int> vector3i;
 
 template<class T>
-class DllExport vector3;
-typedef vector3<int> vector3i;
-
-template<class T>
-class DllExport vector3
+class DECLSPEC vector3
 {
 public:
 	T x, y, z;

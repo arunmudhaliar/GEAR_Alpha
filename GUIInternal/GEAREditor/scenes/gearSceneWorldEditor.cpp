@@ -1,6 +1,6 @@
 ﻿#include "gearSceneWorldEditor.h"
 #include "../EditorApp.h"
-#include "../core/Timer.h"
+//#include "../../../GEAREngine/src/core/Timer.h"
 #include "../gui/geToolBarSeperator.h"
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 #include "../../resource.h"
@@ -336,39 +336,6 @@ void gearSceneWorldEditor::onDraw()
 		if(m_bMonoGameInitialized)
 			monoWrapper::mono_game_run(Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 	}
-
-	/*
-	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
-	if(lightList->size())
-	{
-		for(int x=0;x<lightList->size();x++)
-		{
-			HWShaderManager* hwManager = engine_getHWShaderManager();
-			gxHWShader* shader=hwManager->GetHWShader(3);
-			gxLight* light = lightList->at(x);
-			shader->enableProgram();
-			shader->resetAllFlags();
-			light->renderPass(m_pMainWorldPtr->getRenderer(), shader);
-			shader->disableProgram();
-			m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_ONE, GL_ONE);
-			monoWrapper::mono_engine_render(m_pMainWorldPtr);
-			glDisable(GL_BLEND);
-		}
-	}
-	else
-	{
-		m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-		monoWrapper::mono_engine_render(m_pMainWorldPtr);
-	}
-
-	//glDisable(GL_LIGHT0);
-	//glDisable(GL_LIGHTING);
-
-	//geUtil::drawGizmo(3.0f);
-	//glDisable(GL_COLOR_MATERIAL);
-	*/
 }
 
 void gearSceneWorldEditor::drawLightsOnMultiPass()
@@ -1310,6 +1277,13 @@ void gearSceneWorldEditor::onCommand(int cmd)
 		}
 		break;
 	}
+}
+
+void gearSceneWorldEditor::stopSimulation()
+{
+	m_pPlayButton->buttonNormal();
+	m_pPauseButton->buttonNormal();
+	m_bMonoGameInitialized=false;
 }
 
 //void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight)

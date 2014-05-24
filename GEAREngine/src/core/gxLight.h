@@ -8,7 +8,7 @@
 //http://xissburg.com/faster-gaussian-blur-in-glsl/
 //http://blog.angusforbes.com/openglglsl-render-to-texture/
 
-class DllExport gxLight : public object3d
+class DECLSPEC gxLight : public object3d
 {
 public:
 	gxLight();

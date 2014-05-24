@@ -3,7 +3,7 @@
 
 #include "gxMesh.h"
 
-class DllExport gxSkinnedMesh : public gxMesh
+class DECLSPEC gxSkinnedMesh : public gxMesh
 {
 public:
 	gxSkinnedMesh();

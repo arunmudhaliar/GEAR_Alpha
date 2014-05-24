@@ -53,7 +53,7 @@ void gxAnimationSet::read(gxFile& file)
 }
 
 extern "C" {
-extern DllExport const char* gxAnimationSet_getAnimationName(gxAnimationSet* animSet)
+extern DECLSPEC const char* gxAnimationSet_getAnimationName(gxAnimationSet* animSet)
 {
 	return animSet->getAnimationName();
 }

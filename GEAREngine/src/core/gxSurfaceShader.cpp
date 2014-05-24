@@ -665,6 +665,8 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 				pass.vIN_Normal = (int)str.find("vIN_Normal")>=0;
 				pass.vIN_Color = (int)str.find("vIN_Color")>=0;
 				pass.Tangent = (int)str.find("Tangent")>=0;
+				pass.Time_time = (int)str.find("Time.time")>=0;
+				pass.Time_deltatime = (int)str.find("Time.deltatime")>=0;
 
 				int pos=str.find("__includeModule");
 				if(pos>=0)
@@ -932,22 +934,6 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			gxHWShader* pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, NULL, 0);
 			if(pMainShader)
 			{
-				////check if a tex coord is used in this pass or not
-				//for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
-				//{
-				//	gxSubMap* map = *submap_it;
-				//	//check in vertex shader
-				//	if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
-				//	{
-				//		currentPass->usedSubMap.push_back(map);
-				//	}
-
-				//	//check in fragment shader
-				//	if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
-				//	{
-				//		currentPass->usedSubMap.push_back(map);
-				//	}
-				//}
 				m_vShaderProgram.push_back(pMainShader);
 				DEBUG_PRINT("%s\nShader already loaded\n Parse Success. Pass(%d)\n", constructed_glsl_filename, cntr);
 				continue;
@@ -969,23 +955,8 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 				}
 			}
 
-			////check if a tex coord is used in this pass or not
-			//for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
-			//{
-			//	gxSubMap* map = *submap_it;
-			//	//check in vertex shader
-			//	if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
-			//	{
-			//		currentPass->usedSubMap.push_back(map);
-			//	}
-
-			//	//check in fragment shader
-			//	if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
-			//	{
-			//		currentPass->usedSubMap.push_back(map);
-			//	}
-			//}
-
+			if(currentPass->Time_time || currentPass->Time_deltatime)
+				cMainShaderSource += hwShaderManager->getShaderSnippet(6)->snippet;
 			cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
 			cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
 			cMainShaderSource+=currentPass->vertex_buffer+"\n";

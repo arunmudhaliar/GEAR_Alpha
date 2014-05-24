@@ -3,14 +3,19 @@
 
 
 #ifdef _WIN32
-#define DllImport   __declspec( dllimport )
-#define DllExport   __declspec( dllexport )
+#if EXPORT_DLL
+#define DECLSPEC __declspec(dllexport)
+#else
+#define DECLSPEC __declspec(dllimport)
+#endif
+//#define DllImport   __declspec( dllimport )
+//#define DECLSPEC   __declspec( dllexport )
 	#include <Windows.h>
 	#include "../renderer/glew.h"
 	#include <gl/gl.h>
 #elif ANDROID
 	#define DllImport
-	#define DllExport __attribute__((visibility("default")))
+	#define DECLSPEC __attribute__((visibility("default")))
 	#include <EGL/egl.h>
 	#include <GLES2/gl2.h>
 	#include <GLES2/gl2ext.h>

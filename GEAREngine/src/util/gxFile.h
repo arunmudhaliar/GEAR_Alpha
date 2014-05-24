@@ -2,6 +2,7 @@
 #define GXFILE_H
 
 #include <stdio.h>
+#include "../core/basicIncludes.h"
 
 #ifdef ANDROID
 	typedef long long __int64;
@@ -9,7 +10,7 @@
 
 //#include <fstream>
 #ifdef _WIN32
-class __declspec( dllexport ) gxFile
+class DECLSPEC gxFile
 #else
 class gxFile
 #endif

@@ -54,7 +54,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USEMONOENGINE;USE_ProgrammablePipeLine;_WINDLL;GLUT_DISABLE_ATEXIT_HACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EXPORT_DLL=1;USEMONOENGINE;USE_ProgrammablePipeLine;_WINDLL;GLUT_DISABLE_ATEXIT_HACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -68,7 +68,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USEMONOENGINE;USE_ProgrammablePipeLine;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EXPORT_DLL=1;USEMONOENGINE;USE_ProgrammablePipeLine;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -98,6 +98,7 @@
     <ClCompile Include="..\src\core\object3d.cpp" />
     <ClCompile Include="..\src\core\physicsEngine.cpp" />
     <ClCompile Include="..\src\core\TextureManager.cpp" />
+    <ClCompile Include="..\src\core\Timer.cpp" />
     <ClCompile Include="..\src\core\transform.cpp" />
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp" />
     <ClCompile Include="..\src\GEAREngine.cpp" />
@@ -318,6 +319,7 @@
     <ClInclude Include="..\src\core\rect.h" />
     <ClInclude Include="..\src\core\stTexturePacket.h" />
     <ClInclude Include="..\src\core\TextureManager.h" />
+    <ClInclude Include="..\src\core\Timer.h" />
     <ClInclude Include="..\src\core\transform.h" />
     <ClInclude Include="..\src\core\vector2.h" />
     <ClInclude Include="..\src\core\vector3.h" />

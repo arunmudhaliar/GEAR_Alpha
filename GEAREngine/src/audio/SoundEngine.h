@@ -35,7 +35,7 @@
 #include <algorithm>
 //#include "../engine/core/fdlist.h"
 
-class DllExport SoundEngine
+class DECLSPEC SoundEngine
 {
 public:
     SoundEngine();

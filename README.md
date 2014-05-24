@@ -18,3 +18,6 @@ Set dev to main branch
 
 //stack trace on crash
 http://oroboro.com/stack-trace-on-crash/
+
+//STL EXPORT
+http://support.microsoft.com/kb/168958/en-us

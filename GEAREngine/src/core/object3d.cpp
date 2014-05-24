@@ -1,54 +1,54 @@
 #include "object3d.h"
 
 extern "C" {
-extern DllExport const char* object3d_getName(object3d* obj)
+extern DECLSPEC const char* object3d_getName(object3d* obj)
 {
 	return obj->getName();
 }
 
-extern DllExport int object3d_getID(object3d* obj)
+extern DECLSPEC int object3d_getID(object3d* obj)
 {
 	return obj->getID();
 }
-extern DllExport object3d* object3d_find(object3d* obj, const char* name)
+extern DECLSPEC object3d* object3d_find(object3d* obj, const char* name)
 {
 	return obj->find(name);
 }
-extern DllExport int object3d_getChildCount(object3d* obj)
+extern DECLSPEC int object3d_getChildCount(object3d* obj)
 {
 	return obj->getChildCount();
 }
-extern DllExport object3d* object3d_getChild(object3d* obj, int index)
+extern DECLSPEC object3d* object3d_getChild(object3d* obj, int index)
 {
 	return obj->getChild(index);
 }
 
-extern DllExport gxAnimation* object3d_createAnimationController(object3d* obj)
+extern DECLSPEC gxAnimation* object3d_createAnimationController(object3d* obj)
 {
 	return obj->createAnimationController();
 }
 
-extern DllExport gxAnimation* object3d_getAnimationController(object3d* obj)
+extern DECLSPEC gxAnimation* object3d_getAnimationController(object3d* obj)
 {
 	return obj->getAnimationController();
 }
 
-extern DllExport gxAnimationSet* object3d_applyAnimationSetRecursive(object3d* obj, int index)
+extern DECLSPEC gxAnimationSet* object3d_applyAnimationSetRecursive(object3d* obj, int index)
 {
 	return obj->applyAnimationSetRecursive(index);
 }
 
-extern DllExport object3d* object3d_appendChild(object3d* obj, object3d* child)
+extern DECLSPEC object3d* object3d_appendChild(object3d* obj, object3d* child)
 {
 	return obj->appendChild(child);
 }
 
-extern DllExport bool object3d_removeChild(object3d* obj, object3d* child)
+extern DECLSPEC bool object3d_removeChild(object3d* obj, object3d* child)
 {
 	return obj->removeChild(child);
 }
 
-extern DllExport object3d* object3d_getParent(object3d* obj)
+extern DECLSPEC object3d* object3d_getParent(object3d* obj)
 {
 	return obj->getParent();
 }

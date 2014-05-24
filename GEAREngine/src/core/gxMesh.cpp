@@ -1,5 +1,6 @@
 #include "gxMesh.h"
 #include "../GEAREngine.h"
+#include "Timer.h"
 
 gxMesh::gxMesh(int ID):
 	object3d(ID)
@@ -304,6 +305,22 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 		shader->enableProgram();
 
+		//time
+		if(pass_struct->Time_time)
+		{
+			int t=Timer::getElapsedTime()*100;
+			t%=180;
+			float time[]={t, t, t, t};
+			shader->sendUniform_time(time);
+		}
+		if(pass_struct->Time_deltatime)
+		{
+			float dt=Timer::getDtinSec();
+			float deltatime[]={dt, dt, dt, dt};
+			shader->sendUniform_deltatime(deltatime);
+		}
+		//
+
 		if(light_ob && pass_struct->Light)
 			light_ob->renderPass(renderer, shader);
 
@@ -591,6 +608,7 @@ void gxMesh::disableTextureOperations(int stage, gxHWShader* shader, const char*
 		glDisable(GL_TEXTURE_2D);	
 	}
 #endif
+	glDisable(GL_BLEND);
 }
 
 float* gxMesh::allocateVertexBuffer(int nTris)

@@ -180,9 +180,6 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
-    <ClInclude Include="GEAREditor\core\Timer.h">
-      <Filter>GEAREditor\core</Filter>
-    </ClInclude>
     <ClInclude Include="GEAREditor\scenes\assetUserData.h">
       <Filter>GEAREditor\scenes</Filter>
     </ClInclude>
@@ -361,9 +358,6 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\gui\geTextBox.cpp">
       <Filter>GEAREditor\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="GEAREditor\core\Timer.cpp">
-      <Filter>GEAREditor\core</Filter>
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\gearScenePreview.cpp">
       <Filter>GEAREditor\scenes</Filter>

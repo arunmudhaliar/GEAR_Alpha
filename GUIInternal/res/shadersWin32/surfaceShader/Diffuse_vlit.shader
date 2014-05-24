@@ -56,7 +56,7 @@ __Pass{
                vec3 vertexToLightSource = vec3(light.position - (modelMatrix * vIN_Position));
                float distance = length(vertexToLightSource);
                //attenuation = 1.0 / distance; // linear attenuation 
-				attenuation = 1.f / (light.constant_attenuation +
+				attenuation = 1.0 / (light.constant_attenuation +
 						 light.linear_attenuation * distance +
 						 light.quadratic_attenuation * distance * distance);
                lightDirection = normalize(vertexToLightSource);

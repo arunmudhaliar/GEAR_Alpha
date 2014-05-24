@@ -17,7 +17,7 @@
 
 #define DEBUG_KERNING   0.0f
 
-class DllExport gxFont
+class DECLSPEC gxFont
 {
 public:
     enum ALIGNMENT
@@ -112,7 +112,7 @@ public:
 #endif
 };
 
-class DllExport FontManager
+class DECLSPEC FontManager
 {
 public:
     FontManager();

@@ -57,7 +57,11 @@ void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearV
 	if(m_pCameraStructPtr->getProjectionType()==gxCamera::PERSPECTIVE_PROJECTION)
 		m_cProjMatrix.setPerspective(m_fFOV, aspect, m_fNear, m_fFar);
 	else
-		m_cProjMatrix.setOrtho(m_pRendererPtr->getViewPortRect().m_pos.x, m_pRendererPtr->getViewPortSz().x, m_pRendererPtr->getViewPortRect().m_pos.y, m_pRendererPtr->getViewPortSz().y, m_fNear, m_fFar);
+	{
+		gxRectf viewportRect(m_pRendererPtr->getViewPortRect());
+		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
+		m_cProjMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, m_fNear, m_fFar);
+	}
 	
 	m_pRendererPtr->setProjectionMatrixToGL(&m_cProjMatrix);
 	extractFrustumPlanes();

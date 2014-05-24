@@ -32,7 +32,7 @@ struct stAttribLocation
 	char attrib_ref_name[64];	//uniform vars in shaders must not exceed 64 charachters
 };
 
-class DllExport gxHWShader
+class DECLSPEC gxHWShader
 {
 public:
 	gxHWShader();
@@ -88,6 +88,8 @@ public:
 	void sendUniform_material_ambient(const float* input);
 	void sendUniform_material_specular(const float* input);
 	void sendUniform_material_shininess(float input);
+	void sendUniform_time(const float* time);
+	void sendUniform_deltatime(const float* deltatime);
 
 	int getAttrib_vIN_Position();
 	int getAttrib_vIN_Normal();
@@ -113,6 +115,8 @@ private:
 	int m_cUnifrom_material_ambient;
 	int m_cUnifrom_material_specular;
 	int m_cUnifrom_material_shininess;
+	int m_cUnifrom_Time_time;
+	int m_cUnifrom_Time_deltatime;
 
 	int m_cAttrib_vIN_Position;
 	int m_cAttrib_vIN_Normal;

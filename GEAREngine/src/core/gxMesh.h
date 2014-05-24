@@ -48,7 +48,7 @@ public:
 };
 
 
-class DllExport gxMesh : public object3d
+class DECLSPEC gxMesh : public object3d
 {
 protected:
 	gxMesh(int ID);

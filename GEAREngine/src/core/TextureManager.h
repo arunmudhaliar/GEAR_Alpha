@@ -9,7 +9,7 @@
 #include <vector>
 #include "stTexturePacket.h"
 
-class DllExport CTextureManager
+class DECLSPEC CTextureManager
 {
 public:
 	CTextureManager();

@@ -42,12 +42,6 @@ gxWorld::gxWorld():
 
 gxWorld::~gxWorld()
 {
-	if(m_pOctree)
-	{
-		m_pOctree->reset();
-		GX_DELETE(m_pOctree);
-	}
-
 	resetWorld();
 	m_cMaterialList.clear();	//since our Default material may reside inside: check resetWorld()
 }
@@ -57,6 +51,12 @@ void gxWorld::resetWorld()
 #ifdef USE_BULLET
 	m_cPhysicsEngine.clientResetScene();
 #endif
+
+	if(m_pOctree)
+	{
+		m_pOctree->reset();
+		GX_DELETE(m_pOctree);
+	}
 
 	for(std::vector<gxMaterial*>::iterator it = m_cMaterialList.begin(); it != m_cMaterialList.end(); ++it)
 	{
@@ -147,6 +147,12 @@ void gxWorld::render(gxRenderer* renderer, object3d* lightPtr)
 			getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 
 			object3d* obj = collidedtransformObjNode->GetData();
+			if(!obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			{
+				collidedtransformObjNode=collidedtransformObjNode->GetNext();
+				continue;
+			}
+
 			obj->render(renderer, NULL);
 
 			getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);

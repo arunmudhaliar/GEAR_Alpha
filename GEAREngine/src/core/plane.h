@@ -5,12 +5,11 @@
 
 #define PLANE_EPSILON 0.01f
 
-template<class T>
-class plane3;
-typedef plane3<float> gxPlane3f;
+template<class T> class plane3;
+typedef DECLSPEC plane3<float> gxPlane3f;
 
 template<class T>
-class plane3
+class DECLSPEC plane3
 {
 public:
 	enum Halfspace

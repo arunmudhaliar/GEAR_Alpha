@@ -20,11 +20,11 @@
 #if USE_BULLET
 #include "../physics/btBulletDynamicsCommon.h"
 #endif
+#include "quaternion.h"
 
 
 
-
-class DllExport MRootObserver
+class DECLSPEC MRootObserver
 {
 public:
 	virtual void callback_object3dRemovedFromTree(object3d* child){};
@@ -32,7 +32,7 @@ public:
 	virtual void callback_object3dDestroyedFromTree(object3d* child){};
 };
 
-class DllExport MObject3dObserver
+class DECLSPEC MObject3dObserver
 {
 public:
 	virtual void onObject3dChildAppend(object3d* child)=0;
@@ -63,7 +63,7 @@ public:
 
 class gxAnimation;
 class gxAnimationSet;
-class DllExport object3d : public transform, public MRootObserver
+class DECLSPEC object3d : public transform, public MRootObserver
 {
 public:
 
@@ -181,19 +181,19 @@ protected:
 };
 
 extern "C" {
-	DllExport const char* object3d_getName(object3d* obj);
-	DllExport int object3d_getID(object3d* obj);
-	DllExport object3d* object3d_find(object3d* obj, const char* name);
-	DllExport int object3d_getChildCount(object3d* obj);
-	DllExport object3d* object3d_getChild(object3d* obj, int index);
+	DECLSPEC const char* object3d_getName(object3d* obj);
+	DECLSPEC int object3d_getID(object3d* obj);
+	DECLSPEC object3d* object3d_find(object3d* obj, const char* name);
+	DECLSPEC int object3d_getChildCount(object3d* obj);
+	DECLSPEC object3d* object3d_getChild(object3d* obj, int index);
 
-	DllExport gxAnimation* object3d_createAnimationController(object3d* obj);
-	DllExport gxAnimation* object3d_getAnimationController(object3d* obj);
-	DllExport gxAnimationSet* object3d_applyAnimationSetRecursive(object3d* obj, int index);
+	DECLSPEC gxAnimation* object3d_createAnimationController(object3d* obj);
+	DECLSPEC gxAnimation* object3d_getAnimationController(object3d* obj);
+	DECLSPEC gxAnimationSet* object3d_applyAnimationSetRecursive(object3d* obj, int index);
 
-	DllExport object3d* object3d_appendChild(object3d* obj, object3d* child);
-	DllExport bool object3d_removeChild(object3d* obj, object3d* child);
-	DllExport object3d* object3d_getParent(object3d* obj);
+	DECLSPEC object3d* object3d_appendChild(object3d* obj, object3d* child);
+	DECLSPEC bool object3d_removeChild(object3d* obj, object3d* child);
+	DECLSPEC object3d* object3d_getParent(object3d* obj);
 }
 
 #endif

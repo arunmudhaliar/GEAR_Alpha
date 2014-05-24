@@ -35,7 +35,7 @@
     void bqPlayerCallback(SLBufferQueueItf bq, void *context);
 #endif
 
-class DllExport SoundSource
+class DECLSPEC SoundSource
 {
 public:
     SoundSource();    

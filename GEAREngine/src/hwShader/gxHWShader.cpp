@@ -15,6 +15,8 @@ gxHWShader::gxHWShader()
 	m_cUnifrom_material_ambient=-1;
 	m_cUnifrom_material_specular=-1;
 	m_cUnifrom_material_shininess=-1;
+	m_cUnifrom_Time_time=-1;
+	m_cUnifrom_Time_deltatime=-1;
 
 	m_cAttrib_vIN_Position=-1;
 	m_cAttrib_vIN_Normal=-1;
@@ -589,6 +591,32 @@ void gxHWShader::sendUniform_material_shininess(float input)
 	{
 		m_cUnifrom_material_shininess = getUniformLoc("material.shininess");
 		glUniform1f(m_cUnifrom_material_shininess, input);
+	}
+}
+
+void gxHWShader::sendUniform_time(const float* time)
+{
+	if(m_cUnifrom_Time_time!=-1)
+	{
+		glUniform4fv(m_cUnifrom_Time_time, 1, time);
+	}
+	else
+	{
+		m_cUnifrom_Time_time = getUniformLoc("Time.time");
+		glUniform4fv(m_cUnifrom_Time_time, 1, time);
+	}
+}
+
+void gxHWShader::sendUniform_deltatime(const float* deltatime)
+{
+	if(m_cUnifrom_Time_deltatime!=-1)
+	{
+		glUniform4fv(m_cUnifrom_Time_deltatime, 1, deltatime);
+	}
+	else
+	{
+		m_cUnifrom_Time_deltatime = getUniformLoc("Time.deltatime");
+		glUniform4fv(m_cUnifrom_Time_deltatime, 1, deltatime);
 	}
 }
 

@@ -9,7 +9,7 @@
 //
 //static fbxImporter g_cFBXImporter;
 //
-//extern DllExport void myDLL_fbxImport(const char* filename)
+//extern DECLSPEC void myDLL_fbxImport(const char* filename)
 //{
 //	g_cFBXImporter.loadFBX(filename);
 //}

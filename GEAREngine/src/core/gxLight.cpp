@@ -8,8 +8,8 @@ object3d(OBJECT3D_LIGHT)
 	setLightType(LIGHT_POINT);
 
 	m_cDiffuse.set(0.7f, 0.7f, 0.7f, 1.0f);
-	m_cAmbient.set(0.0f, 0.0f, 0.0f, 1.0f);
-	m_cSpecular.set(0.0f, 0.0f, 0.0f, 1.0f);
+	m_cAmbient.set(0.05f, 0.05f, 0.05f, 1.0f);
+	m_cSpecular.set(0.2f, 0.2f, 0.2f, 1.0f);
 	setPosition(0, 0, 1);
 
 	m_fConstantAttenuation = 0.1f;

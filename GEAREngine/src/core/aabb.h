@@ -14,16 +14,14 @@
 #include "../hwShader/gxHWShader.h"
 
 class gxHWShader;
-template<class T>
-class DllExport AABB;
-typedef AABB<int> gxAABBi;
+template<class T> class AABB;
+typedef DECLSPEC AABB<int> gxAABBi;
+
+template<class T> class AABB;
+typedef DECLSPEC AABB<float> gxAABBf;
 
 template<class T>
-class DllExport AABB;
-typedef AABB<float> gxAABBf;
-
-template<class T>
-class DllExport AABB
+class DECLSPEC AABB
 {
 public:
     AABB<T>()

@@ -7,6 +7,7 @@
 #include <stdio.h>										// Standard I/O header 
 #include <string.h>
 #include <malloc.h>
+#include "../core/basicIncludes.h"
 //#include <gl\gl.h>										// Header for OpenGL32 library
 //#include "Texture.h"
 
@@ -48,7 +49,7 @@ TGA tga;												// TGA image data
 unsigned char uTGAcompare[12] = {0,0,2, 0,0,0,0,0,0,0,0,0};	// Uncompressed TGA Header
 unsigned char cTGAcompare[12] = {0,0,10,0,0,0,0,0,0,0,0,0};	// Compressed TGA Header
 #ifdef _WIN32
-__declspec( dllexport )bool LoadTGA(tgaTexture * texture, const char * filename);
+DECLSPEC bool LoadTGA(tgaTexture * texture, const char * filename);
 #else
 bool LoadTGA(tgaTexture * texture, const char * filename);
 #endif

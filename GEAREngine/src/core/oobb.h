@@ -8,12 +8,11 @@
 #include "../hwShader/gxHWShader.h"
 
 
-template<class T>
-class DllExport OOBB;
-typedef OOBB<float> gxOOBBf;
+template<class T> class OOBB;
+typedef DECLSPEC OOBB<float> gxOOBBf;
 
 template<class T>
-class DllExport OOBB
+class DECLSPEC OOBB
 {
 public:
 	OOBB<T>()

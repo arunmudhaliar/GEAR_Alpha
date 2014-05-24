@@ -8,7 +8,7 @@
 class gxWorld;
 
 #define MAX_OCTREECHILD	8
-class DllExport OctreeNode
+class DECLSPEC OctreeNode
 {
 public:
 	OctreeNode();
@@ -35,7 +35,7 @@ private:
 	float m_fRadius;
 };
 
-class DllExport COctree
+class DECLSPEC COctree
 {
 public:
 	COctree();

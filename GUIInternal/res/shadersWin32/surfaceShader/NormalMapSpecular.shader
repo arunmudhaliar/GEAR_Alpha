@@ -108,7 +108,7 @@ __Pass{
                vec3 vertexToLightSource = vec3(light.position - vOUT_Position);
                float distance = length(vertexToLightSource);
                //attenuation = 1.0 / distance; // linear attenuation 
-				attenuation = 1.f / (light.constant_attenuation +
+				attenuation = 1.0 / (light.constant_attenuation +
 						 light.linear_attenuation * distance +
 						 light.quadratic_attenuation * distance * distance);
                lightDirection = normalize(vertexToLightSource);
@@ -125,7 +125,7 @@ __Pass{
             }
             else // light source on the right side
             {
-               specularReflection = attenuation * vec3(light.specular) * vec3(material.specular) * (1.0 - spectextureColor.a) * pow(max(0.0, dot(reflect(-lightDirection, normalDirection), viewDirection)), material.shininess);
+               specularReflection = attenuation * vec3(light.specular) * vec3(material.specular) * (spectextureColor.a) * pow(max(0.0, dot(reflect(-lightDirection, normalDirection), viewDirection)), material.shininess);
 			}
 
             return vec4(ambientLighting + diffuseReflection + specularReflection, 1.0);

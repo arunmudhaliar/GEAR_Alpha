@@ -104,51 +104,51 @@ bool gxAnimation::isPlaying()
 
 
 extern "C" {
-extern DllExport gxAnimationSet* gxAnimation_play(gxAnimation* animation, int animSetIndex)
+extern DECLSPEC gxAnimationSet* gxAnimation_play(gxAnimation* animation, int animSetIndex)
 {
 	return animation->play(animSetIndex);
 }
-extern DllExport void gxAnimation_stop(gxAnimation* animation)
+extern DECLSPEC void gxAnimation_stop(gxAnimation* animation)
 {
 	animation->stop();
 }
 
-extern DllExport void gxAnimation_pause(gxAnimation* animation)
+extern DECLSPEC void gxAnimation_pause(gxAnimation* animation)
 {
 	animation->pause();
 }
 
-extern DllExport void gxAnimation_resume(gxAnimation* animation)
+extern DECLSPEC void gxAnimation_resume(gxAnimation* animation)
 {
 	animation->resume();
 }
 
-extern DllExport void gxAnimation_rewind(gxAnimation* animation)
+extern DECLSPEC void gxAnimation_rewind(gxAnimation* animation)
 {
 	animation->rewind();
 }
 
-extern DllExport void gxAnimation_rewindAll(gxAnimation* animation)
+extern DECLSPEC void gxAnimation_rewindAll(gxAnimation* animation)
 {
 	animation->rewindAll();
 }
 
-extern DllExport bool gxAnimation_isPlaying(gxAnimation* animation)
+extern DECLSPEC bool gxAnimation_isPlaying(gxAnimation* animation)
 {
 	return animation->isPlaying();
 }
 
-extern DllExport gxAnimationSet* gxAnimation_getAnimationSet(gxAnimation* animation, int index)
+extern DECLSPEC gxAnimationSet* gxAnimation_getAnimationSet(gxAnimation* animation, int index)
 {
 	return animation->getAnimationSet(index);
 }
 
-extern DllExport int gxAnimation_getAnimSetCount(gxAnimation* animation)
+extern DECLSPEC int gxAnimation_getAnimSetCount(gxAnimation* animation)
 {
 	return animation->getAnimSetCount();
 }
 
-extern DllExport void gxAnimation_appendAnimationSet(gxAnimation* animation, gxAnimationSet* animationSet)
+extern DECLSPEC void gxAnimation_appendAnimationSet(gxAnimation* animation, gxAnimationSet* animationSet)
 {
 	animation->appendAnimationSet(animationSet);
 }

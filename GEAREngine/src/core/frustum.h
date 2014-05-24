@@ -4,12 +4,11 @@
 
 #include "plane.h"
 
-template<class T>
-class frustum;
-typedef frustum<float> gxFrustumf;
+template<class T> class frustum;
+typedef DECLSPEC frustum<float> gxFrustumf;
 
 template<class T>
-class frustum
+class DECLSPEC frustum
 {
 public:
 	enum EFRUSTUM_PLANES

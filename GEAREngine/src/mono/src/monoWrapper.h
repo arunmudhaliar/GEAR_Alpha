@@ -8,7 +8,7 @@
 
 #include "../../../GEAREngine/src/GEAREngine.h"
 
-class DllExport monoWrapper
+class DECLSPEC monoWrapper
 {
 public:
 	static void loadMonoModules();

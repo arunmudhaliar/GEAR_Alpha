@@ -1,6 +1,6 @@
 #include "gearScenePreview.h"
 #include "../EditorApp.h"
-#include "../core/Timer.h"
+//#include "../../../GEAREngine/src/core/Timer.h"
 
 gearScenePreview::gearScenePreview():
 geWindow("Preview")
@@ -8,6 +8,7 @@ geWindow("Preview")
 	m_pSelectedObj=NULL;
 	m_pPreviewWorldPtr=NULL;
 	m_bStopFollowCam=false;
+	m_pLightPtr=NULL;
 }
 
 gearScenePreview::~gearScenePreview()
@@ -16,13 +17,22 @@ gearScenePreview::~gearScenePreview()
 
 void gearScenePreview::onCreate()
 {
+	reinitPreviewWorld();
+}
+
+void gearScenePreview::reinitPreviewWorld()
+{
+	if(m_pPreviewWorldPtr)
+		m_pPreviewWorldPtr->resetWorld();
 	m_pPreviewWorldPtr=monoWrapper::mono_engine_getWorld(1);
 	m_pPreviewWorldPtr->getActiveCamera()->getCameraStructure()->setNear(1.0f);
-	object3d* light=engine_createLight(m_pPreviewWorldPtr, "Light", gxLight::LIGHT_POINT);
+	object3d* light=engine_createLight(m_pPreviewWorldPtr, "Light", gxLight::LIGHT_DIRECTIONAL);
 	((gxLight*)light)->setDiffuseColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
 	((gxLight*)light)->setAmbientColor(vector4f(0.1f, 0.1f, 0.1f, 1.0f));
+	((gxLight*)light)->setSpecularColor(vector4f(0.25f, 0.25f, 0.25f, 1.0f));
 	((gxLight*)light)->setConstantAttenuation(0.5f);
 	light->updatePositionf(-1, -10, 1);
+	m_pLightPtr=light;
 }
 
 void gearScenePreview::draw()
@@ -39,29 +49,7 @@ void gearScenePreview::draw()
 
 	monoWrapper::mono_engine_resize(m_pPreviewWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/, 1.0f, 10000.0f);
 
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	GLfloat lightpos[] = {-1, 1, 1, 0.0f};
-	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-	
-	float colorWhite[]  = {1.0f,1.0f,1.0f,1.0f};
-	float ambient[]   = {0.5f,0.5f,0.5f,1.0f};
-	float diffuse[]   = {1.0f,1.0f,1.0f,1.0f};
-	float specular[]   = {0.1f,0.1f,0.1f,1.0f};
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient );
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse );
-    glLightfv(GL_LIGHT0, GL_SPECULAR, specular );
-
-	glEnable(GL_COLOR_MATERIAL);
-	glColor4f(0.7f, 0.7f, 0.7f, 1.0f);
-	glPushMatrix();
 	onDraw();
-	glPopMatrix();
-	glDisable(GL_COLOR_MATERIAL);
-
-	glDisable(GL_LIGHT0);
-	glDisable(GL_LIGHTING);
-
 
 	//STATS
 	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
@@ -73,17 +61,9 @@ void gearScenePreview::draw()
 
 	glPushMatrix();
 	glTranslatef(0, 0, -1);
-
-	//gxMesh* mesh = (gxMesh*)m_pSelectedObj;
-
-	//char buffer[16];
-	//sprintf(buffer, "Tris: %d", mesh->getVerticesCount()/3);
 	glDisable(GL_DEPTH_TEST);
 	geGUIManager::g_pFontArial10_84Ptr->drawString("1 object selected", 5, 5+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	glEnable(GL_DEPTH_TEST);
-	//GLUquadric* q=gluNewQuadric();
-	//gluCylinder(q, 10, 0, 20, 20, 5);
-	//gluDeleteQuadric(q);
 	glPopMatrix();
 	//
 }
@@ -112,21 +92,18 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	Camera* cam=m_pPreviewWorldPtr->getActiveCamera();
 	matrix4x4f* chasingObj=(matrix4x4f*)cam;
     //matrix4x4f* chasedObj=(matrix4x4f*)this;
-    vector3f   lookAtOff;
 	vector3f	eyeOff;
 	float speed=10.0f;
 	
-	//lookAtOff = chasedObj->getChild(0)->getOOBB().getCenter();
-	lookAtOff = CAMERA_LOOKAT_OFFSET;
-	eyeOff = vector3f(0, -(chasedObj->getAABB().getLongestAxis()*0.5f)*4.0f, 0);
+	eyeOff = vector3f(0, -(chasedObj->getAABB().getLongestAxis()*0.5f + cam->getCameraStructure()->getNear())*2.5f, 0);
 
-	vector3f    transformedEye((*chasedObj) * eyeOff);
-    vector3f    transformedLookAt((*chasedObj) * lookAtOff);
+	vector3f    transformedEye((chasedObj->getAABB().getCenter()) + eyeOff);
+	vector3f    transformedLookAt(chasedObj->getAABB().getCenter());
 	
-	vector3f    chasingObjPos(chasingObj->getPosition());
+	vector3f    chasingObjPos(cam->getWorldMatrix()->getPosition());
     vector3f    chasedObjPos(chasedObj->getAABB().getCenter());
     vector3f    lenV(transformedEye-chasingObjPos);
-    float        len=lenV.length();
+    float       len=lenV.length();
 	
     if(len<=0.01f)
 	{
@@ -154,6 +131,8 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	chasingObj->setZAxis(forward);
 	chasingObj->setPosition(updatedPos);
 	
+	m_pLightPtr->setPosition(updatedPos);
+
 	cam->updateCamera();
 }
 
@@ -217,7 +196,7 @@ bool gearScenePreview::onMouseMove(float x, float y, int flag)
 
 		vector3f aUP(0, 0, 1);
 		//aUP=camera->getYAxis();
-		vector3f aVect(0, 0, 0);
+		vector3f aVect(m_pSelectedObj->getAABB().getCenter());
 		//aVect=m_cPickObjectCenter;	//can modify this later to rotate around mesh center
 		Camera* cam=m_pPreviewWorldPtr->getActiveCamera();
 

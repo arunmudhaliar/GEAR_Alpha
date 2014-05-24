@@ -4,7 +4,7 @@
 #include <string.h>
 #include "../core/vector3.h"
 
-class DllExport gxUtil
+class DECLSPEC gxUtil
 {
 public:
 	static const char* getFolderPathFromFileName(const char* filename)

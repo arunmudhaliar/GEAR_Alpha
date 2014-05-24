@@ -12,16 +12,14 @@
 #include "gxMath.h"
 
 
-template<class T>
-class DllExport gxRect;
-typedef gxRect<float> gxRectf;
+template<class T> class gxRect;
+typedef DECLSPEC gxRect<float> gxRectf;
+
+template<class T> class gxRect;
+typedef DECLSPEC gxRect<int> gxRecti;
 
 template<class T>
-class DllExport gxRect;
-typedef gxRect<int> gxRecti;
-
-template<class T>
-class DllExport gxRect
+class DECLSPEC gxRect
 {
 public:
     gxRect<T>()

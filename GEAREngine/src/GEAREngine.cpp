@@ -14,43 +14,43 @@ static MEngineObserver* g_EngineObserver = NULL;
 static MObject3dObserver* g_Object3dObserver = NULL;
 vector2i g_cMousePrevPos;
 
-extern DllExport void engine_setEngineObserver(MEngineObserver* observer)
+extern DECLSPEC void engine_setEngineObserver(MEngineObserver* observer)
 {
 	g_EngineObserver=observer;
 }
 
-extern DllExport void engine_setObject3dObserver(MObject3dObserver* observer)
+extern DECLSPEC void engine_setObject3dObserver(MObject3dObserver* observer)
 {
 	g_Object3dObserver=observer;
 }
 
-extern DllExport int engine_test_function_for_mono()
+extern DECLSPEC int engine_test_function_for_mono()
 {
 	return 100;
 }
 
-extern DllExport void engine_init(int nWorldToCreate)
+extern DECLSPEC void engine_init(int nWorldToCreate)
 {
 	g_cGEAREngine.initEngine(nWorldToCreate);
 	g_cMousePrevPos.zero();
 }
 
-extern DllExport gxWorld* engine_getWorld(int index)
+extern DECLSPEC gxWorld* engine_getWorld(int index)
 {
 	return g_cGEAREngine.getWorld(index);
 }
 
-extern DllExport void engine_update(gxWorld* world, float dt)
+extern DECLSPEC void engine_update(gxWorld* world, float dt)
 {
 	world->update(dt);
 }
 
-extern DllExport void engine_resize(gxWorld* world, float x, float y, float cx, float cy, float nearplane, float farplane)
+extern DECLSPEC void engine_resize(gxWorld* world, float x, float y, float cx, float cy, float nearplane, float farplane)
 {
 	world->resizeWorld(x, y, cx, cy, nearplane, farplane);
 }
 
-extern DllExport void engine_render(gxWorld* world, object3d* light)
+extern DECLSPEC void engine_render(gxWorld* world, object3d* light)
 {
 	world->render(world->getRenderer(), light);
 }
@@ -288,7 +288,7 @@ void populateBonesToMeshNode(object3d* obj, object3d* rootNode)
 #endif
 }
 
-extern DllExport object3d* engine_loadAndAppendMesh(gxWorld* world, const char* filename)
+extern DECLSPEC object3d* engine_loadAndAppendMesh(gxWorld* world, const char* filename)
 {
 //#ifdef _WIN32
 //	return world->loadAndAppendFBX(filename);
@@ -299,7 +299,7 @@ extern DllExport object3d* engine_loadAndAppendMesh(gxWorld* world, const char* 
 //#endif
 }
 
-extern DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory)
+extern DECLSPEC object3d* engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory)
 {
 #ifdef _WIN32
 	fbxImporter importer;
@@ -310,28 +310,28 @@ extern DllExport object3d* engine_loadFBX(gxWorld* world, const char* filename, 
 #endif
 }
 
-extern DllExport object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj)
+extern DECLSPEC object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj)
 {
 	return world->appendChild(obj);
 }
 
-extern DllExport void engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag)
+extern DECLSPEC void engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag)
 {
 }
 
-extern DllExport void engine_mouseLButtonUp(gxWorld* world, int x, int y, int flag)
+extern DECLSPEC void engine_mouseLButtonUp(gxWorld* world, int x, int y, int flag)
 {
 }
 
-extern DllExport void engine_mouseRButtonDown(gxWorld* world, int x, int y, int flag)
+extern DECLSPEC void engine_mouseRButtonDown(gxWorld* world, int x, int y, int flag)
 {
 }
 
-extern DllExport void engine_mouseRButtonUp(gxWorld* world, int x, int y, int flag)
+extern DECLSPEC void engine_mouseRButtonUp(gxWorld* world, int x, int y, int flag)
 {
 }
 
-extern DllExport void engine_mouseWheel(gxWorld* world, int zDelta, int x, int y, int flag)
+extern DECLSPEC void engine_mouseWheel(gxWorld* world, int zDelta, int x, int y, int flag)
 {
 	Camera* camera=world->getActiveCamera();
 	int dir = (zDelta<0)?1:-1;
@@ -346,7 +346,7 @@ extern DllExport void engine_mouseWheel(gxWorld* world, int zDelta, int x, int y
 	camera->updatePositionf(aCamForwardDir.x, aCamForwardDir.y, aCamForwardDir.z);
 }
 
-extern DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag)
+extern DECLSPEC void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 {
 	Camera* camera=world->getActiveCamera();
 
@@ -391,7 +391,7 @@ extern DllExport void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 
 }
 
-extern DllExport void engine_setMetaFolder(gxWorld* world, const char* metaFolder)
+extern DECLSPEC void engine_setMetaFolder(gxWorld* world, const char* metaFolder)
 {
 	world->setMetaDataFolder(metaFolder);
 }
@@ -426,7 +426,7 @@ extern bool engine_destroyObject3d(gxWorld* world, object3d* obj)
 	return false;
 }
 
-extern DllExport object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name)
+extern DECLSPEC object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name)
 {
 	object3d* emptyObject=new object3d(1);
 	emptyObject->setObject3dObserver(g_Object3dObserver);
@@ -435,7 +435,7 @@ extern DllExport object3d* engine_createEmptyObject3d(object3d* parentObj, const
 	return emptyObject;
 }
 
-extern DllExport object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType)
+extern DECLSPEC object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType)
 {
 	gxLight* light = new gxLight();
 	light->setObject3dObserver(g_Object3dObserver);
@@ -445,7 +445,7 @@ extern DllExport object3d* engine_createLight(object3d* parentObj, const char* n
 	return light;
 }
 
-extern DllExport object3d* engine_createCamera(object3d* parentObj, const char* name)
+extern DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* name)
 {
 	gxCamera* camera = new gxCamera();
 	camera->setObject3dObserver(g_Object3dObserver);
@@ -454,12 +454,12 @@ extern DllExport object3d* engine_createCamera(object3d* parentObj, const char* 
 	return camera;
 }
 
-extern DllExport HWShaderManager* engine_getHWShaderManager()
+extern DECLSPEC HWShaderManager* engine_getHWShaderManager()
 {
 	return g_cGEAREngine.getHWShaderManager();
 }
 
-extern DllExport void engine_destroy()
+extern DECLSPEC void engine_destroy()
 {
 	g_cGEAREngine.resetEngine();
 }

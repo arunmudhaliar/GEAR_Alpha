@@ -25,7 +25,7 @@ public:
 };
 
 class COctree;
-class DllExport gxWorld : public object3d
+class DECLSPEC gxWorld : public object3d
 {
 public:
 	gxWorld();

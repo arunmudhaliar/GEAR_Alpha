@@ -87,6 +87,9 @@ void HWShaderManager::LoadDefaultShaders()
 	snippet=LoadCodeSnippet("res/shadersWin32/snippets/material_unifrom_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/time_uniform_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
 
 	//HW shaders
 	gxHWShader* pShader=new gxHWShader();
@@ -144,6 +147,9 @@ void HWShaderManager::LoadDefaultShaders()
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
 	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/material_unifrom_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/time_uniform_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
 

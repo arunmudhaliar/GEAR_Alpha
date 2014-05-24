@@ -6,6 +6,7 @@
 #if USE_NVPROFILER
 #include <Windows.h>
 #include <gl\glut.h>
+#include "../core/basicIncludes.h"
 //#include <gl\GL.h>
 // ********************************************************
 // Set up NVPMAPI
@@ -25,7 +26,7 @@ static const NvPmApi *GetNvPmApi()			{	return S_NVPMManager.Api();	}
 
 #define COUNTER_DISABLED ((NVPMCounterID) 0xFFFFFFFF)
 
-class __declspec( dllexport ) nvProfiler
+class DECLSPEC nvProfiler
 {
 public:
 	// A simple class to manage counters, sampling, and display of the information

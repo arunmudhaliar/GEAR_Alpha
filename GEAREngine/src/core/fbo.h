@@ -5,7 +5,7 @@
 #include <vector>
 #include "gxDebug.h"
 
-class DllExport FBO
+class DECLSPEC FBO
 {
 public:
 	FBO();

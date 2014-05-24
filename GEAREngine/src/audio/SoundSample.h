@@ -29,7 +29,7 @@
 #include "../util/gxFile.h"
 #include "../core/gxDebug.h"
 
-class DllExport SoundSample
+class DECLSPEC SoundSample
 {
 public:
     SoundSample(const char* filename);

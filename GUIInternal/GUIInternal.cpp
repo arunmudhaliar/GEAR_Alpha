@@ -7,7 +7,7 @@
 #include "stdafx.h"
 #include "GUIInternal.h"
 #include "GEAREditor\EditorApp.h"
-#include "GEAREditor\core\Timer.h"
+//#include "../GEAREngine/src/core/Timer.h"
 #include <WindowsX.h>
 #include <ShlObj.h>
 

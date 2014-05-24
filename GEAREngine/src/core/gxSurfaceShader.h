@@ -54,7 +54,7 @@ struct stShaderProperty_Texture2D
 	std::string texture_sampler2d_name;
 };
 
-class DllExport gxSubMap
+class DECLSPEC gxSubMap
 {
 public:
 	gxSubMap();
@@ -93,6 +93,8 @@ struct stPass
 		vIN_Normal=false;
 		vIN_Color=false;
 		Tangent=false;
+		Time_time=false;
+		Time_deltatime=false;
 	}
 
 	~stPass()
@@ -113,6 +115,8 @@ struct stPass
 	bool vIN_Normal;
 	bool vIN_Color;
 	bool Tangent;
+	bool Time_time;
+	bool Time_deltatime;
 
 	std::string vertex_buffer;
 	std::string fragment_buffer;
@@ -133,7 +137,7 @@ struct stSubShader
 
 	std::vector<stPass*> m_vPass;
 };
-class DllExport gxSurfaceShader
+class DECLSPEC gxSurfaceShader
 {
 private:
 	bool findQuat(std::string::const_iterator& start, std::string::const_iterator& end, bool bStrict=true);

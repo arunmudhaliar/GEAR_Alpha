@@ -20,7 +20,7 @@ struct stMaterialPass
 	std::vector<gxSubMap*> vUsedSubMap;
 };
 
-class DllExport gxMaterial //: public gxSurfaceShader
+class DECLSPEC gxMaterial //: public gxSurfaceShader
 {
 public:
 	gxMaterial();

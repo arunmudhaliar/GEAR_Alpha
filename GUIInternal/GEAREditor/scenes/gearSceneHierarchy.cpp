@@ -341,8 +341,9 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 		{
 			//if(MessageBox(EditorApp::getMainWindowHandle(),"Are you sure to reset the world.","Warning",MB_YESNO|MB_ICONWARNING)==IDYES)
 			{
+				EditorApp::getSceneWorldEditor()->stopSimulation();
 				monoWrapper::mono_engine_getWorld(0)->resetWorld();
-				monoWrapper::mono_engine_getWorld(1)->resetWorld();
+				EditorApp::getScenePreview()->reinitPreviewWorld();
 
 				m_cGameObjectsTreeView.clearAndDestroyAll();
 				m_cGameObjectsTreeView.resetSelectedNodePtr();

@@ -3,9 +3,10 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "../core/basicIncludes.h"
 
 #ifdef _WIN32
-class __declspec( dllexport ) gxCrc32
+class DECLSPEC gxCrc32
 #else
 class gxCrc32
 #endif

@@ -45,7 +45,11 @@ void gxCamera::perspectiveChanged()
 	if(getProjectionType()==gxCamera::PERSPECTIVE_PROJECTION)
 		m_cDummyProjMatrix.setPerspective(m_FOV, 1.0f, m_fNear, m_fFar);
 	else
-		m_cDummyProjMatrix.setOrtho(0, 200, 0, 200, m_fNear, m_fFar);
+	{
+		gxRectf viewportRect(0, 0, 200, 200);
+		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
+		m_cDummyProjMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, m_fNear, m_fFar);
+	}
 
 	extractFrustumPlanes();
 }

@@ -6,7 +6,7 @@
 #include "../util/gxFile.h"
 
 class gxAnimationSet;
-class DllExport gxAnimation
+class DECLSPEC gxAnimation
 {
 public:
 	gxAnimation();
@@ -49,17 +49,17 @@ private:
 
 
 extern "C" {
-	DllExport gxAnimationSet* gxAnimation_play(gxAnimation* animation, int animSetIndex);
-	DllExport void gxAnimation_stop(gxAnimation* animation);
-	DllExport void gxAnimation_pause(gxAnimation* animation);
-	DllExport void gxAnimation_resume(gxAnimation* animation);
-	DllExport void gxAnimation_rewind(gxAnimation* animation);
-	DllExport void gxAnimation_rewindAll(gxAnimation* animation);
-	DllExport bool gxAnimation_isPlaying(gxAnimation* animation);
+	DECLSPEC gxAnimationSet* gxAnimation_play(gxAnimation* animation, int animSetIndex);
+	DECLSPEC void gxAnimation_stop(gxAnimation* animation);
+	DECLSPEC void gxAnimation_pause(gxAnimation* animation);
+	DECLSPEC void gxAnimation_resume(gxAnimation* animation);
+	DECLSPEC void gxAnimation_rewind(gxAnimation* animation);
+	DECLSPEC void gxAnimation_rewindAll(gxAnimation* animation);
+	DECLSPEC bool gxAnimation_isPlaying(gxAnimation* animation);
 
-	DllExport gxAnimationSet* gxAnimation_getAnimationSet(gxAnimation* animation, int index);
-	DllExport int gxAnimation_getAnimSetCount(gxAnimation* animation);
-	DllExport void gxAnimation_appendAnimationSet(gxAnimation* animation, gxAnimationSet* animationSet);
+	DECLSPEC gxAnimationSet* gxAnimation_getAnimationSet(gxAnimation* animation, int index);
+	DECLSPEC int gxAnimation_getAnimSetCount(gxAnimation* animation);
+	DECLSPEC void gxAnimation_appendAnimationSet(gxAnimation* animation, gxAnimationSet* animationSet);
 }
 
 #endif

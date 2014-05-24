@@ -10,7 +10,7 @@
 #include "object3d.h"
 #include "../renderer/gxRenderer.h"
 
-class DllExport Camera : public object3d
+class DECLSPEC Camera : public object3d
 {
 public:
 	Camera();

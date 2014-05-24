@@ -4,7 +4,7 @@
 #include "matrix4x4f.h"
 #include "vector3.h"
 
-class DllExport transform : public matrix4x4f
+class DECLSPEC transform : public matrix4x4f
 {
 public:
 	transform():matrix4x4f()
@@ -267,22 +267,22 @@ public:
 };
 
 extern "C" {
-	DllExport void transform_updatePositionf(transform* t, float aXdt, float aYdt, float aZdt);
-	DllExport void transform_updateLocalPositionf(transform* t, float aXdt, float aYdt, float aZdt);
-	DllExport void transform_scaleX(transform* t, float scale);
-	DllExport void transform_scaleY(transform* t, float scale);
-	DllExport void transform_scaleZ(transform* t, float scale);
-	DllExport void transform_rotateLocalXf(transform* t, float aAngleInDeg);
-	DllExport void transform_rotateLocalYf(transform* t, float aAngleInDeg);
-	DllExport void transform_rotateLocalZf(transform* t, float aAngleInDeg);
-	DllExport void transform_rotateWorldXf(transform* t, float aAngleInDeg);
-	DllExport void transform_rotateWorldYf(transform* t, float aAngleInDeg);
-	DllExport void transform_rotateWorldZf(transform* t, float aAngleInDeg);
-	DllExport void transform_setPosition(transform* t, float x, float y, float z);
-	DllExport float transform_getX(transform* t);
-	DllExport float transform_getY(transform* t);
-	DllExport float transform_getZ(transform* t);
-	DllExport void transform_copy(transform* a, transform* b);
+	DECLSPEC void transform_updatePositionf(transform* t, float aXdt, float aYdt, float aZdt);
+	DECLSPEC void transform_updateLocalPositionf(transform* t, float aXdt, float aYdt, float aZdt);
+	DECLSPEC void transform_scaleX(transform* t, float scale);
+	DECLSPEC void transform_scaleY(transform* t, float scale);
+	DECLSPEC void transform_scaleZ(transform* t, float scale);
+	DECLSPEC void transform_rotateLocalXf(transform* t, float aAngleInDeg);
+	DECLSPEC void transform_rotateLocalYf(transform* t, float aAngleInDeg);
+	DECLSPEC void transform_rotateLocalZf(transform* t, float aAngleInDeg);
+	DECLSPEC void transform_rotateWorldXf(transform* t, float aAngleInDeg);
+	DECLSPEC void transform_rotateWorldYf(transform* t, float aAngleInDeg);
+	DECLSPEC void transform_rotateWorldZf(transform* t, float aAngleInDeg);
+	DECLSPEC void transform_setPosition(transform* t, float x, float y, float z);
+	DECLSPEC float transform_getX(transform* t);
+	DECLSPEC float transform_getY(transform* t);
+	DECLSPEC float transform_getZ(transform* t);
+	DECLSPEC void transform_copy(transform* a, transform* b);
 }
 
 #endif

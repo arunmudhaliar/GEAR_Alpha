@@ -5,7 +5,7 @@
 #include "frustum.h"
 #include "../renderer/gxRenderer.h"
 
-class DllExport gxCamera : public object3d
+class DECLSPEC gxCamera : public object3d
 {
 public:
 	enum EPROJECTION_TYPE

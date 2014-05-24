@@ -33,6 +33,7 @@ public:
 	void onSliderChange(geGUIBase* slider);
 
 	void startFollowCam();
+	void stopSimulation();
 
 private:
 	void drawCameraFrustum(gxCamera* camera, gxHWShader* shader);
@@ -63,6 +64,8 @@ protected:
 	void drawLightsOnMultiPass();
 
 	void followObject(float dt, object3d* chasedObj);
+
+
 
 	object3d* m_pSelectedObj;
 	gxWorld* m_pMainWorldPtr;	//0th world. Must not delete this pointer

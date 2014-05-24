@@ -4,7 +4,7 @@
 #include "util\geDefines.h"
 #include "renderer\rendererGL10.h"
 #include "gui\geGUIManager.h"
-
+#include "../../GEAREngine/src/core/Timer.h"
 #include "../mono/src/monoWrapper.h"
 
 #include "scenes\gearSceneFileView.h"

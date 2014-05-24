@@ -5,7 +5,7 @@
 #include <vector>
 #include "../util/gxFile.h"
 
-class DllExport gxAnimationSet
+class DECLSPEC gxAnimationSet
 {
 public:
 	gxAnimationSet(const char* animationName);
@@ -36,7 +36,7 @@ private:
 };
 
 extern "C" {
-	DllExport const char* gxAnimationSet_getAnimationName(gxAnimationSet* animSet);
+	DECLSPEC const char* gxAnimationSet_getAnimationName(gxAnimationSet* animSet);
 }
 
 #endif

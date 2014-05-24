@@ -10,7 +10,9 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-class Timer
+#include "basicIncludes.h"
+
+class DECLSPEC Timer
 {
 public:
 	
@@ -27,6 +29,7 @@ public:
 	static double getCurrentTimeInSec();
 	static unsigned long getCurrentTimeInMilliSec();
 	
+private:
 	static float	m_fFPS;			//frames
 	static float	m_fDT;			//in sec
 	static int		m_iDT;			//in milli sec

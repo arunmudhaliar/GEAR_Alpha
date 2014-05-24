@@ -10,10 +10,10 @@
 #include "../core/gxSkinnedMesh.h"
 
 //extern "C" {
-//DllExport void myDLL_fbxImport(const char* filename);
+//DECLSPEC void myDLL_fbxImport(const char* filename);
 //}
 
-class DllExport fbxImporter
+class DECLSPEC fbxImporter
 {
 public:
 	fbxImporter();

@@ -5,7 +5,7 @@
 #include "../core/rect.h"
 #include "../core/TextureManager.h"
 
-class DllExport gxRenderer
+class DECLSPEC gxRenderer
 {
 public:
 	enum RENDER_PASS_TYPE

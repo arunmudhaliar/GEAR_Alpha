@@ -9,7 +9,7 @@
 
 #include "object3d.h"
 
-class DllExport physicsEngine
+class DECLSPEC physicsEngine
 {
 public:
 	physicsEngine();

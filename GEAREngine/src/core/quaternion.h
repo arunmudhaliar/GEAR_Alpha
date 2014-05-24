@@ -4,7 +4,7 @@
 #include "gxMath.h"
 #include "vector3.h"
 
-class Quaternion
+class DECLSPEC Quaternion
 {
 public:
 	Quaternion()

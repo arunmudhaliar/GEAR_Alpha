@@ -1,5 +1,6 @@
 #include "gearSceneConsole.h"
-#include "../core/Timer.h"
+//#include "../../../GEAREngine/src/core/Timer.h"
+#include "../EditorApp.h"
 #include "../gui/geGUIManager.h"
 
 gearSceneConsole::gearSceneConsole():

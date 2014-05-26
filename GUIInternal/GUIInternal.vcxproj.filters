@@ -285,6 +285,9 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyOctree.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geSeperator.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -436,6 +439,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyOctree.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geSeperator.cpp">
+      <Filter>GEAREditor\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

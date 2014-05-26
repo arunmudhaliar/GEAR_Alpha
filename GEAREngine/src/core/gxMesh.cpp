@@ -321,8 +321,22 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		}
 		//
 
+		//Fog
+		if(pass_struct->Fog)
+		{
+			shader->sendUniform1f("Fog.fog_end", material->getFog()->fog_end);
+			shader->sendUniform1f("Fog.fog_scale", material->getFog()->fog_scale);	//1.0/(Fog.fog_end-Fog.fog_start)
+			shader->sendUniform4fv("Fog.fog_color", &material->getFog()->fog_color.x);
+			//shader->sendUniform1f("Fog.fog_density", material->getFog()->fog_density);
+		}
+		//
+
 		if(light_ob && pass_struct->Light)
 			light_ob->renderPass(renderer, shader);
+		if(pass_struct->GEAR_MV)
+		{
+			shader->sendUniform_GEAR_MODELVIEW(u_modelview_m4x4);
+		}
 
 		if(pass_struct->GEAR_MVP)
 		{

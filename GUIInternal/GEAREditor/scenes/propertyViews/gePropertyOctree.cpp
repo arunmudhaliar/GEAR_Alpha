@@ -11,12 +11,12 @@ gePropertyOctree::gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, co
 	//package name
 	m_pNoOfTransformObjectPerNode = new geHorizontalSlider();
 	m_pNoOfTransformObjectPerNode->create(m_pRenderer, this, "slider", 10, 65, 130);
-	m_pNoOfTransformObjectPerNode->setSliderValue(0.0f);
+	m_pNoOfTransformObjectPerNode->setSliderValue(0.5f);
 	m_pNoOfTransformObjectPerNode->setGUIObserver(this);
 
 	m_pNoOfLevels = new geHorizontalSlider();
 	m_pNoOfLevels->create(m_pRenderer, this, "slider", 10, 65, 130);
-	m_pNoOfLevels->setSliderValue(0.7f);
+	m_pNoOfLevels->setSliderValue(0.2f);
 	m_pNoOfLevels->setGUIObserver(this);
 
 
@@ -27,9 +27,9 @@ gePropertyOctree::gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, co
 	//window column
 	geWindowColumn* pWindowColumn = new geWindowColumn();
 	pWindowColumn->create(m_pRenderer, this, 20, 300.0f, 10.0f, 0.44f);
-	m_pRows[0] = pWindowColumn->addRow("No of objects per node: 4");
+	m_pRows[0] = pWindowColumn->addRow("No of objects per node: 6");
 	pWindowColumn->addControl(m_pRows[0], m_pNoOfTransformObjectPerNode, 15.0f);
-	m_pRows[1] = pWindowColumn->addRow("Octree max depth: 4");
+	m_pRows[1] = pWindowColumn->addRow("Octree max depth: 1");
 	pWindowColumn->addControl(m_pRows[1], m_pNoOfLevels, 15.0f);
 	m_pRows[2] = pWindowColumn->addRow("");
 	pWindowColumn->addControl(m_pRows[2], m_pButtonApply);

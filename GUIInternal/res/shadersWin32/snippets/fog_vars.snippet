@@ -1,0 +1,10 @@
+struct _Fog
+{
+    float fog_density;
+	float fog_start;
+	float fog_end;
+	float fog_scale;
+	vec4 fog_color;
+};
+uniform _Fog Fog;
+varying vec4 vOUT_Fog_frag_coord;

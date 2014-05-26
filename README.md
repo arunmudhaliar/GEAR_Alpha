@@ -21,3 +21,6 @@ http://oroboro.com/stack-trace-on-crash/
 
 //STL EXPORT
 http://support.microsoft.com/kb/168958/en-us
+
+//GLSL
+http://www.shaderific.com/glsl-functions/

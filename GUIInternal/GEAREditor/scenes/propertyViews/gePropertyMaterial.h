@@ -11,6 +11,8 @@
 #include "geNullMaterialExtended.h"
 #include "../../gui/geToolBarDropMenu.h"
 #include "../../gui/geStaticTextBox.h"
+#include "../../gui/geWindowColumn.h"
+#include "../../gui/geSeperator.h"
 
 class gePropertyMaterial : public geTreeNode, public MGUIObserver
 {
@@ -27,6 +29,7 @@ public:
 			m_pText_tileX=NULL;
 			m_pText_tileY=NULL;
 			thumbnail=NULL;
+			m_pSeperator=NULL;
 			m_pSubMapPtr=submap;	//for checking purpose
 		}
 
@@ -35,9 +38,35 @@ public:
 		geTextBox* m_pText_tileX;
 		geTextBox* m_pText_tileY;
 		geTextureThumbnailExtended* thumbnail;
+		geSeperator* m_pSeperator;
 		gxSubMap* m_pSubMapPtr;	//for checking purpose
 	};
 	std::vector<stSubMapView*> m_vSubMap;
+
+	struct stFogView
+	{
+		stFogView()
+		{
+			reset();
+		}
+
+		void reset()
+		{
+			edit_fog_start=NULL;
+			edit_fog_end=NULL;
+			edit_fog_density=NULL;
+			color_fog_color=NULL;
+			menu_fog_type=NULL;
+			pWindowColumn=NULL;
+		}
+
+		geTextBox* edit_fog_start;
+		geTextBox* edit_fog_end;
+		geTextBox* edit_fog_density;
+		geColorControl* color_fog_color;
+		geToolBarDropMenu* menu_fog_type;
+		geWindowColumn* pWindowColumn;
+	};
 
 	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo):
 	  geTreeNode(renderer, parent, name, sprite, 10)
@@ -68,30 +97,15 @@ public:
 	}
 
 	virtual void drawNode();
-
-	virtual void onTextChange(geGUIBase* textbox)
-	{
-		//if(textbox==m_pText_tileX && m_pCurrentMaterialPtr->getTexture())
-		//{
-		//	float value=geUtil::getFloat(m_pText_tileX->getName());
-		//	const float* texMat4x4=m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->getMatrix();
-		//	m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->setXAxis(vector3f(value, texMat4x4[1], texMat4x4[2]));
-		//}
-		//else if(textbox==m_pText_tileY && m_pCurrentMaterialPtr->getTexture())
-		//{
-		//	float value=geUtil::getFloat(m_pText_tileY->getName());
-		//	const float* texMat4x4=m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->getMatrix();
-		//	m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->setYAxis(vector3f(texMat4x4[4], value, texMat4x4[6]));
-		//}
-	}
-
+	virtual void onTextChange(geGUIBase* textbox);
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
 	virtual void onColorChange(geGUIBase* colorControl);
 	virtual void onCommand(int cmd);
 
 	void destroySubMapView();
-	void loadSubMapView();
+	void loadSubMapView(bool& fog);
 
+	stFogView m_cFogSubView;
 	geColorControl* m_pColorControl;
 	geToolBarDropMenu* m_pSurfaceShaderToolBarDropMenuBtnPtr;
 };

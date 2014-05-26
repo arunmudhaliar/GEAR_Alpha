@@ -101,7 +101,7 @@ void geWindowColumn::addControl(stWindowColumnRow* row, geGUIBase* cntrl, float 
 		start_xpos+=(m_fMinimumSpaceBetweenControls + obj->getSize().x);
 	}
 
-	float control_y=cntrl->getPos().y;
+	//float control_y=cntrl->getPos().y;
 	cntrl->setPos(start_xpos, row->getYPoistion());
 	row->addControl(cntrl, override_height);
 }

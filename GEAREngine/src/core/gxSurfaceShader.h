@@ -95,6 +95,7 @@ struct stPass
 		Tangent=false;
 		Time_time=false;
 		Time_deltatime=false;
+		Fog=false;
 	}
 
 	~stPass()
@@ -117,6 +118,7 @@ struct stPass
 	bool Tangent;
 	bool Time_time;
 	bool Time_deltatime;
+	bool Fog;
 
 	std::string vertex_buffer;
 	std::string fragment_buffer;

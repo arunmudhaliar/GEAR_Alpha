@@ -20,6 +20,30 @@ struct stMaterialPass
 	std::vector<gxSubMap*> vUsedSubMap;
 };
 
+struct stFog
+{
+	stFog()
+	{
+		fog_density=0.0f;
+		fog_start=200.0f;
+		fog_end=1000.0f;
+		calculateScale();
+		fog_color.set(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	void setFogDensity(float density)	{	fog_density=density; }
+	void setFogStart(float start)		{	fog_start=start; }
+	void setFogEnd(float end)			{	fog_end=end; }
+	void calculateScale()				{	fog_scale=1.0/(fog_end-fog_start);	}
+	void setFogColor(vector4f clr)		{	fog_color=clr;	}
+
+    float fog_density;
+	float fog_start;
+	float fog_end;
+	float fog_scale;
+	vector4f fog_color;
+};
+
 class DECLSPEC gxMaterial //: public gxSurfaceShader
 {
 public:
@@ -66,6 +90,8 @@ public:
 	std::vector<gxSubMap*>* getSubMapList()	{	return &m_vSubMap;	}
 	std::vector<stMaterialPass*>* getShaderPassList()	{	return &m_vMaterialPass;	}
 
+	stFog* getFog()	{	return &m_cFog; }
+
 private:
 	vector4f m_cAmbient;
 	vector4f m_cDiffuse;
@@ -80,6 +106,7 @@ private:
 	gxSurfaceShader* m_pSurfaceShaderPtr;	//must not delete this pointer
 	std::vector<gxSubMap*> m_vSubMap;
 	std::vector<stMaterialPass*> m_vMaterialPass;
+	stFog m_cFog;
 };
 
 #endif

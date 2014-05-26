@@ -585,11 +585,16 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 				m_cSelectedNodes.clear();
 
 				selectedNode->selectNode();
+				if(m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=selectedNode)
+					m_pCurrentSelectedNodePtr->unselectNode();
+				m_pCurrentSelectedNodePtr=selectedNode;
 				m_cSelectedNodes.push_back(selectedNode);
 			}
 
 			if(!bAlreadySelected)
 			{
+				if(m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=selectedNode)
+					m_pCurrentSelectedNodePtr->unselectNode();
 				m_pCurrentSelectedNodePtr=selectedNode;
 				m_pTVObserver->onTVSelectionChange(selectedNode, this);
 			}
@@ -730,8 +735,9 @@ void geTreeView::clearAndDestroyAll()
 	m_cSelectedNodes.clear();
 }
 
-void geTreeView::refreshTreeView()
+void geTreeView::refreshTreeView(bool bDoNotResetScrollBarPosition)
 {
+	float old_ypos=m_cVerticalScrollBar.getScrollGrabberYPos();
 	m_cVerticalScrollBar.setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
 	m_cVerticalScrollBar.setSize(SCROLLBAR_SIZE, m_cSize.y);
 	m_cVerticalScrollBar.resetScrollBar();
@@ -740,8 +746,11 @@ void geTreeView::refreshTreeView()
 	{
 		m_iTotalHeightOfAllNodes=0;
 		m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
+		if(bDoNotResetScrollBarPosition)
+			m_cVerticalScrollBar.setScrollGrabberYPos(old_ypos);
 		m_cVerticalScrollBar.setConetentHeight(m_iTotalHeightOfAllNodes);
 	}
+
 }
 
 void geTreeView::quick_refreshTreeViewForOnlyVerticalScrollBar(float deltaheight)
@@ -776,6 +785,7 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 					pSelectedNodePtr->selectNode();
 					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
 					m_pTVObserver->onTVSelectionChange(topNode, this);
+					refreshTreeView(true);
 					return geGUIBase::onKeyDown(charValue, flag);
 				}
 			}
@@ -800,6 +810,7 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 					pSelectedNodePtr->selectNode();
 					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
 					m_pTVObserver->onTVSelectionChange(bottomNode, this);
+					refreshTreeView(true);
 					return geGUIBase::onKeyDown(charValue, flag);
 				}
 			}
@@ -821,6 +832,7 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 					pSelectedNodePtr->selectNode();
 					pSelectedNodePtr->closeNode();
 					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
+					refreshTreeView(true);
 					m_pTVObserver->onTVSelectionChange(parentNode, this);
 				}
 			}
@@ -850,6 +862,7 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 					pSelectedNodePtr->selectNode();
 					//pSelectedNodePtr->closeNode();
 					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
+					refreshTreeView(true);
 					m_pTVObserver->onTVSelectionChange(pSelectedNodePtr, this);
 				}
 			}

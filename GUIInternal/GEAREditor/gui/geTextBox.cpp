@@ -40,6 +40,8 @@ geTextBox::geTextBox(const char* name):
 
 geTextBox::~geTextBox()
 {
+	if(geTextBox::g_pCurrentSelectedTextBoxPtr==this)
+		geTextBox::g_pCurrentSelectedTextBoxPtr=NULL;
 }
 
 void geTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float cx, float cy)

@@ -33,6 +33,7 @@ public:
 	float getScrollGrabberHeight()	{	return m_fScrollGrabberHeight;	}
 	bool isScrollBarVisible()		{	return (m_fHeightRatio<1.0f);	}
 	bool isScrollBarGrabbed()		{	return m_bGrabbed;				}
+	void setScrollGrabberYPos(float yPos)	{	m_fScrollGrabberYPos = yPos;	m_pObserverPtr->onScrollBarChange(this);}
 
 protected:
 	virtual void onPosition(float x, float y, int flag);

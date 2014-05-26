@@ -667,6 +667,7 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 				pass.Tangent = (int)str.find("Tangent")>=0;
 				pass.Time_time = (int)str.find("Time.time")>=0;
 				pass.Time_deltatime = (int)str.find("Time.deltatime")>=0;
+				pass.Fog = (int)str.find("Fog.fog_density")>=0 || (int)str.find("Fog.fog_start")>=0 || (int)str.find("Fog.fog_end")>=0 || (int)str.find("Fog.fog_scale")>=0;
 
 				int pos=str.find("__includeModule");
 				if(pos>=0)
@@ -957,6 +958,8 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 
 			if(currentPass->Time_time || currentPass->Time_deltatime)
 				cMainShaderSource += hwShaderManager->getShaderSnippet(6)->snippet;
+			if(currentPass->Fog)
+				cMainShaderSource += hwShaderManager->getShaderSnippet(7)->snippet;
 			cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
 			cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
 			cMainShaderSource+=currentPass->vertex_buffer+"\n";
@@ -965,7 +968,6 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			cMainShaderSource+=currentPass->fragment_buffer+"\n";
 			cMainShaderSource+=hwShaderManager->getShaderSnippet(3)->snippet;
 			cMainShaderSource += "#endif\n";
-
 
 			//create the tmp glsl file
 			FILE* fp=fopen(constructed_glsl_filename, "w");

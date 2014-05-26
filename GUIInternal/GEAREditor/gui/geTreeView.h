@@ -100,7 +100,7 @@ public:
 	virtual void onScrollBarChange(geScrollBar* scrollbar);
 
 	void clearAndDestroyAll();
-	void refreshTreeView();
+	void refreshTreeView(bool bDoNotResetScrollBarPosition=false);
 	void quick_refreshTreeViewForOnlyVerticalScrollBar(float deltaheight);	//wont be accurate
 
 	geTreeNode* getSelectedNode();

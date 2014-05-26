@@ -121,6 +121,8 @@ void geScrollBar::setConetentHeight(int contentHeight)
 		};
 		memcpy(m_cVBGrabberClientArea.m_cszVertexList, clientarea_vertLst, sizeof(clientarea_vertLst));
 	}
+	else
+		m_fScrollGrabberYPos=0;	//need to check
 
 	m_pObserverPtr->onScrollBarChange(this);
 }

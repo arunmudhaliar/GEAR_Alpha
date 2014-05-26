@@ -8,6 +8,7 @@ gxHWShader::gxHWShader()
 	m_cFragShader=0;
 
 	//predefined vars
+	m_cUnifrom_GEAR_MODELVIEW=-1;
 	m_cUnifrom_GEAR_MVP=-1;
 	m_cUnifrom_GEAR_MODEL_MATRIX=-1;
 	m_cUnifrom_GEAR_MODEL_INVERSE=-1;
@@ -503,6 +504,19 @@ void gxHWShader::sendAttrib1f(const char* name, float x)
 }
 
 //predefined vars
+void gxHWShader::sendUniform_GEAR_MODELVIEW(const float* input)
+{
+	if(m_cUnifrom_GEAR_MODELVIEW!=-1)
+	{
+		glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input);
+	}
+	else
+	{
+		m_cUnifrom_GEAR_MODELVIEW = getUniformLoc("GEAR_MODELVIEW");
+		glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input);
+	}
+}
+
 void gxHWShader::sendUniform_GEAR_MVP(const float* input)
 {
 	if(m_cUnifrom_GEAR_MVP!=-1)
@@ -515,7 +529,6 @@ void gxHWShader::sendUniform_GEAR_MVP(const float* input)
 		glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input);
 	}
 }
-
 void gxHWShader::sendUniform_GEAR_MODEL_MATRIX(const float* input)
 {
 	if(m_cUnifrom_GEAR_MODEL_MATRIX!=-1)

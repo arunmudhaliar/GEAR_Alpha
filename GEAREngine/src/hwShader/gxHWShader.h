@@ -81,6 +81,7 @@ public:
 	const char* getShaderName()	{	return m_cShaderName.c_str(); }
 
 	//predefined vars
+	void sendUniform_GEAR_MODELVIEW(const float* input);
 	void sendUniform_GEAR_MVP(const float* input);
 	void sendUniform_GEAR_MODEL_MATRIX(const float* input);
 	void sendUniform_GEAR_MODEL_INVERSE(const float* input);
@@ -109,6 +110,7 @@ private:
 
 	//predefined vars
 	int m_cUnifrom_GEAR_MVP;
+	int m_cUnifrom_GEAR_MODELVIEW;
 	int m_cUnifrom_GEAR_MODEL_MATRIX;
 	int m_cUnifrom_GEAR_MODEL_INVERSE;
 	int m_cUnifrom_material_diffuse;

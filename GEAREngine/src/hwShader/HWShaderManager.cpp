@@ -90,6 +90,9 @@ void HWShaderManager::LoadDefaultShaders()
 	snippet=LoadCodeSnippet("res/shadersWin32/snippets/time_uniform_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
+	snippet=LoadCodeSnippet("res/shadersWin32/snippets/fog_vars.snippet");
+	if(snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
 
 	//HW shaders
 	gxHWShader* pShader=new gxHWShader();

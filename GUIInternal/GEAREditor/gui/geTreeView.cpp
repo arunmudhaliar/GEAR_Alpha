@@ -59,6 +59,8 @@ geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* na
 
 geTreeNode::~geTreeNode()
 {
+	if(m_pSelectedControlPtr==this)
+		m_pSelectedControlPtr=NULL;
 	GE_DELETE(m_pSprite);
 	destroyAllTVChilds();
 }
@@ -935,5 +937,6 @@ geTreeNode* geTreeView::getSelectedNode()
 
 void geTreeView::resetSelectedNodePtr()
 {
+	m_pCurrentSelectedNodePtr=NULL;
 	m_cSelectedNodes.clear();
 }

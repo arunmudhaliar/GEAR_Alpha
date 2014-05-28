@@ -23,9 +23,9 @@ public:
 	{
 	}
 	
-	void reset()
-	{
-	}
+	//void reset()
+	//{
+	//}
 	
 	void setTexturePack(steTexturePacket* pTexTurePtr)		{	m_pTexTurePtr=pTexTurePtr;			}
 	steTexturePacket* getTexturePack()	const					{	return m_pTexTurePtr;				}

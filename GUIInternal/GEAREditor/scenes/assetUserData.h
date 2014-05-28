@@ -5,6 +5,7 @@ class assetUserData
 {
 	assetUserData()
 	{
+		assetObjectPtr=NULL;
 	}
 public:
 
@@ -18,8 +19,14 @@ public:
 	assetUserData(ASSETUSERDATA_TYPE typeID, const char* path, void* ptr)
 	{
 		type=typeID;
-		STRCPY(assetAbsolutePath, path);
+		if(path)
+			STRCPY(assetAbsolutePath, path);
 		assetObjectPtr=ptr;
+	}
+	
+	~assetUserData()
+	{
+		assetObjectPtr=NULL;
 	}
 
 	const char* getAssetAbsolutePath()	{	return assetAbsolutePath;	}

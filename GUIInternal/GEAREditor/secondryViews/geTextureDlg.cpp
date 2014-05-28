@@ -238,12 +238,6 @@ int geTextureDlg::find_textures(rendererGL10* renderer, const char *dirname, geG
 						geTextureThumbnail* thumbnail = new geTextureThumbnail();
 						thumbnail->create(renderer, dlg, texture, 260, 10, 70, 70);
 						m_vTextureThumbs.push_back(thumbnail);
-						/*
-						geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, sprite);
-						assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, buffer, NULL);
-						newtvNode->setUserData(userdata);
-						newtvNode->closeNode();
-						*/
 					}
 				}
                 break;

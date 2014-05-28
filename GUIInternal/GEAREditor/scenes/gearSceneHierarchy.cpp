@@ -217,7 +217,6 @@ void gearSceneHierarchy::createTVNode(geTreeNode* parentNode, object3d* obj, con
 	}
 
 	geTreeNode* newtvNode = new geTreeNode(m_pRenderer, parentNode, name, sprite);
-	//assetUserData* userData = new assetUserData(2, "", obj);
 	newtvNode->setUserData(obj);
 	newtvNode->closeNode();
 	obj->setEditorUserData(newtvNode);
@@ -233,9 +232,6 @@ void gearSceneHierarchy::createTVNode(geTreeNode* parentNode, object3d* obj, con
 void gearSceneHierarchy::destroyTVUserData(geGUIBase* parent)
 {
 	std::vector<geGUIBase*>* list=parent->getChildControls();
-
-	//assetUserData* userdata=(assetUserData*)((geTreeNode*)parent)->getUserData();
-	//GE_DELETE(userdata);
 	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 	{
 		geGUIBase* tvnode = *it;

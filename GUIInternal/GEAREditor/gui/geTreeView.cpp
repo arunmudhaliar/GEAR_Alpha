@@ -60,6 +60,11 @@ geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* na
 geTreeNode::~geTreeNode()
 {
 	GE_DELETE(m_pSprite);
+	destroyAllTVChilds();
+}
+
+void geTreeNode::destroyAllTVChilds()
+{
 	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
@@ -72,21 +77,11 @@ void geTreeNode::setNodeSprite(Sprite2Dx* sprite)
 {
 	if(sprite)
 	{
-		if(!m_pSprite)
-			m_pSprite = new Sprite2Dx();
+		GE_DELETE(m_pSprite);
+		m_pSprite = new Sprite2Dx();
 		m_pSprite->copy(*sprite);
 		m_pSprite->setPos(5+11, 3);
 	}
-}
-
-void geTreeNode::destroyAllTVChilds()
-{
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
-	{
-		geGUIBase* tvnode = *it;
-		GE_DELETE(tvnode);
-	}
-	m_vControls.clear();
 }
 
 void geTreeNode::drawNode()
@@ -573,27 +568,50 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 			{
 				selectedNode->selectNode();
 				if(!bAlreadySelected)
+				{
+					if(m_cSelectedNodes.size()==0)
+					{
+						if(m_pCurrentSelectedNodePtr)
+							m_pCurrentSelectedNodePtr->unselectNode();
+					}
 					m_cSelectedNodes.push_back(selectedNode);
+				}
+				else
+				{
+					m_cSelectedNodes.erase(std::remove(m_cSelectedNodes.begin(), m_cSelectedNodes.end(), selectedNode), m_cSelectedNodes.end());
+					selectedNode->unselectNode();
+					if(m_pCurrentSelectedNodePtr==selectedNode)
+						m_pCurrentSelectedNodePtr=NULL;
+				}
 			}
 			else
 			{
-				for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+				if(!bAlreadySelected)
 				{
-					geTreeNode* node = *it;
-					node->unselectNode();
-				}
-				m_cSelectedNodes.clear();
+					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					{
+						geTreeNode* node = *it;
+						node->unselectNode();
+					}
+					m_cSelectedNodes.clear();
 
-				selectedNode->selectNode();
-				if(m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=selectedNode)
-					m_pCurrentSelectedNodePtr->unselectNode();
-				m_pCurrentSelectedNodePtr=selectedNode;
-				m_cSelectedNodes.push_back(selectedNode);
+					selectedNode->selectNode();
+					if(m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=selectedNode)
+						m_pCurrentSelectedNodePtr->unselectNode();
+					m_pCurrentSelectedNodePtr=selectedNode;
+					m_cSelectedNodes.push_back(selectedNode);
+				}
+				else
+				{
+					m_pCurrentSelectedNodePtr=selectedNode;
+					selectedNode->selectNode();
+					m_pTVObserver->onTVSelectionChange(selectedNode, this);
+				}
 			}
 
 			if(!bAlreadySelected)
 			{
-				if(m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=selectedNode)
+				if(!(nFlag&MK_CONTROL) && m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=selectedNode)
 					m_pCurrentSelectedNodePtr->unselectNode();
 				m_pCurrentSelectedNodePtr=selectedNode;
 				m_pTVObserver->onTVSelectionChange(selectedNode, this);
@@ -726,13 +744,14 @@ void geTreeView::onFocusLost()
 
 void geTreeView::clearAndDestroyAll()
 {
+	m_pCurrentSelectedNodePtr=NULL;
+	m_cSelectedNodes.clear();
 	GE_DELETE(m_pRootNode);
 	m_fVirtualYPos=0.0f;
 	m_cVerticalScrollBar.setConetentHeight(0);
 
 	m_pRootNode = new geTreeNode(m_pRenderer, NULL, "root", NULL);
 	m_pRootNode->setParentTreeView(this);
-	m_cSelectedNodes.clear();
 }
 
 void geTreeView::refreshTreeView(bool bDoNotResetScrollBarPosition)
@@ -780,6 +799,13 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 			{
 				if(topNode!=pSelectedNodePtr)
 				{
+					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					{
+						geTreeNode* node = *it;
+						node->unselectNode();
+					}
+					m_cSelectedNodes.clear();
+
 					pSelectedNodePtr->unselectNode();
 					pSelectedNodePtr=topNode;
 					pSelectedNodePtr->selectNode();
@@ -805,6 +831,13 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 			{
 				if(bottomNode!=pSelectedNodePtr)
 				{
+					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					{
+						geTreeNode* node = *it;
+						node->unselectNode();
+					}
+					m_cSelectedNodes.clear();
+
 					pSelectedNodePtr->unselectNode();
 					pSelectedNodePtr=bottomNode;
 					pSelectedNodePtr->selectNode();
@@ -827,6 +860,13 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 				geTreeNode* parentNode = (geTreeNode*)pSelectedNodePtr->getParent();
 				if(parentNode && parentNode!=getRoot())
 				{
+					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					{
+						geTreeNode* node = *it;
+						node->unselectNode();
+					}
+					m_cSelectedNodes.clear();
+
 					pSelectedNodePtr->unselectNode();
 					pSelectedNodePtr=parentNode;
 					pSelectedNodePtr->selectNode();
@@ -859,6 +899,14 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 						}
 					}
 					//
+					
+					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					{
+						geTreeNode* node = *it;
+						node->unselectNode();
+					}
+					m_cSelectedNodes.clear();
+
 					pSelectedNodePtr->selectNode();
 					//pSelectedNodePtr->closeNode();
 					m_pCurrentSelectedNodePtr=pSelectedNodePtr;

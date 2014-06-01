@@ -24,3 +24,6 @@ http://support.microsoft.com/kb/168958/en-us
 
 //GLSL
 http://www.shaderific.com/glsl-functions/
+
+//Texture Atlas Generator
+https://github.com/lukaszdk/texture-atlas-generator/blob/master/AtlasGenerator.java

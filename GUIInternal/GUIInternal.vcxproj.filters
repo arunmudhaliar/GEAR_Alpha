@@ -443,6 +443,9 @@
     <ClCompile Include="GEAREditor\gui\geSeperator.cpp">
       <Filter>GEAREditor\gui</Filter>
     </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyObject3d.cpp">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GUIInternal.rc">

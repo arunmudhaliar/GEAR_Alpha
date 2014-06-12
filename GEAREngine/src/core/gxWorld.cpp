@@ -15,6 +15,8 @@
 gxWorld::gxWorld():
 	object3d(OBJECT3D_WORLD)
 {
+	m_iLayer = ELAYER_DEFAULT;	//CAUTION: Do not use setLayer() for gxWorld()
+
 	m_pObserverPtr = NULL;
 	m_pActiveCameraPtr = NULL;
 
@@ -78,6 +80,8 @@ void gxWorld::resetWorld()
 	m_vAnimationSetList.clear();
 
 	m_vLightList.clear();
+
+	m_cLayerManager.clearLayers();
 
 	//destroy all child
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
@@ -208,6 +212,11 @@ void gxWorld::render(gxRenderer* renderer, object3d* lightPtr)
 	if(m_pObserverPtr)m_pObserverPtr->postWorldRender();
 }
 
+void gxWorld::renderShadow(gxRenderer* renderer)
+{
+	object3d::render(renderer, NULL);
+}
+
 void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr)
 {
 	if(m_pActiveCameraPtr)
@@ -283,6 +292,28 @@ void gxWorld::createOctree(int minTransformObj, int maxLevel)
 	m_pOctree->createOctree(this, minTransformObj, maxLevel);
 }
 
+bool gxWorld::appendAnimationSetToWorld(gxAnimationSet* animset)
+{
+	if(std::find(m_vAnimationSetList.begin(), m_vAnimationSetList.end(), animset)==m_vAnimationSetList.end())
+	{
+		m_vAnimationSetList.push_back(animset);
+		return true;
+	}
+
+	return false;
+}
+
+void gxWorld::setMetaDataFolder(const char* metaFolder)
+{
+	GX_STRCPY(m_szMetaDataFolder, metaFolder);
+	m_cTextureManager.setMetaDataFolder(m_szMetaDataFolder);
+}
+
+const char* gxWorld::getMetaDataFolder()
+{
+	return m_szMetaDataFolder;
+}
+
 Camera* gxWorld::setDefaultCameraActive()
 {
 	m_pActiveCameraPtr=&m_cDefaultCamera;
@@ -314,6 +345,15 @@ void gxWorld::callback_object3dDestroyedFromTree(object3d* child)
 		std::vector<gxLight*>* lightList=getLightList();
 		lightList->erase(std::remove(lightList->begin(), lightList->end(), child), lightList->end());
 	}
+
+	m_cLayerManager.removeFromLayer(child, child->getLayer());
+}
+
+void gxWorld::callback_object3dLayerChanged(object3d* child, int oldLayerID)
+{
+	if(oldLayerID>=0)
+		m_cLayerManager.removeFromLayer(child, oldLayerID);
+	m_cLayerManager.appendOnLayer(child, child->getLayer());
 }
 
 void gxWorld::loadMaterialFromObject3d(object3d* obj3d)

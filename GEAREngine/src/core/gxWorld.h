@@ -12,6 +12,8 @@
 #include "physicsEngine.h"
 #endif
 #include "COctree.h"
+#include "LayerManager.h"
+
 
 class MWorldObserver
 {
@@ -35,6 +37,7 @@ public:
 
 	void update(float dt);
 	void render(gxRenderer* renderer, object3d* lightPtr);
+	void renderShadow(gxRenderer* renderer);
 
 	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
 	Camera* setDefaultCameraActive();
@@ -49,27 +52,10 @@ public:
 	void createOctree(int minTransformObj, int maxLevel);
 	COctree* getOctree()	{	return m_pOctree;	}
 
-	bool appendAnimationSetToWorld(gxAnimationSet* animset)
-	{
-		if(std::find(m_vAnimationSetList.begin(), m_vAnimationSetList.end(), animset)==m_vAnimationSetList.end())
-		{
-			m_vAnimationSetList.push_back(animset);
-			return true;
-		}
+	bool appendAnimationSetToWorld(gxAnimationSet* animset);
 
-		return false;
-	}
-
-	void setMetaDataFolder(const char* metaFolder)
-	{
-		GX_STRCPY(m_szMetaDataFolder, metaFolder);
-		m_cTextureManager.setMetaDataFolder(m_szMetaDataFolder);
-	}
-
-	const char* getMetaDataFolder()
-	{
-		return m_szMetaDataFolder;
-	}
+	void setMetaDataFolder(const char* metaFolder);
+	const char* getMetaDataFolder();
 
 	CTextureManager* getTextureManager()	{	return &m_cTextureManager;	}
 #if 0
@@ -90,6 +76,7 @@ public:
 	void callback_object3dRemovedFromTree(object3d* child);
 	void callback_object3dAppendToTree(object3d* child);
 	void callback_object3dDestroyedFromTree(object3d* child);
+	void callback_object3dLayerChanged(object3d* child, int oldLayerID);
 
 	object3d* loadAndAppendFBX(const char* filename);
 	object3d* loadAndAppendFBXForDevice(const char* filename);
@@ -97,6 +84,8 @@ public:
 	void loadAnmationFromObject3d(object3d* obj3d, int crc);
 	void loadMaterialFromObject3d(object3d* obj3d);
 	void read3dFile2(gxFile& file, object3d* obj);
+
+	LayerManager* getLayerManager()	{	return &m_cLayerManager;	}
 
 private:
 	std::vector<gxMaterial*> m_cMaterialList;
@@ -116,6 +105,7 @@ private:
 	physicsEngine m_cPhysicsEngine;
 #endif
 	COctree* m_pOctree;
+	LayerManager m_cLayerManager;
 };
 
 #endif

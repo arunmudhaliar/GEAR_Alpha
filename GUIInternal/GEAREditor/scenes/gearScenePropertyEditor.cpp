@@ -251,7 +251,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		m_pLightPropertyNode->populatePropertyOfLight(obj);
 		rootNode->appnendTVChild(m_pLightParentNode);
 	}
-	else if(obj->getID()==OBJECT3D_CAMERA)
+	else if(obj->getID()==OBJECT3D_CAMERA_STRUCT)
 	{
 		m_pCameraPropertyNode->populatePropertyOfCamera(obj);
 		rootNode->appnendTVChild(m_pCameraParentNode);

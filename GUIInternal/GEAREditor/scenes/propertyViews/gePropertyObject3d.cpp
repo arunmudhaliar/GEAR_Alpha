@@ -1,4 +1,5 @@
 #include "gePropertyObject3d.h"
+#include "../../EditorApp.h"
 
 gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
 	geTreeNode(renderer, parent, name, sprite, 10)
@@ -25,8 +26,14 @@ gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent
 	m_pLayerDropDownMenu=new geToolBarDropMenu(m_pRenderer, "Layer", this);
 	m_pLayerDropDownMenu->setGUIObserver(this);
 	m_pLayerDropDownMenu->setPos(150, 35);
-	m_pLayerDropDownMenu->appendMenuItem("Layer0", 0x00006500);
-	m_pLayerDropDownMenu->appendMenuItem("Layer1", 0x00006501);
+
+	LayerManager* layerManager = monoWrapper::mono_engine_getWorld(0)->getLayerManager();
+
+	for(int x=0;x<MAX_LAYER;x++)
+	{
+		Layer* layer = layerManager->getLayer(x);
+		m_pLayerDropDownMenu->appendMenuItem(layer->getLayerName(), 0x00006500+x);
+	}
 	m_pLayerDropDownMenu->setMenuItem(0x00006500);
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
@@ -75,8 +82,12 @@ void gePropertyObject3d::populatePropertyOfObject(object3d* obj)
 {
 	m_pObject3dPtr=obj;
 	m_pTextBoxMeshName->setName(obj->getName());
-
 	m_pPushBtn_Object3dVisible->setCheck(obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible));
+
+	if(m_pObject3dPtr->getLayer()>=0)
+	{
+		m_pLayerDropDownMenu->setMenuItem(0x00006500+m_pObject3dPtr->getLayer());
+	}
 }
 
 void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
@@ -87,5 +98,14 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 			m_pObject3dPtr->setBaseFlag(object3d::eObject3dBaseFlag_Visible);
 		else
 			m_pObject3dPtr->reSetBaseFlag(object3d::eObject3dBaseFlag_Visible);
+	}
+}
+
+void gePropertyObject3d::onCommand(int cmd)
+{
+	if(cmd>=0x00006500 && cmd<0x00006500+MAX_LAYER)
+	{
+		m_pObject3dPtr->setLayer(cmd-0x00006500, true);
+		m_pLayerDropDownMenu->setMenuItem(cmd);
 	}
 }

@@ -147,126 +147,126 @@ object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManag
 	return NULL;
 }
 
-static FbxMatrix FBXToXen(FbxMatrix &fbx)
-{
-	const double *matrix = (const double*)fbx;
-	FbxMatrix t;
-	t.SetRow(0, FbxVector4((float)matrix[0], (float)matrix[1], (float)matrix[2], (float)matrix[3]));
-	t.SetRow(1, FbxVector4((float)matrix[4], (float)matrix[5], (float)matrix[6], (float)matrix[7]));
-	t.SetRow(2, FbxVector4((float)matrix[8], (float)matrix[9], (float)matrix[10], (float)matrix[11]));
-	t.SetRow(3, FbxVector4((float)matrix[12], (float)matrix[13], (float)matrix[14], (float)matrix[15]));
+//static FbxMatrix FBXToXen(FbxMatrix &fbx)
+//{
+//	const double *matrix = (const double*)fbx;
+//	FbxMatrix t;
+//	t.SetRow(0, FbxVector4((float)matrix[0], (float)matrix[1], (float)matrix[2], (float)matrix[3]));
+//	t.SetRow(1, FbxVector4((float)matrix[4], (float)matrix[5], (float)matrix[6], (float)matrix[7]));
+//	t.SetRow(2, FbxVector4((float)matrix[8], (float)matrix[9], (float)matrix[10], (float)matrix[11]));
+//	t.SetRow(3, FbxVector4((float)matrix[12], (float)matrix[13], (float)matrix[14], (float)matrix[15]));
+//
+//	//t.y.x = (float)matrix[4];  t.y.y = (float)matrix[5];  t.y.z = (float)matrix[6];
+//	//t.z.x = (float)matrix[8];  t.z.y = (float)matrix[9];  t.z.z = (float)matrix[10];
+//	//t.w.x = (float)matrix[12]; t.w.y = (float)matrix[13]; t.w.z = (float)matrix[14];
+//	return t;
+//}
 
-	//t.y.x = (float)matrix[4];  t.y.y = (float)matrix[5];  t.y.z = (float)matrix[6];
-	//t.z.x = (float)matrix[8];  t.z.y = (float)matrix[9];  t.z.z = (float)matrix[10];
-	//t.w.x = (float)matrix[12]; t.w.y = (float)matrix[13]; t.w.z = (float)matrix[14];
-	return t;
-}
-
-FbxAMatrix CalculateGlobalTransform(FbxNode* pNode) 
-{
-    FbxAMatrix lTranlationM, lScalingM, lScalingPivotM, lScalingOffsetM, lRotationOffsetM, lRotationPivotM, \
-                lPreRotationM, lRotationM, lPostRotationM, lTransform;
-
-    FbxAMatrix lParentGX, lGlobalT, lGlobalRS;
-
-	if(!pNode)
-	{
-		lTransform.SetIdentity();
-		return lTransform;
-	}
-
-    // Construct translation matrix
-    FbxVector4 lTranslation = pNode->LclTranslation.Get();
-    lTranlationM.SetT(lTranslation);
-
-    // Construct rotation matrices
-    FbxVector4 lRotation = pNode->LclRotation.Get();
-    FbxVector4 lPreRotation = pNode->PreRotation.Get();
-    FbxVector4 lPostRotation = pNode->PostRotation.Get();
-    lRotationM.SetR(lRotation);
-    lPreRotationM.SetR(lPreRotation);
-    lPostRotationM.SetR(lPostRotation);
-
-    // Construct scaling matrix
-    FbxVector4 lScaling = pNode->LclScaling.Get();
-    lScalingM.SetS(lScaling);
-
-    // Construct offset and pivot matrices
-    FbxVector4 lScalingOffset = pNode->ScalingOffset.Get();
-    FbxVector4 lScalingPivot = pNode->ScalingPivot.Get();
-    FbxVector4 lRotationOffset = pNode->RotationOffset.Get();
-    FbxVector4 lRotationPivot = pNode->RotationPivot.Get();
-    lScalingOffsetM.SetT(lScalingOffset);
-    lScalingPivotM.SetT(lScalingPivot);
-    lRotationOffsetM.SetT(lRotationOffset);
-    lRotationPivotM.SetT(lRotationPivot);
-
-    // Calculate the global transform matrix of the parent node
-    FbxNode* lParentNode = pNode->GetParent();
-    if(lParentNode)
-	{
-        lParentGX = CalculateGlobalTransform(lParentNode);
-	}
-	else
-	{
-		lParentGX.SetIdentity();
-	}
-
-    //Construct Global Rotation
-    FbxAMatrix lLRM, lParentGRM;
-    FbxVector4 lParentGR = lParentGX.GetR();
-    lParentGRM.SetR(lParentGR);
-    lLRM = lPreRotationM * lRotationM * lPostRotationM;
-
-    //Construct Global Shear*Scaling
-    //FBX SDK does not support shear, to patch this, we use:
-    //Shear*Scaling = RotationMatrix.Inverse * TranslationMatrix.Inverse * WholeTranformMatrix
-    FbxAMatrix lLSM, lParentGSM, lParentGRSM, lParentTM;
-    FbxVector4 lParentGT = lParentGX.GetT();
-    lParentTM.SetT(lParentGT);
-    lParentGRSM = lParentTM.Inverse() * lParentGX;
-    lParentGSM = lParentGRM.Inverse() * lParentGRSM;
-    lLSM = lScalingM;
-
-    //Do not consider translation now
-    FbxTransform::EInheritType lInheritType = pNode->InheritType.Get();
-    if(lInheritType == FbxTransform::eInheritRrSs)
-    {
-        lGlobalRS = lParentGRM * lLRM * lParentGSM * lLSM;
-    }
-    else if(lInheritType == FbxTransform::eInheritRSrs)
-    {
-        lGlobalRS = lParentGRM * lParentGSM * lLRM * lLSM;
-    }
-    else if(lInheritType == FbxTransform::eInheritRrs)
-    {
-		FbxAMatrix lParentLSM;
-		FbxVector4 lParentLS = pNode->LclScaling.Get();
-		lParentLSM.SetS(lParentLS);
-
-		FbxAMatrix lParentGSM_noLocal = lParentGSM * lParentLSM.Inverse();
-        lGlobalRS = lParentGRM * lLRM * lParentGSM_noLocal * lLSM;
-    }
-    else
-    {
-        FBXSDK_printf("error, unknown inherit type! \n");
-    }
-
-    // Construct translation matrix
-    // Calculate the local transform matrix
-    lTransform = lTranlationM * lRotationOffsetM * lRotationPivotM * lPreRotationM * lRotationM * lPostRotationM * lRotationPivotM.Inverse()\
-        * lScalingOffsetM * lScalingPivotM * lScalingM * lScalingPivotM.Inverse();
-    FbxVector4 lLocalTWithAllPivotAndOffsetInfo = lTransform.GetT();
-    // Calculate global translation vector according to: 
-    // GlobalTranslation = ParentGlobalTransform * LocalTranslationWithPivotAndOffsetInfo
-    FbxVector4 lGlobalTranslation = lParentGX.MultT(lLocalTWithAllPivotAndOffsetInfo);
-    lGlobalT.SetT(lGlobalTranslation);
-
-    //Construct the whole global transform
-    lTransform = lGlobalT * lGlobalRS;
-
-    return lTransform;
-}
+//FbxAMatrix CalculateGlobalTransform(FbxNode* pNode) 
+//{
+//    FbxAMatrix lTranlationM, lScalingM, lScalingPivotM, lScalingOffsetM, lRotationOffsetM, lRotationPivotM, \
+//                lPreRotationM, lRotationM, lPostRotationM, lTransform;
+//
+//    FbxAMatrix lParentGX, lGlobalT, lGlobalRS;
+//
+//	if(!pNode)
+//	{
+//		lTransform.SetIdentity();
+//		return lTransform;
+//	}
+//
+//    // Construct translation matrix
+//    FbxVector4 lTranslation = pNode->LclTranslation.Get();
+//    lTranlationM.SetT(lTranslation);
+//
+//    // Construct rotation matrices
+//    FbxVector4 lRotation = pNode->LclRotation.Get();
+//    FbxVector4 lPreRotation = pNode->PreRotation.Get();
+//    FbxVector4 lPostRotation = pNode->PostRotation.Get();
+//    lRotationM.SetR(lRotation);
+//    lPreRotationM.SetR(lPreRotation);
+//    lPostRotationM.SetR(lPostRotation);
+//
+//    // Construct scaling matrix
+//    FbxVector4 lScaling = pNode->LclScaling.Get();
+//    lScalingM.SetS(lScaling);
+//
+//    // Construct offset and pivot matrices
+//    FbxVector4 lScalingOffset = pNode->ScalingOffset.Get();
+//    FbxVector4 lScalingPivot = pNode->ScalingPivot.Get();
+//    FbxVector4 lRotationOffset = pNode->RotationOffset.Get();
+//    FbxVector4 lRotationPivot = pNode->RotationPivot.Get();
+//    lScalingOffsetM.SetT(lScalingOffset);
+//    lScalingPivotM.SetT(lScalingPivot);
+//    lRotationOffsetM.SetT(lRotationOffset);
+//    lRotationPivotM.SetT(lRotationPivot);
+//
+//    // Calculate the global transform matrix of the parent node
+//    FbxNode* lParentNode = pNode->GetParent();
+//    if(lParentNode)
+//	{
+//        lParentGX = CalculateGlobalTransform(lParentNode);
+//	}
+//	else
+//	{
+//		lParentGX.SetIdentity();
+//	}
+//
+//    //Construct Global Rotation
+//    FbxAMatrix lLRM, lParentGRM;
+//    FbxVector4 lParentGR = lParentGX.GetR();
+//    lParentGRM.SetR(lParentGR);
+//    lLRM = lPreRotationM * lRotationM * lPostRotationM;
+//
+//    //Construct Global Shear*Scaling
+//    //FBX SDK does not support shear, to patch this, we use:
+//    //Shear*Scaling = RotationMatrix.Inverse * TranslationMatrix.Inverse * WholeTranformMatrix
+//    FbxAMatrix lLSM, lParentGSM, lParentGRSM, lParentTM;
+//    FbxVector4 lParentGT = lParentGX.GetT();
+//    lParentTM.SetT(lParentGT);
+//    lParentGRSM = lParentTM.Inverse() * lParentGX;
+//    lParentGSM = lParentGRM.Inverse() * lParentGRSM;
+//    lLSM = lScalingM;
+//
+//    //Do not consider translation now
+//    FbxTransform::EInheritType lInheritType = pNode->InheritType.Get();
+//    if(lInheritType == FbxTransform::eInheritRrSs)
+//    {
+//        lGlobalRS = lParentGRM * lLRM * lParentGSM * lLSM;
+//    }
+//    else if(lInheritType == FbxTransform::eInheritRSrs)
+//    {
+//        lGlobalRS = lParentGRM * lParentGSM * lLRM * lLSM;
+//    }
+//    else if(lInheritType == FbxTransform::eInheritRrs)
+//    {
+//		FbxAMatrix lParentLSM;
+//		FbxVector4 lParentLS = pNode->LclScaling.Get();
+//		lParentLSM.SetS(lParentLS);
+//
+//		FbxAMatrix lParentGSM_noLocal = lParentGSM * lParentLSM.Inverse();
+//        lGlobalRS = lParentGRM * lLRM * lParentGSM_noLocal * lLSM;
+//    }
+//    else
+//    {
+//        FBXSDK_printf("error, unknown inherit type! \n");
+//    }
+//
+//    // Construct translation matrix
+//    // Calculate the local transform matrix
+//    lTransform = lTranlationM * lRotationOffsetM * lRotationPivotM * lPreRotationM * lRotationM * lPostRotationM * lRotationPivotM.Inverse()\
+//        * lScalingOffsetM * lScalingPivotM * lScalingM * lScalingPivotM.Inverse();
+//    FbxVector4 lLocalTWithAllPivotAndOffsetInfo = lTransform.GetT();
+//    // Calculate global translation vector according to: 
+//    // GlobalTranslation = ParentGlobalTransform * LocalTranslationWithPivotAndOffsetInfo
+//    FbxVector4 lGlobalTranslation = lParentGX.MultT(lLocalTWithAllPivotAndOffsetInfo);
+//    lGlobalT.SetT(lGlobalTranslation);
+//
+//    //Construct the whole global transform
+//    lTransform = lGlobalT * lGlobalRS;
+//
+//    return lTransform;
+//}
 
 FbxNode* fbxImporter::findRoot(FbxNode *fbxNode)
 {
@@ -324,11 +324,10 @@ void fbxImporter::pushAllNodes(stBoneList* boneList, FbxNode *fbxNode, int& inde
 void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList, stBoneList* boneList)
 {
 	FbxMatrix transform;
-	FbxMatrix fbxLocalPosition = fbxNode.EvaluateLocalTransform();
+	//FbxMatrix fbxLocalPosition = fbxNode.EvaluateLocalTransform();
 	FbxMatrix fbxGeometryOffset = getFBXGeometryTransform(fbxNode);
 	//FbxMatrix fbxLocalOffPosition = fbxLocalPosition * fbxGeometryOffset;
-
-	FbxMatrix local_tm = fbxLocalPosition;
+	FbxMatrix local_tm = fbxNode.EvaluateLocalTransform();
 
 	object3d* temp_parent_obj=parent_obj_node;
 	FbxMesh *fbxMesh = fbxNode.GetMesh();
@@ -355,8 +354,8 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 				int vc=fbxMesh->GetControlPointsCount();
 				stBoneInfluence* boneInfluenceList = new stBoneInfluence[vc];
 
-				FbxCluster* clusterR	= skinDeformer->GetCluster(0);
-				FbxNode*	rootBone	= findRoot(clusterR->GetLink());
+				//FbxCluster* clusterR	= skinDeformer->GetCluster(0);
+				//FbxNode*	rootBone	= findRoot(clusterR->GetLink());
 
 				int deformerCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin); // Count of skeletons used for skinning
 				for ( int defInd = 0; defInd < deformerCount; defInd++ )
@@ -387,7 +386,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 							{
 								continue;
 							}
-
+							//http://stackoverflow.com/questions/13566608/loading-skinning-information-from-fbx
 							boneInfluenceList[index].bone.push_back(currentFbxLimb);
 							boneInfluenceList[index].weight.push_back((float)weight);
 						}

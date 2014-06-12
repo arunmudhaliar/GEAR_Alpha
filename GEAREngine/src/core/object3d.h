@@ -30,6 +30,7 @@ public:
 	virtual void callback_object3dRemovedFromTree(object3d* child){};
 	virtual void callback_object3dAppendToTree(object3d* child){};
 	virtual void callback_object3dDestroyedFromTree(object3d* child){};
+	virtual void callback_object3dLayerChanged(object3d* child, int oldLayerID){};
 };
 
 class DECLSPEC MObject3dObserver
@@ -58,8 +59,18 @@ public:
 #define OBJECT3D_MESH			100
 #define OBJECT3D_SKINNED_MESH	101
 #define OBJECT3D_LIGHT			3
-#define OBJECT3D_CAMERA			102
+#define OBJECT3D_CAMERA_STRUCT	102
+#define OBJECT3D_CAMERA			110
 #define OBJECT3D_WORLD			999
+
+//Default layers
+enum EDEFAULT_LAYERS
+{
+	ELAYER_DEFAULT,
+	ELAYER_GUI,
+	ELAYER_LAYER1
+};
+//
 
 class gxAnimation;
 class gxAnimationSet;
@@ -90,6 +101,9 @@ public:
 
 	object3d* appendChild(object3d* child);
 	bool removeChild(object3d* child);
+
+	virtual void onAppendObject3dChild(object3d* child);
+	virtual void onRemoveObject3dChild(object3d* child);
 
 #ifdef USE_BXLIST
 	bxLinkedList<object3d*>* getChildList()	{	return &m_cChilds;	}
@@ -153,6 +167,9 @@ public:
 	void setVisited(bool flag)	{	m_bVisited=flag;	}
 	bool isVisited()			{	return m_bVisited;	}
 
+	void setLayer(int layer, bool bRecursive);
+	int getLayer()				{	return m_iLayer;	}
+
 protected:
 	void clearAnimTrackOnAllNodes();
 
@@ -178,6 +195,7 @@ protected:
 	btRigidBody* m_pPhysics_RigidBodyPtr;	//must not delete this pointer
 #endif
 	bool m_bVisited;
+	int m_iLayer;
 };
 
 extern "C" {

@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera():
-	object3d(400)
+	object3d(OBJECT3D_CAMERA)
 {
 	//m_pCurrentCamPtr=NULL;
 	m_pRendererPtr=NULL;

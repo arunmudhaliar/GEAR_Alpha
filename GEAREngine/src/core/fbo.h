@@ -16,17 +16,22 @@ public:
 
 	GLuint& CreateDepthBuffer();			//return the reference of the depth buffer
 	GLuint& CreateTextureBuffer();			//return the reference of the texture buffer
+	GLuint& CreateDepthShadowTextureBuffer();
 
 	GLuint& AttachDepthBuffer();			//return the reference of the depth buffer
 	GLuint& AttachTextureBuffer(int index);	//return the reference of the texture buffer
+	GLuint& AttachShadowTextureBuffer();	//return the reference of the texture buffer
 
 	void BindFBO();
 	void UnBindFBO();
 
     void DrawFBO(int index);
 
-	unsigned int getFBOTextureBuffer(int index)	{	return *m_szTexture.at(index);	}
+	unsigned int getFBOTextureBuffer(int index)		{	return *m_szTexture.at(index);	}
+	unsigned int getFBODepthBuffer()				{	return m_depthbuffer;			}
+	unsigned int getFBOTextureDepthShadowBuffer()	{	return m_depthShadowbuffer;		}
     
+private:
 	//vars
 
 	//handle to fbo
@@ -34,6 +39,7 @@ public:
 
 	//render buffer
 	GLuint m_depthbuffer;
+	GLuint m_depthShadowbuffer;
 
 	int		m_width;
 	int		m_height;

@@ -101,27 +101,32 @@ void HWShaderManager::LoadDefaultShaders()
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/diffusemapunlit.glsl"))	//0
+    if(pShader->loadShader("res/shadersWin32/hwshader/diffusemapunlit.glsl"))	//1
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.glsl"))	//0
+    if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.glsl"))	//2
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/pvLightingOnlyShaderFirstPass.glsl"))	//0
+    if(pShader->loadShader("res/shadersWin32/hwshader/pvLightingOnlyShaderFirstPass.glsl"))	//3
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/guishader.glsl"))	//0
+    if(pShader->loadShader("res/shadersWin32/hwshader/guishader.glsl"))	//4
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/blurshader.glsl"))	//0
+    if(pShader->loadShader("res/shadersWin32/hwshader/blurshader.glsl"))	//5
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/shadowmap.glsl"))	//6
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);

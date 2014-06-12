@@ -43,7 +43,7 @@ public:
 	static void mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light);
 	//static object3d* mono_engine_loadAndAppendFBX(gxWorld* world, const char* filename);
 	static object3d* mono_engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory);
-	static object3d* mono_engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
+	//static object3d* mono_engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
 
 	static void mono_engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag);
 	static void mono_engine_mouseLButtonUp(gxWorld* world, int x, int y, int flag);
@@ -89,7 +89,7 @@ private:
 	static MonoMethod* g_pMethod_engine_renderSingleObject;
 	//static MonoMethod* g_pMethod_engine_loadAndAppendFBX;
 	static MonoMethod* g_pMethod_engine_loadFBX;
-	static MonoMethod* g_pMethod_engine_appendObject3dToRoot;
+	//static MonoMethod* g_pMethod_engine_appendObject3dToRoot;
 	static MonoMethod* g_pMethod_engine_mouseLButtonDown;
 	static MonoMethod* g_pMethod_engine_mouseLButtonUp;
 	static MonoMethod* g_pMethod_engine_mouseRButtonDown;

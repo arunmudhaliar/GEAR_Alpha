@@ -22,6 +22,7 @@ FBO::FBO()
 {
 	m_fbo=0;
 	m_depthbuffer=0;
+	m_depthShadowbuffer=0;
 
 	m_width=0;
 	m_height=0;
@@ -41,6 +42,8 @@ void FBO::ReInitFBO(int w, int h)
 	if(m_fbo>0)
 	{
 		glDeleteRenderbuffers(1, &m_depthbuffer);
+		glDeleteRenderbuffers(1, &m_depthShadowbuffer);
+
 		for(int x=0;x<(int)m_szTexture.size();x++)
 		{
 			GLuint* t=m_szTexture.at(x);
@@ -75,6 +78,7 @@ void FBO::ResetFBO()
 {
 	glDeleteFramebuffers(1, &m_fbo);
 	glDeleteRenderbuffers(1, &m_depthbuffer);
+	glDeleteRenderbuffers(1, &m_depthShadowbuffer);
 	for(int x=0;x<(int)m_szTexture.size();x++)
 	{
 		GLuint* t=m_szTexture.at(x);
@@ -117,6 +121,43 @@ GLuint& FBO::CreateTextureBuffer()
     glBindTexture(GL_TEXTURE_2D, 0);
     
 	return *t;
+}
+
+GLuint& FBO::CreateDepthShadowTextureBuffer()
+{
+	// Now setup a texture to render to
+	glGenTextures(1, &m_depthShadowbuffer);
+	glBindTexture(GL_TEXTURE_2D, m_depthShadowbuffer);
+	glActiveTexture(GL_TEXTURE0);
+	//glClientActiveTexture(GL_TEXTURE0);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,  m_width, m_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,  m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+#ifdef _WIN32
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+#endif
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+	return m_depthShadowbuffer;
+}
+
+GLuint& FBO::AttachShadowTextureBuffer()
+{
+	// Attach the depth render buffer to the FBO as it's depth attachment
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthShadowbuffer, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depthShadowbuffer, 0);
+    
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if(status != GL_FRAMEBUFFER_COMPLETE)
+    {
+        DEBUG_PRINT("failed to make complete framebuffer object %x", status);
+    }
+
+	//glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+	return m_depthShadowbuffer;
 }
 
 GLuint& FBO::AttachDepthBuffer()

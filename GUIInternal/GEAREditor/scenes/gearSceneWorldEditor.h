@@ -62,6 +62,7 @@ protected:
 	void drawOctree();
 	void drawStats();
 	void drawLightsOnMultiPass();
+	void drawShadowMapPass();
 
 	void followObject(float dt, object3d* chasedObj);
 
@@ -103,6 +104,7 @@ protected:
 
 #if defined USE_FBO
 	FBO m_cMultiPassFBO;
+	FBO m_cShadowMapFBO;
 #endif
 	bool m_bEnablePostProcessorBlur;
 	SoundEngine m_cSoundEngine;

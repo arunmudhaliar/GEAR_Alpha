@@ -76,6 +76,7 @@ public:
 	//void renderNormal(gxRenderer* renderer);
 	//void renderWithLight(gxRenderer* renderer, object3d* light);
 	void renderWithHWShader(gxRenderer* renderer, object3d* light);
+	void renderForShadowMap(gxRenderer* renderer);
 
 	float* allocateVertexBuffer(int nTris);
 	float* allocateColorBuffer(int nTris);

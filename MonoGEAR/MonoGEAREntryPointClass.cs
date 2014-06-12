@@ -36,8 +36,8 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr engine_loadAndAppendFBXForDevice(IntPtr world, string filename);
 
-        [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr engine_appendObject3dToRoot(IntPtr world, IntPtr obj);
+        //[DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        //static extern IntPtr engine_appendObject3dToRoot(IntPtr world, IntPtr obj);
 
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -127,7 +127,7 @@ namespace MonoGEAR
 
         public void mono_game_start()
         {
-#if _DISABLEALL
+#if !_DISABLEALL
 #if _DISABLE
             m_pRootObject3d1 = object3d.load("/cube.fbx");
             m_pRootObject3d1.updatePositionf(0, 100, 0);
@@ -227,7 +227,7 @@ namespace MonoGEAR
 
         public void mono_game_run(float dt)
         {
-#if _DISABLEALL
+#if !_DISABLEALL
 #if _DISABLE
 			engine_consoleLog("from mono");
             m_pRootObject3d1.rotateWorldZf(100.0f * dt);

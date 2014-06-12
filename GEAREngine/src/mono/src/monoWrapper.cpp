@@ -43,7 +43,7 @@ MonoMethod* monoWrapper::g_pMethod_engine_render = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_renderSingleObject = NULL;
 //MonoMethod* monoWrapper::g_pMethod_engine_loadAndAppendFBX = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_loadFBX = NULL;
-MonoMethod* monoWrapper::g_pMethod_engine_appendObject3dToRoot = NULL;
+//MonoMethod* monoWrapper::g_pMethod_engine_appendObject3dToRoot = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_mouseLButtonDown = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_mouseLButtonUp = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_mouseRButtonDown = NULL;
@@ -163,7 +163,7 @@ void monoWrapper::bindEngineMethods()
 	g_pMethod_engine_renderSingleObject		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_renderSingleObject", 3);
 	//g_pMethod_engine_loadAndAppendFBX		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadAndAppendFBX", 2);
 	g_pMethod_engine_loadFBX				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadFBX", 3);
-	g_pMethod_engine_appendObject3dToRoot	=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_appendObject3dToRoot", 2);
+//	g_pMethod_engine_appendObject3dToRoot	=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_appendObject3dToRoot", 2);
 	g_pMethod_engine_mouseLButtonDown		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseLButtonDown", 4);
 	g_pMethod_engine_mouseLButtonUp			=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseLButtonUp", 4);
 	g_pMethod_engine_mouseRButtonDown		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseRButtonDown", 4);
@@ -352,17 +352,17 @@ object3d* monoWrapper::mono_engine_loadFBX(gxWorld* world, const char* filename,
 #endif
 }
 
-object3d* monoWrapper::mono_engine_appendObject3dToRoot(gxWorld* world, object3d* obj)
-{
-#ifdef USEMONOENGINE
-	void* args[2]={&world, &obj};
-	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_appendObject3dToRoot, NULL, args, NULL);
-	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
-	return (object3d*)underlyingType;
-#else
-	return engine_appendObject3dToRoot(world, obj);
-#endif
-}
+//object3d* monoWrapper::mono_engine_appendObject3dToRoot(gxWorld* world, object3d* obj)
+//{
+//#ifdef USEMONOENGINE
+//	void* args[2]={&world, &obj};
+//	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_appendObject3dToRoot, NULL, args, NULL);
+//	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
+//	return (object3d*)underlyingType;
+//#else
+//	return engine_appendObject3dToRoot(world, obj);
+//#endif
+//}
 
 void monoWrapper::mono_engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag)
 {

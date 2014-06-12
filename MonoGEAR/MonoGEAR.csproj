@@ -50,6 +50,7 @@
     <Compile Include="game\ZBGlobal.cs" />
     <Compile Include="gxAnimation.cs" />
     <Compile Include="gxAnimationSet.cs" />
+    <Compile Include="gxLight.cs" />
     <Compile Include="gxMath.cs" />
     <Compile Include="matrix4x4f.cs" />
     <Compile Include="MonoGEAREntryPointClass.cs" />

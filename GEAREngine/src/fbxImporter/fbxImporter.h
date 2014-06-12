@@ -24,6 +24,7 @@ public:
 	struct stBoneInfluence
 	{
 		std::vector<FbxNode*> bone;
+		std::vector<FbxCluster*> bone_cluster;
 		std::vector<float>	weight;
 	};
 

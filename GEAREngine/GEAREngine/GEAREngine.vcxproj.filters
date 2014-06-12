@@ -675,6 +675,9 @@
     <ClCompile Include="..\src\core\Timer.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\LayerManager.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -1608,6 +1611,9 @@
       <Filter>engine\util</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\Timer.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\LayerManager.h">
       <Filter>engine\core</Filter>
     </ClInclude>
   </ItemGroup>

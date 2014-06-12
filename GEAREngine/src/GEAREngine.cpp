@@ -310,10 +310,10 @@ extern DECLSPEC object3d* engine_loadFBX(gxWorld* world, const char* filename, c
 #endif
 }
 
-extern DECLSPEC object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj)
-{
-	return world->appendChild(obj);
-}
+//extern DECLSPEC object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj)
+//{
+//	return world->appendChild(obj);
+//}
 
 extern DECLSPEC void engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag)
 {
@@ -493,6 +493,7 @@ void GEAREngine::initEngine(int nWorldToCreate)
 	{
 		gxWorld* newWorld = new gxWorld();
 		newWorld->setRootObserverOfTree(newWorld);
+		//newWorld->setLayer(0, true);	//no need to put world inside layer, by default it is considered to be in default layer
 		m_cWorlds.push_back(newWorld);
 	}
 }

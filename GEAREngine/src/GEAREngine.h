@@ -21,7 +21,7 @@ extern "C" {
 	DECLSPEC object3d* engine_loadAndAppendMesh(gxWorld* world, const char* filename);
 
 	DECLSPEC object3d* engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory);
-	DECLSPEC object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
+//	DECLSPEC object3d* engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
 
 	DECLSPEC void engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag);
 	DECLSPEC void engine_mouseLButtonUp(gxWorld* world, int x, int y, int flag);

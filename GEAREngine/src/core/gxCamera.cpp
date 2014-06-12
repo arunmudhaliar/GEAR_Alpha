@@ -1,7 +1,7 @@
 #include "gxCamera.h"
 
 gxCamera::gxCamera():
-	object3d(OBJECT3D_CAMERA)
+	object3d(OBJECT3D_CAMERA_STRUCT)
 {
 	setFOV(45.0f);
 	setNear(10.0f);

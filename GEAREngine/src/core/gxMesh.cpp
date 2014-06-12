@@ -142,7 +142,14 @@ void gxMesh::render(gxRenderer* renderer, object3d* light)
 		return;
 
 #if defined (USE_ProgrammablePipeLine)
-	renderWithHWShader(renderer, light);
+	if(renderer->getRenderPassType()==gxRenderer::RENDER_SHADOWMAP)
+	{
+		renderForShadowMap(renderer);
+	}
+	else
+	{
+		renderWithHWShader(renderer, light);
+	}
 #else
 	renderNormal(renderer);
 #endif
@@ -268,6 +275,49 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 
 }
 #endif
+
+void gxMesh::renderForShadowMap(gxRenderer* renderer)
+{
+	HWShaderManager* hwShaderManager = engine_getHWShaderManager();
+	gxHWShader* shader = hwShaderManager->GetHWShader(6);	//no need to enable it, since its been enabled/disable by the caller.
+	int vIN_Position = shader->getAttribLoc("a_vertex_coord_v4");
+
+	shader->sendUniformTMfv("u_mvp_m4x4", getWorldMatrix()->getOGLMatrix(), false, 4);
+
+	if(m_bVBO)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID);
+		glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	}
+	else
+	{
+		glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
+	}
+	glEnableVertexAttribArray(vIN_Position);
+
+	float diffuse[]={0.7f, 0.0f, 0.0f, 1.0f};
+	glUniform4fv(shader->getUniformLoc("diffuse"), 1, diffuse);
+
+	for(int x=0;x<m_nTriInfoArray;x++)
+	{
+		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+		if(!triInfo->getTriList()) continue;
+
+		if(m_bVBO)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triInfo->getVBOTriListID());
+			glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, NULL);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		}
+		else
+		{
+			glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
+		}
+	}
+
+	glDisableVertexAttribArray(vIN_Position);
+}
+
 void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 {
 	int pass=0;
@@ -340,13 +390,11 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 		if(pass_struct->GEAR_MVP)
 		{
-			//shader->sendUniformTMfv("GEAR_MVP", u_mvp_m4x4, false, 4);
 			shader->sendUniform_GEAR_MVP(u_mvp_m4x4);
 		}
 
 		if(pass_struct->GEAR_M)
 		{
-			//shader->sendUniformTMfv("GEAR_MODEL_MATRIX", getWorldMatrix()->getMatrix(), false, 4);
 			shader->sendUniform_GEAR_MODEL_MATRIX(getWorldMatrix()->getMatrix());
 		}
 
@@ -354,7 +402,6 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		{
 			matrix4x4f inv_model=*getWorldMatrix();
 			inv_model.inverse();
-			//shader->sendUniformTMfv("GEAR_MODEL_INVERSE", inv_model.getMatrix(), false, 4);
 			shader->sendUniform_GEAR_MODEL_INVERSE(inv_model.getMatrix());
 		}
 
@@ -411,11 +458,6 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 				shader->sendUniform_material_ambient(&material->getAmbientClr().x);
 				shader->sendUniform_material_specular(&material->getSpecularClr().x);
 				shader->sendUniform_material_shininess(2.0f);
-
-				//shader->sendUniform4fv("material.diffuse", &material->getDiffuseClr().x);
-				//shader->sendUniform4fv("material.ambient", &material->getAmbientClr().x);
-				//shader->sendUniform4fv("material.specular", &material->getSpecularClr().x);
-				//shader->sendUniform1f("material.shininess", 2.0f/*material->getShininess()*/);
 			}
 			else
 			{
@@ -427,11 +469,6 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 				shader->sendUniform_material_ambient(ambient);
 				shader->sendUniform_material_specular(specular);
 				shader->sendUniform_material_shininess(10.0f);
-
-				//shader->sendUniform4f("material.diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
-				//shader->sendUniform4f("material.ambient", 0.2f, 0.2f, 0.2f, 1.0f);
-				//shader->sendUniform4f("material.specular", 0.2f, 0.2f, 0.2f, 1.0f);
-				//shader->sendUniform1f("material.shininess", 10.0f/*material->getShininess()*/);
 			}
 		}
 
@@ -483,10 +520,6 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		}
 		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
 		renderer->m_nDrawCalls++;
-		//if(base_tex_var)
-		//{
-		//	disableTextureOperations(nTexUsed, shader, base_tex_var->texture_uv_in_name.c_str());
-		//}
 
 		cntr=0;
 		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, cntr++)

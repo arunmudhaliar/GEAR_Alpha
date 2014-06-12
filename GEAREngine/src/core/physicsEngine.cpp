@@ -84,17 +84,19 @@ void physicsEngine::update(float dt)
 //http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=2961
 void physicsEngine::addRigidBody(object3d* obj)
 {
-	vector3f wpos(obj->getWorldMatrix()->getPosition());
-	vector3f max_v(/**obj->getWorldMatrix() % */(obj->getOOBB().m_max));
-	vector3f min_v(/**obj->getWorldMatrix() % */(obj->getOOBB().m_min));
-	vector3f hsz((max_v - min_v)*0.5f);
-	vector3f center_oobb(min_v+hsz);
+	vector3f localpos(obj->getPosition());
+	vector3f max_v(/**obj->getWorldMatrix() % */(obj->getAABB().m_max));
+	vector3f min_v(/**obj->getWorldMatrix() % */(obj->getAABB().m_min));
+	vector3f dist_v(max_v - min_v);
+	vector3f hsz(dist_v*0.5f);
+	vector3f center_aabb(min_v+hsz);
 
 	btCompoundShape* compoundcolShape = new btCompoundShape;
 	btBoxShape* colShape = new btBoxShape(btVector3(hsz.x, hsz.y, hsz.z));
 	btTransform localTransform;
 	localTransform.setIdentity();
-	localTransform.setOrigin(btVector3(center_oobb.x, center_oobb.y, center_oobb.z));
+	localTransform.setOrigin(btVector3(hsz.x, hsz.y, hsz.z));
+	//localTransform.setFromOpenGLMatrix(obj->getOGLMatrix());
 	compoundcolShape->addChildShape(localTransform, colShape);
 	m_collisionShapes.push_back(compoundcolShape);
 
@@ -107,12 +109,13 @@ void physicsEngine::addRigidBody(object3d* obj)
 	//rigidbody is dynamic if and only if mass is non zero, otherwise static
 	bool isDynamic = (mass != 0.f);
 
-	vector3f pos(obj->getWorldMatrix()->getPosition());
+	vector3f pos(obj->getPosition());
 	btVector3 localInertia(pos.x, pos.y, pos.z);
 	if (isDynamic)
 		colShape->calculateLocalInertia(mass,localInertia);
 
 	startTransform.setFromOpenGLMatrix(obj->getWorldMatrix()->getOGLMatrix());
+	//startTransform.inverse();
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,compoundcolShape,localInertia);
@@ -129,16 +132,16 @@ void physicsEngine::render()
 
 void physicsEngine::addBoxCollider(object3d* obj)
 {
-	vector3f max_v(obj->getOOBB().m_max);
-	vector3f min_v(obj->getOOBB().m_min);
+	vector3f max_v(obj->getAABB().m_max);
+	vector3f min_v(obj->getAABB().m_min);
 	vector3f hsz((max_v - min_v)*0.5f);
-	vector3f center_oobb(min_v+hsz);
+	vector3f center_aabb(min_v+hsz);
 
 	btCompoundShape* compoundcolShape = new btCompoundShape;
 	btBoxShape* colShape = new btBoxShape(btVector3(hsz.x, hsz.y, hsz.z));
 	btTransform localTransform;
 	localTransform.setIdentity();
-	localTransform.setOrigin(btVector3(center_oobb.x, center_oobb.y, center_oobb.z));
+	localTransform.setOrigin(btVector3(center_aabb.x, center_aabb.y, center_aabb.z));
 	compoundcolShape->addChildShape(localTransform, colShape);
 	m_collisionShapes.push_back(compoundcolShape);
 

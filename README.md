@@ -27,3 +27,6 @@ http://www.shaderific.com/glsl-functions/
 
 //Texture Atlas Generator
 https://github.com/lukaszdk/texture-atlas-generator/blob/master/AtlasGenerator.java
+
+//shadow mapping
+http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-16-shadow-mapping/

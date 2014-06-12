@@ -73,6 +73,8 @@ object3d::object3d(int objID):
 #endif
 	m_pEngineObserver = NULL;
 	m_bVisited=false;
+
+	m_iLayer=-1;	//Currently this object is not belong to any layer
 }
 
 object3d::~object3d()
@@ -228,6 +230,30 @@ void object3d::render(gxRenderer* renderer, object3d* light)
 #endif
 }
 
+object3d* object3d::appendChild(object3d* child)
+{
+	child->setParent(this);
+	child->setRootObserverOfTree(getRootObserverOfThisTree());
+
+	if(m_pObject3dObserver)
+		m_pObject3dObserver->onObject3dChildAppend(child);
+	if(m_pRootObserver)
+		m_pRootObserver->callback_object3dAppendToTree(child);
+	child->setLayer(m_iLayer, true);
+#ifdef USE_BXLIST
+	m_cChilds.insertTail(child);
+#else
+	m_cChilds.push_back(child);
+
+#endif
+
+	child->transformationChangedf();
+	transformationChangedf();
+	onAppendObject3dChild(child);
+
+	return child;
+}
+
 bool object3d::removeChild(object3d* child)
 {
 	int old_sz=m_cChilds.size();
@@ -241,6 +267,7 @@ bool object3d::removeChild(object3d* child)
 
 	if((old_sz>m_cChilds.size()))
 	{
+		onRemoveObject3dChild(child);
 		if(m_pObject3dObserver)
 			m_pObject3dObserver->onObject3dChildRemove(child);
 		if(m_pRootObserver)
@@ -271,6 +298,35 @@ bool object3d::removeChild(object3d* child)
 #endif
 	}
 	return false;
+}
+
+void object3d::setLayer(int layer, bool bRecursive)
+{
+	if(layer==m_iLayer)
+		return;
+
+	int oldlayer=m_iLayer;
+	m_iLayer=layer;
+
+	if(m_pRootObserver)
+		m_pRootObserver->callback_object3dLayerChanged(this, oldlayer);
+
+	if(bRecursive)
+	{
+		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+		{
+			object3d* obj = *it;
+			obj->setLayer(layer, bRecursive);
+		}
+	}
+}
+
+void object3d::onAppendObject3dChild(object3d* child)
+{
+}
+
+void object3d::onRemoveObject3dChild(object3d* child)
+{
 }
 
 void object3d::transformationChangedf()
@@ -380,26 +436,6 @@ void object3d::calculateAABB()
 		}
 	}
 	m_cAABB.set(vector3f(min_x, min_y, min_z), vector3f(max_x, max_y, max_z));
-}
-
-object3d* object3d::appendChild(object3d* child)
-{
-	child->setParent(this);
-	child->setRootObserverOfTree(getRootObserverOfThisTree());
-
-	if(m_pObject3dObserver)
-		m_pObject3dObserver->onObject3dChildAppend(child);
-	if(m_pRootObserver)
-		m_pRootObserver->callback_object3dAppendToTree(child);
-#ifdef USE_BXLIST
-	m_cChilds.insertTail(child);
-#else
-	m_cChilds.push_back(child);
-#endif
-
-	child->transformationChangedf();
-	transformationChangedf();
-	return child;
 }
 
 gxAnimation* object3d::createAnimationController()

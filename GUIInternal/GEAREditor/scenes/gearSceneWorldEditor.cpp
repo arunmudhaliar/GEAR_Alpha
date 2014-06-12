@@ -199,6 +199,13 @@ void gearSceneWorldEditor::onCreate()
     m_cMultiPassFBO.CreateTextureBuffer();
     m_cMultiPassFBO.AttachTextureBuffer(0);
     m_cMultiPassFBO.UnBindFBO();
+
+	m_cShadowMapFBO.ReInitFBO(512, 512);
+    m_cShadowMapFBO.CreateDepthBuffer();
+    m_cShadowMapFBO.AttachDepthBuffer();
+	m_cShadowMapFBO.CreateDepthShadowTextureBuffer();
+    m_cShadowMapFBO.AttachShadowTextureBuffer();
+    m_cShadowMapFBO.UnBindFBO();
 #endif
 
 	m_cLightBillBoardSprite.setOffset(0, 0);
@@ -225,6 +232,7 @@ void gearSceneWorldEditor::draw()
 	}
 #endif
 
+	drawShadowMapPass();
 	drawLightsOnMultiPass();
 	onDraw();
 
@@ -241,7 +249,8 @@ void gearSceneWorldEditor::draw()
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45, 1, 1, 1000);
+	//gluPerspective(45, 1, 1, 1000);
+	glLoadMatrixf(monoWrapper::mono_engine_getWorld(0)->getRenderer()->getProjectionMatrix()->getMatrix());
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadMatrixf(monoWrapper::mono_engine_getWorld(0)->getRenderer()->getViewMatrix()->getMatrix());
@@ -336,6 +345,63 @@ void gearSceneWorldEditor::onDraw()
 		if(m_bMonoGameInitialized)
 			monoWrapper::mono_game_run(Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
 	}
+}
+
+void gearSceneWorldEditor::drawShadowMapPass()
+{
+	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
+	if(lightList->size()==0)
+		return;
+
+	gxLight* light=lightList->at(0);
+
+	m_cShadowMapFBO.BindFBO();
+	//projection
+	//glm::vec3 lightInvDir = glm::vec3(0.5f,2,2);
+	//// Compute the MVP matrix from the light's point of view
+	//glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10,10,-10,10,-10,20);
+	//glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0,0,0), glm::vec3(0,1,0));
+	//glm::mat4 depthModelMatrix = glm::mat4(1.0);
+	//glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
+	//
+	
+	gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(6);
+	shader->enableProgram();
+
+	matrix4x4f depthProjectionMatrix;//=m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix();
+	depthProjectionMatrix.setOrtho(-512, 512, -512, 512, 0, 10000);
+	matrix4x4f depthViewMatrix;
+	//vector3f up(1, 0, 0);
+	vector3f forward(-light->getPosition());
+    forward.normalize();
+    vector3f up(0, 0, 1);
+    vector3f left(up.cross(forward));
+    left.normalize();
+    up=forward.cross(left);
+    up.normalize();
+	depthViewMatrix.setXAxis(left);
+	depthViewMatrix.setYAxis(up);
+	depthViewMatrix.setZAxis(forward);
+	//depthViewMatrix.setPosition(light->getPosition());
+
+	matrix4x4f depthModelMatrix;
+	depthModelMatrix.setPosition(light->getPosition());
+
+	//depthViewMatrix.setDirection(&-light->getPosition(), &light->getYAxis());
+	matrix4x4f depthMVP(depthProjectionMatrix * depthViewMatrix.getInverse() * depthModelMatrix);
+
+	//const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * m_cLightBillBoardSprite)).getMatrix();
+	shader->sendUniformTMfv("u_depth_mvp_m4x4", depthMVP.getOGLMatrix(), false, 4);
+
+	glEnable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_SHADOWMAP);
+	//monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+	m_pMainWorldPtr->renderShadow(m_pMainWorldPtr->getRenderer());
+	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+
+	shader->disableProgram();
+	m_cShadowMapFBO.UnBindFBO();
 }
 
 void gearSceneWorldEditor::drawLightsOnMultiPass()
@@ -591,7 +657,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 			//m_pMainWorldPtr->getAABB().draw(shader);
 		}
 
-		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA)
+		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA_STRUCT)
 		{
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.6f, 0.6f, 1.0f);
@@ -639,6 +705,7 @@ void gearSceneWorldEditor::drawStats()
 	glDisable(GL_DEPTH_TEST);
 #if defined USE_FBO
 	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, -getTopMarginOffsetHeight(), m_cSize.x, m_cSize.y);
+	drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
 #endif
 
 	char buffer[128];
@@ -665,6 +732,9 @@ void gearSceneWorldEditor::drawStats()
 	sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
 	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*10, m_cSize.x);
 
+	sprintf(buffer, "Total Layer Objects : %d", m_pMainWorldPtr->getLayerManager()->getTotalLayerObject());
+	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*11, m_cSize.x);
+
 	geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
 	if(selectedNodeInHirarchy)
 	{
@@ -672,7 +742,7 @@ void gearSceneWorldEditor::drawStats()
 		if(obj && obj->getAnimationController())
 		{
 			sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
-			geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*11, m_cSize.x);
+			geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*12, m_cSize.x);
 		}
 	}
 

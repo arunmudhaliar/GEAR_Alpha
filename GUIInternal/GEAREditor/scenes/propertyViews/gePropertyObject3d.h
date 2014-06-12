@@ -19,6 +19,8 @@ public:
 	virtual void drawNode();
 	virtual void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
 	virtual void onButtonClicked(geGUIBase* btn);
+	virtual void onCommand(int cmd);
+
 	void populatePropertyOfObject(object3d* obj);
 
 private:

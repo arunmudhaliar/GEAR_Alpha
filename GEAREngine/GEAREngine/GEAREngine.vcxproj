@@ -54,7 +54,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>EXPORT_DLL=1;USEMONOENGINE;USE_ProgrammablePipeLine;_WINDLL;GLUT_DISABLE_ATEXIT_HACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_BULLET;EXPORT_DLL=1;USEMONOENGINE;USE_ProgrammablePipeLine;_WINDLL;GLUT_DISABLE_ATEXIT_HACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -95,6 +95,7 @@
     <ClCompile Include="..\src\core\gxSkinnedMesh.cpp" />
     <ClCompile Include="..\src\core\gxSurfaceShader.cpp" />
     <ClCompile Include="..\src\core\gxWorld.cpp" />
+    <ClCompile Include="..\src\core\LayerManager.cpp" />
     <ClCompile Include="..\src\core\object3d.cpp" />
     <ClCompile Include="..\src\core\physicsEngine.cpp" />
     <ClCompile Include="..\src\core\TextureManager.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="..\src\core\gxTexture.h" />
     <ClInclude Include="..\src\core\gxTriInfo.h" />
     <ClInclude Include="..\src\core\gxWorld.h" />
+    <ClInclude Include="..\src\core\LayerManager.h" />
     <ClInclude Include="..\src\core\matrix4x4f.h" />
     <ClInclude Include="..\src\core\object3d.h" />
     <ClInclude Include="..\src\core\oobb.h" />

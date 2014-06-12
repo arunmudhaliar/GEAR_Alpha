@@ -52,7 +52,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>EXPORT_DLL=0;USE_ProgrammablePipeLine;WIN32;USEMONOENGINE;_DEBUG;_WINDOWS;GLUT_DISABLE_ATEXIT_HACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_BULLET;EXPORT_DLL=0;USE_ProgrammablePipeLine;WIN32;USEMONOENGINE;_DEBUG;_WINDOWS;GLUT_DISABLE_ATEXIT_HACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
     </ClCompile>

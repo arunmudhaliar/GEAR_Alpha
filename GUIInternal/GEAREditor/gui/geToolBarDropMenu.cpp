@@ -27,12 +27,7 @@ geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, g
 
 geToolBarDropMenu::~geToolBarDropMenu()
 {
-	for(int x=0;x<m_vMenuItems.size();x++)
-	{
-		stDropMenuItem* item=m_vMenuItems[x];
-		GE_DELETE(item);
-	}
-	m_vMenuItems.clear();
+	clearMenu();
 }
 
 void geToolBarDropMenu::loadImage(const char* filename, int clipx, int clipy)
@@ -275,6 +270,17 @@ void geToolBarDropMenu::onMouseExitClientArea()
 void geToolBarDropMenu::onCancelEngagedControls()
 {
 	//setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.3f);
+}
+
+void geToolBarDropMenu::clearMenu()
+{
+	for(int x=0;x<m_vMenuItems.size();x++)
+	{
+		stDropMenuItem* item=m_vMenuItems[x];
+		GE_DELETE(item);
+	}
+	m_vMenuItems.clear();
+	m_pActiveItemPtr=NULL;
 }
 
 geToolBarDropMenu::stDropMenuItem* geToolBarDropMenu::appendMenuItem(const char* name, int menuID, stDropMenuItem* parent, bool bSeperator)

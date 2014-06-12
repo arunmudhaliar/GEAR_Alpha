@@ -15,6 +15,7 @@ public:
 	Layer(const char* name);
 	~Layer();
 
+	void setLayerName(const char* name);
 	const char* getLayerName();
 	std::vector<object3d*>* getLayerList();
 	bool append(object3d* obj);

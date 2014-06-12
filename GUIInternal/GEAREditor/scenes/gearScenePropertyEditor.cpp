@@ -30,6 +30,9 @@ geWindow("Property Editor")
 
 	m_pOctreeParentNode = NULL;
 	m_pPropertyOctree = NULL;
+
+	m_pLayersParentNode = NULL;
+	m_pPropertyLayers = NULL;
 }
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
@@ -47,6 +50,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	GE_DELETE(m_pCameraParentNode);
 	GE_DELETE(m_pOpenOnEditorParentNode);
 	GE_DELETE(m_pOctreeParentNode);
+	GE_DELETE(m_pLayersParentNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -71,6 +75,8 @@ void gearScenePropertyEditor::onCreate()
 	m_cszSprites[7].setClip(130, 404, 16, 16);
 	m_cszSprites[8].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[8].setClip(110, 342, 16, 16);
+	m_cszSprites[9].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	m_cszSprites[9].setClip(257, 6, 16, 16);
 
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 
@@ -98,6 +104,9 @@ void gearScenePropertyEditor::onCreate()
 
 	m_pOctreeParentNode = new geTreeNode(m_pRenderer, rootNode, "Octree", &m_cszSprites[5], 0);
 	m_pPropertyOctree = new gePropertyOctree(m_pRenderer, m_pOctreeParentNode, "", NULL);
+
+	m_pLayersParentNode = new geTreeNode(m_pRenderer, rootNode, "Layers", &m_cszSprites[9], 0);
+	m_pPropertyLayers = new gePropertyLayers(m_pRenderer, m_pLayersParentNode, "", NULL);
 
 	removeAllProperties();
 }
@@ -166,6 +175,7 @@ void gearScenePropertyEditor::removeAllProperties()
 
 	rootNode->removeTVChild(m_pOpenOnEditorParentNode);
 	rootNode->removeTVChild(m_pOctreeParentNode);
+	rootNode->removeTVChild(m_pLayersParentNode);
 
 	//material
 	if(m_pMaterialParent)
@@ -206,6 +216,17 @@ void gearScenePropertyEditor::populatePropertyOfOctree()
 
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 	rootNode->appnendTVChild(m_pOctreeParentNode);
+
+	m_cPropertiesTreeView.refreshTreeView();
+	m_cPropertiesTreeView.resetSelectedNodePtr();
+}
+
+void gearScenePropertyEditor::populatePropertyOfLayers()
+{
+	removeAllProperties();
+
+	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	rootNode->appnendTVChild(m_pLayersParentNode);
 
 	m_cPropertiesTreeView.refreshTreeView();
 	m_cPropertiesTreeView.resetSelectedNodePtr();

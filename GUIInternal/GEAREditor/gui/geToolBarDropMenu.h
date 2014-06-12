@@ -32,6 +32,8 @@ public:
 	void setMenuItem(const char* itemname);
 	int getMenuItemCount()	{	return m_vMenuItems.size();	}
 
+	void clearMenu();
+
 protected:
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);

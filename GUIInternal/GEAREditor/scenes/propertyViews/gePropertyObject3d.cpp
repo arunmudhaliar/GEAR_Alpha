@@ -27,15 +27,6 @@ gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent
 	m_pLayerDropDownMenu->setGUIObserver(this);
 	m_pLayerDropDownMenu->setPos(150, 35);
 
-	LayerManager* layerManager = monoWrapper::mono_engine_getWorld(0)->getLayerManager();
-
-	for(int x=0;x<MAX_LAYER;x++)
-	{
-		Layer* layer = layerManager->getLayer(x);
-		m_pLayerDropDownMenu->appendMenuItem(layer->getLayerName(), 0x00006500+x);
-	}
-	m_pLayerDropDownMenu->setMenuItem(0x00006500);
-
 	setNodeColor(0.21f, 0.21f, 0.21f);
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
@@ -83,6 +74,14 @@ void gePropertyObject3d::populatePropertyOfObject(object3d* obj)
 	m_pObject3dPtr=obj;
 	m_pTextBoxMeshName->setName(obj->getName());
 	m_pPushBtn_Object3dVisible->setCheck(obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible));
+
+	m_pLayerDropDownMenu->clearMenu();
+	LayerManager* layerManager = monoWrapper::mono_engine_getWorld(0)->getLayerManager();
+	for(int x=0;x<MAX_LAYER;x++)
+	{
+		Layer* layer = layerManager->getLayer(x);
+		m_pLayerDropDownMenu->appendMenuItem(layer->getLayerName(), 0x00006500+x);
+	}
 
 	if(m_pObject3dPtr->getLayer()>=0)
 	{

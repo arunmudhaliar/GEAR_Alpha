@@ -16,6 +16,7 @@
 #include "propertyViews\gePropertyCamera.h"
 #include "propertyViews\gePropertyOpenOnEditor.h"
 #include "propertyViews\gePropertyOctree.h"
+#include "propertyViews\gePropertyLayers.h"
 
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {
@@ -30,6 +31,7 @@ public:
 	void populatePropertyOfBlurShader(gxHWShader* blurShader);
 	void populatePropertyOfOpenInEditor();
 	void populatePropertyOfOctree();
+	void populatePropertyOfLayers();
 
 	geTreeNode* getMaterialParentNode()		{	return m_pMaterialParent;		}
 	geTreeNode* getAnimationParentNode()	{	return m_pAnimationParentNode;	}
@@ -73,6 +75,9 @@ private:
 	geTreeNode* m_pOctreeParentNode;
 	gePropertyOctree* m_pPropertyOctree;
 
+	//layers
+	geTreeNode* m_pLayersParentNode;
+	gePropertyLayers* m_pPropertyLayers;
 };
 
 #endif

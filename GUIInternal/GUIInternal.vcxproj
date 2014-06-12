@@ -132,6 +132,7 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyAnimationSet.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyBlurProcessor.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyCamera.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyLayers.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyLight.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyMeshPreview.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyAddComponent.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyBlurProcessor.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyCamera.cpp" />
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyLayers.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyLight.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyMaterial.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyObject3d.cpp" />

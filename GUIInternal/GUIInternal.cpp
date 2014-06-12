@@ -238,6 +238,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				EditorApp::getScenePropertyEditor()->populatePropertyOfOctree();
 			}
 			break;
+		case ID_EDIT_LAYERSPROPERTY:
+			{
+				EditorApp::getScenePropertyEditor()->populatePropertyOfLayers();
+			}
+			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;

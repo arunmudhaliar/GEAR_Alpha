@@ -10,6 +10,11 @@ Layer::~Layer()
 	clear();
 }
 
+void Layer::setLayerName(const char* name)
+{
+	m_cName.assign(name);
+}
+
 const char* Layer::getLayerName()
 {
 	return m_cName.c_str();

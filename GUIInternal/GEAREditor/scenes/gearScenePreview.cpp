@@ -25,7 +25,7 @@ void gearScenePreview::reinitPreviewWorld()
 	if(m_pPreviewWorldPtr)
 		m_pPreviewWorldPtr->resetWorld();
 	m_pPreviewWorldPtr=monoWrapper::mono_engine_getWorld(1);
-	m_pPreviewWorldPtr->getActiveCamera()->getCameraStructure()->setNear(1.0f);
+	m_pPreviewWorldPtr->getActiveCamera()->setNear(1.0f);
 	object3d* light=engine_createLight(m_pPreviewWorldPtr, "Light", gxLight::LIGHT_DIRECTIONAL);
 	((gxLight*)light)->setDiffuseColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
 	((gxLight*)light)->setAmbientColor(vector4f(0.1f, 0.1f, 0.1f, 1.0f));
@@ -95,7 +95,7 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	vector3f	eyeOff;
 	float speed=10.0f;
 	
-	eyeOff = vector3f(0, -(chasedObj->getAABB().getLongestAxis()*0.5f + cam->getCameraStructure()->getNear())*2.5f, 0);
+	eyeOff = vector3f(0, -(chasedObj->getAABB().getLongestAxis()*0.5f + cam->getNear())*2.5f, 0);
 
 	vector3f    transformedEye((chasedObj->getAABB().getCenter()) + eyeOff);
 	vector3f    transformedLookAt(chasedObj->getAABB().getCenter());

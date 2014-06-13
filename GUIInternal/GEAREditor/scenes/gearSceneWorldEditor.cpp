@@ -566,7 +566,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 {
 	//lights
 	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
-	if(lightList->size())
+	if(lightList->size() && m_pMainWorldPtr->getActiveCamera())
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(4);
 		shader->enableProgram();
@@ -593,7 +593,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 	}
 	//
 
-	if(m_pSelectedObj)
+	if(m_pSelectedObj && m_pMainWorldPtr->getActiveCamera())
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(2);
 		shader->enableProgram();
@@ -700,79 +700,75 @@ void gearSceneWorldEditor::drawStats()
 	glLoadIdentity();
 
 	glPushMatrix();
-	glTranslatef(0, 0, -1);
+		glTranslatef(0, 0, -1);
 
-	glDisable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
 #if defined USE_FBO
-	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, -getTopMarginOffsetHeight(), m_cSize.x, m_cSize.y);
-	drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
+		drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, -getTopMarginOffsetHeight(), m_cSize.x, m_cSize.y);
+		drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
 #endif
 
-	char buffer[128];
-	sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
-	sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*3, m_cSize.x);
-	sprintf(buffer, "GLSL %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*4, m_cSize.x);
-	sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*5, m_cSize.x);
-	sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*6, m_cSize.x);
-	sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*7, m_cSize.x);
+		char buffer[128];
+		sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+		sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*3, m_cSize.x);
+		sprintf(buffer, "GLSL %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*4, m_cSize.x);
+		sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*5, m_cSize.x);
+		sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*6, m_cSize.x);
+		sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*7, m_cSize.x);
 
-	sprintf(buffer, "Total Material : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*8, m_cSize.x);
-	sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*9, m_cSize.x);
-	int last_gl_err=glGetError();
-	if(last_gl_err!=GL_NO_ERROR)
-		m_iLastGLError=last_gl_err;
-	sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*10, m_cSize.x);
+		sprintf(buffer, "Total Material : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*8, m_cSize.x);
+		sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*9, m_cSize.x);
+		int last_gl_err=glGetError();
+		if(last_gl_err!=GL_NO_ERROR)
+			m_iLastGLError=last_gl_err;
+		sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*10, m_cSize.x);
 
-	sprintf(buffer, "Total Layer Objects : %d", m_pMainWorldPtr->getLayerManager()->getTotalLayerObject());
-	geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*11, m_cSize.x);
+		sprintf(buffer, "Total Layer Objects : %d", m_pMainWorldPtr->getLayerManager()->getTotalLayerObject());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*11, m_cSize.x);
 
-	geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
-	if(selectedNodeInHirarchy)
-	{
-		object3d* obj=(object3d*)selectedNodeInHirarchy->getUserData();
-		if(obj && obj->getAnimationController())
+		geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
+		if(selectedNodeInHirarchy)
 		{
-			sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
-			geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*12, m_cSize.x);
+			object3d* obj=(object3d*)selectedNodeInHirarchy->getUserData();
+			if(obj && obj->getAnimationController())
+			{
+				sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
+				geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*12, m_cSize.x);
+			}
 		}
-	}
 
 #if USE_NVPROFILER
-	nvProfiler::SampleAndRenderStats();
+		nvProfiler::SampleAndRenderStats();
 #endif
 
-	glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 
-	//
-	//glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
-	gxWorld* world = monoWrapper::mono_engine_getWorld(0);
-	matrix4x4f cameramatrix(*world->getActiveCamera()->getInverseTMViewMatrix());
-	cameramatrix.setPosition(0, 0, 0);
-	cameramatrix.setZAxis(-cameramatrix.getZAxis());
+		gxWorld* world = monoWrapper::mono_engine_getWorld(0);
+		if(world->getActiveCamera())
+		{
+			matrix4x4f cameramatrix(*world->getActiveCamera()->getInverseTMViewMatrix());
+			cameramatrix.setPosition(0, 0, 0);
+			cameramatrix.setZAxis(-cameramatrix.getZAxis());
 
-	glPushMatrix();
-	glTranslatef(m_cSize.x-50, 50, 0);
-	glMultMatrixf(cameramatrix.getMatrix());
-	glEnable(GL_COLOR_MATERIAL);
-	glColor3f(1, 1, 1);
-	glutSolidCube(10);
-	geUtil::drawGizmoCones(60);
-	glDisable(GL_COLOR_MATERIAL);
-	glPopMatrix();
-	//glDisable(GL_LIGHT0);
-	//glDisable(GL_LIGHTING);
-	//
-
+			glPushMatrix();
+				glTranslatef(m_cSize.x-50, 50, 0);
+				glMultMatrixf(cameramatrix.getMatrix());
+				glEnable(GL_COLOR_MATERIAL);
+				glColor3f(1, 1, 1);
+				glutSolidCube(10);
+				geUtil::drawGizmoCones(60);
+				glDisable(GL_COLOR_MATERIAL);
+			glPopMatrix();
+		}
 	glPopMatrix();
 	//
 }
@@ -806,12 +802,18 @@ void gearSceneWorldEditor::postWorldRender()
 void gearSceneWorldEditor::startFollowCam()
 {
 	if(m_pSelectedObj==NULL) return;
+	if(m_pSelectedObj==m_pMainWorldPtr->getActiveCamera()) return;
 
 	m_bStopFollowCam=false;
 }
 
 void gearSceneWorldEditor::followObject(float dt, object3d* chasedObj)
 {
+	if(chasedObj==m_pMainWorldPtr->getActiveCamera())
+	{
+		m_bStopFollowCam=true;
+		return;
+	}
 	if(dt>0.1f || m_bStopFollowCam) return;
 	if(chasedObj==NULL) return;
 	gxWorld* world = monoWrapper::mono_engine_getWorld(0);
@@ -823,7 +825,7 @@ void gearSceneWorldEditor::followObject(float dt, object3d* chasedObj)
 
 	vector3f direction(cam->getWorldMatrix()->getPosition()-chasedObjectCenter);
 	direction.normalize();
-	eyeOff = direction*(chasedObj->getAABB().getLongestAxis()*0.5f + cam->getCameraStructure()->getNear())*4.0f;
+	eyeOff = direction*(chasedObj->getAABB().getLongestAxis()*0.5f + cam->getNear())*4.0f;
 
 	vector3f    transformedEye(chasedObjectCenter + eyeOff);
 	vector3f    transformedLookAt(chasedObjectCenter);
@@ -907,7 +909,7 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 		return true;
 	}
 	//monoWrapper::mono_engine_mouseLButtonDown(m_pMainWorldPtr, x, y, nFlag);
-	if(!m_pMainWorldPtr) return true;
+	if(!m_pMainWorldPtr || !m_pMainWorldPtr->getActiveCamera()) return true;
 
 	bool bTranslateGizmo=m_pTranslateGizmo->isButtonPressed();
 	bool bRotateGizmo=m_pRotateGizmo->isButtonPressed();
@@ -1073,6 +1075,8 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 	//monoWrapper::mono_engine_mouseMove(m_pMainWorldPtr, x, y, flag);
 	Camera* camera=m_pMainWorldPtr->getActiveCamera();
 	
+	if(!camera) return false;
+
 	float dx	= (x-m_cMousePrevPos.x);
 	float dy	= (y-m_cMousePrevPos.y);
 
@@ -1216,6 +1220,9 @@ void gearSceneWorldEditor::onMouseWheel(int zDelta, int x, int y, int flag)
 	m_bStopFollowCam=true;
 	//monoWrapper::mono_engine_mouseWheel(m_pMainWorldPtr, zDelta, x, y, flag);
 	Camera* camera=m_pMainWorldPtr->getActiveCamera();
+	if(!camera)
+		return;
+
 	int dir = (zDelta<0)?1:-1;
 	vector3f aCamForwardDir(camera->getZAxis());
 	float d=camera->getPosition().length();

@@ -492,7 +492,6 @@ void GEAREngine::initEngine(int nWorldToCreate)
 	for(int x=0;x<nWorldToCreate;x++)
 	{
 		gxWorld* newWorld = new gxWorld();
-		newWorld->setRootObserverOfTree(newWorld);
 		//newWorld->setLayer(0, true);	//no need to put world inside layer, by default it is considered to be in default layer
 		m_cWorlds.push_back(newWorld);
 	}

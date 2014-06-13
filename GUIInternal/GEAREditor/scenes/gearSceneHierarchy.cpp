@@ -24,7 +24,7 @@ void gearSceneHierarchy::onCreate()
 {
 	engine_setEngineObserver(this);
 	engine_setObject3dObserver(this);
-	EditorApp::getSceneWorldEditor()->getMainWorld()->setObject3dObserver(this);
+	EditorApp::getSceneWorldEditor()->getMainWorld()->setObject3dObserverRecursive(this);
 	EditorApp::getSceneWorldEditor()->getMainWorld()->setEngineObserver(this);
 
 	m_pCreateToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "Create", getToolBar());
@@ -52,8 +52,15 @@ void gearSceneHierarchy::onCreate()
 	m_cszSprites[1].setClip(68, 488, 16, 16);
 
 	EditorApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(m_cGameObjectsTreeView.getRoot());
-	//m_cButton.create(this, "button1", 100, 200);
-	//m_cPushButton.create(this, "check", 170, 200);
+
+	//HACK: Since the default camera of world0 wont be added to the heirarchy when it initially created, we create it here.
+	object3d* defaultCamera=EditorApp::getSceneWorldEditor()->getMainWorld()->getActiveCamera();
+	object3d* parent_obj=defaultCamera->getParent();
+	geTreeNode* rootNode = (geTreeNode*)parent_obj->getEditorUserData();//m_cGameObjectsTreeView.getRoot();
+	createTVNode(rootNode, defaultCamera, defaultCamera->getName());
+	rootNode->traverseSetWidth(m_cSize.x);
+	m_cGameObjectsTreeView.refreshTreeView();
+	//
 }
 
 void gearSceneHierarchy::onDraw()
@@ -339,11 +346,10 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 			//if(MessageBox(EditorApp::getMainWindowHandle(),"Are you sure to reset the world.","Warning",MB_YESNO|MB_ICONWARNING)==IDYES)
 			{
 				EditorApp::getSceneWorldEditor()->stopSimulation();
-				monoWrapper::mono_engine_getWorld(0)->resetWorld();
-				EditorApp::getScenePreview()->reinitPreviewWorld();
-
 				m_cGameObjectsTreeView.clearAndDestroyAll();
 				m_cGameObjectsTreeView.resetSelectedNodePtr();
+				monoWrapper::mono_engine_getWorld(0)->resetWorld();
+				EditorApp::getScenePreview()->reinitPreviewWorld();
 
 				EditorApp::getSceneWorldEditor()->selectedObject3D(NULL);
 				EditorApp::getScenePropertyEditor()->populatePropertyOfObject(NULL);

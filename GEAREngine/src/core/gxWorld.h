@@ -33,14 +33,14 @@ public:
 	gxWorld();
 	~gxWorld();
 
-	void resetWorld();
+	void resetWorld(bool bDontCreateDefaultCamera=false);
 
 	void update(float dt);
 	void render(gxRenderer* renderer, object3d* lightPtr);
 	void renderShadow(gxRenderer* renderer);
 
 	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
-	Camera* setDefaultCameraActive();
+	Camera* createDefaultCameraAndSetActive();
 
 	void renderSingleObject(object3d* obj, object3d* lightPtr);
 	void resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane);
@@ -91,6 +91,7 @@ private:
 	std::vector<gxMaterial*> m_cMaterialList;
 	std::vector<gxAnimationSet*> m_vAnimationSetList;
 	std::vector<gxLight*> m_vLightList;
+	std::vector<Camera*> m_vCameraList;
 
 	gxRenderer m_cRenderer;
 	Camera* m_pActiveCameraPtr;	//must not delete this pointer

@@ -16,18 +16,13 @@ gxWorld::gxWorld():
 	object3d(OBJECT3D_WORLD)
 {
 	m_iLayer = ELAYER_DEFAULT;	//CAUTION: Do not use setLayer() for gxWorld()
-
 	m_pObserverPtr = NULL;
 	m_pActiveCameraPtr = NULL;
 
-	m_pActiveCameraPtr=NULL;
-	setDefaultCameraActive();
-	m_pActiveCameraPtr->initCamera(&m_cRenderer);
+	setRootObserverOfTree(this);
 
-	//vector3f v(1, -1, -1);
-	//m_pActiveCameraPtr->setDirection(&v);
-	m_pActiveCameraPtr->setCamera(&m_cDefaultCameraStruct);
-	//m_pActiveCameraPtr->updateLocalPositionf(0, 0, -290);
+	m_pActiveCameraPtr=NULL;
+	createDefaultCameraAndSetActive();
 
 	m_cDefaultMaterial.setMaterialName("Default");
 	m_cMaterialList.push_back(&m_cDefaultMaterial);
@@ -44,11 +39,20 @@ gxWorld::gxWorld():
 
 gxWorld::~gxWorld()
 {
-	resetWorld();
+	resetWorld(true);
+
+	////remove and destroy the default camera
+	//if(m_pActiveCameraPtr);
+	//{
+	//	removeChild(m_pActiveCameraPtr);
+	//	GX_DELETE(m_pActiveCameraPtr);
+	//	m_vCameraList.clear();
+	//}
+
 	m_cMaterialList.clear();	//since our Default material may reside inside: check resetWorld()
 }
 
-void gxWorld::resetWorld()
+void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
 {
 #ifdef USE_BULLET
 	m_cPhysicsEngine.clientResetScene();
@@ -80,8 +84,8 @@ void gxWorld::resetWorld()
 	m_vAnimationSetList.clear();
 
 	m_vLightList.clear();
-
 	m_cLayerManager.clearLayers();
+	m_vCameraList.clear();
 
 	//destroy all child
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
@@ -91,6 +95,10 @@ void gxWorld::resetWorld()
 	}
 	m_cChilds.clear();
 	//
+
+	m_pActiveCameraPtr=NULL;
+	if(!bDontCreateDefaultCamera)
+		createDefaultCameraAndSetActive();
 }
 
 void gxWorld::update(float dt)
@@ -109,7 +117,7 @@ void gxWorld::update(float dt)
 #endif
 
 	//collide with octree
-	if(m_pOctree)
+	if(m_pOctree && m_pActiveCameraPtr)
 	{
 		m_pActiveCameraPtr->extractFrustumPlanes();
 		
@@ -314,10 +322,18 @@ const char* gxWorld::getMetaDataFolder()
 	return m_szMetaDataFolder;
 }
 
-Camera* gxWorld::setDefaultCameraActive()
+Camera* gxWorld::createDefaultCameraAndSetActive()
 {
-	m_pActiveCameraPtr=&m_cDefaultCamera;
-
+	//m_pActiveCameraPtr=&m_cDefaultCamera;
+	if(m_pActiveCameraPtr)
+	{
+		removeChild(m_pActiveCameraPtr);
+		GX_DELETE(m_pActiveCameraPtr);
+	}
+	m_pActiveCameraPtr = new Camera();
+	m_pActiveCameraPtr->initCamera(&m_cRenderer);
+	m_pActiveCameraPtr->setObject3dObserver(m_pObject3dObserver);
+	appendChild(m_pActiveCameraPtr);
 	return m_pActiveCameraPtr;
 }
 
@@ -328,6 +344,10 @@ void gxWorld::callback_object3dRemovedFromTree(object3d* child)
 		std::vector<gxLight*>* lightList=getLightList();
 		lightList->erase(std::remove(lightList->begin(), lightList->end(), child), lightList->end());
 	}
+	else if(child->getID()==OBJECT3D_CAMERA)
+	{
+		m_vCameraList.erase(std::remove(m_vCameraList.begin(), m_vCameraList.end(), child), m_vCameraList.end());
+	}
 }
 
 void gxWorld::callback_object3dAppendToTree(object3d* child)
@@ -335,6 +355,10 @@ void gxWorld::callback_object3dAppendToTree(object3d* child)
 	//if light
 	if(child->getID()==OBJECT3D_LIGHT)
 		getLightList()->push_back((gxLight*)child);
+	else if(child->getID()==OBJECT3D_CAMERA)
+	{
+		m_vCameraList.push_back((Camera*)child);
+	}
 	//
 }
 
@@ -344,6 +368,12 @@ void gxWorld::callback_object3dDestroyedFromTree(object3d* child)
 	{
 		std::vector<gxLight*>* lightList=getLightList();
 		lightList->erase(std::remove(lightList->begin(), lightList->end(), child), lightList->end());
+	}
+	else if(child->getID()==OBJECT3D_CAMERA)
+	{
+		if(m_pActiveCameraPtr==child)
+			m_pActiveCameraPtr=NULL;
+		m_vCameraList.erase(std::remove(m_vCameraList.begin(), m_vCameraList.end(), child), m_vCameraList.end());
 	}
 
 	m_cLayerManager.removeFromLayer(child, child->getLayer());

@@ -228,9 +228,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_EDIT_ACTIVECAMERAPROPERTY:
 			{
-				object3d* cam_struct=monoWrapper::mono_engine_getWorld(0)->getActiveCamera()->getCameraStructure();
-				EditorApp::getSceneWorldEditor()->selectedObject3D(cam_struct);
-				EditorApp::getScenePropertyEditor()->populatePropertyOfObject(cam_struct);
+				//object3d* cam_struct=monoWrapper::mono_engine_getWorld(0)->getActiveCamera()->getCameraStructure();
+				//EditorApp::getSceneWorldEditor()->selectedObject3D(cam_struct);
+				//EditorApp::getScenePropertyEditor()->populatePropertyOfObject(cam_struct);
 			}
 			break;
 		case ID_EDIT_OCTREEPROPERTY:

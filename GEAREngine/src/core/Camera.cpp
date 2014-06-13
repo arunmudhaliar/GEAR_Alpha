@@ -3,9 +3,9 @@
 Camera::Camera():
 	object3d(OBJECT3D_CAMERA)
 {
-	//m_pCurrentCamPtr=NULL;
 	m_pRendererPtr=NULL;
-	m_pCameraStructPtr=NULL;
+	//m_pCameraStructPtr=NULL;
+	setName("Camera");
 }
 
 Camera::~Camera()
@@ -15,7 +15,6 @@ Camera::~Camera()
 
 void Camera::resetCamera()
 {
-	//m_pCurrentCamPtr=NULL;
 	m_pRendererPtr=NULL;
 	m_cProjMatrix.identity();
 	m_cInvTranfMatrix.identity();
@@ -24,8 +23,37 @@ void Camera::resetCamera()
 void Camera::initCamera(gxRenderer* renderer)
 {
 	resetCamera();
-
 	m_pRendererPtr=renderer;
+
+	setFOV(45.0f);
+	setNear(10.0f);
+	setFar(10000.0f);
+	setType(PERSPECTIVE_PROJECTION);
+	updateLocalPositionf(0, 0, 300);
+}
+
+void Camera::setFOV(float fov)
+{
+	m_fFOV=fov;
+	perspectiveChanged();
+}
+
+void Camera::setNear(float n)
+{
+	m_fNear=n;
+	perspectiveChanged();
+}
+
+void Camera::setFar(float f)
+{
+	m_fFar=f;
+	perspectiveChanged();
+}
+
+void Camera::setType(EPROJECTION_TYPE type)
+{
+	m_eProjectionType=type;
+	perspectiveChanged();
 }
 
 void Camera::processCamera(matrix4x4f* matrix)
@@ -45,16 +73,27 @@ void Camera::updateCamera()
 	m_cViewProjectionMatrix = m_cProjMatrix * m_cInvTranfMatrix;
 }
 
+void Camera::perspectiveChanged()
+{
+	if(getProjectionType()==gxCamera::PERSPECTIVE_PROJECTION)
+		m_cProjMatrix.setPerspective(m_fFOV, 1.0f, m_fNear, m_fFar);
+	else
+	{
+		gxRectf viewportRect(m_pRendererPtr->getViewPortRect());
+		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
+		m_cProjMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, m_fNear, m_fFar);
+	}
+	m_pRendererPtr->setProjectionMatrixToGL(&m_cProjMatrix);
+	extractFrustumPlanes();
+	updateCamera();
+}
+
 void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearValue, float farValue*/)
 {
 	if(cx==0.0f || cy==0.0f)	return;
 
 	float aspect=cx/cy;
-	m_fFOV=m_pCameraStructPtr->getFOV();
-	m_fNear=m_pCameraStructPtr->getNear();
-	m_fFar=m_pCameraStructPtr->getFar();
-
-	if(m_pCameraStructPtr->getProjectionType()==gxCamera::PERSPECTIVE_PROJECTION)
+	if(getProjectionType()==gxCamera::PERSPECTIVE_PROJECTION)
 		m_cProjMatrix.setPerspective(m_fFOV, aspect, m_fNear, m_fFar);
 	else
 	{
@@ -71,12 +110,12 @@ void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearV
 
 void Camera::setCamera(gxCamera* camera)
 {
-	if(!camera) return;
+	//if(!camera) return;
 
-	m_pCameraStructPtr = camera;
-	copy((matrix4x4f)*camera);
+	//m_pCameraStructPtr = camera;
+	//copy((matrix4x4f)*camera);
 
-	setUpCameraPerspective(m_pRendererPtr->getViewPortSz().x, m_pRendererPtr->getViewPortSz().y/*, camera->getFOV(), camera->getNear(), camera->getFar()*/);
+	//setUpCameraPerspective(m_pRendererPtr->getViewPortSz().x, m_pRendererPtr->getViewPortSz().y/*, camera->getFOV(), camera->getNear(), camera->getFar()*/);
 }
 
 

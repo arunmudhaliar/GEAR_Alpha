@@ -7,7 +7,7 @@
 #include "../../gui/geTextBox.h"
 #include "../../gui/geHorizontalSlider.h"
 #include "../../gui/geColorControl.h"
-#include "../../../../GEAREngine/src/core/gxCamera.h"
+#include "../../../../GEAREngine/src/core/Camera.h"
 #include "../../gui/geToolBarDropMenu.h"
 #include "../../gui/geWindowColumn.h"
 #include "../../gui/geButton.h"
@@ -15,7 +15,7 @@
 class gePropertyCamera : public geTreeNode, public MGUIObserver
 {
 public:
-	gxCamera* m_pCameraPtr;
+	Camera* m_pCameraPtr;
 
 	geToolBarDropMenu* m_pCameraTypeToolBarDropMenuBtnPtr;
 	geHorizontalSlider* m_pHorizontalSlider_FOV;

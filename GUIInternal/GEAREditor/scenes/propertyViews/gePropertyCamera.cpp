@@ -95,15 +95,15 @@ void gePropertyCamera::drawNode()
 
 void gePropertyCamera::populatePropertyOfCamera(object3d* obj)
 {
-	m_pCameraPtr = (gxCamera*)obj;
+	m_pCameraPtr = (Camera*)obj;
 
 	m_pHorizontalSlider_FOV->setSliderValue(m_pCameraPtr->getFOV()/120.0f, false);
 	m_pHorizontalSlider_Near->setSliderValue(m_pCameraPtr->getNear()/100.0f, false);
 	m_pHorizontalSlider_Far->setSliderValue(m_pCameraPtr->getFar()/10000.0f, false);
 
-	if(m_pCameraPtr->getProjectionType()==gxCamera::PERSPECTIVE_PROJECTION)
+	if(m_pCameraPtr->getProjectionType()==Camera::PERSPECTIVE_PROJECTION)
 		m_pCameraTypeToolBarDropMenuBtnPtr->setMenuItem("Perspective");
-	else if(m_pCameraPtr->getProjectionType()==gxCamera::ORTHOGRAPHIC_PROJECTION)
+	else if(m_pCameraPtr->getProjectionType()==Camera::ORTHOGRAPHIC_PROJECTION)
 		m_pCameraTypeToolBarDropMenuBtnPtr->setMenuItem("Orthographic");
 }
 
@@ -135,7 +135,7 @@ void gePropertyCamera::onButtonClicked(geGUIBase* btn)
 {
 	if(btn==m_pButtonApplyMainCamera && m_pButtonApplyMainCamera->isButtonPressed())
 	{
-		monoWrapper::mono_engine_getWorld(0)->getActiveCamera()->setCamera(m_pCameraPtr);
+		monoWrapper::mono_engine_getWorld(0)->setActiveCamera(m_pCameraPtr);
 	}
 }
 
@@ -143,12 +143,12 @@ void gePropertyCamera::onCommand(int cmd)
 {
 	if(cmd==0x00007000)
 	{
-		m_pCameraPtr->setType(gxCamera::PERSPECTIVE_PROJECTION);
+		m_pCameraPtr->setType(Camera::PERSPECTIVE_PROJECTION);
 		m_pCameraTypeToolBarDropMenuBtnPtr->setMenuItem(cmd);
 	}
 	else if(cmd==0x00007001)
 	{
-		m_pCameraPtr->setType(gxCamera::ORTHOGRAPHIC_PROJECTION);
+		m_pCameraPtr->setType(Camera::ORTHOGRAPHIC_PROJECTION);
 		m_pCameraTypeToolBarDropMenuBtnPtr->setMenuItem(cmd);
 	}
 }

@@ -348,6 +348,7 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 				EditorApp::getSceneWorldEditor()->stopSimulation();
 				m_cGameObjectsTreeView.clearAndDestroyAll();
 				m_cGameObjectsTreeView.resetSelectedNodePtr();
+				EditorApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(m_cGameObjectsTreeView.getRoot());
 				monoWrapper::mono_engine_getWorld(0)->resetWorld();
 				EditorApp::getScenePreview()->reinitPreviewWorld();
 
@@ -410,7 +411,7 @@ void gearSceneHierarchy::onCommand(int cmd)
 			break;
 		case 0x00004004:
 			{
-			object3d* camera=engine_createCamera(monoWrapper::mono_engine_getWorld(0), "Camera");
+				object3d* camera=engine_createCamera(monoWrapper::mono_engine_getWorld(0), "Camera", monoWrapper::mono_engine_getWorld(0)->getRenderer());
 			}
 			break;
 	}

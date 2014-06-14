@@ -228,9 +228,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_EDIT_ACTIVECAMERAPROPERTY:
 			{
-				//object3d* cam_struct=monoWrapper::mono_engine_getWorld(0)->getActiveCamera()->getCameraStructure();
-				//EditorApp::getSceneWorldEditor()->selectedObject3D(cam_struct);
-				//EditorApp::getScenePropertyEditor()->populatePropertyOfObject(cam_struct);
+				object3d* cam=monoWrapper::mono_engine_getWorld(0)->getActiveCamera();
+				EditorApp::getSceneWorldEditor()->selectedObject3D(cam);
+				EditorApp::getScenePropertyEditor()->populatePropertyOfObject(cam);
 			}
 			break;
 		case ID_EDIT_OCTREEPROPERTY:
@@ -413,6 +413,10 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
+		break;
+	case WM_CLOSE:
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
 		break;
 	default:
 		return DefWindowProc(hDlg, message, wParam, lParam);

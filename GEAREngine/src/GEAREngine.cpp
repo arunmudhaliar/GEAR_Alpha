@@ -445,9 +445,10 @@ extern DECLSPEC object3d* engine_createLight(object3d* parentObj, const char* na
 	return light;
 }
 
-extern DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* name)
+extern DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* name, gxRenderer* renderer)
 {
-	gxCamera* camera = new gxCamera();
+	Camera* camera = new Camera();
+	camera->initCamera(renderer);
 	camera->setObject3dObserver(g_Object3dObserver);
 	camera->setName(name);
 	parentObj->appendChild(camera);

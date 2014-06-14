@@ -39,7 +39,7 @@ extern "C" {
 
 	DECLSPEC object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name);
 	DECLSPEC object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType);
-	DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* name);
+	DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* name, gxRenderer* renderer);
 
 	DECLSPEC void engine_consoleLog(const char* msg);
 

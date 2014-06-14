@@ -39,6 +39,7 @@ public:
 	void render(gxRenderer* renderer, object3d* lightPtr);
 	void renderShadow(gxRenderer* renderer);
 
+	void setActiveCamera(Camera* camera)	{	m_pActiveCameraPtr = camera;	}
 	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
 	Camera* createDefaultCameraAndSetActive();
 

@@ -801,15 +801,20 @@ void gearSceneWorldEditor::postWorldRender()
 
 void gearSceneWorldEditor::startFollowCam()
 {
+	if(m_pPlayButton->isButtonPressed())
+	{
+		if(!m_pPauseButton->isButtonPressed())
+			return;
+	}
 	if(m_pSelectedObj==NULL) return;
-	if(m_pSelectedObj==m_pMainWorldPtr->getActiveCamera()) return;
+	if(m_pSelectedObj->getID()==OBJECT3D_CAMERA) return;
 
 	m_bStopFollowCam=false;
 }
 
 void gearSceneWorldEditor::followObject(float dt, object3d* chasedObj)
 {
-	if(chasedObj==m_pMainWorldPtr->getActiveCamera())
+	if(chasedObj && chasedObj->getID()==OBJECT3D_CAMERA)
 	{
 		m_bStopFollowCam=true;
 		return;

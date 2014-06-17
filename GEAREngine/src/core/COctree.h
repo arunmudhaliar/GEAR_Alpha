@@ -52,12 +52,15 @@ public:
 	void checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustum);
 	
 	int	getLevelsReached()	{	return m_nLevelReached;}
-	ExpandableArray<object3d*>* getCollidedObjList()	{	return &m_cCollidedObjLst;		}
+	ExpandableArray<object3d*>* getCollidedObjList()		{	return &m_cCollidedObjLst;			}
+	ExpandableArray<object3d*>* getCollidedAlphaObjList()	{	return &m_cCollidedAlphaObjLst;		}
+
 private:
 	bool create(OctreeNode* node);
 
 	int m_nLevelReached;
 	ExpandableArray<object3d*> m_cCollidedObjLst;
+	ExpandableArray<object3d*> m_cCollidedAlphaObjLst;
 	int	m_nMinTransformObj;
 	int m_nMaxLevel;
 	OctreeNode*	m_pRootNode;

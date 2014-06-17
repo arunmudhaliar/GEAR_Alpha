@@ -49,6 +49,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 #ifdef _DEBUG
 	_CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
 	_CrtSetReportMode ( _CRT_ERROR, _CRTDBG_MODE_DEBUG);
+
+	//SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
+	SymInitialize(GetCurrentProcess(), NULL, TRUE);
 #endif
 
 	UNREFERENCED_PARAMETER(hPrevInstance);
@@ -326,6 +329,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			monoWrapper::destroyMono();
 			monoWrapper::destroyDebugConsole();
 
+#ifdef _DEBUG
+			SymCleanup(GetCurrentProcess());
+#endif
 			PostQuitMessage(0);
 		}
 		break;

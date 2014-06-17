@@ -21,6 +21,7 @@ gxMesh::gxMesh(int ID):
 	m_cVBO_clrID=0;
 	m_cVBO_nrmlID=0;
 	m_cVBO_tangentID=0;
+	setBaseFlag(eObject3dBaseFlag_Static);
 }
 
 gxMesh::gxMesh():
@@ -42,6 +43,7 @@ gxMesh::gxMesh():
 	m_cVBO_clrID=0;
 	m_cVBO_nrmlID=0;
 	m_cVBO_tangentID=0;
+	setBaseFlag(eObject3dBaseFlag_Static);
 }
 
 gxMesh::~gxMesh()
@@ -411,28 +413,28 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 		if(m_bVBO)
 		{
-			glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID);
-			glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID));
+			CHECK_GL_ERROR(glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, NULL));
 		}
 		else
 		{
-			glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
+			CHECK_GL_ERROR(glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer()));
 		}
-		glEnableVertexAttribArray(vIN_Position);
+		CHECK_GL_ERROR(glEnableVertexAttribArray(vIN_Position));
 
 		if(pass_struct->Light)
 		{
 			vIN_Normal=shader->getAttrib_vIN_Normal();
 			if(m_bVBO)
 			{
-				glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_nrmlID);
-				glVertexAttribPointer(vIN_Normal, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+				CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_nrmlID));
+				CHECK_GL_ERROR(glVertexAttribPointer(vIN_Normal, 3, GL_FLOAT, GL_FALSE, 0, NULL));
 			}
 			else
 			{
-				glVertexAttribPointer(vIN_Normal, 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer());
+				CHECK_GL_ERROR(glVertexAttribPointer(vIN_Normal, 3, GL_FLOAT, GL_FALSE, 0, getNormalBuffer()));
 			}
-			glEnableVertexAttribArray(vIN_Normal);
+			CHECK_GL_ERROR(glEnableVertexAttribArray(vIN_Normal));
 		}
 
 		if(pass_struct->Tangent)
@@ -440,14 +442,14 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			Tangent=shader->getAttrib_Tangent();
 			if(m_bVBO)
 			{
-				glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_tangentID);
-				glVertexAttribPointer(Tangent, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+				CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_tangentID));
+				CHECK_GL_ERROR(glVertexAttribPointer(Tangent, 4, GL_FLOAT, GL_FALSE, 0, NULL));
 			}
 			else
 			{
-				glVertexAttribPointer(Tangent, 4, GL_FLOAT, GL_FALSE, 0, getTangentBuffer());
+				CHECK_GL_ERROR(glVertexAttribPointer(Tangent, 4, GL_FLOAT, GL_FALSE, 0, getTangentBuffer()));
 			}
-			glEnableVertexAttribArray(Tangent);
+			CHECK_GL_ERROR(glEnableVertexAttribArray(Tangent));
 		}
 
 		if(pass_struct->Material)
@@ -501,7 +503,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 #ifdef _WIN32
 			texenv1=GL_TEXTURE_ENV_MODE;
 #endif
-			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, texenv1, GL_REPLACE, 2, shader, shader_var->texture_uv_in_name.c_str()))
+			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, texenv1, GL_MODULATE, 2, shader, shader_var->texture_uv_in_name.c_str()))
 			{
 				shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
 				nTexUsed++;
@@ -510,13 +512,13 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 		if(m_bVBO)
 		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triInfo->getVBOTriListID());
-			glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, NULL);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			CHECK_GL_ERROR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triInfo->getVBOTriListID()));
+			CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, NULL));
+			CHECK_GL_ERROR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 		}
 		else
 		{
-			glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
+			CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList()));
 		}
 		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
 		renderer->m_nDrawCalls++;
@@ -529,21 +531,21 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			disableTextureOperations(cntr, shader, shader_var->texture_uv_in_name.c_str());
 		}
 
-		glDisableVertexAttribArray(vIN_Position);
+		CHECK_GL_ERROR(glDisableVertexAttribArray(vIN_Position));
 
 		if(pass_struct->Light)
 		{
-			glDisableVertexAttribArray(vIN_Normal);
+			CHECK_GL_ERROR(glDisableVertexAttribArray(vIN_Normal));
 		}
 
 		if(pass_struct->Tangent)
 		{
-			glDisableVertexAttribArray(Tangent);
+			CHECK_GL_ERROR(glDisableVertexAttribArray(Tangent));
 		}
 
 		if(m_bVBO)
 		{
-			glBindBuffer(GL_ARRAY_BUFFER,0);
+			CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER,0));
 		}
 
 		shader->disableProgram();
@@ -596,20 +598,22 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	}
 
 	gxHWShader* hwShader=(gxHWShader*)shader;
-    glActiveTexture(GL_TEXTURE0+stage);
-
+    CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0+stage));
 	if(bUse1x1Texture)
-		glBindTexture(GL_TEXTURE_2D, renderer->getGEARTexture1x1()->iTextureID);	
+		CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, renderer->getGEARTexture1x1()->iTextureID));	
 	else
 	{
-		glBindTexture(GL_TEXTURE_2D, submap->getTexture()->getTextureID());	
+		CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, submap->getTexture()->getTextureID()));	
 #if defined(TEXENV_ISSUE) && defined(_WIN32)
 		glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
 #endif
 		if(submap->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
 		{
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			//need to fix this bug
+			//CHECK_GL_ERROR(glEnable(GL_BLEND));
+			//CHECK_GL_ERROR(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+			//setBaseFlag(eObject3dBaseFlag_Alpha);	//check this
+			//
 		}
 	}
 
@@ -617,14 +621,14 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	{
 		if(m_bVBO)
 		{
-			glBindBuffer(GL_ARRAY_BUFFER, uv->m_cVBO_texID);
-			glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, 0);
+			CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, uv->m_cVBO_texID));
+			CHECK_GL_ERROR(glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, 0));
 		}
 		else
 		{
-			glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, uv->m_pszfGLTexCoordList);
+			CHECK_GL_ERROR(glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, uv->m_pszfGLTexCoordList));
 		}
-		glEnableVertexAttribArray(hwShader->getAttribLoc(texCoordAttribName));
+		CHECK_GL_ERROR(glEnableVertexAttribArray(hwShader->getAttribLoc(texCoordAttribName)));
 	}
 	//glEnable(GL_TEXTURE_2D);
 
@@ -637,10 +641,10 @@ void gxMesh::disableTextureOperations(int stage, gxHWShader* shader, const char*
 #if defined (USE_ProgrammablePipeLine)
 	if(shader)
 	{
-		glActiveTexture(GL_TEXTURE0+stage);
-		glDisableVertexAttribArray(shader->getAttribLoc(texCoordAttribName));
+		CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0+stage));
+		CHECK_GL_ERROR(glDisableVertexAttribArray(shader->getAttribLoc(texCoordAttribName)));
 		//glDisable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
 		//glDisable(GL_TEXTURE_2D);
 	}
 #else
@@ -655,7 +659,9 @@ void gxMesh::disableTextureOperations(int stage, gxHWShader* shader, const char*
 		glDisable(GL_TEXTURE_2D);	
 	}
 #endif
-	glDisable(GL_BLEND);
+	//need to fix this bug
+	//CHECK_GL_ERROR(glDisable(GL_BLEND));
+	//
 }
 
 float* gxMesh::allocateVertexBuffer(int nTris)

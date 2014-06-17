@@ -13,6 +13,7 @@
 #endif
 #include "COctree.h"
 #include "LayerManager.h"
+#include "../util/gxExpandableArray.h"
 
 
 class MWorldObserver
@@ -89,6 +90,8 @@ public:
 	LayerManager* getLayerManager()	{	return &m_cLayerManager;	}
 
 private:
+	void renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list);
+
 	std::vector<gxMaterial*> m_cMaterialList;
 	std::vector<gxAnimationSet*> m_vAnimationSetList;
 	std::vector<gxLight*> m_vLightList;

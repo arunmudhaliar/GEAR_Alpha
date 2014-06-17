@@ -61,12 +61,14 @@ COctree::~COctree()
 void COctree::reset()
 {
 	m_cCollidedObjLst.Clear();
+	m_cCollidedAlphaObjLst.Clear();
 	GX_DELETE(m_pRootNode);
 }
 
 bool COctree::createOctree(gxWorld* world, int minTransformObj/* =4 */, int maxLevel/* =8 */)
 {
 	m_cCollidedObjLst.Init(30, 10);
+	m_cCollidedAlphaObjLst.Init(30, 10);
 	m_pRootNode=new OctreeNode();
 	m_nMinTransformObj=minTransformObj;
 	m_nMaxLevel=maxLevel;
@@ -247,7 +249,7 @@ void COctree::overlapWithChildNodes(OctreeNode* node)
 
 void COctree::resetCollidedTransformObjList()
 {
-	if(m_cCollidedObjLst.GetCount()==0) return;
+	if(m_cCollidedObjLst.GetCount()==0 && m_cCollidedAlphaObjLst.GetCount()==0) return;
 
 	ExpandableArrayNode<object3d*>* collidedtransformObjNode=m_cCollidedObjLst.GetRoot();
 	int count=m_cCollidedObjLst.GetCount();
@@ -257,6 +259,16 @@ void COctree::resetCollidedTransformObjList()
 		collidedtransformObjNode=collidedtransformObjNode->GetNext();
 	}
 	m_cCollidedObjLst.Clear();
+
+	//alpha list
+	ExpandableArrayNode<object3d*>* collidedtransformAlphaObjNode=m_cCollidedAlphaObjLst.GetRoot();
+	int alpha_count=m_cCollidedAlphaObjLst.GetCount();
+	while(collidedtransformAlphaObjNode && alpha_count--)
+	{
+		collidedtransformAlphaObjNode->GetData()->setVisited(false);
+		collidedtransformAlphaObjNode=collidedtransformAlphaObjNode->GetNext();
+	}
+	m_cCollidedAlphaObjLst.Clear();
 }
 
 void COctree::checkOverlapWithOctree(OctreeNode* node, object3d* obj)
@@ -282,7 +294,10 @@ void COctree::checkOverlapWithOctree(OctreeNode* node, object3d* obj)
 			if(obj->getAABB().isOverLap(transf->getAABB()))
 			{
 				transf->setVisited(true);
-				m_cCollidedObjLst.Append(transf);
+				if(transf->isBaseFlag(object3d::eObject3dBaseFlag_Alpha))
+					m_cCollidedAlphaObjLst.Append(transf);
+				else
+					m_cCollidedObjLst.Append(transf);
 			}
 		}
 	}
@@ -308,7 +323,10 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 			if(!transf->isVisited())
 			{
 				transf->setVisited(true);
-				m_cCollidedObjLst.Append(transf);
+				if(transf->isBaseFlag(object3d::eObject3dBaseFlag_Alpha))
+					m_cCollidedAlphaObjLst.Append(transf);
+				else
+					m_cCollidedObjLst.Append(transf);
 			}
 		}
 		return;
@@ -325,7 +343,10 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 			if(frustum->isAABBInside(transf->getAABB()))
 			{
 				transf->setVisited(true);
-				m_cCollidedObjLst.Append(transf);
+				if(transf->isBaseFlag(object3d::eObject3dBaseFlag_Alpha))
+					m_cCollidedAlphaObjLst.Append(transf);
+				else
+					m_cCollidedObjLst.Append(transf);
 			}
 		}
 	}

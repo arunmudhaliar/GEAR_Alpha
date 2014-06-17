@@ -91,7 +91,7 @@ void geToolBarDropMenu::onSize(float cx, float cy, int flag)
 	memcpy(m_cVBLayoutToggleButtonLine, togglebutton_linevertLst, sizeof(togglebutton_linevertLst));
 }
 
-void geToolBarDropMenu::onButtonStateChanged(EBUTTON_STATE eFromState)
+void geToolBarDropMenu::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver)
 {
 	switch(m_eState)
 	{
@@ -100,6 +100,9 @@ void geToolBarDropMenu::onButtonStateChanged(EBUTTON_STATE eFromState)
 		break;
 	case BTN_STATE_PRESSED:
 		applySecondryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.45f);
+		break;
+	case BTN_STATE_CANCEL:
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
 		break;
 	}
 }
@@ -228,18 +231,18 @@ void geToolBarDropMenu::onButtonClicked()
 
 	if(m_pGUIObserver)
 		m_pGUIObserver->onButtonClicked(this);
-	buttonNormal();
+	buttonNormal(true);
 }
 
 bool geToolBarDropMenu::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	if(m_eState==BTN_STATE_NORMAL)
 	{
-		buttonPressed();
+		buttonPressed(false);
 	}
 	else if(m_eState==BTN_STATE_PRESSED)
 	{
-		buttonNormal();
+		buttonNormal(false);
 	}
 
 	return true;

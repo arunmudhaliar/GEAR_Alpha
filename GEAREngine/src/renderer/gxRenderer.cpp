@@ -23,7 +23,7 @@ void gxRenderer::setViewPort(float x, float y, float cx, float cy)
 	vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
 	m_cOrthogonalProjectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, 0.0f, 1000.0f);
 	m_cViewPortRect.set(x, y, cx, cy);
-	glViewport((int)x, (int)y, (int)cx, (int)cy);
+	CHECK_GL_ERROR(glViewport((int)x, (int)y, (int)cx, (int)cy));
 }
 
 void gxRenderer::setProjectionMatrixToGL(matrix4x4f* matrix)

@@ -137,6 +137,8 @@ void HWShaderManager::LoadDefaultShaders()
 	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMap.shader");
 	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMapSpecular.shader");
 	LoadSurfaceShader("res//shadersWin32//surfaceShader//MultiTex.shader");
+	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMapSeperateSpecular.shader");
+
 #elif defined(ANDROID)
 		//load code snippets
 	stHWShaderSnippet* snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/matrices_uniform_vars.snippet");

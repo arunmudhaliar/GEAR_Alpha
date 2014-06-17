@@ -91,7 +91,7 @@ bool gePushButton::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	if(m_eState==BTN_STATE_NORMAL)
 	{
-		buttonPressed();
+		buttonPressed(false);
 	}
 
 	return true;
@@ -101,7 +101,7 @@ bool gePushButton::onMouseLButtonUp(float x, float y, int nFlag)
 {
 	if(m_eState==BTN_STATE_PRESSED)
 	{
-		buttonNormal();
+		buttonNormal(false);
 		onButtonClicked();
 	}
 
@@ -113,7 +113,7 @@ bool gePushButton::onMouseMove(float x, float y, int flag)
 	return true;
 }
 
-void gePushButton::onButtonStateChanged(EBUTTON_STATE eFromState)
+void gePushButton::refresh()
 {
 	switch(m_eState)
 	{
@@ -123,9 +123,32 @@ void gePushButton::onButtonStateChanged(EBUTTON_STATE eFromState)
 	case BTN_STATE_PRESSED:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.3f);
 		break;
+	case BTN_STATE_CANCEL:
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
+		break;
+	}
+}
+
+void gePushButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver)
+{
+	bool bClicked=false;
+	switch(m_eState)
+	{
+	case BTN_STATE_NORMAL:
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
+		bClicked=true;
+		break;
+	case BTN_STATE_PRESSED:
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.3f);
+		bClicked=true;
+		break;
+	case BTN_STATE_CANCEL:
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
+		m_eState=BTN_STATE_NORMAL;
+		break;
 	}
 
-	if(m_pGUIObserver)
+	if(m_pGUIObserver && bClicked && !dontPassEventToObserver)
 		m_pGUIObserver->onButtonClicked(this);
 }
 

@@ -111,6 +111,48 @@ object3d::~object3d()
 	GX_DELETE(m_pAnimationController);
 }
 
+void object3d::resetAllBaseFlags(bool recursive)
+{
+	m_eBaseFlags=0;
+
+	if(recursive)
+	{
+		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+		{
+			object3d* obj = *it;
+			obj->resetAllBaseFlags(recursive);
+		}
+	}
+}
+
+void object3d::setBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive)
+{
+	m_eBaseFlags=m_eBaseFlags|eFlags;
+
+	if(recursive)
+	{
+		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+		{
+			object3d* obj = *it;
+			obj->setBaseFlag(eFlags, recursive);
+		}
+	}
+}
+
+void object3d::reSetBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive)
+{
+	m_eBaseFlags=m_eBaseFlags&~eFlags;
+	
+	if(recursive)
+	{
+		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+		{
+			object3d* obj = *it;
+			obj->reSetBaseFlag(eFlags, recursive);
+		}
+	}
+}
+
 void object3d::setObject3dObserverRecursive(MObject3dObserver* observer)
 {
 	setObject3dObserver(observer);

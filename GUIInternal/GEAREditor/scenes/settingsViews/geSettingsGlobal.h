@@ -41,7 +41,7 @@ public:
 	{
 		if(btn==m_pPushBtnVsync)
 		{
-			if(m_pPushBtnVsync->isCheck())
+			if(!m_pPushBtnVsync->isCheck())
 				setVSync(1);
 			else
 				setVSync(0);

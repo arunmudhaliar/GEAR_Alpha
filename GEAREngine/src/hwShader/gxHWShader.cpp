@@ -184,8 +184,8 @@ bool gxHWShader::compileShader(GLuint* shader, GLenum type, const char* source, 
     GLint status;
 
     *shader = glCreateShader(type);
-    glShaderSource(*shader, 1, &source, &fileSz);
-    glCompileShader(*shader);
+    CHECK_GL_ERROR(glShaderSource(*shader, 1, &source, &fileSz));
+    CHECK_GL_ERROR(glCompileShader(*shader));
 	
 #if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
 	GLint logLength;
@@ -202,7 +202,7 @@ bool gxHWShader::compileShader(GLuint* shader, GLenum type, const char* source, 
     glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
     if (status == 0)
     {
-        glDeleteShader(*shader);
+        CHECK_GL_ERROR(glDeleteShader(*shader));
         return false;
     }
 	
@@ -213,7 +213,7 @@ bool gxHWShader::linkProgram()
 {
     GLint status;
 	
-    glLinkProgram(m_cProgram);
+    CHECK_GL_ERROR(glLinkProgram(m_cProgram));
 	
 #if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
     GLint logLength;
@@ -227,7 +227,7 @@ bool gxHWShader::linkProgram()
     }
 #endif
 	
-    glGetProgramiv(m_cProgram, GL_LINK_STATUS, &status);
+    CHECK_GL_ERROR(glGetProgramiv(m_cProgram, GL_LINK_STATUS, &status));
     if (status == 0)
         return false;
 	
@@ -237,18 +237,18 @@ bool gxHWShader::linkProgram()
 void gxHWShader::attachShader()
 {
 	// Attach vertex shader to program
-	glAttachShader(m_cProgram, m_cVertShader);
+	CHECK_GL_ERROR(glAttachShader(m_cProgram, m_cVertShader));
 	// Attach fragment shader to program
-	glAttachShader(m_cProgram, m_cFragShader);	
+	CHECK_GL_ERROR(glAttachShader(m_cProgram, m_cFragShader));	
 }
 
 void gxHWShader::detachShader()
 {
 	// Release vertex and fragment shaders
 	if (m_cVertShader)
-		glDetachShader(m_cProgram, m_cVertShader);
+		CHECK_GL_ERROR(glDetachShader(m_cProgram, m_cVertShader));
 	if (m_cFragShader)
-		glDetachShader(m_cProgram, m_cFragShader);
+		CHECK_GL_ERROR(glDetachShader(m_cProgram, m_cFragShader));
 
 	clearAttribRefVarList();
 	clearUniformRefVarList();
@@ -260,17 +260,17 @@ void gxHWShader::destroyShader()
 
 	if (m_cVertShader)
 	{
-		glDeleteShader(m_cVertShader);
+		CHECK_GL_ERROR(glDeleteShader(m_cVertShader));
 		m_cVertShader = 0;
 	}
 	if (m_cFragShader)
 	{
-		glDeleteShader(m_cFragShader);
+		CHECK_GL_ERROR(glDeleteShader(m_cFragShader));
 		m_cFragShader = 0;
 	}
 	if (m_cProgram)
 	{
-		glDeleteProgram(m_cProgram);
+		CHECK_GL_ERROR(glDeleteProgram(m_cProgram));
 		m_cProgram = 0;
 	}	
 }
@@ -278,19 +278,19 @@ void gxHWShader::destroyShader()
 void gxHWShader::enableProgram()
 {
 	// Use shader program
-    glUseProgram(m_cProgram);
+    CHECK_GL_ERROR(glUseProgram(m_cProgram));
 }
 
 void gxHWShader::disableProgram()
 {
-	glUseProgram(0);
+	CHECK_GL_ERROR(glUseProgram(0));
 }
 
 bool gxHWShader::validateProgram()
 {
 	GLint logLength, status;
 	
-	glValidateProgram(m_cProgram);
+	CHECK_GL_ERROR(glValidateProgram(m_cProgram));
 
 #if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
 	glGetProgramiv(m_cProgram, GL_INFO_LOG_LENGTH, &logLength);
@@ -303,7 +303,7 @@ bool gxHWShader::validateProgram()
 	}
 #endif
 
-	glGetProgramiv(m_cProgram, GL_VALIDATE_STATUS, &status);
+	CHECK_GL_ERROR(glGetProgramiv(m_cProgram, GL_VALIDATE_STATUS, &status));
 	if (status == 0)
 		return false;
 	
@@ -313,11 +313,11 @@ bool gxHWShader::validateProgram()
 void gxHWShader::showShaderLog(const char* title)
 {
 	GLint logLength;
-	glGetProgramiv(m_cProgram, GL_INFO_LOG_LENGTH, &logLength);
+	CHECK_GL_ERROR(glGetProgramiv(m_cProgram, GL_INFO_LOG_LENGTH, &logLength));
 	if (logLength > 1)
 	{
 		GLchar *log = (GLchar *)malloc(logLength);
-		glGetProgramInfoLog(m_cProgram, logLength, &logLength, log);
+		CHECK_GL_ERROR(glGetProgramInfoLog(m_cProgram, logLength, &logLength, log));
 		DEBUG_PRINT("title :%s\n%s", title, log);
 		free(log);
 	}
@@ -401,42 +401,42 @@ void gxHWShader::clearUniformRefVarList()
 
 void gxHWShader::sendUniform1f(const char* name, float x)
 {
-	glUniform1f(getUniformLoc(name), x);
+	CHECK_GL_ERROR(glUniform1f(getUniformLoc(name), x));
 }
 
 void gxHWShader::sendUniform2f(const char* name, float x, float y)
 {
-	glUniform2f(getUniformLoc(name), x, y);
+	CHECK_GL_ERROR(glUniform2f(getUniformLoc(name), x, y));
 }
 
 void gxHWShader::sendUniform3f(const char* name, float x, float y, float z)
 {
-	glUniform3f(getUniformLoc(name), x, y, z);
+	CHECK_GL_ERROR(glUniform3f(getUniformLoc(name), x, y, z));
 }
 
 void gxHWShader::sendUniform4f(const char* name, float x, float y, float z, float w)
 {
-	glUniform4f(getUniformLoc(name), x, y, z, w);
+	CHECK_GL_ERROR(glUniform4f(getUniformLoc(name), x, y, z, w));
 }
 
 void gxHWShader::sendUniform1i(const char* name, int x)
 {
-	glUniform1i(getUniformLoc(name), x);
+	CHECK_GL_ERROR(glUniform1i(getUniformLoc(name), x));
 }
 
 void gxHWShader::sendUniform2i(const char* name, int x, int y)
 {
-	glUniform2i(getUniformLoc(name), x, y);
+	CHECK_GL_ERROR(glUniform2i(getUniformLoc(name), x, y));
 }
 
 void gxHWShader::sendUniform3i(const char* name, int x, int y, int z)
 {
-	glUniform3i(getUniformLoc(name), x, y, z);
+	CHECK_GL_ERROR(glUniform3i(getUniformLoc(name), x, y, z));
 }
 
 void gxHWShader::sendUniform4i(const char* name, int x, int y, int z, int w)
 {
-	glUniform4i(getUniformLoc(name), x, y, z, w);
+	CHECK_GL_ERROR(glUniform4i(getUniformLoc(name), x, y, z, w));
 }
 
 void gxHWShader::sendUniformTMfv(const char* name, const float* matrix, bool transpose, int size)
@@ -446,35 +446,35 @@ void gxHWShader::sendUniformTMfv(const char* name, const float* matrix, bool tra
 	switch(size)
     {
     case 2:
-		glUniformMatrix2fv(loc, 1, transpose, matrix);
+		CHECK_GL_ERROR(glUniformMatrix2fv(loc, 1, transpose, matrix));
 		break;
     case 3:
-		glUniformMatrix3fv(loc, 1, transpose, matrix);
+		CHECK_GL_ERROR(glUniformMatrix3fv(loc, 1, transpose, matrix));
 		break;
     case 4:
-		glUniformMatrix4fv(loc, 1, transpose, matrix);
+		CHECK_GL_ERROR(glUniformMatrix4fv(loc, 1, transpose, matrix));
 		break;
     }
 }
 
 void gxHWShader::sendUniform2fv(const char* name, const float* input)
 {
-	glUniform2fv(getUniformLoc(name), 1, input);
+	CHECK_GL_ERROR(glUniform2fv(getUniformLoc(name), 1, input));
 }
 
 void gxHWShader::sendUniform3fv(const char* name, const float* input)
 {
-	glUniform3fv(getUniformLoc(name), 1, input);
+	CHECK_GL_ERROR(glUniform3fv(getUniformLoc(name), 1, input));
 }
 
 void gxHWShader::sendUniform4fv(const char* name, const float* input)
 {
-	glUniform4fv(getUniformLoc(name), 1, input);
+	CHECK_GL_ERROR(glUniform4fv(getUniformLoc(name), 1, input));
 }
 
 void gxHWShader::sendUniform4fv(const char* name, const float* input, int nVectors)
 {
-    glUniform4fv(getUniformLoc(name), nVectors, input);
+    CHECK_GL_ERROR(glUniform4fv(getUniformLoc(name), nVectors, input));
 }
 
 
@@ -482,25 +482,25 @@ void gxHWShader::sendUniform4fv(const char* name, const float* input, int nVecto
 void gxHWShader::sendAttrib2fv(const char* name, const float* input)
 {
 	int loc=getAttribLoc(name);
-	glVertexAttrib2fv(loc, input);
+	CHECK_GL_ERROR(glVertexAttrib2fv(loc, input));
 }
 
 void gxHWShader::sendAttrib3fv(const char* name, const float* input)
 {
 	int loc=getAttribLoc(name);
-	glVertexAttrib3fv(loc, input);
+	CHECK_GL_ERROR(glVertexAttrib3fv(loc, input));
 }
 
 void gxHWShader::sendAttrib4fv(const char* name, const float* input)
 {
 	int loc=getAttribLoc(name);
-	glVertexAttrib4fv(loc, input);
+	CHECK_GL_ERROR(glVertexAttrib4fv(loc, input));
 }
 
 void gxHWShader::sendAttrib1f(const char* name, float x)
 {
 	int loc=getAttribLoc(name);
-	glVertexAttrib1f(loc, x);
+	CHECK_GL_ERROR(glVertexAttrib1f(loc, x));
 }
 
 //predefined vars
@@ -508,12 +508,12 @@ void gxHWShader::sendUniform_GEAR_MODELVIEW(const float* input)
 {
 	if(m_cUnifrom_GEAR_MODELVIEW!=-1)
 	{
-		glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input);
+		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input));
 	}
 	else
 	{
 		m_cUnifrom_GEAR_MODELVIEW = getUniformLoc("GEAR_MODELVIEW");
-		glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input);
+		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input));
 	}
 }
 
@@ -521,24 +521,24 @@ void gxHWShader::sendUniform_GEAR_MVP(const float* input)
 {
 	if(m_cUnifrom_GEAR_MVP!=-1)
 	{
-		glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input);
+		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input));
 	}
 	else
 	{
 		m_cUnifrom_GEAR_MVP = getUniformLoc("GEAR_MVP");
-		glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input);
+		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input));
 	}
 }
 void gxHWShader::sendUniform_GEAR_MODEL_MATRIX(const float* input)
 {
 	if(m_cUnifrom_GEAR_MODEL_MATRIX!=-1)
 	{
-		glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input);
+		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input));
 	}
 	else
 	{
 		m_cUnifrom_GEAR_MODEL_MATRIX = getUniformLoc("GEAR_MODEL_MATRIX");
-		glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input);
+		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input));
 	}
 }
 
@@ -546,12 +546,12 @@ void gxHWShader::sendUniform_GEAR_MODEL_INVERSE(const float* input)
 {
 	if(m_cUnifrom_GEAR_MODEL_INVERSE!=-1)
 	{
-		glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input);
+		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input));
 	}
 	else
 	{
 		m_cUnifrom_GEAR_MODEL_INVERSE = getUniformLoc("GEAR_MODEL_INVERSE");
-		glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input);
+		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input));
 	}
 }
 
@@ -559,12 +559,12 @@ void gxHWShader::sendUniform_material_diffuse(const float* input)
 {
 	if(m_cUnifrom_material_diffuse!=-1)
 	{
-		glUniformMatrix4fv(m_cUnifrom_material_diffuse, 1, false, input);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_diffuse, 1, input));
 	}
 	else
 	{
 		m_cUnifrom_material_diffuse = getUniformLoc("material.diffuse");
-		glUniform4fv(m_cUnifrom_material_diffuse, 1, input);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_diffuse, 1, input));
 	}
 }
 
@@ -572,12 +572,12 @@ void gxHWShader::sendUniform_material_ambient(const float* input)
 {
 	if(m_cUnifrom_material_ambient!=-1)
 	{
-		glUniformMatrix4fv(m_cUnifrom_material_ambient, 1, false, input);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_ambient, 1, input));
 	}
 	else
 	{
 		m_cUnifrom_material_ambient = getUniformLoc("material.ambient");
-		glUniform4fv(m_cUnifrom_material_ambient, 1, input);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_ambient, 1, input));
 	}
 }
 
@@ -585,12 +585,12 @@ void gxHWShader::sendUniform_material_specular(const float* input)
 {
 	if(m_cUnifrom_material_specular!=-1)
 	{
-		glUniformMatrix4fv(m_cUnifrom_material_specular, 1, false, input);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_specular, 1, input));
 	}
 	else
 	{
 		m_cUnifrom_material_specular = getUniformLoc("material.specular");
-		glUniform4fv(m_cUnifrom_material_specular, 1, input);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_specular, 1, input));
 	}
 }
 
@@ -598,12 +598,12 @@ void gxHWShader::sendUniform_material_shininess(float input)
 {
 	if(m_cUnifrom_material_shininess!=-1)
 	{
-		glUniform1f(m_cUnifrom_material_shininess, input);
+		CHECK_GL_ERROR(glUniform1f(m_cUnifrom_material_shininess, input));
 	}
 	else
 	{
 		m_cUnifrom_material_shininess = getUniformLoc("material.shininess");
-		glUniform1f(m_cUnifrom_material_shininess, input);
+		CHECK_GL_ERROR(glUniform1f(m_cUnifrom_material_shininess, input));
 	}
 }
 
@@ -611,12 +611,12 @@ void gxHWShader::sendUniform_time(const float* time)
 {
 	if(m_cUnifrom_Time_time!=-1)
 	{
-		glUniform4fv(m_cUnifrom_Time_time, 1, time);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_Time_time, 1, time));
 	}
 	else
 	{
 		m_cUnifrom_Time_time = getUniformLoc("Time.time");
-		glUniform4fv(m_cUnifrom_Time_time, 1, time);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_Time_time, 1, time));
 	}
 }
 
@@ -624,12 +624,12 @@ void gxHWShader::sendUniform_deltatime(const float* deltatime)
 {
 	if(m_cUnifrom_Time_deltatime!=-1)
 	{
-		glUniform4fv(m_cUnifrom_Time_deltatime, 1, deltatime);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_Time_deltatime, 1, deltatime));
 	}
 	else
 	{
 		m_cUnifrom_Time_deltatime = getUniformLoc("Time.deltatime");
-		glUniform4fv(m_cUnifrom_Time_deltatime, 1, deltatime);
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_Time_deltatime, 1, deltatime));
 	}
 }
 

@@ -175,11 +175,11 @@ void gearSceneConsole::onButtonClicked(geGUIBase* btn)
 	if(m_pClearBtn==btn)
 	{
 		clearConsoleCurrentRun();
-		m_pClearBtn->buttonNormal();
+		m_pClearBtn->buttonNormal(true);
 	}
 	else if(m_pClearAllBtn==btn)
 	{
 		clearConsoleAllRun();
-		m_pClearAllBtn->buttonNormal();
+		m_pClearAllBtn->buttonNormal(true);
 	}
 }

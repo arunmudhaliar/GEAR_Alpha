@@ -247,14 +247,14 @@ public:
                 break;
         }
         
-        GLenum err;
-		err = glGetError();
-		if (err != GL_NO_ERROR)
-		{
-#if defined (LOG_DEBUG_ENGINE)
-            DEBUG_PRINT("Error uploading texture to gpu. glError: 0x%04X", err);
-#endif 			
-		}
+//        GLenum err;
+//		err = glGetError();
+//		if (err != GL_NO_ERROR)
+//		{
+//#if defined (LOG_DEBUG_ENGINE)
+//            DEBUG_PRINT("Error uploading texture to gpu. glError: 0x%04X", err);
+//#endif 			
+//		}
         
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

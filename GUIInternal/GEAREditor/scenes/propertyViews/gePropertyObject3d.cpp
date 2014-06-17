@@ -1,5 +1,6 @@
 #include "gePropertyObject3d.h"
 #include "../../EditorApp.h"
+#include "../../../resource.h"
 
 gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
 	geTreeNode(renderer, parent, name, sprite, 10)
@@ -15,6 +16,10 @@ gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent
 
 	m_pTextBoxMeshName = new geTextBox("MeshName");
 	m_pTextBoxMeshName->create(renderer, this, "MeshName", 35, 10, 200, 16);
+
+	m_pPushBtn_Object3dStatic = new gePushButton("");
+	m_pPushBtn_Object3dStatic->create(renderer, this, "", m_pTextBoxMeshName->getPos().x+m_pTextBoxMeshName->getSize().x+10, 10);
+	m_pPushBtn_Object3dStatic->setGUIObserver(this);
 
 	m_pTagDropDownMenu=new geToolBarDropMenu(m_pRenderer, "Tag", this);
 	m_pTagDropDownMenu->setGUIObserver(this);
@@ -43,6 +48,7 @@ void gePropertyObject3d::drawNode()
 	drawRect(&m_cVBClientArea);
 
 	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geGUIManager::g_pFontArial10_84Ptr->drawString("Static", m_pPushBtn_Object3dStatic->getPos().x+m_pPushBtn_Object3dStatic->getSize().x+5, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()+5, m_cSize.x);
 	geGUIManager::g_pFontArial10_84Ptr->drawString("Tag", 10, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()+33, m_cSize.x);
 	geGUIManager::g_pFontArial10_84Ptr->drawString("Layer", m_pLayerDropDownMenu->getPos().x-37, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()+33, m_cSize.x);
 
@@ -74,6 +80,7 @@ void gePropertyObject3d::populatePropertyOfObject(object3d* obj)
 	m_pObject3dPtr=obj;
 	m_pTextBoxMeshName->setName(obj->getName());
 	m_pPushBtn_Object3dVisible->setCheck(obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible));
+	m_pPushBtn_Object3dStatic->setCheck(obj->isBaseFlag(object3d::eObject3dBaseFlag_Static));
 
 	m_pLayerDropDownMenu->clearMenu();
 	LayerManager* layerManager = monoWrapper::mono_engine_getWorld(0)->getLayerManager();
@@ -93,10 +100,41 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 {
 	if(btn==m_pPushBtn_Object3dVisible)
 	{
-		if(m_pPushBtn_Object3dVisible->isCheck())
+		if(!m_pPushBtn_Object3dVisible->isCheck())
 			m_pObject3dPtr->setBaseFlag(object3d::eObject3dBaseFlag_Visible);
 		else
 			m_pObject3dPtr->reSetBaseFlag(object3d::eObject3dBaseFlag_Visible);
+	}
+	else if(btn==m_pPushBtn_Object3dStatic /*&& m_pPushBtn_Object3dStatic->isButtonPressed()*/)
+	{
+		bool bRecursive=false;
+		if(m_pObject3dPtr->getChildCount())
+		{
+			LRESULT result = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_YESNOCANCEL_ITERATECHILDS_BOX), EditorApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(YesNoCancel_DlgBox));
+			if(result==IDYES)
+				bRecursive=true;
+			else if(result==IDCANCEL)
+			{
+				if(!m_pPushBtn_Object3dStatic->isCheck())
+					m_pPushBtn_Object3dStatic->buttonNormal(true);
+				else
+					m_pPushBtn_Object3dStatic->buttonPressed(true);
+				return;
+			}
+
+		}
+		if(!m_pPushBtn_Object3dStatic->isCheck())
+		{
+			m_pObject3dPtr->setBaseFlag(object3d::eObject3dBaseFlag_Static, bRecursive);
+			//m_pPushBtn_Object3dStatic->buttonPressed(true);
+		}
+		else
+		{
+			m_pObject3dPtr->reSetBaseFlag(object3d::eObject3dBaseFlag_Static, bRecursive);
+			//m_pPushBtn_Object3dStatic->buttonNormal(true);
+		}
+		m_pPushBtn_Object3dStatic->refresh();
+		//TODO: We need to remove/add to octree based on this flag.
 	}
 }
 

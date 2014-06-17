@@ -79,7 +79,7 @@ void geToolBarButton::onSize(float cx, float cy, int flag)
 	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 }
 
-void geToolBarButton::onButtonStateChanged(EBUTTON_STATE eFromState)
+void geToolBarButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver)
 {
 	switch(m_eState)
 	{
@@ -88,6 +88,10 @@ void geToolBarButton::onButtonStateChanged(EBUTTON_STATE eFromState)
 		break;
 	case BTN_STATE_PRESSED:
 		applySecondryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.45f);
+		break;
+	case BTN_STATE_CANCEL:
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
+		m_eState=BTN_STATE_NORMAL;
 		break;
 	}
 }
@@ -102,11 +106,11 @@ bool geToolBarButton::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	if(m_eState==BTN_STATE_NORMAL)
 	{
-		buttonPressed();
+		buttonPressed(false);
 	}
 	else if(m_eState==BTN_STATE_PRESSED)
 	{
-		buttonNormal();
+		buttonNormal(false);
 	}
 
 	return true;

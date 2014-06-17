@@ -9,7 +9,8 @@ public:
 	enum EBUTTON_STATE
 	{
 		BTN_STATE_NORMAL,
-		BTN_STATE_PRESSED
+		BTN_STATE_PRESSED,
+		BTN_STATE_CANCEL
 	};
 
 	geButtonBase()
@@ -21,14 +22,15 @@ public:
 
 	virtual void onCancelEngagedControls();
 
-	void buttonPressed();
-	void buttonNormal();
+	void buttonCancel();
+	void buttonPressed(bool dontPassEventToObserver);
+	void buttonNormal(bool dontPassEventToObserver);
 	void buttonHover();
 	void buttonUnHover();
 	bool isButtonPressed();
 
 protected:
-	virtual void onButtonStateChanged(EBUTTON_STATE eFromState)=0;
+	virtual void onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver)=0;
 
 	virtual void onButtonClicked();
 
@@ -61,7 +63,7 @@ protected:
 	virtual bool onMouseLButtonUp(float x, float y, int nFlag);
 	virtual bool onMouseMove(float x, float y, int flag);
 
-	virtual void onButtonStateChanged(EBUTTON_STATE eFromState);
+	virtual void onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver);
 
 	virtual void onMouseEnterClientArea();
 	virtual void onMouseExitClientArea();

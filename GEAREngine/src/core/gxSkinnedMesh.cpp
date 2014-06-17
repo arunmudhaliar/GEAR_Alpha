@@ -11,6 +11,7 @@ gxMesh(OBJECT3D_SKINNED_MESH)
 	m_pszVertexCopyBuffer=NULL;
 	m_pszInvBoneTMList=NULL;
 	m_pszBoneOffsetList=NULL;
+	reSetBaseFlag(eObject3dBaseFlag_Static);
 }
 
 gxSkinnedMesh::~gxSkinnedMesh()

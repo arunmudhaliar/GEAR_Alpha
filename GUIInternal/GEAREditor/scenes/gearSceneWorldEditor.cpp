@@ -80,7 +80,7 @@ void gearSceneWorldEditor::onCreate()
 	getToolBar()->appendToolBarControl(m_pScaleGizmo);
 
 	//enable translate gizmo
-	m_pTranslateGizmo->buttonPressed();
+	m_pTranslateGizmo->buttonPressed(false);
 
 	m_pHorizontalSlider_LightAmbient = new geHorizontalSlider();
 	m_pHorizontalSlider_LightAmbient->create(m_pRenderer, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
@@ -97,7 +97,7 @@ void gearSceneWorldEditor::onCreate()
 	m_pTBGridView->loadImage("res//icons16x16.png", 112, 384);
 	//m_pTBGridView->setClientAreaSecondryActiveForeColor(0.5f, 0.3f, 0.2f, 1.0f);
 	//m_pTBGridView->applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
-	m_pTBGridView->buttonPressed();
+	m_pTBGridView->buttonPressed(false);
 	getToolBar()->appendToolBarControl(m_pTBGridView);
 
 	geToolBarSeperator* seperator3 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40);
@@ -232,9 +232,9 @@ void gearSceneWorldEditor::draw()
 	}
 #endif
 
-	drawShadowMapPass();
-	drawLightsOnMultiPass();
-	onDraw();
+	//drawShadowMapPass();
+	CHECK_GL_ERROR(drawLightsOnMultiPass());
+	CHECK_GL_ERROR(onDraw());
 
 #if defined USE_FBO
 	//if(bMultiPass)
@@ -242,7 +242,7 @@ void gearSceneWorldEditor::draw()
 	//m_cFBO.UnBindFBO();
 #endif
 
-	drawStats();
+	CHECK_GL_ERROR(drawStats());
 
 #if USE_BULLET
 	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
@@ -255,7 +255,7 @@ void gearSceneWorldEditor::draw()
 	glPushMatrix();
 	glLoadMatrixf(monoWrapper::mono_engine_getWorld(0)->getRenderer()->getViewMatrix()->getMatrix());
 
-	monoWrapper::mono_engine_getWorld(0)->getPhysicsEngine()->render();
+	CHECK_GL_ERROR(monoWrapper::mono_engine_getWorld(0)->getPhysicsEngine()->render());
 	glPopMatrix();
 #endif
 }
@@ -409,7 +409,7 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	m_cMultiPassFBO.BindFBO();
 	//gxCamera* active_cam=m_pMainWorldPtr->getActiveCamera()->getCameraStructure();
 	monoWrapper::mono_engine_resize(m_pMainWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/, 10.0f, 100000.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 #if USE_NVPROFILER
 	if(nvProfiler::g_bPerformanceAnalyze)
@@ -458,9 +458,9 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
 #endif
 
-	drawGrid();
-	drawSelectedObject();
-	drawOctree();
+	CHECK_GL_ERROR(drawGrid());
+	CHECK_GL_ERROR(drawSelectedObject());
+	CHECK_GL_ERROR(drawOctree());
 	m_cMultiPassFBO.UnBindFBO();
 }
 
@@ -472,7 +472,9 @@ void gearSceneWorldEditor::drawGrid()
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(0);
 		shader->enableProgram();
 
-		const float* u_mvp_m4x4=m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix();
+		matrix4x4f gridOffsetTM;
+		gridOffsetTM.setPosition(0, 0, -1);
+		const float* u_mvp_m4x4=(*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * gridOffsetTM).getOGLMatrix();
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 
 		vector4f diffuseClr(0.2f, 0.2f, 0.2f, 1.0f);
@@ -705,7 +707,7 @@ void gearSceneWorldEditor::drawStats()
 		glDisable(GL_DEPTH_TEST);
 #if defined USE_FBO
 		drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, -getTopMarginOffsetHeight(), m_cSize.x, m_cSize.y);
-		drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
+		//drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
 #endif
 
 		char buffer[128];
@@ -726,9 +728,9 @@ void gearSceneWorldEditor::drawStats()
 		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*8, m_cSize.x);
 		sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
 		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*9, m_cSize.x);
-		int last_gl_err=glGetError();
-		if(last_gl_err!=GL_NO_ERROR)
-			m_iLastGLError=last_gl_err;
+		//int last_gl_err=glGetError();
+		//if(last_gl_err!=GL_NO_ERROR)
+		//	m_iLastGLError=last_gl_err;
 		sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
 		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*10, m_cSize.x);
 
@@ -933,14 +935,14 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 
 	GLdouble x1, y1, z1, depth;
 	GLdouble x2, y2, z2;
-	glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth);
-	z1=z2=depth;
+	//CHECK_GL_ERROR(glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth));
+	z1=z2=depth=0.0f;
 
 	gxRectf viewPortRect=m_pMainWorldPtr->getRenderer()->getViewPortRect();
 	GLint viewport[4]={viewPortRect.m_pos.x, viewPortRect.m_pos.y, viewPortRect.m_size.x, viewPortRect.m_size.y}; 
 	//float ptY=Scene::getCommonData()->getScreenHeight();
-	gluUnProject(x, viewPortRect.m_size.y - y, 0, viewTM, projectionTM, viewport, &x1, &y1, &z1);
-	gluUnProject(x, viewPortRect.m_size.y - y, 1, viewTM, projectionTM, viewport, &x2, &y2, &z2);
+	CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 0, viewTM, projectionTM, viewport, &x1, &y1, &z1));
+	CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 1, viewTM, projectionTM, viewport, &x2, &y2, &z2));
 	
 	minV.set(x1, y1, z1);
 	maxV.set(x2, y2, z2);
@@ -1130,14 +1132,14 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 
 				GLdouble x1, y1, z1, depth;
 				GLdouble x2, y2, z2;
-				glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth);
-				z1=z2=depth;
+				//CHECK_GL_ERROR(glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth));
+				z1=z2=depth=0.0f;
 
 				gxRectf viewPortRect=m_pMainWorldPtr->getRenderer()->getViewPortRect();
 				GLint viewport[4]={viewPortRect.m_pos.x, viewPortRect.m_pos.y, viewPortRect.m_size.x, viewPortRect.m_size.y}; 
 				//float ptY=Scene::getCommonData()->getScreenHeight();
-				gluUnProject(x, viewPortRect.m_size.y - y, 0, viewTM, projectionTM, viewport, &x1, &y1, &z1);
-				gluUnProject(x, viewPortRect.m_size.y - y, 1, viewTM, projectionTM, viewport, &x2, &y2, &z2);
+				CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 0, viewTM, projectionTM, viewport, &x1, &y1, &z1));
+				CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 1, viewTM, projectionTM, viewport, &x2, &y2, &z2));
 
 				minV.set(x1, y1, z1);
 				maxV.set(x2, y2, z2);
@@ -1254,7 +1256,7 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 			m_pLocalOrGlobalAxis->setName("Local");
 			m_bTransformThroughLocalAxis=true;
 		}
-		m_pLocalOrGlobalAxis->buttonNormal();
+		m_pLocalOrGlobalAxis->buttonNormal(true);
 	}
 	else if(m_pPlayButton==btn)
 	{
@@ -1266,7 +1268,7 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 		}
 		else
 		{
-			m_pPauseButton->buttonNormal();
+			m_pPauseButton->buttonNormal(true);
 			m_bMonoGameInitialized=false;
 		}
 	}
@@ -1275,31 +1277,31 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 		if(m_pPauseButton->isButtonPressed() && !m_pPlayButton->isButtonPressed())
 		{
 			//reset the button if not in play mode
-			m_pPauseButton->buttonNormal();
+			m_pPauseButton->buttonNormal(true);
 		}
 	}
 	else if(m_pTranslateGizmo==btn)
 	{
 		if(m_pTranslateGizmo->isButtonPressed())
 		{
-			m_pRotateGizmo->buttonNormal();
-			m_pScaleGizmo->buttonNormal();
+			m_pRotateGizmo->buttonNormal(true);
+			m_pScaleGizmo->buttonNormal(true);
 		}
 	}
 	else if(m_pRotateGizmo==btn)
 	{
 		if(m_pRotateGizmo->isButtonPressed())
 		{
-			m_pTranslateGizmo->buttonNormal();
-			m_pScaleGizmo->buttonNormal();
+			m_pTranslateGizmo->buttonNormal(true);
+			m_pScaleGizmo->buttonNormal(true);
 		}
 	}
 	else if(m_pScaleGizmo==btn)
 	{
 		if(m_pScaleGizmo->isButtonPressed())
 		{
-			m_pRotateGizmo->buttonNormal();
-			m_pTranslateGizmo->buttonNormal();
+			m_pRotateGizmo->buttonNormal(true);
+			m_pTranslateGizmo->buttonNormal(true);
 		}
 	}
 }
@@ -1363,8 +1365,8 @@ void gearSceneWorldEditor::onCommand(int cmd)
 
 void gearSceneWorldEditor::stopSimulation()
 {
-	m_pPlayButton->buttonNormal();
-	m_pPauseButton->buttonNormal();
+	m_pPlayButton->buttonNormal(true);
+	m_pPauseButton->buttonNormal(true);
 	m_bMonoGameInitialized=false;
 }
 

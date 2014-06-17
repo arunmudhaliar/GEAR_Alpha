@@ -17,6 +17,9 @@
 
 #include "scenes\propertyViews\gePropertyOctree.h"
 
+LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK YesNoCancel_DlgBox(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
 class EditorApp
 {
 public:

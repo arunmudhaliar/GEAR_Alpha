@@ -12,18 +12,25 @@ geButtonBase::~geButtonBase()
 {
 }
 
-void geButtonBase::buttonPressed()
+void geButtonBase::buttonPressed(bool dontPassEventToObserver)
 {
 	EBUTTON_STATE prevState=m_eState;
 	m_eState=BTN_STATE_PRESSED;
-	onButtonStateChanged(prevState);
+	onButtonStateChanged(prevState, dontPassEventToObserver);
 }
 
-void geButtonBase::buttonNormal()
+void geButtonBase::buttonNormal(bool dontPassEventToObserver)
 {
 	EBUTTON_STATE prevState=m_eState;
 	m_eState = BTN_STATE_NORMAL;
-	onButtonStateChanged(prevState);
+	onButtonStateChanged(prevState, dontPassEventToObserver);
+}
+
+void geButtonBase::buttonCancel()
+{
+	EBUTTON_STATE prevState=m_eState;
+	m_eState = BTN_STATE_CANCEL;
+	onButtonStateChanged(prevState, true);
 }
 
 void geButtonBase::buttonHover()
@@ -43,7 +50,7 @@ bool geButtonBase::isButtonPressed()
 
 void geButtonBase::onCancelEngagedControls()
 {
-	buttonNormal();
+	buttonCancel();
 
 	geGUIBase::onCancelEngagedControls();
 }
@@ -142,7 +149,7 @@ bool geButton::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	if(m_eState==BTN_STATE_NORMAL)
 	{
-		buttonPressed();
+		buttonPressed(false);
 	}
 
 	return true;
@@ -152,7 +159,7 @@ bool geButton::onMouseLButtonUp(float x, float y, int nFlag)
 {
 	if(m_eState==BTN_STATE_PRESSED)
 	{
-		buttonNormal();
+		buttonNormal(false);
 		onButtonClicked();
 	}
 
@@ -164,19 +171,26 @@ bool geButton::onMouseMove(float x, float y, int flag)
 	return true;
 }
 
-void geButton::onButtonStateChanged(EBUTTON_STATE eFromState)
+void geButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver)
 {
+	bool bClicked=false;
 	switch(m_eState)
 	{
 	case BTN_STATE_NORMAL:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
+		bClicked=true;
 		break;
 	case BTN_STATE_PRESSED:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.3f);
+		bClicked=true;
+		break;
+	case BTN_STATE_CANCEL:
+		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
+		m_eState=BTN_STATE_NORMAL;
 		break;
 	}
 
-	if(m_pGUIObserver)
+	if(m_pGUIObserver && bClicked && !dontPassEventToObserver)
 		m_pGUIObserver->onButtonClicked(this);
 }
 

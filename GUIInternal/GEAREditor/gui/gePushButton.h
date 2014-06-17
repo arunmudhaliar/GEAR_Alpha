@@ -20,6 +20,7 @@ public:
 	
 	void setCheck(bool flag)	{	m_bCheck=flag;		}
 	bool isCheck()				{	return m_bCheck;	}
+	void refresh();
 
 protected:
 	virtual void onPosition(float x, float y, int flag);
@@ -29,7 +30,7 @@ protected:
 	virtual bool onMouseLButtonUp(float x, float y, int nFlag);
 	virtual bool onMouseMove(float x, float y, int flag);
 
-	virtual void onButtonStateChanged(EBUTTON_STATE eFromState);
+	virtual void onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver);
 
 	virtual void onMouseEnterClientArea();
 	virtual void onMouseExitClientArea();

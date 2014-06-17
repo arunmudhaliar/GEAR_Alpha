@@ -81,7 +81,9 @@ public:
 	enum EOBJEC3DTFLAGS
 	{
 		eObject3dBaseFlag_None		= 0,
-		eObject3dBaseFlag_Visible	= (1<<0)
+		eObject3dBaseFlag_Visible	= (1<<0),
+		eObject3dBaseFlag_Alpha		= (1<<1),	//any type of transparency
+		eObject3dBaseFlag_Static	= (1<<2)	//static object
 	};
 
 	object3d(int objID);
@@ -117,9 +119,9 @@ public:
 	void setParent(object3d* pParentPtr)	{	m_pParentPtr=pParentPtr;	}
 	object3d* getParent()					{	return m_pParentPtr;		}
 
-	void	resetAllBaseFlags()						{	m_eBaseFlags=0;						}
-	void	setBaseFlag(EOBJEC3DTFLAGS eFlags)		{	m_eBaseFlags=m_eBaseFlags|eFlags;	};
-	void	reSetBaseFlag(EOBJEC3DTFLAGS eFlags)	{	m_eBaseFlags=m_eBaseFlags&~eFlags;	};
+	void	resetAllBaseFlags(bool recursive=false);
+	void	setBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive=false);
+	void	reSetBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive=false);
 	bool	isBaseFlag(EOBJEC3DTFLAGS eFlags)		{	return (m_eBaseFlags&eFlags)?true:false;	};
 	int		getBaseFlag()							{	return m_eBaseFlags;				}
 

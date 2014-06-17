@@ -363,7 +363,7 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 
 				//EditorApp::getScenePreview()->selectedObject3D(NULL);	//for safety
 			}
-			m_pClearBtn->buttonNormal();
+			m_pClearBtn->buttonNormal(true);
 		}
 	}
 }

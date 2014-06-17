@@ -511,6 +511,17 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 					if(!parseTexProperty(it, end, "_BumpMap", maintexpropertydepth))
 						return false;
 				}
+
+				//_SpecMap
+				str.assign(it, end);
+				pos=str.find("_SpecMap");
+				if(pos>=0)
+				{
+					it=it+pos+strlen("_SpecMap");
+					int maintexpropertydepth=-1;
+					if(!parseTexProperty(it, end, "_SpecMap", maintexpropertydepth))
+						return false;
+				}
 			}
 			break;
 		}

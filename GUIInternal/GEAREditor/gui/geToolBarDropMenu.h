@@ -38,7 +38,7 @@ protected:
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);
 
-	virtual void onButtonStateChanged(EBUTTON_STATE eFromState);
+	virtual void onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver);
 	virtual void onButtonClicked();
 
 	bool onMouseLButtonDown(float x, float y, int nFlag);

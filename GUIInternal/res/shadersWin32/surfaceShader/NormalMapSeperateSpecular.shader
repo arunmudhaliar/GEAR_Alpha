@@ -126,7 +126,7 @@ __Pass{
             }
             else // light source on the right side
             {
-               specularReflection = attenuation * vec3(light.specular) * vec3(material.specular) * (spectextureColor.r) * pow(max(0.0, dot(reflect(-lightDirection, normalDirection), viewDirection)), material.shininess);
+               specularReflection = attenuation * vec3(light.specular) * vec3(material.specular) * (spectextureColor.g) * pow(max(0.0, dot(reflect(-lightDirection, normalDirection), viewDirection)), material.shininess);
 			}
 
             return vec4(ambientLighting + diffuseReflection + specularReflection, 1.0);

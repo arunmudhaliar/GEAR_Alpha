@@ -201,12 +201,17 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
         
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); 
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);	//MIPMAP
 
 		unsigned char* image_data = new unsigned char[cx*cy*bpp];
 		file_meta.ReadBuffer(image_data, cx*cy*bpp);
 		file_meta.CloseFile();
 
 		glTexImage2D(GL_TEXTURE_2D, 0, texType, cx, cy, 0, texType, GL_UNSIGNED_BYTE, image_data);
+
+		glGenerateMipmap(GL_TEXTURE_2D);  //Generate mipmaps now!!!
 
 		GX_DELETE(image_data);
 

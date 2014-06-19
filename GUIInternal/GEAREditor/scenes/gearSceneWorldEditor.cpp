@@ -232,7 +232,7 @@ void gearSceneWorldEditor::draw()
 	}
 #endif
 
-	CHECK_GL_ERROR(drawShadowMapPass());
+	//CHECK_GL_ERROR(drawShadowMapPass());
 	CHECK_GL_ERROR(drawLightsOnMultiPass());
 	CHECK_GL_ERROR(onDraw());
 

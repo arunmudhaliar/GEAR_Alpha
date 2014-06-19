@@ -188,14 +188,14 @@ void gePropertyMaterial::loadSubMapView(bool& fog)
 			}
 
 			submapview->m_pTiling = new geStaticTextBox("");
-			submapview->m_pTiling->create(m_pRenderer, this, "Tiling", 20, 80+cntr*80, -5, geGUIManager::g_pFontArial10_80Ptr);
+			submapview->m_pTiling->create(m_pRenderer, this, "Tiling", 20, 70+cntr*80, -5, geGUIManager::g_pFontArial10_80Ptr);
 			submapview->m_pTiling->setGUIObserver(this);
 
 			submapview->m_pText_tileX = new geTextBox("1.0");
-			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 60, 80+cntr*80, 60, 16);
+			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 60, 70+cntr*80, 60, 16);
 			submapview->m_pText_tileX->setGUIObserver(this);
 			submapview->m_pText_tileY = new geTextBox("1.0");
-			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 130, 80+cntr*80, 60, 16);
+			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 130, 70+cntr*80, 60, 16);
 			submapview->m_pText_tileY->setGUIObserver(this);
 
 			submapview->m_pMapName = new geStaticTextBox("");
@@ -313,8 +313,8 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 
 		//shininess
 		m_pHorizontalSliderShininess = new geHorizontalSlider();
-		m_pHorizontalSliderShininess->create(m_pRenderer, this, "slider", 125, 40, 100);
-		m_pHorizontalSliderShininess->setSliderValue(m_pCurrentMaterialPtr->getShininess()/60.0f);
+		m_pHorizontalSliderShininess->create(m_pRenderer, this, "slider", 140, 40, 100);
+		m_pHorizontalSliderShininess->setSliderValue(m_pCurrentMaterialPtr->getShininess()/MATERIAL_SHININESS_SCALE_FACTOR);
 		m_pHorizontalSliderShininess->setGUIObserver(this);
 
 		m_pCommonSeperator = new geSeperator();
@@ -334,7 +334,7 @@ void gePropertyMaterial::drawNode()
 		//geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 		char buffer[64];
-		sprintf(buffer, "Shininess (%3.2f/60.0)", m_pCurrentMaterialPtr->getShininess());
+		sprintf(buffer, "Shininess (%3.2f/%3.1f)", m_pCurrentMaterialPtr->getShininess(), MATERIAL_SHININESS_SCALE_FACTOR);
 		geGUIManager::g_pFontArial10_80Ptr->drawString(buffer, 10, 45, m_cSize.x);
 
 		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
@@ -454,6 +454,6 @@ void gePropertyMaterial::onSliderChange(geGUIBase* slider)
 
 	if(m_pHorizontalSliderShininess==slider)
 	{
-		m_pCurrentMaterialPtr->setShininess(m_pHorizontalSliderShininess->getSliderValue()*60.0f);
+		m_pCurrentMaterialPtr->setShininess(m_pHorizontalSliderShininess->getSliderValue()*MATERIAL_SHININESS_SCALE_FACTOR);
 	}
 }

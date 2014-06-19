@@ -14,6 +14,8 @@
 #include "../../gui/geWindowColumn.h"
 #include "../../gui/geSeperator.h"
 
+#define MATERIAL_SHININESS_SCALE_FACTOR	300.0f
+
 class gePropertyMaterial : public geTreeNode, public MGUIObserver
 {
 public:

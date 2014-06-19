@@ -5,7 +5,7 @@
 #include <stdarg.h>
 #include "basicIncludes.h"
 
-#ifdef _WIN32
+#if defined(_WIN32) && defined(_DEBUG)
 	#include <DbgHelp.h>
 	#define LOG_GL_ERROR
 #endif

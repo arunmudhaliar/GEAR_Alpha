@@ -37,6 +37,7 @@ EditorApp::EditorApp()
 
 EditorApp::~EditorApp()
 {
+	m_cGUIManager.reset();
 	GE_DELETE(m_pRendererGL10);
 }
 

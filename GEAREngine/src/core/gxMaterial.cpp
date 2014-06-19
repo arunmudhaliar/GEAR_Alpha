@@ -5,6 +5,9 @@ gxMaterial::gxMaterial()
 	m_cDiffuse.set(0.5f, 0.5f, 0.5f, 1.0f);
 	m_iFileCRC=0;
 	m_pSurfaceShaderPtr=NULL;
+	m_fAlpha=1.0f;
+	m_fShininess=10.0f;
+	m_bTwoSided=false;
 }
 
 gxMaterial::~gxMaterial()

@@ -232,7 +232,7 @@ void gearSceneWorldEditor::draw()
 	}
 #endif
 
-	//drawShadowMapPass();
+	CHECK_GL_ERROR(drawShadowMapPass());
 	CHECK_GL_ERROR(drawLightsOnMultiPass());
 	CHECK_GL_ERROR(onDraw());
 
@@ -278,7 +278,7 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
   
 	if(m_bEnablePostProcessorBlur)
 	{
-		gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(5);
+		gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_BLUR_SHADER);
     
 		shader->enableProgram();
    
@@ -364,10 +364,6 @@ void gearSceneWorldEditor::drawShadowMapPass()
 	//glm::mat4 depthModelMatrix = glm::mat4(1.0);
 	//glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
 	//
-	
-	gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(6);
-	shader->enableProgram();
-
 	matrix4x4f depthProjectionMatrix;//=m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix();
 	depthProjectionMatrix.setOrtho(-512, 512, -512, 512, 0, 10000);
 	matrix4x4f depthViewMatrix;
@@ -391,12 +387,14 @@ void gearSceneWorldEditor::drawShadowMapPass()
 	matrix4x4f depthMVP(depthProjectionMatrix * depthViewMatrix.getInverse() * depthModelMatrix);
 
 	//const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * m_cLightBillBoardSprite)).getMatrix();
-	shader->sendUniformTMfv("u_depth_mvp_m4x4", depthMVP.getOGLMatrix(), false, 4);
 
-	glEnable(GL_DEPTH_TEST);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
+	CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_SHADOWMAP);
-	//monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+
+	gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_SHADOWMAP_SHADER);
+	shader->enableProgram();
+	shader->sendUniformTMfv("u_depth_mvp_m4x4", depthMVP.getOGLMatrix(), false, 4);
 	m_pMainWorldPtr->renderShadow(m_pMainWorldPtr->getRenderer());
 	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 
@@ -469,7 +467,7 @@ void gearSceneWorldEditor::drawGrid()
 	//grid
 	if(m_pTBGridView->isButtonPressed())
 	{
-		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(0);
+		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_DIFFUSE);
 		shader->enableProgram();
 
 		matrix4x4f gridOffsetTM;
@@ -570,7 +568,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
 	if(lightList->size() && m_pMainWorldPtr->getActiveCamera())
 	{
-		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(4);
+		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_GUI_SHADER);
 		shader->enableProgram();
 		for(int x=0;x<lightList->size();x++)
 		{
@@ -597,7 +595,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 	if(m_pSelectedObj && m_pMainWorldPtr->getActiveCamera())
 	{
-		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(2);
+		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_DIFFUSE_WITH_COLOR_PTR);
 		shader->enableProgram();
 
 		glEnable(GL_LIGHT0);
@@ -636,7 +634,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		shader->disableProgram();
 
-		shader = engine_getHWShaderManager()->GetHWShader(0);
+		shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_DIFFUSE);
 		shader->enableProgram();
 
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
@@ -681,7 +679,7 @@ void gearSceneWorldEditor::drawOctree()
 {
 	if(m_pTBShowOctree->isButtonPressed() && m_pMainWorldPtr->getOctree())
 	{
-		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(0);
+		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_DIFFUSE);
 		shader->enableProgram();
 
 		shader->sendUniformTMfv("u_mvp_m4x4", m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix(), false, 4);
@@ -707,7 +705,7 @@ void gearSceneWorldEditor::drawStats()
 		glDisable(GL_DEPTH_TEST);
 #if defined USE_FBO
 		drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, -getTopMarginOffsetHeight(), m_cSize.x, m_cSize.y);
-		//drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
+		drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
 #endif
 
 		char buffer[128];
@@ -1357,7 +1355,7 @@ void gearSceneWorldEditor::onCommand(int cmd)
 	case ID_POSTPROCESSOR_BLURPROCESSOR:
 		{
 			m_bEnablePostProcessorBlur=!m_bEnablePostProcessorBlur;
-			//EditorApp::getScenePropertyEditor()->populatePropertyOfBlurShader(engine_getHWShaderManager()->GetHWShader(5));
+			//EditorApp::getScenePropertyEditor()->populatePropertyOfBlurShader(engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_BLUR_SHADER));
 		}
 		break;
 	}

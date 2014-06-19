@@ -11,6 +11,11 @@ geGUIManager::geGUIManager()
 
 geGUIManager::~geGUIManager()
 {
+	reset();
+}
+
+void geGUIManager::reset()
+{
 	for(std::vector<geWindow*>::iterator it = m_vWindowObjects.begin(); it != m_vWindowObjects.end(); ++it)
 	{
 		geWindow* obj = *it;

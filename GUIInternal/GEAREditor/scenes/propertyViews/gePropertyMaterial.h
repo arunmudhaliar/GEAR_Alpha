@@ -68,46 +68,25 @@ public:
 		geWindowColumn* pWindowColumn;
 	};
 
-	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo):
-	  geTreeNode(renderer, parent, name, sprite, 10)
-	{
-		m_pColorControl=NULL;
-		setSize(m_cSize.x, 115.0f);
-
-		m_pTriInfoPtr=triinfo;
-		loadClientViewFromMaterial(m_pTriInfoPtr->getMaterial());
-
-		setNodeColor(0.21f, 0.21f, 0.21f);
-		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
-		setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
-		applyPrimaryColorToVBClientArea();
-	}
-
-	void loadClientViewFromMaterial(gxMaterial* material);
-
-	virtual ~gePropertyMaterial()
-	{
-		//destroy submapview nodes
-		for(std::vector<stSubMapView*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
-		{
-			stSubMapView* tvnode = *it;
-			GE_DELETE(tvnode);
-		}
-		m_vSubMap.clear();
-	}
+	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo);
+	virtual ~gePropertyMaterial();
 
 	virtual void drawNode();
 	virtual void onTextChange(geGUIBase* textbox);
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
 	virtual void onColorChange(geGUIBase* colorControl);
 	virtual void onCommand(int cmd);
+	virtual void onSliderChange(geGUIBase* slider);
 
+	void loadClientViewFromMaterial(gxMaterial* material);
 	void destroySubMapView();
 	void loadSubMapView(bool& fog);
 
 	stFogView m_cFogSubView;
 	geColorControl* m_pColorControl;
 	geToolBarDropMenu* m_pSurfaceShaderToolBarDropMenuBtnPtr;
+	geHorizontalSlider* m_pHorizontalSliderShininess;
+	geSeperator* m_pCommonSeperator;
 };
 
 #endif

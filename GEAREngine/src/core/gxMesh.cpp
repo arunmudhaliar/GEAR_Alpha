@@ -281,24 +281,25 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 void gxMesh::renderForShadowMap(gxRenderer* renderer)
 {
 	HWShaderManager* hwShaderManager = engine_getHWShaderManager();
-	gxHWShader* shader = hwShaderManager->GetHWShader(6);	//no need to enable it, since its been enabled/disable by the caller.
+	gxHWShader* shader = hwShaderManager->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_SHADOWMAP_SHADER);	//no need to enable it, since its been enabled/disable by the caller.
 	int vIN_Position = shader->getAttribLoc("a_vertex_coord_v4");
 
-	shader->sendUniformTMfv("u_mvp_m4x4", getWorldMatrix()->getOGLMatrix(), false, 4);
+	const float* u_mvp_m4x4 = getWorldMatrix()->getMatrix();
+	shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 
 	if(m_bVBO)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID);
-		glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID));
+		CHECK_GL_ERROR(glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, NULL));
 	}
 	else
 	{
-		glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer());
+		CHECK_GL_ERROR(glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, getVertexBuffer()));
 	}
-	glEnableVertexAttribArray(vIN_Position);
+	CHECK_GL_ERROR(glEnableVertexAttribArray(vIN_Position));
 
 	float diffuse[]={0.7f, 0.0f, 0.0f, 1.0f};
-	glUniform4fv(shader->getUniformLoc("diffuse"), 1, diffuse);
+	CHECK_GL_ERROR(glUniform4fv(shader->getUniformLoc("diffuse"), 1, diffuse));
 
 	for(int x=0;x<m_nTriInfoArray;x++)
 	{
@@ -307,17 +308,17 @@ void gxMesh::renderForShadowMap(gxRenderer* renderer)
 
 		if(m_bVBO)
 		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triInfo->getVBOTriListID());
-			glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, NULL);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			CHECK_GL_ERROR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triInfo->getVBOTriListID()));
+			CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, NULL));
+			CHECK_GL_ERROR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 		}
 		else
 		{
-			glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
+			CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList()));
 		}
 	}
 
-	glDisableVertexAttribArray(vIN_Position);
+	CHECK_GL_ERROR(glDisableVertexAttribArray(vIN_Position));
 }
 
 void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
@@ -459,7 +460,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 				shader->sendUniform_material_diffuse(&material->getDiffuseClr().x);
 				shader->sendUniform_material_ambient(&material->getAmbientClr().x);
 				shader->sendUniform_material_specular(&material->getSpecularClr().x);
-				shader->sendUniform_material_shininess(2.0f);
+				shader->sendUniform_material_shininess(material->getShininess());
 			}
 			else
 			{

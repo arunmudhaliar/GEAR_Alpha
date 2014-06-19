@@ -61,6 +61,7 @@ public:
 	void setSpecularClr(vector4f clr)		{	m_cSpecular=clr;	}
 
 	float getShininess()				{	return m_fShininess;	}
+	void setShininess(float value)		{	m_fShininess=value;	}
 
 	void setMaterialName(const char* name)	{	GX_STRCPY(m_szMaterialName, name);	}
 	const char* getMaterialName()			{	return m_szMaterialName;		}

@@ -14,6 +14,8 @@ public:
 	~geGUIManager();
 
 	void init(rendererGL10* renderer);
+	void reset();
+
 	void size(int cx, int cy);
 	void update(float dt);
 	void draw();

@@ -1,6 +1,33 @@
 #include "gePropertyMaterial.h"
 #include "../../EditorApp.h"
 
+gePropertyMaterial::gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo):
+	geTreeNode(renderer, parent, name, sprite, 10)
+{
+	m_pHorizontalSliderShininess=NULL;
+	m_pColorControl=NULL;
+	setSize(m_cSize.x, 115.0f);
+
+	m_pTriInfoPtr=triinfo;
+	loadClientViewFromMaterial(m_pTriInfoPtr->getMaterial());
+
+	setNodeColor(0.21f, 0.21f, 0.21f);
+	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
+	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
+	applyPrimaryColorToVBClientArea();
+}
+
+gePropertyMaterial::~gePropertyMaterial()
+{
+	//destroy submapview nodes
+	for(std::vector<stSubMapView*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	{
+		stSubMapView* tvnode = *it;
+		GE_DELETE(tvnode);
+	}
+	m_vSubMap.clear();
+}
+
 void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
 {
 	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
@@ -161,33 +188,33 @@ void gePropertyMaterial::loadSubMapView(bool& fog)
 			}
 
 			submapview->m_pTiling = new geStaticTextBox("");
-			submapview->m_pTiling->create(m_pRenderer, this, "Tiling", 100, 50+cntr*80, -5, geGUIManager::g_pFontArial10_80Ptr);
+			submapview->m_pTiling->create(m_pRenderer, this, "Tiling", 20, 80+cntr*80, -5, geGUIManager::g_pFontArial10_80Ptr);
 			submapview->m_pTiling->setGUIObserver(this);
 
 			submapview->m_pText_tileX = new geTextBox("1.0");
-			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 100, 70+cntr*80, 60, 16);
+			submapview->m_pText_tileX->create(m_pRenderer, this, tileX_temp_buffer, 60, 80+cntr*80, 60, 16);
 			submapview->m_pText_tileX->setGUIObserver(this);
 			submapview->m_pText_tileY = new geTextBox("1.0");
-			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 100, 90+cntr*80, 60, 16);
+			submapview->m_pText_tileY->create(m_pRenderer, this, tileY_temp_buffer, 130, 80+cntr*80, 60, 16);
 			submapview->m_pText_tileY->setGUIObserver(this);
 
 			submapview->m_pMapName = new geStaticTextBox("");
-			submapview->m_pMapName->create(m_pRenderer, this, map->getShaderTextureProperty()->name.c_str(), 10, 40+cntr*80, -5, geGUIManager::g_pFontArial10_80Ptr);
+			submapview->m_pMapName->create(m_pRenderer, this, map->getShaderTextureProperty()->name.c_str(), 10, 60+cntr*80, -5, geGUIManager::g_pFontArial10_80Ptr);
 			submapview->m_pMapName->setGUIObserver(this);
 
 			submapview->thumbnail = new geTextureThumbnailExtended();
-			submapview->thumbnail->create(m_pRenderer, this, map->getTexture(), 260, 40+cntr*80, 70, 70);
+			submapview->thumbnail->create(m_pRenderer, this, map->getTexture(), 260, 60+cntr*80, 70, 70);
 			submapview->thumbnail->setUserData(map);
 
 			submapview->m_pSeperator = new geSeperator();
-			submapview->m_pSeperator->create(m_pRenderer, this, 10, 115+cntr*80, submapview->thumbnail->getPos().x+submapview->thumbnail->getSize().x-10);
+			submapview->m_pSeperator->create(m_pRenderer, this, 10, 135+cntr*80, submapview->thumbnail->getPos().x+submapview->thumbnail->getSize().x-10);
 
 			m_vSubMap.push_back(submapview);
 			cntr++;
 		}
 
 		if(cntr)
-			setSize(m_cSize.x, 125.0f+(cntr-1)*80);
+			setSize(m_cSize.x, 145.0f+(cntr-1)*80);
 	}
 
 	if(fog)
@@ -204,15 +231,15 @@ void gePropertyMaterial::loadSubMapView(bool& fog)
 
 		//fog
 		m_cFogSubView.edit_fog_start = new geTextBox(buffer_fog_start);
-		m_cFogSubView.edit_fog_start->create(m_pRenderer, this, buffer_fog_start, 0, 0, 70, 16);
+		m_cFogSubView.edit_fog_start->create(m_pRenderer, this, buffer_fog_start, 0, 0, 80, 16);
 		m_cFogSubView.edit_fog_start->setGUIObserver(this);
 
 		m_cFogSubView.edit_fog_end = new geTextBox(buffer_fog_end);
-		m_cFogSubView.edit_fog_end->create(m_pRenderer, this, buffer_fog_end, 0, 0, 70, 16);
+		m_cFogSubView.edit_fog_end->create(m_pRenderer, this, buffer_fog_end, 0, 0, 80, 16);
 		m_cFogSubView.edit_fog_end->setGUIObserver(this);
 
 		m_cFogSubView.edit_fog_density = new geTextBox(buffer_fog_density);
-		m_cFogSubView.edit_fog_density->create(m_pRenderer, this, buffer_fog_density, 0, 0, 70, 16);
+		m_cFogSubView.edit_fog_density->create(m_pRenderer, this, buffer_fog_density, 0, 0, 80, 16);
 		m_cFogSubView.edit_fog_density->setGUIObserver(this);
 
 		m_cFogSubView.color_fog_color = new geColorControl();
@@ -284,6 +311,15 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 		}
 		m_pSurfaceShaderToolBarDropMenuBtnPtr->setMenuItem(m_pCurrentMaterialPtr->getMainshaderName());
 
+		//shininess
+		m_pHorizontalSliderShininess = new geHorizontalSlider();
+		m_pHorizontalSliderShininess->create(m_pRenderer, this, "slider", 125, 40, 100);
+		m_pHorizontalSliderShininess->setSliderValue(m_pCurrentMaterialPtr->getShininess()/60.0f);
+		m_pHorizontalSliderShininess->setGUIObserver(this);
+
+		m_pCommonSeperator = new geSeperator();
+		m_pCommonSeperator->create(m_pRenderer, this, 10, m_pHorizontalSliderShininess->getPos().y+m_pHorizontalSliderShininess->getSize().y+7, m_pHorizontalSliderShininess->getPos().x+m_pHorizontalSliderShininess->getSize().x-10);
+
 		bool bFog=false;
 		loadSubMapView(bFog);
 	}
@@ -295,7 +331,11 @@ void gePropertyMaterial::drawNode()
 
 	if(m_pCurrentMaterialPtr)
 	{
-		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+		//geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+
+		char buffer[64];
+		sprintf(buffer, "Shininess (%3.2f/60.0)", m_pCurrentMaterialPtr->getShininess());
+		geGUIManager::g_pFontArial10_80Ptr->drawString(buffer, 10, 45, m_cSize.x);
 
 		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 		{
@@ -407,4 +447,13 @@ void gePropertyMaterial::onTextChange(geGUIBase* textbox)
 	//	const float* texMat4x4=m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->getMatrix();
 	//	m_pCurrentMaterialPtr->getTexture()->getTextureMatrix()->setYAxis(vector3f(texMat4x4[4], value, texMat4x4[6]));
 	//}
+}
+
+void gePropertyMaterial::onSliderChange(geGUIBase* slider)
+{
+
+	if(m_pHorizontalSliderShininess==slider)
+	{
+		m_pCurrentMaterialPtr->setShininess(m_pHorizontalSliderShininess->getSliderValue()*60.0f);
+	}
 }

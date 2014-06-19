@@ -101,32 +101,22 @@ void HWShaderManager::LoadDefaultShaders()
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/diffusemapunlit.glsl"))	//1
+    if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.glsl"))	//1
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.glsl"))	//2
+    if(pShader->loadShader("res/shadersWin32/hwshader/guishader.glsl"))	//2
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/pvLightingOnlyShaderFirstPass.glsl"))	//3
+    if(pShader->loadShader("res/shadersWin32/hwshader/blurshader.glsl"))	//3
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/guishader.glsl"))	//4
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/blurshader.glsl"))	//5
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/shadowmap.glsl"))	//6
+    if(pShader->loadShader("res/shadersWin32/hwshader/shadowmap.glsl"))	//4
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
@@ -170,27 +160,22 @@ void HWShaderManager::LoadDefaultShaders()
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/diffusemapunlit.glsl"))	//0
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/only_diffuse_with_color_pointer.glsl"))	//1
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/only_diffuse_with_color_pointer.glsl"))	//0
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/guishader.glsl"))	//2
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/pvLightingOnlyShaderFirstPass.glsl"))	//0
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/blurshader.glsl"))	//3
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/guishader.glsl"))	//0
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/blurshader.glsl"))	//0
+    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/shadowmap.glsl"))	//4
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
@@ -200,6 +185,7 @@ void HWShaderManager::LoadDefaultShaders()
 	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//Diffuse_vlit.shader");
 	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//NormalMap.shader");
 	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//NormalMapSpecular.shader");
+	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//NormalMapSeperateSpecular.shader");
 #endif
 #endif
 }

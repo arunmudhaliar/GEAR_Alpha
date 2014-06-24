@@ -66,142 +66,88 @@ gxSurfaceShader* HWShaderManager::LoadSurfaceShader(const char* filename)
 void HWShaderManager::LoadDefaultShaders()
 {
 #if defined (USE_ProgrammablePipeLine)
+
+	std::string resource_dir_root_path;
+
 #if defined(WIN32)
+	resource_dir_root_path="res/shadersWin32/";
+#elif defined(ANDROID)
+	resource_dir_root_path="/storage/emulated/0/gear/shadersAndroid/";
+#else
+	DEBUG_PRINT("ERROR : Shaders not implemented for this platform ");
+	return;
+#endif
 
 	//load code snippets
-	stHWShaderSnippet* snippet=LoadCodeSnippet("res/shadersWin32/snippets/matrices_uniform_vars.snippet");
+	stHWShaderSnippet* snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/matrices_uniform_vars.snippet").c_str());
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_attrib_vars.snippet");
+	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/vertex_attrib_vars.snippet").c_str());
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/vertex_main.snippet");
+	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/vertex_main.snippet").c_str());
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/fragment_main.snippet");
+	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/fragment_main.snippet").c_str());
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/light_unifrom_vars.snippet");
+	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/light_unifrom_vars.snippet").c_str());
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/material_unifrom_vars.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
-	//snippet=LoadCodeSnippet("res/shadersWin32/snippets/time_uniform_vars.snippet");
-	//if(snippet)
-	//	m_cvHWShaderSnippets.push_back(snippet);
-	//snippet=LoadCodeSnippet("res/shadersWin32/snippets/fog_vars.snippet");
-	//if(snippet)
-	//	m_cvHWShaderSnippets.push_back(snippet);
-
-	//HW shaders
-	gxHWShader* pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse.glsl"))	//0
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/only_diffuse_with_color_pointer.glsl"))	//1
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/guishader.glsl"))	//2
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/blurshader.glsl"))	//3
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/shadowmap.glsl"))	//4
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/fog_linear_shader.glsl"))	//5
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/fog_exp_shader.glsl"))	//6
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-	pShader=new gxHWShader();
-    if(pShader->loadShader("res/shadersWin32/hwshader/fog_exp2_shader.glsl"))	//7
-		m_cvHWShaderLst.push_back(pShader);
-	else
-		GX_DELETE(pShader);
-
-	//surface shaders
-	LoadSurfaceShader("res//shadersWin32//surfaceShader//Diffuse.shader");
-	LoadSurfaceShader("res//shadersWin32//surfaceShader//Diffuse_vlit.shader");
-	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMap.shader");
-	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMapSpecular.shader");
-	LoadSurfaceShader("res//shadersWin32//surfaceShader//MultiTex.shader");
-	LoadSurfaceShader("res//shadersWin32//surfaceShader//NormalMapSeperateSpecular.shader");
-
-#elif defined(ANDROID)
-		//load code snippets
-	stHWShaderSnippet* snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/matrices_uniform_vars.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/vertex_attrib_vars.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/vertex_main.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/fragment_main.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/light_unifrom_vars.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/material_unifrom_vars.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("/storage/emulated/0/gear/shadersAndroid/snippets/time_uniform_vars.snippet");
+	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/material_unifrom_vars.snippet").c_str());
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
 
 	//HW shaders
 	gxHWShader* pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/only_diffuse.glsl"))	//0
+    if(pShader->loadShader((resource_dir_root_path+"hwshader/only_diffuse.glsl").c_str()))	//0
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/only_diffuse_with_color_pointer.glsl"))	//1
+    if(pShader->loadShader((resource_dir_root_path+"hwshader/only_diffuse_with_color_pointer.glsl").c_str()))	//1
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/guishader.glsl"))	//2
+    if(pShader->loadShader((resource_dir_root_path+"hwshader/guishader.glsl").c_str()))	//2
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/blurshader.glsl"))	//3
+    if(pShader->loadShader((resource_dir_root_path+"hwshader/blurshader.glsl").c_str()))	//3
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
-    if(pShader->loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/shadowmap.glsl"))	//4
+    if(pShader->loadShader((resource_dir_root_path+"hwshader/shadowmap.glsl").c_str()))	//4
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader((resource_dir_root_path+"hwshader/fog_linear_shader.glsl").c_str()))	//5
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader((resource_dir_root_path+"hwshader/fog_exp_shader.glsl").c_str()))	//6
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader((resource_dir_root_path+"hwshader/fog_exp2_shader.glsl").c_str()))	//7
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 
 	//surface shaders
-	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//Diffuse.shader");
-	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//Diffuse_vlit.shader");
-	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//NormalMap.shader");
-	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//NormalMapSpecular.shader");
-	LoadSurfaceShader("//storage//emulated//0//gear//shadersAndroid//surfaceShader//NormalMapSeperateSpecular.shader");
-#endif
+	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/Diffuse.shader").c_str());
+	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/Diffuse_vlit.shader").c_str());
+	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMap.shader").c_str());
+	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMapSpecular.shader").c_str());
+	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/MultiTex.shader").c_str());
+	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMapSeperateSpecular.shader").c_str());
+
 #endif
 }
 

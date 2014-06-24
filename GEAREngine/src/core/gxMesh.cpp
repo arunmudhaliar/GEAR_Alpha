@@ -356,33 +356,33 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		gxHWShader* shader=surfaceshader->getShaderPass(pass);
 		stPass* pass_struct = surfaceshader->getShaderPassStruct(pass);
 
+		if(pass_struct->cull_face)
+		{
+			CHECK_GL_ERROR(glEnable(GL_CULL_FACE));
+			CHECK_GL_ERROR(glCullFace(pass_struct->cull_face));
+		}
+		else
+		{
+			CHECK_GL_ERROR(glDisable(GL_CULL_FACE));
+		}
+
 		shader->enableProgram();
 
 		//time
-		if(pass_struct->Time_time)
+		if(pass_struct->GEAR_Time)
 		{
-			int t=Timer::getElapsedTime()*100;
-			t%=180;
-			float time[]={t, t, t, t};
-			shader->sendUniform_time(time);
+			float t=Timer::getElapsedTime()*Timer::getTimeScale();
+			float time[]={t, t*0.5f, t*0.25f, t*0.1f};
+			shader->sendUniform_GEAR_Time(time);
 		}
-		if(pass_struct->Time_deltatime)
-		{
-			float dt=Timer::getDtinSec();
-			float deltatime[]={dt, dt, dt, dt};
-			shader->sendUniform_deltatime(deltatime);
-		}
-		//
 
-		//Fog
-		if(pass_struct->Fog)
+		//screen params
+		if(pass_struct->GEAR_ScreenParams)
 		{
-			shader->sendUniform1f("Fog.fog_end", material->getFog()->fog_end);
-			shader->sendUniform1f("Fog.fog_scale", material->getFog()->fog_scale);	//1.0/(Fog.fog_end-Fog.fog_start)
-			shader->sendUniform4fv("Fog.fog_color", &material->getFog()->fog_color.x);
-			//shader->sendUniform1f("Fog.fog_density", material->getFog()->fog_density);
+			vector2f viewport_sz(renderer->getViewPortSz());
+			float screenParams[]={viewport_sz.x, viewport_sz.y, 0, 0};
+			shader->sendUniform_GEAR_ScreenParams(screenParams);
 		}
-		//
 
 		if(light_ob && pass_struct->Light)
 			light_ob->renderPass(renderer, shader);

@@ -4,6 +4,7 @@ Properties {
 	_MainTex ("Base (RGB) Gloss (A)", Tex2D) = "white" {}
 	_BumpMap ("Normal Map", Tex2D) = "bump" {}
 	_SpecMap ("Specular Map", Tex2D) = "spec" {}
+	_Range ("Specular Map", Range) = (0.0, 1.5) = 0.5
 }
 
 SubShader {

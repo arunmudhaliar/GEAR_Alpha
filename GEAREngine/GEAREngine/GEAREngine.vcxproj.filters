@@ -1616,6 +1616,9 @@
     <ClInclude Include="..\src\core\LayerManager.h">
       <Filter>engine\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\renderer\stFog.h">
+      <Filter>engine\renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\physics\CMakeLists.txt">

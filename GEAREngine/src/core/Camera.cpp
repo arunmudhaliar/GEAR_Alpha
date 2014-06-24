@@ -107,18 +107,6 @@ void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearV
 	updateCamera();
 }
 
-
-void Camera::setCamera(gxCamera* camera)
-{
-	//if(!camera) return;
-
-	//m_pCameraStructPtr = camera;
-	//copy((matrix4x4f)*camera);
-
-	//setUpCameraPerspective(m_pRendererPtr->getViewPortSz().x, m_pRendererPtr->getViewPortSz().y/*, camera->getFOV(), camera->getNear(), camera->getFar()*/);
-}
-
-
 vector3f Camera::getCameraSpaceLoc(const vector3f& point)
 {
 	return m_cInvTranfMatrix * point;

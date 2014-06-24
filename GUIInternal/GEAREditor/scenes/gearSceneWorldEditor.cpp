@@ -119,6 +119,7 @@ void gearSceneWorldEditor::onCreate()
 
 	m_pHorizontalSlider_TimeScale = new geHorizontalSlider();
 	m_pHorizontalSlider_TimeScale->create(m_pRenderer, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
+	m_pHorizontalSlider_TimeScale->setGUIObserver(this);
 	m_pHorizontalSlider_TimeScale->setSliderValue(1.0f);
 	getToolBar()->appendToolBarControl(m_pHorizontalSlider_TimeScale);
 
@@ -200,12 +201,19 @@ void gearSceneWorldEditor::onCreate()
     m_cMultiPassFBO.AttachTextureBuffer(0);
     m_cMultiPassFBO.UnBindFBO();
 
-	m_cShadowMapFBO.ReInitFBO(512, 512);
-    m_cShadowMapFBO.CreateDepthBuffer();
-    m_cShadowMapFBO.AttachDepthBuffer();
-	m_cShadowMapFBO.CreateDepthShadowTextureBuffer();
-    m_cShadowMapFBO.AttachShadowTextureBuffer();
-    m_cShadowMapFBO.UnBindFBO();
+	m_cFOGFBO.ReInitFBO(512, 512);
+    m_cFOGFBO.CreateDepthBuffer();
+    m_cFOGFBO.AttachDepthBuffer();
+    m_cFOGFBO.CreateTextureBuffer();
+    m_cFOGFBO.AttachTextureBuffer(0);
+    m_cFOGFBO.UnBindFBO();
+
+	//m_cShadowMapFBO.ReInitFBO(512, 512);
+ //   m_cShadowMapFBO.CreateDepthBuffer();
+ //   m_cShadowMapFBO.AttachDepthBuffer();
+	//m_cShadowMapFBO.CreateDepthShadowTextureBuffer();
+ //   m_cShadowMapFBO.AttachShadowTextureBuffer();
+ //   m_cShadowMapFBO.UnBindFBO();
 #endif
 
 	m_cLightBillBoardSprite.setOffset(0, 0);
@@ -263,10 +271,10 @@ void gearSceneWorldEditor::draw()
 void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float cy)
 {
     float cszTileBuffer[]={
-        x,      y,
-        x,      y+cy,
-        x+cx,   y+cy,
-        x+cx,   y
+        0,      0,
+        0,      0+cy,
+        0+cx,   0+cy,
+        0+cx,   0
     };
     
 	float cszTileTexBuffer[]={
@@ -278,42 +286,43 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
   
 	if(m_bEnablePostProcessorBlur)
 	{
+		//glDisable(GL_CULL_FACE);
 		gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_BLUR_SHADER);
     
 		shader->enableProgram();
    
-		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, cszTileBuffer);
-		glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
-    
-    
-		////////
+		CHECK_GL_ERROR(glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, cszTileBuffer));
+		CHECK_GL_ERROR(glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4")));
 
-		glActiveTexture(GL_TEXTURE0);
-		glVertexAttribPointer(shader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, cszTileTexBuffer);
-		glEnableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
+		////////
+		CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0));
+		CHECK_GL_ERROR(glVertexAttribPointer(shader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, cszTileTexBuffer));
+		CHECK_GL_ERROR(glEnableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2")));
 		//arun:texissue glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, t);	
+		CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, t));	
 
 		shader->sendUniform1i("u_diffuse_texture", 0);
 
-		matrix4x4f cRenderMatrix;
-		const float* u_mvp_m4x4= m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix()->getMatrix();
+		matrix4x4f offset;
+		offset.setPosition(-(-x+cx)*0.5f, -(-y+cy+getTopMarginOffsetHeight())*0.5f, -1.0f);
+		const float* u_mvp_m4x4 = (*m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix() * offset).getMatrix();
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
     
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		CHECK_GL_ERROR(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
     
 		//Disable all texture ops
-		glDisableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2"));
+		CHECK_GL_ERROR(glDisableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2")));
 		//arun:texissue glDisable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
     
-		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
-		glBindBuffer(GL_ARRAY_BUFFER,0);
+		CHECK_GL_ERROR(glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4")));
+		CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER,0));
     
 		shader->disableProgram();    
 	}
 	else
 	{
+		//glDisable(GL_CULL_FACE);
 		glColor3f(1.0f, 1.0f, 1.0f);
  		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(2, GL_FLOAT, 0, cszTileBuffer);
@@ -325,8 +334,10 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
     
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, t);
-		//glTranslatef(0, 0, 0);
+		glPushMatrix();
+		glTranslatef(-(-x+cx)*0.5f, -(-y+cy+getTopMarginOffsetHeight())*0.5f, -1.0f);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
@@ -335,15 +346,105 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
 	}
 }
 
+void gearSceneWorldEditor::drawFOGFBO(GLuint base_t, GLuint depth_t, float x, float y, float cx, float cy)
+{
+    float cszTileBuffer[]={
+        0,      0,
+        0,      0+cy,
+        0+cx,   0+cy,
+        0+cx,   0
+    };
+    
+	float cszTileTexBuffer[]={
+        0,1,
+		0,0,
+		1,0,
+		1,1,
+    };
+  
+	//glDisable(GL_CULL_FACE);
+	gxHWShader* shader=NULL;
+	stFog* fog_struct = monoWrapper::mono_engine_getWorld(0)->getRenderer()->getFog();
+
+	switch(fog_struct->fog_type)
+	{
+	case stFog::FOG_LINEAR:
+		{
+			shader=engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_FOG_LINEAR_SHADER);
+			shader->enableProgram();
+			shader->sendUniform1f("fog_end", fog_struct->fog_end);
+			shader->sendUniform1f("fog_scale", fog_struct->fog_scale);
+		}
+		break;
+	case stFog::FOG_EXP:
+		{
+			shader=engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_FOG_EXP_SHADER);
+			shader->enableProgram();
+			shader->sendUniform1f("fog_density", fog_struct->fog_density);
+		}
+		break;
+	case stFog::FOG_EXP2:
+		{
+			shader=engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_FOG_EXP2_SHADER);
+			shader->enableProgram();
+			shader->sendUniform1f("fog_density", fog_struct->fog_density);
+		}
+		break;
+	}
+	
+	shader->sendUniform4fv("fog_color", &fog_struct->fog_color.x);
+
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	CHECK_GL_ERROR(glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, cszTileBuffer));
+	CHECK_GL_ERROR(glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4")));
+
+	////////
+	CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0));
+	CHECK_GL_ERROR(glVertexAttribPointer(shader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, cszTileTexBuffer));
+	CHECK_GL_ERROR(glEnableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2")));
+	//arun:texissue glEnable(GL_TEXTURE_2D);
+	CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, base_t));	
+	shader->sendUniform1i("u_base_texture", 0);
+
+	CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0+1));
+	CHECK_GL_ERROR(glVertexAttribPointer(shader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, cszTileTexBuffer));
+	CHECK_GL_ERROR(glEnableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2")));
+	//arun:texissue glEnable(GL_TEXTURE_2D);
+	CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, depth_t));	
+	shader->sendUniform1i("u_depth_texture", 1);
+
+
+	matrix4x4f offset;
+	offset.setPosition(-(-x+cx)*0.5f, -(-y+cy+getTopMarginOffsetHeight())*0.5f, -1.0f);
+	const float* u_mvp_m4x4 = (*m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix() * offset).getMatrix();
+	shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+    
+	CHECK_GL_ERROR(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
+    
+	//Disable all texture ops
+	CHECK_GL_ERROR(glDisableVertexAttribArray(shader->getAttribLoc("a_uv_coord0_v2")));
+	//arun:texissue glDisable(GL_TEXTURE_2D);
+	CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
+    
+	CHECK_GL_ERROR(glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4")));
+	CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER,0));
+    
+	//glDisable(GL_BLEND);
+
+	shader->disableProgram();
+}
+
 void gearSceneWorldEditor::onDraw()
 {
 	followObject(Timer::getDtinSec(), m_pSelectedObj);
 
-	monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
+	monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec()*Timer::getTimeScale());
 	if(m_pPlayButton->isButtonPressed() && !m_pPauseButton->isButtonPressed())
 	{
 		if(m_bMonoGameInitialized)
-			monoWrapper::mono_game_run(Timer::getDtinSec()*m_pHorizontalSlider_TimeScale->getSliderValue());
+			monoWrapper::mono_game_run(Timer::getDtinSec()*Timer::getTimeScale());
 	}
 }
 
@@ -460,6 +561,16 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	CHECK_GL_ERROR(drawSelectedObject());
 	CHECK_GL_ERROR(drawOctree());
 	m_cMultiPassFBO.UnBindFBO();
+
+
+	//postprocess fog
+	glDisable(GL_DEPTH_TEST);
+	m_cFOGFBO.BindFBO();
+	CHECK_GL_ERROR(glViewport(0, 0, m_cFOGFBO.getFBOWidth(), m_cFOGFBO.getFBOHeight()));	
+	CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT/* | GL_DEPTH_BUFFER_BIT*/));
+	drawFOGFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), m_cMultiPassFBO.getFBODepthBuffer(), 0.0f, 0.0f, m_cFOGFBO.getFBOWidth(), m_cFOGFBO.getFBOHeight());
+	m_cFOGFBO.UnBindFBO();
+	//
 }
 
 void gearSceneWorldEditor::drawGrid()
@@ -691,23 +802,25 @@ void gearSceneWorldEditor::drawOctree()
 
 void gearSceneWorldEditor::drawStats()
 {
-	//STATS
+	////STATS
 	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((int)0, (int)(m_cSize.x), (int)(m_cSize.y-getTopMarginOffsetHeight()), (int)0, -100, 100);
+	glLoadMatrixf(m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix()->getMatrix());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glPushMatrix();
-		glTranslatef(0, 0, -1);
 
-		glDisable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 #if defined USE_FBO
-		drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, -getTopMarginOffsetHeight(), m_cSize.x, m_cSize.y);
-		drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
+		drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, 0.0f, m_cSize.x, m_cSize.y);
+		//drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
+		drawFBO(m_cFOGFBO.getFBOTextureBuffer(0), m_cSize.x-310, m_cSize.y-310, 300, 300);
+		drawFBO(m_cMultiPassFBO.getFBODepthBuffer(), -310, m_cSize.y-310, 300, 300);
 #endif
 
+	glPushMatrix();
+	glTranslatef(-m_cSize.x*0.5f, -(m_cSize.y+getTopMarginOffsetHeight())*0.5f+getTopMarginOffsetHeight(), -1.0f);
 		char buffer[128];
 		sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
 		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
@@ -880,6 +993,13 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 		m_cMultiPassFBO.CreateTextureBuffer();
 		m_cMultiPassFBO.AttachTextureBuffer(0);
 		m_cMultiPassFBO.UnBindFBO();
+
+		m_cFOGFBO.ReInitFBO(cx, cy);
+		m_cFOGFBO.CreateDepthBuffer();
+		m_cFOGFBO.AttachDepthBuffer();
+		m_cFOGFBO.CreateTextureBuffer();
+		m_cFOGFBO.AttachTextureBuffer(0);
+		m_cFOGFBO.UnBindFBO();
 		
 #if USE_NVPROFILER
 		gTraceDisplay_DisplayW=cx;
@@ -1172,11 +1292,11 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 						else if(bRotateGizmo)
 						{
 							if(m_iAxisSelected==1)
-								m_pSelectedObj->rotateLocalXf(-0.5f*dy);
+								m_pSelectedObj->rotateLocalXf(0.5f*dy);
 							else if(m_iAxisSelected==2)
 								m_pSelectedObj->rotateLocalYf(-0.5f*dy);
 							else if(m_iAxisSelected==3)
-								m_pSelectedObj->rotateLocalZf(-0.5f*dx);
+								m_pSelectedObj->rotateLocalZf(0.5f*dx);
 						}
 						else if(bScaleGizmo)
 						{
@@ -1204,7 +1324,10 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 					}
 
 					if(bTranslateGizmo || bRotateGizmo || bScaleGizmo)
+					{
 						m_pMainWorldPtr->transformationChangedf();
+						EditorApp::getScenePropertyEditor()->updateTransformPropertyOfCurrentSelectedObject();
+					}
 
 					m_cMousePrevPosInWorld = current_pos_in_world;
 				}
@@ -1310,6 +1433,10 @@ void gearSceneWorldEditor::onSliderChange(geGUIBase* slider)
 	{
 		float val=0.1f+m_pHorizontalSlider_LightAmbient->getSliderValue()*0.13f;
 		glClearColor(val, val, val, 1.0f);
+	}
+	else if(slider==m_pHorizontalSlider_TimeScale)
+	{
+		Timer::setTimeScale(m_pHorizontalSlider_TimeScale->getSliderValue());
 	}
 }
 

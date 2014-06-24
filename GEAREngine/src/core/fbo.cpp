@@ -64,9 +64,20 @@ void FBO::ReInitFBO(int w, int h)
 	m_height=h;
 }
 
-void FBO::BindFBO()
+void FBO::BindFBO(int flag)
 {
-	CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, m_fbo));
+	switch(flag)
+	{
+	case 0:
+		CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, m_fbo));
+		break;
+	case 1:
+		CHECK_GL_ERROR(glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo));
+		break;
+	case 2:
+		CHECK_GL_ERROR(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo));
+		break;
+	}
 }
 
 void FBO::UnBindFBO()
@@ -92,12 +103,20 @@ void FBO::ResetFBO()
 
 GLuint& FBO::CreateDepthBuffer()
 {
-	//GLuint depthbuffer=0;
-
+#if 0
 	// Create the render buffer for depth	
 	CHECK_GL_ERROR(glGenRenderbuffers(1, &m_depthbuffer));
 	CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, m_depthbuffer));
 	CHECK_GL_ERROR(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_width, m_height));
+#else
+	CHECK_GL_ERROR(glGenTextures(1, &m_depthbuffer));
+	CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, m_depthbuffer));
+	CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0));
+	CHECK_GL_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, m_width, m_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL));
+    //CHECK_GL_ERROR(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
+	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+#endif
 	return m_depthbuffer;
 }
 
@@ -162,8 +181,12 @@ GLuint& FBO::AttachShadowTextureBuffer()
 
 GLuint& FBO::AttachDepthBuffer()
 {
+#if 0
 	// Attach the depth render buffer to the FBO as it's depth attachment
 	CHECK_GL_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthbuffer));
+#else
+	CHECK_GL_ERROR(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
+#endif
     
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if(status != GL_FRAMEBUFFER_COMPLETE)

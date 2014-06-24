@@ -144,6 +144,7 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyOpenOnEditor.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyTransform.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\geSettingsFog.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.h" />
     <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsAndroid.h" />
     <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsGlobal.h" />
@@ -215,6 +216,7 @@
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyOpenOnEditor.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyTransform.cpp" />
+    <ClCompile Include="GEAREditor\scenes\propertyViews\geSettingsFog.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geColorDlg.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geSecondryView.cpp" />

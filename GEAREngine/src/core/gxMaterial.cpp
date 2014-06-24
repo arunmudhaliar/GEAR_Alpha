@@ -172,7 +172,7 @@ void gxMaterial::setSurfaceShader(gxSurfaceShader* surfaceShader)
 
 	m_pSurfaceShaderPtr=surfaceShader;
 
-	std::vector<stShaderProperty_Texture2D*>* propertylist=m_pSurfaceShaderPtr->getShaderPropertyList();
+	std::vector<stShaderProperty_Texture2D*>* propertylist=m_pSurfaceShaderPtr->getShaderPropertyList_Texture2D();
 	while(m_vSubMap.size()<propertylist->size())
 	{
 		gxSubMap* submap = new gxSubMap();

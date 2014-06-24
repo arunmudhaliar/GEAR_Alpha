@@ -220,7 +220,7 @@ bool gxSurfaceShader::findAnyValidAlphaNumeric(std::string::const_iterator& star
 {
 	while(start!=end)
 	{
-		bool bValidChar=((*start>=65 && *start<=90) || (*start>=97 && *start<=122) || (*start>=48 && *start<=57));
+		bool bValidChar=((*start>=65 && *start<=90) || (*start>=97 && *start<=122) || (*start>=48 && *start<=57) || *start=='_');
 		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && !bValidChar)
 			return false;
@@ -241,6 +241,32 @@ bool gxSurfaceShader::findAnyValidNumeric(std::string::const_iterator& start, st
 	while(start!=end)
 	{
 		bool bValidChar=(*start>=48 && *start<=57);
+		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
+		if(!bWS && !bValidChar)
+			return false;
+
+		if(bValidChar)
+		{
+			start++;
+			return true;
+		}
+		start++;
+	}
+
+	return false;
+}
+
+bool gxSurfaceShader::findAnyValidFloat(std::string::const_iterator& start, std::string::const_iterator& end)
+{
+	while(start!=end)
+	{
+		bool bValidChar=(*start>=48 && *start<=57);
+		if(*start=='.' && (start+1)!=end && *(start+1)>=48 && *(start+1)<=57)
+		{
+			start++;
+			return true;
+		}
+
 		bool bWS=(*start=='\r' || *start=='\n' || *start=='\t' || *start==0 || *start==' ');
 		if(!bWS && !bValidChar)
 			return false;
@@ -279,19 +305,106 @@ bool gxSurfaceShader::parseKeyWord(std::string::const_iterator& start, std::stri
 bool gxSurfaceShader::parseArgInsideRoundBrace(std::string::const_iterator& start, std::string::const_iterator& end, std::vector<std::string>& args, int argCount)
 {
 	int cnt=argCount-1;
+	bool bOnlyOneArgument = (cnt)?false:true;
 
 	if(findOpeningRoundBrace(start, end))	//find the first "
 	{
 		while(start!=end)
 		{
-			if(findAnyValidNumeric(start, end))
+			float floatval=0.0f;
+			bool bClosingBraceFound=false;
+			while(parseFloat(start, end, floatval))
 			{
+				char buffer[32];
+				sprintf(buffer, "%f", floatval);
+				std::string str;
+				str.assign(buffer);
+				args.push_back(str);
+				if(findClosingRoundBrace(start, end))
+				{
+					bClosingBraceFound=true;
+					break;
+				}
+
+				if(!findComma(start, end))
+				{
+					return false;
+				}
+			}
+
+			return (args.size()==argCount && bClosingBraceFound);
+#if 0
 				std::string::const_iterator name_start=start-1;
 				bool valid=false;
 				if(cnt)
 					valid=findComma(start, end);
 				else
-					valid=findClosingRoundBrace(start, end);	//last arg
+				{
+					if(bOnlyOneArgument)
+					{
+						std::string keyword;
+						std::string::const_iterator keyword_it=start-1;
+						if(parseKeyWord(keyword_it, end, keyword))
+							valid=findClosingRoundBrace(keyword_it, end);	//last arg
+						else return false;
+						start=keyword_it;
+					}
+					else
+					{
+						valid=findClosingRoundBrace(start, end);	//last arg
+					}
+				}
+				if(valid)
+				{
+					std::string str;
+					str.assign(name_start, start-1);
+					args.push_back(str);
+					cnt--;
+					if(cnt==-1)
+					{
+						return true;
+					}
+				}
+				else return false;
+#endif
+			//start++;
+		}
+	}
+
+	return false;
+}
+
+bool gxSurfaceShader::parseAlphaNumericArgInsideRoundBrace(std::string::const_iterator& start, std::string::const_iterator& end, std::vector<std::string>& args, int argCount)
+{
+	int cnt=argCount-1;
+
+	if(findOpeningRoundBrace(start, end))	//find the first "
+	{
+		while(start!=end)
+		{
+			if(findAnyValidAlphaNumeric(start, end))
+			{
+				std::string::const_iterator name_start=start-1;
+				bool valid=false;
+				if(cnt)
+				{
+					std::string keyword;
+					std::string::const_iterator keyword_it=start-1;
+					if(parseKeyWord(keyword_it, end, keyword))
+						valid=findComma(keyword_it, end);
+					else return false;
+					start=keyword_it;
+				}
+				else
+				{
+					std::string keyword;
+					std::string::const_iterator keyword_it=start-1;
+					if(parseKeyWord(keyword_it, end, keyword))
+						valid=findClosingRoundBrace(keyword_it, end);	//last arg
+					else return false;
+					start=keyword_it;
+				}
+
 				if(valid)
 				{
 					std::string str;
@@ -328,61 +441,30 @@ bool gxSurfaceShader::parseNameInsideQuats(std::string::const_iterator& start, s
 	return false;
 }
 
-bool gxSurfaceShader::parseColorProperty(std::string::const_iterator& start, std::string::const_iterator& end, int& depth)
+bool gxSurfaceShader::parseFloat(std::string::const_iterator& start, std::string::const_iterator& end, float& floatval)
 {
-	std::string _keyword;
-	std::string _name;
-	std::string::const_iterator it=start;
-	while(it!=end)
+	if(findAnyValidFloat(start, end))
 	{
-		switch(depth)
+		std::string::const_iterator start_float=start-1;
+		while(start!=end)
 		{
-		case -1:
+			bool bValidChar=((*start>=48 && *start<=57) || *start=='.');
+			if(!bValidChar)
 			{
-				if(findOpeningRoundBrace(it, end))
-				{
-					if(parseNameInsideQuats(it, end, _name))	//find the first "
-					{
-						if(findComma(it, end))
-						{
-							if(parseKeyWord(it, end, _keyword) && findClosingRoundBrace(it, end))
-							{
-								if(findEqualTo(it, end))
-								{
-									std::vector<std::string> args;
-									if(parseArgInsideRoundBrace(it, end, args, 4))
-									{
-										stShaderProperty_Color* newcolor = new stShaderProperty_Color();
-										newcolor->name=_name;
-										newcolor->color.set(atof(args.at(0).c_str()), atof(args.at(1).c_str()), atof(args.at(2).c_str()), atof(args.at(3).c_str()));
-										m_vColor_Properties.push_back(newcolor);
-
-										start=it;
-										return true;
-									}
-									else return false;
-								}
-								else return false;
-							}
-							else return false;
-						}
-						else return false;
-					}
-					else return false;
-				}
-				else return false;
+				std::string floatstring;
+				floatstring.assign(start_float, start);
+				floatval=atof(floatstring.c_str());
+				return true;
 			}
-			break;
-		}
 
-		if(std::distance(it, end)<=0) return false;
-		it++;
+			start++;
+		}
 	}
 
 	return false;
 }
 
-bool gxSurfaceShader::parseTexProperty(std::string::const_iterator& start, std::string::const_iterator& end, const char* _texname, int& depth)
+bool gxSurfaceShader::parseEachProperty(std::string::const_iterator& start, std::string::const_iterator& end, const char* _nameofproperty, int& depth)
 {
 	std::string _temp;
 	std::string _keyword;
@@ -402,27 +484,83 @@ bool gxSurfaceShader::parseTexProperty(std::string::const_iterator& start, std::
 						{
 							if(parseKeyWord(it, end, _keyword) && findClosingRoundBrace(it, end))
 							{
-								if(findEqualTo(it, end))
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+								if(strcmp(_keyword.c_str(), "Tex2D")==0)
 								{
-									std::vector<std::string> args;
-									if(parseNameInsideQuats(it, end, _temp))
+									//
+									if(findEqualTo(it, end))
 									{
-										if(findOpeningCurlyBrace(it, end))
+										std::vector<std::string> args;
+										if(parseNameInsideQuats(it, end, _temp))
 										{
-											if(findClosingCurlyBrace(it, end))
+											if(findOpeningCurlyBrace(it, end))
 											{
-												stShaderProperty_Texture2D* newtex2D = new stShaderProperty_Texture2D();
-												newtex2D->name=_name;
-												newtex2D->texture_uv_in_name= "uv_in";
-												newtex2D->texture_uv_in_name+=_texname;
-												newtex2D->texture_uv_out_name= "uv_out";
-												newtex2D->texture_uv_out_name+=_texname;
-												newtex2D->texture_sampler2d_name= "sampler2d";
-												newtex2D->texture_sampler2d_name+= _texname;
-												//
-												m_vTex2D_Properties.push_back(newtex2D);
-												start=it;
-												return true;
+												if(findClosingCurlyBrace(it, end))
+												{
+													stShaderProperty_Texture2D* newtex2D = new stShaderProperty_Texture2D();
+													newtex2D->name=_name;
+													newtex2D->texture_uv_in_name= "uv_in";
+													newtex2D->texture_uv_in_name+=_nameofproperty;
+													newtex2D->texture_uv_out_name= "uv_out";
+													newtex2D->texture_uv_out_name+=_nameofproperty;
+													newtex2D->texture_sampler2d_name= "sampler2d";
+													newtex2D->texture_sampler2d_name+= _nameofproperty;
+													//
+													m_vTex2D_Properties.push_back(newtex2D);
+													start=it;
+													return true;
+												}
+												else return false;
+											}
+											else return false;
+										}
+										else return false;
+									}
+									else return false;
+									//
+								}
+								else if(strcmp(_keyword.c_str(), "Color")==0)
+								{
+									if(findEqualTo(it, end))
+									{
+										std::vector<std::string> args;
+										if(parseArgInsideRoundBrace(it, end, args, 4))
+										{
+											stShaderProperty_Color* newcolor = new stShaderProperty_Color();
+											newcolor->name=_name;
+											newcolor->color.set(atof(args.at(0).c_str()), atof(args.at(1).c_str()), atof(args.at(2).c_str()), atof(args.at(3).c_str()));
+											m_vColor_Properties.push_back(newcolor);
+
+											start=it;
+											return true;
+										}
+										else return false;
+									}
+									else return false;
+								}
+								else if(strcmp(_keyword.c_str(), "Range")==0)
+								{
+									if(findEqualTo(it, end))
+									{
+										std::vector<std::string> args;
+										if(parseArgInsideRoundBrace(it, end, args, 2))
+										{
+											if(findEqualTo(it, end))
+											{
+												float floatval=0.0f;
+												if(parseFloat(it, end, floatval))
+												{
+													stShaderProperty_Range* newrange = new stShaderProperty_Range();
+													newrange->name=_name;
+													newrange->range_min=atof(args.at(0).c_str());
+													newrange->range_max=atof(args.at(1).c_str());
+													newrange->range_value=floatval;
+													m_vRange_Properties.push_back(newrange);
+
+													start=it;
+													return true;
+												}
+												else return false;
 											}
 											else return false;
 										}
@@ -430,7 +568,7 @@ bool gxSurfaceShader::parseTexProperty(std::string::const_iterator& start, std::
 									}
 									else return false;
 								}
-								else return false;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 							}
 							else return false;
 						}
@@ -468,6 +606,9 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 		case -1:
 			if(findOpeningCurlyBrace(it, end))
 			{
+				//parse and get all the property list
+				//
+#if 0
 				//_Color
 				str.assign(it, end);
 				int pos=str.find("_Color");
@@ -521,6 +662,74 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 					int maintexpropertydepth=-1;
 					if(!parseTexProperty(it, end, "_SpecMap", maintexpropertydepth))
 						return false;
+				}
+#else
+				std::string _nameofproperty;
+				while(parseKeyWord(it, end, _nameofproperty))
+				{
+					int propertydepth=-1;
+					if(!parseEachProperty(it, end, _nameofproperty.c_str(), propertydepth))
+						return false;
+				}
+				it--;
+#endif
+			}
+			break;
+		}
+		
+		if(std::distance(it, end)<=0) return false;
+		it++;
+	}
+
+	return false;
+}
+
+bool gxSurfaceShader::parseSubShader_tag(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth)
+{
+	std::string str;
+	std::string::const_iterator it=start;
+	while(it!=end)
+	{
+		char ch=*it;
+		if(findClosingCurlyBrace(it, end))
+		{
+			start=it;
+			return true;
+		}
+
+		switch(depth)
+		{
+		case -1:
+			if(findOpeningCurlyBrace(it, end))
+			{
+				//check for CULL
+				str.assign(it, end);
+				int pos=str.find("CULLFACE");
+				if(pos>=0)
+				{
+					std::vector<std::string> args;
+					std::string::const_iterator tmp_it=it+pos+strlen("CULLFACE");
+					if(!parseAlphaNumericArgInsideRoundBrace(tmp_it, end, args, 1))
+						return false;
+
+					char* tmp=(char*)args.at(0).c_str();
+					std::string argVar(gxUtil::trimwhitespace(tmp));
+					if(argVar.compare("NONE")==0)
+					{
+						pass.cull_face=GL_NONE;
+					}
+					else if(argVar.compare("FRONT")==0)
+					{
+						pass.cull_face=GL_FRONT;
+					}
+					else if(argVar.compare("BACK")==0)
+					{
+						pass.cull_face=GL_BACK;
+					}
+					else if(argVar.compare("FRONT_AND_BACK")==0)
+					{
+						pass.cull_face=GL_FRONT_AND_BACK;
+					}
 				}
 			}
 			break;
@@ -676,9 +885,8 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 				pass.vIN_Normal = (int)str.find("vIN_Normal")>=0;
 				pass.vIN_Color = (int)str.find("vIN_Color")>=0;
 				pass.Tangent = (int)str.find("Tangent")>=0;
-				pass.Time_time = (int)str.find("Time.time")>=0;
-				pass.Time_deltatime = (int)str.find("Time.deltatime")>=0;
-				pass.Fog = (int)str.find("Fog.fog_density")>=0 || (int)str.find("Fog.fog_start")>=0 || (int)str.find("Fog.fog_end")>=0 || (int)str.find("Fog.fog_scale")>=0;
+				pass.GEAR_Time = (int)str.find("GEAR_Time")>=0;
+				pass.GEAR_ScreenParams = (int)str.find("GEAR_ScreenParams")>=0;
 
 				int pos=str.find("__includeModule");
 				if(pos>=0)
@@ -697,6 +905,16 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 						}
 					}
 					else
+						return false;
+				}
+
+				str.assign(it, end);
+				pos=str.find("__tag");
+				if(pos>=0)
+				{
+					it=it+pos+strlen("__tag");
+					int tag_depth=-1;
+					if(!parseSubShader_tag(it, end, pass, tag_depth))
 						return false;
 				}
 
@@ -881,6 +1099,7 @@ gxSurfaceShader::gxSurfaceShader()
 
 gxSurfaceShader::~gxSurfaceShader()
 {
+	//
 	for(std::vector<stShaderProperty_Texture2D*>::iterator it = m_vTex2D_Properties.begin(); it != m_vTex2D_Properties.end(); ++it)
 	{
 		stShaderProperty_Texture2D* obj = *it;
@@ -894,6 +1113,22 @@ gxSurfaceShader::~gxSurfaceShader()
 		GX_DELETE(obj);
 	}
 	m_vColor_Properties.clear();
+
+	for(std::vector<stShaderProperty_Range*>::iterator it = m_vRange_Properties.begin(); it != m_vRange_Properties.end(); ++it)
+	{
+		stShaderProperty_Range* obj = *it;
+		GX_DELETE(obj);
+	}
+	m_vRange_Properties.clear();
+
+	for(std::vector<stShaderProperty_Vector*>::iterator it = m_vVector_Properties.begin(); it != m_vVector_Properties.end(); ++it)
+	{
+		stShaderProperty_Vector* obj = *it;
+		GX_DELETE(obj);
+	}
+	m_vVector_Properties.clear();
+	//
+
 
 	for(std::vector<stTextureMap*>::iterator it = m_vTextureMap.begin(); it != m_vTextureMap.end(); ++it)
 	{
@@ -967,10 +1202,12 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 				}
 			}
 
-			if(currentPass->Time_time || currentPass->Time_deltatime)
-				cMainShaderSource += hwShaderManager->getShaderSnippet(6)->snippet;
-			if(currentPass->Fog)
-				cMainShaderSource += hwShaderManager->getShaderSnippet(7)->snippet;
+			if(currentPass->GEAR_Time)
+				cMainShaderSource += "uniform vec4 GEAR_Time;\n";	//hwShaderManager->getShaderSnippet(6)->snippet;
+			if(currentPass->GEAR_ScreenParams)
+				cMainShaderSource += "uniform vec4 GEAR_ScreenParams;\n";
+			//if(currentPass->Fog)
+			//	cMainShaderSource += hwShaderManager->getShaderSnippet(7)->snippet;
 			cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
 			cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
 			cMainShaderSource+=currentPass->vertex_buffer+"\n";

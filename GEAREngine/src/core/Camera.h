@@ -28,8 +28,6 @@ public:
 	void processCamera(matrix4x4f* matrix=NULL);
 	void updateCamera();
 	void setUpCameraPerspective(float cx, float cy/*, float fov, float nearValue, float farValue*/);
-	void setCamera(gxCamera* aCamera);
-	//gxCamera*	getCameraStructure()						{	return m_pCameraStructPtr;	}
 
 	void extractFrustumPlanes();
 	virtual void transformationChangedf();

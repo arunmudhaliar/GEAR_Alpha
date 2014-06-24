@@ -4,6 +4,7 @@
 #include "../core/matrix4x4f.h"
 #include "../core/rect.h"
 #include "../core/TextureManager.h"
+#include "stFog.h"
 
 class DECLSPEC gxRenderer
 {
@@ -44,6 +45,8 @@ public:
 	void setMainCameraEye(vector3f eye)		{	m_cMainCameraEyePos=eye;	}
 	vector3f getMainCameraEye()				{	return m_cMainCameraEyePos;	}
 
+	stFog* getFog()	{	return &m_cFog; }
+
 private:
 
 	gxRectf	m_cViewPortRect;
@@ -55,6 +58,8 @@ private:
 	stTexturePacket* m_pGEARTexture1x1Ptr;		//must not delete this pointer
 	RENDER_PASS_TYPE m_eRenderPassType;
 	vector3f m_cMainCameraEyePos;
+
+	stFog m_cFog;
 };
 
 #endif

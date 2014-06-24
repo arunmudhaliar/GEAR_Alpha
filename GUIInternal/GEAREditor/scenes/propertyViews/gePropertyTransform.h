@@ -27,6 +27,7 @@ public:
 	void onTextChange(geGUIBase* textbox);
 
 	void populatePropertyOfTransform(object3d* obj);
+	void updatePropertyView();
 
 	bool decompose(vector3f& scale, Quaternion& quat, vector3f& translate , const float* m)
 	{

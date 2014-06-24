@@ -29,6 +29,9 @@ public:
 	static double getCurrentTimeInSec();
 	static unsigned long getCurrentTimeInMilliSec();
 	
+	static void setTimeScale(float timescale)	{ m_fTimeScale=timescale; }
+	static float getTimeScale() { return m_fTimeScale; }
+
 private:
 	static float	m_fFPS;			//frames
 	static float	m_fDT;			//in sec
@@ -39,6 +42,8 @@ private:
     static float    m_fAveragingTime;   //calculate after this much amount of secs
     static double   m_fLastTime;        //for internal calculations of averaging fps
     static int      m_iFrameCount;      //frame counter
+
+	static float	m_fTimeScale;	//global time scale for the engine (especially for shaders)
 };
 
 #endif

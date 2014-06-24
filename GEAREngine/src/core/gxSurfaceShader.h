@@ -23,6 +23,35 @@ struct stTextureMap
 	int crc;
 };
 
+
+//////////Surface Shader Properties//////////
+struct stShaderProperty_Vector
+{
+	~stShaderProperty_Vector()
+	{
+		name.clear();
+	}
+	std::string name;
+	vector4f vector;
+};
+
+struct stShaderProperty_Range
+{
+	stShaderProperty_Range()
+	{
+		range_max=range_min=range_value=0.0f;
+	}
+
+	~stShaderProperty_Range()
+	{
+		name.clear();
+	}
+	std::string name;
+	float range_max;
+	float range_min;
+	float range_value;
+};
+
 struct stShaderProperty_Color
 {
 	~stShaderProperty_Color()
@@ -53,6 +82,7 @@ struct stShaderProperty_Texture2D
 	std::string texture_uv_out_name;
 	std::string texture_sampler2d_name;
 };
+//////////~Surface Shader Properties//////////
 
 class DECLSPEC gxSubMap
 {
@@ -93,9 +123,9 @@ struct stPass
 		vIN_Normal=false;
 		vIN_Color=false;
 		Tangent=false;
-		Time_time=false;
-		Time_deltatime=false;
-		Fog=false;
+		GEAR_Time=false;
+		GEAR_ScreenParams=false;
+		cull_face=GL_BACK;	//default value
 	}
 
 	~stPass()
@@ -116,9 +146,9 @@ struct stPass
 	bool vIN_Normal;
 	bool vIN_Color;
 	bool Tangent;
-	bool Time_time;
-	bool Time_deltatime;
-	bool Fog;
+	bool GEAR_Time;
+	bool GEAR_ScreenParams;
+	unsigned int cull_face;
 
 	std::string vertex_buffer;
 	std::string fragment_buffer;
@@ -152,17 +182,20 @@ private:
 	bool findAnyValidCharForName(std::string::const_iterator& start, std::string::const_iterator& end);
 	bool findAnyValidAlphaNumeric(std::string::const_iterator& start, std::string::const_iterator& end);
 	bool findAnyValidNumeric(std::string::const_iterator& start, std::string::const_iterator& end);
+	bool findAnyValidFloat(std::string::const_iterator& start, std::string::const_iterator& end);
 	bool parseKeyWord(std::string::const_iterator& start, std::string::const_iterator& end, std::string& name);
+	bool parseFloat(std::string::const_iterator& start, std::string::const_iterator& end, float& floatval);
 	bool parseArgInsideRoundBrace(std::string::const_iterator& start, std::string::const_iterator& end, std::vector<std::string>& args, int argCount);
+	bool parseAlphaNumericArgInsideRoundBrace(std::string::const_iterator& start, std::string::const_iterator& end, std::vector<std::string>& args, int argCount);
 	bool parseNameInsideQuats(std::string::const_iterator& start, std::string::const_iterator& end, std::string& name);
-	bool parseColorProperty(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
-	bool parseTexProperty(std::string::const_iterator& start, std::string::const_iterator& end, const char* _texname, int& depth);
+	bool parseEachProperty(std::string::const_iterator& start, std::string::const_iterator& end, const char* _nameofproperty, int& depth);
 	bool parseProperties(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseSubShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseSubShaderPass(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth);
 	bool findEndingCurlyBraseOfModule(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parseSubShader_vertex(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth);
 	bool parseSubShader_fragment(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth);
+	bool parseSubShader_tag(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth);
 	bool parseShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parse(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 
@@ -170,6 +203,9 @@ protected:
 	stSubShader m_cSubShader;
 	std::vector<stShaderProperty_Texture2D*> m_vTex2D_Properties;
 	std::vector<stShaderProperty_Color*> m_vColor_Properties;
+	std::vector<stShaderProperty_Range*> m_vRange_Properties;
+	std::vector<stShaderProperty_Vector*> m_vVector_Properties;
+
 	std::vector<stTextureMap*> m_vTextureMap;
 	std::vector<gxHWShader*> m_vShaderProgram;
 	std::string m_cName;
@@ -189,8 +225,12 @@ public:
 	stPass* getShaderPassStruct(int pass)	{	return (pass<m_cSubShader.m_vPass.size())?m_cSubShader.m_vPass[pass]:NULL;}
 
 	std::vector<stPass*>* getShaderPassList()	{	return &m_cSubShader.m_vPass;	}
-	std::vector<stShaderProperty_Texture2D*>* getShaderPropertyList()	{	return &m_vTex2D_Properties;		}
-	stShaderProperty_Texture2D* getShaderProperty_Texture2D(int index)	{	return m_vTex2D_Properties[index];	}
-	stShaderProperty_Color* getShaderProperty_Color(int index)			{	return m_vColor_Properties[index];	}
+	std::vector<stShaderProperty_Texture2D*>* getShaderPropertyList_Texture2D()	{	return &m_vTex2D_Properties;		}
+	std::vector<stShaderProperty_Color*>* getShaderPropertyList_Color()			{	return &m_vColor_Properties;		}
+	std::vector<stShaderProperty_Range*>* getShaderPropertyList_Range()			{	return &m_vRange_Properties;		}
+	std::vector<stShaderProperty_Vector*>* getShaderPropertyList_Vector()		{	return &m_vVector_Properties;		}
+
+	//stShaderProperty_Texture2D* getShaderProperty_Texture2D(int index)	{	return m_vTex2D_Properties[index];	}
+	//stShaderProperty_Color* getShaderProperty_Color(int index)			{	return m_vColor_Properties[index];	}
 };
 #endif

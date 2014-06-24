@@ -151,6 +151,7 @@ void gxWorld::renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3
 		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
 		CHECK_GL_ERROR(glEnable(GL_BLEND));
 		CHECK_GL_ERROR(glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR));		//really good result	(2x Multiplicative)
+		//CHECK_GL_ERROR(glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE));	//not good result	(Soft Additive)
 		std::vector<gxLight*>* lightList = getLightList();
 		for(int x=0;x<lightList->size();x++)
 		{

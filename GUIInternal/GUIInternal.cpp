@@ -246,6 +246,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				EditorApp::getScenePropertyEditor()->populatePropertyOfLayers();
 			}
 			break;
+		case ID_EDIT_FOGSETTINGS:
+			{
+				EditorApp::getScenePropertyEditor()->populateSettingsOfFog();
+			}
+			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;

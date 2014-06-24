@@ -16,8 +16,8 @@ gxHWShader::gxHWShader()
 	m_cUnifrom_material_ambient=-1;
 	m_cUnifrom_material_specular=-1;
 	m_cUnifrom_material_shininess=-1;
-	m_cUnifrom_Time_time=-1;
-	m_cUnifrom_Time_deltatime=-1;
+	m_cUnifrom_GEAR_Time=-1;
+	m_cUnifrom_GEAR_ScreenParams=-1;
 
 	m_cAttrib_vIN_Position=-1;
 	m_cAttrib_vIN_Normal=-1;
@@ -607,32 +607,31 @@ void gxHWShader::sendUniform_material_shininess(float input)
 	}
 }
 
-void gxHWShader::sendUniform_time(const float* time)
+void gxHWShader::sendUniform_GEAR_Time(const float* time)
 {
-	if(m_cUnifrom_Time_time!=-1)
+	if(m_cUnifrom_GEAR_Time!=-1)
 	{
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_Time_time, 1, time));
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_Time, 1, time));
 	}
 	else
 	{
-		m_cUnifrom_Time_time = getUniformLoc("Time.time");
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_Time_time, 1, time));
+		m_cUnifrom_GEAR_Time = getUniformLoc("GEAR_Time");
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_Time, 1, time));
 	}
 }
 
-void gxHWShader::sendUniform_deltatime(const float* deltatime)
+void gxHWShader::sendUniform_GEAR_ScreenParams(const float* screenParams)
 {
-	if(m_cUnifrom_Time_deltatime!=-1)
+	if(m_cUnifrom_GEAR_ScreenParams!=-1)
 	{
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_Time_deltatime, 1, deltatime));
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_ScreenParams, 1, screenParams));
 	}
 	else
 	{
-		m_cUnifrom_Time_deltatime = getUniformLoc("Time.deltatime");
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_Time_deltatime, 1, deltatime));
+		m_cUnifrom_GEAR_ScreenParams = getUniformLoc("GEAR_ScreenParams");
+		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_ScreenParams, 1, screenParams));
 	}
 }
-
 int gxHWShader::getAttrib_vIN_Position()
 {
 	if(m_cAttrib_vIN_Position==-1)

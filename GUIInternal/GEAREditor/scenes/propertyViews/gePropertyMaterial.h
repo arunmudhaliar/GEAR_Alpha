@@ -45,31 +45,6 @@ public:
 	};
 	std::vector<stSubMapView*> m_vSubMap;
 
-	struct stFogView
-	{
-		stFogView()
-		{
-			reset();
-		}
-
-		void reset()
-		{
-			edit_fog_start=NULL;
-			edit_fog_end=NULL;
-			edit_fog_density=NULL;
-			color_fog_color=NULL;
-			menu_fog_type=NULL;
-			pWindowColumn=NULL;
-		}
-
-		geTextBox* edit_fog_start;
-		geTextBox* edit_fog_end;
-		geTextBox* edit_fog_density;
-		geColorControl* color_fog_color;
-		geToolBarDropMenu* menu_fog_type;
-		geWindowColumn* pWindowColumn;
-	};
-
 	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo);
 	virtual ~gePropertyMaterial();
 
@@ -82,9 +57,8 @@ public:
 
 	void loadClientViewFromMaterial(gxMaterial* material);
 	void destroySubMapView();
-	void loadSubMapView(bool& fog);
+	void loadSubMapView();
 
-	stFogView m_cFogSubView;
 	geColorControl* m_pColorControl;
 	geToolBarDropMenu* m_pSurfaceShaderToolBarDropMenuBtnPtr;
 	geHorizontalSlider* m_pHorizontalSliderShininess;

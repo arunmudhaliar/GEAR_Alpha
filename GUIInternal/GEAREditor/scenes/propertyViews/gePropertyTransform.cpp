@@ -105,38 +105,8 @@ void gePropertyTransform::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tr
 void gePropertyTransform::populatePropertyOfTransform(object3d* obj)
 {
 	m_pObject3dPtr=obj;
-	char buffer[32];
-	sprintf(buffer, "%12.4f", obj->getMatrix()[12]);
-	m_pszTextBoxTranslation[0]->setName(buffer);
-	sprintf(buffer, "%12.4f", obj->getMatrix()[13]);
-	m_pszTextBoxTranslation[1]->setName(buffer);
-	sprintf(buffer, "%12.4f", obj->getMatrix()[14]);
-	m_pszTextBoxTranslation[2]->setName(buffer);
 
-	sprintf(buffer, "%12.4f", obj->getMatrix()[0]);
-	m_pszTextBoxScale[0]->setName(buffer);
-	sprintf(buffer, "%12.4f", obj->getMatrix()[5]);
-	m_pszTextBoxScale[1]->setName(buffer);
-	sprintf(buffer, "%12.4f", obj->getMatrix()[10]);
-	m_pszTextBoxScale[2]->setName(buffer);
-
-	float Yaw;
-	float Pitch;
-	float Roll;
-
-	Quaternion quat;
-	quat=Quaternion::fromRotationMatrix(obj->getMatrix());
-	quat.getEuler(Yaw, Pitch, Roll);
-
-	Quaternion aa= quat.getQuaternion(Yaw, Pitch, Roll);
-	//getRotation(Yaw, Pitch, Roll, obj->getMatrix());
-
-	sprintf(buffer, "%12.4f", Pitch);
-	m_pszTextBoxRotation[0]->setName(buffer);
-	sprintf(buffer, "%12.4f", Yaw);
-	m_pszTextBoxRotation[1]->setName(buffer);
-	sprintf(buffer, "%12.4f", Roll);
-	m_pszTextBoxRotation[2]->setName(buffer);
+	updatePropertyView();
 }
 
 void gePropertyTransform::onTextChange(geGUIBase* textbox)
@@ -163,4 +133,42 @@ void gePropertyTransform::onTextChange(geGUIBase* textbox)
 	else if(textbox==m_pszTextBoxScale[2])
 		m_pObject3dPtr->setScale(mat[0], mat[5], value);
 
+}
+
+void gePropertyTransform::updatePropertyView()
+{
+	if(m_pObject3dPtr==NULL) return;
+
+	char buffer[32];
+	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[12]);
+	m_pszTextBoxTranslation[0]->setName(buffer);
+	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[13]);
+	m_pszTextBoxTranslation[1]->setName(buffer);
+	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[14]);
+	m_pszTextBoxTranslation[2]->setName(buffer);
+
+	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[0]);
+	m_pszTextBoxScale[0]->setName(buffer);
+	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[5]);
+	m_pszTextBoxScale[1]->setName(buffer);
+	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[10]);
+	m_pszTextBoxScale[2]->setName(buffer);
+
+	float Yaw;
+	float Pitch;
+	float Roll;
+
+	Quaternion quat;
+	quat=Quaternion::fromRotationMatrix(m_pObject3dPtr->getMatrix());
+	quat.getEuler(Yaw, Pitch, Roll);
+
+	Quaternion aa= quat.getQuaternion(Yaw, Pitch, Roll);
+	//getRotation(Yaw, Pitch, Roll, obj->getMatrix());
+
+	sprintf(buffer, "%12.4f", Pitch);
+	m_pszTextBoxRotation[0]->setName(buffer);
+	sprintf(buffer, "%12.4f", Yaw);
+	m_pszTextBoxRotation[1]->setName(buffer);
+	sprintf(buffer, "%12.4f", Roll);
+	m_pszTextBoxRotation[2]->setName(buffer);
 }

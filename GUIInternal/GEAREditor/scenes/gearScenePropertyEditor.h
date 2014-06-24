@@ -17,6 +17,7 @@
 #include "propertyViews\gePropertyOpenOnEditor.h"
 #include "propertyViews\gePropertyOctree.h"
 #include "propertyViews\gePropertyLayers.h"
+#include "propertyViews\geSettingsFog.h"
 
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {
@@ -32,6 +33,9 @@ public:
 	void populatePropertyOfOpenInEditor();
 	void populatePropertyOfOctree();
 	void populatePropertyOfLayers();
+	void populateSettingsOfFog();
+
+	void updateTransformPropertyOfCurrentSelectedObject();
 
 	geTreeNode* getMaterialParentNode()		{	return m_pMaterialParent;		}
 	geTreeNode* getAnimationParentNode()	{	return m_pAnimationParentNode;	}
@@ -78,6 +82,10 @@ private:
 	//layers
 	geTreeNode* m_pLayersParentNode;
 	gePropertyLayers* m_pPropertyLayers;
+
+	//Fog
+	geTreeNode* m_pFogParentNode;
+	geSettingsFog* m_pSettingsFog;
 };
 
 #endif

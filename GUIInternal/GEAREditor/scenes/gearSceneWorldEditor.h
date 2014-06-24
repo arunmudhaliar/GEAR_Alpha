@@ -47,7 +47,6 @@ protected:
 	virtual bool onMouseLButtonUp(float x, float y, int nFlag);
 	virtual bool onMouseRButtonDown(float x, float y, int nFlag);
 	virtual void onMouseRButtonUp(float x, float y, int nFlag);
-
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
@@ -57,6 +56,8 @@ protected:
 	virtual void onCommand(int cmd);
 
 	void drawFBO(GLuint t, float x, float y, float cx, float cy);
+	void drawFOGFBO(GLuint base_t, GLuint depth_t, float x, float y, float cx, float cy);
+
 	void drawGrid();
 	void drawSelectedObject();
 	void drawOctree();
@@ -105,6 +106,7 @@ protected:
 #if defined USE_FBO
 	FBO m_cMultiPassFBO;
 	FBO m_cShadowMapFBO;
+	FBO m_cFOGFBO;
 #endif
 	bool m_bEnablePostProcessorBlur;
 	SoundEngine m_cSoundEngine;

@@ -33,6 +33,9 @@ geWindow("Property Editor")
 
 	m_pLayersParentNode = NULL;
 	m_pPropertyLayers = NULL;
+
+	m_pFogParentNode = NULL;
+	m_pSettingsFog = NULL;
 }
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
@@ -51,6 +54,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	GE_DELETE(m_pOpenOnEditorParentNode);
 	GE_DELETE(m_pOctreeParentNode);
 	GE_DELETE(m_pLayersParentNode);
+	GE_DELETE(m_pFogParentNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -107,6 +111,9 @@ void gearScenePropertyEditor::onCreate()
 
 	m_pLayersParentNode = new geTreeNode(m_pRenderer, rootNode, "Layers", &m_cszSprites[9], 0);
 	m_pPropertyLayers = new gePropertyLayers(m_pRenderer, m_pLayersParentNode, "", NULL);
+
+	m_pFogParentNode = new geTreeNode(m_pRenderer, rootNode, "Fog", &m_cszSprites[9], 0);
+	m_pSettingsFog = new geSettingsFog(m_pRenderer, m_pFogParentNode, "", NULL, monoWrapper::mono_engine_getWorld(0)->getRenderer()->getFog());
 
 	removeAllProperties();
 }
@@ -176,6 +183,7 @@ void gearScenePropertyEditor::removeAllProperties()
 	rootNode->removeTVChild(m_pOpenOnEditorParentNode);
 	rootNode->removeTVChild(m_pOctreeParentNode);
 	rootNode->removeTVChild(m_pLayersParentNode);
+	rootNode->removeTVChild(m_pFogParentNode);
 
 	//material
 	if(m_pMaterialParent)
@@ -227,6 +235,17 @@ void gearScenePropertyEditor::populatePropertyOfLayers()
 
 	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
 	rootNode->appnendTVChild(m_pLayersParentNode);
+
+	m_cPropertiesTreeView.refreshTreeView();
+	m_cPropertiesTreeView.resetSelectedNodePtr();
+}
+
+void gearScenePropertyEditor::populateSettingsOfFog()
+{
+	removeAllProperties();
+
+	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	rootNode->appnendTVChild(m_pFogParentNode);
 
 	m_cPropertiesTreeView.refreshTreeView();
 	m_cPropertiesTreeView.resetSelectedNodePtr();
@@ -309,4 +328,15 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 
 	m_cPropertiesTreeView.refreshTreeView();
 	m_cPropertiesTreeView.resetSelectedNodePtr();
+}
+
+void gearScenePropertyEditor::updateTransformPropertyOfCurrentSelectedObject()
+{
+	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+
+	std::vector<geGUIBase*>* controlList=rootNode->getChildControls();
+	if(std::find(controlList->begin(), controlList->end(), m_pTransformParentNode)!=controlList->end())
+	{
+		m_pTransformPropertyNode->updatePropertyView();
+	}
 }

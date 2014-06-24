@@ -59,7 +59,7 @@ __Pass{
 		vec4 fragment_function()
 		{
  
-            return vec4((texture2D(sampler2d_MainTex, vec2(sin(radians(Time.time.x)), uv_out_MainTex.s))+texture2D(sampler2d_BumpMap, uv_out_BumpMap)).rgb, 1);
+            return vec4((texture2D(sampler2d_MainTex, vec2(uv_out_MainTex.s+GEAR_Time.z, uv_out_MainTex.t)) + texture2D(sampler2d_BumpMap, uv_out_BumpMap)).rgb, 1);
 		}
 	}
 }

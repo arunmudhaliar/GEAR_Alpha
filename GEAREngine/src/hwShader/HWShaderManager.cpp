@@ -87,12 +87,12 @@ void HWShaderManager::LoadDefaultShaders()
 	snippet=LoadCodeSnippet("res/shadersWin32/snippets/material_unifrom_vars.snippet");
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/time_uniform_vars.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
-	snippet=LoadCodeSnippet("res/shadersWin32/snippets/fog_vars.snippet");
-	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
+	//snippet=LoadCodeSnippet("res/shadersWin32/snippets/time_uniform_vars.snippet");
+	//if(snippet)
+	//	m_cvHWShaderSnippets.push_back(snippet);
+	//snippet=LoadCodeSnippet("res/shadersWin32/snippets/fog_vars.snippet");
+	//if(snippet)
+	//	m_cvHWShaderSnippets.push_back(snippet);
 
 	//HW shaders
 	gxHWShader* pShader=new gxHWShader();
@@ -117,6 +117,21 @@ void HWShaderManager::LoadDefaultShaders()
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
     if(pShader->loadShader("res/shadersWin32/hwshader/shadowmap.glsl"))	//4
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/fog_linear_shader.glsl"))	//5
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/fog_exp_shader.glsl"))	//6
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+	pShader=new gxHWShader();
+    if(pShader->loadShader("res/shadersWin32/hwshader/fog_exp2_shader.glsl"))	//7
 		m_cvHWShaderLst.push_back(pShader);
 	else
 		GX_DELETE(pShader);

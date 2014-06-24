@@ -581,6 +581,7 @@
     <ClInclude Include="..\src\physics\vectormath\vmInclude.h" />
     <ClInclude Include="..\src\renderer\glew.h" />
     <ClInclude Include="..\src\renderer\gxRenderer.h" />
+    <ClInclude Include="..\src\renderer\stFog.h" />
     <ClInclude Include="..\src\tga\Tga.h" />
     <ClInclude Include="..\src\util\bxLinkedList.h" />
     <ClInclude Include="..\src\util\FontManager.h" />

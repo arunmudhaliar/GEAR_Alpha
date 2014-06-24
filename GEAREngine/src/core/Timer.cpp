@@ -32,6 +32,7 @@ double	Timer::m_fPrevTime=0.0f;
 float   Timer::m_fAveragingTime=0.5f;   //in sec
 int     Timer::m_iFrameCount=0;
 double  Timer::m_fLastTime=0.0f;
+float  Timer::m_fTimeScale=0.0f;
 
 void Timer::init()
 {
@@ -103,6 +104,7 @@ void Timer::update(float targetFPS)
 
 void Timer::reset()
 {
+	m_fTimeScale=1.0f;
 	m_fFPS=0.0f;		
 	m_fDT=0.0f;		
 	m_iDT=0;			

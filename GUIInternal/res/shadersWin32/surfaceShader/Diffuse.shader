@@ -1,18 +1,22 @@
 Shader "Diffuse" {
 Properties {
-	_Color ("Main Color", Color) = (1,1,1,1)
+	_Color ("Main Color", Color) = ( 1.0, .05,  1.00,1111.2222  )
 	_MainTex ("Base (RGB)", Tex2D) = "white" {}
 }
 
 SubShader {
 __Pass{
+
+	__tag{
+		CULLFACE( GL_BACK )
+	}
+	
 	__vertex{
 		attribute vec2 uv_in_MainTex;
 		varying vec2 uv_out_MainTex;
 		
 		vec4 vertex_function()
 		{
-			vOUT_Fog_frag_coord=(GEAR_MODELVIEW * vIN_Position).z;	//need to change to eye coordinate later
 			uv_out_MainTex = uv_in_MainTex;
 			return GEAR_MVP * vIN_Position;
 		}
@@ -24,10 +28,7 @@ __Pass{
 
 		vec4 fragment_function()
 		{
-			float fog = (Fog.fog_end + vOUT_Fog_frag_coord) * Fog.fog_scale;
-			//float fog = exp(-Fog.fog_density * vOUT_Fog_frag_coord);
-			vec4 color = mix(Fog.fog_color, texture2D(sampler2d_MainTex, uv_out_MainTex), fog);
-			return color;
+			return texture2D(sampler2d_MainTex, uv_out_MainTex);
 		}
 	}
 }

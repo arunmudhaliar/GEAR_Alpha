@@ -22,7 +22,7 @@ public:
 	GLuint& AttachTextureBuffer(int index);	//return the reference of the texture buffer
 	GLuint& AttachShadowTextureBuffer();	//return the reference of the texture buffer
 
-	void BindFBO();
+	void BindFBO(int flag=0);		//0-default, 1-read
 	void UnBindFBO();
 
     void DrawFBO(int index);
@@ -31,6 +31,9 @@ public:
 	unsigned int getFBODepthBuffer()				{	return m_depthbuffer;			}
 	unsigned int getFBOTextureDepthShadowBuffer()	{	return m_depthShadowbuffer;		}
     
+	int getFBOWidth()	{    return m_width;  }
+	int getFBOHeight()	{    return m_height; }
+
 private:
 	//vars
 

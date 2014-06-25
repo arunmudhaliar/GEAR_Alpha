@@ -52,3 +52,65 @@ void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)
 	shader->sendUniform4f("light.position", lightPos.x, lightPos.y, lightPos.z, (m_eType==LIGHT_POINT)?1.0f:0.0f);
 #endif
 }
+
+void gxLight::write(gxFile& file)
+{
+	file.Write(m_iObjectID);
+	file.Write(m_eBaseFlags);
+	file.Write(m_cszName);
+	file.WriteBuffer((unsigned char*)m, sizeof(m));
+	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.Write(m_iAssetFileCRC);
+	writeAnimationController(file);
+
+	//write light data
+	file.Write(m_eType);
+	file.WriteBuffer((unsigned char*)&m_cAmbient, sizeof(m_cAmbient));
+	file.WriteBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
+	file.WriteBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
+	file.Write(m_fConstantAttenuation);
+	file.Write(m_fLinearAttenuation);
+	file.Write(m_fQuadraticAttenuation);
+	//
+
+	file.Write((int)m_cChilds.size());
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=m_cChilds.getHead();
+    while(node)
+    {
+		object3d* obj=node->getData();
+		obj->write(file);
+        node=node->getNext();
+	}
+#else
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		obj->write(file);
+	}
+#endif
+}
+
+void gxLight::read(gxFile& file)
+{
+	file.Read(m_eBaseFlags);
+	char* temp=file.ReadString();
+	GX_STRCPY(m_cszName, temp);
+	GX_DELETE_ARY(temp);
+	file.ReadBuffer((unsigned char*)m, sizeof(m));
+	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.Read(m_iAssetFileCRC);
+	readAnimationController(file);
+
+	//read light data
+	int type=0;
+	file.Read(type);
+	m_eType=(ELIGHT_TYPE)type;
+	file.ReadBuffer((unsigned char*)&m_cAmbient, sizeof(m_cAmbient));
+	file.ReadBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
+	file.ReadBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
+	file.Read(m_fConstantAttenuation);
+	file.Read(m_fLinearAttenuation);
+	file.Read(m_fQuadraticAttenuation);
+	//
+}

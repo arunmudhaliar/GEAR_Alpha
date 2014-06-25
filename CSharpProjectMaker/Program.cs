@@ -28,8 +28,8 @@ namespace CSharpProjectMaker
             StreamWriter stream = new StreamWriter(workingdir+"//"+slnfilename+".sln");
 
             stream.WriteLine();
-            stream.WriteLine("Microsoft Visual Studio Solution File, Format Version 11.00");
-            stream.WriteLine("# Visual Studio 2010");
+            stream.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
+            stream.WriteLine("# Visual Studio 2012");
             stream.WriteLine("Project(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"" + slnfilename + "\", \"" + slnfilename + ".csproj\", \"{" + guid + "}\"");
             stream.WriteLine("EndProject");
             stream.WriteLine("Global");

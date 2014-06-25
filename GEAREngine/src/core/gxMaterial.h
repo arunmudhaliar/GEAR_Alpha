@@ -20,7 +20,7 @@ struct stMaterialPass
 	std::vector<gxSubMap*> vUsedSubMap;
 };
 
-class DECLSPEC gxMaterial //: public gxSurfaceShader
+class DECLSPEC gxMaterial : public GEARAsset
 {
 public:
 	gxMaterial();
@@ -42,16 +42,10 @@ public:
 	void setMaterialName(const char* name)	{	GX_STRCPY(m_szMaterialName, name);	}
 	const char* getMaterialName()			{	return m_szMaterialName;		}
 
-#if 0
-	gxTexture* loadTextureFromDirectory(CTextureManager& textureManager, const char* directory);
-#endif
 	bool appendDependency(int crc);
 
 	void write(gxFile& file);
 	void read(gxFile& file);
-
-	void setFileCRC(int crc)	{	m_iFileCRC=crc;		}
-	int getFileCRC()			{	return m_iFileCRC;	}
 
 	static gxMaterial* createNewMaterial();
 
@@ -61,7 +55,6 @@ public:
 	void setSurfaceShader(gxSurfaceShader* surfaceShader);
 	gxSurfaceShader* getSurfaceShader()						{	return m_pSurfaceShaderPtr;			}
 
-	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap);	//-1 will add a map to the list
 	void appendSubMap(gxSubMap* map);
 	gxSubMap* getSubMap(int index);
 	std::vector<gxSubMap*>* getSubMapList()	{	return &m_vSubMap;	}
@@ -76,7 +69,6 @@ private:
 	bool m_bTwoSided;
 	char m_szMaterialName[64];
 	std::vector<int> m_vDependencyCRCList;
-	int m_iFileCRC;
 	std::string m_cMainShaderName;
 	gxSurfaceShader* m_pSurfaceShaderPtr;	//must not delete this pointer
 	std::vector<gxSubMap*> m_vSubMap;

@@ -56,6 +56,7 @@ extern DECLSPEC object3d* object3d_getParent(object3d* obj)
 
 object3d::object3d(int objID):
 	transform(),
+	GEARAsset(),
 	m_iObjectID(objID)
 {
 	setObject3dObserver(NULL);
@@ -66,7 +67,6 @@ object3d::object3d(int objID):
 	setBaseFlag(eObject3dBaseFlag_Visible);
 	m_pAnimationController=NULL;
 	m_pAnimationTrack=NULL;
-	m_iFileCRC=0;
 	setRootObserverOfTree(NULL);
 #if USE_BULLET
 	m_pPhysics_RigidBodyPtr=NULL;
@@ -105,7 +105,7 @@ object3d::~object3d()
 
 	//if(m_pAnimationTrack)
 	//	m_pAnimationTrack->setObject3d(NULL);
-	m_iFileCRC=0;
+	m_iAssetFileCRC=0;
 	m_pParentPtr=NULL;
 	m_pAnimationTrack=NULL;
 	GX_DELETE(m_pAnimationController);
@@ -600,7 +600,7 @@ void object3d::write(gxFile& file)
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
 	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Write(m_iFileCRC);
+	file.Write(m_iAssetFileCRC);
 	writeAnimationController(file);
 	file.Write((int)m_cChilds.size());
 
@@ -629,7 +629,7 @@ void object3d::read(gxFile& file)
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
 	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Read(m_iFileCRC);
+	file.Read(m_iAssetFileCRC);
 	readAnimationController(file);
 }
 

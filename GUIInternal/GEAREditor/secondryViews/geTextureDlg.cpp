@@ -136,7 +136,7 @@ bool geTextureDlg::onMouseMove(float x, float y, int flag)
 	return geSecondryView::onMouseMove(x, y, flag);
 }
 
-gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc)
+gxTexture* geTextureDlg::loadTextureFromMeta(CTextureManager& textureManager, unsigned int crc)
 {
 	char metaDataFileName[256];
 	sprintf(metaDataFileName, "%x", crc);
@@ -146,7 +146,7 @@ gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc)
 	{
 		gxTexture* pTexture = new gxTexture();
 		pTexture->setTexture(texturePack);
-		pTexture->setFileCRC(crc);
+		pTexture->setAssetFileCRC(crc, metaDataFileName);
 		if(texturePack->bAlphaTex)
 		{
 			pTexture->setTextureType(gxTexture::TEX_ALPHA);
@@ -161,7 +161,7 @@ gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc)
 	return NULL;
 }
 
-gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename)
+gxTexture* geTextureDlg::loadTextureFromFile(CTextureManager& textureManager, const char* filename)
 {
 	char metaInfoFileName[256];
 	const char* onlyFilename = gxUtil::getFileNameFromPath(filename);
@@ -171,7 +171,7 @@ gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* file
 	gxFile metaInfoFile;
 	if(metaInfoFile.OpenFile(metaInfoFileName))
 	{
-		int crc=0;
+		unsigned int crc=0;
 		metaInfoFile.Read(crc);
 		metaInfoFile.CloseFile();
 		return loadTextureFromMeta(textureManager, crc);

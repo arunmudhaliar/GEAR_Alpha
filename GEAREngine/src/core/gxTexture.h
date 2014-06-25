@@ -12,8 +12,9 @@
 
 #include "stTexturePacket.h"
 #include "matrix4x4f.h"
+#include "GEARAsset.h"
 
-class gxTexture
+class gxTexture : public GEARAsset
 {
 public:
 	enum ETEXTURE
@@ -23,7 +24,8 @@ public:
 		TEX_UNDEFINED
 	};
 	
-	gxTexture()
+	gxTexture():
+		GEARAsset()
 	{
 		m_pTexTurePtr=NULL;
 		m_eTextureType=TEX_UNDEFINED;
@@ -56,9 +58,6 @@ public:
 	ETEXTURE getTextureType() const			{	return m_eTextureType;	}
 	
 	matrix4x4f* getTextureMatrix()			{	return &m_cMatrix;		}
-
-	void setFileCRC(int crc)	{	m_iFileCRC=crc;		}
-	int getFileCRC()			{	return m_iFileCRC;	}
 
 private:
 	stTexturePacket* m_pTexTurePtr;     //must not delete this pointer

@@ -1,9 +1,9 @@
 #include "gxMaterial.h"
 
-gxMaterial::gxMaterial()
+gxMaterial::gxMaterial():
+	GEARAsset()
 {
 	m_cDiffuse.set(0.5f, 0.5f, 0.5f, 1.0f);
-	m_iFileCRC=0;
 	m_pSurfaceShaderPtr=NULL;
 	m_fAlpha=1.0f;
 	m_fShininess=10.0f;
@@ -29,45 +29,6 @@ gxMaterial::~gxMaterial()
 	//
 }
 
-#if 0
-gxTexture* gxMaterial::loadTextureFromDirectory(CTextureManager& textureManager, const char* directory)
-{
-	if(strlen(m_szTextureName)==0)
-		return NULL;
-	char metaInfoFileName[256];
-	sprintf(metaInfoFileName, "%s//%s.meta",directory, m_szTextureName);
-
-	gxFile metaInfoFile;
-	if(metaInfoFile.OpenFile(metaInfoFileName))
-	{
-		int crc=0;
-		metaInfoFile.Read(crc);
-		metaInfoFile.CloseFile();
-
-		char metaDataFileName[256];
-		sprintf(metaDataFileName, "%x", crc);
-
-		stTexturePacket* texturePack=textureManager.LoadTexture(metaDataFileName);
-
-		GX_DELETE(m_pTexture);
-		m_pTexture = new gxTexture();
-		m_pTexture->setTexture(texturePack);
-		if(texturePack->bAlphaTex)
-		{
-			m_pTexture->setTextureType(gxTexture::TEX_ALPHA);
-		}
-		else
-		{
-			m_pTexture->setTextureType(gxTexture::TEX_NORMAL);
-		}
-
-		return m_pTexture;
-	}
-
-	return NULL;
-}
-#endif
-
 bool gxMaterial::appendDependency(int crc)
 {
 	if(std::find(m_vDependencyCRCList.begin(), m_vDependencyCRCList.end(), crc)==m_vDependencyCRCList.end())
@@ -81,7 +42,7 @@ bool gxMaterial::appendDependency(int crc)
 
 void gxMaterial::write(gxFile& file)
 {
-	file.Write(m_iFileCRC);
+	file.Write(m_iAssetFileCRC);
 	file.WriteBuffer((unsigned char*)&m_cAmbient, sizeof(m_cAmbient));
 	file.WriteBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
 	file.WriteBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
@@ -107,7 +68,7 @@ void gxMaterial::write(gxFile& file)
 
 void gxMaterial::read(gxFile& file)
 {
-	file.Read(m_iFileCRC);
+	file.Read(m_iAssetFileCRC);
 	file.ReadBuffer((unsigned char*)&m_cAmbient, sizeof(m_cAmbient));
 	file.ReadBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
 	file.ReadBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
@@ -246,20 +207,4 @@ gxSubMap* gxMaterial::getSubMap(int index)
 	if(index>=(int)m_vSubMap.size()) return NULL;
 
 	return m_vSubMap[index];
-}
-
-gxTexture* gxMaterial::loadTextureFromFile(CTextureManager& textureManager, const char* filename, int submap)
-{
-	gxSubMap* map=NULL;
-	if(submap==-1)
-	{
-		map = new gxSubMap();
-		appendSubMap(map);
-	}
-	else
-	{
-		map = m_vSubMap[submap];
-	}
-
-	return map->load(textureManager, filename);
 }

@@ -60,9 +60,6 @@ public:
 	const char* getMetaDataFolder();
 
 	CTextureManager* getTextureManager()	{	return &m_cTextureManager;	}
-#if 0
-	void loadTextures(object3d* obj, const char* fbxFileName);
-#endif
 
 	gxRenderer* getRenderer()	{	return &m_cRenderer;	}
 
@@ -80,16 +77,15 @@ public:
 	void callback_object3dDestroyedFromTree(object3d* child);
 	void callback_object3dLayerChanged(object3d* child, int oldLayerID);
 
-	object3d* loadAndAppendFBX(const char* filename);
 	object3d* loadAndAppendFBXForDevice(const char* filename);
 	void populateBonesToMeshNode(object3d* obj, object3d* rootNode);
 	void loadAnmationFromObject3d(object3d* obj3d, int crc);
 	void loadMaterialFromObject3d(object3d* obj3d);
-	void read3dFile2(gxFile& file, object3d* obj);
 
 	LayerManager* getLayerManager()	{	return &m_cLayerManager;	}
 
 private:
+	void read3dFile(gxFile& file, object3d* obj);
 	void renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list);
 
 	std::vector<gxMaterial*> m_cMaterialList;

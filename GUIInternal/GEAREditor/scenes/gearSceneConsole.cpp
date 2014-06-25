@@ -107,30 +107,39 @@ void gearSceneConsole::appendConsoleRunRootNode()
 	m_uCurrentRunElapsedTime=Timer::getCurrentTimeInMilliSec();
 }
 
-void gearSceneConsole::appendConsoleMsg(const char* msg)
+void gearSceneConsole::appendConsoleMsg(const char* msg, int msgtype)
 {
 	if(m_pDontLogBtn->isButtonPressed())
 		return;
 
 	geTreeNode* newtvConsoleNode;
 
+	//
+	unsigned long now=Timer::getCurrentTimeInMilliSec()-m_uCurrentRunElapsedTime;
+	char msg_buffer[256];
+	switch (msgtype)
+	{
+	case 0:	//info
+		sprintf(msg_buffer, "(%d) info: %s", now, msg);
+		break;
+	case 1:	//warning
+		sprintf(msg_buffer, "(%d) warning: %s", now, msg);
+		break;
+	case 2:	//error
+		sprintf(msg_buffer, "(%d) ERROR: %s", now, msg);
+		break;
+	default:
+		break;
+	}
+	//
+
 	if(m_pCurrentBuildRootNodePtr)
 	{
-		//
-		unsigned long now=Timer::getCurrentTimeInMilliSec()-m_uCurrentRunElapsedTime;
-		char msg_buffer[256];
-		sprintf(msg_buffer, "(%d) %s", now, msg);
-		//
 		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL);
 	}
 	else
 	{
 		appendConsoleRunRootNode();
-		//
-		unsigned long now=Timer::getCurrentTimeInMilliSec()-m_uCurrentRunElapsedTime;
-		char msg_buffer[256];
-		sprintf(msg_buffer, "(%d) %s", now, msg);
-		//
 		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL);
 	}
 

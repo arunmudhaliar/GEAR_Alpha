@@ -87,6 +87,7 @@
     <ClCompile Include="..\src\core\Camera.cpp" />
     <ClCompile Include="..\src\core\COctree.cpp" />
     <ClCompile Include="..\src\core\fbo.cpp" />
+    <ClCompile Include="..\src\core\GEARAsset.cpp" />
     <ClCompile Include="..\src\core\gxAnimation.cpp" />
     <ClCompile Include="..\src\core\gxAnimationSet.cpp" />
     <ClCompile Include="..\src\core\gxAnimationTrack.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="..\src\core\COctree.h" />
     <ClInclude Include="..\src\core\fbo.h" />
     <ClInclude Include="..\src\core\frustum.h" />
+    <ClInclude Include="..\src\core\GEARAsset.h" />
     <ClInclude Include="..\src\core\gxAnimation.h" />
     <ClInclude Include="..\src\core\gxAnimationSet.h" />
     <ClInclude Include="..\src\core\gxAnimationTrack.h" />

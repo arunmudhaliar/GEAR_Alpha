@@ -13,7 +13,6 @@
 #ifdef _WIN32
 #include <CommCtrl.h>
 #include "../../util/gxUtil.h"
-//#include "../../GEAREditor/EditorApp.h"
 
 #include <stdio.h>
 #include <io.h>
@@ -41,9 +40,6 @@ MonoMethod* monoWrapper::g_pMethod_engine_update = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_resize = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_render = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_renderSingleObject = NULL;
-//MonoMethod* monoWrapper::g_pMethod_engine_loadAndAppendFBX = NULL;
-MonoMethod* monoWrapper::g_pMethod_engine_loadFBX = NULL;
-//MonoMethod* monoWrapper::g_pMethod_engine_appendObject3dToRoot = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_mouseLButtonDown = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_mouseLButtonUp = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_mouseRButtonDown = NULL;
@@ -51,7 +47,6 @@ MonoMethod* monoWrapper::g_pMethod_engine_mouseRButtonUp = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_mouseWheel = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_mouseMove = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_setMetaFolder = NULL;
-MonoMethod* monoWrapper::g_pMethod_engine_loadTextureFromFile = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_removeObject3d = NULL;
 MonoMethod* monoWrapper::g_pMethod_engine_destroyObject3d = NULL;
 
@@ -161,16 +156,12 @@ void monoWrapper::bindEngineMethods()
 	g_pMethod_engine_resize					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_resize", 7);
 	g_pMethod_engine_render					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_render", 2);
 	g_pMethod_engine_renderSingleObject		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_renderSingleObject", 3);
-	//g_pMethod_engine_loadAndAppendFBX		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadAndAppendFBX", 2);
-	g_pMethod_engine_loadFBX				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadFBX", 3);
-//	g_pMethod_engine_appendObject3dToRoot	=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_appendObject3dToRoot", 2);
 	g_pMethod_engine_mouseLButtonDown		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseLButtonDown", 4);
 	g_pMethod_engine_mouseLButtonUp			=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseLButtonUp", 4);
 	g_pMethod_engine_mouseRButtonDown		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseRButtonDown", 4);
 	g_pMethod_engine_mouseWheel				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseWheel", 5);
 	g_pMethod_engine_mouseMove				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseMove", 4);
 	g_pMethod_engine_setMetaFolder			=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_setMetaFolder", 2);
-	g_pMethod_engine_loadTextureFromFile	=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_loadTextureFromFile", 4);
 	g_pMethod_engine_removeObject3d			=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_removeObject3d", 2);
 	g_pMethod_engine_destroyObject3d		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_destroyObject3d", 2);
 
@@ -328,42 +319,6 @@ void monoWrapper::mono_engine_renderSingleObject(gxWorld* world, object3d* obj, 
 #endif
 }
 
-//object3d* monoWrapper::mono_engine_loadAndAppendFBX(gxWorld* world, const char* filename)
-//{
-//#ifdef USEMONOENGINE
-//	void* args[2]={&world, mono_string_new(g_pMonoDomain, filename)};
-//	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_loadAndAppendFBX, NULL, args, NULL);
-//	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
-//	return (object3d*)underlyingType;
-//#else
-//	return engine_loadAndAppendFBX(world, filename);
-//#endif
-//}
-
-object3d* monoWrapper::mono_engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory)
-{
-#ifdef USEMONOENGINE
-	void* args[3]={&world, mono_string_new(g_pMonoDomain, filename), mono_string_new(g_pMonoDomain, projecthomedirectory)};
-	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_loadFBX, NULL, args, NULL);
-	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
-	return (object3d*)underlyingType;
-#else
-	return engine_loadFBX(world, filename, projecthomedirectory);
-#endif
-}
-
-//object3d* monoWrapper::mono_engine_appendObject3dToRoot(gxWorld* world, object3d* obj)
-//{
-//#ifdef USEMONOENGINE
-//	void* args[2]={&world, &obj};
-//	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_appendObject3dToRoot, NULL, args, NULL);
-//	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
-//	return (object3d*)underlyingType;
-//#else
-//	return engine_appendObject3dToRoot(world, obj);
-//#endif
-//}
-
 void monoWrapper::mono_engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag)
 {
 #ifdef USEMONOENGINE
@@ -431,18 +386,6 @@ void monoWrapper::mono_engine_setMetaFolder(gxWorld* world, const char* metaFold
 	mono_runtime_invoke(g_pMethod_engine_setMetaFolder, NULL, args, NULL);
 #else
 	engine_setMetaFolder(world, metaFolder);
-#endif
-}
-
-gxTexture* monoWrapper::mono_engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename, int submap)
-{
-#ifdef USEMONOENGINE
-	void* args[4]={&world, &material, mono_string_new(g_pMonoDomain, filename), &submap};
-	MonoObject* returnValue=mono_runtime_invoke(g_pMethod_engine_loadTextureFromFile, NULL, args, NULL);
-	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
-	return (gxTexture*)underlyingType;
-#else
-	return engine_loadTextureFromFile(world, material, filename, submap);
 #endif
 }
 

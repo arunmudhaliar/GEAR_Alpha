@@ -16,7 +16,7 @@ public:
 	void onButtonClicked(geGUIBase* btn);
 
 	void appendConsoleRunRootNode();
-	void appendConsoleMsg(const char* msg);
+	void appendConsoleMsg(const char* msg, int msgtype);
 	void clearConsoleCurrentRun();
 	void clearConsoleAllRun();
 

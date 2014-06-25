@@ -3,6 +3,7 @@
 
 class assetUserData
 {
+private:
 	assetUserData()
 	{
 		assetObjectPtr=NULL;
@@ -20,7 +21,7 @@ public:
 	{
 		type=typeID;
 		if(path)
-			STRCPY(assetAbsolutePath, path);
+			STRCPY(assetPath, path);
 		assetObjectPtr=ptr;
 	}
 	
@@ -29,13 +30,13 @@ public:
 		assetObjectPtr=NULL;
 	}
 
-	const char* getAssetAbsolutePath()	{	return assetAbsolutePath;	}
+	const char* getAssetPath()	{	return assetPath;	}
 	ASSETUSERDATA_TYPE getAssetType()	{	return type;				}
 	void* getAssetObjectPtr()			{	return assetObjectPtr;		}
 	void setAssetObjectPtr(void* ptr, ASSETUSERDATA_TYPE typeID)	{	assetObjectPtr= ptr; type=typeID;	}
 
 private:
-	char assetAbsolutePath[1024];
+	char assetPath[1024];
 	ASSETUSERDATA_TYPE type;
 	void* assetObjectPtr;
 };

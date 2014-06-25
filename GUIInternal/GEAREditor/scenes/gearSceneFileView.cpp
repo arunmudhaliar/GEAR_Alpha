@@ -19,7 +19,6 @@
 #include "../../resource.h"
 #include "../../../GEAREngine/src/core/gxSkinnedMesh.h"
 
-static int find_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
 LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 char g_cszPrefabName[256];
 
@@ -76,7 +75,7 @@ void gearSceneFileView::onDraw()
 	m_cFileTreeView.draw();
 }
 
-void read3dFile(gxFile& file, object3d* obj)
+void gearSceneFileView::read3dFile(gxFile& file, object3d* obj)
 {
 	int nChild=0;
 	file.Read(nChild);
@@ -86,16 +85,15 @@ void read3dFile(gxFile& file, object3d* obj)
 		int objID=0;
 		file.Read(objID);
 		object3d* tempObj=NULL;
-		if(objID==100)
+		switch(objID)
 		{
+		case OBJECT3D_MESH:
 			tempObj = new gxMesh();
-		}
-		else if(objID==101)
-		{
+			break;
+		case OBJECT3D_SKINNED_MESH:
 			tempObj = new gxSkinnedMesh();
-		}
-		else
-		{
+			break;
+		default:
 			tempObj = new object3d(objID);
 		}
 
@@ -105,7 +103,7 @@ void read3dFile(gxFile& file, object3d* obj)
 	}
 }
 
-void deleteAnmationFromObject3d(object3d* obj3d)
+void gearSceneFileView::deleteAnmationFromObject3d(object3d* obj3d)
 {
 	gxAnimation* animationController = obj3d->getAnimationController();
 	if(animationController)
@@ -141,7 +139,7 @@ void gearSceneFileView::loadPreviewObjects()
 		file_meta.Read(objID);
 
 		object3d* tempObj=NULL;
-		if(objID!=100)
+		if(objID!=OBJECT3D_MESH)
 		{
 			tempObj = new object3d(objID);
 			tempObj->read(file_meta);
@@ -172,7 +170,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 	object3d* obj=(object3d*)((assetUserData*)tvnode->getUserData())->getAssetObjectPtr();
 	if(obj==NULL)
 	{
-		const char* relativePath=((assetUserData*)tvnode->getUserData())->getAssetAbsolutePath();
+		const char* relativePath=((assetUserData*)tvnode->getUserData())->getAssetPath();
 		char crcFile[1024];
 		if(relativePath)
 		{
@@ -203,11 +201,11 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				file_meta.Read(objID);
 
 				object3d* tempObj=NULL;
-				if(objID==100)
+				if(objID==OBJECT3D_MESH)
 				{
 					tempObj = new gxMesh();
 				}
-				else if(objID==101)
+				else if(objID==OBJECT3D_SKINNED_MESH)
 				{
 					tempObj = new gxSkinnedMesh();
 				}
@@ -233,7 +231,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		else if(util::GE_IS_EXTENSION(relativePath, ".mat") || util::GE_IS_EXTENSION(relativePath, ".MAT"))
 		{
 			gxFile file_meta;
-			int crc32=AssetImporter::calcCRC32((unsigned char*)relativePath);
+			unsigned int crc32=AssetImporter::calcCRC32((unsigned char*)relativePath);
 
 			gxMaterial* matchingMaterial=NULL;
 			//check if the material name already exists in our list or not
@@ -242,7 +240,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
 			{
 				gxMaterial* material_in_list = *it;
-				if(material_in_list->getFileCRC()==crc32)
+				if(material_in_list->getAssetFileCRC()==crc32)
 				{
 					//match found, so assing and delete the new material object
 					matchingMaterial=material_in_list;
@@ -319,11 +317,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			gxMesh* mesh=(gxMesh*)m_pPreviewObj_Cube->getChild(0);
 			gxTriInfo* triinfo = mesh->getTriInfo(0);
 			triinfo->setMaterial(&m_cPreviewMaterial);
-			//world->getMaterialList()->push_back(triinfo->getMaterial());
 			obj=m_pPreviewObj_Cube;
-			//gxWorld* world=monoWrapper::mono_engine_getWorld(0);
-			//m_cPreviewMaterial.loadTextureFromFile(*world->getTextureManager()
-			//EditorApp::getScenePropertyEditor()->populatePropertyOfOpenInEditor();
 		}
 	}
 	EditorApp::getScenePreview()->selectedObject3D(obj);
@@ -341,7 +335,7 @@ void gearSceneFileView::populateFiles(const char* dirPath)
 	destroyTVUserData(m_cFileTreeView.getRoot());
 	m_cFileTreeView.clearAndDestroyAll();
 
-	find_files(m_pRenderer, dirPath, m_pSerachStringTextBoxPtr->getName(), m_cFileTreeView.getRoot(), m_cszSprites);
+	gearSceneFileView::find_files(m_pRenderer, dirPath, m_pSerachStringTextBoxPtr->getName(), m_cFileTreeView.getRoot(), m_cszSprites);
 	m_cFileTreeView.getRoot()->traverseSetWidth(m_cSize.x);
 	m_cFileTreeView.refreshTreeView();
 }
@@ -440,7 +434,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
 			sprintf(prefabFileName, "%s.prefab", g_cszPrefabName);
 			char absolutepath[512];
 			sprintf(absolutepath, "%s/%s", m_szDirectoryPath, prefabFileName);
-			int crc32 = AssetImporter::calcCRC32((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(absolutepath));
+			unsigned int crc32 = AssetImporter::calcCRC32((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(absolutepath));
 			gxFile prefabFile;
 			if(prefabFile.OpenFile(absolutepath, gxFile::FILE_w))
 			{
@@ -453,7 +447,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
 					char crcFileName[512];
 					sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc32);
 
-					obj->setFileCRC(crc32);
+					obj->setAssetFileCRC(crc32, absolutepath);
 					if(AssetImporter::saveObject3DToMetaData(crcFileName, obj, fst))
 					{
 						//create the meta-info file
@@ -475,52 +469,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
 	}
 }
 
-static const char* STRCHR_nocase(const char* str, char value)
-{
-	for(int x=0;x<strlen(str);x++)
-	{
-		if(tolower(str[x])==tolower(value))
-			return &str[x];
-	}
-
-	return NULL;
-}
-
-static bool isSubString(const char* str, const char* substr)
-{
-	const char* fond_str=STRCHR_nocase(str, substr[0]);
-	if(fond_str==NULL) return false;
-
-	bool bFound=false;
-
-	while(!bFound)
-	{
-		int sub_strlen=strlen(substr);
-		int str_len=strlen(fond_str);
-		if(sub_strlen>str_len) return false;
-
-		bFound=true;
-		for(int x=0;x<sub_strlen; x++)
-		{
-			if(tolower(substr[x])!=tolower(*fond_str))
-			{
-				bFound=false;
-				break;
-			}
-			fond_str++;
-		}
-
-		if(bFound)
-			return bFound;
-
-		fond_str=STRCHR_nocase(fond_str, substr[0]);
-		if(fond_str==NULL) return false;
-	}
-
-	return false;
-}
-
-static int find_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray)
+int gearSceneFileView::find_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray)
 {
     DIR *dir;
     char buffer[PATH_MAX + 2];
@@ -571,7 +520,7 @@ static int find_files(rendererGL10* renderer, const char *dirname, const char* s
                 {
 					if(searchString!=NULL && strlen(searchString)>0)
 					{
-						if(!isSubString(ent->d_name, searchString))
+						if(!gxUtil::isSubString(ent->d_name, searchString))
 							break;
 					}
 

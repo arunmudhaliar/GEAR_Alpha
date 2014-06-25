@@ -113,7 +113,53 @@ public:
 		return str;
 	}
 
+	static bool isSubString(const char* str, const char* substr)
+	{
+		const char* fond_str=STRCHR_nocase(str, substr[0]);
+		if(fond_str==NULL) return false;
+
+		bool bFound=false;
+
+		while(!bFound)
+		{
+			int sub_strlen=strlen(substr);
+			int str_len=strlen(fond_str);
+			if(sub_strlen>str_len) return false;
+
+			bFound=true;
+			for(int x=0;x<sub_strlen; x++)
+			{
+				if(tolower(substr[x])!=tolower(*fond_str))
+				{
+					bFound=false;
+					break;
+				}
+				fond_str++;
+			}
+
+			if(bFound)
+				return bFound;
+
+			fond_str=STRCHR_nocase(fond_str, substr[0]);
+			if(fond_str==NULL) return false;
+		}
+
+		return false;
+	}
+
 private:
+
+	static const char* STRCHR_nocase(const char* str, char value)
+	{
+		for(int x=0;x<strlen(str);x++)
+		{
+			if(tolower(str[x])==tolower(value))
+				return &str[x];
+		}
+
+		return NULL;
+	}
+
 	static char g_directoryPath[512];
 	static char g_filePath[512];
 };

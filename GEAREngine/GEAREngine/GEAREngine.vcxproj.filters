@@ -678,6 +678,9 @@
     <ClCompile Include="..\src\core\LayerManager.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\GEARAsset.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -1618,6 +1621,9 @@
     </ClInclude>
     <ClInclude Include="..\src\renderer\stFog.h">
       <Filter>engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\GEARAsset.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

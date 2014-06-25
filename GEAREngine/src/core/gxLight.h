@@ -43,6 +43,9 @@ public:
 	void setLinearAttenuation(float value)		{	m_fLinearAttenuation=value;		}
 	void setQuadraticAttenuation(float value)	{	m_fQuadraticAttenuation=value;	}
 
+	virtual void write(gxFile& file);
+	virtual void read(gxFile& file);
+
 private:
 	ELIGHT_TYPE m_eType;
 	vector4f m_cDiffuse;

@@ -41,9 +41,6 @@ public:
 	static void mono_engine_resize(gxWorld* world, float x, float y, float cx, float cy, float nearplane, float farplane);
 	static void mono_engine_render(gxWorld* world, object3d* light);
 	static void mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light);
-	//static object3d* mono_engine_loadAndAppendFBX(gxWorld* world, const char* filename);
-	static object3d* mono_engine_loadFBX(gxWorld* world, const char* filename, const char* projecthomedirectory);
-	//static object3d* mono_engine_appendObject3dToRoot(gxWorld* world, object3d* obj);
 
 	static void mono_engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag);
 	static void mono_engine_mouseLButtonUp(gxWorld* world, int x, int y, int flag);
@@ -52,7 +49,6 @@ public:
 	static void mono_engine_mouseWheel(gxWorld* world, int zDelta, int x, int y, int flag);
 	static void mono_engine_mouseMove(gxWorld* world, int x, int y, int flag);
 	static void mono_engine_setMetaFolder(gxWorld* world, const char* metaFolder);
-	static gxTexture* mono_engine_loadTextureFromFile(gxWorld* world, gxMaterial* material, const char* filename, int submap);
 	static bool mono_engine_removeObject3d(gxWorld* world, object3d* obj);
 	static bool mono_engine_destroyObject3d(gxWorld* world, object3d* obj);
 
@@ -87,9 +83,7 @@ private:
 	static MonoMethod* g_pMethod_engine_resize;
 	static MonoMethod* g_pMethod_engine_render;
 	static MonoMethod* g_pMethod_engine_renderSingleObject;
-	//static MonoMethod* g_pMethod_engine_loadAndAppendFBX;
-	static MonoMethod* g_pMethod_engine_loadFBX;
-	//static MonoMethod* g_pMethod_engine_appendObject3dToRoot;
+
 	static MonoMethod* g_pMethod_engine_mouseLButtonDown;
 	static MonoMethod* g_pMethod_engine_mouseLButtonUp;
 	static MonoMethod* g_pMethod_engine_mouseRButtonDown;
@@ -97,7 +91,6 @@ private:
 	static MonoMethod* g_pMethod_engine_mouseWheel;
 	static MonoMethod* g_pMethod_engine_mouseMove;
 	static MonoMethod* g_pMethod_engine_setMetaFolder;
-	static MonoMethod* g_pMethod_engine_loadTextureFromFile;
 	static MonoMethod* g_pMethod_engine_removeObject3d;
 	static MonoMethod* g_pMethod_engine_destroyObject3d;
 

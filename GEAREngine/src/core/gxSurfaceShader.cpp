@@ -46,7 +46,7 @@ gxTexture* gxSubMap::loadTextureFromMeta(CTextureManager& textureManager, int cr
 
 		m_pTexture = new gxTexture();
 		m_pTexture->setTexture(texturePack);
-		m_pTexture->setFileCRC(crc);
+		m_pTexture->setAssetFileCRC(crc, metaDataFileName);
 		if(texturePack->bAlphaTex)
 		{
 			m_pTexture->setTextureType(gxTexture::TEX_ALPHA);

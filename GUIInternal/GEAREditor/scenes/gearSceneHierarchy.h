@@ -18,7 +18,7 @@ public:
 	//engine observer
 	virtual void onAppendToWorld(object3d* world, object3d* obj);
 	virtual void onRemoveFromWorld(object3d* world, object3d* obj);
-	virtual void onConsoleLogFromMono(const char* msg);
+	virtual void onConsoleLogFromMono(const char* msg, int msgtype);
 
 	//object3d observer
 	virtual void onObject3dChildAppend(object3d* child);

@@ -431,7 +431,8 @@ int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMate
 	char temp_buffer[1024];
 	GX_STRCPY(temp_buffer, gxUtil::getFolderPathFromFileName(fbx_file_name));
 	sprintf(buffer, "%s/%s.mat", temp_buffer, material->getMaterialName());
-	int crc32=gxCrc32::Calc((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer));
+	unsigned char* relative_path=(unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer);
+	unsigned int crc32=gxCrc32::Calc(relative_path);
 	gxFile materialFile;
 	if(materialFile.OpenFile(buffer))
 	{
@@ -473,7 +474,7 @@ int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMate
 		if(bCreateMetaFile)
 		{
 			gxFile file_meta;
-			material->setFileCRC(crc32);
+			material->setAssetFileCRC(crc32, (char*)relative_path);
 			saveMaterialToMetaData(crcFileName, material, fst);
 		}
 	}

@@ -825,7 +825,7 @@ void gxMesh::writeMeshData(gxFile& file)
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
 	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Write(m_iFileCRC);
+	file.Write(m_iAssetFileCRC);
 	writeAnimationController(file);
 
 	file.Write(m_nTriInfoArray);
@@ -879,7 +879,7 @@ void gxMesh::writeMeshData(gxFile& file)
 	for(int x=0;x<m_nUVChannels;x++)
 	{
 		if(m_pszUVChannels[x].m_pMaterialPtr)
-			file.Write(m_pszUVChannels[x].m_pMaterialPtr->getFileCRC());
+			file.Write(m_pszUVChannels[x].m_pMaterialPtr->getAssetFileCRC());
 		else
 			file.Write((int)0);
 		file.WriteBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
@@ -917,7 +917,7 @@ void gxMesh::read(gxFile& file)
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
 	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Read(m_iFileCRC);
+	file.Read(m_iAssetFileCRC);
 	readAnimationController(file);
 
 	file.Read(m_nTriInfoArray);

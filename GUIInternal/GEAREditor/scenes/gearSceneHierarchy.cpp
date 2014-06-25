@@ -147,12 +147,12 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 		geGUIBase* droppedDataObject = *it;
 		if(dropObject->getSourcePtr()==EditorApp::getSceneFileView())
 		{
-			const char* absolutePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
+			const char* relativePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetPath();
 
-			if (util::GE_IS_EXTENSION(absolutePath, ".fbx") || util::GE_IS_EXTENSION(absolutePath, ".FBX") ||
-				util::GE_IS_EXTENSION(absolutePath, ".prefab") || util::GE_IS_EXTENSION(absolutePath, ".PREFAB"))
+			if (util::GE_IS_EXTENSION(relativePath, ".fbx") || util::GE_IS_EXTENSION(relativePath, ".FBX") ||
+				util::GE_IS_EXTENSION(relativePath, ".prefab") || util::GE_IS_EXTENSION(relativePath, ".PREFAB"))
 			{
-				object3d* obj = engine_loadAndAppendMesh(EditorApp::getSceneWorldEditor()->getMainWorld(), absolutePath);
+				object3d* obj = engine_loadAndAppendMesh(EditorApp::getSceneWorldEditor()->getMainWorld(), relativePath);
 			}
 		}
 		else if(dropObject->getSourcePtr()==this)
@@ -270,9 +270,9 @@ void gearSceneHierarchy::recreateOctree()
 	world->createOctree(nTransformPerNodes, nLevels);
 }
 
-void gearSceneHierarchy::onConsoleLogFromMono(const char* msg)
+void gearSceneHierarchy::onConsoleLogFromMono(const char* msg, int msgtype)
 {
-	EditorApp::getSceneConsole()->appendConsoleMsg(msg);
+	EditorApp::getSceneConsole()->appendConsoleMsg(msg, msgtype);
 }
 
 void gearSceneHierarchy::onObject3dChildAppend(object3d* child)
@@ -312,12 +312,6 @@ bool gearSceneHierarchy::onKeyDown(int charValue, int flag)
 			object3d* obj=(object3d*)selectedNode->getUserData();
 			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), obj))
 			{
-				//geTreeNode* parentNode = (geTreeNode*)selectedNode->getParent();
-				//parentNode->removeTVChild(selectedNode);
-				//destroyTVUserData(selectedNode);
-				//GE_DELETE(selectedNode);
-				//m_cGameObjectsTreeView.resetSelectedNodePtr();
-
 				GE_DELETE(obj);
 				EditorApp::getSceneWorldEditor()->selectedObject3D(NULL);
 				EditorApp::getScenePropertyEditor()->populatePropertyOfObject(NULL);

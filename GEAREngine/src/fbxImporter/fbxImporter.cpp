@@ -122,7 +122,7 @@ object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManag
       
 		// recurse over the scene nodes and import them as needed...
 		object3d* object3d_root_object = new object3d(0);
-		object3d_root_object->setFileCRC(fileCRC);
+		object3d_root_object->setAssetFileCRC(fileCRC, filePath);
 		object3d_root_object->setName(gxUtil::getFileNameFromPath(filePath));
 
 		stBoneList boneList;
@@ -643,7 +643,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 					if(strcmp(material_in_list->getMaterialName(), surfaceMaterial->GetName())==0)
 					{
 						triInfoArray[fbxMaterialIndex].setMaterial(material_in_list);
-						material_in_list->appendDependency(rootObject3d->getFileCRC());
+						material_in_list->appendDependency(rootObject3d->getAssetFileCRC());
 						material=material_in_list;
 						break;
 					}
@@ -690,7 +690,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 #endif
 					material->setMainShaderName("Diffuse");
 					triInfoArray[fbxMaterialIndex].setMaterial(material);
-					material->appendDependency(rootObject3d->getFileCRC());
+					material->appendDependency(rootObject3d->getAssetFileCRC());
 					materialList->push_back(material);
 				}
 			}
@@ -781,7 +781,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 	{
 		//create and assign new material
 		triInfoArray[0].setMaterial(gxMaterial::createNewMaterial());
-		triInfoArray[0].getMaterial()->appendDependency(rootObject3d->getFileCRC());
+		triInfoArray[0].getMaterial()->appendDependency(rootObject3d->getAssetFileCRC());
 	}
 
 	for(int m=0;m<nCount;m++)

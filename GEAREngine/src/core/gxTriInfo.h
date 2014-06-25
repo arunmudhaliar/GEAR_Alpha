@@ -42,7 +42,7 @@ public:
 		if(m_nVertices)
 			file.WriteBuffer((unsigned char*)m_pTriList, sizeof(int)*m_nVertices*3);
 		if(m_pMaterialPtr)
-			file.Write(m_pMaterialPtr->getFileCRC());
+			file.Write(m_pMaterialPtr->getAssetFileCRC());
 		else
 			file.Write((int)0);
 	}

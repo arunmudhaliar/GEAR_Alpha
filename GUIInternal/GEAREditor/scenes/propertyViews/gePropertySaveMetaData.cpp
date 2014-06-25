@@ -9,16 +9,16 @@ void gePropertySaveMetaData::onButtonClicked(geGUIBase* btn)
 		if(m_pButtonSave->isButtonPressed())
 		{
 			object3d* obj=m_pObject3dPtr;
-			if(obj && obj->getParent()==monoWrapper::mono_engine_getWorld(0) && obj->getFileCRC()!=0)
+			if(obj && obj->getParent()==monoWrapper::mono_engine_getWorld(0) && obj->getAssetFileCRC()!=0)
 			{
 				//save metadata
 				stMetaHeader metaHeader;
 				struct stat fst;
 
-				if(AssetImporter::readMetaHeader(obj->getFileCRC(), metaHeader, fst))
+				if(AssetImporter::readMetaHeader(obj->getAssetFileCRC(), metaHeader, fst))
 				{
 					char crcFileName[512];
-					sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", obj->getFileCRC());
+					sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", obj->getAssetFileCRC());
 					AssetImporter::saveObject3DToMetaData(crcFileName, obj, fst);
 					saveMaterialRecursiveToMeta(obj);
 				}
@@ -40,10 +40,10 @@ void gePropertySaveMetaData::saveMaterialRecursiveToMeta(object3d* obj)
 			{
 				stMetaHeader metaHeader;
 				struct stat fst;
-				if(AssetImporter::readMetaHeader(material->getFileCRC(), metaHeader, fst))
+				if(AssetImporter::readMetaHeader(material->getAssetFileCRC(), metaHeader, fst))
 				{
 					char crcFileName[512];
-					sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", material->getFileCRC());
+					sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", material->getAssetFileCRC());
 					AssetImporter::saveMaterialToMetaData(crcFileName, material, fst);
 				}
 			}

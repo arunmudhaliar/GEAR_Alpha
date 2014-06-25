@@ -440,7 +440,7 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 				for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
 				{
 					gxMaterial* material_in_list = *it;
-					if(material_in_list->getFileCRC()==material->getFileCRC())
+					if(material_in_list->getAssetFileCRC()==material->getAssetFileCRC())
 					{
 						//match found, so assing and delete the new material object
 						triInfo->setMaterial(material_in_list);
@@ -581,7 +581,7 @@ void gxWorld::populateBonesToMeshNode(object3d* obj, object3d* rootNode)
 #endif
 }
 
-void gxWorld::read3dFile2(gxFile& file, object3d* obj)
+void gxWorld::read3dFile(gxFile& file, object3d* obj)
 {
 	int nChild=0;
 	file.Read(nChild);
@@ -591,94 +591,27 @@ void gxWorld::read3dFile2(gxFile& file, object3d* obj)
 		int objID=0;
 		file.Read(objID);
 		object3d* tempObj=NULL;
-		if(objID==OBJECT3D_MESH)
+
+		switch(objID)
 		{
+		case OBJECT3D_MESH:
 			tempObj = new gxMesh();
-		}
-		else if(objID==OBJECT3D_SKINNED_MESH)
-		{
+			break;
+		case OBJECT3D_SKINNED_MESH:
 			tempObj = new gxSkinnedMesh();
-		}
-		else
-		{
+			break;
+		case OBJECT3D_LIGHT:
+			tempObj = new gxLight();
+			break;
+		default:
 			tempObj = new object3d(objID);
 		}
 
 		tempObj->setObject3dObserver(m_pObject3dObserver);
 		tempObj->read(file);
 		obj->appendChild(tempObj);
-		read3dFile2(file, tempObj);
+		read3dFile(file, tempObj);
 	}
-}
-
-object3d* gxWorld::loadAndAppendFBX(const char* filename)
-{
-	object3d* root_object_node=NULL;
-	if (gxUtil::GX_IS_EXTENSION(filename, ".fbx") || gxUtil::GX_IS_EXTENSION(filename, ".FBX") ||
-		gxUtil::GX_IS_EXTENSION(filename, ".prefab") || gxUtil::GX_IS_EXTENSION(filename, ".PREFAB"))
-	{
-		object3d* obj = NULL;
-		char metaInfoFileName[256];
-		sprintf(metaInfoFileName, "%s.meta",filename);
-
-		gxFile metaInfoFile;
-		if(metaInfoFile.OpenFile(metaInfoFileName))
-		{
-			int crc=0;
-			metaInfoFile.Read(crc);
-			metaInfoFile.CloseFile();
-
-			char crcFile[1024];
-			sprintf(crcFile, "%s/%x", getMetaDataFolder(), crc);
-
-			gxFile file_meta;
-			if(file_meta.OpenFile(crcFile))
-			{
-				stMetaHeader metaHeader;
-				file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
-
-				int objID=0;
-				file_meta.Read(objID);
-
-				object3d* tempObj=NULL;
-
-				if(objID==100)
-				{
-					tempObj = new gxMesh();
-				}
-				else if(objID==101)
-				{
-					tempObj = new gxSkinnedMesh();
-				}
-				else
-				{
-					tempObj = new object3d(objID);
-				}
-
-				if(tempObj)
-				{
-					tempObj->setObject3dObserver(m_pObject3dObserver);
-					tempObj->read(file_meta);
-					appendChild(tempObj);
-					read3dFile2(file_meta, tempObj);
-					obj=tempObj;
-					loadMaterialFromObject3d(obj);
-					loadAnmationFromObject3d(obj, crc);
-					root_object_node=obj;
-				}
-				file_meta.CloseFile();
-			}
-		}
-	}
-
-	transformationChangedf();
-
-	if(m_pEngineObserver)
-		m_pEngineObserver->onAppendToWorld(this, root_object_node);
-
-	populateBonesToMeshNode(root_object_node, root_object_node);
-
-	return root_object_node;
 }
 
 object3d* gxWorld::loadAndAppendFBXForDevice(const char* filename)
@@ -704,16 +637,18 @@ object3d* gxWorld::loadAndAppendFBXForDevice(const char* filename)
 
 			object3d* tempObj=NULL;
 
-			if(objID==100)
+			switch(objID)
 			{
+			case OBJECT3D_MESH:
 				tempObj = new gxMesh();
-			}
-			else if(objID==101)
-			{
+				break;
+			case OBJECT3D_SKINNED_MESH:
 				tempObj = new gxSkinnedMesh();
-			}
-			else
-			{
+				break;
+			case OBJECT3D_LIGHT:
+				tempObj = new gxLight();
+				break;
+			default:
 				tempObj = new object3d(objID);
 			}
 
@@ -722,7 +657,7 @@ object3d* gxWorld::loadAndAppendFBXForDevice(const char* filename)
 				tempObj->setObject3dObserver(m_pObject3dObserver);
 				tempObj->read(file_meta);
 				appendChild(tempObj);
-				read3dFile2(file_meta, tempObj);
+				read3dFile(file_meta, tempObj);
 				obj=tempObj;
 				loadMaterialFromObject3d(obj);
 				loadAnmationFromObject3d(obj, crc);

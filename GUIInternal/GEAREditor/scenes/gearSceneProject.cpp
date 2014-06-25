@@ -63,7 +63,7 @@ void gearSceneProject::onDraw()
 
 void gearSceneProject::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
 {
-	EditorApp::getSceneFileView()->populateFiles(((assetUserData*)tvnode->getUserData())->getAssetAbsolutePath());
+	EditorApp::getSceneFileView()->populateFiles(((assetUserData*)tvnode->getUserData())->getAssetPath());
 }
 
 void gearSceneProject::destroyTVUserData(geGUIBase* parent)

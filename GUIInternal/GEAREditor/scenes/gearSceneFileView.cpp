@@ -93,6 +93,9 @@ void gearSceneFileView::read3dFile(gxFile& file, object3d* obj)
 		case OBJECT3D_SKINNED_MESH:
 			tempObj = new gxSkinnedMesh();
 			break;
+		case OBJECT3D_LIGHT:
+			tempObj = new gxLight();
+			break;
 		default:
 			tempObj = new object3d(objID);
 		}
@@ -201,18 +204,22 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				file_meta.Read(objID);
 
 				object3d* tempObj=NULL;
-				if(objID==OBJECT3D_MESH)
+				switch(objID)
 				{
+				case OBJECT3D_MESH:
 					tempObj = new gxMesh();
-				}
-				else if(objID==OBJECT3D_SKINNED_MESH)
-				{
+					break;
+				case OBJECT3D_SKINNED_MESH:
 					tempObj = new gxSkinnedMesh();
-				}
-				else
-				{
+					break;
+				case OBJECT3D_LIGHT:
+					tempObj = new gxLight();
+					break;
+
+				default:
 					tempObj = new object3d(objID);
 				}
+
 				if(tempObj)
 				{
 					tempObj->read(file_meta);

@@ -4,6 +4,8 @@ gxMaterial::gxMaterial():
 	GEARAsset()
 {
 	m_cDiffuse.set(0.5f, 0.5f, 0.5f, 1.0f);
+	m_cAmbient.set(0.1f, 0.1f, 0.1f, 1.0f);
+	m_cSpecular.set(0.2f, 0.2f, 0.2f, 1.0f);
 	m_pSurfaceShaderPtr=NULL;
 	m_fAlpha=1.0f;
 	m_fShininess=10.0f;
@@ -73,15 +75,10 @@ void gxMaterial::read(gxFile& file)
 	file.ReadBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
 	file.ReadBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
 
-	m_cAmbient.set(1.0f, 1.0f, 1.0f, 1.0f);
-	m_cSpecular.set(1.0f, 1.0f, 1.0f, 1.0f);
-
-	//m_cAmbient.zero();
-	//m_cSpecular.zero();
-
 	file.Read(m_fAlpha);
 	file.Read(m_fShininess);
 	file.Read(m_bTwoSided);	
+
 	char* temp=file.ReadString();
 	GX_STRCPY(m_szMaterialName, temp);
 	GX_DELETE_ARY(temp);

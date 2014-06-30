@@ -718,3 +718,13 @@ void geGUIBase::onCommand(int cmd)
 {
 
 }
+
+void geGUIBase::notifyParent(int msg)
+{
+	if(m_pParentPtr)
+	m_pParentPtr->onNotify(msg);
+}
+
+void geGUIBase::onNotify(int msg)
+{
+}

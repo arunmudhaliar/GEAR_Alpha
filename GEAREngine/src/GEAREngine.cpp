@@ -194,7 +194,7 @@ extern bool engine_destroyObject3d(gxWorld* world, object3d* obj)
 
 extern DECLSPEC object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name)
 {
-	object3d* emptyObject=new object3d(1);
+	object3d* emptyObject=new object3d(OBJECT3D_DUMMY);
 	emptyObject->setObject3dObserver(g_Object3dObserver);
 	emptyObject->setName(name);
 	parentObj->appendChild(emptyObject);

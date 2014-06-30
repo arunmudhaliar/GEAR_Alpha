@@ -121,7 +121,7 @@ object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManag
 		triangulateFBXRecursive(fbxConverter, *fbxRoot);
       
 		// recurse over the scene nodes and import them as needed...
-		object3d* object3d_root_object = new object3d(0);
+		object3d* object3d_root_object = new object3d(OBJECT3D_DUMMY);
 		object3d_root_object->setAssetFileCRC(fileCRC, filePath);
 		object3d_root_object->setName(gxUtil::getFileNameFromPath(filePath));
 
@@ -146,127 +146,6 @@ object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManag
 
 	return NULL;
 }
-
-//static FbxMatrix FBXToXen(FbxMatrix &fbx)
-//{
-//	const double *matrix = (const double*)fbx;
-//	FbxMatrix t;
-//	t.SetRow(0, FbxVector4((float)matrix[0], (float)matrix[1], (float)matrix[2], (float)matrix[3]));
-//	t.SetRow(1, FbxVector4((float)matrix[4], (float)matrix[5], (float)matrix[6], (float)matrix[7]));
-//	t.SetRow(2, FbxVector4((float)matrix[8], (float)matrix[9], (float)matrix[10], (float)matrix[11]));
-//	t.SetRow(3, FbxVector4((float)matrix[12], (float)matrix[13], (float)matrix[14], (float)matrix[15]));
-//
-//	//t.y.x = (float)matrix[4];  t.y.y = (float)matrix[5];  t.y.z = (float)matrix[6];
-//	//t.z.x = (float)matrix[8];  t.z.y = (float)matrix[9];  t.z.z = (float)matrix[10];
-//	//t.w.x = (float)matrix[12]; t.w.y = (float)matrix[13]; t.w.z = (float)matrix[14];
-//	return t;
-//}
-
-//FbxAMatrix CalculateGlobalTransform(FbxNode* pNode) 
-//{
-//    FbxAMatrix lTranlationM, lScalingM, lScalingPivotM, lScalingOffsetM, lRotationOffsetM, lRotationPivotM, \
-//                lPreRotationM, lRotationM, lPostRotationM, lTransform;
-//
-//    FbxAMatrix lParentGX, lGlobalT, lGlobalRS;
-//
-//	if(!pNode)
-//	{
-//		lTransform.SetIdentity();
-//		return lTransform;
-//	}
-//
-//    // Construct translation matrix
-//    FbxVector4 lTranslation = pNode->LclTranslation.Get();
-//    lTranlationM.SetT(lTranslation);
-//
-//    // Construct rotation matrices
-//    FbxVector4 lRotation = pNode->LclRotation.Get();
-//    FbxVector4 lPreRotation = pNode->PreRotation.Get();
-//    FbxVector4 lPostRotation = pNode->PostRotation.Get();
-//    lRotationM.SetR(lRotation);
-//    lPreRotationM.SetR(lPreRotation);
-//    lPostRotationM.SetR(lPostRotation);
-//
-//    // Construct scaling matrix
-//    FbxVector4 lScaling = pNode->LclScaling.Get();
-//    lScalingM.SetS(lScaling);
-//
-//    // Construct offset and pivot matrices
-//    FbxVector4 lScalingOffset = pNode->ScalingOffset.Get();
-//    FbxVector4 lScalingPivot = pNode->ScalingPivot.Get();
-//    FbxVector4 lRotationOffset = pNode->RotationOffset.Get();
-//    FbxVector4 lRotationPivot = pNode->RotationPivot.Get();
-//    lScalingOffsetM.SetT(lScalingOffset);
-//    lScalingPivotM.SetT(lScalingPivot);
-//    lRotationOffsetM.SetT(lRotationOffset);
-//    lRotationPivotM.SetT(lRotationPivot);
-//
-//    // Calculate the global transform matrix of the parent node
-//    FbxNode* lParentNode = pNode->GetParent();
-//    if(lParentNode)
-//	{
-//        lParentGX = CalculateGlobalTransform(lParentNode);
-//	}
-//	else
-//	{
-//		lParentGX.SetIdentity();
-//	}
-//
-//    //Construct Global Rotation
-//    FbxAMatrix lLRM, lParentGRM;
-//    FbxVector4 lParentGR = lParentGX.GetR();
-//    lParentGRM.SetR(lParentGR);
-//    lLRM = lPreRotationM * lRotationM * lPostRotationM;
-//
-//    //Construct Global Shear*Scaling
-//    //FBX SDK does not support shear, to patch this, we use:
-//    //Shear*Scaling = RotationMatrix.Inverse * TranslationMatrix.Inverse * WholeTranformMatrix
-//    FbxAMatrix lLSM, lParentGSM, lParentGRSM, lParentTM;
-//    FbxVector4 lParentGT = lParentGX.GetT();
-//    lParentTM.SetT(lParentGT);
-//    lParentGRSM = lParentTM.Inverse() * lParentGX;
-//    lParentGSM = lParentGRM.Inverse() * lParentGRSM;
-//    lLSM = lScalingM;
-//
-//    //Do not consider translation now
-//    FbxTransform::EInheritType lInheritType = pNode->InheritType.Get();
-//    if(lInheritType == FbxTransform::eInheritRrSs)
-//    {
-//        lGlobalRS = lParentGRM * lLRM * lParentGSM * lLSM;
-//    }
-//    else if(lInheritType == FbxTransform::eInheritRSrs)
-//    {
-//        lGlobalRS = lParentGRM * lParentGSM * lLRM * lLSM;
-//    }
-//    else if(lInheritType == FbxTransform::eInheritRrs)
-//    {
-//		FbxAMatrix lParentLSM;
-//		FbxVector4 lParentLS = pNode->LclScaling.Get();
-//		lParentLSM.SetS(lParentLS);
-//
-//		FbxAMatrix lParentGSM_noLocal = lParentGSM * lParentLSM.Inverse();
-//        lGlobalRS = lParentGRM * lLRM * lParentGSM_noLocal * lLSM;
-//    }
-//    else
-//    {
-//        FBXSDK_printf("error, unknown inherit type! \n");
-//    }
-//
-//    // Construct translation matrix
-//    // Calculate the local transform matrix
-//    lTransform = lTranlationM * lRotationOffsetM * lRotationPivotM * lPreRotationM * lRotationM * lPostRotationM * lRotationPivotM.Inverse()\
-//        * lScalingOffsetM * lScalingPivotM * lScalingM * lScalingPivotM.Inverse();
-//    FbxVector4 lLocalTWithAllPivotAndOffsetInfo = lTransform.GetT();
-//    // Calculate global translation vector according to: 
-//    // GlobalTranslation = ParentGlobalTransform * LocalTranslationWithPivotAndOffsetInfo
-//    FbxVector4 lGlobalTranslation = lParentGX.MultT(lLocalTWithAllPivotAndOffsetInfo);
-//    lGlobalT.SetT(lGlobalTranslation);
-//
-//    //Construct the whole global transform
-//    lTransform = lGlobalT * lGlobalRS;
-//
-//    return lTransform;
-//}
 
 FbxNode* fbxImporter::findRoot(FbxNode *fbxNode)
 {
@@ -321,125 +200,91 @@ void fbxImporter::pushAllNodes(stBoneList* boneList, FbxNode *fbxNode, int& inde
 	}
 }
 
-void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList, stBoneList* boneList)
+object3d* fbxImporter::tryImportFBXSkinnedMesh(FbxNode &fbxNode, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d, stBoneList* boneList)
 {
-	FbxMatrix transform;
-	//FbxMatrix fbxLocalPosition = fbxNode.EvaluateLocalTransform();
-	FbxMatrix fbxGeometryOffset = getFBXGeometryTransform(fbxNode);
-	//FbxMatrix fbxLocalOffPosition = fbxLocalPosition * fbxGeometryOffset;
-	FbxMatrix local_tm = fbxNode.EvaluateLocalTransform();
-
-	object3d* temp_parent_obj=parent_obj_node;
 	FbxMesh *fbxMesh = fbxNode.GetMesh();
-	//FbxSkeleton* fbxSkeleton = fbxNode.GetSkeleton();
+	if(!fbxMesh) return NULL;
 
-	if(fbxMesh)
+	//links
+	int nCluster=0;
+	for(int mm=0;mm<fbxMesh->GetDeformerCount(FbxDeformer::eSkin);mm++)
 	{
-		//links
-		int nCluster=0;
-		for(int mm=0;mm<fbxMesh->GetDeformerCount(FbxDeformer::eSkin);mm++)
-		{
-			FbxSkin* skin=(FbxSkin*)fbxMesh->GetDeformer(mm, FbxDeformer::eSkin);
-			nCluster+=skin->GetClusterCount();
-		}
-		//
+		FbxSkin* skin=(FbxSkin*)fbxMesh->GetDeformer(mm, FbxDeformer::eSkin);
+		nCluster+=skin->GetClusterCount();
+	}
+	//
 
-		if(nCluster)
-		{
-			FbxSkin*		skinDeformer = (FbxSkin *)fbxMesh->GetDeformer(0, FbxDeformer::eSkin);
-			FbxSkin::EType	skinningType = skinDeformer->GetSkinningType();
+	if(nCluster==0) return NULL;
 
-			if(skinningType == FbxSkin::eLinear || skinningType == FbxSkin::eRigid || skinningType == FbxSkin::eDualQuaternion)
+	FbxSkin*		skinDeformer = (FbxSkin *)fbxMesh->GetDeformer(0, FbxDeformer::eSkin);
+	FbxSkin::EType	skinningType = skinDeformer->GetSkinningType();
+
+	if(skinningType == FbxSkin::eLinear || skinningType == FbxSkin::eRigid || skinningType == FbxSkin::eDualQuaternion)
+	{
+		int vc=fbxMesh->GetControlPointsCount();
+		stBoneInfluence* boneInfluenceList = new stBoneInfluence[vc];
+
+		//FbxCluster* clusterR	= skinDeformer->GetCluster(0);
+		//FbxNode*	rootBone	= findRoot(clusterR->GetLink());
+
+		int deformerCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin); // Count of skeletons used for skinning
+		for ( int defInd = 0; defInd < deformerCount; defInd++ )
+		{
+			skinDeformer = (FbxSkin *)fbxMesh->GetDeformer(defInd, FbxDeformer::eSkin);
+			int clusterCount = skinDeformer->GetClusterCount();							// Count of bones in skeleton
+			for (int clusterIndex = 0; clusterIndex < clusterCount; ++clusterIndex)
 			{
-				int vc=fbxMesh->GetControlPointsCount();
-				stBoneInfluence* boneInfluenceList = new stBoneInfluence[vc];
+				FbxCluster* cluster = skinDeformer->GetCluster(clusterIndex);
+				if (!cluster->GetLink())
+					continue;
 
-				//FbxCluster* clusterR	= skinDeformer->GetCluster(0);
-				//FbxNode*	rootBone	= findRoot(clusterR->GetLink());
+				FbxNode*	currentFbxLimb	= cluster->GetLink();
+				const char*	currentLimbName = currentFbxLimb->GetName();
 
-				int deformerCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin); // Count of skeletons used for skinning
-				for ( int defInd = 0; defInd < deformerCount; defInd++ )
+				int vertexIndexCount = cluster->GetControlPointIndicesCount();
+				for (int k = 0; k < vertexIndexCount; ++k)
 				{
-					skinDeformer = (FbxSkin *)fbxMesh->GetDeformer(defInd, FbxDeformer::eSkin);
-					int clusterCount = skinDeformer->GetClusterCount();							// Count of bones in skeleton
-					for (int clusterIndex = 0; clusterIndex < clusterCount; ++clusterIndex)
+					int index = cluster->GetControlPointIndices()[k];
+
+					// Sometimes, the mesh can have less points than at the time of the skinning
+					// because a smooth operator was active when skinning but has been deactivated during export.
+					if (index >= fbxMesh->GetControlPointsCount())
+						continue;
+
+					double weight = cluster->GetControlPointWeights()[k];
+					if (weight == 0.0)
 					{
-						FbxCluster* cluster = skinDeformer->GetCluster(clusterIndex);
-						if (!cluster->GetLink())
-							continue;
-
-						FbxNode*	currentFbxLimb	= cluster->GetLink();
-						const char*	currentLimbName = currentFbxLimb->GetName();
-
-						int vertexIndexCount = cluster->GetControlPointIndicesCount();
-						for (int k = 0; k < vertexIndexCount; ++k)
-						{
-							int index = cluster->GetControlPointIndices()[k];
-
-							// Sometimes, the mesh can have less points than at the time of the skinning
-							// because a smooth operator was active when skinning but has been deactivated during export.
-							if (index >= fbxMesh->GetControlPointsCount())
-								continue;
-
-							double weight = cluster->GetControlPointWeights()[k];
-							if (weight == 0.0)
-							{
-								continue;
-							}
-							//http://stackoverflow.com/questions/13566608/loading-skinning-information-from-fbx
-							boneInfluenceList[index].bone.push_back(currentFbxLimb);
-							boneInfluenceList[index].weight.push_back((float)weight);
-						}
-///////////////////////////////////
+						continue;
 					}
+					//http://stackoverflow.com/questions/13566608/loading-skinning-information-from-fbx
+					boneInfluenceList[index].bone.push_back(currentFbxLimb);
+					boneInfluenceList[index].weight.push_back((float)weight);
 				}
+///////////////////////////////////
+			}
+		}
 
-				gxSkinnedMesh* newSkinnedMesh = new gxSkinnedMesh();
-				importFBXMesh(newSkinnedMesh, *fbxMesh, fbxGeometryOffset, materialList, rootObject3d, boneInfluenceList, boneList);
-				newSkinnedMesh->setName(fbxNode.GetName());
-				parent_obj_node->appendChild(newSkinnedMesh);
-				parent_obj_node=newSkinnedMesh;
-				
-				newSkinnedMesh->allocateBoneList(boneList->bonelst.size());
-				delete [] boneInfluenceList;
-			}
-			else
-			{
-				//didnt find any skinned mesh, so create a dummy object
-				object3d* object3d_child = new object3d(1);
-				object3d_child->setName(fbxNode.GetName());
-				parent_obj_node->appendChild(object3d_child);
-				parent_obj_node=object3d_child;
-			}
-		}
-		else
-		{
-			gxMesh* newMesh = new gxMesh();
-			importFBXMesh(newMesh, *fbxMesh, fbxGeometryOffset, materialList, rootObject3d, NULL, NULL);
-			newMesh->setName(fbxNode.GetName());
-			parent_obj_node->appendChild(newMesh);
-			parent_obj_node=newMesh;
-		}
+		gxSkinnedMesh* newSkinnedMesh = new gxSkinnedMesh();
+		importFBXMesh(newSkinnedMesh, *fbxMesh, geometryOffset, materialList, rootObject3d, boneInfluenceList, boneList);
+		newSkinnedMesh->setName(fbxNode.GetName());
+
+		newSkinnedMesh->allocateBoneList(boneList->bonelst.size());
+		delete [] boneInfluenceList;
+		return newSkinnedMesh;
 	}
 	else
 	{
-		object3d* object3d_child = new object3d(1);
+		//didnt find any skinned mesh, so create a dummy object
+		object3d* object3d_child = new object3d(OBJECT3D_DUMMY);
 		object3d_child->setName(fbxNode.GetName());
-		parent_obj_node->appendChild(object3d_child);
-		parent_obj_node=object3d_child;
+		return object3d_child;
 	}
 
-	FbxVector4 row1 = local_tm.GetRow(0);
-	FbxVector4 row2 = local_tm.GetRow(1);
-	FbxVector4 row3 = local_tm.GetRow(2);
-	FbxVector4 row4 = local_tm.GetRow(3);
-	parent_obj_node->setXAxis(vector3f((float)row1.mData[0], (float)row1.mData[1], (float)row1.mData[2]));
-	parent_obj_node->setYAxis(vector3f((float)row2.mData[0], (float)row2.mData[1], (float)row2.mData[2]));
-	parent_obj_node->setZAxis(vector3f((float)row3.mData[0], (float)row3.mData[1], (float)row3.mData[2]));
-	parent_obj_node->setPosition(vector3f((float)row4.mData[0], (float)row4.mData[1], (float)row4.mData[2]));
+	return NULL;
+}
 
-	//*parent_obj_node->getWorldMatrix() = *parent_obj_node * *temp_parent_obj->getWorldMatrix();
-
+bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList)
+{
 	//animation
 	FbxGlobalSettings& lTimeSettings = fbxScene.GetGlobalSettings();
 	FbxTime::EMode lTimeMode = lTimeSettings.GetTimeMode();
@@ -448,12 +293,12 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	FbxLongLong nGlobalFrame=pTimeSpan.GetStop().GetFrameCount();
 	double lFrameRate = FbxTime::GetFrameRate(lTimeMode);
 	double oneFrameTime_inSec = 1.0f/lFrameRate;
+
 	/*
 	Since an animation curve is a function, on a given animation curve, only one key per time is allowed.
 	The keys are sorted in time order. They can be accessed by their index on the curve, from 0 to FbxAnimCurve::KeyGetCount-1.
 	The time unit in FBX (FbxTime) is 1/46186158000 of one second.
 	*/
-	//FbxLongLong fc=FbxTime::GetFrame(true);
 
 	int numStacks = fbxScene.GetSrcObjectCount(FBX_TYPE(FbxAnimStack));
 	gxAnimation* animationController=NULL;
@@ -532,6 +377,223 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	}//for(int x=0;x<numStacks;x++)
 	//
 
+	return true;
+}
+
+int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerElementArrayTemplate<int> *fbxMaterialIndices, object3d* rootObject3d, gxTriInfo* triInfoArray, FbxMesh &fbxMesh, std::vector<int>& validMaterials, std::vector<gxMaterial*>* materialList)
+{
+	const unsigned int fbxNumMaterialIndices = fbxMaterialIndices ? (unsigned int)fbxMaterialIndices->GetCount() : 0;
+
+	int originalfbxMaterialIndex = 0;
+	if(fbxMaterialIndices)
+		originalfbxMaterialIndex = fbxMaterialIndices->GetAt(triIndex<fbxNumMaterialIndices ? triIndex : 0);
+
+	int fbxMaterialIndex = validMaterials[originalfbxMaterialIndex];
+
+	if(nMaterialCount)
+	{
+		FbxSurfaceMaterial* surfaceMaterial=fbxMesh.GetNode()->GetMaterial(originalfbxMaterialIndex);
+		gxMaterial* material=triInfoArray[fbxMaterialIndex].getMaterial();
+		if(material==NULL)
+		{
+			//check if the material name already exists in our list or not
+			for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+			{
+				gxMaterial* material_in_list = *it;
+				if(strcmp(material_in_list->getMaterialName(), surfaceMaterial->GetName())==0)
+				{
+					triInfoArray[fbxMaterialIndex].setMaterial(material_in_list);
+					material_in_list->appendDependency(rootObject3d->getAssetFileCRC());
+					material=material_in_list;
+					break;
+				}
+			}
+
+			if(material==NULL)
+			{
+				//create a new material and add to list and assign to the tri list
+				material = new gxMaterial();
+				material->setMaterialName(surfaceMaterial->GetName());
+
+				//
+				if (surfaceMaterial->GetClassId().Is(FbxSurfacePhong::ClassId))
+				{
+					FbxSurfacePhong* pong=(FbxSurfacePhong*)surfaceMaterial;
+					FbxDouble3 diffuse=pong->Diffuse.Get();
+					FbxDouble3 ambient=pong->Ambient.Get();
+					FbxDouble3 specular=pong->Specular.Get();
+					FbxDouble specular_factor=pong->SpecularFactor;
+					material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
+					material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
+					material->setSpecularClr(vector4f((float)specular.mData[0], (float)specular.mData[1], (float)specular.mData[2], 1.0f));	//lambert doesn't have specular
+
+				}
+				else if(surfaceMaterial->GetClassId().Is(FbxSurfaceLambert::ClassId) )
+				{
+					FbxSurfaceLambert* lambert=(FbxSurfaceLambert*)surfaceMaterial;
+					FbxDouble3 diffuse=lambert->Diffuse.Get();
+					FbxDouble3 ambient=lambert->Ambient.Get();
+					material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
+					material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
+					material->setSpecularClr(vector4f(0.5f, 0.5f, 0.5f, 1.0f));	//lambert doesn't have specular
+				}
+				else
+				{
+#if 0	//utility code to iterate through all property
+					FbxProperty property_iterator=surfaceMaterial->GetFirstProperty();
+					while(property_iterator.IsValid())
+					{
+						const char* label=property_iterator.GetLabel().Buffer();
+						const char* name=property_iterator.GetNameAsCStr();
+						const char* datatype=property_iterator.GetPropertyDataType().GetName();
+
+						property_iterator = surfaceMaterial->GetNextProperty(property_iterator);
+					}
+#endif
+
+					FbxProperty ambient_property=surfaceMaterial->FindProperty("AmbientColor");
+					FbxProperty diffuse_property=surfaceMaterial->FindProperty("DiffuseColor");
+					FbxProperty specular_property=surfaceMaterial->FindProperty("SpecularColor");
+
+					FbxColor ambient = (ambient_property.IsValid())?ambient_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
+					FbxColor diffuse = (diffuse_property.IsValid())?diffuse_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
+					FbxColor specular = (specular_property.IsValid())?specular_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
+					material->setDiffuseClr(vector4f((float)diffuse.mRed, (float)diffuse.mGreen, (float)diffuse.mBlue, (float)diffuse.mAlpha));
+					material->setAmbientClr(vector4f((float)ambient.mRed, (float)ambient.mGreen, (float)ambient.mBlue, (float)ambient.mAlpha));
+					material->setSpecularClr(vector4f((float)specular.mRed, (float)specular.mGreen, (float)specular.mBlue, (float)specular.mAlpha));
+				}
+
+#if 0	//moved the maps to surface shader. so we don't need this anymore
+				FbxProperty diffuseProp = surfaceMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
+				if(diffuseProp.IsValid())
+				{
+					int numTextures = diffuseProp.GetSrcObjectCount(FbxFileTexture::ClassId);
+					for (int iTexture = 0; iTexture < numTextures; iTexture++)
+					{
+						FbxFileTexture* texture = FbxCast<FbxFileTexture>(
+							diffuseProp.GetSrcObject(FbxTexture::ClassId, iTexture)); 
+
+						if( !texture ) continue;
+							
+						stTextureMap* texmap = new stTextureMap();
+						texmap->texturename.assign(gxUtil::getFileNameFromPath(texture->GetFileName()));
+						material->appendTextureMap(texmap);
+					}
+				}
+				else
+				{
+					stTextureMap* texmap = new stTextureMap();
+					texmap->texturename.assign("no-map");
+					material->appendTextureMap(texmap);
+				}
+#endif
+				material->setMainShaderName("Diffuse");
+				triInfoArray[fbxMaterialIndex].setMaterial(material);
+				material->appendDependency(rootObject3d->getAssetFileCRC());
+				materialList->push_back(material);
+			}
+		}
+	}
+	else
+	{
+		//There is no material for this mesh. Only color property will be available.
+		//create a new material and add to list and assign to the tri list
+		gxMaterial* material = triInfoArray[fbxMaterialIndex].getMaterial();
+		FbxProperty color_property=fbxMesh.FindProperty("Color");
+		char materialnamebuffer[64];
+		sprintf(materialnamebuffer, "ColorMaterial%x", &color_property);
+
+		if(material==NULL)
+		{
+				
+			//check if the material name already exists in our list or not
+			for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+			{
+				gxMaterial* material_in_list = *it;
+				if(strcmp(material_in_list->getMaterialName(), materialnamebuffer)==0)
+				{
+					triInfoArray[fbxMaterialIndex].setMaterial(material_in_list);
+					material_in_list->appendDependency(rootObject3d->getAssetFileCRC());
+					material=material_in_list;
+					break;
+				}
+			}
+
+			if(material==NULL)
+			{
+				material=new gxMaterial();
+				material->setMaterialName(materialnamebuffer);
+
+					
+				FbxColor diffuse_color = (color_property.IsValid())?color_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
+				material->setDiffuseClr(vector4f((float)diffuse_color.mRed, (float)diffuse_color.mGreen, (float)diffuse_color.mBlue, (float)diffuse_color.mAlpha));
+				material->setAmbientClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
+				material->setSpecularClr(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
+			
+				material->setMainShaderName("Diffuse");
+				triInfoArray[fbxMaterialIndex].setMaterial(material);
+				material->appendDependency(rootObject3d->getAssetFileCRC());
+				materialList->push_back(material);
+			}
+		}
+	}
+
+	return fbxMaterialIndex;
+}
+
+void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std::vector<gxMaterial*>* materialList, FbxScene &fbxScene, object3d* rootObject3d, std::vector<gxAnimationSet*>* animationSetList, stBoneList* boneList)
+{
+	FbxMatrix transform;
+	FbxMatrix fbxGeometryOffset = getFBXGeometryTransform(fbxNode);
+	FbxMatrix local_tm = fbxNode.EvaluateLocalTransform();
+
+	object3d* temp_parent_obj=parent_obj_node;
+	FbxMesh *fbxMesh = fbxNode.GetMesh();
+
+
+	if(fbxMesh)
+	{
+		//try to import a skinned mesh if the node contains a skin modifier
+		object3d* object3d_child=tryImportFBXSkinnedMesh(fbxNode, fbxGeometryOffset, materialList, rootObject3d, boneList);
+		if(object3d_child)
+		{
+			parent_obj_node->appendChild(object3d_child);
+			parent_obj_node=object3d_child;
+		}
+		else
+		{
+			//we don't have any skin modifier in this node, so only import mesh
+			gxMesh* newMesh = new gxMesh();
+			importFBXMesh(newMesh, *fbxMesh, fbxGeometryOffset, materialList, rootObject3d, NULL, NULL);
+			newMesh->setName(fbxNode.GetName());
+			parent_obj_node->appendChild(newMesh);
+			parent_obj_node=newMesh;
+		}
+	}
+	else
+	{
+		//there is no mesh modifier in this node so create this node as dummy
+		object3d* object3d_child = new object3d(OBJECT3D_DUMMY);
+		object3d_child->setName(fbxNode.GetName());
+		parent_obj_node->appendChild(object3d_child);
+		parent_obj_node=object3d_child;
+	}
+
+	//transform
+	FbxVector4 row1 = local_tm.GetRow(0);
+	FbxVector4 row2 = local_tm.GetRow(1);
+	FbxVector4 row3 = local_tm.GetRow(2);
+	FbxVector4 row4 = local_tm.GetRow(3);
+	parent_obj_node->setXAxis(vector3f((float)row1.mData[0], (float)row1.mData[1], (float)row1.mData[2]));
+	parent_obj_node->setYAxis(vector3f((float)row2.mData[0], (float)row2.mData[1], (float)row2.mData[2]));
+	parent_obj_node->setZAxis(vector3f((float)row3.mData[0], (float)row3.mData[1], (float)row3.mData[2]));
+	parent_obj_node->setPosition(vector3f((float)row4.mData[0], (float)row4.mData[1], (float)row4.mData[2]));
+	//
+
+	//animation
+	tryImportAnimation(fbxNode, parent_obj_node, fbxScene, rootObject3d, animationSetList);
+
+
 	// import child nodes...
 	const unsigned int numChildren = fbxNode.GetChildCount();
 	for(unsigned int i=0; i<numChildren; i++)
@@ -543,6 +605,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 			importFBXNode(*fbxChildNode, parent_obj_node, materialList, fbxScene, rootObject3d, animationSetList, boneList);
 		}
 	}
+	//
 }
 
 gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d, stBoneInfluence* boneInfluenceList, stBoneList* boneList)
@@ -572,6 +635,51 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 	}
 	//
 
+
+	FbxLayerElementArrayTemplate<int> *fbxMaterialIndices = 0;
+    fbxMesh.GetMaterialIndices(&fbxMaterialIndices);
+	const unsigned int fbxNumMaterialIndices = fbxMaterialIndices ? (unsigned int)fbxMaterialIndices->GetCount() : 0;
+	int nMaterialCount=fbxMesh.GetNode()->GetMaterialCount();
+
+	if(nMaterialCount==0)
+		nMaterialCount=0;
+	std::vector<int> allMaterials(nMaterialCount);
+	std::vector<int> validMaterials(nMaterialCount);
+
+	if(nMaterialCount)
+	{
+		//count valid material
+		for(int x=0;x<fbxMesh.GetPolygonCount();x++)
+		{
+			int fbxMaterialIndex = 0;
+			if(fbxMaterialIndices)
+				fbxMaterialIndex = fbxMaterialIndices->GetAt(x<fbxNumMaterialIndices ? x : 0);
+
+			allMaterials[fbxMaterialIndex]=allMaterials[fbxMaterialIndex]+1;
+		}
+	}
+
+	int nValidMaterials=0;
+	int material_id=0;
+	for(std::vector<int>::iterator it = allMaterials.begin(); it != allMaterials.end(); ++it)
+	{
+		int data = *it;
+		if(data>0)
+		{
+			validMaterials[material_id]=nValidMaterials;
+			nValidMaterials++;
+		}
+		material_id++;
+	}
+
+	if(nValidMaterials==0 && validMaterials.size()==0)
+	{
+		//didnt find any valid material.
+		validMaterials.push_back(0);
+		nValidMaterials=1;
+	}
+	//
+
 	struct stTriData
 	{
 		~stTriData()
@@ -584,22 +692,12 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 
 	stTriData*  vTriList = NULL;
 
-	int nMaterialCount=fbxMesh.GetNode()->GetMaterialCount();
-	if(nMaterialCount)
+	
+	if(nValidMaterials)
 	{
-		triInfoArray = newMesh->allocateTriInfoArray(nMaterialCount);
-		vTriList = new stTriData[nMaterialCount];
+		triInfoArray = newMesh->allocateTriInfoArray(nValidMaterials);
+		vTriList = new stTriData[nValidMaterials];
 	}
-	else
-	{
-		triInfoArray = newMesh->allocateTriInfoArray(1);
-		vTriList = new stTriData[1];
-	}
-
-	FbxLayerElementArrayTemplate<int> *fbxMaterialIndices = 0;
-    fbxMesh.GetMaterialIndices(&fbxMaterialIndices);
-
-	const unsigned int fbxNumMaterialIndices = fbxMaterialIndices ? (unsigned int)fbxMaterialIndices->GetCount() : 0;
 
 	fbxMesh.ComputeBBox();
 	FbxDouble3 bbmin=geometryOffset.MultNormalize(FbxVector4(fbxMesh.BBoxMin));
@@ -626,13 +724,18 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 		};
 
 
-		int fbxMaterialIndex = 0;
+		int fbxMaterialIndex = tryImportMaterial(x, nMaterialCount, fbxMaterialIndices, rootObject3d, triInfoArray, fbxMesh, validMaterials, materialList);
+
+#if 0
+		int originalfbxMaterialIndex = 0;
 		if(fbxMaterialIndices)
-			fbxMaterialIndex = fbxMaterialIndices->GetAt(x<fbxNumMaterialIndices ? x : 0);
+			originalfbxMaterialIndex = fbxMaterialIndices->GetAt(x<fbxNumMaterialIndices ? x : 0);
+
+		int fbxMaterialIndex = validMaterials[originalfbxMaterialIndex];
 
 		if(nMaterialCount)
 		{
-			FbxSurfaceMaterial* surfaceMaterial=fbxMesh.GetNode()->GetMaterial(fbxMaterialIndex);
+			FbxSurfaceMaterial* surfaceMaterial=fbxMesh.GetNode()->GetMaterial(originalfbxMaterialIndex);
 			gxMaterial* material=triInfoArray[fbxMaterialIndex].getMaterial();
 			if(material==NULL)
 			{
@@ -655,14 +758,53 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 					material = new gxMaterial();
 					material->setMaterialName(surfaceMaterial->GetName());
 
-					FbxSurfaceLambert* lambert=(FbxSurfaceLambert*)surfaceMaterial;
-					//FbxDouble3 diffuse=lambert->Diffuse.Get();
-					//FbxDouble3 ambient=lambert->Ambient.Get();
-					//material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
-					//material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
-					material->setDiffuseClr(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
-					material->setAmbientClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
-					material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
+					//
+					if (surfaceMaterial->GetClassId().Is(FbxSurfacePhong::ClassId))
+					{
+						FbxSurfacePhong* pong=(FbxSurfacePhong*)surfaceMaterial;
+						FbxDouble3 diffuse=pong->Diffuse.Get();
+						FbxDouble3 ambient=pong->Ambient.Get();
+						FbxDouble3 specular=pong->Specular.Get();
+						FbxDouble specular_factor=pong->SpecularFactor;
+						material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
+						material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
+						material->setSpecularClr(vector4f((float)specular.mData[0], (float)specular.mData[1], (float)specular.mData[2], 1.0f));	//lambert doesn't have specular
+
+					}
+					else if(surfaceMaterial->GetClassId().Is(FbxSurfaceLambert::ClassId) )
+					{
+						FbxSurfaceLambert* lambert=(FbxSurfaceLambert*)surfaceMaterial;
+						FbxDouble3 diffuse=lambert->Diffuse.Get();
+						FbxDouble3 ambient=lambert->Ambient.Get();
+						material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
+						material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
+						material->setSpecularClr(vector4f(0.5f, 0.5f, 0.5f, 1.0f));	//lambert doesn't have specular
+					}
+					else
+					{
+#if 0	//utility code to iterate through all property
+						FbxProperty property_iterator=surfaceMaterial->GetFirstProperty();
+						while(property_iterator.IsValid())
+						{
+							const char* label=property_iterator.GetLabel().Buffer();
+							const char* name=property_iterator.GetNameAsCStr();
+							const char* datatype=property_iterator.GetPropertyDataType().GetName();
+
+							property_iterator = surfaceMaterial->GetNextProperty(property_iterator);
+						}
+#endif
+
+						FbxProperty ambient_property=surfaceMaterial->FindProperty("AmbientColor");
+						FbxProperty diffuse_property=surfaceMaterial->FindProperty("DiffuseColor");
+						FbxProperty specular_property=surfaceMaterial->FindProperty("SpecularColor");
+
+						FbxColor ambient = (ambient_property.IsValid())?ambient_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
+						FbxColor diffuse = (diffuse_property.IsValid())?diffuse_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
+						FbxColor specular = (specular_property.IsValid())?specular_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
+						material->setDiffuseClr(vector4f((float)diffuse.mRed, (float)diffuse.mGreen, (float)diffuse.mBlue, (float)diffuse.mAlpha));
+						material->setAmbientClr(vector4f((float)ambient.mRed, (float)ambient.mGreen, (float)ambient.mBlue, (float)ambient.mAlpha));
+						material->setSpecularClr(vector4f((float)specular.mRed, (float)specular.mGreen, (float)specular.mBlue, (float)specular.mAlpha));
+					}
 
 #if 0	//moved the maps to surface shader. so we don't need this anymore
 					FbxProperty diffuseProp = surfaceMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
@@ -695,6 +837,50 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 				}
 			}
 		}
+		else
+		{
+			//There is no material for this mesh. Only color property will be available.
+			//create a new material and add to list and assign to the tri list
+			gxMaterial* material = triInfoArray[fbxMaterialIndex].getMaterial();
+			FbxProperty color_property=fbxMesh.FindProperty("Color");
+			char materialnamebuffer[64];
+			sprintf(materialnamebuffer, "ColorMaterial%x", &color_property);
+
+			if(material==NULL)
+			{
+				
+				//check if the material name already exists in our list or not
+				for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+				{
+					gxMaterial* material_in_list = *it;
+					if(strcmp(material_in_list->getMaterialName(), materialnamebuffer)==0)
+					{
+						triInfoArray[fbxMaterialIndex].setMaterial(material_in_list);
+						material_in_list->appendDependency(rootObject3d->getAssetFileCRC());
+						material=material_in_list;
+						break;
+					}
+				}
+
+				if(material==NULL)
+				{
+					material=new gxMaterial();
+					material->setMaterialName(materialnamebuffer);
+
+					
+					FbxColor diffuse_color = (color_property.IsValid())?color_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
+					material->setDiffuseClr(vector4f((float)diffuse_color.mRed, (float)diffuse_color.mGreen, (float)diffuse_color.mBlue, (float)diffuse_color.mAlpha));
+					material->setAmbientClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
+					material->setSpecularClr(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
+			
+					material->setMainShaderName("Diffuse");
+					triInfoArray[fbxMaterialIndex].setMaterial(material);
+					material->appendDependency(rootObject3d->getAssetFileCRC());
+					materialList->push_back(material);
+				}
+			}
+		}
+#endif
 
 		vTriList[fbxMaterialIndex].arrayList.push_back(vertexIndices[0]);
 		vTriList[fbxMaterialIndex].arrayList.push_back(vertexIndices[1]);
@@ -717,7 +903,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 
 			FbxVector4 normal;
 			fbxMesh.GetPolygonVertexNormal(x, y, normal);
-			normal=geometryOffset.MultNormalize(normal);
+			//normal=geometryOffset.MultNormalize(normal);
 			//normal=transform.MultNormalize(normal);
 			normal.Normalize();
 			//vertex
@@ -756,6 +942,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 					}
 				}
 			}
+			//
 
 			//uv sets
 			for(int m=0;m<uvSetNames.GetCount();m++)
@@ -775,16 +962,8 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 		createTangentBuffer(newMesh, fbxMesh, geometryOffset, uvSetNames.GetStringAt(0));
 	}
 
-	int nCount=(nMaterialCount>0)?nMaterialCount:1;
-
-	if(nMaterialCount==0)
-	{
-		//create and assign new material
-		triInfoArray[0].setMaterial(gxMaterial::createNewMaterial());
-		triInfoArray[0].getMaterial()->appendDependency(rootObject3d->getAssetFileCRC());
-	}
-
-	for(int m=0;m<nCount;m++)
+	//fill the actual tri list
+	for(int m=0;m<nValidMaterials;m++)
 	{
 		if(vTriList[m].arrayList.size()==0)
 			continue;
@@ -970,103 +1149,6 @@ void fbxImporter::triangulateFBXRecursive(FbxGeometryConverter &fbxConverter, Fb
 }
 
 /*
-void fbxImporter::PrintTabs()
-{
-	for(int i = 0; i < numTabs; i++)
-		printf("\t");
-}
-
-void fbxImporter::PrintNode(FbxNode* pNode, object3d* parent_obj_node, FbxManager* fbxManager)
-{
-	object3d* object3d_child = NULL;
-
-	if(pNode->GetMesh())
-	{
-		gxMesh* newMesh = new gxMesh();
-		newMesh->setName(pNode->GetName());
-
-		//
-		FbxMesh* fbxmesh=pNode->GetMesh();
-		FbxGeometryConverter converter( fbxManager);
-		fbxmesh=converter.TriangulateMesh(fbxmesh);
-		int nTriGrp=fbxmesh->GetElementPolygonGroupCount();
-		int nVerts=fbxmesh->GetControlPointsCount();
-		int nTris=fbxmesh->GetPolygonCount();
-		int nM=fbxmesh->GetElementMaterialCount();
-		//fbxmesh->Get
-
-		for(int x=0;x<nTris;x++)
-		{
-			for(int y=0;y<fbxmesh->GetPolygonSize(x);y++)
-			{
-				int vertexIndex=fbxmesh->GetPolygonVertex(x, y);
-				FbxVector4 vertex=fbxmesh->GetControlPointAt(vertexIndex);
-				vertex.Length();
-				//fbxmesh->GetMaterialIndices
-			}
-		}
-
-		int nMC=pNode->GetMaterialCount();
-		for(int x=0;x<nMC;x++)
-		{
-			const char* mname=pNode->GetMaterial(x)->GetName();
-			x=x;
-		}
-
-		//fbxmesh->GetEle
-		//
-		FbxVector4* fbxVertexLst = fbxmesh->GetControlPoints();
-
-		parent_obj_node->appendChild(newMesh);
-		object3d_child=newMesh;
-	}
-	else
-	{
-		object3d_child = new object3d(1);
-		object3d_child->setName(pNode->GetName());
-		parent_obj_node->appendChild(object3d_child);
-	}
-
-	const char* nodeName = pNode->GetName();
-	FbxDouble3 translation = pNode->LclTranslation.Get();
-	FbxDouble3 rotation = pNode->LclRotation.Get();
-	FbxDouble3 scaling = pNode->LclScaling.Get();
-
-	// print the contents of the node.
-	printf("<node name='%s' translation='(%f, %f, %f)' rotation='(%f, %f, %f)' scaling='(%f, %f, %f)'>\n", 
-		nodeName, 
-		translation[0], translation[1], translation[2],
-		rotation[0], rotation[1], rotation[2],
-		scaling[0], scaling[1], scaling[2]
-		);
-	numTabs++;
-
-	// Print the node's attributes.
-	for(int i = 0; i < pNode->GetNodeAttributeCount(); i++)
-		PrintAttribute(pNode->GetNodeAttributeByIndex(i));
-
-	// Recursively print the children nodes.
-	for(int j = 0; j < pNode->GetChildCount(); j++)
-		PrintNode(pNode->GetChild(j), object3d_child, fbxManager);
-
-	numTabs--;
-	PrintTabs();
-	printf("</node>\n");
-}
-
-
-void fbxImporter::PrintAttribute(FbxNodeAttribute* pAttribute)
-{
-	if(!pAttribute) return;
- 
-	FbxString typeName = GetAttributeTypeName(pAttribute->GetAttributeType());
-	FbxString attrName = pAttribute->GetName();
-	PrintTabs();
-	// Note: to retrieve the chararcter array of a FbxString, use its Buffer() method.
-	printf("<attribute type='%s' name='%s'/>\n", typeName.Buffer(), attrName.Buffer());
-}
-
-
 FbxString fbxImporter::GetAttributeTypeName(FbxNodeAttribute::EType type)
 {
 	switch(type) {

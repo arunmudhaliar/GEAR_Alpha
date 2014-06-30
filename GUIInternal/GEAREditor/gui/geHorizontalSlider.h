@@ -17,6 +17,11 @@ public:
 	float getSliderValue()				{	return m_fSliderPos;	}
 	void setSliderValue(float value, bool bCallObserver=true);
 
+	float getSliderValueWithInRange();
+	void setSliderValueWithInRange(float value);
+
+	void setRange(float min, float max);
+
 protected:
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);
@@ -33,6 +38,9 @@ private:
 	float m_fSliderPos;
 	bool m_bGrabbed;
 	float m_fMousePrevXPos	;
+
+	float m_fMinRange;
+	float m_fMaxRange;
 };
 
 #endif

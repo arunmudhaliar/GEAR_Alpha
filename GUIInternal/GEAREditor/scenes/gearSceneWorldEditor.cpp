@@ -201,12 +201,14 @@ void gearSceneWorldEditor::onCreate()
     m_cMultiPassFBO.AttachTextureBuffer(0);
     m_cMultiPassFBO.UnBindFBO();
 
+#ifdef ENABLE_FOG
 	m_cFOGFBO.ReInitFBO(512, 512);
     m_cFOGFBO.CreateDepthBuffer();
     m_cFOGFBO.AttachDepthBuffer();
     m_cFOGFBO.CreateTextureBuffer();
     m_cFOGFBO.AttachTextureBuffer(0);
     m_cFOGFBO.UnBindFBO();
+#endif
 
 	//m_cShadowMapFBO.ReInitFBO(512, 512);
  //   m_cShadowMapFBO.CreateDepthBuffer();
@@ -562,7 +564,7 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	CHECK_GL_ERROR(drawOctree());
 	m_cMultiPassFBO.UnBindFBO();
 
-
+#ifdef ENABLE_FOG
 	//postprocess fog
 	glDisable(GL_DEPTH_TEST);
 	m_cFOGFBO.BindFBO();
@@ -571,6 +573,7 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 	drawFOGFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), m_cMultiPassFBO.getFBODepthBuffer(), 0.0f, 0.0f, m_cFOGFBO.getFBOWidth(), m_cFOGFBO.getFBOHeight());
 	m_cFOGFBO.UnBindFBO();
 	//
+#endif
 }
 
 void gearSceneWorldEditor::drawGrid()
@@ -815,8 +818,10 @@ void gearSceneWorldEditor::drawStats()
 #if defined USE_FBO
 		drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, 0.0f, m_cSize.x, m_cSize.y);
 		//drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
+#ifdef ENABLE_FOG
 		drawFBO(m_cFOGFBO.getFBOTextureBuffer(0), m_cSize.x-310, m_cSize.y-310, 300, 300);
 		drawFBO(m_cMultiPassFBO.getFBODepthBuffer(), -310, m_cSize.y-310, 300, 300);
+#endif
 #endif
 
 	glPushMatrix();
@@ -994,13 +999,15 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 		m_cMultiPassFBO.AttachTextureBuffer(0);
 		m_cMultiPassFBO.UnBindFBO();
 
+#ifdef ENABLE_FOG
 		m_cFOGFBO.ReInitFBO(cx, cy);
 		m_cFOGFBO.CreateDepthBuffer();
 		m_cFOGFBO.AttachDepthBuffer();
 		m_cFOGFBO.CreateTextureBuffer();
 		m_cFOGFBO.AttachTextureBuffer(0);
 		m_cFOGFBO.UnBindFBO();
-		
+#endif
+
 #if USE_NVPROFILER
 		gTraceDisplay_DisplayW=cx;
 		gTraceDisplay_DisplayH=cy;

@@ -59,10 +59,15 @@ public:
 	void destroySubMapView();
 	void loadSubMapView();
 
+private:
+	void destroyShaderPropertiesControls();
+
 	geColorControl* m_pColorControl;
 	geToolBarDropMenu* m_pSurfaceShaderToolBarDropMenuBtnPtr;
 	geHorizontalSlider* m_pHorizontalSliderShininess;
 	geSeperator* m_pCommonSeperator;
+	geSeperator* m_pBottomSeperator;	//only be visible if there is any property other than submaps
+	geWindowColumn* m_pWindowColumn_ShaderProperties;
 };
 
 #endif

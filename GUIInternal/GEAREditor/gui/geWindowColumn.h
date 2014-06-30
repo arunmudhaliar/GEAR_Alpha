@@ -31,6 +31,8 @@ public:
 	stWindowColumnRow* addRow(const char* name);
 	void addControl(stWindowColumnRow* row, geGUIBase* cntrl, float override_height=0.0f);
 
+	std::vector<stWindowColumnRow*>* getRowList()	{ return &m_vRow; }
+
 	virtual void draw();
 protected:
 	virtual void onPosition(float x, float y, int flag);

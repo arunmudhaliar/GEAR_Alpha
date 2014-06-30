@@ -147,7 +147,8 @@ void HWShaderManager::LoadDefaultShaders()
 	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMapSpecular.shader").c_str());
 	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/MultiTex.shader").c_str());
 	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMapSeperateSpecular.shader").c_str());
-
+	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMapSeperateEmissive.shader").c_str());
+	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMapSeperateSpecularEmissive.shader").c_str());
 #endif
 }
 

@@ -28,6 +28,7 @@ void geHorizontalSlider::create(rendererGL10* renderer, geGUIBase* parent, const
 	m_bGrabbed=false;
 	m_fMousePrevXPos=0.0f;
 	setMouseBoundCheck(false);
+	setRange(0.0f, 1.0f);
 }
 
 void geHorizontalSlider::draw()
@@ -129,6 +130,24 @@ void geHorizontalSlider::setSliderValue(float value, bool bCallObserver)
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.4f);
 	if(bCallObserver)
 		onSliderChange(m_fSliderPos);
+}
+
+void geHorizontalSlider::setRange(float min, float max)
+{
+	m_fMinRange=min;
+	m_fMaxRange=max;
+}
+
+float geHorizontalSlider::getSliderValueWithInRange()
+{
+	float diff=m_fMaxRange-m_fMinRange;
+	return m_fMinRange+diff*m_fSliderPos;
+}
+
+void geHorizontalSlider::setSliderValueWithInRange(float value)
+{
+	float diff=m_fMaxRange-m_fMinRange;
+	m_fSliderPos=(value-m_fMinRange)/diff;
 }
 
 void geHorizontalSlider::onSliderChange(float sliderValue)

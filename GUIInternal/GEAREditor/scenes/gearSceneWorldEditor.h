@@ -15,6 +15,8 @@
 
 #include "../../../GEAREngine/src/audio/SoundEngine.h"
 
+//#define ENABLE_FOG
+
 class gearSceneWorldEditor : public geWindow, public MWorldObserver, public MGUIObserver
 {
 public:

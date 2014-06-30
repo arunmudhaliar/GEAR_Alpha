@@ -46,6 +46,7 @@ geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* na
 	};
 	memcpy(m_cVBLayoutToggleButtonLine, togglebutton_linevertLst, sizeof(togglebutton_linevertLst));
 
+	m_pParentTreeView=NULL;
 	m_pSprite=NULL;
 	setNodeSprite(sprite);
 
@@ -434,6 +435,27 @@ int geTreeNode::getTVNodeChildCount()
 	}
 
 	return cnt;
+}
+
+void geTreeNode::onNotify(int msg)
+{
+	if(!m_pParentTreeView)
+	{
+		notifyParent(msg);
+	}
+	else
+	{
+		switch(msg)
+		{
+		case 700:	//invalidate view msg
+			{
+				geTreeView* tree = (geTreeView*)m_pParentTreeView;
+				tree->refreshTreeView();
+				tree->resetSelectedNodePtr();
+			}
+			break;
+		}
+	}
 }
 
 /////////////////////////////////////////////////////////////////

@@ -6,6 +6,10 @@ gePropertyMaterial::gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent
 {
 	m_pHorizontalSliderShininess=NULL;
 	m_pColorControl=NULL;
+	m_pWindowColumn_ShaderProperties = NULL;
+	m_pCommonSeperator = NULL;
+	m_pBottomSeperator = NULL;
+
 	setSize(m_cSize.x, 115.0f);
 
 	m_pTriInfoPtr=triinfo;
@@ -26,6 +30,8 @@ gePropertyMaterial::~gePropertyMaterial()
 		GE_DELETE(tvnode);
 	}
 	m_vSubMap.clear();
+
+	destroyShaderPropertiesControls();
 }
 
 void gePropertyMaterial::onDragDrop(int x, int y, MDataObject* dropObject)
@@ -187,14 +193,96 @@ void gePropertyMaterial::loadSubMapView()
 			m_vSubMap.push_back(submapview);
 			cntr++;
 		}
-
-		if(cntr)
-			setSize(m_cSize.x, 145.0f+(cntr-1)*80);
 	}
+		
+	if(cntr)
+		setSize(m_cSize.x, 145.0f+(cntr-1)*80);
+
+	//range property
+	std::vector<stShaderProperty_Range*>* rangeList = m_pCurrentMaterialPtr->getSurfaceShader()->getShaderPropertyList_Range();
+	std::vector<stShaderProperty_Color*>* colorList = m_pCurrentMaterialPtr->getSurfaceShader()->getShaderPropertyList_Color();
+
+	if(rangeList->size()>0)
+	{
+		//window column
+		destroyShaderPropertiesControls();
+
+		m_pWindowColumn_ShaderProperties = new geWindowColumn();
+		m_pWindowColumn_ShaderProperties->create(m_pRenderer, this, getSize().y, 300.0f, 10.0f, 0.4f);
+
+		geGUIBase* lastControl = NULL;
+
+		for(std::vector<stShaderProperty_Range*>::iterator it = rangeList->begin(); it != rangeList->end(); ++it)
+		{
+			stShaderProperty_Range* range = *it;
+			geHorizontalSlider* range_slider = new geHorizontalSlider();
+			range_slider->create(m_pRenderer, this, "slider", 10, 85, 130);
+			range_slider->setRange(range->range_min, range->range_max);
+			range_slider->setSliderValueWithInRange(range->range_value);
+			//range_slider->setSliderValue(1.0f);
+			range_slider->setGUIObserver(this);
+
+			char formatted_buffer[64];
+			sprintf(formatted_buffer, "(%3.2f)", range->range_value);
+
+			geStaticTextBox* pLabel = new geStaticTextBox("");
+			pLabel->create(m_pRenderer, this, formatted_buffer, 20, 80+cntr*80, -5, geGUIManager::g_pFontArial10_80Ptr);
+			pLabel->setGUIObserver(this);
+			range_slider->setUserData(pLabel);
+			pLabel->setUserData(range);
+
+			lastControl=range_slider;
+			sprintf(formatted_buffer, "%s (%3.1f, %3.1f)", range->name.c_str(), range->range_min, range->range_max);
+			stWindowColumnRow* row = m_pWindowColumn_ShaderProperties->addRow(formatted_buffer);
+			m_pWindowColumn_ShaderProperties->addControl(row, range_slider, range_slider->getSize().y*3);
+			m_pWindowColumn_ShaderProperties->addControl(row, pLabel, range_slider->getSize().y*3);
+		}
+
+		for(std::vector<stShaderProperty_Color*>::iterator it = colorList->begin(); it != colorList->end(); ++it)
+		{
+			stShaderProperty_Color* color = *it;
+			geColorControl* color_control = new geColorControl();
+			color_control->create(m_pRenderer, this, 10, 10);
+			color_control->setControlColor(color->color.x, color->color.y, color->color.z, color->color.w);
+			color_control->setGUIObserver(this);
+			color_control->setUserData(color);
+
+			lastControl=color_control;
+			stWindowColumnRow* row = m_pWindowColumn_ShaderProperties->addRow(color->name.c_str());
+			m_pWindowColumn_ShaderProperties->addControl(row, color_control, color_control->getSize().y*2);
+		}
+
+		m_pBottomSeperator = new geSeperator();
+		m_pBottomSeperator->create(m_pRenderer, this, 10, lastControl->getPos().y+lastControl->getSize().y+7, m_pWindowColumn_ShaderProperties->getSize().x-20);
+
+		setSize(m_cSize.x, lastControl->getPos().y+lastControl->getSize().y+15);
+	}
+}
+
+void gePropertyMaterial::destroyShaderPropertiesControls()
+{
+	if(m_pWindowColumn_ShaderProperties==NULL) return;
+
+	//destroy the controls in the column
+	for(std::vector<stWindowColumnRow*>::iterator it = m_pWindowColumn_ShaderProperties->getRowList()->begin(); it != m_pWindowColumn_ShaderProperties->getRowList()->end(); ++it)
+	{
+		stWindowColumnRow* row = *it;
+		for(std::vector<geGUIBase*>::iterator ctrl_it = row->getControlList()->begin(); ctrl_it != row->getControlList()->end(); ++ctrl_it)
+		{
+			geGUIBase* control = *ctrl_it;
+			m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), control), m_vControls.end());
+			GE_DELETE(control);
+		}
+	}
+	//
+
+	m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), m_pWindowColumn_ShaderProperties), m_vControls.end());
+	GE_DELETE(m_pWindowColumn_ShaderProperties);
 }
 
 void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 {
+	destroyShaderPropertiesControls();
 	destroySubMapView();
 
 	//destroy the child views
@@ -289,6 +377,30 @@ void gePropertyMaterial::onColorChange(geGUIBase* colorControl)
 			m_pColorControl->getControlColor().z
 			));
 	}
+
+
+	//iterate through the shader properties control
+	if(m_pWindowColumn_ShaderProperties)
+	{
+		//destroy the controls in the column
+		for(std::vector<stWindowColumnRow*>::iterator it = m_pWindowColumn_ShaderProperties->getRowList()->begin(); it != m_pWindowColumn_ShaderProperties->getRowList()->end(); ++it)
+		{
+			stWindowColumnRow* row = *it;
+			for(std::vector<geGUIBase*>::iterator ctrl_it = row->getControlList()->begin(); ctrl_it != row->getControlList()->end(); ++ctrl_it)
+			{
+				geGUIBase* control = *ctrl_it;
+				if(colorControl==control)
+				{
+					geColorControl* derived_control = (geColorControl*)colorControl;
+					stShaderProperty_Color* color_property = (stShaderProperty_Color*)colorControl->getUserData();
+					geVector4f clr_value(derived_control->getControlColor());
+					color_property->color.set(clr_value.x, clr_value.y, clr_value.z, clr_value.w);
+					return;
+				}
+			}
+		}
+	}
+	//
 }
 
 void gePropertyMaterial::onCommand(int cmd)
@@ -308,8 +420,10 @@ void gePropertyMaterial::onCommand(int cmd)
 					m_pCurrentMaterialPtr->setMainShaderName(surfaceshader->getName());
 					m_pCurrentMaterialPtr->setSurfaceShader(surfaceshader);
 					m_pSurfaceShaderToolBarDropMenuBtnPtr->setMenuItem(surfaceshader->getName());
+					destroyShaderPropertiesControls();
 					destroySubMapView();
 					loadSubMapView();
+					notifyParent(700);	//invalidate view msg
 					break;
 				}
 			}
@@ -328,4 +442,39 @@ void gePropertyMaterial::onSliderChange(geGUIBase* slider)
 	{
 		m_pCurrentMaterialPtr->setShininess(m_pHorizontalSliderShininess->getSliderValue()*MATERIAL_SHININESS_SCALE_FACTOR);
 	}
+
+	//iterate through the shader properties control
+	if(m_pWindowColumn_ShaderProperties)
+	{
+		//destroy the controls in the column
+		for(std::vector<stWindowColumnRow*>::iterator it = m_pWindowColumn_ShaderProperties->getRowList()->begin(); it != m_pWindowColumn_ShaderProperties->getRowList()->end(); ++it)
+		{
+			stWindowColumnRow* row = *it;
+			for(std::vector<geGUIBase*>::iterator ctrl_it = row->getControlList()->begin(); ctrl_it != row->getControlList()->end(); ++ctrl_it)
+			{
+				geGUIBase* control = *ctrl_it;
+				if(slider==control)
+				{
+					geHorizontalSlider* derived_control = (geHorizontalSlider*)slider;
+					geStaticTextBox* label = (geStaticTextBox*)slider->getUserData();
+					stShaderProperty_Range* range = (stShaderProperty_Range*)label->getUserData();
+					range->range_value=derived_control->getSliderValueWithInRange();
+					
+					char formatted_buffer[64];
+					sprintf(formatted_buffer, "(%3.2f)", range->range_value);
+					label->setName(formatted_buffer);
+
+					//pass value to gpu
+					range->passPtr->glslShaderPtr->enableProgram();
+					CHECK_GL_ERROR(glUniform1f(range->passPtr->glslShaderPtr->getUniformLoc(range->nameofProperty.c_str()), range->range_value));
+					range->passPtr->glslShaderPtr->disableProgram();
+					//
+					return;
+				}
+			}
+		}
+	}
+	//
+
+
 }

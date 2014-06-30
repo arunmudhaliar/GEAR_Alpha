@@ -1,9 +1,9 @@
-Shader "NormalMapSeperateSpecular" {
+Shader "NormalMapSeperateEmissive" {
 Properties {
 	_Color ("Main Color", Color) = (1,1,1,1)
 	_MainTex ("Base (RGB) Gloss (A)", Tex2D) = "white" {}
 	_BumpMap ("Normal Map", Tex2D) = "bump" {}
-	_SpecMap ("Specular Map", Tex2D) = "spec" {}
+	_EmissiveMap ("Emissive Map", Tex2D) = "emissive" {}
 }
 
 SubShader {
@@ -40,8 +40,8 @@ __Pass{
 		// User-specified properties
 		attribute vec2 uv_in_BumpMap;
 		varying vec2 uv_out_BumpMap;
-		attribute vec2 uv_in_SpecMap;
-		varying vec2 uv_out_SpecMap;
+		attribute vec2 uv_in_EmissiveMap;
+		varying vec2 uv_out_EmissiveMap;
 		attribute vec4 Tangent;
 
 		// The following built-in uniforms (except _LightColor0) 
@@ -67,16 +67,16 @@ __Pass{
 			vOUT_WorldSpaceCameraPos = _WorldSpaceCameraPos;
             vOUT_Position = GEAR_MODEL_MATRIX * vIN_Position;
             uv_out_BumpMap = uv_in_BumpMap;
-			uv_out_SpecMap = uv_in_SpecMap;
+			uv_out_EmissiveMap = uv_in_EmissiveMap;
 			return GEAR_MVP * vIN_Position;
 		}
 	}
 
 	__fragment{
 	    uniform sampler2D sampler2d_BumpMap;
-		uniform sampler2D sampler2d_SpecMap;
+		uniform sampler2D sampler2d_EmissiveMap;
 		varying vec2 uv_out_BumpMap;
-		varying vec2 uv_out_SpecMap;
+		varying vec2 uv_out_EmissiveMap;
 		varying vec4 vOUT_Position;
 		varying vec3 vOUT_WorldSpaceCameraPos;
 		varying mat3 localSurface2World;
@@ -118,7 +118,7 @@ __Pass{
             vec3 ambientLighting = vec3(light.ambient) * vec3(material.ambient);
             vec3 diffuseReflection = attenuation * vec3(light.diffuse) * vec3(material.diffuse) * max(0.0, dot(normalDirection, lightDirection));
  
-			vec4 spectextureColor = texture2D(sampler2d_SpecMap, uv_out_SpecMap);
+			vec4 emissiveTextureColor = texture2D(sampler2d_EmissiveMap, uv_out_EmissiveMap);
             vec3 specularReflection;
             if (dot(normalDirection, lightDirection) < 0.0) // light source on the wrong side?
             {
@@ -126,10 +126,10 @@ __Pass{
             }
             else // light source on the right side
             {
-               specularReflection = attenuation * vec3(light.specular) * vec3(material.specular) * (spectextureColor.g) * pow(max(0.0, dot(reflect(-lightDirection, normalDirection), viewDirection)), material.shininess);
+               specularReflection = attenuation * vec3(light.specular) * vec3(material.specular) * pow(max(0.0, dot(reflect(-lightDirection, normalDirection), viewDirection)), material.shininess);
 			}
 
-            return vec4(ambientLighting + diffuseReflection + specularReflection, 1.0);
+            return vec4(ambientLighting + diffuseReflection + specularReflection + emissiveTextureColor.rgb, 1.0);
 		}
 	}
 }

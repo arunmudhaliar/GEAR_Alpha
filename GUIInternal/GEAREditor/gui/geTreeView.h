@@ -65,6 +65,8 @@ public:
 	geGUIBase* getParentTreeView()						{	return m_pParentTreeView;			}
 	//
 
+	virtual void onNotify(int msg);
+
 protected:
 	Sprite2Dx* m_pSprite;
 

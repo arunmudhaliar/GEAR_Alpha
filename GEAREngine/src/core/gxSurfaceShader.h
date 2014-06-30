@@ -23,60 +23,80 @@ struct stTextureMap
 	int crc;
 };
 
-
+struct stPass;
 //////////Surface Shader Properties//////////
-struct stShaderProperty_Vector
+struct stShaderPropertyBase
 {
-	~stShaderProperty_Vector()
+private:
+	stShaderPropertyBase(){}
+public:
+	stShaderPropertyBase(int type):
+		propertyid(type)
+	{
+		passPtr = NULL;
+	}
+
+	virtual ~stShaderPropertyBase()
 	{
 		name.clear();
+		nameofProperty.clear();
 	}
-	std::string name;
+	
+	stPass* passPtr;
+	int propertyid;
+	std::string name;	//sometimes used to identify inside glsl shader
+	std::string nameofProperty;
+};
+//
+
+struct stShaderProperty_Vector : public stShaderPropertyBase
+{
+	stShaderProperty_Vector()
+		:stShaderPropertyBase(1)
+	{
+	}
+
 	vector4f vector;
 };
 
-struct stShaderProperty_Range
+struct stShaderProperty_Range : public stShaderPropertyBase
 {
-	stShaderProperty_Range()
+	stShaderProperty_Range():
+		stShaderPropertyBase(2)
 	{
 		range_max=range_min=range_value=0.0f;
 	}
 
-	~stShaderProperty_Range()
-	{
-		name.clear();
-	}
-	std::string name;
 	float range_max;
 	float range_min;
 	float range_value;
 };
 
-struct stShaderProperty_Color
+struct stShaderProperty_Color : public stShaderPropertyBase
 {
-	~stShaderProperty_Color()
+	stShaderProperty_Color()
+		:stShaderPropertyBase(3)
 	{
-		name.clear();
 	}
-	std::string name;
 	vector4f color;
 };
 
-struct stShaderProperty_Texture2D
+struct stShaderProperty_Texture2D : public stShaderPropertyBase
 {
 	stShaderProperty_Texture2D()
+		:stShaderPropertyBase(4)
 	{
 	}
 
 	~stShaderProperty_Texture2D()
 	{
-		name.clear();
 		texture_name.clear();
 		texture_uv_in_name.clear();
 		texture_uv_out_name.clear();
 		texture_sampler2d_name.clear();
 	}
-	std::string name;
+
+	
 	std::string texture_name;
 	std::string texture_uv_in_name;
 	std::string texture_uv_out_name;
@@ -126,6 +146,7 @@ struct stPass
 		GEAR_Time=false;
 		GEAR_ScreenParams=false;
 		cull_face=GL_BACK;	//default value
+		glslShaderPtr=NULL;
 	}
 
 	~stPass()
@@ -153,6 +174,7 @@ struct stPass
 	std::string vertex_buffer;
 	std::string fragment_buffer;
 	std::vector<std::string> vIncludeModule;
+	gxHWShader* glslShaderPtr;
 };
 
 struct stSubShader

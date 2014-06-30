@@ -137,6 +137,8 @@ public:
 	void setClientAreaPrimaryActiveForeColor(float r, float g, float b, float a=1.0f);
 	void setClientAreaSecondryActiveForeColor(float r, float g, float b, float a=1.0f);
 
+	void notifyParent(int msg);
+
 protected:
 
 	virtual void onCreate();
@@ -175,6 +177,8 @@ protected:
 	virtual void onSetName();
 
 	virtual void onCommand(int cmd);
+
+	virtual void onNotify(int msg);
 
 	void drawRect(stVertexBuffer* vbuffer);
 	void drawRect(stVertexBuffer* vbuffer, float* textureCoord, unsigned int texID);

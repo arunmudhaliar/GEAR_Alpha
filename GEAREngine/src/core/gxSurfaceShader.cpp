@@ -499,6 +499,7 @@ bool gxSurfaceShader::parseEachProperty(std::string::const_iterator& start, std:
 												{
 													stShaderProperty_Texture2D* newtex2D = new stShaderProperty_Texture2D();
 													newtex2D->name=_name;
+													newtex2D->nameofProperty=_nameofproperty;
 													newtex2D->texture_uv_in_name= "uv_in";
 													newtex2D->texture_uv_in_name+=_nameofproperty;
 													newtex2D->texture_uv_out_name= "uv_out";
@@ -528,6 +529,7 @@ bool gxSurfaceShader::parseEachProperty(std::string::const_iterator& start, std:
 										{
 											stShaderProperty_Color* newcolor = new stShaderProperty_Color();
 											newcolor->name=_name;
+											newcolor->nameofProperty=_nameofproperty;
 											newcolor->color.set(atof(args.at(0).c_str()), atof(args.at(1).c_str()), atof(args.at(2).c_str()), atof(args.at(3).c_str()));
 											m_vColor_Properties.push_back(newcolor);
 
@@ -552,6 +554,7 @@ bool gxSurfaceShader::parseEachProperty(std::string::const_iterator& start, std:
 												{
 													stShaderProperty_Range* newrange = new stShaderProperty_Range();
 													newrange->name=_name;
+													newrange->nameofProperty=_nameofproperty;
 													newrange->range_min=atof(args.at(0).c_str());
 													newrange->range_max=atof(args.at(1).c_str());
 													newrange->range_value=floatval;
@@ -607,63 +610,6 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 			if(findOpeningCurlyBrace(it, end))
 			{
 				//parse and get all the property list
-				//
-#if 0
-				//_Color
-				str.assign(it, end);
-				int pos=str.find("_Color");
-				if(pos>=0)
-				{
-					it=it+pos+strlen("_Color");
-					int colorpropertydepth=-1;
-					if(!parseColorProperty(it, end, colorpropertydepth))
-						return false;
-				}
-
-				//_MainTex
-				str.assign(it, end);
-				pos=str.find("_MainTex");
-				if(pos>=0)
-				{
-					it=it+pos+strlen("_MainTex");
-					int maintexpropertydepth=-1;
-					if(!parseTexProperty(it, end, "_MainTex", maintexpropertydepth))
-						return false;
-				}
-
-				//_Decal
-				str.assign(it, end);
-				pos=str.find("_DecalTex");
-				if(pos>=0)
-				{
-					it=it+pos+strlen("_DecalTex");
-					int maintexpropertydepth=-1;
-					if(!parseTexProperty(it, end, "_DecalTex", maintexpropertydepth))
-						return false;
-				}
-
-				//_BumpMap
-				str.assign(it, end);
-				pos=str.find("_BumpMap");
-				if(pos>=0)
-				{
-					it=it+pos+strlen("_BumpMap");
-					int maintexpropertydepth=-1;
-					if(!parseTexProperty(it, end, "_BumpMap", maintexpropertydepth))
-						return false;
-				}
-
-				//_SpecMap
-				str.assign(it, end);
-				pos=str.find("_SpecMap");
-				if(pos>=0)
-				{
-					it=it+pos+strlen("_SpecMap");
-					int maintexpropertydepth=-1;
-					if(!parseTexProperty(it, end, "_SpecMap", maintexpropertydepth))
-						return false;
-				}
-#else
 				std::string _nameofproperty;
 				while(parseKeyWord(it, end, _nameofproperty))
 				{
@@ -672,7 +618,6 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 						return false;
 				}
 				it--;
-#endif
 			}
 			break;
 		}
@@ -887,6 +832,39 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 				pass.Tangent = (int)str.find("Tangent")>=0;
 				pass.GEAR_Time = (int)str.find("GEAR_Time")>=0;
 				pass.GEAR_ScreenParams = (int)str.find("GEAR_ScreenParams")>=0;
+
+				//properties
+				//range
+				for(std::vector<stShaderProperty_Range*>::iterator prop_it = m_vRange_Properties.begin(); prop_it != m_vRange_Properties.end(); ++prop_it)
+				{
+					stShaderProperty_Range* range = *prop_it;
+					if((int)str.find(range->nameofProperty)>=0)
+					{
+						range->passPtr=&pass;
+					}
+				}
+
+				//color
+				for(std::vector<stShaderProperty_Color*>::iterator prop_it = m_vColor_Properties.begin(); prop_it != m_vColor_Properties.end(); ++prop_it)
+				{
+					stShaderProperty_Color* color = *prop_it;
+					if((int)str.find(color->nameofProperty)>=0)
+					{
+						color->passPtr=&pass;
+					}
+				}
+				//
+
+				//float
+				for(std::vector<stShaderProperty_Vector*>::iterator prop_it = m_vVector_Properties.begin(); prop_it != m_vVector_Properties.end(); ++prop_it)
+				{
+					stShaderProperty_Vector* vector = *prop_it;
+					if((int)str.find(vector->nameofProperty)>=0)
+					{
+						vector->passPtr=&pass;
+					}
+				}
+				//
 
 				int pos=str.find("__includeModule");
 				if(pos>=0)
@@ -1206,6 +1184,41 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 				cMainShaderSource += "uniform vec4 GEAR_Time;\n";	//hwShaderManager->getShaderSnippet(6)->snippet;
 			if(currentPass->GEAR_ScreenParams)
 				cMainShaderSource += "uniform vec4 GEAR_ScreenParams;\n";
+
+			//properties
+			//range
+			for(std::vector<stShaderProperty_Range*>::iterator prop_it = m_vRange_Properties.begin(); prop_it != m_vRange_Properties.end(); ++prop_it)
+			{
+				stShaderProperty_Range* range = *prop_it;
+				if(currentPass==range->passPtr)
+				{
+					cMainShaderSource += "uniform float "+range->nameofProperty+";\n";
+				}
+			}
+
+			//color
+			for(std::vector<stShaderProperty_Color*>::iterator prop_it = m_vColor_Properties.begin(); prop_it != m_vColor_Properties.end(); ++prop_it)
+			{
+				stShaderProperty_Color* color = *prop_it;
+				if(currentPass==color->passPtr)
+				{
+					cMainShaderSource += "uniform vec4 "+color->nameofProperty+";\n";
+				}
+			}
+			//
+
+			//float
+			for(std::vector<stShaderProperty_Vector*>::iterator prop_it = m_vVector_Properties.begin(); prop_it != m_vVector_Properties.end(); ++prop_it)
+			{
+				stShaderProperty_Vector* vector = *prop_it;
+				if(currentPass==vector->passPtr)
+				{
+					cMainShaderSource += "uniform vec4 "+vector->nameofProperty+";\n";
+				}
+			}
+			//
+			//
+
 			//if(currentPass->Fog)
 			//	cMainShaderSource += hwShaderManager->getShaderSnippet(7)->snippet;
 			cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
@@ -1231,6 +1244,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 				DEBUG_PRINT("%s\nParse Success but GLSL compiler failed. Pass(%d)\n", constructed_glsl_filename, cntr);
 			else
 			{
+				currentPass->glslShaderPtr=pMainShader;
 				m_vShaderProgram.push_back(pMainShader);
 				DEBUG_PRINT("%s\nParse Success. Pass(%d)\n", constructed_glsl_filename, cntr);
 			}

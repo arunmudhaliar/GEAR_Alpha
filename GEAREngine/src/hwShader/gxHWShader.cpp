@@ -506,132 +506,104 @@ void gxHWShader::sendAttrib1f(const char* name, float x)
 //predefined vars
 void gxHWShader::sendUniform_GEAR_MODELVIEW(const float* input)
 {
-	if(m_cUnifrom_GEAR_MODELVIEW!=-1)
-	{
-		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input));
-	}
-	else
+	if(m_cUnifrom_GEAR_MODELVIEW==-1)
 	{
 		m_cUnifrom_GEAR_MODELVIEW = getUniformLoc("GEAR_MODELVIEW");
-		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input));
 	}
+	
+	CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input));
 }
 
 void gxHWShader::sendUniform_GEAR_MVP(const float* input)
 {
-	if(m_cUnifrom_GEAR_MVP!=-1)
-	{
-		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input));
-	}
-	else
+	if(m_cUnifrom_GEAR_MVP==-1)
 	{
 		m_cUnifrom_GEAR_MVP = getUniformLoc("GEAR_MVP");
-		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input));
 	}
+
+	CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input));
 }
+
 void gxHWShader::sendUniform_GEAR_MODEL_MATRIX(const float* input)
 {
-	if(m_cUnifrom_GEAR_MODEL_MATRIX!=-1)
-	{
-		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input));
-	}
-	else
+	if(m_cUnifrom_GEAR_MODEL_MATRIX==-1)
 	{
 		m_cUnifrom_GEAR_MODEL_MATRIX = getUniformLoc("GEAR_MODEL_MATRIX");
-		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input));
 	}
+	
+	CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input));
 }
 
 void gxHWShader::sendUniform_GEAR_MODEL_INVERSE(const float* input)
 {
-	if(m_cUnifrom_GEAR_MODEL_INVERSE!=-1)
-	{
-		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input));
-	}
-	else
+	if(m_cUnifrom_GEAR_MODEL_INVERSE==-1)
 	{
 		m_cUnifrom_GEAR_MODEL_INVERSE = getUniformLoc("GEAR_MODEL_INVERSE");
-		CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input));
 	}
+		
+	CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input));
 }
 
 void gxHWShader::sendUniform_material_diffuse(const float* input)
 {
-	if(m_cUnifrom_material_diffuse!=-1)
-	{
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_diffuse, 1, input));
-	}
-	else
+	if(m_cUnifrom_material_diffuse==-1)
 	{
 		m_cUnifrom_material_diffuse = getUniformLoc("material.diffuse");
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_diffuse, 1, input));
 	}
+
+	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_diffuse, 1, input));
 }
 
 void gxHWShader::sendUniform_material_ambient(const float* input)
 {
-	if(m_cUnifrom_material_ambient!=-1)
-	{
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_ambient, 1, input));
-	}
-	else
+	if(m_cUnifrom_material_ambient==-1)
 	{
 		m_cUnifrom_material_ambient = getUniformLoc("material.ambient");
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_ambient, 1, input));
 	}
+	
+	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_ambient, 1, input));
 }
 
 void gxHWShader::sendUniform_material_specular(const float* input)
 {
-	if(m_cUnifrom_material_specular!=-1)
-	{
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_specular, 1, input));
-	}
-	else
+	if(m_cUnifrom_material_specular==-1)
 	{
 		m_cUnifrom_material_specular = getUniformLoc("material.specular");
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_specular, 1, input));
 	}
+	
+	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_specular, 1, input));
 }
 
 void gxHWShader::sendUniform_material_shininess(float input)
 {
-	if(m_cUnifrom_material_shininess!=-1)
-	{
-		CHECK_GL_ERROR(glUniform1f(m_cUnifrom_material_shininess, input));
-	}
-	else
+	if(m_cUnifrom_material_shininess==-1)
 	{
 		m_cUnifrom_material_shininess = getUniformLoc("material.shininess");
-		CHECK_GL_ERROR(glUniform1f(m_cUnifrom_material_shininess, input));
 	}
+
+	CHECK_GL_ERROR(glUniform1f(m_cUnifrom_material_shininess, input));
 }
 
 void gxHWShader::sendUniform_GEAR_Time(const float* time)
 {
-	if(m_cUnifrom_GEAR_Time!=-1)
-	{
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_Time, 1, time));
-	}
-	else
+	if(m_cUnifrom_GEAR_Time==-1)
 	{
 		m_cUnifrom_GEAR_Time = getUniformLoc("GEAR_Time");
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_Time, 1, time));
 	}
+	
+	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_Time, 1, time));
 }
 
 void gxHWShader::sendUniform_GEAR_ScreenParams(const float* screenParams)
 {
-	if(m_cUnifrom_GEAR_ScreenParams!=-1)
-	{
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_ScreenParams, 1, screenParams));
-	}
-	else
+	if(m_cUnifrom_GEAR_ScreenParams==-1)
 	{
 		m_cUnifrom_GEAR_ScreenParams = getUniformLoc("GEAR_ScreenParams");
-		CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_ScreenParams, 1, screenParams));
 	}
+
+	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_ScreenParams, 1, screenParams));
 }
+
 int gxHWShader::getAttrib_vIN_Position()
 {
 	if(m_cAttrib_vIN_Position==-1)

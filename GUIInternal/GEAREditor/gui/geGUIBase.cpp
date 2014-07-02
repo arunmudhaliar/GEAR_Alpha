@@ -29,6 +29,10 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name):
 
 	if(name!=NULL)
 	{
+		if(strlen(name)>sizeof(m_szName))
+		{
+			DEBUG_PRINT("ERROR geGUIBase::geGUIBase() strlen(name)>sizeof(m_szName)");
+		}
 		STRCPY(m_szName, name);
 	}
 	m_pGUIObserver=NULL;
@@ -46,6 +50,17 @@ geGUIBase::~geGUIBase()
 	//	GE_DELETE(node);
 	//}
 	m_vControls.clear();
+}
+
+void geGUIBase::setName(const char* name)
+{
+	if(strlen(name)>sizeof(m_szName))
+	{
+		DEBUG_PRINT("ERROR geGUIBase::setName() strlen(name)>sizeof(m_szName)");
+	}
+
+	STRCPY(m_szName, name);
+	onSetName();
 }
 
 void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent)

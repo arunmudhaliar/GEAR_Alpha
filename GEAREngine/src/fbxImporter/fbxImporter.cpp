@@ -463,7 +463,7 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 					material->setSpecularClr(vector4f((float)specular.mRed, (float)specular.mGreen, (float)specular.mBlue, (float)specular.mAlpha));
 				}
 
-#if 0	//moved the maps to surface shader. so we don't need this anymore
+#if 1	//moved the maps to surface shader. so we don't need this anymore
 				FbxProperty diffuseProp = surfaceMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
 				if(diffuseProp.IsValid())
 				{
@@ -474,17 +474,8 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 							diffuseProp.GetSrcObject(FbxTexture::ClassId, iTexture)); 
 
 						if( !texture ) continue;
-							
-						stTextureMap* texmap = new stTextureMap();
-						texmap->texturename.assign(gxUtil::getFileNameFromPath(texture->GetFileName()));
-						material->appendTextureMap(texmap);
+						material->appendTextureNamesFromFBX(gxUtil::getFileNameFromPath(texture->GetFileName()));
 					}
-				}
-				else
-				{
-					stTextureMap* texmap = new stTextureMap();
-					texmap->texturename.assign("no-map");
-					material->appendTextureMap(texmap);
 				}
 #endif
 				material->setMainShaderName("Diffuse");

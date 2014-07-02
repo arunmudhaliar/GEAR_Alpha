@@ -23,111 +23,6 @@ struct stTextureMap
 	int crc;
 };
 
-struct stPass;
-//////////Surface Shader Properties//////////
-struct stShaderPropertyBase
-{
-private:
-	stShaderPropertyBase(){}
-public:
-	stShaderPropertyBase(int type):
-		propertyid(type)
-	{
-		passPtr = NULL;
-	}
-
-	virtual ~stShaderPropertyBase()
-	{
-		name.clear();
-		nameofProperty.clear();
-	}
-	
-	stPass* passPtr;
-	int propertyid;
-	std::string name;	//sometimes used to identify inside glsl shader
-	std::string nameofProperty;
-};
-//
-
-struct stShaderProperty_Vector : public stShaderPropertyBase
-{
-	stShaderProperty_Vector()
-		:stShaderPropertyBase(1)
-	{
-	}
-
-	vector4f vector;
-};
-
-struct stShaderProperty_Range : public stShaderPropertyBase
-{
-	stShaderProperty_Range():
-		stShaderPropertyBase(2)
-	{
-		range_max=range_min=range_value=0.0f;
-	}
-
-	float range_max;
-	float range_min;
-	float range_value;
-};
-
-struct stShaderProperty_Color : public stShaderPropertyBase
-{
-	stShaderProperty_Color()
-		:stShaderPropertyBase(3)
-	{
-	}
-	vector4f color;
-};
-
-struct stShaderProperty_Texture2D : public stShaderPropertyBase
-{
-	stShaderProperty_Texture2D()
-		:stShaderPropertyBase(4)
-	{
-	}
-
-	~stShaderProperty_Texture2D()
-	{
-		texture_name.clear();
-		texture_uv_in_name.clear();
-		texture_uv_out_name.clear();
-		texture_sampler2d_name.clear();
-	}
-
-	
-	std::string texture_name;
-	std::string texture_uv_in_name;
-	std::string texture_uv_out_name;
-	std::string texture_sampler2d_name;
-};
-//////////~Surface Shader Properties//////////
-
-class DECLSPEC gxSubMap
-{
-public:
-	gxSubMap();
-	~gxSubMap();
-
-	void setTextureName(const char* name)	{	GX_STRCPY(m_szTextureName, name);	}
-	void setTextureCRC(int crc)				{	m_iTextureCRC=crc;	}
-	const char* getTextureName()			{	return m_szTextureName;	}
-	int getTextureCRC()						{	return m_iTextureCRC;	}
-	gxTexture* load(CTextureManager& textureManager, const char* filename);
-	gxTexture* getTexture()		{	return m_pTexture;	}
-	gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc);
-
-	void setShaderTextureProperty(stShaderProperty_Texture2D* property_tex2D)	{	m_pShaderPropertyVar = property_tex2D;	}
-	stShaderProperty_Texture2D* getShaderTextureProperty()						{	return m_pShaderPropertyVar;			}
-
-private:
-	char m_szTextureName[256];
-	int m_iTextureCRC;
-	gxTexture* m_pTexture;
-	stShaderProperty_Texture2D* m_pShaderPropertyVar;
-};
-
 struct stPass
 {
 	stPass()
@@ -177,6 +72,163 @@ struct stPass
 	gxHWShader* glslShaderPtr;
 };
 
+//////////Surface Shader Properties//////////
+struct stShaderPropertyBase
+{
+private:
+	stShaderPropertyBase(){}
+public:
+	stShaderPropertyBase(int type):
+		propertyid(type)
+	{
+		passPtr = NULL;
+		unifrom_GLSL_Var=-1;
+	}
+
+	virtual ~stShaderPropertyBase()
+	{
+		name.clear();
+		nameofProperty.clear();
+	}
+	
+	virtual void sendToGLSL(bool bDoEnableAndDisableShader=false)=0;	//if bDoEnableAndDisableShader the do the enable/disable of shader inside sendToGLSL()
+
+	stPass* passPtr;
+	int propertyid;
+	std::string name;	//sometimes used to identify inside glsl shader
+	std::string nameofProperty;
+	int unifrom_GLSL_Var;
+};
+//
+
+struct stShaderProperty_Vector : public stShaderPropertyBase
+{
+	stShaderProperty_Vector()
+		:stShaderPropertyBase(1)
+	{
+	}
+
+	void sendToGLSL(bool bDoEnableAndDisableShader=false)
+	{
+		if(bDoEnableAndDisableShader)
+			passPtr->glslShaderPtr->enableProgram();
+
+		if(unifrom_GLSL_Var==-1)
+		{
+			unifrom_GLSL_Var = passPtr->glslShaderPtr->getUniformLoc(nameofProperty.c_str());
+		}
+		CHECK_GL_ERROR(glUniform4fv(unifrom_GLSL_Var, 1, &vector.x));
+
+		if(bDoEnableAndDisableShader)
+			passPtr->glslShaderPtr->disableProgram();
+	}
+
+	vector4f vector;
+};
+
+struct stShaderProperty_Range : public stShaderPropertyBase
+{
+	stShaderProperty_Range():
+		stShaderPropertyBase(2)
+	{
+		range_max=range_min=range_value=0.0f;
+	}
+
+	void sendToGLSL(bool bDoEnableAndDisableShader=false)
+	{
+		if(bDoEnableAndDisableShader)
+			passPtr->glslShaderPtr->enableProgram();
+
+		if(unifrom_GLSL_Var==-1)
+		{
+			unifrom_GLSL_Var = passPtr->glslShaderPtr->getUniformLoc(nameofProperty.c_str());
+		}
+		CHECK_GL_ERROR(glUniform1f(unifrom_GLSL_Var, range_value));
+
+		if(bDoEnableAndDisableShader)
+			passPtr->glslShaderPtr->disableProgram();
+	}
+
+	float range_max;
+	float range_min;
+	float range_value;
+};
+
+struct stShaderProperty_Color : public stShaderPropertyBase
+{
+	stShaderProperty_Color()
+		:stShaderPropertyBase(3)
+	{
+	}
+
+	void sendToGLSL(bool bDoEnableAndDisableShader=false)
+	{
+		if(bDoEnableAndDisableShader)
+			passPtr->glslShaderPtr->enableProgram();
+
+		if(unifrom_GLSL_Var==-1)
+		{
+			unifrom_GLSL_Var = passPtr->glslShaderPtr->getUniformLoc(nameofProperty.c_str());
+		}
+		CHECK_GL_ERROR(glUniform4fv(unifrom_GLSL_Var, 1, &color.x));
+
+		if(bDoEnableAndDisableShader)
+			passPtr->glslShaderPtr->disableProgram();
+	}
+
+	vector4f color;
+};
+
+struct stShaderProperty_Texture2D : public stShaderPropertyBase
+{
+	stShaderProperty_Texture2D()
+		:stShaderPropertyBase(4)
+	{
+	}
+
+	~stShaderProperty_Texture2D()
+	{
+		texture_name.clear();
+		texture_uv_in_name.clear();
+		texture_uv_out_name.clear();
+		texture_sampler2d_name.clear();
+	}
+
+	void sendToGLSL(bool bDoEnableAndDisableShader=false)
+	{
+	}
+
+	std::string texture_name;
+	std::string texture_uv_in_name;
+	std::string texture_uv_out_name;
+	std::string texture_sampler2d_name;
+};
+//////////~Surface Shader Properties//////////
+
+class DECLSPEC gxSubMap
+{
+public:
+	gxSubMap();
+	~gxSubMap();
+
+	void setTextureName(const char* name)	{	GX_STRCPY(m_szTextureName, name);	}
+	void setTextureCRC(int crc)				{	m_iTextureCRC=crc;	}
+	const char* getTextureName()			{	return m_szTextureName;	}
+	int getTextureCRC()						{	return m_iTextureCRC;	}
+	gxTexture* load(CTextureManager& textureManager, const char* filename);
+	gxTexture* getTexture()		{	return m_pTexture;	}
+	gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc);
+
+	void setShaderTextureProperty(stShaderProperty_Texture2D* property_tex2D)	{	m_pShaderPropertyVar = property_tex2D;	}
+	stShaderProperty_Texture2D* getShaderTextureProperty()						{	return m_pShaderPropertyVar;			}
+
+private:
+	char m_szTextureName[256];
+	int m_iTextureCRC;
+	gxTexture* m_pTexture;
+	stShaderProperty_Texture2D* m_pShaderPropertyVar;
+};
+
 struct stSubShader
 {
 	~stSubShader()
@@ -220,6 +272,8 @@ private:
 	bool parseSubShader_tag(std::string::const_iterator& start, std::string::const_iterator& end, stPass& pass, int& depth);
 	bool parseShader(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
 	bool parse(std::string::const_iterator& start, std::string::const_iterator& end, int& depth);
+
+	void applyDefaultValuesOfPropertiesToGLSLShader(stPass* currentPass);
 
 protected:
 	stSubShader m_cSubShader;

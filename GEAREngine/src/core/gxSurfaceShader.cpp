@@ -1245,6 +1245,9 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			else
 			{
 				currentPass->glslShaderPtr=pMainShader;
+				currentPass->glslShaderPtr->enableProgram();
+				applyDefaultValuesOfPropertiesToGLSLShader(currentPass);
+				currentPass->glslShaderPtr->disableProgram();
 				m_vShaderProgram.push_back(pMainShader);
 				DEBUG_PRINT("%s\nParse Success. Pass(%d)\n", constructed_glsl_filename, cntr);
 			}
@@ -1261,6 +1264,43 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 	GX_DELETE_ARY(vsource);
 
 	return bParseRetVal;
+}
+
+void gxSurfaceShader::applyDefaultValuesOfPropertiesToGLSLShader(stPass* currentPass)
+{
+	//properties
+	//range
+	for(std::vector<stShaderProperty_Range*>::iterator prop_it = m_vRange_Properties.begin(); prop_it != m_vRange_Properties.end(); ++prop_it)
+	{
+		stShaderProperty_Range* range = *prop_it;
+		if(currentPass==range->passPtr)
+		{
+			range->sendToGLSL();
+		}
+	}
+
+	//color
+	for(std::vector<stShaderProperty_Color*>::iterator prop_it = m_vColor_Properties.begin(); prop_it != m_vColor_Properties.end(); ++prop_it)
+	{
+		stShaderProperty_Color* color = *prop_it;
+		if(currentPass==color->passPtr)
+		{
+			color->sendToGLSL();
+		}
+	}
+	//
+
+	//float
+	for(std::vector<stShaderProperty_Vector*>::iterator prop_it = m_vVector_Properties.begin(); prop_it != m_vVector_Properties.end(); ++prop_it)
+	{
+		stShaderProperty_Vector* vector = *prop_it;
+		if(currentPass==vector->passPtr)
+		{
+			vector->sendToGLSL();
+		}
+	}
+	//
+	//
 }
 
 void gxSurfaceShader::appendTextureMap(stTextureMap* texmap)

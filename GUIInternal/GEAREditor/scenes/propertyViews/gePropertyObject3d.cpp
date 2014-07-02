@@ -101,9 +101,9 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 	if(btn==m_pPushBtn_Object3dVisible)
 	{
 		if(!m_pPushBtn_Object3dVisible->isCheck())
-			m_pObject3dPtr->setBaseFlag(object3d::eObject3dBaseFlag_Visible);
+			m_pObject3dPtr->setBaseFlag(object3d::eObject3dBaseFlag_Visible, true);
 		else
-			m_pObject3dPtr->reSetBaseFlag(object3d::eObject3dBaseFlag_Visible);
+			m_pObject3dPtr->reSetBaseFlag(object3d::eObject3dBaseFlag_Visible, true);
 	}
 	else if(btn==m_pPushBtn_Object3dStatic /*&& m_pPushBtn_Object3dStatic->isButtonPressed()*/)
 	{

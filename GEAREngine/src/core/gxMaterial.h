@@ -60,6 +60,9 @@ public:
 	std::vector<gxSubMap*>* getSubMapList()	{	return &m_vSubMap;	}
 	std::vector<stMaterialPass*>* getShaderPassList()	{	return &m_vMaterialPass;	}
 
+	void appendTextureNamesFromFBX(const char* filename);
+	std::vector<std::string>* getListOfTextureNamesFromFBX()	{  return &m_vTextureNameFromFBXFile;	}
+
 private:
 	vector4f m_cAmbient;
 	vector4f m_cDiffuse;
@@ -67,12 +70,16 @@ private:
 	float m_fAlpha;
 	float m_fShininess;
 	bool m_bTwoSided;
-	char m_szMaterialName[64];
+	char m_szMaterialName[256];
 	std::vector<int> m_vDependencyCRCList;
 	std::string m_cMainShaderName;
 	gxSurfaceShader* m_pSurfaceShaderPtr;	//must not delete this pointer
 	std::vector<gxSubMap*> m_vSubMap;
 	std::vector<stMaterialPass*> m_vMaterialPass;
+
+	//texture names read from FBX
+	std::vector<std::string> m_vTextureNameFromFBXFile;
+	//
 };
 
 #endif

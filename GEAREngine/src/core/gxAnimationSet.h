@@ -31,7 +31,7 @@ private:
 	std::vector<gxAnimationTrack*> m_vAnimationTrack;
 	int m_nFrames;
 	int m_iFPS;
-	char m_szName[64];
+	char m_szName[256];
 	int m_iCRC_of_mesh_data;
 };
 

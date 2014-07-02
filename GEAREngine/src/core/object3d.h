@@ -188,7 +188,7 @@ public:
 protected:
 	void clearAnimTrackOnAllNodes();
 
-	char m_cszName[64];
+	char m_cszName[256];
 	int m_iObjectID;
 	object3d* m_pParentPtr;
 	unsigned int m_eBaseFlags;

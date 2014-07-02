@@ -29,6 +29,8 @@ gxMaterial::~gxMaterial()
 	}
 	m_vMaterialPass.clear();
 	//
+
+	m_vTextureNameFromFBXFile.clear();
 }
 
 bool gxMaterial::appendDependency(int crc)
@@ -65,6 +67,12 @@ void gxMaterial::write(gxFile& file)
 	for(int x=0;x<m_vDependencyCRCList.size();x++)
 	{
 		file.Write(m_vDependencyCRCList[x]);
+	}
+
+	file.Write(m_vTextureNameFromFBXFile.size());
+	for(int x=0;x<m_vTextureNameFromFBXFile.size();x++)
+	{
+		file.Write(m_vTextureNameFromFBXFile[x].c_str());
 	}
 }
 
@@ -109,6 +117,15 @@ void gxMaterial::read(gxFile& file)
 		int crc=0;
 		file.Read(crc);
 		m_vDependencyCRCList.push_back(crc);
+	}
+
+	int nFBXTextures=0;
+	file.Read(nFBXTextures);
+	for(int x=0;x<nFBXTextures;x++)
+	{
+		char* temp=file.ReadString();
+		m_vTextureNameFromFBXFile.push_back(temp);
+		GX_DELETE_ARY(temp);
 	}
 }
 
@@ -204,4 +221,9 @@ gxSubMap* gxMaterial::getSubMap(int index)
 	if(index>=(int)m_vSubMap.size()) return NULL;
 
 	return m_vSubMap[index];
+}
+
+void gxMaterial::appendTextureNamesFromFBX(const char* filename)
+{
+	m_vTextureNameFromFBXFile.push_back(filename);
 }

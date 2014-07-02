@@ -29,12 +29,15 @@ protected:
 
 	virtual void onTextChange(geGUIBase* btn);
 	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+
 private:
 	void destroyTVUserData(geGUIBase* parent);
 	void loadPreviewObjects();
 	void read3dFile(gxFile& file, object3d* obj);
 	void deleteAnmationFromObject3d(object3d* obj3d);
 	static int find_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
+
+	void tryLoadTexturesFromObject3d(object3d* obj3d, const char* filepath);
 
 	Sprite2Dx m_cszSprites[5];
 	geTreeView m_cFileTreeView;

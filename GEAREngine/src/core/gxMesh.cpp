@@ -353,6 +353,8 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		gxSurfaceShader* surfaceshader=material->getSurfaceShader();
 		if(!surfaceshader) continue;
 
+		if(surfaceshader->getShaderPassCount()<=pass) continue;
+
 		gxHWShader* shader=surfaceshader->getShaderPass(pass);
 		stPass* pass_struct = surfaceshader->getShaderPassStruct(pass);
 

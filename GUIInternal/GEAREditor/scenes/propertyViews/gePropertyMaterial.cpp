@@ -202,7 +202,7 @@ void gePropertyMaterial::loadSubMapView()
 	std::vector<stShaderProperty_Range*>* rangeList = m_pCurrentMaterialPtr->getSurfaceShader()->getShaderPropertyList_Range();
 	std::vector<stShaderProperty_Color*>* colorList = m_pCurrentMaterialPtr->getSurfaceShader()->getShaderPropertyList_Color();
 
-	if(rangeList->size()>0)
+	if(rangeList->size()>0 || colorList->size()>0)
 	{
 		//window column
 		destroyShaderPropertiesControls();
@@ -395,6 +395,10 @@ void gePropertyMaterial::onColorChange(geGUIBase* colorControl)
 					stShaderProperty_Color* color_property = (stShaderProperty_Color*)colorControl->getUserData();
 					geVector4f clr_value(derived_control->getControlColor());
 					color_property->color.set(clr_value.x, clr_value.y, clr_value.z, clr_value.w);
+
+					//pass value to gpu
+					color_property->sendToGLSL(true);
+					//
 					return;
 				}
 			}
@@ -465,9 +469,7 @@ void gePropertyMaterial::onSliderChange(geGUIBase* slider)
 					label->setName(formatted_buffer);
 
 					//pass value to gpu
-					range->passPtr->glslShaderPtr->enableProgram();
-					CHECK_GL_ERROR(glUniform1f(range->passPtr->glslShaderPtr->getUniformLoc(range->nameofProperty.c_str()), range->range_value));
-					range->passPtr->glslShaderPtr->disableProgram();
+					range->sendToGLSL(true);
 					//
 					return;
 				}

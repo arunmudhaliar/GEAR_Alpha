@@ -43,7 +43,7 @@ private:
 	int m_iCurrentFrame;
 	matrix4x4f* m_pTrack;
 	//object3d* m_pObjectPtr;	//must not delete this pointer
-	char m_szName[64];
+	char m_szName[256];
 };
 
 #include "object3d.h"

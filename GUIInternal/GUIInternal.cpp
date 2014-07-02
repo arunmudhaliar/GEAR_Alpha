@@ -18,6 +18,7 @@
 #include <direct.h>
 
 #ifdef _DEBUG
+//#define ENABLE_MEMORY_CHECK
 #include <crtdbg.h>
 #endif
 
@@ -46,7 +47,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      int       nCmdShow)
 {
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(ENABLE_MEMORY_CHECK)
 	_CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
 	_CrtSetReportMode ( _CRT_ERROR, _CRTDBG_MODE_DEBUG);
 
@@ -334,7 +335,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			monoWrapper::destroyMono();
 			monoWrapper::destroyDebugConsole();
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(ENABLE_MEMORY_CHECK)
 			SymCleanup(GetCurrentProcess());
 #endif
 			PostQuitMessage(0);

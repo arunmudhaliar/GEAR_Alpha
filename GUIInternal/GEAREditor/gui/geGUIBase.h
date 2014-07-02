@@ -80,7 +80,7 @@ public:
 	virtual int getTitleOffsetHeight()		{	return 0;	}
 
 	const char* getName()			{	return m_szName;		}
-	void setName(const char* name)	{	STRCPY(m_szName, name);	onSetName();	}
+	void setName(const char* name);
 
 	//mouse events
 	bool MouseLButtonDown(float x, float y, int nFlag);
@@ -192,7 +192,7 @@ protected:
 	void setMouseBoundCheck(bool flag)	{	m_bMouseBoundCheckEnabled=flag;		}
 
 	unsigned short m_uGUIID;
-	char m_szName[64];
+	char m_szName[256];
 
 	geVector2f m_cPos;
 	geVector2f m_cSize;

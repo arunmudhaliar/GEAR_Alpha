@@ -10,6 +10,7 @@ public:
 	gxTriInfo()
 	{
 		m_nVertices=0;
+		m_nTriangles=0;
 		m_pTriList=NULL;
 		m_pMaterialPtr=NULL;
 		m_iMaterialCRC = 0;
@@ -19,11 +20,12 @@ public:
 	~gxTriInfo()
 	{
 		deleteVBOTriList();
-		m_nVertices=0;
 		GX_DELETE_ARY(m_pTriList);
 	}
 
 	int getVerticesCount()	{	return m_nVertices;		}
+	int getTriangleCount()	{   return m_nTriangles;	}
+
 	int* getTriList()	{	return m_pTriList;	}
 
 	int* allocateMemory(int nVertices)
@@ -50,6 +52,7 @@ public:
 	void read(gxFile& file)
 	{
 		file.Read(m_nVertices);
+		m_nTriangles=m_nVertices/3;
 		if(m_nVertices)
 		{
 			int* buffer = allocateMemory(m_nVertices);
@@ -82,6 +85,7 @@ private:
 	gxMaterial* m_pMaterialPtr;	//must not delete this pointer
 
 	int m_nVertices;
+	int m_nTriangles;
 	int* m_pTriList;
 	int m_iMaterialCRC;
 	unsigned int m_uVBO_trilstID;

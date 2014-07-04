@@ -36,6 +36,21 @@ public:
 		return path;
 	}
 
+	static bool lineSegmentAndPlaneIntersection(vector3f p1, vector3f p2, vector3f planeNormal, vector3f pointOnPlane, float& u)
+	{
+		vector3f p3_p1(pointOnPlane-p1);
+		vector3f p2_p1(p2-p1);
+
+		float n = planeNormal.dot(p3_p1);
+		float d = planeNormal.dot(p2_p1);
+
+		if(abs(d)<0.00000001f)
+			return false;		//line parallel to plane
+
+		u=n/d;
+		return true;
+	}
+
 	static bool twoLineSegmentIntersection(vector3f p1, vector3f p2, vector3f p3, vector3f p4, vector3f& pa, vector3f& pb, float& ua, float& ub)
 	{
 		//http://paulbourke.net/geometry/pointlineplane/

@@ -211,11 +211,63 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDM_ABOUT:
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 			break;
-		case ID_HELP_COMMAND:
+		case ID_TEST_COMMAND:
 			{
-				//geColorDlg* view = new geColorDlg(NULL);
-				//view->showView(hWnd);
-				//GE_DELETE(view);
+				gxFile file;
+				file.OpenFile("05_med_bay_dark.scene.xml.bin");
+				int nActor=0;
+				file.Read(nActor);
+				geGUIBase* tvnode=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
+				if(!tvnode)
+					break;
+				object3d* selectedobj=(object3d*)tvnode->getUserData();
+				if(!selectedobj)
+					break;
+
+				for(int x=0;x<nActor;x++)
+				{
+					char* actorname=file.ReadString();
+					bool bPrefab=false;
+					file.Read(bPrefab);
+					char* prefabname=NULL;
+					if(bPrefab)
+						prefabname=file.ReadString();
+
+					float rotation[3];
+					float translation[3];
+
+					file.Read(rotation[0]);
+					file.Read(rotation[1]);
+					file.Read(rotation[2]);
+
+					file.Read(translation[0]);
+					file.Read(translation[1]);
+					file.Read(translation[2]);
+
+					if(prefabname)
+					{
+						std::vector<object3d*>* list=selectedobj->getChildList();
+						for(std::vector<object3d*>::iterator it = list->begin(); it != list->end(); ++it)
+						{
+							object3d* childobj = *it;
+
+							if(strcmp(prefabname, childobj->getName())==0)
+							{
+								//apply transforms
+								//childobj->rotateLocalXf(rotation[0]);
+								//childobj->rotateLocalXf(rotation[1]);
+								//childobj->rotateLocalXf(rotation[2]);
+								childobj->updatePositionf(translation[0], translation[2], translation[1]);
+
+								break;
+							}
+						}
+					}
+					GX_DELETE_ARY(actorname);
+					GX_DELETE_ARY(prefabname);
+				}
+
+				file.CloseFile();
 			}
 			break;
 		case ID_PROJECT_BUILDFORANDROID:
@@ -546,13 +598,16 @@ char* browseFolder(HWND hWndParent)
 
 	OleUninitialize();
 
-	//win32 to unix style path
-	for(int x=0;x<strlen(return_buffer);x++)
+	if(return_buffer)
 	{
-		if(return_buffer[x]=='\\')
-			return_buffer[x]='/';
+		//win32 to unix style path
+		for(int x=0;x<strlen(return_buffer);x++)
+		{
+			if(return_buffer[x]=='\\')
+				return_buffer[x]='/';
+		}
+		//
 	}
-	//
 
 	return return_buffer;
 }

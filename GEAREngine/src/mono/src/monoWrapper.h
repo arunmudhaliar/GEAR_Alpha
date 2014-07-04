@@ -39,8 +39,8 @@ public:
 
 	static void mono_engine_update(gxWorld* world, float dt);
 	static void mono_engine_resize(gxWorld* world, float x, float y, float cx, float cy, float nearplane, float farplane);
-	static void mono_engine_render(gxWorld* world, object3d* light);
-	static void mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light);
+	static void mono_engine_render(gxWorld* world, object3d* light, int renderFlag);
+	static void mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light, int renderFlag);
 
 	static void mono_engine_mouseLButtonDown(gxWorld* world, int x, int y, int flag);
 	static void mono_engine_mouseLButtonUp(gxWorld* world, int x, int y, int flag);

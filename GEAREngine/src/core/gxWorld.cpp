@@ -130,45 +130,66 @@ void gxWorld::update(float dt)
 	object3d::update(dt);
 }
 
-void gxWorld::renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list)
+void gxWorld::renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list, int renderFlag)
 {
 	ExpandableArrayNode<object3d*>* collidedtransformObjNode=list->GetRoot();
 		
 	int count=list->GetCount();
 	while(collidedtransformObjNode && count--)
 	{
-		getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-
 		object3d* obj = collidedtransformObjNode->GetData();
-		if(!obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
-		{
-			collidedtransformObjNode=collidedtransformObjNode->GetNext();
-			continue;
-		}
 
-		obj->render(renderer, NULL);
-
-		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
-		CHECK_GL_ERROR(glEnable(GL_BLEND));
-		CHECK_GL_ERROR(glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR));		//really good result	(2x Multiplicative)
-		//CHECK_GL_ERROR(glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE));	//not good result	(Soft Additive)
-		std::vector<gxLight*>* lightList = getLightList();
-		for(int x=0;x<lightList->size();x++)
+		if((renderFlag&eObject3dBase_RenderFlag_FirstPass))
 		{
-			gxLight* light = lightList->at(x);
-			if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+			if(!obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			{
+				collidedtransformObjNode=collidedtransformObjNode->GetNext();
 				continue;
-				
-			//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-			obj->render(renderer, light);
+			}
+			obj->render(renderer, NULL, renderFlag);
 		}
-		CHECK_GL_ERROR(glDisable(GL_BLEND));
+
+		if((renderFlag&eObject3dBase_RenderFlag_SecondPass))
+		{
+			getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+			CHECK_GL_ERROR(glEnable(GL_BLEND));
+			CHECK_GL_ERROR(glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR));		//really good result	(2x Multiplicative)
+			//CHECK_GL_ERROR(glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE));	//not good result	(Soft Additive)
+			std::vector<gxLight*>* lightList = getLightList();
+			for(int x=0;x<lightList->size();x++)
+			{
+				gxLight* light = lightList->at(x);
+				if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+					continue;
+				
+				//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+				obj->render(renderer, light, renderFlag);
+			}
+			CHECK_GL_ERROR(glDisable(GL_BLEND));
+		}
 
 		collidedtransformObjNode=collidedtransformObjNode->GetNext();
 	}
+
+
+#if 0
+	//check for duplicates
+	for(int x=0;x<list->GetCount()-1;x++)
+	{
+		for(int y=x+1;y<list->GetCount();y++)
+		{
+			if(list->getNode(x)->GetData()==list->getNode(y)->GetData())
+			{
+				int isue;
+				isue=0;
+			}
+		}
+	}
+#endif
 }
 
-void gxWorld::render(gxRenderer* renderer, object3d* lightPtr)
+void gxWorld::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
 	if(m_pActiveCameraPtr)
 	{
@@ -183,18 +204,17 @@ void gxWorld::render(gxRenderer* renderer, object3d* lightPtr)
 
 	////////////////////////////////
 	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
-	
 
 	if(m_pOctree)
 	{
 		//render octree
-		renderFromOctreeList(renderer,  m_pOctree->getCollidedObjList());
-		renderFromOctreeList(renderer,  m_pOctree->getCollidedAlphaObjList());
+		renderFromOctreeList(renderer,  m_pOctree->getCollidedObjList(), renderFlag|eObject3dBase_RenderFlag_DontRenderChilds);
+		renderFromOctreeList(renderer,  m_pOctree->getCollidedAlphaObjList(), renderFlag|eObject3dBase_RenderFlag_DontRenderChilds);
 	}
 	else
 	{
 		getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-		CHECK_GL_ERROR(object3d::render(renderer, NULL));
+		CHECK_GL_ERROR(object3d::render(renderer, NULL, renderFlag));
 
 		//glDisable(GL_DEPTH_TEST);
 		//glDepthMask(GL_FALSE);
@@ -213,7 +233,7 @@ void gxWorld::render(gxRenderer* renderer, object3d* lightPtr)
 				continue;
 
 			//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-			CHECK_GL_ERROR(object3d::render(renderer, light));
+			CHECK_GL_ERROR(object3d::render(renderer, light, renderFlag));
 		}
 		CHECK_GL_ERROR(glDisable(GL_BLEND));
 		//glDepthMask(GL_TRUE);
@@ -224,12 +244,12 @@ void gxWorld::render(gxRenderer* renderer, object3d* lightPtr)
 	if(m_pObserverPtr)m_pObserverPtr->postWorldRender();
 }
 
-void gxWorld::renderShadow(gxRenderer* renderer)
+void gxWorld::renderShadow(gxRenderer* renderer, int renderFlag)
 {
-	object3d::render(renderer, NULL);
+	object3d::render(renderer, NULL, renderFlag);
 }
 
-void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr)
+void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr, int renderFlag)
 {
 	if(m_pActiveCameraPtr)
 	{
@@ -238,7 +258,7 @@ void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr)
 
 	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
 	getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-	obj->render(&m_cRenderer, NULL);
+	obj->render(&m_cRenderer, NULL, renderFlag);
 
 	CHECK_GL_ERROR(glEnable(GL_BLEND));
 	CHECK_GL_ERROR(glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR));		//really good result	(2x Multiplicative)
@@ -254,7 +274,7 @@ void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr)
 
 		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
 		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-		obj->render(&m_cRenderer, light);
+		obj->render(&m_cRenderer, light, renderFlag);
 	}
 	CHECK_GL_ERROR(glDisable(GL_BLEND));
 }

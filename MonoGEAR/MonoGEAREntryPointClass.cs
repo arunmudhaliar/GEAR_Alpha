@@ -25,10 +25,10 @@ namespace MonoGEAR
         static extern void engine_resize(IntPtr world, float x, float y, float cx, float cy, float nearplane, float farplane);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern void engine_render(IntPtr world, IntPtr light);
+        static extern void engine_render(IntPtr world, IntPtr light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern void engine_renderSingleObject(IntPtr world, IntPtr obj, IntPtr light);
+        static extern void engine_renderSingleObject(IntPtr world, IntPtr obj, IntPtr light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr engine_loadAndAppendMesh(IntPtr world, string filename);

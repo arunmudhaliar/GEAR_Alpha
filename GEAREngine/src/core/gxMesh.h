@@ -72,7 +72,7 @@ public:
 	unsigned int getVBOTangentID()  {   return m_cVBO_tangentID;    }
 
 	virtual void update(float dt);
-	virtual void render(gxRenderer* renderer, object3d* light);
+	virtual void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
 	//void renderNormal(gxRenderer* renderer);
 	//void renderWithLight(gxRenderer* renderer, object3d* light);
 	void renderWithHWShader(gxRenderer* renderer, object3d* light);
@@ -104,6 +104,7 @@ public:
 	gxTriInfo* getTriInfo(int index)				{	return &m_pszTriInfoArray[index];	}
 
 	int getVerticesCount();
+	int getTriangleCount()		{    return m_nTris_For_Internal_Use;	}
 
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);

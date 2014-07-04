@@ -37,7 +37,7 @@ extern "C" DECLSPEC void printCallStack();
 //#pragma GCC diagnostic pop
 
 #else
-#define CHECK_GL_ERROR(fn) do { fn; } while(0)
+#define CHECK_GL_ERROR(fn) fn
 #endif // GL_ERROR_CHECK_H_INCLUDED
 //
 #endif

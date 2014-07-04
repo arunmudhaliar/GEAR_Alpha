@@ -86,6 +86,7 @@ private:
 	object3d(){}
 public:
 
+	//These flags are used as attributes and properties of an object3d instance
 	enum EOBJEC3DTFLAGS
 	{
 		eObject3dBaseFlag_None		= 0,
@@ -94,13 +95,37 @@ public:
 		eObject3dBaseFlag_Static	= (1<<2)	//static object
 	};
 
+	//These public flags are used to control the render flow of the engine from outside
+	enum EOBJECT3DRENDERFLAGS
+	{
+		eObject3dBase_RenderFlag_None					= 0,
+		eObject3dBase_RenderFlag_FirstPass				= (1<<0),
+		eObject3dBase_RenderFlag_SecondPass				= (1<<1),
+		eObject3dBase_RenderFlag_ThirdPass				= (1<<2),
+		eObject3dBase_RenderFlag_FourthPass				= (1<<3),
+		eObject3dBase_RenderFlag_Reserved1				= (1<<4),
+		eObject3dBase_RenderFlag_Reserved2				= (1<<5),
+		eObject3dBase_RenderFlag_Reserved3				= (1<<6),
+		eObject3dBase_RenderFlag_Reserved4				= (1<<7),
+		eObject3dBase_RenderFlag_Reserved5				= (1<<8),
+		eObject3dBase_RenderFlag_DontRenderChilds		= (1<<9),
+		eObject3dBase_RenderFlag_NormalRenderPass		= eObject3dBase_RenderFlag_FirstPass
+																		| eObject3dBase_RenderFlag_SecondPass
+																		| eObject3dBase_RenderFlag_ThirdPass
+																		| eObject3dBase_RenderFlag_FourthPass,
+		eObject3dBase_RenderFlag_NormalRenderPassWithOutOctreeCulling = eObject3dBase_RenderFlag_NormalRenderPass,
+		eObject3dBase_RenderFlag_NormalRenderPassWithOctreeCulling = eObject3dBase_RenderFlag_NormalRenderPass
+																		| eObject3dBase_RenderFlag_DontRenderChilds,
+
+	};
+
 	//constructor-destructor
 	object3d(int objID);
 	virtual ~object3d();
 
 	//message pump
 	virtual void update(float dt);
-	virtual void render(gxRenderer* renderer, object3d* light);
+	virtual void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);	//
 
 	//transform-callback
 	virtual void transformationChangedf();
@@ -136,7 +161,7 @@ public:
 	void	setBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive=false);
 	void	reSetBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive=false);
 	bool	isBaseFlag(EOBJEC3DTFLAGS eFlags)		{	return (m_eBaseFlags&eFlags)?true:false;	};
-	int		getBaseFlag()							{	return m_eBaseFlags;				}
+	unsigned int getBaseFlag()							{	return m_eBaseFlags;				}
 
 	//bounds
 	gxAABBf& getAABB()	{	return m_cAABB;	}

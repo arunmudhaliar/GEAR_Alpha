@@ -56,7 +56,7 @@ void gxSkinnedMesh::update(float dt)
 	}
 }
 
-void gxSkinnedMesh::render(gxRenderer* renderer, object3d* light)
+void gxSkinnedMesh::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
@@ -70,7 +70,7 @@ void gxSkinnedMesh::render(gxRenderer* renderer, object3d* light)
 	renderNormal(renderer);
 #endif
 
-	object3d::render(renderer, light);
+	object3d::render(renderer, light, renderFlag);
 }
 
 int* gxSkinnedMesh::allocateBoneIndexBuffer(int nTris, int nBoneInfluencePerVertex)

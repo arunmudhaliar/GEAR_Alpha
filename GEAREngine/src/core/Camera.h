@@ -34,8 +34,7 @@ public:
 	virtual void calculateAABB();
 	vector3f getCameraSpaceLoc(const vector3f& point);
 
-	void drawFrustum();
-    //void render(const matrix4x4f* parentTM);
+	void drawFrustum(gxHWShader* shader);
 
 	gxFrustumf&	getFrustum()					{	return m_cFrustum;			}
 	const matrix4x4f* getProjectionMatrix()		{	return &m_cProjMatrix;		}
@@ -60,10 +59,11 @@ private:
 	matrix4x4f	m_cViewProjectionMatrix;
 
 	gxFrustumf	m_cFrustum;
+	gxFrustumf	m_cRenderFrustum;	//used only for rendering purpose;
+
 	float m_fFOV;	//in angles
 	float m_fNear;
 	float m_fFar;
-	//gxCamera* m_pCameraStructPtr;
 	EPROJECTION_TYPE m_eProjectionType;
 };
 

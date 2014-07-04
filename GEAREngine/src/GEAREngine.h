@@ -26,8 +26,8 @@ extern "C" {
 
 	//message pump
 	DECLSPEC void engine_update(gxWorld* world, float dt);
-	DECLSPEC void engine_render(gxWorld* world, object3d* light);
-	DECLSPEC void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light);
+	DECLSPEC void engine_render(gxWorld* world, object3d* light, int renderFlag);
+	DECLSPEC void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light, int renderFlag);
 
 	//load
 	DECLSPEC object3d* engine_loadAndAppendMesh(gxWorld* world, const char* filename);

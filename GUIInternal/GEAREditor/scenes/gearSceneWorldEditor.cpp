@@ -1,14 +1,12 @@
 ﻿#include "gearSceneWorldEditor.h"
 #include "../EditorApp.h"
-//#include "../../../GEAREngine/src/core/Timer.h"
 #include "../gui/geToolBarSeperator.h"
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 #include "../../resource.h"
-
+#if USE_NVPROFILER
 #include "../../../GEAREngine/src/util/nvProfiler.h"
 #include "../../../GEAREngine/src/util/nvProfiler.cpp"
-
-//void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight);
+#endif
 
 gearSceneWorldEditor::gearSceneWorldEditor():
 geWindow("World Editor")
@@ -34,6 +32,7 @@ geWindow("World Editor")
 	m_bEnablePostProcessorBlur=false;
 	m_iLastGLError=0;
 	m_bStopFollowCam=true;
+	m_nSelectedObjectTriangles=0;
 }
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
@@ -41,7 +40,6 @@ gearSceneWorldEditor::~gearSceneWorldEditor()
 #if USE_NVPROFILER
 	GetNvPmApi()->Shutdown();
 #endif
-	//GE_DELETE(m_pHorizontalSlider_LightAmbient);
 }
 
 void gearSceneWorldEditor::onCreate()
@@ -227,11 +225,6 @@ void gearSceneWorldEditor::onCreate()
 	//snd->play();
 }
 
-
-vector3f minV;
-vector3f maxV;
-vector3f i1, i2, testSpehere;
-
 void gearSceneWorldEditor::draw()
 {
 #ifdef LOG_GLERROR
@@ -242,17 +235,13 @@ void gearSceneWorldEditor::draw()
 	}
 #endif
 
-	//CHECK_GL_ERROR(drawShadowMapPass());
-	CHECK_GL_ERROR(drawLightsOnMultiPass());
+	//engine updte func
 	CHECK_GL_ERROR(onDraw());
 
-#if defined USE_FBO
-	//if(bMultiPass)
-		//m_cMultiPassFBO.UnBindFBO();
-	//m_cFBO.UnBindFBO();
-#endif
-
-	CHECK_GL_ERROR(drawStats());
+	//engine render funcs
+	//CHECK_GL_ERROR(drawShadowMapPass());
+	CHECK_GL_ERROR(drawWorld());
+	CHECK_GL_ERROR(drawFBO2FrameBuffer());
 
 #if USE_BULLET
 	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
@@ -498,14 +487,14 @@ void gearSceneWorldEditor::drawShadowMapPass()
 	gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_SHADOWMAP_SHADER);
 	shader->enableProgram();
 	shader->sendUniformTMfv("u_depth_mvp_m4x4", depthMVP.getOGLMatrix(), false, 4);
-	m_pMainWorldPtr->renderShadow(m_pMainWorldPtr->getRenderer());
+	m_pMainWorldPtr->renderShadow(m_pMainWorldPtr->getRenderer(), object3d::eObject3dBase_RenderFlag_NormalRenderPass);
 	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 
 	shader->disableProgram();
 	m_cShadowMapFBO.UnBindFBO();
 }
 
-void gearSceneWorldEditor::drawLightsOnMultiPass()
+void gearSceneWorldEditor::drawWorld()
 {
 	m_cMultiPassFBO.BindFBO();
 	//gxCamera* active_cam=m_pMainWorldPtr->getActiveCamera()->getCameraStructure();
@@ -556,7 +545,7 @@ void gearSceneWorldEditor::drawLightsOnMultiPass()
 		monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
 	}
 #else
-	monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL);
+	monoWrapper::mono_engine_render(m_pMainWorldPtr, NULL, object3d::eObject3dBase_RenderFlag_NormalRenderPass);
 #endif
 
 	CHECK_GL_ERROR(drawGrid());
@@ -616,32 +605,32 @@ void gearSceneWorldEditor::drawGrid()
 	//
 }
 
-void gearSceneWorldEditor::drawCameraFrustum(gxCamera* camera, gxHWShader* shader)
+void gearSceneWorldEditor::drawCameraFrustum(Camera* camera, gxHWShader* shader)
 {
-	gxFrustumf* frustum=camera->getFrustum();
+	gxFrustumf& frustum=camera->getFrustum();
 
 	float lineAry[]={
-		frustum->m_cFrustumVert[0].x, frustum->m_cFrustumVert[0].y, frustum->m_cFrustumVert[0].z,		//0	near
-		frustum->m_cFrustumVert[1].x, frustum->m_cFrustumVert[1].y, frustum->m_cFrustumVert[1].z,		//1
-		frustum->m_cFrustumVert[2].x, frustum->m_cFrustumVert[2].y, frustum->m_cFrustumVert[2].z,		//2
-		frustum->m_cFrustumVert[3].x, frustum->m_cFrustumVert[3].y, frustum->m_cFrustumVert[3].z,		//3
+		frustum.m_cFrustumVert[0].x, frustum.m_cFrustumVert[0].y, frustum.m_cFrustumVert[0].z,		//0	near
+		frustum.m_cFrustumVert[1].x, frustum.m_cFrustumVert[1].y, frustum.m_cFrustumVert[1].z,		//1
+		frustum.m_cFrustumVert[2].x, frustum.m_cFrustumVert[2].y, frustum.m_cFrustumVert[2].z,		//2
+		frustum.m_cFrustumVert[3].x, frustum.m_cFrustumVert[3].y, frustum.m_cFrustumVert[3].z,		//3
 
-		frustum->m_cFrustumVert[4].x, frustum->m_cFrustumVert[4].y, frustum->m_cFrustumVert[4].z,		//4	far
-		frustum->m_cFrustumVert[5].x, frustum->m_cFrustumVert[5].y, frustum->m_cFrustumVert[5].z,		//5
-		frustum->m_cFrustumVert[6].x, frustum->m_cFrustumVert[6].y, frustum->m_cFrustumVert[6].z,		//6
-		frustum->m_cFrustumVert[7].x, frustum->m_cFrustumVert[7].y, frustum->m_cFrustumVert[7].z,		//7
+		frustum.m_cFrustumVert[4].x, frustum.m_cFrustumVert[4].y, frustum.m_cFrustumVert[4].z,		//4	far
+		frustum.m_cFrustumVert[5].x, frustum.m_cFrustumVert[5].y, frustum.m_cFrustumVert[5].z,		//5
+		frustum.m_cFrustumVert[6].x, frustum.m_cFrustumVert[6].y, frustum.m_cFrustumVert[6].z,		//6
+		frustum.m_cFrustumVert[7].x, frustum.m_cFrustumVert[7].y, frustum.m_cFrustumVert[7].z,		//7
 
-		frustum->m_cFrustumVert[0].x, frustum->m_cFrustumVert[0].y, frustum->m_cFrustumVert[0].z,		//0	near
-		frustum->m_cFrustumVert[4].x, frustum->m_cFrustumVert[4].y, frustum->m_cFrustumVert[4].z,		//4	far
+		frustum.m_cFrustumVert[0].x, frustum.m_cFrustumVert[0].y, frustum.m_cFrustumVert[0].z,		//0	near
+		frustum.m_cFrustumVert[4].x, frustum.m_cFrustumVert[4].y, frustum.m_cFrustumVert[4].z,		//4	far
 
-		frustum->m_cFrustumVert[1].x, frustum->m_cFrustumVert[1].y, frustum->m_cFrustumVert[1].z,		//1
-		frustum->m_cFrustumVert[5].x, frustum->m_cFrustumVert[5].y, frustum->m_cFrustumVert[5].z,		//5
+		frustum.m_cFrustumVert[1].x, frustum.m_cFrustumVert[1].y, frustum.m_cFrustumVert[1].z,		//1
+		frustum.m_cFrustumVert[5].x, frustum.m_cFrustumVert[5].y, frustum.m_cFrustumVert[5].z,		//5
 
-		frustum->m_cFrustumVert[2].x, frustum->m_cFrustumVert[2].y, frustum->m_cFrustumVert[2].z,		//2
-		frustum->m_cFrustumVert[6].x, frustum->m_cFrustumVert[6].y, frustum->m_cFrustumVert[6].z,		//6
+		frustum.m_cFrustumVert[2].x, frustum.m_cFrustumVert[2].y, frustum.m_cFrustumVert[2].z,		//2
+		frustum.m_cFrustumVert[6].x, frustum.m_cFrustumVert[6].y, frustum.m_cFrustumVert[6].z,		//6
 
-		frustum->m_cFrustumVert[3].x, frustum->m_cFrustumVert[3].y, frustum->m_cFrustumVert[3].z,		//3
-		frustum->m_cFrustumVert[7].x, frustum->m_cFrustumVert[7].y, frustum->m_cFrustumVert[7].z,		//7
+		frustum.m_cFrustumVert[3].x, frustum.m_cFrustumVert[3].y, frustum.m_cFrustumVert[3].z,		//3
+		frustum.m_cFrustumVert[7].x, frustum.m_cFrustumVert[7].y, frustum.m_cFrustumVert[7].z,		//7
 	};
 
 	unsigned int mode=GL_LINE_LOOP;
@@ -771,11 +760,12 @@ void gearSceneWorldEditor::drawSelectedObject()
 			//m_pMainWorldPtr->getAABB().draw(shader);
 		}
 
-		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA_STRUCT)
+		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA)
 		{
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.6f, 0.6f, 1.0f);
-			drawCameraFrustum((gxCamera*)m_pSelectedObj, shader);
+			//drawCameraFrustum((Camera*)m_pSelectedObj, shader);
+			((Camera*)m_pSelectedObj)->drawFrustum(shader);
 		}
 
 		glDisable(GL_COLOR_MATERIAL);
@@ -803,16 +793,92 @@ void gearSceneWorldEditor::drawOctree()
 	}
 }
 
+void gearSceneWorldEditor::drawCompas()
+{
+	glEnable(GL_DEPTH_TEST);
+
+	//world compas 
+	gxWorld* world = monoWrapper::mono_engine_getWorld(0);
+	if(world->getActiveCamera())
+	{
+		matrix4x4f cameramatrix(*world->getActiveCamera()->getInverseTMViewMatrix());
+		cameramatrix.setPosition(0, 0, 0);
+		cameramatrix.setZAxis(-cameramatrix.getZAxis());
+
+		glPushMatrix();
+			glTranslatef(m_cSize.x-50, 50, 0);
+			glMultMatrixf(cameramatrix.getMatrix());
+			glEnable(GL_COLOR_MATERIAL);
+			glColor3f(1, 1, 1);
+			glutSolidCube(10);
+			geUtil::drawGizmoCones(60);
+			glDisable(GL_COLOR_MATERIAL);
+		glPopMatrix();
+	}
+}
+
 void gearSceneWorldEditor::drawStats()
 {
-	////STATS
+	glPushMatrix();
+	glTranslatef(-m_cSize.x*0.5f, -(m_cSize.y+getTopMarginOffsetHeight())*0.5f+getTopMarginOffsetHeight(), -1.0f);
+		char buffer[128];
+		sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+		int cnt=3;
+		sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		sprintf(buffer, "GLSL %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		sprintf(buffer, "nSelectedObjectTriangles : %d", m_nSelectedObjectTriangles);
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+
+		sprintf(buffer, "Total Material : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		////int last_gl_err=glGetError();
+		////if(last_gl_err!=GL_NO_ERROR)
+		////	m_iLastGLError=last_gl_err;
+		//sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
+		//geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+
+		sprintf(buffer, "Total Layer Objects : %d", m_pMainWorldPtr->getLayerManager()->getTotalLayerObject());
+		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+
+		geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
+		if(selectedNodeInHirarchy)
+		{
+			object3d* obj=(object3d*)selectedNodeInHirarchy->getUserData();
+			if(obj && obj->getAnimationController())
+			{
+				sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
+				geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+			}
+		}
+
+#if USE_NVPROFILER
+		nvProfiler::SampleAndRenderStats();
+#endif
+
+		drawCompas();
+	glPopMatrix();
+	//
+}
+
+void gearSceneWorldEditor::drawFBO2FrameBuffer()
+{
 	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glLoadMatrixf(m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix()->getMatrix());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
 
 	glDisable(GL_DEPTH_TEST);
 #if defined USE_FBO
@@ -824,71 +890,8 @@ void gearSceneWorldEditor::drawStats()
 #endif
 #endif
 
-	glPushMatrix();
-	glTranslatef(-m_cSize.x*0.5f, -(m_cSize.y+getTopMarginOffsetHeight())*0.5f+getTopMarginOffsetHeight(), -1.0f);
-		char buffer[128];
-		sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
-		sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*3, m_cSize.x);
-		sprintf(buffer, "GLSL %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*4, m_cSize.x);
-		sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*5, m_cSize.x);
-		sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*6, m_cSize.x);
-		sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*7, m_cSize.x);
-
-		sprintf(buffer, "Total Material : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*8, m_cSize.x);
-		sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*9, m_cSize.x);
-		//int last_gl_err=glGetError();
-		//if(last_gl_err!=GL_NO_ERROR)
-		//	m_iLastGLError=last_gl_err;
-		sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*10, m_cSize.x);
-
-		sprintf(buffer, "Total Layer Objects : %d", m_pMainWorldPtr->getLayerManager()->getTotalLayerObject());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*11, m_cSize.x);
-
-		geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
-		if(selectedNodeInHirarchy)
-		{
-			object3d* obj=(object3d*)selectedNodeInHirarchy->getUserData();
-			if(obj && obj->getAnimationController())
-			{
-				sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
-				geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*12, m_cSize.x);
-			}
-		}
-
-#if USE_NVPROFILER
-		nvProfiler::SampleAndRenderStats();
-#endif
-
-		glEnable(GL_DEPTH_TEST);
-
-		gxWorld* world = monoWrapper::mono_engine_getWorld(0);
-		if(world->getActiveCamera())
-		{
-			matrix4x4f cameramatrix(*world->getActiveCamera()->getInverseTMViewMatrix());
-			cameramatrix.setPosition(0, 0, 0);
-			cameramatrix.setZAxis(-cameramatrix.getZAxis());
-
-			glPushMatrix();
-				glTranslatef(m_cSize.x-50, 50, 0);
-				glMultMatrixf(cameramatrix.getMatrix());
-				glEnable(GL_COLOR_MATERIAL);
-				glColor3f(1, 1, 1);
-				glutSolidCube(10);
-				geUtil::drawGizmoCones(60);
-				glDisable(GL_COLOR_MATERIAL);
-			glPopMatrix();
-		}
-	glPopMatrix();
-	//
+	//draw statistics
+	drawStats();
 }
 
 void gearSceneWorldEditor::preWorldRender()
@@ -1018,21 +1021,6 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 	geWindow::onSize(cx, cy, flag);
 }
 
-static bool intersectionOfLineSegmentAndPlane(vector3f p1, vector3f p2, vector3f planeNormal, vector3f pointOnPlane, float& u)
-{
-	vector3f p3_p1(pointOnPlane-p1);
-	vector3f p2_p1(p2-p1);
-
-	float n = planeNormal.dot(p3_p1);
-	float d = planeNormal.dot(p2_p1);
-
-	if(abs(d)<0.00000001f)
-		return false;		//line parallel to plane
-
-	u=n/d;
-	return true;
-}
-
 bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	if(!isPointInsideClientArea(x, y))
@@ -1042,6 +1030,10 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	}
 	//monoWrapper::mono_engine_mouseLButtonDown(m_pMainWorldPtr, x, y, nFlag);
 	if(!m_pMainWorldPtr || !m_pMainWorldPtr->getActiveCamera()) return true;
+
+	vector3f minV;
+	vector3f maxV;
+	vector3f i1, i2, testSpehere;
 
 	bool bTranslateGizmo=m_pTranslateGizmo->isButtonPressed();
 	bool bRotateGizmo=m_pRotateGizmo->isButtonPressed();
@@ -1112,9 +1104,8 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 					m_iAxisSelected=1;
 					float pu;
 					vector3f plane_normal((m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1));
-					if(intersectionOfLineSegmentAndPlane(minV, maxV, plane_normal, m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
+					if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, plane_normal, m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
 					{
-						//vector3f 
 						m_cMousePrevPosInWorld = minV+(maxV-minV)*pu;
 					}
 				}
@@ -1130,9 +1121,8 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 					m_iAxisSelected=2;
 					float pu;
 					vector3f plane_normal((m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1));
-					if(intersectionOfLineSegmentAndPlane(minV, maxV, plane_normal, m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
+					if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, plane_normal, m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
 					{
-						//vector3f 
 						m_cMousePrevPosInWorld = minV+(maxV-minV)*pu;
 					}
 				}
@@ -1148,9 +1138,8 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 					m_iAxisSelected=3;
 					float pu;
 					vector3f plane_normal((m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getYAxis():vector3f(0, 1, 0));
-					if(intersectionOfLineSegmentAndPlane(minV, maxV, plane_normal, m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
+					if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, plane_normal, m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
 					{
-						//vector3f 
 						m_cMousePrevPosInWorld = minV+(maxV-minV)*pu;
 					}
 				}
@@ -1246,6 +1235,9 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 		{
 			if(m_pSelectedObj && m_iAxisSelected>0)
 			{
+				vector3f minV;
+				vector3f maxV;
+
 				float d=camera->getPosition().length();
 				GLdouble viewTM[16];
 				GLdouble projectionTM[16];
@@ -1277,7 +1269,7 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 				};
 
 				float pu;
-				if(intersectionOfLineSegmentAndPlane(minV, maxV, planeNormalArray[m_iAxisSelected-1], m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
+				if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, planeNormalArray[m_iAxisSelected-1], m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
 				{
 					vector3f current_pos_in_world(minV+(maxV-minV)*pu);
 					vector3f diff_in_world(current_pos_in_world-m_cMousePrevPosInWorld);
@@ -1502,180 +1494,27 @@ void gearSceneWorldEditor::stopSimulation()
 	m_bMonoGameInitialized=false;
 }
 
-//void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight)
-//{
-//	float rgb_top[4] ={0.3, 0.3, 0.3, 1.0f};
-//	float rgb_bottom[4] ={0.3*0.45f, 0.3*0.45f, 0.3*0.45f, 1.0f};
-//	float rgb_delta[4]={(rgb_bottom[0]-rgb_top[0]), (rgb_bottom[1]-rgb_top[1]), (rgb_bottom[2]-rgb_top[2]), (rgb_bottom[3]-rgb_top[3])};
-//
-//	const float horizontal_vertLst[8] =
-//	{
-//		cx,	deltaHeight,
-//		0,	deltaHeight,
-//		cx,	cy-deltaHeight,
-//		0,	cy-deltaHeight,
-//	};
-//
-//	const float horizontal_colorLst[16] =
-//	{
-//		rgb_top[0]+rgb_delta[0]*(deltaHeight/cy), rgb_top[1]+rgb_delta[1]*(deltaHeight/cy), rgb_top[2]+rgb_delta[2]*(deltaHeight/cy), rgb_top[3]+rgb_delta[3]*(deltaHeight/cy),
-//		rgb_top[0]+rgb_delta[0]*(deltaHeight/cy), rgb_top[1]+rgb_delta[1]*(deltaHeight/cy), rgb_top[2]+rgb_delta[2]*(deltaHeight/cy), rgb_top[3]+rgb_delta[3]*(deltaHeight/cy),
-//		rgb_bottom[0]-rgb_delta[0]*(deltaHeight/cy), rgb_bottom[1]-rgb_delta[1]*(deltaHeight/cy), rgb_bottom[2]-rgb_delta[2]*(deltaHeight/cy), rgb_bottom[3]-rgb_delta[3]*(deltaHeight/cy),
-//		rgb_bottom[0]-rgb_delta[0]*(deltaHeight/cy), rgb_bottom[1]-rgb_delta[1]*(deltaHeight/cy), rgb_bottom[2]-rgb_delta[2]*(deltaHeight/cy), rgb_bottom[3]-rgb_delta[3]*(deltaHeight/cy)
-//	};
-//	
-//	const float vertical_vertLst[8] =
-//	{
-//		cx-deltaHeight,	0,
-//		deltaHeight,	0,
-//		cx-deltaHeight,	cy,
-//		deltaHeight,	cy,
-//	};
-//
-//	const float vertical_colorLst[16] =
-//	{
-//		rgb_top[0], rgb_top[1], rgb_top[2], rgb_top[3],
-//		rgb_top[0], rgb_top[1], rgb_top[2], rgb_top[3],
-//		rgb_bottom[0], rgb_bottom[1], rgb_bottom[2], rgb_bottom[3],
-//		rgb_bottom[0], rgb_bottom[1], rgb_bottom[2], rgb_bottom[3]
-//	};
-//
-//	const int step=10;
-//	float delta_angle=90/step;
-//	const int szz=(2+step)*2;
-//	const int cszz=(2+step)*4;
-//	float rounded_left_top_vertList[szz];
-//	float rounded_right_top_vertList[szz];
-//	float rounded_right_bottom_vertList[szz];
-//	float rounded_left_bottom_vertList[szz];
-//
-//	float rounded_left_top_colorList[cszz];
-//	float rounded_right_top_colorList[cszz];
-//	float rounded_right_bottom_colorList[cszz];
-//	float rounded_left_bottom_colorList[cszz];
-//
-//	//left top
-//	rounded_left_top_vertList[0]=deltaHeight;
-//	rounded_left_top_vertList[1]=deltaHeight;
-//	rounded_left_top_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_left_top_vertList[1]/cy);
-//	rounded_left_top_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_left_top_vertList[1]/cy);
-//	rounded_left_top_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_left_top_vertList[1]/cy);
-//	rounded_left_top_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_left_top_vertList[1]/cy);
-//
-//	float angle=180;
-//	for(int xx=step;xx>=0;xx--)
-//	{
-//		rounded_left_top_vertList[(xx+1)*2+0]=rounded_left_top_vertList[0]+deltaHeight*gxMath::COSF(angle);
-//		rounded_left_top_vertList[(xx+1)*2+1]=rounded_left_top_vertList[1]+deltaHeight*gxMath::SINF(angle);
-//
-//		float color_height=rounded_left_top_vertList[(xx+1)*2+1];
-//		rounded_left_top_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-//		rounded_left_top_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-//		rounded_left_top_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-//		rounded_left_top_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-//		angle+=delta_angle;
-//	}
-//
-//	//right top
-//	rounded_right_top_vertList[0]=cx-deltaHeight;
-//	rounded_right_top_vertList[1]=deltaHeight;
-//	rounded_right_top_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_left_top_vertList[1]/cy);
-//	rounded_right_top_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_left_top_vertList[1]/cy);
-//	rounded_right_top_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_left_top_vertList[1]/cy);
-//	rounded_right_top_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_left_top_vertList[1]/cy);
-//
-//	angle=270;
-//	for(int xx=step;xx>=0;xx--)
-//	{
-//		rounded_right_top_vertList[(xx+1)*2+0]=rounded_right_top_vertList[0]+deltaHeight*gxMath::COSF(angle);
-//		rounded_right_top_vertList[(xx+1)*2+1]=rounded_right_top_vertList[1]+deltaHeight*gxMath::SINF(angle);
-//
-//		float color_height=rounded_right_top_vertList[(xx+1)*2+1];
-//		rounded_right_top_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-//		rounded_right_top_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-//		rounded_right_top_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-//		rounded_right_top_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-//		angle+=delta_angle;
-//	}
-//
-//	//right bottom
-//	rounded_right_bottom_vertList[0]=cx-deltaHeight;
-//	rounded_right_bottom_vertList[1]=cy-deltaHeight;
-//	rounded_right_bottom_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_right_bottom_vertList[1]/cy);
-//	rounded_right_bottom_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_right_bottom_vertList[1]/cy);
-//	rounded_right_bottom_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_right_bottom_vertList[1]/cy);
-//	rounded_right_bottom_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_right_bottom_vertList[1]/cy);
-//
-//	angle=0;
-//	for(int xx=step;xx>=0;xx--)
-//	{
-//		rounded_right_bottom_vertList[(xx+1)*2+0]=rounded_right_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
-//		rounded_right_bottom_vertList[(xx+1)*2+1]=rounded_right_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
-//
-//		float color_height=rounded_right_bottom_vertList[(xx+1)*2+1];
-//		rounded_right_bottom_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-//		rounded_right_bottom_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-//		rounded_right_bottom_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-//		rounded_right_bottom_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-//		angle+=delta_angle;
-//	}
-//
-//	//left bottom
-//	rounded_left_bottom_vertList[0]=deltaHeight;
-//	rounded_left_bottom_vertList[1]=cy-deltaHeight;
-//	rounded_left_bottom_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_left_bottom_vertList[1]/cy);
-//	rounded_left_bottom_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_left_bottom_vertList[1]/cy);
-//	rounded_left_bottom_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_left_bottom_vertList[1]/cy);
-//	rounded_left_bottom_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_left_bottom_vertList[1]/cy);
-//
-//	angle=90;
-//	for(int xx=step;xx>=0;xx--)
-//	{
-//		rounded_left_bottom_vertList[(xx+1)*2+0]=rounded_left_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
-//		rounded_left_bottom_vertList[(xx+1)*2+1]=rounded_left_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
-//
-//		float color_height=rounded_left_bottom_vertList[(xx+1)*2+1];
-//		rounded_left_bottom_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-//		rounded_left_bottom_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-//		rounded_left_bottom_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-//		rounded_left_bottom_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-//		angle+=delta_angle;
-//	}
-//
-//
-//	glPushMatrix();
-//	glTranslatef(x, y, 0);
-//	glEnableClientState(GL_VERTEX_ARRAY);
-//	glEnableClientState(GL_COLOR_ARRAY);
-//	
-//	//draw the horizontal rect
-//
-//	glVertexPointer(2, GL_FLOAT, 0, vertical_vertLst);
-//	glColorPointer(4, GL_FLOAT, 0, vertical_colorLst);
-//    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-//
-//	glVertexPointer(2, GL_FLOAT, 0, horizontal_vertLst);
-//	glColorPointer(4, GL_FLOAT, 0, horizontal_colorLst);
-//    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-//
-//
-//	glVertexPointer(2, GL_FLOAT, 0, rounded_left_top_vertList);
-//	glColorPointer(4, GL_FLOAT, 0, rounded_left_top_colorList);
-//    glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
-//
-//	glVertexPointer(2, GL_FLOAT, 0, rounded_right_top_vertList);
-//	glColorPointer(4, GL_FLOAT, 0, rounded_right_top_colorList);
-//    glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
-//
-//	glVertexPointer(2, GL_FLOAT, 0, rounded_right_bottom_vertList);
-//	glColorPointer(4, GL_FLOAT, 0, rounded_right_bottom_colorList);
-//    glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
-//
-//	glVertexPointer(2, GL_FLOAT, 0, rounded_left_bottom_vertList);
-//	glColorPointer(4, GL_FLOAT, 0, rounded_left_bottom_colorList);
-//    glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
-//
-//	glDisableClientState(GL_COLOR_ARRAY);
-//	glDisableClientState(GL_VERTEX_ARRAY);
-//	glPopMatrix();
-//}
+void gearSceneWorldEditor::selectedObject3D(object3d* obj)
+{
+	m_pSelectedObj=obj;	
+	m_nSelectedObjectTriangles=0;
+	getTringleCountForThisTree(obj, m_nSelectedObjectTriangles);
+}
+
+void gearSceneWorldEditor::getTringleCountForThisTree(object3d* obj, int& count)
+{
+	if(obj==NULL) return;
+
+	if(obj->getID()==OBJECT3D_MESH || obj->getID()==OBJECT3D_SKINNED_MESH)
+	{
+		gxMesh* mesh = (gxMesh*)obj;
+		count+=mesh->getTriangleCount();
+	}
+
+	std::vector<object3d*>* childList = obj->getChildList();
+	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
+	{
+		object3d* child = *it;
+		getTringleCountForThisTree(child, count);
+	}
+}

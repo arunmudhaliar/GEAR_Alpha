@@ -37,14 +37,14 @@ public:
 	void resetWorld(bool bDontCreateDefaultCamera=false);
 
 	void update(float dt);
-	void render(gxRenderer* renderer, object3d* lightPtr);
-	void renderShadow(gxRenderer* renderer);
+	void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
+	void renderShadow(gxRenderer* renderer, int renderFlag);
 
 	void setActiveCamera(Camera* camera)	{	m_pActiveCameraPtr = camera;	}
 	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
 	Camera* createDefaultCameraAndSetActive();
 
-	void renderSingleObject(object3d* obj, object3d* lightPtr);
+	void renderSingleObject(object3d* obj, object3d* lightPtr, int renderFlag);
 	void resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane);
 
 	gxMaterial* getDefaultMaterial()					{	return &m_cDefaultMaterial;		}
@@ -86,7 +86,7 @@ public:
 
 private:
 	void read3dFile(gxFile& file, object3d* obj);
-	void renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list);
+	void renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list, int renderFlag);
 
 	std::vector<gxMaterial*> m_cMaterialList;
 	std::vector<gxAnimationSet*> m_vAnimationSetList;

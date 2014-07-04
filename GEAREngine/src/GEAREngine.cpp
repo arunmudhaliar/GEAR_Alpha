@@ -64,14 +64,14 @@ extern DECLSPEC void engine_update(gxWorld* world, float dt)
 	world->update(dt);
 }
 
-extern DECLSPEC void engine_render(gxWorld* world, object3d* light)
+extern DECLSPEC void engine_render(gxWorld* world, object3d* light, int renderFlag)
 {
-	world->render(world->getRenderer(), light);
+	world->render(world->getRenderer(), light, renderFlag);
 }
 
-void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light)
+void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light, int renderFlag)
 {
-	world->renderSingleObject(obj, light);
+	world->renderSingleObject(obj, light, renderFlag);
 }
 
 void engine_consoleLog(const char* msg, int msgtype)

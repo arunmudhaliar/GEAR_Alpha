@@ -1,8 +1,6 @@
 #include "geWindow.h"
 #include "geGUIManager.h"
 
-void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight);
-
 geWindow::geWindow(const char* name):
 	geGUIBase(GEGUI_WINDOW, name)
 {
@@ -38,6 +36,8 @@ void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float 
 		m_pToolBar = new geToolBar();
 		m_pToolBar->create(renderer, this, 0, -GE_TOOLBAR_HEIGHT/*GE_WND_TITLE_HEIGHT*/, cx, GE_TOOLBAR_HEIGHT);
 	}
+
+	m_cRoundedRectangle.create(m_fTitleWidth+30, GE_WND_TITLE_HEIGHT-3, 5);
 
 	onCreate();
 }
@@ -84,7 +84,9 @@ void geWindow::drawTitleAndToolBar(float xoff, float yoff, bool bActiveWindow, b
 	}
 
 	if(bActiveWindow)
-		drawRoundedRectangle(1, 3, m_fTitleWidth+30, GE_WND_TITLE_HEIGHT-3, 5);
+	{
+		m_cRoundedRectangle.draw(1, 3);
+	}
 	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	//drawTriangle(&m_cVBLayoutToggleButtonLine[3*0], 0.05f, 0.05f, 0.05f, 1.0f, 3);
 	if(m_pToolBar && bActiveWindow)
@@ -223,189 +225,4 @@ void geWindow::onMouseExitClientArea()
 geVector2f geWindow::getAbsolutePositionOnScreen()
 {
 	return geVector2f(m_cPos.x+m_pIamOnLayout->getPos().x, m_cPos.y+m_pIamOnLayout->getPos().y);
-}
-
-void drawRoundedRectangle(float x, float y, float cx, float cy, float deltaHeight)
-{
-	int type=1;
-
-	float rgb_top[4] ={0.21f, 0.21f, 0.21f, 1.0f};
-	float rgb_bottom[4] ={0.21f*0.75f, 0.21f*0.75f, 0.21f*0.75f, 1.0f};
-	float rgb_delta[4]={(rgb_bottom[0]-rgb_top[0]), (rgb_bottom[1]-rgb_top[1]), (rgb_bottom[2]-rgb_top[2]), (rgb_bottom[3]-rgb_top[3])};
-
-	const float horizontal_vertLst[8] =
-	{
-		cx,	deltaHeight,
-		0,	deltaHeight,
-		cx,	(type==0)?cy-deltaHeight:cy,
-		0,	(type==0)?cy-deltaHeight:cy,
-	};
-
-	const float horizontal_colorLst[16] =
-	{
-		rgb_top[0]+rgb_delta[0]*(deltaHeight/cy), rgb_top[1]+rgb_delta[1]*(deltaHeight/cy), rgb_top[2]+rgb_delta[2]*(deltaHeight/cy), rgb_top[3]+rgb_delta[3]*(deltaHeight/cy),
-		rgb_top[0]+rgb_delta[0]*(deltaHeight/cy), rgb_top[1]+rgb_delta[1]*(deltaHeight/cy), rgb_top[2]+rgb_delta[2]*(deltaHeight/cy), rgb_top[3]+rgb_delta[3]*(deltaHeight/cy),
-		(type==0)?rgb_bottom[0]-rgb_delta[0]*(deltaHeight/cy):rgb_bottom[0], (type==0)?rgb_bottom[1]-rgb_delta[1]*(deltaHeight/cy):rgb_bottom[1], (type==0)?rgb_bottom[2]-rgb_delta[2]*(deltaHeight/cy):rgb_bottom[2], (type==0)?rgb_bottom[3]-rgb_delta[3]*(deltaHeight/cy):rgb_bottom[3],
-		(type==0)?rgb_bottom[0]-rgb_delta[0]*(deltaHeight/cy):rgb_bottom[0], (type==0)?rgb_bottom[1]-rgb_delta[1]*(deltaHeight/cy):rgb_bottom[1], (type==0)?rgb_bottom[2]-rgb_delta[2]*(deltaHeight/cy):rgb_bottom[2], (type==0)?rgb_bottom[3]-rgb_delta[3]*(deltaHeight/cy):rgb_bottom[3]
-	};
-	
-	const float vertical_vertLst[8] =
-	{
-		cx-deltaHeight,	0,
-		deltaHeight,	0,
-		cx-deltaHeight,	cy,
-		deltaHeight,	cy,
-	};
-
-	const float vertical_colorLst[16] =
-	{
-		rgb_top[0], rgb_top[1], rgb_top[2], rgb_top[3],
-		rgb_top[0], rgb_top[1], rgb_top[2], rgb_top[3],
-		rgb_bottom[0], rgb_bottom[1], rgb_bottom[2], rgb_bottom[3],
-		rgb_bottom[0], rgb_bottom[1], rgb_bottom[2], rgb_bottom[3]
-	};
-
-	const int step=10;
-	float delta_angle=90/step;
-	const int szz=(2+step)*2;
-	const int cszz=(2+step)*4;
-	float rounded_left_top_vertList[szz];
-	float rounded_right_top_vertList[szz];
-	float rounded_right_bottom_vertList[szz];
-	float rounded_left_bottom_vertList[szz];
-
-	float rounded_left_top_colorList[cszz];
-	float rounded_right_top_colorList[cszz];
-	float rounded_right_bottom_colorList[cszz];
-	float rounded_left_bottom_colorList[cszz];
-
-	//left top
-	rounded_left_top_vertList[0]=deltaHeight;
-	rounded_left_top_vertList[1]=deltaHeight;
-	rounded_left_top_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_left_top_vertList[1]/cy);
-	rounded_left_top_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_left_top_vertList[1]/cy);
-	rounded_left_top_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_left_top_vertList[1]/cy);
-	rounded_left_top_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_left_top_vertList[1]/cy);
-
-	float angle=180;
-	for(int xx=step;xx>=0;xx--)
-	{
-		rounded_left_top_vertList[(xx+1)*2+0]=rounded_left_top_vertList[0]+deltaHeight*gxMath::COSF(angle);
-		rounded_left_top_vertList[(xx+1)*2+1]=rounded_left_top_vertList[1]+deltaHeight*gxMath::SINF(angle);
-
-		float color_height=rounded_left_top_vertList[(xx+1)*2+1];
-		rounded_left_top_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-		rounded_left_top_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-		rounded_left_top_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-		rounded_left_top_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-		angle+=delta_angle;
-	}
-
-	//right top
-	rounded_right_top_vertList[0]=cx-deltaHeight;
-	rounded_right_top_vertList[1]=deltaHeight;
-	rounded_right_top_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_left_top_vertList[1]/cy);
-	rounded_right_top_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_left_top_vertList[1]/cy);
-	rounded_right_top_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_left_top_vertList[1]/cy);
-	rounded_right_top_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_left_top_vertList[1]/cy);
-
-	angle=270;
-	for(int xx=step;xx>=0;xx--)
-	{
-		rounded_right_top_vertList[(xx+1)*2+0]=rounded_right_top_vertList[0]+deltaHeight*gxMath::COSF(angle);
-		rounded_right_top_vertList[(xx+1)*2+1]=rounded_right_top_vertList[1]+deltaHeight*gxMath::SINF(angle);
-
-		float color_height=rounded_right_top_vertList[(xx+1)*2+1];
-		rounded_right_top_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-		rounded_right_top_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-		rounded_right_top_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-		rounded_right_top_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-		angle+=delta_angle;
-	}
-
-	if(type==0)
-	{
-		//right bottom
-		rounded_right_bottom_vertList[0]=cx-deltaHeight;
-		rounded_right_bottom_vertList[1]=cy-deltaHeight;
-		rounded_right_bottom_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_right_bottom_vertList[1]/cy);
-		rounded_right_bottom_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_right_bottom_vertList[1]/cy);
-		rounded_right_bottom_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_right_bottom_vertList[1]/cy);
-		rounded_right_bottom_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_right_bottom_vertList[1]/cy);
-
-		angle=0;
-		for(int xx=step;xx>=0;xx--)
-		{
-			rounded_right_bottom_vertList[(xx+1)*2+0]=rounded_right_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
-			rounded_right_bottom_vertList[(xx+1)*2+1]=rounded_right_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
-
-			float color_height=rounded_right_bottom_vertList[(xx+1)*2+1];
-			rounded_right_bottom_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-			rounded_right_bottom_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-			rounded_right_bottom_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-			rounded_right_bottom_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-			angle+=delta_angle;
-		}
-
-		//left bottom
-		rounded_left_bottom_vertList[0]=deltaHeight;
-		rounded_left_bottom_vertList[1]=cy-deltaHeight;
-		rounded_left_bottom_colorList[0]=rgb_top[0]+rgb_delta[0]*(rounded_left_bottom_vertList[1]/cy);
-		rounded_left_bottom_colorList[1]=rgb_top[1]+rgb_delta[1]*(rounded_left_bottom_vertList[1]/cy);
-		rounded_left_bottom_colorList[2]=rgb_top[2]+rgb_delta[2]*(rounded_left_bottom_vertList[1]/cy);
-		rounded_left_bottom_colorList[3]=rgb_top[3]+rgb_delta[3]*(rounded_left_bottom_vertList[1]/cy);
-
-		angle=90;
-		for(int xx=step;xx>=0;xx--)
-		{
-			rounded_left_bottom_vertList[(xx+1)*2+0]=rounded_left_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
-			rounded_left_bottom_vertList[(xx+1)*2+1]=rounded_left_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
-
-			float color_height=rounded_left_bottom_vertList[(xx+1)*2+1];
-			rounded_left_bottom_colorList[(xx+1)*4+0]=rgb_top[0]+rgb_delta[0]*(color_height/cy);
-			rounded_left_bottom_colorList[(xx+1)*4+1]=rgb_top[1]+rgb_delta[1]*(color_height/cy);
-			rounded_left_bottom_colorList[(xx+1)*4+2]=rgb_top[2]+rgb_delta[2]*(color_height/cy);
-			rounded_left_bottom_colorList[(xx+1)*4+3]=rgb_top[3]+rgb_delta[3]*(color_height/cy);
-			angle+=delta_angle;
-		}
-	}
-
-	glPushMatrix();
-	glTranslatef(x, y, 0);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	
-	//draw the horizontal rect
-
-	glVertexPointer(2, GL_FLOAT, 0, vertical_vertLst);
-	glColorPointer(4, GL_FLOAT, 0, vertical_colorLst);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	glVertexPointer(2, GL_FLOAT, 0, horizontal_vertLst);
-	glColorPointer(4, GL_FLOAT, 0, horizontal_colorLst);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-
-	glVertexPointer(2, GL_FLOAT, 0, rounded_left_top_vertList);
-	glColorPointer(4, GL_FLOAT, 0, rounded_left_top_colorList);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
-
-	glVertexPointer(2, GL_FLOAT, 0, rounded_right_top_vertList);
-	glColorPointer(4, GL_FLOAT, 0, rounded_right_top_colorList);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
-
-	if(type==0)
-	{
-		glVertexPointer(2, GL_FLOAT, 0, rounded_right_bottom_vertList);
-		glColorPointer(4, GL_FLOAT, 0, rounded_right_bottom_colorList);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
-
-		glVertexPointer(2, GL_FLOAT, 0, rounded_left_bottom_vertList);
-		glColorPointer(4, GL_FLOAT, 0, rounded_left_bottom_colorList);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, (2+step));
-	}
-
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glPopMatrix();
 }

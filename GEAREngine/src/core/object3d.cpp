@@ -250,9 +250,12 @@ void object3d::updateAnimationFrameToObject3d(int frame)
 #endif
 }
 
-void object3d::render(gxRenderer* renderer, object3d* light)
+void object3d::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
+		return;
+
+	if((renderFlag&eObject3dBase_RenderFlag_DontRenderChilds))
 		return;
 
 #ifdef USE_BXLIST
@@ -260,14 +263,14 @@ void object3d::render(gxRenderer* renderer, object3d* light)
     while(node)
     {
 		object3d* obj=node->getData();
-		obj->render(renderer, light);
+		obj->render(renderer, light, renderFlag);
         node=node->getNext();
 	}
 #else
 	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
 	{
 		object3d* obj = *it;
-		obj->render(renderer, light);
+		obj->render(renderer, light, renderFlag);
 	}
 #endif
 }

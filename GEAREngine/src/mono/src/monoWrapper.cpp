@@ -154,8 +154,8 @@ void monoWrapper::bindEngineMethods()
 	g_pMethod_engine_getWorld				=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_getWorld", 1);
 	g_pMethod_engine_update					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_update", 2);
 	g_pMethod_engine_resize					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_resize", 7);
-	g_pMethod_engine_render					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_render", 2);
-	g_pMethod_engine_renderSingleObject		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_renderSingleObject", 3);
+	g_pMethod_engine_render					=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_render", 3);
+	g_pMethod_engine_renderSingleObject		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_renderSingleObject", 4);
 	g_pMethod_engine_mouseLButtonDown		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseLButtonDown", 4);
 	g_pMethod_engine_mouseLButtonUp			=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseLButtonUp", 4);
 	g_pMethod_engine_mouseRButtonDown		=  mono_class_get_method_from_name(g_pMonoGEAREntryPointClass, "engine_mouseRButtonDown", 4);
@@ -291,28 +291,28 @@ void monoWrapper::mono_engine_resize(gxWorld* world, float x, float y, float cx,
 #endif
 }
 
-void monoWrapper::mono_engine_render(gxWorld* world, object3d* light)
+void monoWrapper::mono_engine_render(gxWorld* world, object3d* light, int renderFlag)
 {
 #ifdef USEMONOENGINE
 	object3d null_obj(999);
 	object3d* lightPtr=light;
 	if(lightPtr==NULL)
 		lightPtr=&null_obj;
-	void* args[2]={&world, &lightPtr};
+	void* args[3]={&world, &lightPtr, &renderFlag};
 	mono_runtime_invoke(g_pMethod_engine_render, NULL, args, NULL);
 #else
-	engine_render(world, light);
+	engine_render(world, light, renderFlag);
 #endif
 }
 
-void monoWrapper::mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light)
+void monoWrapper::mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light, int renderFlag)
 {
 #ifdef USEMONOENGINE
 	object3d null_obj(999);
 	object3d* lightPtr=light;
 	if(lightPtr==NULL)
 		lightPtr=&null_obj;
-	void* args[3]={&world, &obj, &lightPtr};
+	void* args[4]={&world, &obj, &lightPtr, &renderFlag};
 	mono_runtime_invoke(g_pMethod_engine_renderSingleObject, NULL, args, NULL);
 #else
 	engine_renderSingleObject(world, obj, light);

@@ -73,7 +73,7 @@ void gearScenePreview::onDraw()
 	monoWrapper::mono_engine_update(m_pPreviewWorldPtr, Timer::getDtinSec());
 	followObject(Timer::getDtinSec(), m_pSelectedObj);
 
-	monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj, NULL);
+	monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj, NULL, object3d::eObject3dBase_RenderFlag_NormalRenderPass);
 }
 
 void gearScenePreview::selectedObject3D(object3d* obj)

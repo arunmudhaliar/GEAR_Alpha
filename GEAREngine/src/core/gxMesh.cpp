@@ -138,7 +138,7 @@ void gxMesh::update(float dt)
 	object3d::update(dt);
 }
 
-void gxMesh::render(gxRenderer* renderer, object3d* light)
+void gxMesh::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
@@ -156,7 +156,7 @@ void gxMesh::render(gxRenderer* renderer, object3d* light)
 	renderNormal(renderer);
 #endif
 
-	object3d::render(renderer, light);
+	object3d::render(renderer, light, renderFlag);
 }
 
 #if 0
@@ -187,7 +187,7 @@ void gxMesh::renderNormal(gxRenderer* renderer)
 				nTexUsed++;
 		}
 		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
-		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
+		renderer->m_nTrisRendered+=triInfo->getTriangleCount();
 		renderer->m_nDrawCalls++;
 
 		disableTextureOperations(nTexUsed, NULL, NULL);
@@ -266,7 +266,7 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 
 
 		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
-		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
+		renderer->m_nTrisRendered+=triInfo->getTriangleCount();
 		renderer->m_nDrawCalls++;
 
 		glDisableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
@@ -480,7 +480,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		int nTexUsed=0;
 		int cntr=0;
 		//std::vector<gxSubMap*>* maplist=material->getSubMapList();
-		gxUV* base_uv=(m_nUVChannels)?&m_pszUVChannels[0]:NULL;
+		//gxUV* base_uv=(m_nUVChannels)?&m_pszUVChannels[0]:NULL;
 		//stShaderProperty_Texture2D* base_tex_var=NULL;
 		//for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it, ++cntr)
 		//{
@@ -506,6 +506,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 #ifdef _WIN32
 			texenv1=GL_TEXTURE_ENV_MODE;
 #endif
+			gxUV* base_uv=(cntr<m_nUVChannels)?&m_pszUVChannels[cntr]:((m_nUVChannels)?&m_pszUVChannels[0]:NULL);
 			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, texenv1, GL_MODULATE, 2, shader, shader_var->texture_uv_in_name.c_str()))
 			{
 				shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
@@ -523,7 +524,8 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		{
 			CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList()));
 		}
-		renderer->m_nTrisRendered+=(triInfo->getVerticesCount()/3);
+
+		renderer->m_nTrisRendered+=triInfo->getTriangleCount();
 		renderer->m_nDrawCalls++;
 
 		cntr=0;
@@ -811,13 +813,13 @@ bool gxMesh::createTBN_Data()
 
 int gxMesh::getVerticesCount()
 {
-	int nTris=0;
+	int nVerts=0;
 	for(int x=0;x<m_nTriInfoArray;x++)
 	{
-		nTris+=m_pszTriInfoArray[x].getVerticesCount();
+		nVerts+=m_pszTriInfoArray[x].getVerticesCount();
 	}
 
-	return nTris;
+	return nVerts;
 }
 
 void gxMesh::writeMeshData(gxFile& file)

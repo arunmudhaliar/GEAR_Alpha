@@ -7,6 +7,7 @@
 #include "geButton.h"
 #include "geTreeView.h"
 #include "gePushButton.h"
+#include "RoundedRectControl.h"
 
 #define GE_WND_TITLE_HEIGHT	20.0f
 
@@ -72,7 +73,8 @@ private:
 	bool m_bCanMove;
 	float m_cVBLayoutToggleButtonLine[6*2];
 
-	float m_fTitleWidth	;
+	float m_fTitleWidth;
+	RoundedRectControl m_cRoundedRectangle;
 };
 
 #endif

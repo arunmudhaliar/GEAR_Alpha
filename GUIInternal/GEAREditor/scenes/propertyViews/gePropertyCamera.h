@@ -21,6 +21,8 @@ public:
 	geHorizontalSlider* m_pHorizontalSlider_FOV;
 	geHorizontalSlider* m_pHorizontalSlider_Near;
 	geHorizontalSlider* m_pHorizontalSlider_Far;
+	geToolBarDropMenu* m_pCameraCullingToolBarDropMenuBtnPtr;
+
 	geButton* m_pButtonApplyMainCamera;
 
 	gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite);

@@ -142,7 +142,7 @@ void gePropertyObject3d::onCommand(int cmd)
 {
 	if(cmd>=0x00006500 && cmd<0x00006500+MAX_LAYER)
 	{
-		m_pObject3dPtr->setLayer(cmd-0x00006500, true);
+		m_pObject3dPtr->setLayer(cmd-0x00006500, false);
 		m_pLayerDropDownMenu->setMenuItem(cmd);
 	}
 }

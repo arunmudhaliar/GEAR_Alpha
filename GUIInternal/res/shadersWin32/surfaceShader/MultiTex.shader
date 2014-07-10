@@ -8,6 +8,8 @@ Properties {
 	_ColorFactor ("Color Factor", Range) = (0, 1) = 0.5
 	_GlobalFactor ("Global Factor", Range) = (0, 1) = 1
 	_Global2Factor ("Global2 Factor", Range) = (0, 1) = 0.7
+	_Color2 ("Color2", Color) = (0.5,0.5,0.5,1)
+
 }
 
 SubShader {
@@ -42,7 +44,7 @@ __Pass{
 		vec4 fragment_function()
 		{
  
-            return vec4((texture2D(sampler2d_MainTex, vec2(uv_out_MainTex.s+GEAR_Time.z, uv_out_MainTex.t))*_MainTexFactor + texture2D(sampler2d_SecTex, vec2(uv_out_SecTex.s+GEAR_Time.y, uv_out_SecTex.t))*_SecTexFactor + _Color*_ColorFactor).rgb*_GlobalFactor*_Global2Factor, 1);
+            return vec4((texture2D(sampler2d_MainTex, vec2(uv_out_MainTex.s+GEAR_Time.z, uv_out_MainTex.t))*_MainTexFactor + texture2D(sampler2d_SecTex, vec2(uv_out_SecTex.s+GEAR_Time.y, uv_out_SecTex.t))*_SecTexFactor + _Color*_ColorFactor + _Color2*_ColorFactor).rgb*_GlobalFactor*_Global2Factor, 1);
 		}
 	}
 }

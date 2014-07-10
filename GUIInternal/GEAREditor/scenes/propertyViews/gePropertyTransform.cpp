@@ -158,11 +158,14 @@ void gePropertyTransform::updatePropertyView()
 	float Pitch;
 	float Roll;
 
+	matrix4x4f tm((matrix4x4f)*m_pObject3dPtr);
+	tm.noScale();
+
 	Quaternion quat;
-	quat=Quaternion::fromRotationMatrix(m_pObject3dPtr->getMatrix());
+	quat=Quaternion::fromRotationMatrix(tm.getMatrix());
 	quat.getEuler(Yaw, Pitch, Roll);
 
-	Quaternion aa= quat.getQuaternion(Yaw, Pitch, Roll);
+	//Quaternion aa= quat.getQuaternion(Yaw, Pitch, Roll);
 	//getRotation(Yaw, Pitch, Roll, obj->getMatrix());
 
 	sprintf(buffer, "%12.4f", Pitch);

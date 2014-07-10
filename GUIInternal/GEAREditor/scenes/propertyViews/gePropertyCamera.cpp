@@ -4,9 +4,7 @@
 gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
 	geTreeNode(renderer, parent, name, sprite, 10)
 {
-	setSize(m_cSize.x, 130.0f);
-
-	//diffuse
+	//camera type
 	m_pCameraTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "CameraType", this);
 	m_pCameraTypeToolBarDropMenuBtnPtr->setGUIObserver(this);
 	m_pCameraTypeToolBarDropMenuBtnPtr->setPos(10, 35);
@@ -14,6 +12,10 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 	m_pCameraTypeToolBarDropMenuBtnPtr->appendMenuItem("Perspective", 0x00007000);
 	m_pCameraTypeToolBarDropMenuBtnPtr->appendMenuItem("Orthographic", 0x00007001);
 
+	//camera culling
+	m_pCameraCullingToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "Camera Culling", this);
+	m_pCameraCullingToolBarDropMenuBtnPtr->setGUIObserver(this);
+	m_pCameraCullingToolBarDropMenuBtnPtr->setPos(10, 65);
 
 	//attenuations
 	m_pHorizontalSlider_FOV = new geHorizontalSlider();
@@ -46,9 +48,10 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 	pWindowColumn->addControl(row, m_pHorizontalSlider_Near, 20.0f);
 	row = pWindowColumn->addRow("Far Plane");
 	pWindowColumn->addControl(row, m_pHorizontalSlider_Far, 20.0f);
+	row = pWindowColumn->addRow("Camera Culling");
+	pWindowColumn->addControl(row, m_pCameraCullingToolBarDropMenuBtnPtr, 25.0f);
 	row = pWindowColumn->addRow("");
-	pWindowColumn->addControl(row, m_pButtonApplyMainCamera, 20.0f);
-	//
+	pWindowColumn->addControl(row, m_pButtonApplyMainCamera, 20.0f);	//
 
 
 	m_pCameraPtr=NULL;
@@ -57,6 +60,8 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();
+
+	setSize(m_cSize.x, m_pButtonApplyMainCamera->getPos().y+m_pButtonApplyMainCamera->getSize().y+10);
 }
 
 gePropertyCamera::~gePropertyCamera()
@@ -105,6 +110,16 @@ void gePropertyCamera::populatePropertyOfCamera(object3d* obj)
 		m_pCameraTypeToolBarDropMenuBtnPtr->setMenuItem("Perspective");
 	else if(m_pCameraPtr->getProjectionType()==Camera::ORTHOGRAPHIC_PROJECTION)
 		m_pCameraTypeToolBarDropMenuBtnPtr->setMenuItem("Orthographic");
+
+	//culling mask
+	m_pCameraCullingToolBarDropMenuBtnPtr->clearMenu();
+	LayerManager* layerManager = monoWrapper::mono_engine_getWorld(0)->getLayerManager();
+	for(int x=0;x<MAX_LAYER;x++)
+	{
+		Layer* layer = layerManager->getLayer(x);
+		m_pCameraCullingToolBarDropMenuBtnPtr->appendMenuItem(layer->getLayerName(), 0x00003000+x);
+	}
+
 }
 
 void gePropertyCamera::onTextChange(geGUIBase* textbox)

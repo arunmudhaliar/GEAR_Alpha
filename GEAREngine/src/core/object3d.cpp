@@ -284,7 +284,11 @@ object3d* object3d::appendChild(object3d* child)
 		m_pObject3dObserver->onObject3dChildAppend(child);
 	if(m_pRootObserver)
 		m_pRootObserver->callback_object3dAppendToTree(child);
-	child->setLayer(m_iLayer, true);
+	if(child->getLayer()==-1)
+		child->setLayer(ELAYER_DEFAULT, false);
+	else
+		child->setLayer(child->getLayer(), false);
+
 #ifdef USE_BXLIST
 	m_cChilds.insertTail(child);
 #else

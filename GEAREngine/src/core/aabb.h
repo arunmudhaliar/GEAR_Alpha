@@ -96,11 +96,89 @@ public:
 				ABS(aV.z) <= (aSzA.z + r);
 	}
 
-    bool isPointInsideAABB(vector3<T> v)
+    bool isPointInsideAABB(vector3<T>& v)
     {
         return (m_min.x<v.x && m_min.y<v.y && m_min.z<v.z && m_max.x>v.x && m_max.y>v.y && m_max.z>v.z);
     }
     
+	float rayIntersectionDistance(vector3<T>& rayOrig, vector3<T>& rayDir, int axis, float position)
+	{
+		float* origin_ptr = &rayOrig.x;
+		float* dir_ptr = &rayDir.x;
+
+		if (position == origin_ptr[axis])
+		{
+			return 0.0f;
+		}
+		return (position - origin_ptr[axis])/dir_ptr[axis];
+	}
+
+	//Getter for the TItem value of the given line where it first intersects this box.
+    float getRayIntersection(vector3<T>& rayOrig, vector3<T>& rayDir)
+    {
+        bool tValuesSet = false;
+        float largestMinT = 0.0f, smallestMaxT = 0.0f;
+        if (isPointInsideAABB(rayOrig))
+        {
+            return 0.0f;
+        }
+
+        // Check X axis
+        if (rayDir.x != 0.0f)
+        {
+            float tValue1 = rayIntersectionDistance(rayOrig, rayDir, 0, m_min.x);
+            float tValue2 = rayIntersectionDistance(rayOrig, rayDir, 0, m_max.x);
+            largestMinT = MIN(tValue1, tValue2);
+            smallestMaxT = MAX(tValue1, tValue2);
+            tValuesSet = true;
+        }
+        // Check Y axis
+        if (rayDir.y != 0.0f)
+        {
+            float tValue1 = rayIntersectionDistance(rayOrig, rayDir, 1, m_min.y);
+            float tValue2 = rayIntersectionDistance(rayOrig, rayDir, 1, m_max.y);
+            float smallerT = MIN(tValue1, tValue2);
+            float largerT = MAX(tValue1, tValue2);
+            if (tValuesSet)
+            {
+                largestMinT = MAX(largestMinT, smallerT);
+                smallestMaxT = MIN(smallestMaxT, largerT);
+            }
+            else
+            {
+                largestMinT = smallerT;
+                smallestMaxT = largerT;
+                tValuesSet = true;
+            }
+        }
+        // Check Z axis
+        if (rayDir.z != 0.0f)
+        {
+            float tValue1 = rayIntersectionDistance(rayOrig, rayDir, 2, m_min.z);
+            float tValue2 = rayIntersectionDistance(rayOrig, rayDir, 2, m_max.z);
+            float smallerT = MIN(tValue1, tValue2);
+            float largerT = MAX(tValue1, tValue2);
+            if (tValuesSet)
+            {
+                largestMinT = MAX(largestMinT, smallerT);
+                smallestMaxT = MIN(smallestMaxT, largerT);
+            }
+            else
+            {
+                largestMinT = smallerT;
+                smallestMaxT = largerT;
+                tValuesSet = true;
+            }
+        }
+        // Check if we should return that there was a collision
+        if (smallestMaxT < largestMinT || largestMinT < 0.0f)
+        {
+            return -1.0f; // Negative so calling code knows there was no intersection
+        }
+        // Return the min TItem unless it is less than zero
+        return MAX(0.0f, largestMinT);
+    }
+
 	void scale(float scale)
 	{
 		vector3<T> sz(getSize());

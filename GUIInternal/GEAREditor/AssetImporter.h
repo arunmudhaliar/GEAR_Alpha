@@ -33,6 +33,7 @@ private:
 	int import_png_to_metadata(const char* png_file_name, const char* crcFileName, struct stat srcStat);
 	int import_tga_to_metadata(const char* tga_file_name, const char* crcFileName, struct stat srcStat);
 	int import_fbx_to_metadata(const char* fbx_file_name, const char* crcFileName, struct stat srcStat);
+	bool import_using_freeImageLib(const char* filename, const char* crcFileName, struct stat srcStat);
 
 	int m_nAssetsToProcess;
 	int m_iProgressBarID;

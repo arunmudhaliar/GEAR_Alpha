@@ -194,10 +194,10 @@ void gearSceneFileView::tryLoadTexturesFromObject3d(object3d* obj3d, const char*
 			memset(relativetexturefilepath, 0, sizeof(relativetexturefilepath));
 			sprintf(relativetexturefilepath, "%s%s", dirname, material->getListOfTextureNamesFromFBX()->at(0).c_str());
 
-			//tif hack
-			if(gxUtil::GX_IS_EXTENSION(relativetexturefilepath, ".tif") || gxUtil::GX_IS_EXTENSION(relativetexturefilepath, ".TIF"))
-				strcpy(&relativetexturefilepath[strlen(relativetexturefilepath)-3], "png");
-			//
+			////tif hack
+			//if(gxUtil::GX_IS_EXTENSION(relativetexturefilepath, ".tif") || gxUtil::GX_IS_EXTENSION(relativetexturefilepath, ".TIF"))
+			//	strcpy(&relativetexturefilepath[strlen(relativetexturefilepath)-3], "png");
+			////
 
 			gxSubMap* submap = maplist->at(0);
 			int textureCRC=AssetImporter::calcCRC32((unsigned char*)relativetexturefilepath);
@@ -366,8 +366,17 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		{
 			EditorApp::getScenePropertyEditor()->populatePropertyOfOpenInEditor();
 		}
-		else if(util::GE_IS_EXTENSION(relativePath, ".png") || util::GE_IS_EXTENSION(relativePath, ".PNG")
-			|| util::GE_IS_EXTENSION(relativePath, ".tga") || util::GE_IS_EXTENSION(relativePath, ".TGA"))
+		else if(util::GE_IS_EXTENSION(relativePath, ".png") || util::GE_IS_EXTENSION(relativePath, ".PNG") ||
+			util::GE_IS_EXTENSION(relativePath, ".tga") || util::GE_IS_EXTENSION(relativePath, ".TGA") ||
+			util::GE_IS_EXTENSION(relativePath, ".bmp") || util::GE_IS_EXTENSION(relativePath, ".BMP") ||
+			util::GE_IS_EXTENSION(relativePath, ".ico") || util::GE_IS_EXTENSION(relativePath, ".ICO") ||
+			util::GE_IS_EXTENSION(relativePath, ".jpeg") || util::GE_IS_EXTENSION(relativePath, ".JPEG") ||
+			util::GE_IS_EXTENSION(relativePath, ".pcx") || util::GE_IS_EXTENSION(relativePath, ".PCX") ||
+			util::GE_IS_EXTENSION(relativePath, ".tif") || util::GE_IS_EXTENSION(relativePath, ".TIF") ||
+			util::GE_IS_EXTENSION(relativePath, ".psd") || util::GE_IS_EXTENSION(relativePath, ".PSD") ||
+			util::GE_IS_EXTENSION(relativePath, ".gif") || util::GE_IS_EXTENSION(relativePath, ".GIF") ||
+			util::GE_IS_EXTENSION(relativePath, ".hdr") || util::GE_IS_EXTENSION(relativePath, ".HDR")
+			)
 		{
 			HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 			//load surface shader
@@ -601,7 +610,16 @@ int gearSceneFileView::find_files(rendererGL10* renderer, const char *dirname, c
 						Sprite2Dx* sprite=&spriteArray[1];
 
 						if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG") ||
-							util::GE_IS_EXTENSION(buffer, ".tga") || util::GE_IS_EXTENSION(buffer, ".TGA"))
+							util::GE_IS_EXTENSION(buffer, ".tga") || util::GE_IS_EXTENSION(buffer, ".TGA") ||
+							util::GE_IS_EXTENSION(buffer, ".bmp") || util::GE_IS_EXTENSION(buffer, ".BMP") ||
+							util::GE_IS_EXTENSION(buffer, ".ico") || util::GE_IS_EXTENSION(buffer, ".ICO") ||
+							util::GE_IS_EXTENSION(buffer, ".jpeg") || util::GE_IS_EXTENSION(buffer, ".JPEG") ||
+							util::GE_IS_EXTENSION(buffer, ".pcx") || util::GE_IS_EXTENSION(buffer, ".PCX") ||
+							util::GE_IS_EXTENSION(buffer, ".tif") || util::GE_IS_EXTENSION(buffer, ".TIF") ||
+							util::GE_IS_EXTENSION(buffer, ".psd") || util::GE_IS_EXTENSION(buffer, ".PSD") ||
+							util::GE_IS_EXTENSION(buffer, ".gif") || util::GE_IS_EXTENSION(buffer, ".GIF") ||
+							util::GE_IS_EXTENSION(buffer, ".hdr") || util::GE_IS_EXTENSION(buffer, ".HDR")
+							)
 							sprite=&spriteArray[2];
 						else if(util::GE_IS_EXTENSION(buffer, ".mat") || util::GE_IS_EXTENSION(buffer, ".MAT"))
 							sprite=&spriteArray[3];

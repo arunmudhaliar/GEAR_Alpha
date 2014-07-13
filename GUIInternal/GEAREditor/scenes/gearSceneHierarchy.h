@@ -33,6 +33,8 @@ public:
 
 	void recreateOctree();
 
+	void selectObject3dInTreeView(object3d* objtoselect);
+
 protected:
 	virtual void onCreate();
 	virtual void onDraw();
@@ -49,6 +51,8 @@ protected:
 	virtual void onCommand(int cmd);
 
 private:
+	bool selectObject3dInTreeView(geTreeNode* node, object3d* objtoselect);
+
 	void destroyTVUserData(geGUIBase* parent);
 	void createTVNode(geTreeNode* parentNode, object3d* obj, const char* filename);
 

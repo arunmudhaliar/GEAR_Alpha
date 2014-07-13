@@ -6,6 +6,7 @@ object3d(OBJECT3D_LIGHT)
 {
 	setName("Point Light");
 	setLightType(LIGHT_POINT);
+	m_cOOBB.set(vector3f(-5, -5, -5), vector3f(5, 5, 5));
 
 	m_cDiffuse.set(0.7f, 0.7f, 0.7f, 1.0f);
 	m_cAmbient.set(0.05f, 0.05f, 0.05f, 1.0f);

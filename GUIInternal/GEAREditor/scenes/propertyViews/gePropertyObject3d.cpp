@@ -100,7 +100,7 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 {
 	if(btn==m_pPushBtn_Object3dVisible)
 	{
-		if(!m_pPushBtn_Object3dVisible->isCheck())
+		if(m_pPushBtn_Object3dVisible->isCheck())
 			m_pObject3dPtr->setBaseFlag(object3d::eObject3dBaseFlag_Visible, true);
 		else
 			m_pObject3dPtr->reSetBaseFlag(object3d::eObject3dBaseFlag_Visible, true);
@@ -108,6 +108,7 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 	else if(btn==m_pPushBtn_Object3dStatic /*&& m_pPushBtn_Object3dStatic->isButtonPressed()*/)
 	{
 		bool bRecursive=false;
+		bool bOldCheck=m_pPushBtn_Object3dStatic->isCheck();
 		if(m_pObject3dPtr->getChildCount())
 		{
 			LRESULT result = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_YESNOCANCEL_ITERATECHILDS_BOX), EditorApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(YesNoCancel_DlgBox));
@@ -115,15 +116,12 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 				bRecursive=true;
 			else if(result==IDCANCEL)
 			{
-				if(!m_pPushBtn_Object3dStatic->isCheck())
-					m_pPushBtn_Object3dStatic->buttonNormal(true);
-				else
-					m_pPushBtn_Object3dStatic->buttonPressed(true);
+				m_pPushBtn_Object3dStatic->setCheck(!bOldCheck);
 				return;
 			}
 
 		}
-		if(!m_pPushBtn_Object3dStatic->isCheck())
+		if(bOldCheck)
 		{
 			m_pObject3dPtr->setBaseFlag(object3d::eObject3dBaseFlag_Static, bRecursive);
 			//m_pPushBtn_Object3dStatic->buttonPressed(true);

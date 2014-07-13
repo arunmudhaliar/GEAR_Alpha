@@ -12,8 +12,9 @@ public:
 	void update(float dt);
 	void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
 
-	int* allocateBoneIndexBuffer(int nTris, int nBoneInfluencePerVertex);
-	float* allocateWeightBuffer(int nTris, int nBoneInfluencePerVertex);
+	int* allocateBoneInfluenceCountBuffer(int nTris);
+	int* allocateBoneIndexBuffer(int nCount);
+	float* allocateWeightBuffer(int nCount);
 
 	void allocateBoneList(int nBones);
 	void populateBoneList(object3d* bone, int index);
@@ -26,6 +27,7 @@ public:
 	void clearPrivateIterator()	{	m_iPrivateIterator=0;	}
 
 private:
+	int* m_pszBoneInfluenceCountBuffer;
 	int* m_pszBoneIndexBuffer;
 	float* m_pszWeightBuffer;
 	int m_nBoneInfluencePerVertex;
@@ -33,6 +35,7 @@ private:
 
 	int m_iPrivateIterator;
 	int m_nBones;
+	int m_nBoneIndexBuffer;
 	object3d** m_pszBoneList;
 	matrix4x4f* m_pszInvBoneTMList;
 	vector3f* m_pszBoneOffsetList;

@@ -188,7 +188,7 @@ void gePropertyMaterial::loadSubMapView()
 			submapview->thumbnail->setUserData(map);
 
 			submapview->m_pSeperator = new geSeperator();
-			submapview->m_pSeperator->create(m_pRenderer, this, 10, 135+cntr*80, submapview->thumbnail->getPos().x+submapview->thumbnail->getSize().x-10);
+			submapview->m_pSeperator->create(m_pRenderer, this, 10, submapview->thumbnail->getPos().y+submapview->thumbnail->getSize().y+5, submapview->thumbnail->getPos().x+submapview->thumbnail->getSize().x-10);
 
 			m_vSubMap.push_back(submapview);
 			cntr++;
@@ -278,6 +278,9 @@ void gePropertyMaterial::destroyShaderPropertiesControls()
 
 	m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), m_pWindowColumn_ShaderProperties), m_vControls.end());
 	GE_DELETE(m_pWindowColumn_ShaderProperties);
+
+	m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), m_pBottomSeperator), m_vControls.end());
+	GE_DELETE(m_pBottomSeperator);
 }
 
 void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)

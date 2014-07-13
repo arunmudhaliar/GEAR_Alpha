@@ -355,6 +355,44 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 		checkFrustumOverlapWithOctree(node->getChild(x), frustum);
 }
 
+object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)
+{
+	if(m_cCollidedObjLst.GetCount()==0 && m_cCollidedAlphaObjLst.GetCount()==0) return NULL;
+
+	float smallest_distance=1e32f;
+	object3d* selectedObj=NULL;
+	ExpandableArrayNode<object3d*>* collidedtransformObjNode=m_cCollidedObjLst.GetRoot();
+	int count=m_cCollidedObjLst.GetCount();
+	while(collidedtransformObjNode && count--)
+	{
+		object3d* obj=collidedtransformObjNode->GetData();
+		float distance=obj->getAABB().getRayIntersection(rayOrig, rayDir);
+		if(distance<=smallest_distance && distance>=0.0f && obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+		{
+			selectedObj=obj;
+			smallest_distance=distance;
+		}
+		collidedtransformObjNode=collidedtransformObjNode->GetNext();
+	}
+
+	//alpha list
+	ExpandableArrayNode<object3d*>* collidedtransformAlphaObjNode=m_cCollidedAlphaObjLst.GetRoot();
+	int alpha_count=m_cCollidedAlphaObjLst.GetCount();
+	while(collidedtransformAlphaObjNode && alpha_count--)
+	{
+		object3d* obj=collidedtransformAlphaObjNode->GetData();
+		float distance=obj->getAABB().getRayIntersection(rayOrig, rayDir);
+		if(distance<=smallest_distance && distance>=0.0f && obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+		{
+			selectedObj=obj;
+			smallest_distance=distance;
+		}
+		collidedtransformAlphaObjNode=collidedtransformAlphaObjNode->GetNext();
+	}
+
+	return selectedObj;
+}
+
 void COctree::drawOctree(OctreeNode* node, gxHWShader* shader)
 {
 	if(!node) return;

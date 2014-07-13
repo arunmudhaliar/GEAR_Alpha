@@ -214,7 +214,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_TEST_COMMAND:
 			{
 				gxFile file;
-				file.OpenFile("05_med_bay_dark.scene.xml.bin");
+				file.OpenFile("01_snow_planet.scene.xml.bin");
 				int nActor=0;
 				file.Read(nActor);
 				geGUIBase* tvnode=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
@@ -254,9 +254,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							if(strcmp(prefabname, childobj->getName())==0)
 							{
 								//apply transforms
-								//childobj->rotateLocalXf(rotation[0]);
-								//childobj->rotateLocalXf(rotation[1]);
-								//childobj->rotateLocalXf(rotation[2]);
+								childobj->rotateLocalXf(rotation[0]);
+								childobj->rotateLocalXf(rotation[1]);
+								childobj->rotateLocalXf(rotation[2]);
 								childobj->updatePositionf(translation[0], translation[2], translation[1]);
 
 								break;

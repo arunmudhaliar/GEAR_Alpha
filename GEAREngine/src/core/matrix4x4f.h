@@ -288,6 +288,14 @@ public:
 		return res;
 	}
 	
+	void getScale(float& sx, float& sy, float& sz)
+	{
+		// Compute the scaling part.
+		sx = gxMath::SQRT( m[ 0 ] * m[ 0 ] + m[ 1 ] * m[ 1 ] + m[ 2 ] * m[ 2 ] );
+		sy = gxMath::SQRT( m[ 4 ] * m[ 4 ] + m[ 5 ] * m[ 5 ] + m[ 6 ] * m[ 6 ] );
+		sz = gxMath::SQRT( m[ 8 ] * m[ 8 ] + m[ 9 ] * m[ 9 ] + m[ 10 ] * m[ 10 ] );
+	}
+
 	bool noScale()
 	{
 		// Compute the scaling part.

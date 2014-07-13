@@ -605,24 +605,44 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 	float* normalBuffer = newMesh->allocateNormalBuffer(fbxMesh.GetPolygonCount());
 	gxTriInfo* triInfoArray = NULL;
 
+#if BONE_OPTIMIZATION
 	//Max no of bones per vertex
 	int nMaxBonePerVert=0;
+#endif
+	int* boneInfluenceCountBuffer=NULL;
 	int* boneIndexBuffer=NULL;
 	float* weightBuffer=NULL;
 
+	//int tt=fbxMesh.GetControlPointsCount();
+	//int ttt=fbxMesh.GetPolygonCount();
+	//int tempcount;
 	if(boneInfluenceList)
 	{
-		int nData=0;
+#if BONE_OPTIMIZATION
 		for(int x=0;x<fbxMesh.GetControlPointsCount();x++)
 		{
-			nData+=boneInfluenceList[x].bone.size();
 			if((int)boneInfluenceList[x].bone.size()>nMaxBonePerVert)
 				nMaxBonePerVert=boneInfluenceList[x].bone.size();
 		}
+
 		nMaxBonePerVert=4;	//hack
+#endif
 		//allocation for influence bones and weights
-		boneIndexBuffer=((gxSkinnedMesh*)newMesh)->allocateBoneIndexBuffer(fbxMesh.GetPolygonCount(), nMaxBonePerVert);
-		weightBuffer=((gxSkinnedMesh*)newMesh)->allocateWeightBuffer(fbxMesh.GetPolygonCount(), nMaxBonePerVert);
+		boneInfluenceCountBuffer=((gxSkinnedMesh*)newMesh)->allocateBoneInfluenceCountBuffer(fbxMesh.GetPolygonCount());
+
+		int nData=0;
+		for(int x=0;x<fbxMesh.GetPolygonCount();x++)
+		{
+			for(int y=0;y<fbxMesh.GetPolygonSize(x);y++)
+			{
+				int vertexIndex=fbxMesh.GetPolygonVertex(x, y);
+				nData+=boneInfluenceList[vertexIndex].bone.size();
+			}
+		}
+
+		boneIndexBuffer=((gxSkinnedMesh*)newMesh)->allocateBoneIndexBuffer(nData);
+		weightBuffer=((gxSkinnedMesh*)newMesh)->allocateWeightBuffer(nData);
+		//tempcount=nData;
 	}
 	//
 
@@ -909,7 +929,10 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 			//bone influence
 			if(boneInfluenceList)
 			{
+#if BONE_OPTIMIZATION
 				int nReminder = nMaxBonePerVert-boneInfluenceList[vertexIndex].bone.size();
+#endif
+				boneInfluenceCountBuffer[vertexIndices[y]]=(int)boneInfluenceList[vertexIndex].bone.size();
 
 				for(int bb=0;bb<(int)boneInfluenceList[vertexIndex].bone.size();bb++)
 				{
@@ -922,9 +945,15 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 						if(boneList->bonelst[si]==influencedBone)
 							break;
 					}
-					boneIndexBuffer[vertexIndices[y]*nMaxBonePerVert+bb]=si;
-					weightBuffer[vertexIndices[y]*nMaxBonePerVert+bb]=weight;
+					boneIndexBuffer[bb]=si;
+					weightBuffer[bb]=weight;
 				}
+				
+				boneIndexBuffer+=boneInfluenceCountBuffer[vertexIndices[y]];
+				weightBuffer+=boneInfluenceCountBuffer[vertexIndices[y]];
+				//tempcount-=boneInfluenceCountBuffer[vertexIndices[y]];
+
+#if BONE_OPTIMIZATION
 				if(nReminder>0)
 				{
 					for(int bb=nMaxBonePerVert-nReminder;bb<nMaxBonePerVert;bb++)
@@ -932,6 +961,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 						boneIndexBuffer[vertexIndices[y]*nMaxBonePerVert+bb]=boneIndexBuffer[vertexIndices[y]*nMaxBonePerVert+bb];
 					}
 				}
+#endif
 			}
 			//
 
@@ -942,7 +972,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 				bool pUnmapped;
 				fbxMesh.GetPolygonVertexUV(x, y, uvSetNames.GetStringAt(m), uv, pUnmapped);
 				uvChannels[m].m_pszfGLTexCoordList[vertexIndices[y]*2+0]=(float)uv.mData[0];
-				uvChannels[m].m_pszfGLTexCoordList[vertexIndices[y]*2+1]=1.0f-(float)uv.mData[1];
+				uvChannels[m].m_pszfGLTexCoordList[vertexIndices[y]*2+1]=/*1.0f-*/(float)uv.mData[1];
 			}
 		}
 	}

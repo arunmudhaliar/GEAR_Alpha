@@ -16,10 +16,12 @@ enum EMETA_FILETYPE
 enum ETEXTURE_2D_TYPE
 {
 	eTexture2D_Unknown,
-	eTexture2D_888,
-	eTexture2D_8888,
-	eTexture2D_565,
-	eTexture2D_5551,
+	eTexture2D_RGB888,
+	eTexture2D_RGBA8888,
+	eTexture2D_RGB565,
+	eTexture2D_RGBA5551,
+	eTexture2D_BGR888,
+	eTexture2D_BGRA8888,
 };
 
 struct stMetaHeader

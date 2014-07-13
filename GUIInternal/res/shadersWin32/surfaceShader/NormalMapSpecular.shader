@@ -1,6 +1,5 @@
 Shader "NormalMapSpecular" {
 Properties {
-	_Color ("Main Color", Color) = (1,1,1,1)
 	_MainTex ("Base (RGB) Gloss (A)", Tex2D) = "white" {}
 	_BumpMap ("Normal Map", Tex2D) = "bump" {}
 }

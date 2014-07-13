@@ -55,6 +55,8 @@ public:
 	ExpandableArray<object3d*>* getCollidedObjList()		{	return &m_cCollidedObjLst;			}
 	ExpandableArray<object3d*>* getCollidedAlphaObjList()	{	return &m_cCollidedAlphaObjLst;		}
 
+	object3d* pickBruteForce(vector3f& rayOrig, vector3f& rayDir);
+
 private:
 	bool create(OctreeNode* node);
 

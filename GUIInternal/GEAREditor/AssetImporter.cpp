@@ -17,6 +17,8 @@
 #include <Windows.h>
 #include <CommCtrl.h>
 
+#include "../../FreeImage/FreeImage.h"
+
 AssetImporter::AssetImporter()
 {
 }
@@ -96,25 +98,30 @@ int AssetImporter::traverseAndCountAssetDirectory(const char *dirname)
             switch (ent->d_type) {
             case DT_REG:
                 {
-					bool bPNG=false;
-					bool bTGA=false;
+					bool bImage=false;
 					bool bFBX=false;
 
-					if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG"))
+					if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG") ||
+						util::GE_IS_EXTENSION(buffer, ".tga") || util::GE_IS_EXTENSION(buffer, ".TGA") ||
+						util::GE_IS_EXTENSION(buffer, ".bmp") || util::GE_IS_EXTENSION(buffer, ".BMP") ||
+						util::GE_IS_EXTENSION(buffer, ".ico") || util::GE_IS_EXTENSION(buffer, ".ICO") ||
+						util::GE_IS_EXTENSION(buffer, ".jpeg") || util::GE_IS_EXTENSION(buffer, ".JPEG") ||
+						util::GE_IS_EXTENSION(buffer, ".pcx") || util::GE_IS_EXTENSION(buffer, ".PCX") ||
+						util::GE_IS_EXTENSION(buffer, ".tif") || util::GE_IS_EXTENSION(buffer, ".TIF") ||
+						util::GE_IS_EXTENSION(buffer, ".psd") || util::GE_IS_EXTENSION(buffer, ".PSD") ||
+						util::GE_IS_EXTENSION(buffer, ".gif") || util::GE_IS_EXTENSION(buffer, ".GIF") ||
+						util::GE_IS_EXTENSION(buffer, ".hdr") || util::GE_IS_EXTENSION(buffer, ".HDR")
+						)
 					{
-						bPNG=true;
+						bImage=true;
 					}
 
-					if(util::GE_IS_EXTENSION(buffer, ".tga") || util::GE_IS_EXTENSION(buffer, ".TGA"))
-					{
-						bTGA=true;
-					}
 					if(util::GE_IS_EXTENSION(buffer, ".fbx") || util::GE_IS_EXTENSION(buffer, ".FBX"))
 					{
 						bFBX=true;
 					}
 
-					if(bPNG || bTGA || bFBX)
+					if(bImage || bFBX)
 					{
 						m_nAssetsToProcess++;
 					}
@@ -196,25 +203,31 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
             switch (ent->d_type) {
             case DT_REG:
                 {
-					bool bPNG=false;
+					bool bImage=false;
 					bool bTGA=false;
 					bool bFBX=false;
 
-					if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG"))
+					if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG") ||
+						util::GE_IS_EXTENSION(buffer, ".tga") || util::GE_IS_EXTENSION(buffer, ".TGA") ||
+						util::GE_IS_EXTENSION(buffer, ".bmp") || util::GE_IS_EXTENSION(buffer, ".BMP") ||
+						util::GE_IS_EXTENSION(buffer, ".ico") || util::GE_IS_EXTENSION(buffer, ".ICO") ||
+						util::GE_IS_EXTENSION(buffer, ".jpeg") || util::GE_IS_EXTENSION(buffer, ".JPEG") ||
+						util::GE_IS_EXTENSION(buffer, ".pcx") || util::GE_IS_EXTENSION(buffer, ".PCX") ||
+						util::GE_IS_EXTENSION(buffer, ".tif") || util::GE_IS_EXTENSION(buffer, ".TIF") ||
+						util::GE_IS_EXTENSION(buffer, ".psd") || util::GE_IS_EXTENSION(buffer, ".PSD") ||
+						util::GE_IS_EXTENSION(buffer, ".gif") || util::GE_IS_EXTENSION(buffer, ".GIF") ||
+						util::GE_IS_EXTENSION(buffer, ".hdr") || util::GE_IS_EXTENSION(buffer, ".HDR")
+						)
 					{
-						bPNG=true;
+						bImage=true;
 					}
 
-					if(util::GE_IS_EXTENSION(buffer, ".tga") || util::GE_IS_EXTENSION(buffer, ".TGA"))
-					{
-						bTGA=true;
-					}
 					if(util::GE_IS_EXTENSION(buffer, ".fbx") || util::GE_IS_EXTENSION(buffer, ".FBX"))
 					{
 						bFBX=true;
 					}
 
-					if(bPNG || bTGA || bFBX)
+					if(bImage || bFBX)
 					{
 						bool bCreateMetaFile=false;
 						struct stat fst;
@@ -235,7 +248,7 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 								metaFile.CloseFile();
 
 								if(metaHeader.lastmodified!=fst.st_mtime || 
-									((bPNG || bTGA) && metaHeader.filetype!=eMetaTexture2D) ||
+									((bImage) && metaHeader.filetype!=eMetaTexture2D) ||
 									((bFBX) && metaHeader.filetype!=eMeta3DFile)
 									)
 								{
@@ -254,12 +267,7 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 							if(bCreateMetaFile)
 							{
 								bool bWriteMetaInfo=false;
-								if(bPNG && import_png_to_metadata(buffer, crcFileName, fst))
-								{
-									bWriteMetaInfo=true;
-								}
-
-								if(bTGA && import_tga_to_metadata(buffer, crcFileName, fst))
+								if(bImage && import_using_freeImageLib(buffer, crcFileName, fst))
 								{
 									bWriteMetaInfo=true;
 								}
@@ -532,12 +540,12 @@ int AssetImporter::import_tga_to_metadata(const char* tga_file_name, const char*
 		int bpp=3;
 		if(texture.type==1)
 		{
-			file_meta.Write(eTexture2D_888);
+			file_meta.Write(eTexture2D_RGB888);
 			bpp=3;
 		}
 		else if(texture.type==2)
 		{
-			file_meta.Write(eTexture2D_8888);
+			file_meta.Write(eTexture2D_RGBA8888);
 			bpp=4;
 		}
 		else
@@ -721,12 +729,12 @@ int AssetImporter::import_png_to_metadata(const char* png_file_name, const char*
 	int bpp=3;
 	if(color_type==PNG_COLOR_TYPE_RGB)
 	{
-		file_meta.Write(eTexture2D_888);
+		file_meta.Write(eTexture2D_RGB888);
 		bpp=3;
 	}
 	else if(color_type==PNG_COLOR_TYPE_RGB_ALPHA)
 	{
-		file_meta.Write(eTexture2D_8888);
+		file_meta.Write(eTexture2D_RGBA8888);
 		bpp=4;
 	}
 	else
@@ -743,6 +751,102 @@ int AssetImporter::import_png_to_metadata(const char* png_file_name, const char*
 
 	////DEBUG_PRINT("%s : size(%d, %d), format %d, compressed size %d bytes\n", out_filename, width, height, out_format, compressedSize);
 	return 1;
+}
+
+bool AssetImporter::import_using_freeImageLib(const char* filename, const char* crcFileName, struct stat srcStat)
+{
+	//image format
+	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
+	//pointer to the image, once loaded
+	FIBITMAP *dib(0);
+	//pointer to the image data
+	BYTE* bits(0);
+	//image width and height
+	unsigned int width(0), height(0);
+	
+	//check the file signature and deduce its format
+	fif = FreeImage_GetFileType(filename, 0);
+	//if still unknown, try to guess the file format from the file extension
+	if(fif == FIF_UNKNOWN) 
+		fif = FreeImage_GetFIFFromFilename(filename);
+	//if still unkown, return failure
+	if(fif == FIF_UNKNOWN)
+		return false;
+
+	//check that the plugin has reading capabilities and load the file
+	if(FreeImage_FIFSupportsReading(fif))
+		dib = FreeImage_Load(fif, filename);
+	//if the image failed to load, return failure
+	if(!dib)
+		return false;
+
+	//retrieve the image data
+	bits = FreeImage_GetBits(dib);
+	//get the image width and height
+	width = FreeImage_GetWidth(dib);
+	height = FreeImage_GetHeight(dib);
+	//if this somehow one of these failed (they shouldn't), return failure
+	if((bits == 0) || (width == 0) || (height == 0))
+		return false;
+	
+	////if this texture ID is in use, unload the current texture
+	//if(m_texID.find(texID) != m_texID.end())
+	//	glDeleteTextures(1, &(m_texID[texID]));
+
+	////generate an OpenGL texture ID for this texture
+	//glGenTextures(1, &gl_texID);
+	////store the texture ID mapping
+	//m_texID[texID] = gl_texID;
+	////bind to the new texture ID
+	//glBindTexture(GL_TEXTURE_2D, gl_texID);
+	////store the texture data for OpenGL use
+	//glTexImage2D(GL_TEXTURE_2D, level, internal_format, width, height,
+	//	border, image_format, GL_UNSIGNED_BYTE, bits);
+
+	//
+	gxFile file_meta;
+	if(!file_meta.OpenFile(crcFileName, gxFile::FILE_w))
+	{
+		//Free FreeImage's copy of the data
+		FreeImage_Unload(dib);
+		return 0;
+	}
+
+	stMetaHeader metaHeader;
+	metaHeader.filetype=eMetaTexture2D;
+	metaHeader.lastaccessed = srcStat.st_atime;
+	metaHeader.lastmodified = srcStat.st_mtime;
+	metaHeader.lastchanged = srcStat.st_ctime;
+
+	//write the meta header
+	file_meta.WriteBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+	//write the texture header
+	file_meta.Write(width);
+	file_meta.Write(height);
+	int bpp=FreeImage_GetBPP(dib);
+	
+	switch(bpp)
+	{
+	case 24:
+		file_meta.Write(eTexture2D_BGR888);
+		break;
+	case 32:
+		file_meta.Write(eTexture2D_BGRA8888);
+		break;
+	default:
+		file_meta.Write(eTexture2D_Unknown);
+	}
+	file_meta.WriteBuffer(bits, width*height*(bpp/8));
+
+	file_meta.CloseFile();
+	//
+
+	//Free FreeImage's copy of the data
+	FreeImage_Unload(dib);
+
+	//return success
+	return true;
 }
 
 int AssetImporter::calcCRC32(unsigned char* data)

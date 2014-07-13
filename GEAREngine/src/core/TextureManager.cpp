@@ -175,23 +175,84 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 		int type=0;
 		file_meta.Read(type);
 		GLenum texType=GL_RGB;
+		GLint internalformat=GL_RGB;
+		/*
+	eTexture2D_Unknown,
+	eTexture2D_888,
+	eTexture2D_8888,
+	eTexture2D_565,
+	eTexture2D_5551,
+	eTexture2D_BGR888,
+	eTexture2D_BGRA8888,
+		*/
 
-		if(type==eTexture2D_888)
+		switch(type)
 		{
-			bAlpha=false;
-			bpp=3;
-			texType=GL_RGB;
-		}
-		else if(type==eTexture2D_8888)
-		{
-			bAlpha=true;
-			bpp=4;
-			texType=GL_RGBA;
-		}
-		else
-		{
-			file_meta.CloseFile();
-			return 0;
+		case eTexture2D_RGB888:
+			{
+				bAlpha=false;
+				bpp=3;
+				texType=GL_RGB;
+				internalformat=GL_RGB;
+			}
+			break;
+		case eTexture2D_RGBA8888:
+			{
+				bAlpha=true;
+				bpp=4;
+				texType=GL_RGBA;
+				internalformat=GL_RGBA;
+			}
+			break;
+		case eTexture2D_RGB565:
+			{
+				bAlpha=false;
+				bpp=2;
+				texType=GL_RGB565;
+				internalformat=GL_RGB;
+			}
+			break;
+		case eTexture2D_RGBA5551:
+			{
+#ifdef _WIN32
+				file_meta.CloseFile();
+				return 0;
+#else
+				bAlpha=true;
+				bpp=2;
+				texType=GL_RGB5551;
+				internalformat=GL_RGBA;
+#endif
+			}
+			break;
+		case eTexture2D_BGR888:
+			{
+				bAlpha=false;
+				bpp=3;
+				texType=GL_BGR;
+				internalformat=GL_RGB;
+			}
+			break;
+		case eTexture2D_BGRA8888:
+			{
+				bAlpha=true;
+				bpp=4;
+				texType=GL_BGRA;
+				internalformat=GL_RGBA;
+			}
+			break;
+		case eTexture2D_Unknown:
+			{
+				file_meta.CloseFile();
+				return 0;
+			}
+			break;
+		default:
+			{
+				file_meta.CloseFile();
+				return 0;
+			}
+			break;
 		}
 
 		unsigned int texID=0;
@@ -209,7 +270,7 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 		file_meta.ReadBuffer(image_data, cx*cy*bpp);
 		file_meta.CloseFile();
 
-		glTexImage2D(GL_TEXTURE_2D, 0, texType, cx, cy, 0, texType, GL_UNSIGNED_BYTE, image_data);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalformat, cx, cy, 0, texType, GL_UNSIGNED_BYTE, image_data);
 
 		glGenerateMipmap(GL_TEXTURE_2D);  //Generate mipmaps now!!!
 

@@ -701,34 +701,23 @@ void gearSceneWorldEditor::drawSelectedObject()
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_DIFFUSE_WITH_COLOR_PTR);
 		shader->enableProgram();
 
-		glEnable(GL_LIGHT0);
-		glEnable(GL_LIGHTING);
-		
 		float distance_frm_cam=(m_pSelectedObj->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
 		if(distance_frm_cam<12.0f)
 			distance_frm_cam=1.0f;
 		else
 			distance_frm_cam/=12.0f;
 
-		//matrix4x4f localTM(*m_pSelectedObj->getWorldMatrix());
-		//vector3f localScale(localTM.getScale());
-		//localScale.normalize();
-		//localTM.setScale(localScale);
-		//glPushMatrix();
 		const float* u_mvp_m4x4_local=NULL;
 		const float* u_mvp_m4x4_world=NULL;
-		//if(m_bTransformThroughLocalAxis)
-		{
-			u_mvp_m4x4_local = (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * *m_pSelectedObj->getWorldMatrix()).getMatrix();
-		}
-		//else
-		{
-			matrix4x4f globalAxisTM;
-			globalAxisTM.setPosition(m_pSelectedObj->getWorldMatrix()->getPosition());
-			u_mvp_m4x4_world = (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * globalAxisTM).getMatrix();
-		}
+		matrix4x4f noscale_world_matrix(*m_pSelectedObj->getWorldMatrix());
+		noscale_world_matrix.noScale();
+		u_mvp_m4x4_local = (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * noscale_world_matrix).getMatrix();
 
-		glEnable(GL_COLOR_MATERIAL);
+		matrix4x4f globalAxisTM;
+		globalAxisTM.setPosition(m_pSelectedObj->getWorldMatrix()->getPosition());
+		u_mvp_m4x4_world = (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * globalAxisTM).getMatrix();
+
+		//glEnable(GL_COLOR_MATERIAL);
 		if(m_bTransformThroughLocalAxis)
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 		else
@@ -741,7 +730,6 @@ void gearSceneWorldEditor::drawSelectedObject()
 		shader->enableProgram();
 
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
-		//glColor4f(0.25f, 0.4f, 0.62f, 1);
 #if USE_BULLET
 		if(m_pSelectedObj->getRigidBody())
 			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.0f, 0.62f, 1.0f);
@@ -757,25 +745,17 @@ void gearSceneWorldEditor::drawSelectedObject()
 			shader->sendUniformTMfv("u_mvp_m4x4", m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix(), false, 4);
 			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.4f, 0.62f, 1.0f);
 			m_pSelectedObj->getAABB().draw(shader);
-			//m_pMainWorldPtr->getAABB().draw(shader);
 		}
 
 		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA)
 		{
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.6f, 0.6f, 1.0f);
-			//drawCameraFrustum((Camera*)m_pSelectedObj, shader);
 			((Camera*)m_pSelectedObj)->drawFrustum(shader);
 		}
 
-		glDisable(GL_COLOR_MATERIAL);
-
+		//glDisable(GL_COLOR_MATERIAL);
 		shader->disableProgram();
-
-		//glPopMatrix();
-
-		glDisable(GL_LIGHT0);
-		glDisable(GL_LIGHTING);
 	}
 }
 
@@ -1067,6 +1047,8 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	m_iAxisSelected=0;
 	if(m_pSelectedObj)
 	{
+		matrix4x4f noscale_world_matrix(*m_pSelectedObj->getWorldMatrix());
+		noscale_world_matrix.noScale();
 		float distance_frm_cam=(m_pSelectedObj->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
 		if(distance_frm_cam<12.0f)
 			distance_frm_cam=1.0f;
@@ -1081,9 +1063,9 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 
 		if(m_bTransformThroughLocalAxis)
 		{
-			xgizmo_max=*m_pSelectedObj->getWorldMatrix() * xgizmo_max ;
-			ygizmo_max=*m_pSelectedObj->getWorldMatrix() * ygizmo_max ;
-			zgizmo_max=*m_pSelectedObj->getWorldMatrix() * zgizmo_max ;
+			xgizmo_max=noscale_world_matrix * xgizmo_max ;
+			ygizmo_max=noscale_world_matrix * ygizmo_max ;
+			zgizmo_max=noscale_world_matrix * zgizmo_max ;
 		}
 		else
 		{
@@ -1144,6 +1126,22 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 					}
 				}
 			}
+		}
+	}
+
+	if(m_iAxisSelected==0 && m_pMainWorldPtr->getOctree())
+	{
+		//m_cMultiPassFBO.BindFBO();
+		//glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth);
+		//m_cMultiPassFBO.UnBindFBO();
+		vector3f rayOrig(minV);
+		vector3f rayDir(maxV-minV);
+		rayDir.normalize();
+		object3d* pickedObj = m_pMainWorldPtr->getOctree()->pickBruteForce(rayOrig, rayDir);
+
+		if(pickedObj!=m_pSelectedObj && pickedObj!=NULL)
+		{
+			EditorApp::getSceneHierarchy()->selectObject3dInTreeView(pickedObj);
 		}
 	}
 

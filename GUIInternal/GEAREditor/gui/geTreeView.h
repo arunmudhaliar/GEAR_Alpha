@@ -116,6 +116,8 @@ public:
 
 	float getVirtualYPos()	{	return m_fVirtualYPos;	}
 
+	void selectNode(geTreeNode* nodetoselect);
+
 protected:
 	virtual void onSize(float cx, float cy, int flag);
 	virtual bool onMouseLButtonDown(float x, float y, int nFlag);

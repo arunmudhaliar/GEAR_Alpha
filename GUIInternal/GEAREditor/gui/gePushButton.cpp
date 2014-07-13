@@ -91,7 +91,7 @@ bool gePushButton::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	if(m_eState==BTN_STATE_NORMAL)
 	{
-		buttonPressed(false);
+		buttonPressed(true);
 	}
 
 	return true;
@@ -101,8 +101,8 @@ bool gePushButton::onMouseLButtonUp(float x, float y, int nFlag)
 {
 	if(m_eState==BTN_STATE_PRESSED)
 	{
-		buttonNormal(false);
 		onButtonClicked();
+		buttonNormal(false);
 	}
 
 	return true;

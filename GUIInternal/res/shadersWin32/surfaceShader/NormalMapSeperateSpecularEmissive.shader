@@ -1,6 +1,5 @@
 Shader "NormalMapSeperateSpecularEmissive" {
 Properties {
-	_Color ("Main Color", Color) = (1,1,1,1)
 	_MainTex ("Base (RGB) Gloss (A)", Tex2D) = "white" {}
 	_BumpMap ("Normal Map", Tex2D) = "bump" {}
 	_SpecMap ("Specular Map", Tex2D) = "spec" {}

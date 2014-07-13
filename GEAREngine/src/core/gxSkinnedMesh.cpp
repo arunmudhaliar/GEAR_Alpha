@@ -3,11 +3,13 @@
 gxSkinnedMesh::gxSkinnedMesh():
 gxMesh(OBJECT3D_SKINNED_MESH)
 {
+	m_pszBoneInfluenceCountBuffer=NULL;
 	m_pszBoneIndexBuffer=NULL;
 	m_pszWeightBuffer=NULL;
 	m_nBoneInfluencePerVertex=4;
 	m_pszBoneList=NULL;
 	m_nBones=0;
+	m_nBoneIndexBuffer=0;
 	m_pszVertexCopyBuffer=NULL;
 	m_pszInvBoneTMList=NULL;
 	m_pszBoneOffsetList=NULL;
@@ -16,6 +18,7 @@ gxMesh(OBJECT3D_SKINNED_MESH)
 
 gxSkinnedMesh::~gxSkinnedMesh()
 {
+	GX_DELETE_ARY(m_pszBoneInfluenceCountBuffer);
 	GX_DELETE_ARY(m_pszBoneIndexBuffer);
 	GX_DELETE_ARY(m_pszWeightBuffer);
 
@@ -25,22 +28,29 @@ gxSkinnedMesh::~gxSkinnedMesh()
 	GX_DELETE_ARY(m_pszBoneOffsetList);
 }
 
+#include <assert.h>
+
 void gxSkinnedMesh::update(float dt)
 {
 	gxMesh::update(dt);
+
+	int* boneindexbuffer=m_pszBoneIndexBuffer;
+	float* weightbuffer=m_pszWeightBuffer;
+	int tmp=m_nBoneIndexBuffer;
 
 	for(int x=0;x<m_nTris_For_Internal_Use*3;x++)
 	{
 		vector3f vertex(&m_pszVertexCopyBuffer[x*3]);
 		vector3f finalVertex;
-		for(int y=0;y<m_nBoneInfluencePerVertex;y++)
+		int nInfluenceBones=m_pszBoneInfluenceCountBuffer[x];
+		for(int y=0;y<nInfluenceBones;y++)
 		{
-			int boneID=m_pszBoneIndexBuffer[x*m_nBoneInfluencePerVertex+y];
+			int boneID=boneindexbuffer[y];
 			if(boneID<0)
 				continue;
 
 			object3d* bone=m_pszBoneList[boneID];
-			float weight=m_pszWeightBuffer[x*m_nBoneInfluencePerVertex+y];
+			float weight=weightbuffer[y];
 
 			vector3f transformedVertex(m_pszInvBoneTMList[boneID] * vertex);
 			vector3f deformVertex(*bone->getWorldMatrix() * transformedVertex);
@@ -48,6 +58,12 @@ void gxSkinnedMesh::update(float dt)
 			finalVertex.y+=deformVertex.y*weight;
 			finalVertex.z+=deformVertex.z*weight;
 		}
+
+		boneindexbuffer+=nInfluenceBones;
+		weightbuffer+=nInfluenceBones;
+
+		tmp-=nInfluenceBones;
+		assert(tmp>=0);
 
 		//finalVertex=finalVertex-this->getParent()->getWorldMatrix()->getPosition();
 		m_pszVertexBuffer[x*3+0]=finalVertex.x;
@@ -73,22 +89,31 @@ void gxSkinnedMesh::render(gxRenderer* renderer, object3d* light, int renderFlag
 	object3d::render(renderer, light, renderFlag);
 }
 
-int* gxSkinnedMesh::allocateBoneIndexBuffer(int nTris, int nBoneInfluencePerVertex)
+int* gxSkinnedMesh::allocateBoneInfluenceCountBuffer(int nTris)
 {
-	m_nBoneInfluencePerVertex=nBoneInfluencePerVertex;
+	GX_DELETE_ARY(m_pszBoneInfluenceCountBuffer);
+	m_pszBoneInfluenceCountBuffer = new int[nTris*3];
+	return m_pszBoneInfluenceCountBuffer;
+}
+
+int* gxSkinnedMesh::allocateBoneIndexBuffer(int nCount)
+{
+	//m_nBoneInfluencePerVertex=nBoneInfluencePerVertex;
+	m_nBoneIndexBuffer=nCount;
 	GX_DELETE_ARY(m_pszBoneIndexBuffer);
-	m_pszBoneIndexBuffer = new int[nTris*3*nBoneInfluencePerVertex];
-	for(int x=0;x<nTris*3*nBoneInfluencePerVertex;x++)
+	m_pszBoneIndexBuffer = new int[nCount];
+	for(int x=0;x<nCount;x++)
 		m_pszBoneIndexBuffer[x]=-1;
 	return m_pszBoneIndexBuffer;
 }
 
-float* gxSkinnedMesh::allocateWeightBuffer(int nTris, int nBoneInfluencePerVertex)
+float* gxSkinnedMesh::allocateWeightBuffer(int nCount)
 {
-	m_nBoneInfluencePerVertex=nBoneInfluencePerVertex;
+	//m_nBoneInfluencePerVertex=nBoneInfluencePerVertex;
+	m_nBoneIndexBuffer=nCount;
 	GX_DELETE_ARY(m_pszWeightBuffer);
-	m_pszWeightBuffer = new float[nTris*3*nBoneInfluencePerVertex];
-	memset(m_pszWeightBuffer, 0, sizeof(int)*nTris*3*nBoneInfluencePerVertex);
+	m_pszWeightBuffer = new float[nCount];
+	memset(m_pszWeightBuffer, 0, sizeof(float)*nCount);
 	return m_pszWeightBuffer;
 }
 
@@ -150,11 +175,22 @@ void gxSkinnedMesh::write(gxFile& file)
 	gxMesh::writeMeshData(file);
 
 	//write skin data
-	file.Write(m_nBoneInfluencePerVertex);
+	if(m_pszBoneInfluenceCountBuffer)
+	{
+		file.Write(true);
+		file.Write(m_nTris_For_Internal_Use);
+		file.WriteBuffer((unsigned char*)m_pszBoneInfluenceCountBuffer, sizeof(int)*m_nTris_For_Internal_Use*3);
+	}
+	else
+	{
+		file.Write(false);
+	}
+
 	if(m_pszBoneIndexBuffer)
 	{
 		file.Write(true);
-		file.WriteBuffer((unsigned char*)m_pszBoneIndexBuffer, sizeof(int)*m_nTris_For_Internal_Use*3*m_nBoneInfluencePerVertex);
+		file.Write(m_nBoneIndexBuffer);
+		file.WriteBuffer((unsigned char*)m_pszBoneIndexBuffer, sizeof(int)*m_nBoneIndexBuffer);
 	}
 	else
 	{
@@ -164,7 +200,8 @@ void gxSkinnedMesh::write(gxFile& file)
 	if(m_pszWeightBuffer)
 	{
 		file.Write(true);
-		file.WriteBuffer((unsigned char*)m_pszWeightBuffer, sizeof(float)*m_nTris_For_Internal_Use*3*m_nBoneInfluencePerVertex);
+		file.Write(m_nBoneIndexBuffer);
+		file.WriteBuffer((unsigned char*)m_pszWeightBuffer, sizeof(float)*m_nBoneIndexBuffer);
 	}
 	else
 	{
@@ -198,21 +235,33 @@ void gxSkinnedMesh::read(gxFile& file)
 	gxMesh::read(file);
 
 	//read skin data
-	file.Read(m_nBoneInfluencePerVertex);
+
+	bool bBoneInfluenceCountBuffer=false;
+	file.Read(bBoneInfluenceCountBuffer);
+	if(bBoneInfluenceCountBuffer)
+	{
+		int nBoneInfluenceCountBuffer=0;
+		file.Read(nBoneInfluenceCountBuffer);
+		int* buffer=allocateBoneInfluenceCountBuffer(nBoneInfluenceCountBuffer);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(int)*nBoneInfluenceCountBuffer*3);
+	}
+
 	bool bBoneIndexBuffer=false;
 	file.Read(bBoneIndexBuffer);
 	if(bBoneIndexBuffer)
 	{
-		int* buffer=allocateBoneIndexBuffer(m_nTris_For_Internal_Use, m_nBoneInfluencePerVertex);
-		file.ReadBuffer((unsigned char*)buffer, sizeof(int)*m_nTris_For_Internal_Use*3*m_nBoneInfluencePerVertex);
+		file.Read(m_nBoneIndexBuffer);
+		int* buffer=allocateBoneIndexBuffer(m_nBoneIndexBuffer);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(int)*m_nBoneIndexBuffer);
 	}
 
 	bool bWeightBuffer=false;
 	file.Read(bWeightBuffer);
 	if(bWeightBuffer)
 	{
-		float* buffer=allocateWeightBuffer(m_nTris_For_Internal_Use, m_nBoneInfluencePerVertex);
-		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*m_nBoneInfluencePerVertex);
+		file.Read(m_nBoneIndexBuffer);
+		float* buffer=allocateWeightBuffer(m_nBoneIndexBuffer);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nBoneIndexBuffer);
 	}
 	file.Read(m_nBones);
 	allocateBoneList(m_nBones);

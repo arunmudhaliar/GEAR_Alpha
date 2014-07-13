@@ -1,6 +1,5 @@
 Shader "NormalMap" {
 Properties {
-	_Color ("Main Color", Color) = (1,1,1,1)
 	_MainTex ("Base (RGB)", Tex2D) = "white" {}
 	_BumpMap ("Normal Map", Tex2D) = "bump" {}
 }

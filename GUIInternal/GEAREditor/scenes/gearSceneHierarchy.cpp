@@ -86,6 +86,31 @@ void gearSceneHierarchy::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tre
 	EditorApp::getScenePropertyEditor()->populatePropertyOfObject((object3d*)tvnode->getUserData());
 }
 
+void gearSceneHierarchy::selectObject3dInTreeView(object3d* objtoselect)
+{
+	selectObject3dInTreeView(m_cGameObjectsTreeView.getRoot(), objtoselect);
+}
+
+bool gearSceneHierarchy::selectObject3dInTreeView(geTreeNode* node, object3d* objtoselect)
+{
+	if(node->getUserData()==objtoselect)
+	{
+		m_cGameObjectsTreeView.selectNode(node);
+		return true;
+	}
+
+	std::vector<geGUIBase*>* list=node->getChildControls();
+	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
+	{
+		geGUIBase* tvnode = *it;
+		if(tvnode->getGUIID()!=GEGUI_TREEVIEW_NODE)
+			continue;
+		if(selectObject3dInTreeView((geTreeNode*)tvnode, objtoselect))
+			return true;
+	}
+	return false;
+}
+
 bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 {
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))

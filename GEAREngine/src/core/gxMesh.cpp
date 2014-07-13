@@ -615,9 +615,9 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 		if(submap->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
 		{
 			//need to fix this bug
-			//CHECK_GL_ERROR(glEnable(GL_BLEND));
-			//CHECK_GL_ERROR(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-			//setBaseFlag(eObject3dBaseFlag_Alpha);	//check this
+			CHECK_GL_ERROR(glEnable(GL_BLEND));
+			CHECK_GL_ERROR(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+			setBaseFlag(eObject3dBaseFlag_Alpha);	//check this
 			//
 		}
 	}
@@ -665,7 +665,7 @@ void gxMesh::disableTextureOperations(int stage, gxHWShader* shader, const char*
 	}
 #endif
 	//need to fix this bug
-	//CHECK_GL_ERROR(glDisable(GL_BLEND));
+	CHECK_GL_ERROR(glDisable(GL_BLEND));
 	//
 }
 

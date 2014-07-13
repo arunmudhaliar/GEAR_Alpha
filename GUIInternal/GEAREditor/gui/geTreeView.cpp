@@ -962,3 +962,54 @@ void geTreeView::resetSelectedNodePtr()
 	m_pCurrentSelectedNodePtr=NULL;
 	m_cSelectedNodes.clear();
 }
+
+void geTreeView::selectNode(geTreeNode* nodetoselect)
+{
+	bool bAlreadySelected=false;
+	for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+	{
+		geTreeNode* node = *it;
+		if(node==nodetoselect)
+		{
+			bAlreadySelected=true;
+			break;
+		}
+	}
+
+	if(!bAlreadySelected)
+	{
+		for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+		{
+			geTreeNode* node = *it;
+			node->unselectNode();
+		}
+		m_cSelectedNodes.clear();
+
+		nodetoselect->selectNode();
+		if(m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=nodetoselect)
+			m_pCurrentSelectedNodePtr->unselectNode();
+		m_pCurrentSelectedNodePtr=nodetoselect;
+		m_cSelectedNodes.push_back(nodetoselect);
+	}
+	else
+	{
+		m_pCurrentSelectedNodePtr=nodetoselect;
+		nodetoselect->selectNode();
+	}
+	
+	//open parent node
+	geTreeNode* pnode=nodetoselect;
+	while(pnode)
+	{
+		if(pnode!=nodetoselect)
+		{
+			pnode->openNode();
+		}
+		pnode=(geTreeNode*)pnode->getParent();
+	}
+
+	m_pTVObserver->onTVSelectionChange(nodetoselect, this);
+	m_iTotalHeightOfAllNodes=0;
+	m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
+	m_cVerticalScrollBar.setConetentHeight(m_iTotalHeightOfAllNodes);
+}

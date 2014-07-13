@@ -1,6 +1,5 @@
 Shader "Diffuse" {
 Properties {
-	_Color ("Main Color", Color) = ( 1.0, .05,  1.00,1111.2222  )
 	_MainTex ("Base (RGB)", Tex2D) = "white" {}
 }
 

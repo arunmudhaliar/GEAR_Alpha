@@ -26,6 +26,8 @@ public:
 
 	void clearPrivateIterator()	{	m_iPrivateIterator=0;	}
 
+	void setRootNode(object3d* rootNode)	{	m_pRootNodePtr = rootNode;	}
+
 private:
 	int* m_pszBoneInfluenceCountBuffer;
 	int* m_pszBoneIndexBuffer;
@@ -38,7 +40,8 @@ private:
 	int m_nBoneIndexBuffer;
 	object3d** m_pszBoneList;
 	matrix4x4f* m_pszInvBoneTMList;
-	vector3f* m_pszBoneOffsetList;
+	matrix4x4f* m_pszBoneOffsetList;
+	object3d* m_pRootNodePtr;
 };
 
 #endif

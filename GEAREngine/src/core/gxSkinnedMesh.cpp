@@ -13,6 +13,7 @@ gxMesh(OBJECT3D_SKINNED_MESH)
 	m_pszVertexCopyBuffer=NULL;
 	m_pszInvBoneTMList=NULL;
 	m_pszBoneOffsetList=NULL;
+	m_pRootNodePtr=NULL;
 	reSetBaseFlag(eObject3dBaseFlag_Static);
 }
 
@@ -28,8 +29,6 @@ gxSkinnedMesh::~gxSkinnedMesh()
 	GX_DELETE_ARY(m_pszBoneOffsetList);
 }
 
-#include <assert.h>
-
 void gxSkinnedMesh::update(float dt)
 {
 	gxMesh::update(dt);
@@ -37,6 +36,9 @@ void gxSkinnedMesh::update(float dt)
 	int* boneindexbuffer=m_pszBoneIndexBuffer;
 	float* weightbuffer=m_pszWeightBuffer;
 	int tmp=m_nBoneIndexBuffer;
+	matrix4x4f skinTM(*this);
+	//skinTM.setPosition(0, 0, 0);
+	matrix4x4f rootNodeInverse(getWorldMatrix()->getInverse());	//TODO: try optimize this by transforming the skin in transformchanged()
 
 	for(int x=0;x<m_nTris_For_Internal_Use*3;x++)
 	{
@@ -53,7 +55,8 @@ void gxSkinnedMesh::update(float dt)
 			float weight=weightbuffer[y];
 
 			vector3f transformedVertex(m_pszInvBoneTMList[boneID] * vertex);
-			vector3f deformVertex(*bone->getWorldMatrix() * transformedVertex);
+			//vector3f deformVertex(*bone->getWorldMatrix() * transformedVertex);
+			vector3f deformVertex((rootNodeInverse * *bone->getWorldMatrix()) * transformedVertex);
 			finalVertex.x+=deformVertex.x*weight;
 			finalVertex.y+=deformVertex.y*weight;
 			finalVertex.z+=deformVertex.z*weight;
@@ -124,7 +127,7 @@ void gxSkinnedMesh::allocateBoneList(int nBones)
 	GX_DELETE_ARY(m_pszInvBoneTMList);
 	m_pszBoneList = new object3d*[nBones];
 	m_pszInvBoneTMList = new matrix4x4f[nBones];
-	m_pszBoneOffsetList = new vector3f[nBones];
+	m_pszBoneOffsetList = new matrix4x4f[nBones];
 }
 
 void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
@@ -136,12 +139,17 @@ void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
 	}
 
 	m_pszBoneList[m_iPrivateIterator]=bone;
+	matrix4x4f bone_backup(*bone);
 	if(bone!=this /*&& bone!=this->getParent()*/)
 	{
+		m_pszBoneOffsetList[m_iPrivateIterator]=*bone->getWorldMatrix();
 		*(matrix4x4f*)bone = *bone * this->getWorldMatrix()->getInverse();
 	}
 	m_pszInvBoneTMList[m_iPrivateIterator]=bone->getWorldMatrix()->getInverse();
-	m_pszBoneOffsetList[m_iPrivateIterator]=bone->getWorldMatrix()->getPosition();
+	
+	//reassign the original value to bone
+	*(matrix4x4f*)bone=bone_backup;
+
 	m_iPrivateIterator++;
 
 #ifdef USE_BXLIST

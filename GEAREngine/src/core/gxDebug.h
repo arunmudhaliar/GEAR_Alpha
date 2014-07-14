@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
 #include "basicIncludes.h"
 
 #if defined(_WIN32) && defined(_DEBUG)

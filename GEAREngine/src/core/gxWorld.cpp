@@ -579,6 +579,7 @@ void gxWorld::populateBonesToMeshNode(object3d* obj, object3d* rootNode)
 	{
 		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj;
 		int index=0;
+		skinMesh->setRootNode(rootNode);
 		skinMesh->clearPrivateIterator();
 		skinMesh->populateBoneList(rootNode, index);
 	}

@@ -27,6 +27,9 @@ MonoImage*		monoWrapper::g_pImage = NULL;
 MonoClass*		monoWrapper::g_pMonoGEAREntryPointClass = NULL;
 MonoClass*		monoWrapper::g_pMonoobject3d = NULL;
 
+MonoAssembly*	monoWrapper::g_pUserMonoAssembly = NULL;
+MonoImage*		monoWrapper::g_pUserImage = NULL;
+
 MonoMethod* monoWrapper::g_monogear_engine_test_function_for_mono=NULL;
 MonoMethod* monoWrapper::g_mono_game_start = NULL;
 MonoMethod* monoWrapper::g_mono_game_run = NULL;
@@ -53,6 +56,9 @@ MonoMethod* monoWrapper::g_pMethod_engine_destroyObject3d = NULL;
 MonoMethod* monoWrapper::g_mono_object3d_onObject3dChildAppend = NULL;
 MonoMethod* monoWrapper::g_mono_object3d_onObject3dChildRemove = NULL;
 
+std::vector<std::string> monoWrapper::g_monoscriptlist;
+std::vector<monoScript*> monoWrapper::g_monoScriptClassDefs;
+
 void monoWrapper::loadMonoModules()
 {
 #ifndef USEMONOENGINE
@@ -60,8 +66,9 @@ void monoWrapper::loadMonoModules()
 #endif
 
 #ifdef _WIN32
-	//mono_set_dirs("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc"); 
-	mono_set_dirs("../Mono-2.10.6/lib", "../Mono-2.10.6/etc");
+	mono_set_dirs("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc"); 
+	//mono_set_dirs("../Mono-2.10.6/lib", "../Mono-2.10.6/etc");
+	//mono_set_dirs("C:/Mono-3.2.3/lib", "C:/Mono-3.2.3/etc");
 #else
 	mono_set_dirs("/storage/emulated/0/gear/", "/storage/emulated/0/gear/");
 #endif
@@ -70,47 +77,101 @@ void monoWrapper::loadMonoModules()
 	g_pMonoDomain = mono_jit_init("system");
 }
 
+void onMonoAssemblyLoad(MonoAssembly *assembly, void* user_data)
+{
+
+}
+
+void monoWrapper::destroyUserDefinedMonoClassDefs()
+{
+	for(int x=0;x<g_monoScriptClassDefs.size();x++)
+	{
+		monoScript* script = g_monoScriptClassDefs[x];
+		GX_DELETE(script);
+	}
+	g_monoScriptClassDefs.clear();
+}
+
 void monoWrapper::reInitMono(const char* projecthomedirectory)
 {
 #ifndef USEMONOENGINE
 	return;
 #endif
 	//destroyMono();
+
+	destroyUserDefinedMonoClassDefs();
 #ifdef _WIN32
-	std::vector<std::string> csharpfileslist;
-	traverseForCSharpFiles(projecthomedirectory, &csharpfileslist);
-	compileCSharpScripts(&csharpfileslist);
-	csharpfileslist.clear();
+	g_monoscriptlist.clear();
+	traverseForCSharpFiles(projecthomedirectory, &g_monoscriptlist);
+	compileCSharpScripts(&g_monoscriptlist);
 
 #if _DEBUG
-	const char* executableFile="./Debug/out.exe";
+	const char* monogeardllfile="./Debug/MonoGEAR.dll";
+	const char* userexecutablefile="./Debug/out.exe";
 #else
-	const char* executableFile="./Release/out.exe";
+	const char* monogeardllfile="./Release/MonoGEAR.dll";
+	const char* userexecutablefile="./Release/out.exe";
 #endif
 #else
-	const char* executableFile="/storage/emulated/0/gear/out.exe";
+	const char* monogeardllfile="/storage/emulated/0/gear/MonoGEAR.dll";
+	const char* userexecutablefile="/storage/emulated/0/gear/out.exe";
 #endif
 
-	g_pMonoAssembly = mono_domain_assembly_open(g_pMonoDomain, executableFile);
+	//hooks
+	mono_install_assembly_load_hook(onMonoAssemblyLoad, NULL);
 
-	//if (!assembly)
-	//	exit (2);
-	/*
-	 * mono_jit_exec() will run the Main() method in the assembly.
-	 * The return value needs to be looked up from
-	 * System.Environment.ExitCode.
-	 */
-
+	g_pMonoAssembly = mono_domain_assembly_open(g_pMonoDomain, monogeardllfile);
 	g_pImage = mono_assembly_get_image(g_pMonoAssembly);
+
+	g_pUserMonoAssembly = mono_domain_assembly_open(g_pMonoDomain, userexecutablefile);
+	g_pUserImage = mono_assembly_get_image(g_pUserMonoAssembly);
+	//MonoClass* g_pUserClass = mono_class_from_name (g_pUserImage, "helloworld", "helloworld");
+
 	g_pMonoGEAREntryPointClass = mono_class_from_name (g_pImage, "MonoGEAR", "MonoGEAREntryPointClass");
 	g_pMonoobject3d = mono_class_from_name (g_pImage, "MonoGEAR", "object3d");
+
+	//
+	int nUserDefinedClasses = mono_image_get_table_rows (g_pUserImage, MONO_TABLE_TYPEDEF);
+	for(int x=1;x<nUserDefinedClasses;x++)
+	{
+		MonoClass* uklass = mono_class_get (g_pUserImage, (x+1) | MONO_TOKEN_TYPE_DEF);
+		const char* klassname=mono_class_get_name(uklass);
+		const char* klassnamespace=mono_class_get_namespace(uklass);
+
+		for(int y=0;y<g_monoscriptlist.size();y++)
+		{
+			const char* scriptname = gxUtil::getFileNameFromPath(g_monoscriptlist[y].c_str());
+			char kclass_cs[512];
+			memset(kclass_cs, 0, sizeof(kclass_cs));
+			sprintf(kclass_cs, "%s.cs", klassname);
+			if(strcmp(scriptname, kclass_cs)==0)
+			{
+				monoScript* newScript = new monoScript(scriptname, g_pMonoDomain, uklass, klassname, klassnamespace);
+				g_monoScriptClassDefs.push_back(newScript);
+			}
+		}
+	}
+	//
 
 	///* allocate memory for the object */
 	g_pMonoGEAREntryPointClass_Instance_Variable = mono_object_new(g_pMonoDomain, g_pMonoGEAREntryPointClass);
 
 	bindEngineMethods();
- //   /* execute the default argument-less constructor */
+	///* execute the default argument-less constructor */
 	mono_runtime_object_init(g_pMonoGEAREntryPointClass_Instance_Variable);
+}
+
+monoScript* monoWrapper::mono_getMonoScripDef(const char* scriptname)
+{
+	const char* _scriptname = gxUtil::getFileNameFromPath(scriptname);
+	for(int x=0;x<g_monoScriptClassDefs.size();x++)
+	{
+		monoScript* script = g_monoScriptClassDefs[x];
+		if(strcmp(_scriptname, script->getMonoScript().c_str())==0)
+			return script;
+	}
+
+	return NULL;
 }
 
 #ifdef _WIN32
@@ -176,6 +237,7 @@ void monoWrapper::updateMono()
 
 void monoWrapper::destroyMono()
 {
+	destroyUserDefinedMonoClassDefs();
 #ifdef USEMONOENGINE
 	if(g_pMonoDomain)
 	{
@@ -531,9 +593,9 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 	//command_buffer += "-o "+EditorApp::getProjectHomeDirectory()+"/MetaData/out.exe";
 
 #if _DEBUG
-	command_buffer += "-v -o Debug//out.exe";
+	command_buffer += "-v -o Debug//out.exe -r:Debug//MonoGEAR.dll";
 #else
-	command_buffer += "-v -o Release//out.exe";
+	command_buffer += "-v -o Release//out.exe -lib:Debug//MonoGEAR.dll";
 #endif
 
 	char responsebuffer[4096];

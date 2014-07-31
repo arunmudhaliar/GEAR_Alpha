@@ -1,12 +1,15 @@
 #ifndef MONOWRAPPER_H
 #define MONOWRAPPER_H
 
-#include <mono\metadata\mono-config.h>
-#include <mono\metadata\metadata.h>
-#include <mono\metadata\assembly.h>
-#include <mono\jit\jit.h>
+#include <mono/metadata/mono-config.h>
+#include <mono/metadata/metadata.h>
+#include <mono/metadata/assembly.h>
+#include <mono/metadata/tokentype.h>
+#include <mono/jit/jit.h>
+
 
 #include "../../../GEAREngine/src/GEAREngine.h"
+#include "monoScript.h"
 
 class DECLSPEC monoWrapper
 {
@@ -21,6 +24,8 @@ public:
 	static void initDebugConsole();
 	static void destroyDebugConsole();
 #endif
+	static void destroyUserDefinedMonoClassDefs();
+
 	//MONO C# test function
 	static int mono_engine_test_function_for_mono();
 	//
@@ -61,6 +66,8 @@ public:
 	static char exec_cmd(char const *cmd, char *buf);
 #endif
 
+	static monoScript* mono_getMonoScripDef(const char* scriptname);
+
 private:
 	static MonoObject*		g_pMonoGEAREntryPointClass_Instance_Variable;
 	static MonoDomain*		g_pMonoDomain;
@@ -68,6 +75,10 @@ private:
 	static MonoImage*		g_pImage;
 	static MonoClass*		g_pMonoGEAREntryPointClass;
 	static MonoClass*		g_pMonoobject3d;
+
+	//USER ASSEMBLY
+	static MonoAssembly*	g_pUserMonoAssembly;
+	static MonoImage*		g_pUserImage;
 
 	//ENGIINE INTERFACES
 	static MonoMethod* g_monogear_engine_test_function_for_mono;
@@ -97,6 +108,11 @@ private:
 	static MonoMethod* g_mono_object3d_onObject3dChildAppend;
 	static MonoMethod* g_mono_object3d_onObject3dChildRemove;
 	//
+
+	//scripts
+	static std::vector<std::string> g_monoscriptlist;
+
+	static std::vector<monoScript*> g_monoScriptClassDefs;
 };
 
 #endif

@@ -22,7 +22,7 @@
 #endif
 #include "quaternion.h"
 #include "GEARAsset.h"
-
+#include "../mono/src/monoScript.h"
 
 //M* Observers
 class DECLSPEC MRootObserver
@@ -126,6 +126,7 @@ public:
 	//message pump
 	virtual void update(float dt);
 	virtual void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);	//
+	virtual void updateMono();
 
 	//transform-callback
 	virtual void transformationChangedf();
@@ -210,6 +211,11 @@ public:
 	void setLayer(int layer, bool bRecursive);
 	int getLayer()				{	return m_iLayer;	}
 
+	//mono scripts
+	void attachMonoScrip(monoScript* script);
+	monoScriptObjectInstance* getMonoScriptInstance(int index);
+	int getMonoScriptInstanceCount();
+
 protected:
 	void clearAnimTrackOnAllNodes();
 
@@ -235,6 +241,8 @@ protected:
 #endif
 	bool m_bVisited;
 	int m_iLayer;
+
+	std::vector<monoScriptObjectInstance*> m_cAttachedScriptInstances;
 };
 
 ////////////////////OBJECT3D C# BRIDGE////////////////////

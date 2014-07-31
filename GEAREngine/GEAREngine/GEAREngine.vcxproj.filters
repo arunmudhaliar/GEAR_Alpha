@@ -681,6 +681,9 @@
     <ClCompile Include="..\src\core\GEARAsset.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\mono\src\monoScript.cpp">
+      <Filter>engine\mono</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -1624,6 +1627,9 @@
     </ClInclude>
     <ClInclude Include="..\src\core\GEARAsset.h">
       <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mono\src\monoScript.h">
+      <Filter>engine\mono</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

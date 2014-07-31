@@ -435,7 +435,10 @@ void gearSceneWorldEditor::onDraw()
 	if(m_pPlayButton->isButtonPressed() && !m_pPauseButton->isButtonPressed())
 	{
 		if(m_bMonoGameInitialized)
+		{
+			m_pMainWorldPtr->updateMono();
 			monoWrapper::mono_game_run(Timer::getDtinSec()*Timer::getTimeScale());
+		}
 	}
 }
 
@@ -881,22 +884,22 @@ void gearSceneWorldEditor::preWorldRender()
 
 void gearSceneWorldEditor::postWorldRender()
 {
-	//glBegin(GL_LINES);
-	//glVertex3fv(&minV.x);
-	//glVertex3fv(&maxV.x);
-	//glEnd();
+	////glBegin(GL_LINES);
+	////glVertex3fv(&minV.x);
+	////glVertex3fv(&maxV.x);
+	////glEnd();
 
 	//glDisable(GL_DEPTH_TEST);
 	//glPushMatrix();
-	//glTranslatef(i1.x, i1.y, i1.z);
+	//glTranslatef(m_cDebugPos.x, m_cDebugPos.y, m_cDebugPos.z);
 	////glColor4f(1, 0 , 0, 1);
 	//glutWireSphere(0.1f, 3, 3);
 	//glPopMatrix();
-	//glPushMatrix();
-	//glTranslatef(testSpehere.x, testSpehere.y, testSpehere.z);
-	//glColor4f(1, 0 , 0, 1);
-	//glutWireSphere(0.1f, 3, 3);
-	//glPopMatrix();
+	////glPushMatrix();
+	//////glTranslatef(testSpehere.x, testSpehere.y, testSpehere.z);
+	////glColor4f(1, 0 , 0, 1);
+	////glutWireSphere(0.1f, 3, 3);
+	////glPopMatrix();
 	//glEnable(GL_DEPTH_TEST);
 }
 
@@ -1012,6 +1015,7 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	if(!m_pMainWorldPtr || !m_pMainWorldPtr->getActiveCamera()) return true;
 
 	vector3f minV;
+	vector3f rayminV;
 	vector3f maxV;
 	vector3f i1, i2, testSpehere;
 
@@ -1030,19 +1034,27 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 		projectionTM[m]=m_pMainWorldPtr->getActiveCamera()->getProjectionMatrix()->getMatrix()[m];
 	}
 
-	GLdouble x1, y1, z1, depth;
-	GLdouble x2, y2, z2;
-	//CHECK_GL_ERROR(glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth));
-	z1=z2=depth=0.0f;
-
 	gxRectf viewPortRect=m_pMainWorldPtr->getRenderer()->getViewPortRect();
+	GLdouble x1, y1, z1;
+	GLdouble x2, y2, z2;
+	GLdouble x3, y3, z3;
+	GLfloat depth;
+
+	glEnable(GL_DEPTH_TEST);
+	m_cMultiPassFBO.BindFBO();
+	CHECK_GL_ERROR(glReadPixels(x, viewPortRect.m_size.y - y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
+	m_cMultiPassFBO.UnBindFBO();
+	z1=z2=0.0f;
+
 	GLint viewport[4]={viewPortRect.m_pos.x, viewPortRect.m_pos.y, viewPortRect.m_size.x, viewPortRect.m_size.y}; 
 	//float ptY=Scene::getCommonData()->getScreenHeight();
 	CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 0, viewTM, projectionTM, viewport, &x1, &y1, &z1));
 	CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 1, viewTM, projectionTM, viewport, &x2, &y2, &z2));
+	CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, depth, viewTM, projectionTM, viewport, &x3, &y3, &z3));
 	
 	minV.set(x1, y1, z1);
 	maxV.set(x2, y2, z2);
+	rayminV.set(x3, y3, z3);
 
 	m_iAxisSelected=0;
 	if(m_pSelectedObj)
@@ -1129,13 +1141,14 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 		}
 	}
 
+	m_cDebugPos=minV;
 	if(m_iAxisSelected==0 && m_pMainWorldPtr->getOctree())
 	{
 		//m_cMultiPassFBO.BindFBO();
 		//glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth);
 		//m_cMultiPassFBO.UnBindFBO();
-		vector3f rayOrig(minV);
-		vector3f rayDir(maxV-minV);
+		vector3f rayOrig(rayminV);
+		vector3f rayDir(maxV-rayminV);
 		rayDir.normalize();
 		object3d* pickedObj = m_pMainWorldPtr->getOctree()->pickBruteForce(rayOrig, rayDir);
 

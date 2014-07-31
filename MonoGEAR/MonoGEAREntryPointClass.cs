@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define _DISABLEALL
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,10 +37,6 @@ namespace MonoGEAR
 		
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr engine_loadAndAppendFBXForDevice(IntPtr world, string filename);
-
-        //[DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        //static extern IntPtr engine_appendObject3dToRoot(IntPtr world, IntPtr obj);
-
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr engine_loadFBX(IntPtr world, string filename, string projecthomedirectory);
@@ -78,7 +76,7 @@ namespace MonoGEAR
         public static extern IntPtr engine_createEmptyObject3d(IntPtr parentObj, string name);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void engine_consoleLog(string msg);
+        public static extern void engine_consoleLog(string msg, int msgtype);
 
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr engine_createLight(IntPtr parentObj, string name, int eType);
@@ -87,10 +85,12 @@ namespace MonoGEAR
         {
         }
 
+        /*
         public static void Main(string[] args)
         {
 			Console.WriteLine("monogear_engine Main() called from C#");
         }
+        */
 
         public static int monogear_engine_test_function_for_mono()
         {
@@ -141,7 +141,7 @@ namespace MonoGEAR
             m_pRootObject3d4 = object3d.load("/cube.fbx");
             m_pRootObject3d4.updatePositionf(0, 0, -50);
 #else
-            engine_consoleLog("from mono");
+            engine_consoleLog("from mono", 0);
             m_pRootObject3d5 = object3d.load("/PrefabName.prefab");
 
             m_pRootObject3d6 = object3d.load("/PrefabName.prefab");
@@ -229,7 +229,7 @@ namespace MonoGEAR
         {
 #if !_DISABLEALL
 #if _DISABLE
-			engine_consoleLog("from mono");
+			engine_consoleLog("from mono", 0);
             m_pRootObject3d1.rotateWorldZf(100.0f * dt);
             m_pRootObject3d2.rotateWorldZf(-100.0f * dt);
             m_pRootObject3d3.rotateWorldYf(200.0f * dt);

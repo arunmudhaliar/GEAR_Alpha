@@ -39,10 +39,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../../Mono-2.10.6/include/mono-2.0;../../FBXSDK/2014.2/include;../src/zlib-1.2.4;..\..\openal\include;..\src\physics;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Mono-2.10.6\include\mono-2.0;../../FBXSDK/2014.2/include;../src/zlib-1.2.4;..\..\openal\include;..\src\physics;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>../../Mono-2.10.6/lib/mono/4.0;../../Mono-2.10.6/lib;../../Mono-2.10.6/bin;../../FBXSDK/2014.2/lib/vs2010/x86/$(Configuration);..\..\openal\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Mono-2.10.6\lib\mono\4.0;C:\Mono-2.10.6\lib;C:\Mono-2.10.6\bin;../../FBXSDK/2014.2/lib/vs2010/x86/$(Configuration);..\..\openal\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -124,6 +124,7 @@
     <ClCompile Include="..\src\lpng151\pngwrite.c" />
     <ClCompile Include="..\src\lpng151\pngwtran.c" />
     <ClCompile Include="..\src\lpng151\pngwutil.c" />
+    <ClCompile Include="..\src\mono\src\monoScript.cpp" />
     <ClCompile Include="..\src\mono\src\monoWrapper.cpp" />
     <ClCompile Include="..\src\physics\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp" />
     <ClCompile Include="..\src\physics\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp" />
@@ -342,6 +343,7 @@
     <ClInclude Include="..\src\lpng151\pnglibconf.h" />
     <ClInclude Include="..\src\lpng151\pngpriv.h" />
     <ClInclude Include="..\src\lpng151\pngstruct.h" />
+    <ClInclude Include="..\src\mono\src\monoScript.h" />
     <ClInclude Include="..\src\mono\src\monoWrapper.h" />
     <ClInclude Include="..\src\physics\btBulletCollisionCommon.h" />
     <ClInclude Include="..\src\physics\btBulletDynamicsCommon.h" />

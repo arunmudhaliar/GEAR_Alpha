@@ -18,6 +18,7 @@
 #include "propertyViews\gePropertyOctree.h"
 #include "propertyViews\gePropertyLayers.h"
 #include "propertyViews\geSettingsFog.h"
+#include "propertyViews\gePropertyScriptComponent.h"
 
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {
@@ -48,7 +49,7 @@ protected:
 
 private:
 	geTreeView m_cPropertiesTreeView;
-	Sprite2Dx m_cszSprites[10];
+	Sprite2Dx m_cszSprites[15];
 
 	geTreeNode* m_pObject3dParentNode;
 	geTreeNode* m_pTransformParentNode;
@@ -86,6 +87,10 @@ private:
 	//Fog
 	geTreeNode* m_pFogParentNode;
 	geSettingsFog* m_pSettingsFog;
+
+	//Scripts
+	geTreeNode* m_pMonoScriptParentNode;
+	gePropertyScriptComponent* m_pSettingsMonoScript;
 };
 
 #endif

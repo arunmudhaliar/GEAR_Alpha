@@ -10,9 +10,9 @@ namespace CSharpProjectMaker
     {
         static void Main(string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length < 3)
             {
-                Console.WriteLine("Usage: CSharpProjectMaker <app name> <working directory>");
+                Console.WriteLine("Usage: CSharpProjectMaker <app name> <working directory> <path to MonoGEAR.dll");
                 return;
             }
 
@@ -20,7 +20,7 @@ namespace CSharpProjectMaker
 
             Guid guid = Guid.NewGuid();
             create_sln(args[0], args[1], guid);
-            create_csproj(args[0], args[1], guid);
+            create_csproj(args[0], args[1], args[2], guid);
         }
 
         static void create_sln(string slnfilename, string workingdir, Guid guid)
@@ -50,7 +50,7 @@ namespace CSharpProjectMaker
             stream.Close();
         }
 
-        static void create_csproj(string cs_projfilename, string workingdir, Guid guid)
+        static void create_csproj(string cs_projfilename, string workingdir, string path_to_monogeardll, Guid guid)
         {
             StreamWriter stream = new StreamWriter(workingdir + "//" + cs_projfilename + ".csproj");
 
@@ -96,6 +96,10 @@ namespace CSharpProjectMaker
             stream.WriteLine("\t\t<Reference Include=\"System.Core\" />");
             stream.WriteLine("\t\t<Reference Include=\"System.Xml\" />");
             stream.WriteLine("\t\t<Reference Include=\"System.Xml.Linq\" />");
+
+            stream.WriteLine("\t\t<Reference Include=\"MonoGEAR\">");
+            stream.WriteLine("\t\t\t<HintPath>" + path_to_monogeardll + "</HintPath>");
+            stream.WriteLine("\t\t</Reference>");
 
             stream.WriteLine("\t</ItemGroup>");
             stream.WriteLine("\t<ItemGroup>");

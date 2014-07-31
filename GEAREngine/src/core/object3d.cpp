@@ -103,6 +103,13 @@ object3d::~object3d()
 	m_cChilds.clear();
 #endif
 
+	for(std::vector<monoScriptObjectInstance*>::iterator it = m_cAttachedScriptInstances.begin(); it != m_cAttachedScriptInstances.end(); ++it)
+	{
+		monoScriptObjectInstance* scriptinstance = *it;
+		GX_DELETE(scriptinstance);
+	}
+	m_cAttachedScriptInstances.clear();
+
 	//if(m_pAnimationTrack)
 	//	m_pAnimationTrack->setObject3d(NULL);
 	m_iAssetFileCRC=0;
@@ -222,6 +229,21 @@ void object3d::update(float dt)
 		obj->update(dt);
 	}
 #endif
+}
+
+void object3d::updateMono()
+{
+	for(std::vector<monoScriptObjectInstance*>::iterator it = m_cAttachedScriptInstances.begin(); it != m_cAttachedScriptInstances.end(); ++it)
+	{
+		monoScriptObjectInstance* scriptinstance = *it;
+		scriptinstance->update();
+	}
+
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		obj->updateMono();
+	}
 }
 
 void object3d::updateAnimationFrameToObject3d(int frame)
@@ -662,4 +684,21 @@ void object3d::readAnimationController(gxFile& file)
 		gxAnimation* animationController=createAnimationController();
 		animationController->read(file);
 	}
+}
+
+void object3d::attachMonoScrip(monoScript* script)
+{
+	monoScriptObjectInstance* newscript = new monoScriptObjectInstance(script, script->createNewObject());
+
+	m_cAttachedScriptInstances.push_back(newscript);
+}
+
+monoScriptObjectInstance* object3d::getMonoScriptInstance(int index)
+{
+	return m_cAttachedScriptInstances[index];
+}
+
+int object3d::getMonoScriptInstanceCount()
+{
+	return (int)m_cAttachedScriptInstances.size();
 }

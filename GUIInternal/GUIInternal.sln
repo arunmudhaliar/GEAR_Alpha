@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GUIInternal", "GUIInternal.vcxproj", "{26F81658-AD70-4115-9ABE-B45B4CDFFF37}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96} = {2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}

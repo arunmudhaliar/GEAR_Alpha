@@ -358,7 +358,9 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)
 {
 	if(m_cCollidedObjLst.GetCount()==0 && m_cCollidedAlphaObjLst.GetCount()==0) return NULL;
+	if(rayDir.lengthSquared()==0) return NULL;
 
+	std::vector<object3d*> raystartsfrominideobjects;
 	float smallest_distance=1e32f;
 	object3d* selectedObj=NULL;
 	ExpandableArrayNode<object3d*>* collidedtransformObjNode=m_cCollidedObjLst.GetRoot();
@@ -369,6 +371,10 @@ object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)
 		float distance=obj->getAABB().getRayIntersection(rayOrig, rayDir);
 		if(distance<=smallest_distance && distance>=0.0f && obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 		{
+			if(distance==0.0f)
+			{
+				raystartsfrominideobjects.push_back(obj);
+			}
 			selectedObj=obj;
 			smallest_distance=distance;
 		}
@@ -384,11 +390,30 @@ object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)
 		float distance=obj->getAABB().getRayIntersection(rayOrig, rayDir);
 		if(distance<=smallest_distance && distance>=0.0f && obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 		{
+			if(distance==0.0f)
+			{
+				raystartsfrominideobjects.push_back(obj);
+			}
 			selectedObj=obj;
 			smallest_distance=distance;
 		}
 		collidedtransformAlphaObjNode=collidedtransformAlphaObjNode->GetNext();
 	}
+
+	smallest_distance=1e32f;
+	//check if anyobject completely covers over ray origin
+	for(std::vector<object3d*>::iterator it = raystartsfrominideobjects.begin(); it != raystartsfrominideobjects.end(); ++it)
+	{
+		object3d* obj = *it;
+		vector3f v=obj->getAABB().getCenter()-rayOrig;
+		float distance=v.length();
+		if(distance<=smallest_distance)
+		{
+			selectedObj=obj;
+			smallest_distance=distance;
+		}
+	}
+	raystartsfrominideobjects.clear();
 
 	return selectedObj;
 }

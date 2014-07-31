@@ -297,6 +297,9 @@
     <ClInclude Include="GEAREditor\gui\RoundedRectControl.h">
       <Filter>GEAREditor\gui</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyScriptComponent.h">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -463,6 +466,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\gui\RoundedRectControl.cpp">
       <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyScriptComponent.cpp">
+      <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

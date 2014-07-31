@@ -179,6 +179,16 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDataObject* dropObject)
 			{
 				object3d* obj = engine_loadAndAppendMesh(EditorApp::getSceneWorldEditor()->getMainWorld(), relativePath);
 			}
+			else if(util::GE_IS_EXTENSION(relativePath, ".cs") || util::GE_IS_EXTENSION(relativePath, ".CS"))
+			{
+				if(selectedNode)
+				{
+					object3d* selectedObj=(object3d*)selectedNode->getUserData();
+
+					monoScript* script = monoWrapper::mono_getMonoScripDef(relativePath);
+					selectedObj->attachMonoScrip(script);
+				}
+			}
 		}
 		else if(dropObject->getSourcePtr()==this)
 		{

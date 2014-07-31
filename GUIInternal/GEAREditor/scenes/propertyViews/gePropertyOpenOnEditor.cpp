@@ -40,12 +40,19 @@ void gePropertyOpenOnEditor::onButtonClicked(geGUIBase* btn)
 	{
 		if(m_pButtonOpenOnEditor->isButtonPressed())
 		{
-			char buffer[1024];
+			char current_working_directory[1024];
+			GetCurrentDirectory(sizeof(current_working_directory), current_working_directory);
+
+			char buffer[2048];
 			char responsebuffer[4096];
 			//GetCurrentDirectory(sizeof(buffer), buffer);
 			memset(buffer, 0, sizeof(buffer));
 			memset(responsebuffer, 0, sizeof(responsebuffer));
-			sprintf(buffer, "CSharpProjectMaker.exe gearProject %s", EditorApp::getProjectHomeDirectory());
+#ifdef _DEBUG
+			sprintf(buffer, "CSharpProjectMaker.exe gearProject %s %s\\Debug\\MonoGEAR.dll", EditorApp::getProjectHomeDirectory(), current_working_directory);
+#else
+			sprintf(buffer, "CSharpProjectMaker.exe gearProject %s %s\\Release\\MonoGEAR.dll", EditorApp::getProjectHomeDirectory(), current_working_directory);
+#endif
 			printf("\n================Creating Visual Studio Project===============\n");
 			if(monoWrapper::exec_cmd(buffer, responsebuffer)==0)
 			{

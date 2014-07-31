@@ -112,6 +112,7 @@ private:
 	int m_iLastGLError;
 
 	bool m_bStopFollowCam;
+	vector3f m_cDebugPos;
 };
 
 #endif

@@ -147,6 +147,7 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyOctree.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyOpenOnEditor.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.h" />
+    <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyScriptComponent.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyTransform.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\geSettingsFog.h" />
     <ClInclude Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyOctree.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyOpenOnEditor.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertySaveMetaData.cpp" />
+    <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyScriptComponent.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyTransform.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\geSettingsFog.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.cpp" />

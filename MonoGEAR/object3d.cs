@@ -35,22 +35,37 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr object3d_getParent(IntPtr obj);
 
+        protected object3d():
+            base(MonoGEAREntryPointClass.engine_createEmptyObject3d(MonoGEAREntryPointClass.engine_getWorld(0), "emptyobject"))
+        {
+            Console.WriteLine("object3d() called");
+            initObject3d();
+        }
 
         public object3d(string name):
             base(MonoGEAREntryPointClass.engine_createEmptyObject3d(MonoGEAREntryPointClass.engine_getWorld(0), name))
         {
-
+            Console.WriteLine("object3d(string name) called");
+            initObject3d();
         }
 
         public object3d(object3d parent, string name):
             base(MonoGEAREntryPointClass.engine_createEmptyObject3d(parent.getHandle(), name))
         {
+            Console.WriteLine("object3d(object3d parent, string name) called");
+            initObject3d();
         }
 
         public object3d(IntPtr ptr):
             base(ptr)
         {
-            //m_vComponents.Add(new object3d(IntPtr.Zero));
+            Console.WriteLine("object3d(IntPtr ptr) called");
+            initObject3d();
+        }
+
+        protected override void setHandle(IntPtr ptr)
+        {
+            m_pObj3dPtr = ptr;
         }
 
         public static object3d load(string name)
@@ -137,6 +152,11 @@ namespace MonoGEAR
             return object3d_removeChild(m_pObj3dPtr, child.getHandle());
         }
         //List<object3d> m_cChildList;
+
+
+        protected virtual void initObject3d()
+        {
+        }
 
         string m_pName;
         gxAnimation m_pAnimation;

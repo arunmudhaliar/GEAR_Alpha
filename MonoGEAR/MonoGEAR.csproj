@@ -68,6 +68,7 @@
     <Compile Include="gxMath.cs" />
     <Compile Include="matrix4x4f.cs" />
     <Compile Include="MonoGEAREntryPointClass.cs" />
+    <Compile Include="monoScript.cs" />
     <Compile Include="object3d.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.cs" />

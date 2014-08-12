@@ -79,6 +79,7 @@ enum EDEFAULT_LAYERS
 
 class gxAnimation;
 class gxAnimationSet;
+
 class DECLSPEC object3d : public transform, public GEARAsset, public MRootObserver
 {
 private:

@@ -91,6 +91,10 @@ private:
 	//Scripts
 	geTreeNode* m_pMonoScriptParentNode;
 	gePropertyScriptComponent* m_pSettingsMonoScript;
+
+	std::vector<geTreeNode*> m_pMonoScriptParentNodeList;
+	std::vector<gePropertyScriptComponent*> m_pSettingsMonoScriptList;
+
 };
 
 #endif

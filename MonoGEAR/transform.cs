@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace MonoGEAR
 {
-    public class transform
+    public abstract class transform : object
     {
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void transform_updatePositionf(IntPtr t, float aXdt, float aYdt, float aZdt);
@@ -58,7 +58,8 @@ namespace MonoGEAR
 
         protected IntPtr m_pObj3dPtr;
 
-        public transform(IntPtr ptr)
+        public transform(IntPtr ptr):
+            base()
         {
             m_pObj3dPtr = ptr;
         }
@@ -67,6 +68,8 @@ namespace MonoGEAR
         {
             return m_pObj3dPtr;
         }
+
+        protected abstract void setHandle(IntPtr ptr);
 
         public void updatePositionf(float aXdt, float aYdt, float aZdt)
         {

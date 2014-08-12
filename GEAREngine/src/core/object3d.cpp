@@ -688,7 +688,7 @@ void object3d::readAnimationController(gxFile& file)
 
 void object3d::attachMonoScrip(monoScript* script)
 {
-	monoScriptObjectInstance* newscript = new monoScriptObjectInstance(script, script->createNewObject());
+	monoScriptObjectInstance* newscript = new monoScriptObjectInstance(script, script->createNewObject(), this);
 
 	m_cAttachedScriptInstances.push_back(newscript);
 }

@@ -10,26 +10,31 @@
 class monoScript
 {
 public:
-	monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* klass, std::string klassname, std::string knamespace);
+	monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* klass, std::string klassname, std::string knamespace, MonoClass* monoscript_klass);
 	~monoScript();
 
 	std::string getMonoScript()	{	return m_cScript;	}
 	MonoObject* createNewObject();
 	MonoClass* getMonoClass()	{	return m_pMonoObjectClass;	}
 
+	bool isMonoScript()	{ 	return m_bMonoScript;	}
+	MonoMethod* getSetHandleMethod()	{	return m_pSetHandle_method;	}
+
 private:
 	std::string m_cScript;
 	std::string m_cMonoClassName;
 	std::string m_cMonoNameSpace;
+	bool m_bMonoScript;
 
 	MonoClass* m_pMonoObjectClass;
 	MonoDomain* m_pMonoDomain;
+	MonoMethod* m_pSetHandle_method;
 };
 
 class monoScriptObjectInstance
 {
 public:
-	monoScriptObjectInstance(monoScript* script, MonoObject* monoobj);
+	monoScriptObjectInstance(monoScript* script, MonoObject* monoobj, void* obj);
 	~monoScriptObjectInstance();
 
 	monoScript* getScriptPtr()	{	return m_pScriptPtr;	}
@@ -38,6 +43,7 @@ public:
 private:
 	monoScript* m_pScriptPtr;
 	MonoObject* m_pMonoObjectInstance;
+	MonoMethod* m_pMethod_initMonoScript;
 	MonoMethod* m_pMethod_update;
 };
 

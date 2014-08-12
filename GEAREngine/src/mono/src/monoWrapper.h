@@ -75,6 +75,7 @@ private:
 	static MonoImage*		g_pImage;
 	static MonoClass*		g_pMonoGEAREntryPointClass;
 	static MonoClass*		g_pMonoobject3d;
+	static MonoClass*		g_pMonoScript;
 
 	//USER ASSEMBLY
 	static MonoAssembly*	g_pUserMonoAssembly;

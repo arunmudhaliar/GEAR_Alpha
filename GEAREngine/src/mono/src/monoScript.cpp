@@ -1,12 +1,19 @@
 #include "monoScript.h"
 
-monoScript::monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* klass, std::string klassname, std::string knamespace)
+monoScript::monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* klass, std::string klassname, std::string knamespace, MonoClass* monoscript_klass)
 {
 	m_cScript=script;
 	m_pMonoObjectClass = klass;	
 	m_cMonoClassName = klassname;
 	m_cMonoNameSpace = knamespace;
 	m_pMonoDomain = pMonoDomain;
+	m_pSetHandle_method = NULL;
+	m_bMonoScript=false;
+	if(mono_class_is_subclass_of(m_pMonoObjectClass, monoscript_klass, false))
+	{
+		m_bMonoScript=true;
+		m_pSetHandle_method =  mono_class_get_method_from_name(monoscript_klass, "setHandle", 2);
+	}
 }
 
 monoScript::~monoScript()
@@ -15,18 +22,27 @@ monoScript::~monoScript()
 
 MonoObject* monoScript::createNewObject()
 {
-	return mono_object_new(m_pMonoDomain, m_pMonoObjectClass);
+	MonoObject* newmonoobj = mono_object_new(m_pMonoDomain, m_pMonoObjectClass);
+	return newmonoobj;
 }
 
 /////////////////////////////////////////////////////////////////////
 
-monoScriptObjectInstance::monoScriptObjectInstance(monoScript* script, MonoObject* monoobj)
+monoScriptObjectInstance::monoScriptObjectInstance(monoScript* script, MonoObject* monoobj, void* obj)
 {
 	m_pScriptPtr = script;
 	m_pMonoObjectInstance = monoobj;
 
-	m_pMethod_update =  mono_class_get_method_from_name(script->getMonoClass(), "update", 0);
+	if(m_pScriptPtr->isMonoScript())
+	{
+		void* args[2]={this, &obj};
+		mono_runtime_invoke(m_pScriptPtr->getSetHandleMethod(), m_pMonoObjectInstance, args, NULL);
 
+		m_pMethod_update =  mono_class_get_method_from_name(m_pScriptPtr->getMonoClass(), "update", 0);
+		m_pMethod_initMonoScript =  mono_class_get_method_from_name(m_pScriptPtr->getMonoClass(), "initMonoScript", 0);
+		mono_runtime_invoke(m_pMethod_initMonoScript, m_pMonoObjectInstance, NULL, NULL);
+	}
+	
 }
 
 monoScriptObjectInstance::~monoScriptObjectInstance()
@@ -35,6 +51,8 @@ monoScriptObjectInstance::~monoScriptObjectInstance()
 
 void monoScriptObjectInstance::update()
 {
-	mono_runtime_invoke(m_pMethod_update, m_pMonoObjectInstance, NULL, NULL);
-
+	if(m_pScriptPtr->isMonoScript())
+	{
+		mono_runtime_invoke(m_pMethod_update, m_pMonoObjectInstance, NULL, NULL);
+	}
 }

@@ -26,6 +26,7 @@ MonoAssembly*	monoWrapper::g_pMonoAssembly = NULL;
 MonoImage*		monoWrapper::g_pImage = NULL;
 MonoClass*		monoWrapper::g_pMonoGEAREntryPointClass = NULL;
 MonoClass*		monoWrapper::g_pMonoobject3d = NULL;
+MonoClass*		monoWrapper::g_pMonoScript = NULL;
 
 MonoAssembly*	monoWrapper::g_pUserMonoAssembly = NULL;
 MonoImage*		monoWrapper::g_pUserImage = NULL;
@@ -129,6 +130,7 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 
 	g_pMonoGEAREntryPointClass = mono_class_from_name (g_pImage, "MonoGEAR", "MonoGEAREntryPointClass");
 	g_pMonoobject3d = mono_class_from_name (g_pImage, "MonoGEAR", "object3d");
+	g_pMonoScript = mono_class_from_name (g_pImage, "MonoGEAR", "monoScript");
 
 	//
 	int nUserDefinedClasses = mono_image_get_table_rows (g_pUserImage, MONO_TABLE_TYPEDEF);
@@ -146,7 +148,7 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 			sprintf(kclass_cs, "%s.cs", klassname);
 			if(strcmp(scriptname, kclass_cs)==0)
 			{
-				monoScript* newScript = new monoScript(scriptname, g_pMonoDomain, uklass, klassname, klassnamespace);
+				monoScript* newScript = new monoScript(scriptname, g_pMonoDomain, uklass, klassname, klassnamespace, g_pMonoScript);
 				g_monoScriptClassDefs.push_back(newScript);
 			}
 		}
@@ -595,7 +597,7 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 #if _DEBUG
 	command_buffer += "-v -o Debug//out.exe -r:Debug//MonoGEAR.dll";
 #else
-	command_buffer += "-v -o Release//out.exe -lib:Debug//MonoGEAR.dll";
+	command_buffer += "-v -o Release//out.exe -r:Release//MonoGEAR.dll";
 #endif
 
 	char responsebuffer[4096];

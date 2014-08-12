@@ -1,6 +1,19 @@
 #include "gearScenePropertyEditor.h"
 #include "../EditorApp.h"
 
+gearScenePropertyEditor::stMonoScriptTVNode::stMonoScriptTVNode()
+{
+	m_pMonoScriptParentNode=NULL;
+	m_pSettingsMonoScript=NULL;
+}
+
+gearScenePropertyEditor::stMonoScriptTVNode::~stMonoScriptTVNode()
+{
+	GX_DELETE(m_pMonoScriptParentNode);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
 gearScenePropertyEditor::gearScenePropertyEditor():
 geWindow("Property Editor")
 {
@@ -36,9 +49,6 @@ geWindow("Property Editor")
 
 	m_pFogParentNode = NULL;
 	m_pSettingsFog = NULL;
-
-	m_pMonoScriptParentNode = NULL;
-	m_pSettingsMonoScript = NULL;
 }
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
@@ -58,7 +68,6 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	GE_DELETE(m_pOctreeParentNode);
 	GE_DELETE(m_pLayersParentNode);
 	GE_DELETE(m_pFogParentNode);
-	GE_DELETE(m_pMonoScriptParentNode);
 }
 
 void gearScenePropertyEditor::onCreate()
@@ -120,9 +129,6 @@ void gearScenePropertyEditor::onCreate()
 
 	m_pFogParentNode = new geTreeNode(m_pRenderer, rootNode, "Fog", &m_cszSprites[9], 0);
 	m_pSettingsFog = new geSettingsFog(m_pRenderer, m_pFogParentNode, "", NULL, monoWrapper::mono_engine_getWorld(0)->getRenderer()->getFog());
-
-	m_pMonoScriptParentNode = new geTreeNode(m_pRenderer, rootNode, "Mono Scripts", &m_cszSprites[10], 0);
-	m_pSettingsMonoScript = new gePropertyScriptComponent(m_pRenderer, m_pMonoScriptParentNode, "", NULL);
 
 	removeAllProperties();
 }
@@ -193,7 +199,14 @@ void gearScenePropertyEditor::removeAllProperties()
 	rootNode->removeTVChild(m_pOctreeParentNode);
 	rootNode->removeTVChild(m_pLayersParentNode);
 	rootNode->removeTVChild(m_pFogParentNode);
-	rootNode->removeTVChild(m_pMonoScriptParentNode);
+
+	for(std::vector<stMonoScriptTVNode*>::iterator it = m_vMonoScript.begin(); it != m_vMonoScript.end(); ++it)
+	{
+		stMonoScriptTVNode* obj = *it;
+		rootNode->removeTVChild(obj->m_pMonoScriptParentNode);
+		GX_DELETE(obj);
+	}
+	m_vMonoScript.clear();
 
 	//material
 	if(m_pMaterialParent)
@@ -327,6 +340,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 
 	m_pSaveMetaDataPropertyNode->populatePropertyOfObject(obj);
 	rootNode->appnendTVChild(m_pSaveMetaDataParentNode);
+	m_pSaveMetaDataParentNode->closeNode();
 
 	////hack
 	//m_pBlurProcessorPropertyNode->populatePropertyOfBlurShader(NULL);
@@ -336,12 +350,22 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	//components
 	m_pAddComponentProperty->populatePropertyOfObject(obj);
 	rootNode->appnendTVChild(m_pAddComponentParentNode);
+	m_pAddComponentParentNode->closeNode();
 
 	//mono scripts
 	if(obj->getMonoScriptInstanceCount())
 	{
-		m_pSettingsMonoScript->populatePropertyOfMonoScripts(obj);
-		rootNode->appnendTVChild(m_pMonoScriptParentNode);
+		for(int x=0;x<obj->getMonoScriptInstanceCount();x++)
+		{
+			monoScriptObjectInstance* monoInstance = obj->getMonoScriptInstance(x);
+			stMonoScriptTVNode* monoScriptTVNode = new stMonoScriptTVNode();
+			monoScriptTVNode->m_pMonoScriptParentNode = new geTreeNode(m_pRenderer, rootNode, monoInstance->getScriptPtr()->getMonoScript().c_str(), &m_cszSprites[10], 0);
+			monoScriptTVNode->m_pSettingsMonoScript = new gePropertyScriptComponent(m_pRenderer, monoScriptTVNode->m_pMonoScriptParentNode, "", NULL);
+			monoScriptTVNode->m_pMonoScriptParentNode->closeNode();
+
+			monoScriptTVNode->m_pSettingsMonoScript->populatePropertyOfMonoScripts(obj, monoInstance);
+			m_vMonoScript.push_back(monoScriptTVNode);
+		}
 	}
 
 	m_cPropertiesTreeView.refreshTreeView();

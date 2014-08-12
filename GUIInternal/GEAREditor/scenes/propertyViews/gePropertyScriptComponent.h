@@ -17,7 +17,7 @@ public:
 	virtual void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
 	virtual void onButtonClicked(geGUIBase* btn);
 
-	void populatePropertyOfMonoScripts(object3d* obj);
+	void populatePropertyOfMonoScripts(object3d* obj, monoScriptObjectInstance* monoScript);
 
 private:
 	object3d* m_pObject3dPtr;

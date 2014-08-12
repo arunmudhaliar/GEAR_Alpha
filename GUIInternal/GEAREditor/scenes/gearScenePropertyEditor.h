@@ -23,6 +23,16 @@
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {
 public:
+	class stMonoScriptTVNode
+	{
+	public:
+		stMonoScriptTVNode();
+		~stMonoScriptTVNode();
+
+		geTreeNode* m_pMonoScriptParentNode;
+		gePropertyScriptComponent* m_pSettingsMonoScript;
+	};
+
 	gearScenePropertyEditor();
 	~gearScenePropertyEditor();
 
@@ -89,12 +99,7 @@ private:
 	geSettingsFog* m_pSettingsFog;
 
 	//Scripts
-	geTreeNode* m_pMonoScriptParentNode;
-	gePropertyScriptComponent* m_pSettingsMonoScript;
-
-	std::vector<geTreeNode*> m_pMonoScriptParentNodeList;
-	std::vector<gePropertyScriptComponent*> m_pSettingsMonoScriptList;
-
+	std::vector<stMonoScriptTVNode*> m_vMonoScript;
 };
 
 #endif

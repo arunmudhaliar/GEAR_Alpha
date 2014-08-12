@@ -5,7 +5,6 @@
 gePropertyScriptComponent::gePropertyScriptComponent(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
 	geTreeNode(renderer, parent, name, sprite, 10)
 {
-	setSize(m_cSize.x, 40.0f);
 
 	m_pWindowColumn = new geWindowColumn();
 	m_pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.4f);
@@ -14,6 +13,8 @@ gePropertyScriptComponent::gePropertyScriptComponent(rendererGL10* renderer, geG
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();
+
+	setSize(m_cSize.x, 40.0f);
 }
 
 gePropertyScriptComponent::~gePropertyScriptComponent()
@@ -49,10 +50,11 @@ void gePropertyScriptComponent::onTVSelectionChange(geTreeNode* tvnode, geTreeVi
 
 }
 
-void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj)
+void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, monoScriptObjectInstance* monoScript)
 {
 	m_pObject3dPtr=obj;
 
+	/*
 	//destroy the controls in the column
 	for(std::vector<stWindowColumnRow*>::iterator it = m_pWindowColumn->getRowList()->begin(); it != m_pWindowColumn->getRowList()->end(); ++it)
 	{
@@ -68,18 +70,30 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj)
 	}
 	m_pWindowColumn->getRowList()->clear();
 	//
+	*/
 
 
 	geGUIBase* lastControl=NULL;
-	//window column
-	for(int x=0;x<m_pObject3dPtr->getMonoScriptInstanceCount();x++)
+	////window column
+	////for(int x=0;x<m_pObject3dPtr->getMonoScriptInstanceCount();x++)
+	//{
+	//	stWindowColumnRow* firstrow = m_pWindowColumn->addRow("Script");
+	//	geStaticTextBox* scripteditbox = new geStaticTextBox("");
+	//	scripteditbox->create(m_pRenderer, this, monoScript->getScriptPtr()->getMonoScript().c_str(), 0, 0, -7, geGUIManager::g_pFontArial10_80Ptr);
+	//	m_pWindowColumn->addControl(firstrow, scripteditbox, 16.0f);
+	//	lastControl=scripteditbox;
+	//}
+
+	//mono vars
+	for(int x=0;x<monoScript->getScriptPtr()->getMonoVarCount();x++)
 	{
-		stWindowColumnRow* row = m_pWindowColumn->addRow("Script");
-		geStaticTextBox* scripteditbox = new geStaticTextBox("");
-		scripteditbox->create(m_pRenderer, this, m_pObject3dPtr->getMonoScriptInstance(x)->getScriptPtr()->getMonoScript().c_str(), 0, 0, -7, geGUIManager::g_pFontArial10_80Ptr);
-		m_pWindowColumn->addControl(row, scripteditbox, 16.0f);
-		lastControl=scripteditbox;
+		stWindowColumnRow* row = m_pWindowColumn->addRow(monoScript->getScriptPtr()->getMonoVarName(x));
+		geTextBox* variableeditbox = new geTextBox("");
+		variableeditbox->create(m_pRenderer, this, "", 0, 0, 30, 15);
+		m_pWindowColumn->addControl(row, variableeditbox, 16.0f);
+		lastControl=variableeditbox;
 	}
+
 	//
 
 	if(lastControl)

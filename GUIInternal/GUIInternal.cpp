@@ -18,7 +18,7 @@
 #include <direct.h>
 
 #ifdef _DEBUG
-//#define ENABLE_MEMORY_CHECK
+#define ENABLE_MEMORY_CHECK
 #include <crtdbg.h>
 #endif
 

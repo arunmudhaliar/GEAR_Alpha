@@ -13,11 +13,28 @@ monoScript::monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* k
 	{
 		m_bMonoScript=true;
 		m_pSetHandle_method =  mono_class_get_method_from_name(monoscript_klass, "setHandle", 2);
+
+		for(int x=0;x<mono_class_num_fields(m_pMonoObjectClass);x++)
+		{
+			MonoClassField* classfiled = mono_class_get_fields(m_pMonoObjectClass, (void**)&x);
+			m_vMonoVars.push_back(classfiled);
+		}
 	}
+}
+
+const char* monoScript::getMonoVarName(int index)
+{
+	return mono_field_get_name(m_vMonoVars[index]);
+}
+
+MonoClassField* monoScript::getMonoVar(int index)
+{
+	return m_vMonoVars[index];
 }
 
 monoScript::~monoScript()
 {
+	m_vMonoVars.clear();
 }
 
 MonoObject* monoScript::createNewObject()

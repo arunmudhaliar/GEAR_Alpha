@@ -6,8 +6,9 @@
 #include <mono\metadata\metadata.h>
 #include <mono\metadata\assembly.h>
 #include <mono\jit\jit.h>
+#include "../../core/basicIncludes.h"
 
-class monoScript
+class DECLSPEC monoScript
 {
 public:
 	monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* klass, std::string klassname, std::string knamespace, MonoClass* monoscript_klass);
@@ -20,6 +21,10 @@ public:
 	bool isMonoScript()	{ 	return m_bMonoScript;	}
 	MonoMethod* getSetHandleMethod()	{	return m_pSetHandle_method;	}
 
+	int getMonoVarCount()	{	return m_vMonoVars.size();	}
+	const char* getMonoVarName(int index);
+	MonoClassField* getMonoVar(int index);
+
 private:
 	std::string m_cScript;
 	std::string m_cMonoClassName;
@@ -29,6 +34,8 @@ private:
 	MonoClass* m_pMonoObjectClass;
 	MonoDomain* m_pMonoDomain;
 	MonoMethod* m_pSetHandle_method;
+
+	std::vector<MonoClassField*> m_vMonoVars;
 };
 
 class monoScriptObjectInstance

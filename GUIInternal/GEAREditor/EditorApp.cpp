@@ -26,6 +26,7 @@ gearScenePropertyEditor* EditorApp::g_pScenePropertyEditorPtr=NULL;
 gearSceneWorldEditor* EditorApp::g_pSceneWorldEditorPtr=NULL;
 gearSceneConsole* EditorApp::g_pSceneConsolePtr=NULL;
 gePropertyOctree* EditorApp::g_pPropertyOctreePtr=NULL;
+std::string EditorApp::g_cAppDirectory="";
 
 rendererGL10* EditorApp::g_pMainRenderer=NULL;
 
@@ -336,6 +337,38 @@ void EditorApp::DoCommand(int cmd)
 	m_cGUIManager.DoCommand(cmd);
 }
 
+bool EditorApp::showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir)
+{
+	memset(out_savefilename, 0, out_savefilename_size);
+
+	OPENFILENAME saveFileDialog;
+	ZeroMemory(&saveFileDialog, sizeof(saveFileDialog));
+	saveFileDialog.lStructSize= sizeof(saveFileDialog);
+	saveFileDialog.hwndOwner = hWnd;
+	saveFileDialog.lpstrFilter = filter;
+	saveFileDialog.lpstrFile = out_savefilename;
+	saveFileDialog.nMaxFile = out_savefilename_size;
+	saveFileDialog.lpstrInitialDir = root_dir;
+	saveFileDialog.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY |OFN_OVERWRITEPROMPT;
+	saveFileDialog.lpstrDefExt = defaultext;
+	return GetSaveFileName(&saveFileDialog);
+}
+
+bool EditorApp::showOpenCommonDlg(HWND hWnd, char* out_openfilename, int out_openfilename_size, const char* filter, const char* defaultext, const char* root_dir)
+{
+	OPENFILENAME openFileDialog;
+	ZeroMemory(&openFileDialog, sizeof(openFileDialog));
+	openFileDialog.lStructSize= sizeof(openFileDialog);
+	openFileDialog.hwndOwner = hWnd;
+	openFileDialog.lpstrFilter = filter;
+	openFileDialog.lpstrFile = out_openfilename;
+	openFileDialog.lpstrFile[0] = '\0';
+	openFileDialog.nMaxFile = out_openfilename_size;
+	openFileDialog.lpstrInitialDir = root_dir;
+	openFileDialog.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	openFileDialog.lpstrDefExt = defaultext;
+	return GetOpenFileName(&openFileDialog);
+}
 LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(Msg)
@@ -362,39 +395,4 @@ LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, 
 	}
 
 	return FALSE;
-}
-
-INT_PTR CALLBACK YesNoCancel_DlgBox(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
-
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDYES)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		else if (LOWORD(wParam) == IDNO)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		else if (LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
-	case WM_CLOSE:
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		break;
-	default:
-		return DefWindowProc(hDlg, message, wParam, lParam);
-	}
-	return (INT_PTR)FALSE;
 }

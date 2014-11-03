@@ -35,6 +35,10 @@ public:
 
 	void selectObject3dInTreeView(object3d* objtoselect);
 
+	void clearHierarchy();
+	bool saveCurrentScene(const char* sceneFilePath);
+	bool loadScene(const char* sceneFilePath);
+
 protected:
 	virtual void onCreate();
 	virtual void onDraw();

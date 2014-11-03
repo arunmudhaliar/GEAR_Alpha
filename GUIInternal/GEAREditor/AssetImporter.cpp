@@ -829,10 +829,28 @@ bool AssetImporter::import_using_freeImageLib(const char* filename, const char* 
 	switch(bpp)
 	{
 	case 24:
-		file_meta.Write(eTexture2D_BGR888);
+		{
+			int bytesPerPixel=(bpp/8);
+			for(int x=0;x<width*height;x++)
+			{
+				BYTE b = bits[x*bytesPerPixel+0];
+				bits[x*bytesPerPixel+0] = bits[x*bytesPerPixel+2];
+				bits[x*bytesPerPixel+2]=b;
+			}
+			file_meta.Write(eTexture2D_RGB888);
+		}
 		break;
 	case 32:
-		file_meta.Write(eTexture2D_BGRA8888);
+		{
+			int bytesPerPixel=(bpp/8);
+			for(int x=0;x<width*height;x++)
+			{
+				BYTE b = bits[x*bytesPerPixel+0];
+				bits[x*bytesPerPixel+0] = bits[x*bytesPerPixel+2];
+				bits[x*bytesPerPixel+2]=b;
+			}
+			file_meta.Write(eTexture2D_RGBA8888);
+		}
 		break;
 	default:
 		file_meta.Write(eTexture2D_Unknown);

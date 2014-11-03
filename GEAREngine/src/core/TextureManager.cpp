@@ -212,6 +212,7 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 				internalformat=GL_RGB;
 			}
 			break;
+#if !defined(ANDROID)	//TODO: need to fix this for android
 		case eTexture2D_RGBA5551:
 			{
 #ifdef _WIN32
@@ -241,6 +242,7 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 				internalformat=GL_RGBA;
 			}
 			break;
+#endif
 		case eTexture2D_Unknown:
 			{
 				file_meta.CloseFile();

@@ -368,7 +368,7 @@ void geGUIBase::MouseLButtonUp(float x, float y, int nFlag)
 			}
 		}
 
-		//if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight()))
+		if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight())  || !isMouseBoundCheckEnabled())
 		{
 			bHandled=onMouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
 			//if(m_pSelectedControlPtr==this)
@@ -409,7 +409,10 @@ bool geGUIBase::MouseMove(float x, float y, int flag)
 		}
 	}
 
-	return onMouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
+	if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight())  || !isMouseBoundCheckEnabled())
+		return onMouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
+	else
+		return false;
 
 	//if(isPointInsideWindow(x, y) || !isMouseBoundCheckEnabled())
 	//{
@@ -600,7 +603,13 @@ void geGUIBase::DragDrop(int x, int y, MDataObject* dropObject)
 				obj->DragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
 			}
 		}
-		onDragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
+
+		if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight())/*  || !isMouseBoundCheckEnabled()*/)
+		//if(isPointInsideWindow(x, y)/*  || !isMouseBoundCheckEnabled()*/)
+		{
+			onDragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
+			onMouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), -1);	//event from a drag drop
+		}
 	}
 }
 

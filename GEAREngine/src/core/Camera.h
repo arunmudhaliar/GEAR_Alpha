@@ -52,6 +52,17 @@ public:
 	float getFar()			{	return m_fFar;	}
 	EPROJECTION_TYPE getProjectionType()	{	return m_eProjectionType;	}
 
+	bool isLayerCullingMask(unsigned int flag);
+	void resetLayerCullingMask(unsigned int flag);
+	void setLayerCullingMask(unsigned int flag);
+	unsigned int getLayerCullingMask();
+	
+	void setMainCamera(bool flag)	{	m_bMainCamera=flag;	}
+	bool isMainCamera()		{	return m_bMainCamera;	}
+
+	virtual void write(gxFile& file);
+	virtual void read(gxFile& file);
+
 private:
 	gxRenderer* m_pRendererPtr;	//must not delete this pointer
 	matrix4x4f	m_cProjMatrix;
@@ -65,6 +76,8 @@ private:
 	float m_fNear;
 	float m_fFar;
 	EPROJECTION_TYPE m_eProjectionType;
+	unsigned int m_iLayerCullingMask;
+	bool m_bMainCamera;
 };
 
 #endif

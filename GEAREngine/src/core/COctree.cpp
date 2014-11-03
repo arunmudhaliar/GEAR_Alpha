@@ -306,7 +306,7 @@ void COctree::checkOverlapWithOctree(OctreeNode* node, object3d* obj)
 		checkOverlapWithOctree(node->getChild(x), obj);
 }
 
-void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustum)
+void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustum, unsigned int cullingmask)
 {
 	if(!node || !frustum) return;
 
@@ -320,7 +320,7 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 		for(std::vector<object3d*>::iterator it = list->begin(); it != list->end(); ++it)
 		{
 			object3d* transf=*it;
-			if(!transf->isVisited())
+			if(!transf->isVisited() && ((1<<transf->getLayer())&cullingmask))
 			{
 				transf->setVisited(true);
 				if(transf->isBaseFlag(object3d::eObject3dBaseFlag_Alpha))
@@ -338,7 +338,7 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 	{
 		object3d* transf=*it;
 
-		if(!transf->isVisited())
+		if(!transf->isVisited() && ((1<<transf->getLayer())&cullingmask))
 		{
 			if(frustum->isAABBInside(transf->getAABB()))
 			{
@@ -352,7 +352,7 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 	}
 	
 	for(int x=0;x<MAX_OCTREECHILD;x++)
-		checkFrustumOverlapWithOctree(node->getChild(x), frustum);
+		checkFrustumOverlapWithOctree(node->getChild(x), frustum, cullingmask);
 }
 
 object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)

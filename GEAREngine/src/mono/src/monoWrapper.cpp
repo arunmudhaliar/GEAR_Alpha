@@ -611,7 +611,7 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 
 char monoWrapper::exec_cmd(char const *cmd, char *buf)
 {
-	char output[1024*10], start[1024*10];
+	char output[1024], start[1024*20];
 	char *s;
 	FILE *fpo;
 	int size;
@@ -637,4 +637,31 @@ char monoWrapper::exec_cmd(char const *cmd, char *buf)
 	ret = _pclose(fpo);
 	return (ret);
 }/* exec_cmd */
+
+char monoWrapper::exec_cmd(char const *cmd)
+{
+	char output[1024];
+	char *s;
+	FILE *fpo;
+	int size;
+	int ret;
+	if((fpo = _popen(cmd, "r") )== NULL)
+	{
+		size = 6;
+	}
+	else
+	{
+		size =0;
+		while((s =fgets(output, 1024, fpo)) != NULL)
+		{
+			printf("%s", output);
+			if(output == NULL)
+				break;
+		}
+	}
+
+	ret = _pclose(fpo);
+	return (ret);
+}/* exec_cmd */
+
 #endif

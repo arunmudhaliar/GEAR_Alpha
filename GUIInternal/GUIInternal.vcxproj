@@ -167,6 +167,7 @@
     <ClInclude Include="GEAREditor\util\objC_util.h" />
     <ClInclude Include="GEAREditor\util\pxMath.h" />
     <ClInclude Include="GEAREditor\util\geVector2.h" />
+    <ClInclude Include="GEAREditor\win32\ConfirmationDialog.h" />
     <ClInclude Include="GEAREditor\win32\cursorUtil.h" />
     <ClInclude Include="GEAREditor\win32\eventHook.h" />
     <ClInclude Include="GEAREditor\win32\MDropSource.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite2Dx.cpp" />
     <ClCompile Include="GEAREditor\util\geFontManager.cpp" />
+    <ClCompile Include="GEAREditor\win32\ConfirmationDialog.cpp" />
     <ClCompile Include="GUIInternal.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

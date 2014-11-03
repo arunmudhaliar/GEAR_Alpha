@@ -180,12 +180,24 @@ void geToolBarDropMenu::onButtonClicked()
 			{
 				minfo.hSubMenu=item->sub_menu_handle;
 				minfo.fMask|=MIIM_SUBMENU;
+				
 			}
+
+			//if(item->hasCheck)
+			//{
+			//	minfo.fMask|=MIIM_CHECKMARKS;
+			//	minfo.fState|=MFS_CHECKED;
+			//}
 
 			minfo.fType = MFT_STRING;
 			minfo.dwTypeData = item->name;
 			minfo.cch = strlen(item->name);
 			InsertMenuItem(hCurrentPopupMenu, 0, true, &minfo);
+			bool b=SetMenuItemBitmaps(hCurrentPopupMenu, 0, MF_BYPOSITION, NULL, NULL);
+			if(item->hasCheck)
+			{
+				CheckMenuItem(hCurrentPopupMenu, 0, MF_BYPOSITION | MF_CHECKED);
+			}
 		}
 		else if(item->type==1)
 		{
@@ -286,13 +298,15 @@ void geToolBarDropMenu::clearMenu()
 	m_pActiveItemPtr=NULL;
 }
 
-geToolBarDropMenu::stDropMenuItem* geToolBarDropMenu::appendMenuItem(const char* name, int menuID, stDropMenuItem* parent, bool bSeperator)
+geToolBarDropMenu::stDropMenuItem* geToolBarDropMenu::appendMenuItem(const char* name, int menuID, stDropMenuItem* parent, bool bSeperator, bool bCheck)
 {
 	stDropMenuItem* newItem = new stDropMenuItem();
 	strcpy(newItem->name, name);
 	newItem->menuid=menuID;
 	newItem->parent=(parent)?parent:NULL;
 	newItem->type=bSeperator?1:0;
+	newItem->hasCheck=bCheck;
+
 	m_vMenuItems.push_back(newItem);
 
 	return newItem;
@@ -302,6 +316,21 @@ void geToolBarDropMenu::onSetName()
 {
 	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(m_szName, strlen(m_szName), 0);
 	setSize(width+27, GE_TOOLBAR_HEIGHT);
+}
+
+void geToolBarDropMenu::checkMenuItem(int menuID, bool bCheck)
+{
+	for(std::vector<stDropMenuItem*>::iterator it = m_vMenuItems.begin(); it != m_vMenuItems.end(); ++it)
+	{
+		stDropMenuItem* menuitem = *it;
+		if(menuitem->menuid==menuID)
+		{
+			CheckMenuItem(menuitem->menu_handle, 0, MF_BYPOSITION | (bCheck)?MF_CHECKED:MF_UNCHECKED);
+			menuitem->hasCheck=bCheck;
+			break;
+		}
+	}
+
 }
 
 void geToolBarDropMenu::setMenuItem(int menuID)

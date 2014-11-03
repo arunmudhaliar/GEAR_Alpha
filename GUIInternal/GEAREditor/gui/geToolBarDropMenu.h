@@ -18,6 +18,7 @@ public:
 		int menuid;
 		stDropMenuItem* parent;
 		int type;
+		bool hasCheck;
 	};
 
 	geToolBarDropMenu();
@@ -27,10 +28,12 @@ public:
 	virtual void draw();
 	void loadImage(const char* filename, int clipx, int clipy);
 
-	stDropMenuItem* appendMenuItem(const char* name, int menuID, stDropMenuItem* parent=NULL, bool bSeperator=false);
+	stDropMenuItem* appendMenuItem(const char* name, int menuID, stDropMenuItem* parent=NULL, bool bSeperator=false, bool bCheck=false);
 	void setMenuItem(int menuID);
 	void setMenuItem(const char* itemname);
 	int getMenuItemCount()	{	return m_vMenuItems.size();	}
+
+	void checkMenuItem(int menuID, bool bCheck);
 
 	void clearMenu();
 

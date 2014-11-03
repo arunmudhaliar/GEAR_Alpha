@@ -1,8 +1,11 @@
 #include "gxUtil.h"
 
 #ifdef _WIN32
-#if EXPORT_DLL
-char gxUtil::g_directoryPath[512];
-char gxUtil::g_filePath[512];
-#endif
+	#if EXPORT_DLL
+		char gxUtil::g_directoryPath[512];
+		char gxUtil::g_filePath[512];
+	#endif
+#else
+	char gxUtil::g_directoryPath[512];
+	char gxUtil::g_filePath[512];
 #endif

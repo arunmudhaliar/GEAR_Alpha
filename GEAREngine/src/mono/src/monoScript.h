@@ -7,6 +7,7 @@
 #include <mono\metadata\assembly.h>
 #include <mono\jit\jit.h>
 #include "../../core/basicIncludes.h"
+#include <string>
 
 class DECLSPEC monoScript
 {

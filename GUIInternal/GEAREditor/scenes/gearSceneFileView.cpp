@@ -255,40 +255,43 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			util::GE_IS_EXTENSION(relativePath, ".prefab") || util::GE_IS_EXTENSION(relativePath, ".PREFAB"))
 		{
 			gxFile file_meta;
-			if(file_meta.OpenFile(crcFile))
+			if(!file_meta.OpenFile(crcFile))
 			{
-				stMetaHeader metaHeader;
-				file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
-
-				int objID=0;
-				file_meta.Read(objID);
-
-				object3d* tempObj=NULL;
-				switch(objID)
-				{
-				case OBJECT3D_MESH:
-					tempObj = new gxMesh();
-					break;
-				case OBJECT3D_SKINNED_MESH:
-					tempObj = new gxSkinnedMesh();
-					break;
-				case OBJECT3D_LIGHT:
-					tempObj = new gxLight();
-					break;
-
-				default:
-					tempObj = new object3d(objID);
-				}
-
-				if(tempObj)
-				{
-					tempObj->read(file_meta);
-					read3dFile(file_meta, tempObj);
-					obj=tempObj;
-					//arun:transform obj->transformationChangedf();
-				}
-				file_meta.CloseFile();
+				return;
 			}
+
+			stMetaHeader metaHeader;
+			file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+			int objID=0;
+			file_meta.Read(objID);
+
+			object3d* tempObj=NULL;
+			switch(objID)
+			{
+			case OBJECT3D_MESH:
+				tempObj = new gxMesh();
+				break;
+			case OBJECT3D_SKINNED_MESH:
+				tempObj = new gxSkinnedMesh();
+				break;
+			case OBJECT3D_LIGHT:
+				tempObj = new gxLight();
+				break;
+
+			default:
+				tempObj = new object3d(objID);
+			}
+
+			if(tempObj)
+			{
+				tempObj->read(file_meta);
+				read3dFile(file_meta, tempObj);
+				obj=tempObj;
+				//arun:transform obj->transformationChangedf();
+			}
+			file_meta.CloseFile();
+
 			deleteAnmationFromObject3d(obj);
 			gxWorld* world=monoWrapper::mono_engine_getWorld(0);
 			world->loadMaterialFromObject3d(obj);
@@ -454,7 +457,7 @@ bool gearSceneFileView::onMouseLButtonUp(float x, float y, int nFlag)
 bool gearSceneFileView::onMouseMove(float x, float y, int flag)
 {
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
-	//	return;
+	//	return geWindow::onMouseMove(x, y, flag);
 
 	std::vector<geTreeNode*>* selectedNodeList=m_cFileTreeView.getSelectedNodeList();
 	if((flag&MK_LBUTTON) && selectedNodeList->size())

@@ -49,7 +49,7 @@ public:
 	vector3<T> operator/(const float n)	const			{	return vector3<T>(x/n, y/n, z/n);			}
 
 	void set(T xx, T yy, T zz)		{	x=xx;	y=yy;	z=zz;	}
-	void set(vector3<T>& v)			{	x=v.x;	y=v.y;	z=v.z;	}
+	void set(const vector3<T>& v)			{	x=v.x;	y=v.y;	z=v.z;	}
 
 	void zero()								{	x=y=z=0;	}
 	

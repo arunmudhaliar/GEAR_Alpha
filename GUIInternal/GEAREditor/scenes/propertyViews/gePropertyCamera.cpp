@@ -117,7 +117,7 @@ void gePropertyCamera::populatePropertyOfCamera(object3d* obj)
 	for(int x=0;x<MAX_LAYER;x++)
 	{
 		Layer* layer = layerManager->getLayer(x);
-		m_pCameraCullingToolBarDropMenuBtnPtr->appendMenuItem(layer->getLayerName(), 0x00003000+x);
+		m_pCameraCullingToolBarDropMenuBtnPtr->appendMenuItem(layer->getLayerName(), 0x00003000+x, NULL, false, m_pCameraPtr->isLayerCullingMask((1<<x)));
 	}
 
 }
@@ -165,5 +165,19 @@ void gePropertyCamera::onCommand(int cmd)
 	{
 		m_pCameraPtr->setType(Camera::ORTHOGRAPHIC_PROJECTION);
 		m_pCameraTypeToolBarDropMenuBtnPtr->setMenuItem(cmd);
+	}
+	else if(cmd>=0x00003000 && cmd<=(0x00003000+32))
+	{
+		int layerid=(cmd-0x00003000);
+		if(m_pCameraPtr->isLayerCullingMask((1<<layerid)))
+		{
+			m_pCameraPtr->resetLayerCullingMask((1<<layerid));
+			m_pCameraCullingToolBarDropMenuBtnPtr->checkMenuItem(cmd, false);
+		}
+		else
+		{
+			m_pCameraPtr->setLayerCullingMask((1<<layerid));
+			m_pCameraCullingToolBarDropMenuBtnPtr->checkMenuItem(cmd, true);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 #ifndef GXUTIL_H
 #define GXUTIL_H
 
-#include <string.h>
+#include <string>
 #include "../core/vector3.h"
 
 class DECLSPEC gxUtil

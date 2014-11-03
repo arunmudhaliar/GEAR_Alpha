@@ -49,7 +49,7 @@ public:
 	void drawOctree(OctreeNode* node, gxHWShader* shader);
 	void resetCollidedTransformObjList();
 	void checkOverlapWithOctree(OctreeNode* node, object3d* obj);
-	void checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustum);
+	void checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustum, unsigned int cullingmask);
 	
 	int	getLevelsReached()	{	return m_nLevelReached;}
 	ExpandableArray<object3d*>* getCollidedObjList()		{	return &m_cCollidedObjLst;			}

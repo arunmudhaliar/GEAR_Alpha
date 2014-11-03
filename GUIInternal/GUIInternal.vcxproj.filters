@@ -300,6 +300,9 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyScriptComponent.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\win32\ConfirmationDialog.h">
+      <Filter>GEAREditor\win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -469,6 +472,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyScriptComponent.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\win32\ConfirmationDialog.cpp">
+      <Filter>GEAREditor\win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

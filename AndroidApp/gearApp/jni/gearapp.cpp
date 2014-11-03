@@ -191,7 +191,7 @@ static void engine_draw_frame(struct engine* engine) {
 	monoWrapper::mono_game_run(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	monoWrapper::mono_engine_render(monoWrapper::mono_engine_getWorld(0), NULL);
+	monoWrapper::mono_engine_render(monoWrapper::mono_engine_getWorld(0), NULL, object3d::eObject3dBase_RenderFlag_NormalRenderPass);
 
 	if(g_pFontPtr)
 	{

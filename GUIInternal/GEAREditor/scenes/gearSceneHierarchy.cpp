@@ -318,6 +318,14 @@ void gearSceneHierarchy::onObject3dChildAppend(object3d* child)
 	rootNode->traverseSetWidth(m_cSize.x);
 	m_cGameObjectsTreeView.refreshTreeView();
 	monoWrapper::mono_object3d_onObject3dChildAppend(parent_obj, child);
+
+	if(child->getID()==OBJECT3D_CAMERA)
+	{
+		if(((Camera*)child)->isMainCamera())
+		{
+			monoWrapper::mono_engine_getWorld(0)->setActiveCamera((Camera*)child);
+		}
+	}
 }
 
 void gearSceneHierarchy::onObject3dChildRemove(object3d* child)
@@ -366,6 +374,21 @@ bool gearSceneHierarchy::onKeyUp(int charValue, int flag)
 	return geWindow::onKeyUp(charValue, flag);
 }
 
+void gearSceneHierarchy::clearHierarchy()
+{
+	EditorApp::getSceneWorldEditor()->stopSimulation();
+	m_cGameObjectsTreeView.clearAndDestroyAll();
+	m_cGameObjectsTreeView.resetSelectedNodePtr();
+	EditorApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(m_cGameObjectsTreeView.getRoot());
+	monoWrapper::mono_engine_getWorld(0)->resetWorld();
+	EditorApp::getScenePreview()->reinitPreviewWorld();
+
+	EditorApp::getSceneWorldEditor()->selectedObject3D(NULL);
+	EditorApp::getScenePropertyEditor()->populatePropertyOfObject(NULL);
+	geTreeNode* selectedProjectFile = EditorApp::getSceneProject()->getSelectedNode();
+	EditorApp::getSceneFileView()->populateFileView();
+}
+
 void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 {
 	if(m_pClearBtn==btn)
@@ -374,17 +397,7 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 		{
 			//if(MessageBox(EditorApp::getMainWindowHandle(),"Are you sure to reset the world.","Warning",MB_YESNO|MB_ICONWARNING)==IDYES)
 			{
-				EditorApp::getSceneWorldEditor()->stopSimulation();
-				m_cGameObjectsTreeView.clearAndDestroyAll();
-				m_cGameObjectsTreeView.resetSelectedNodePtr();
-				EditorApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(m_cGameObjectsTreeView.getRoot());
-				monoWrapper::mono_engine_getWorld(0)->resetWorld();
-				EditorApp::getScenePreview()->reinitPreviewWorld();
-
-				EditorApp::getSceneWorldEditor()->selectedObject3D(NULL);
-				EditorApp::getScenePropertyEditor()->populatePropertyOfObject(NULL);
-				geTreeNode* selectedProjectFile = EditorApp::getSceneProject()->getSelectedNode();
-				EditorApp::getSceneFileView()->populateFileView();
+				clearHierarchy();
 				//if(selectedProjectFile)
 				//{
 				//	EditorApp::getSceneFileView()->populateFiles(((assetUserData*)selectedProjectFile->getUserData())->getAssetAbsolutePath());
@@ -405,6 +418,71 @@ geGUIBase* gearSceneHierarchy::getSelectedTreeNode()
 {
 	geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
 	return selectedNode;
+}
+
+bool gearSceneHierarchy::saveCurrentScene(const char* sceneFilePath)
+{
+	gxFile sceneFile;
+	if(!sceneFile.OpenFile(sceneFilePath, gxFile::FILE_w))
+	{
+		return false;
+	}
+
+	std::vector<geGUIBase*>* childNodeList = m_cGameObjectsTreeView.getRoot()->getChildControls();
+	int nRootObjects=0;
+	for(std::vector<geGUIBase*>::iterator it = childNodeList->begin(); it != childNodeList->end(); ++it)
+	{
+		geTreeNode* node = (geTreeNode*)*it;
+		object3d* obj = (object3d*)node->getUserData();
+		if(obj->getAssetFileCRC()==0)
+		{
+			DEBUG_PRINT("WARNING saveCurrentScene(%s) obj->getAssetFileCRC()==0", sceneFilePath);
+			continue;
+		}
+		nRootObjects++;
+	}
+
+	sceneFile.Write(nRootObjects);
+	for(std::vector<geGUIBase*>::iterator it = childNodeList->begin(); it != childNodeList->end(); ++it)
+	{
+		geTreeNode* node = (geTreeNode*)*it;
+		object3d* obj = (object3d*)node->getUserData();
+		if(obj->getAssetFileCRC()==0)
+		{
+			continue;
+		}
+		sceneFile.Write(obj->getAssetFileCRC());
+	}
+
+	sceneFile.CloseFile();
+
+	return true;
+}
+
+bool gearSceneHierarchy::loadScene(const char* sceneFilePath)
+{
+	gxFile sceneFile;
+	if(!sceneFile.OpenFile(sceneFilePath))
+	{
+		return false;
+	}
+
+	clearHierarchy();
+
+	int nRootObjects=0;
+	sceneFile.Read(nRootObjects);
+
+	unsigned int assetcrc=0;
+	for(int x=0;x<nRootObjects;x++)
+	{
+		sceneFile.Read(assetcrc);
+
+		engine_getWorld(0)->loadFromCRCFile(assetcrc);
+	}
+
+	sceneFile.CloseFile();
+
+	return true;
 }
 
 void gearSceneHierarchy::onCommand(int cmd)

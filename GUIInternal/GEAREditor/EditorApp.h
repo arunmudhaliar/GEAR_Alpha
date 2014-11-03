@@ -14,11 +14,10 @@
 #include "scenes\gearScenePropertyEditor.h"
 #include "scenes\gearSceneWorldEditor.h"
 #include "scenes\gearSceneConsole.h"
-
 #include "scenes\propertyViews\gePropertyOctree.h"
+#include <string>
 
 LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK YesNoCancel_DlgBox(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 class EditorApp
 {
@@ -80,6 +79,12 @@ public:
 
 	bool isInitialized()	{	return m_bInitialised;	}
 
+	static bool showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir);
+	static bool showOpenCommonDlg(HWND hWnd, char* out_openfilename, int out_openfilename_size, const char* filter, const char* defaultext, const char* root_dir);
+
+	static void setAppDirectory(const char* dir)	{	g_cAppDirectory = dir;	}
+	static std::string getAppDirectory()			{	return g_cAppDirectory;	}
+
 private:
 	static HWND g_hWnd;	//main window
 
@@ -102,6 +107,7 @@ private:
 	static gearSceneConsole* g_pSceneConsolePtr;
 
 	static gePropertyOctree* g_pPropertyOctreePtr;
+	static std::string g_cAppDirectory;
 };
 
 #endif

@@ -16,6 +16,7 @@
 #include "GEAREditor\win32\eventHook.h"
 #include "GEAREditor\secondryViews\geColorDlg.h"
 #include <direct.h>
+#include <Commdlg.h>
 
 #ifdef _DEBUG
 #define ENABLE_MEMORY_CHECK
@@ -39,7 +40,8 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK	Proj_DlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
-char* browseFolder(HWND hWndParent);
+char* browseFolder(HWND hWndParent, const char* title, const char* root_dir=NULL);
+LPITEMIDLIST convertPathToLpItemIdList(const char *pszPath);
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -173,6 +175,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 		{
+			char current_working_directory[1024];
+			GetCurrentDirectory(sizeof(current_working_directory), current_working_directory);
+			geUtil::convertPathToUnixFormat(current_working_directory);
+
+			EditorApp::setAppDirectory(current_working_directory);
+
 			monoWrapper::initDebugConsole();
 			monoWrapper::loadMonoModules();
 
@@ -198,6 +206,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				Timer::init();
 				//eventHook::g_pEditorAppPtr=&m_cEditorApp;
 				//eventHook::hookEvent(hWnd);
+
+				//load the current scene
+				std::string root_dir = EditorApp::getProjectHomeDirectory();
+				root_dir+="/ProjectSettings/currentscene";
+				gxFile currenSceneFile;
+				if(currenSceneFile.OpenFile(root_dir.c_str()))
+				{
+					const char* relativepath = currenSceneFile.ReadString();
+					currenSceneFile.CloseFile();
+
+					root_dir = EditorApp::getProjectHomeDirectory();
+					root_dir+="/Assets";
+					root_dir+=relativepath;
+					if(EditorApp::getSceneHierarchy()->loadScene(root_dir.c_str()))
+					{
+						std::string wndTitle ="GEAR Alpha [";
+						wndTitle+=relativepath;
+						wndTitle+=+"]";
+						SetWindowText(hWnd, wndTitle.c_str());
+						EditorApp::getSceneProject()->populateProjectView();
+						EditorApp::getSceneFileView()->populateFileView();
+					}
+					GX_DELETE_ARY(relativepath);
+				}
+				//
 			}
 		}
 		break;
@@ -273,12 +306,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_PROJECT_BUILDFORANDROID:
 			{
 				printf("\n================ANDROID BUILD ENGINE===============\n");
-				char responsebuffer[1024*10];
-				if(monoWrapper::exec_cmd("AndroidProjectMaker.exe", responsebuffer)!=0)
+				char inputbuffer[1024*6];
+
+				sprintf(inputbuffer, "%s//AndroidProjectMaker.exe %s %s", EditorApp::getAppDirectory().c_str(), EditorApp::getAppDirectory().c_str(), EditorApp::getProjectHomeDirectory());
+				if(monoWrapper::exec_cmd(inputbuffer)!=0)
 				{
 					printf("\nERROR\n");
 				}
-				printf(responsebuffer);
 				printf("\n======================================================\n");
 			}
 			break;
@@ -302,6 +336,80 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_EDIT_FOGSETTINGS:
 			{
 				EditorApp::getScenePropertyEditor()->populateSettingsOfFog();
+			}
+			break;
+		case ID_FILE_SAVESCENE:
+			{
+				std::string root_dir = EditorApp::getProjectHomeDirectory();
+				root_dir+="/Assets";
+				std::replace( root_dir.begin(), root_dir.end(), '/', '\\');
+				char output_buffer[MAX_PATH];
+				if(EditorApp::showSaveCommonDlg(hWnd, output_buffer, MAX_PATH, "GEAR Scene (*.gearscene)\0*.gearscene\0", "gearscene", root_dir.c_str()))
+				{
+					if(EditorApp::getSceneHierarchy()->saveCurrentScene(output_buffer))
+					{
+						EditorApp::getSceneProject()->populateProjectView();
+						EditorApp::getSceneFileView()->populateFileView();
+
+						//update the currentscene file
+						root_dir = EditorApp::getProjectHomeDirectory();
+						root_dir+="/ProjectSettings/currentscene";
+						gxFile currenSceneFile;
+						if(currenSceneFile.OpenFile(root_dir.c_str(), gxFile::FILE_w))
+						{
+							const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(output_buffer);
+							char unix_path[MAX_PATH];
+							memset(unix_path, 0, MAX_PATH);
+							strcpy(unix_path, relativepath);
+							geUtil::convertPathToUnixFormat(unix_path);
+							currenSceneFile.Write(unix_path);
+							currenSceneFile.CloseFile();
+
+							std::string wndTitle ="GEAR Alpha [";
+							wndTitle+=relativepath;
+							wndTitle+=+"]";
+							SetWindowText(hWnd, wndTitle.c_str());
+						}
+						//
+					}
+				}
+			}
+			break;
+		case ID_FILE_OPENSCENE:
+			{
+				std::string root_dir = EditorApp::getProjectHomeDirectory();
+				root_dir+="/Assets";
+				std::replace( root_dir.begin(), root_dir.end(), '/', '\\');
+				char output_buffer[MAX_PATH];
+				if(EditorApp::showOpenCommonDlg(hWnd, output_buffer, MAX_PATH, "GEAR Scene (*.gearscene)\0*.gearscene\0", "gearscene", root_dir.c_str()))
+				{
+					if(EditorApp::getSceneHierarchy()->loadScene(output_buffer))
+					{
+						EditorApp::getSceneProject()->populateProjectView();
+						EditorApp::getSceneFileView()->populateFileView();
+
+						//update the currentscene file
+						root_dir = EditorApp::getProjectHomeDirectory();
+						root_dir+="/ProjectSettings/currentscene";
+						gxFile currenSceneFile;
+						if(currenSceneFile.OpenFile(root_dir.c_str(), gxFile::FILE_w))
+						{
+							const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(output_buffer);
+							char unix_path[MAX_PATH];
+							memset(unix_path, 0, MAX_PATH);
+							strcpy(unix_path, relativepath);
+							geUtil::convertPathToUnixFormat(unix_path);
+							currenSceneFile.Write(unix_path);
+							currenSceneFile.CloseFile();
+
+							std::string wndTitle ="GEAR Alpha [";
+							wndTitle+=relativepath;
+							wndTitle+=+"]";
+							SetWindowText(hWnd, wndTitle.c_str());
+						}
+						//
+					}
+				}
 			}
 			break;
 		case IDM_EXIT:
@@ -515,7 +623,7 @@ LRESULT CALLBACK Proj_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 		{
 			case ID_PROJ_DLG_OPEN_NEW_PROJECT:
 			{
-				char* project_directory=browseFolder(hWndDlg);
+				char* project_directory=browseFolder(hWndDlg, _T("Select an empty folder to create project."));
 				if(EditorApp::createNewProject(project_directory)!=0)
 				{
 					MessageBox(hWndDlg, "Project creation failed", "Error.", MB_OK | MB_ICONERROR);
@@ -565,12 +673,17 @@ LRESULT CALLBACK Proj_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 	return FALSE;
 }
 
-char* browseFolder(HWND hWndParent)
+char* browseFolder(HWND hWndParent, const char* title, const char* root_dir)
 {
 	char* return_buffer=NULL;
 	BROWSEINFO bi = { 0 };
 	bi.hwndOwner=hWndParent;
-    bi.lpszTitle = _T("Select an empty folder to create project.");
+    bi.lpszTitle = title;
+	if(root_dir)
+	{
+		bi.pidlRoot = convertPathToLpItemIdList(root_dir);
+	}
+
 	bi.ulFlags=BIF_USENEWUI;// | BIF_RETURNONLYFSDIRS;
 
 	HRESULT r=OleInitialize(NULL);
@@ -601,13 +714,28 @@ char* browseFolder(HWND hWndParent)
 	if(return_buffer)
 	{
 		//win32 to unix style path
-		for(int x=0;x<strlen(return_buffer);x++)
-		{
-			if(return_buffer[x]=='\\')
-				return_buffer[x]='/';
-		}
-		//
+		geUtil::convertPathToUnixFormat(return_buffer);
 	}
 
 	return return_buffer;
+}
+
+LPITEMIDLIST convertPathToLpItemIdList(const char *pszPath)
+{
+	LPITEMIDLIST  pidl = NULL;
+	LPSHELLFOLDER pDesktopFolder = NULL;
+	OLECHAR       olePath[MAX_PATH];
+	ULONG         chEaten;
+	HRESULT       hr;
+
+	if (SUCCEEDED(SHGetDesktopFolder(&pDesktopFolder)))
+	{
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pszPath, -1, 
+					olePath, MAX_PATH);
+		hr = pDesktopFolder->ParseDisplayName(NULL, NULL, 
+					olePath, &chEaten, &pidl, NULL);
+		pDesktopFolder->Release();
+		return pidl;
+	}
+	return NULL;
 }

@@ -5,7 +5,9 @@ Camera::Camera():
 {
 	m_pRendererPtr=NULL;
 	//m_pCameraStructPtr=NULL;
+	m_iLayerCullingMask=0xffffffff;
 	setName("Camera");
+	setMainCamera(false);
 }
 
 Camera::~Camera()
@@ -30,6 +32,26 @@ void Camera::initCamera(gxRenderer* renderer)
 	setFar(10000.0f);
 	setType(PERSPECTIVE_PROJECTION);
 	updateLocalPositionf(0, 0, 300);
+}
+
+bool Camera::isLayerCullingMask(unsigned int flag)
+{
+	return (m_iLayerCullingMask&flag)?true:false;
+}
+	
+void Camera::resetLayerCullingMask(unsigned int flag)
+{
+	m_iLayerCullingMask=m_iLayerCullingMask&~flag;
+}
+
+void Camera::setLayerCullingMask(unsigned int flag)
+{
+	m_iLayerCullingMask|=flag;
+}
+
+unsigned int Camera::getLayerCullingMask()
+{
+	return m_iLayerCullingMask;
 }
 
 void Camera::setFOV(float fov)
@@ -121,7 +143,8 @@ void Camera::transformationChangedf()
 
 void Camera::extractFrustumPlanes()
 {
-	m_cFrustum.extractFrustumPlanes(m_cProjMatrix * m_cInvTranfMatrix);
+	matrix4x4f pvm(m_cProjMatrix * m_cInvTranfMatrix);
+	m_cFrustum.extractFrustumPlanes(pvm);
 	m_cRenderFrustum.extractFrustumPlanes(m_cProjMatrix);
 	calculateAABB();
 }
@@ -211,4 +234,66 @@ void Camera::drawFrustum(gxHWShader* shader)
 
 		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 #endif
+}
+
+void Camera::write(gxFile& file)
+{
+	file.Write(m_iObjectID);
+	file.Write(m_eBaseFlags);
+	file.Write(m_cszName);
+	file.WriteBuffer((unsigned char*)m, sizeof(m));
+	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.Write(m_iAssetFileCRC);
+	writeAnimationController(file);
+
+	//write camera data
+	file.Write(m_eProjectionType);
+	file.Write(m_bMainCamera);
+	file.Write(m_fFOV);
+	file.Write(m_fNear);
+	file.Write(m_fFar);
+	file.Write(m_iLayerCullingMask);
+	//
+
+	file.Write((int)m_cChilds.size());
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=m_cChilds.getHead();
+    while(node)
+    {
+		object3d* obj=node->getData();
+		obj->write(file);
+        node=node->getNext();
+	}
+#else
+	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	{
+		object3d* obj = *it;
+		obj->write(file);
+	}
+#endif
+}
+
+void Camera::read(gxFile& file)
+{
+	file.Read(m_eBaseFlags);
+	char* temp=file.ReadString();
+	GX_STRCPY(m_cszName, temp);
+	GX_DELETE_ARY(temp);
+	file.ReadBuffer((unsigned char*)m, sizeof(m));
+	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.Read(m_iAssetFileCRC);
+	readAnimationController(file);
+
+	//read camera data
+	int etype=0;
+	file.Read(etype);
+	m_eProjectionType=(EPROJECTION_TYPE)etype;
+	file.Read(m_bMainCamera);
+	file.Read(m_fFOV);
+	file.Read(m_fNear);
+	file.Read(m_fFar);
+	file.Read(m_iLayerCullingMask);
+	//
+
+	perspectiveChanged();
 }

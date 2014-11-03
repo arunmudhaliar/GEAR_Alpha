@@ -146,6 +146,7 @@ private:
 	MTreeViewObserver* m_pTVObserver;
 	geVector2f m_fOffsetCacheForMouseMove;
 	std::vector<geTreeNode*> m_cSelectedNodes;
+	bool m_bSelectionChanged;
 };
 
 class MTreeViewObserver

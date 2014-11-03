@@ -123,7 +123,7 @@ void gxWorld::update(float dt)
 		
 		m_pOctree->resetCollidedTransformObjList();
 		//m_pOctree->CheckOverlapWithOctree(m_pOctree->GetRoot(), GetCurrentCamera());
-		m_pOctree->checkFrustumOverlapWithOctree(m_pOctree->getRoot(), &m_pActiveCameraPtr->getFrustum());
+		m_pOctree->checkFrustumOverlapWithOctree(m_pOctree->getRoot(), &m_pActiveCameraPtr->getFrustum(), m_pActiveCameraPtr->getLayerCullingMask());
 		//DEBUG_PRINT("octree item %d", m_pOctree->GetCollidedTransformObjList()->GetCount());
 	}
 
@@ -346,6 +346,15 @@ const char* gxWorld::getMetaDataFolder()
 	return m_szMetaDataFolder;
 }
 
+void gxWorld::setActiveCamera(Camera* camera)
+{
+	if(m_pActiveCameraPtr)
+		m_pActiveCameraPtr->setMainCamera(false);
+	m_pActiveCameraPtr = camera;
+	if(m_pActiveCameraPtr)
+		m_pActiveCameraPtr->setMainCamera(true);
+}
+
 Camera* gxWorld::createDefaultCameraAndSetActive()
 {
 	//m_pActiveCameraPtr=&m_cDefaultCamera;
@@ -356,6 +365,7 @@ Camera* gxWorld::createDefaultCameraAndSetActive()
 	}
 	m_pActiveCameraPtr = new Camera();
 	m_pActiveCameraPtr->initCamera(&m_cRenderer);
+	m_pActiveCameraPtr->setMainCamera(true);
 	m_pActiveCameraPtr->setObject3dObserver(m_pObject3dObserver);
 	appendChild(m_pActiveCameraPtr);
 	return m_pActiveCameraPtr;
@@ -624,6 +634,12 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
 		case OBJECT3D_LIGHT:
 			tempObj = new gxLight();
 			break;
+		case OBJECT3D_CAMERA:
+			{
+				tempObj = new Camera();
+				((Camera*)tempObj)->initCamera(&m_cRenderer);
+			}
+			break;
 		default:
 			tempObj = new object3d(objID);
 		}
@@ -635,65 +651,79 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
 	}
 }
 
-object3d* gxWorld::loadAndAppendFBXForDevice(const char* filename)
+object3d* gxWorld::loadFromCRCFile(int crc)
 {
+	char crcFile[1024];
+	sprintf(crcFile, "%s/%x", getMetaDataFolder(), crc);
+
+	object3d* obj = NULL;
 	object3d* root_object_node=NULL;
-	if (gxUtil::GX_IS_EXTENSION(filename, ".fbx") || gxUtil::GX_IS_EXTENSION(filename, ".FBX") ||
-		gxUtil::GX_IS_EXTENSION(filename, ".prefab") || gxUtil::GX_IS_EXTENSION(filename, ".PREFAB"))
+	gxFile file_meta;
+	if(!file_meta.OpenFile(crcFile))
 	{
-		object3d* obj = NULL;
-		int crc=gxCrc32::Calc((unsigned char*)filename);
-
-		char crcFile[1024];
-		sprintf(crcFile, "%s/%x", getMetaDataFolder(), crc);
-
-		gxFile file_meta;
-		if(file_meta.OpenFile(crcFile))
-		{
-			stMetaHeader metaHeader;
-			file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
-
-			int objID=0;
-			file_meta.Read(objID);
-
-			object3d* tempObj=NULL;
-
-			switch(objID)
-			{
-			case OBJECT3D_MESH:
-				tempObj = new gxMesh();
-				break;
-			case OBJECT3D_SKINNED_MESH:
-				tempObj = new gxSkinnedMesh();
-				break;
-			case OBJECT3D_LIGHT:
-				tempObj = new gxLight();
-				break;
-			default:
-				tempObj = new object3d(objID);
-			}
-
-			if(tempObj)
-			{
-				tempObj->setObject3dObserver(m_pObject3dObserver);
-				tempObj->read(file_meta);
-				appendChild(tempObj);
-				read3dFile(file_meta, tempObj);
-				obj=tempObj;
-				loadMaterialFromObject3d(obj);
-				loadAnmationFromObject3d(obj, crc);
-				root_object_node=obj;
-			}
-			file_meta.CloseFile();
-		}
+		return NULL;
 	}
 
+	stMetaHeader metaHeader;
+	file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+
+	int objID=0;
+	file_meta.Read(objID);
+
+	object3d* tempObj=NULL;
+
+	switch(objID)
+	{
+	case OBJECT3D_MESH:
+		tempObj = new gxMesh();
+		break;
+	case OBJECT3D_SKINNED_MESH:
+		tempObj = new gxSkinnedMesh();
+		break;
+	case OBJECT3D_LIGHT:
+		tempObj = new gxLight();
+		break;
+	case OBJECT3D_CAMERA:
+		{
+			tempObj = new Camera();
+			((Camera*)tempObj)->initCamera(&m_cRenderer);
+		}
+		break;
+	default:
+		tempObj = new object3d(objID);
+	}
+
+	if(tempObj)
+	{
+		tempObj->setObject3dObserver(m_pObject3dObserver);
+		tempObj->read(file_meta);
+		appendChild(tempObj);
+		read3dFile(file_meta, tempObj);
+		obj=tempObj;
+		loadMaterialFromObject3d(obj);
+		loadAnmationFromObject3d(obj, crc);
+		root_object_node=obj;
+	}
+	file_meta.CloseFile();
+	
 	transformationChangedf();
 
 	if(m_pEngineObserver)
-			m_pEngineObserver->onAppendToWorld(this, root_object_node);
+		m_pEngineObserver->onAppendToWorld(this, root_object_node);
 
 	populateBonesToMeshNode(root_object_node, root_object_node);
 
 	return root_object_node;
+}
+
+object3d* gxWorld::loadAndAppendFBXForDevice(const char* filename)
+{
+	if (gxUtil::GX_IS_EXTENSION(filename, ".fbx") || gxUtil::GX_IS_EXTENSION(filename, ".FBX") ||
+		gxUtil::GX_IS_EXTENSION(filename, ".prefab") || gxUtil::GX_IS_EXTENSION(filename, ".PREFAB"))
+	{
+		int crc=gxCrc32::Calc((unsigned char*)filename);
+		return loadFromCRCFile(crc);
+	}
+
+	return NULL;
 }

@@ -1,6 +1,6 @@
 #include "gePropertyObject3d.h"
 #include "../../EditorApp.h"
-#include "../../../resource.h"
+#include "../../win32/ConfirmationDialog.h"
 
 gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
 	geTreeNode(renderer, parent, name, sprite, 10)
@@ -111,7 +111,8 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 		bool bOldCheck=m_pPushBtn_Object3dStatic->isCheck();
 		if(m_pObject3dPtr->getChildCount())
 		{
-			LRESULT result = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_YESNOCANCEL_ITERATECHILDS_BOX), EditorApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(YesNoCancel_DlgBox));
+			
+			LRESULT result = ConfirmationDialog::ShowConfirmationDialog("Do you want to change this object and its child or not ?");
 			if(result==IDYES)
 				bRecursive=true;
 			else if(result==IDCANCEL)
@@ -140,7 +141,19 @@ void gePropertyObject3d::onCommand(int cmd)
 {
 	if(cmd>=0x00006500 && cmd<0x00006500+MAX_LAYER)
 	{
-		m_pObject3dPtr->setLayer(cmd-0x00006500, false);
+		bool bRecursive=false;
+		if(m_pObject3dPtr->getChildCount())
+		{
+			LRESULT result = ConfirmationDialog::ShowConfirmationDialog("Do you want to change this object and its child or not ?");
+			if(result==IDYES)
+				bRecursive=true;
+			else if(result==IDNO)
+				bRecursive=false;
+			else if(result==IDCANCEL)
+				return;
+		}
+
+		m_pObject3dPtr->setLayer(cmd-0x00006500, bRecursive);
 		m_pLayerDropDownMenu->setMenuItem(cmd);
 	}
 }

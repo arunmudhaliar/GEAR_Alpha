@@ -46,6 +46,8 @@ void gearSceneProject::populateProjectView()
 	m_cAssetTreeView.clearAndDestroyAll();
 
 	find_directory(m_pRenderer, EditorApp::getProjectHomeDirectory(), m_cAssetTreeView.getRoot(), m_cszSprites);
+	m_cAssetTreeView.getRoot()->traverseSetWidth(m_cSize.x);
+	m_cAssetTreeView.refreshTreeView();
 }
 
 void gearSceneProject::onDraw()

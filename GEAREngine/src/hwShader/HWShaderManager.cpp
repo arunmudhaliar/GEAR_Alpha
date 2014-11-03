@@ -140,6 +140,7 @@ void HWShaderManager::LoadDefaultShaders()
 	else
 		GX_DELETE(pShader);
 
+
 	//surface shaders
 	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/Diffuse.shader").c_str());
 	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/Diffuse_vlit.shader").c_str());

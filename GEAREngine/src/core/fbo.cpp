@@ -66,6 +66,7 @@ void FBO::ReInitFBO(int w, int h)
 
 void FBO::BindFBO(int flag)
 {
+#if 0
 	switch(flag)
 	{
 	case 0:
@@ -78,6 +79,10 @@ void FBO::BindFBO(int flag)
 		CHECK_GL_ERROR(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo));
 		break;
 	}
+#else
+	CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, m_fbo));
+#endif
+
 }
 
 void FBO::UnBindFBO()
@@ -151,8 +156,8 @@ GLuint& FBO::CreateDepthShadowTextureBuffer()
 	//glClientActiveTexture(GL_TEXTURE0);
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,  m_width, m_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
 	CHECK_GL_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,  m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
-	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP));
-	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP));
+	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 #ifdef _WIN32
@@ -185,7 +190,13 @@ GLuint& FBO::AttachDepthBuffer()
 	// Attach the depth render buffer to the FBO as it's depth attachment
 	CHECK_GL_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthbuffer));
 #else
+#ifdef WIN32
 	CHECK_GL_ERROR(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
+#elif defined(ANDROID)
+	CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
+#else
+	#error "Need to look in to this in fbo.cpp"
+#endif
 #endif
     
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);

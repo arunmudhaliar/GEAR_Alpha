@@ -40,7 +40,7 @@ public:
 	void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
 	void renderShadow(gxRenderer* renderer, int renderFlag);
 
-	void setActiveCamera(Camera* camera)	{	m_pActiveCameraPtr = camera;	}
+	void setActiveCamera(Camera* camera);
 	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
 	Camera* createDefaultCameraAndSetActive();
 
@@ -78,6 +78,7 @@ public:
 	void callback_object3dLayerChanged(object3d* child, int oldLayerID);
 
 	object3d* loadAndAppendFBXForDevice(const char* filename);
+	object3d* loadFromCRCFile(int crc);
 	void populateBonesToMeshNode(object3d* obj, object3d* rootNode);
 	void loadAnmationFromObject3d(object3d* obj3d, int crc);
 	void loadMaterialFromObject3d(object3d* obj3d);

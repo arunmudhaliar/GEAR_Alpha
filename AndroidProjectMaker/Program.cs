@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace AndroidProjectMaker
 {
@@ -17,13 +18,16 @@ namespace AndroidProjectMaker
             //string strCmdText;
             //strCmdText = "mkdir c://TempAndroid";
             //System.Diagnostics.Process.Start("CMD.exe", strCmdText);
+            string gearprojectDirectory = args[1];
+
             g_cGUI_mainform = new mainform();
             g_cGUI_mainform.Show();
             g_cGUI_mainform.setMessage("Checking Environment Variables");
 
             string app_bundle_identifier = "com.gear.gearapp";
             string app_name = "gearApp";
-            string rootDirectory = ".";
+            string rootDirectory = args[0];
+            Directory.Delete(rootDirectory + "//TempAndroid", true);
             DirectoryInfo dirinfo = Directory.CreateDirectory(rootDirectory+"//TempAndroid");
 
             string android_sdk_root = Environment.GetEnvironmentVariable("ANDROID_ROOT");
@@ -33,12 +37,12 @@ namespace AndroidProjectMaker
 
             g_cGUI_mainform.setMessage("Creating Android Project");
             string command_buffer;
-			command_buffer = android_sdk_root+"//tools//android.bat ";
-			command_buffer += "create project --target 2 ";
+            command_buffer = android_sdk_root + "//tools//android.bat ";
+            command_buffer += "create project --target 2 ";
             command_buffer += "--name " + app_name + " ";
             command_buffer += "--path " + rootDirectory + "//TempAndroid ";
             command_buffer += "--activity MainActivity ";
-			command_buffer += "--package "+app_bundle_identifier;
+            command_buffer += "--package " + app_bundle_identifier;
 
             ExecuteCommandSync(command_buffer);
             if (g_iExitCode != 0)
@@ -49,6 +53,29 @@ namespace AndroidProjectMaker
 
             AndroidManifest.createAndroidManifestFile(rootDirectory + "//TempAndroid", app_bundle_identifier, app_name);
             MainActivity.createMainActivityFile(rootDirectory + "//TempAndroid", app_bundle_identifier);
+
+            //Directory.CreateDirectory(rootDirectory + "//TempAndroid//libs//armeabi//");
+
+            //copy the required files
+            //File.Copy(rootDirectory + "//..//AndroidApp//gearApp//libs//armeabi//libgearapp.so",
+            //    rootDirectory + "//TempAndroid//libs//armeabi//libgearapp.so", true);
+            //File.Copy(rootDirectory + "//..//AndroidApp//gearApp//libs//armeabi//libGEAREngine.dll.so",
+            //    rootDirectory + "//TempAndroid//libs//armeabi//libGEAREngine.dll.so", true);
+
+            Directory.CreateDirectory(rootDirectory + "//TempAndroid//assets");
+            Directory.CreateDirectory(rootDirectory + "//TempAndroid//jni");
+
+            //jni folder
+            foreach (string newPath in Directory.GetFiles(rootDirectory + "//jni_source", "*.*",
+            SearchOption.AllDirectories))
+                File.Copy(newPath, newPath.Replace(rootDirectory + "//jni_source", rootDirectory + "//TempAndroid//jni"), true);
+
+#if COPY_META_TO_ASSET
+            //Copy all the files & Replaces any files with the same name
+            foreach (string newPath in Directory.GetFiles(gearprojectDirectory + "//MetaData", "*.*",
+                SearchOption.AllDirectories))
+                File.Copy(newPath, newPath.Replace(gearprojectDirectory + "//MetaData", rootDirectory + "//TempAndroid//assets"), true);
+#endif
             /*
             //project update
             //android update project --name <project_name> --target <target_ID> --path <path_to_your_project>
@@ -65,9 +92,9 @@ namespace AndroidProjectMaker
             if (ndk_home == null)
                 return -97;     //NDK_HOME variable not set
 
-            command_buffer = ndk_home + "\\ndk-build --directory="+rootDirectory + "//TempAndroid";
+            command_buffer = ndk_home + "\\ndk-build --directory=" + rootDirectory + "//TempAndroid";
             ExecuteCommandSync(command_buffer);
-            if (g_iExitCode!= 0)
+            if (g_iExitCode != 0)
             {
                 g_cGUI_mainform.setMessage("Error in Compilation 1");
                 return -89;
@@ -101,7 +128,7 @@ namespace AndroidProjectMaker
 
 #if !DEBUG
             g_cGUI_mainform.setMessage("JarSigner");
-            command_buffer = "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore " + rootDirectory + "//TempAndroid//bin//debug.keystore  -storepass android " + rootDirectory + "//TempAndroid//bin//" + app_name + "-release-unsigned.apk androiddebugkey";
+            command_buffer = "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore " + rootDirectory + "//android_keystore//debug.keystore  -storepass android " + rootDirectory + "//TempAndroid//bin//" + app_name + "-release-unsigned.apk androiddebugkey";
             ExecuteCommandSync(command_buffer);
             if (g_iExitCode != 0)
             {
@@ -109,6 +136,68 @@ namespace AndroidProjectMaker
                 return -87;
             }
 #endif
+
+            g_cGUI_mainform.setMessage("Pushing files to device");
+            //Pushing files to device
+            string[] necessaryfiles = { "out.exe", "MonoGEAR.dll" };
+            foreach (string file_str in necessaryfiles)
+            {
+#if DEBUG
+                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + rootDirectory + "//Debug//" + file_str + " //sdcard//gear//" + file_str;
+#else
+                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + rootDirectory + "//Release//" + file_str + " //sdcard//gear//" + file_str;
+#endif
+                ExecuteCommandSync(command_buffer);
+                if (g_iExitCode != 0)
+                {
+                    ExecuteCommandSync("adb kill-server");
+                    g_cGUI_mainform.setMessage("USB device error while pushing files to device.");
+                    return -98;
+                }
+            }
+
+            //Copy all the metadata files & Replaces any files with the same name
+            foreach (string newPath in Directory.GetFiles(gearprojectDirectory + "//MetaData", "*.*", SearchOption.AllDirectories))
+            {
+                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + newPath + " //sdcard//gear//MetaData//" + Path.GetFileName(newPath);
+                ExecuteCommandSync(command_buffer);
+                if (g_iExitCode != 0)
+                {
+                    ExecuteCommandSync("adb kill-server");
+                    g_cGUI_mainform.setMessage("USB device error while pushing meta data files to device.");
+                    return -99;
+                }
+            }
+
+            //Copy all the scenes files & Replaces any files with the same name
+            foreach (string newPath in Directory.GetFiles(gearprojectDirectory + "//Assets", "*.gearscene", SearchOption.AllDirectories))
+            {
+                string relativePath = newPath;
+                relativePath=relativePath.Replace(gearprojectDirectory + "//Assets", "");
+                relativePath=relativePath.Replace("\\", "//");
+
+                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + newPath + " //sdcard//gear//scenes" + relativePath;
+                ExecuteCommandSync(command_buffer);
+                if (g_iExitCode != 0)
+                {
+                    ExecuteCommandSync("adb kill-server");
+                    g_cGUI_mainform.setMessage("USB device error while pushing scenes files to device.");
+                    return -99;
+                }
+            }
+
+            //current scene
+            if (File.Exists(gearprojectDirectory + "//ProjectSettings//currentscene"))
+            {
+                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + gearprojectDirectory + "//ProjectSettings//currentscene" + " //sdcard//gear//currentscene";
+                ExecuteCommandSync(command_buffer);
+                if (g_iExitCode != 0)
+                {
+                    ExecuteCommandSync("adb kill-server");
+                    g_cGUI_mainform.setMessage("USB device error while pushing current scenes file to device.");
+                    return -99;
+                }
+            }
 
             g_cGUI_mainform.setMessage("Pushing to device");
             //Pushing to device
@@ -125,7 +214,6 @@ namespace AndroidProjectMaker
                 return -86;
             }
             ExecuteCommandSync("adb kill-server");
-
 
             g_cGUI_mainform.setMessage("Executing on device");
             //Executing on device
@@ -182,7 +270,7 @@ namespace AndroidProjectMaker
             {
                 using (System.Diagnostics.Process process = new System.Diagnostics.Process())
                 {
-                    int timeout = 20 * 1000;
+                    int timeout = 3 * 60 * 1000;    //3 minutes
                     g_iExitCode = 0;
 
                     System.Diagnostics.ProcessStartInfo procStartInfo =

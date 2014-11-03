@@ -128,10 +128,17 @@ void geColorDlg::onDraw()
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3, GL_FLOAT, 0, &m_pszColorCircleColor[0].x);
-
 	glDrawArrays(GL_TRIANGLE_FAN, 0, COLOR_DLG_MAX_RESOLUTION);
-
 	glDisableClientState(GL_COLOR_ARRAY);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_COLOR_MATERIAL);
+	float luminance=m_pHorizontalSlider_RGBA[3]->getSliderValue();
+	glColor4f(0, 0, 0, 1.0f-luminance);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, COLOR_DLG_MAX_RESOLUTION);
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_BLEND);
 
 	//pointer
 	glColor3f(0.0f, 0.0f, 0.0f);
@@ -187,11 +194,26 @@ bool geColorDlg::onMouseMove(float x, float y, int flag)
 			colorTM.setZAxis(zaxis);
 			vector3f res(colorTM.getInverse() *mousePos);
 
+			//res.x=0.3359375+res.x;
+			//res.y=0.3359375+res.y;
+			//res.z=0.3359375+res.z;
+
 			m_pColorControl->setControlColor(res.x, res.y, res.z, 1.0f);
+
+			//m_pHorizontalSlider_RGBA[0]->setSliderValue((res.x+1.0f)*0.5f, false);
+			//m_pHorizontalSlider_RGBA[1]->setSliderValue((res.y+1.0f)*0.5f, false);
+			//m_pHorizontalSlider_RGBA[2]->setSliderValue((res.z+1.0f)*0.5f, false);
+
 
 			m_pHorizontalSlider_RGBA[0]->setSliderValue(res.x, false);
 			m_pHorizontalSlider_RGBA[1]->setSliderValue(res.y, false);
 			m_pHorizontalSlider_RGBA[2]->setSliderValue(res.z, false);
+
+			//float avg_rgb=(ABS(res.x)+ABS(res.y)+ABS(res.z))/3.0f;
+			//if(avg_rgb>=1.0f)
+			//	m_pHorizontalSlider_RGBA[3]->setSliderValue(1.0f, false);
+			//else
+			//	m_pHorizontalSlider_RGBA[3]->setSliderValue(avg_rgb, false);
 
 			if(m_pObserverControlPtr)
 				m_pObserverControlPtr->setControlColor(res.x, res.y, res.z, 1.0f);
@@ -204,18 +226,38 @@ bool geColorDlg::onMouseMove(float x, float y, int flag)
 void geColorDlg::onSliderChange(geGUIBase* slider)
 {
 	geVector3f rgb(m_pHorizontalSlider_RGBA[0]->getSliderValue(), m_pHorizontalSlider_RGBA[1]->getSliderValue(), m_pHorizontalSlider_RGBA[2]->getSliderValue());
+
+	float luminance_old_value = m_pHorizontalSlider_RGBA[3]->getSliderValue();
+	float luminance = MIN(luminance_old_value, rgb.x+rgb.y+rgb.z);
+	//luminance=CLAMP(luminance, 0.0f, 1.0f);
+	rgb.x = MIN(rgb.x, luminance);
+	rgb.y = MIN(rgb.y, luminance);
+	rgb.z = MIN(rgb.z, luminance);
+
+	m_pHorizontalSlider_RGBA[0]->setSliderValue(rgb.x, false);
+	m_pHorizontalSlider_RGBA[1]->setSliderValue(rgb.y, false);
+	m_pHorizontalSlider_RGBA[2]->setSliderValue(rgb.z, false);
+	m_pHorizontalSlider_RGBA[3]->setSliderValue(luminance, false);
+
 	m_pColorControl->setControlColor(rgb.x, rgb.y, rgb.z, 1.0f);
 	if(m_pObserverControlPtr)
 		m_pObserverControlPtr->setControlColor(rgb.x, rgb.y, rgb.z, 1.0f);
 
 	//rgb to xyz
 	matrix4x4f xyzTM;
+
 	vector3f xaxis(cos(DEG2RAD(60.0f)), sin(DEG2RAD(60.0f)), 0.0f);
 	xyzTM.setXAxis(xaxis);
 	vector3f yaxis(cos(DEG2RAD(180.0f)), sin(DEG2RAD(180.0f)), 0.0f);
 	xyzTM.setYAxis(yaxis);
 	vector3f zaxis(cos(DEG2RAD(300.0f)), sin(DEG2RAD(300.0f)), 0.0f);
 	xyzTM.setZAxis(zaxis);
+
+	//float avg_rgb=(ABS(res.x)+ABS(res.y)+ABS(res.z))/3.0f;
+	//if(avg_rgb>=1.0f)
+	//	m_pHorizontalSlider_RGBA[3]->setSliderValue(1.0f, false);
+	//else
+	//	m_pHorizontalSlider_RGBA[3]->setSliderValue(avg_rgb, false);
 
 	vector3f res(xyzTM*vector3f(rgb.x, rgb.y, rgb.z));
 	m_cPointerPos.set(m_fCircleRadius*res.x, m_fCircleRadius*res.y);

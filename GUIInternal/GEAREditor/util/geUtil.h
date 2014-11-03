@@ -212,6 +212,17 @@ public:
 
 		return str;
 	}
+
+	static void convertPathToUnixFormat(char* path)
+	{
+		//win32 to unix style path
+		for(int x=0;x<strlen(path);x++)
+		{
+			if(path[x]=='\\')
+				path[x]='/';
+		}
+		//
+	}
 };
 
 #endif

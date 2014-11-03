@@ -466,6 +466,7 @@ geTreeView::geTreeView():
 	m_fVirtualYPos=0.0f;
 	m_pTVObserver=NULL;
 	m_pCurrentSelectedNodePtr=NULL;
+	m_bSelectionChanged=false;
 }
 
 geTreeView::geTreeView(const char* name):
@@ -475,6 +476,7 @@ geTreeView::geTreeView(const char* name):
 	m_fVirtualYPos=0.0f;
 	m_pTVObserver=NULL;
 	m_pCurrentSelectedNodePtr=NULL;
+	m_bSelectionChanged=false;
 }
 
 geTreeView::~geTreeView()
@@ -629,7 +631,8 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 				{
 					m_pCurrentSelectedNodePtr=selectedNode;
 					selectedNode->selectNode();
-					m_pTVObserver->onTVSelectionChange(selectedNode, this);
+					//m_pTVObserver->onTVSelectionChange(selectedNode, this);	//moved to onMouseLButtonUp
+					m_bSelectionChanged=true;
 				}
 			}
 
@@ -638,7 +641,8 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 				if(!(nFlag&MK_CONTROL) && m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=selectedNode)
 					m_pCurrentSelectedNodePtr->unselectNode();
 				m_pCurrentSelectedNodePtr=selectedNode;
-				m_pTVObserver->onTVSelectionChange(selectedNode, this);
+				//m_pTVObserver->onTVSelectionChange(selectedNode, this);	//moved to onMouseLButtonUp
+				m_bSelectionChanged=true;
 			}
 		}
 
@@ -655,6 +659,13 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 bool geTreeView::onMouseLButtonUp(float x, float y, int nFlag)
 {
 	m_cVerticalScrollBar.MouseLButtonUp(x, y, nFlag);
+
+	if(m_bSelectionChanged)
+	{
+		if(m_pCurrentSelectedNodePtr)
+			m_pTVObserver->onTVSelectionChange(m_pCurrentSelectedNodePtr, this);
+		m_bSelectionChanged=false;
+	}
 
 	int xoff=-m_pRootNode->getXOffset();
 	int yoff=(int)m_fVirtualYPos-GE_TREEVIEWNODE_CY;
@@ -746,7 +757,7 @@ void geTreeView::onCancelEngagedControls()
 {
 	m_cVerticalScrollBar.CancelEngagedControls();
 	m_pRootNode->CancelEngagedControls();
-
+	m_bSelectionChanged=false;
 	geGUIBase::onCancelEngagedControls();
 }
 
@@ -768,6 +779,7 @@ void geTreeView::onFocusLost()
 
 void geTreeView::clearAndDestroyAll()
 {
+	m_bSelectionChanged=false;
 	m_pCurrentSelectedNodePtr=NULL;
 	m_cSelectedNodes.clear();
 	GE_DELETE(m_pRootNode);
@@ -780,6 +792,7 @@ void geTreeView::clearAndDestroyAll()
 
 void geTreeView::refreshTreeView(bool bDoNotResetScrollBarPosition)
 {
+	m_bSelectionChanged=false;
 	float old_ypos=m_cVerticalScrollBar.getScrollGrabberYPos();
 	m_cVerticalScrollBar.setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
 	m_cVerticalScrollBar.setSize(SCROLLBAR_SIZE, m_cSize.y);

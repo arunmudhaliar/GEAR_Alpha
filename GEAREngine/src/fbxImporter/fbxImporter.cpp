@@ -118,7 +118,8 @@ object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManag
       
 		// convert everything into triangles...
 		FbxGeometryConverter fbxConverter(&fbxManager);
-		triangulateFBXRecursive(fbxConverter, *fbxRoot);
+		fbxConverter.Triangulate(&fbxScene, true);
+		//triangulateFBXRecursive(fbxConverter, *fbxRoot);
       
 		// recurse over the scene nodes and import them as needed...
 		object3d* object3d_root_object = new object3d(OBJECT3D_DUMMY);
@@ -266,7 +267,7 @@ object3d* fbxImporter::tryImportFBXSkinnedMesh(FbxNode &fbxNode, const FbxMatrix
 		}
 
 		gxSkinnedMesh* newSkinnedMesh = new gxSkinnedMesh();
-		importFBXMesh(newSkinnedMesh, *fbxMesh, geometryOffset, materialList, rootObject3d, boneInfluenceList, boneList);
+		importFBXMesh(newSkinnedMesh, fbxNode, geometryOffset, materialList, rootObject3d, boneInfluenceList, boneList);
 		newSkinnedMesh->setName(fbxNode.GetName());
 
 		newSkinnedMesh->allocateBoneList(boneList->bonelst.size());
@@ -556,7 +557,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 		{
 			//we don't have any skin modifier in this node, so only import mesh
 			gxMesh* newMesh = new gxMesh();
-			importFBXMesh(newMesh, *fbxMesh, fbxGeometryOffset, materialList, rootObject3d, NULL, NULL);
+			importFBXMesh(newMesh, fbxNode, fbxGeometryOffset, materialList, rootObject3d, NULL, NULL);
 			newMesh->setName(fbxNode.GetName());
 			parent_obj_node->appendChild(newMesh);
 			parent_obj_node=newMesh;
@@ -572,10 +573,13 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	}
 
 	//transform
+	FbxVector4 lTmpVector = fbxNode.GetRotationPivot(FbxNode::eSourcePivot);
+
 	FbxVector4 row1 = local_tm.GetRow(0);
 	FbxVector4 row2 = local_tm.GetRow(1);
 	FbxVector4 row3 = local_tm.GetRow(2);
 	FbxVector4 row4 = local_tm.GetRow(3);
+	row4=lTmpVector;
 	parent_obj_node->setXAxis(vector3f((float)row1.mData[0], (float)row1.mData[1], (float)row1.mData[2]));
 	parent_obj_node->setYAxis(vector3f((float)row2.mData[0], (float)row2.mData[1], (float)row2.mData[2]));
 	parent_obj_node->setZAxis(vector3f((float)row3.mData[0], (float)row3.mData[1], (float)row3.mData[2]));
@@ -600,8 +604,9 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	//
 }
 
-gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d, stBoneInfluence* boneInfluenceList, stBoneList* boneList)
+gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxMatrix &geometryOffset, std::vector<gxMaterial*>* materialList, object3d* rootObject3d, stBoneInfluence* boneInfluenceList, stBoneList* boneList)
 {
+	FbxMesh& fbxMesh = *fbxNode.GetMesh();
 	float* vertexBuffer = newMesh->allocateVertexBuffer(fbxMesh.GetPolygonCount());
 	float* normalBuffer = newMesh->allocateNormalBuffer(fbxMesh.GetPolygonCount());
 	gxTriInfo* triInfoArray = NULL;
@@ -726,6 +731,8 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 	//char* uvsetname=uvSetNames.GetStringAt(0);
 	//fbxMesh.GetPolygonVertexUV(
 	//
+
+	FbxVector4 rotationpivot = fbxNode.GetRotationPivot(FbxNode::eSourcePivot);
 
 	for(int x=0;x<fbxMesh.GetPolygonCount();x++)
 	{
@@ -912,6 +919,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxMesh &fbxMesh, const FbxM
 			//FbxVector4 v = pivot.MultT(vertex);
 			//vertex=globalTM.MultT(v);
 			vertex=geometryOffset.MultNormalize(vertex);
+			vertex=vertex-rotationpivot;
 
 			FbxVector4 normal;
 			fbxMesh.GetPolygonVertexNormal(x, y, normal);

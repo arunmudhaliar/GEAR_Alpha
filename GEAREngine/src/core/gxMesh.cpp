@@ -503,11 +503,13 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			gxSubMap* submap = *it;
 			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
 			int texenv1=0;
+			int texenv2=0;
 #ifdef _WIN32
 			texenv1=GL_TEXTURE_ENV_MODE;
+			texenv2=GL_MODULATE;
 #endif
 			gxUV* base_uv=(cntr<m_nUVChannels)?&m_pszUVChannels[cntr]:((m_nUVChannels)?&m_pszUVChannels[0]:NULL);
-			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, texenv1, GL_MODULATE, 2, shader, shader_var->texture_uv_in_name.c_str()))
+			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, texenv1, texenv2, 2, shader, shader_var->texture_uv_in_name.c_str()))
 			{
 				shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
 				nTexUsed++;

@@ -1,3 +1,4 @@
+#ifndef GEAR2D
 #ifndef GETEXTURETHUMBNAIL_H
 #define GETEXTURETHUMBNAIL_H
 
@@ -32,4 +33,5 @@ private:
 	float m_cVBClientAreaLine[10];
 };
 
+#endif
 #endif

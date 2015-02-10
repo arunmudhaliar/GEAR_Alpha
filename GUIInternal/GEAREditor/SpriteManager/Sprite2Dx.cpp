@@ -15,6 +15,7 @@ Sprite2Dx::~Sprite2Dx()
 	
 }
 
+#ifndef GEAR2D
 void Sprite2Dx::draw(gxHWShader* shader)
 {
 	glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, m_cszVertLst);
@@ -56,6 +57,7 @@ void Sprite2Dx::draw(gxHWShader* shader)
 	
 	glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 }
+#endif
 
 void Sprite2Dx::draw(/*const matrix4x4f& parentTM, */geVector2f* pos)
 {	

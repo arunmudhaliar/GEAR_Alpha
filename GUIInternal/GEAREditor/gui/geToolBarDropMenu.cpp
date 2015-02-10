@@ -1,6 +1,10 @@
 #include "geToolBarDropMenu.h"
 #include "geGUIManager.h"
+#ifndef GEAR2D
 #include "../EditorApp.h"
+#else
+#include "../../../../GEAR2D_Alpha/GEAR2D/app/Editor2DApp.h"
+#endif
 
 geToolBarDropMenu::geToolBarDropMenu():
 	geButtonBase(GEGUI_TOOLBAR_DROPMENU, "ToolBarButton")
@@ -228,8 +232,13 @@ void geToolBarDropMenu::onButtonClicked()
 		POINT pt;
 		pt.x=x+treeView->getPositionOnScreen().x;
 		pt.y=y-treeView->getPositionOnScreen().y+((geTreeView*)treeView)->getVirtualYPos();
+#ifndef GEAR2D
 		ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
 		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+#else
+		ClientToScreen(Editor2DApp::getMainWindowHandle(), &pt);
+		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, Editor2DApp::getMainWindowHandle(), NULL);
+#endif
 
 	}
 	else if(rootTVNode)
@@ -237,8 +246,13 @@ void geToolBarDropMenu::onButtonClicked()
 		POINT pt;
 		pt.x=getPositionOnScreen().x;
 		pt.y=-getPositionOnScreen().y;
+#ifndef GEAR2D
 		ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
 		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+#else
+		ClientToScreen(Editor2DApp::getMainWindowHandle(), &pt);
+		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, Editor2DApp::getMainWindowHandle(), NULL);
+#endif
 	}
 
 	if(m_pGUIObserver)

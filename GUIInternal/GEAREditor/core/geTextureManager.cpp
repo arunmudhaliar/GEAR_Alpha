@@ -1,5 +1,9 @@
 #include "geTextureManager.h"
+#ifndef GEAR2D
 #include "../../../GEAREngine/src/util/pngLoader.h"
+#else
+#include "../../../../GEAR2D_Alpha/GEAR2D/app/pngLoaderfor2D.h"
+#endif
 
 CGETextureManager::CGETextureManager()
 {

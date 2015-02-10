@@ -1,7 +1,12 @@
+#ifndef GEAR2D
 #include "geColorControl.h"
 #include "geGUIManager.h"
 #include "../secondryViews/geColorDlg.h"
+#ifndef GEAR2D
 #include "../EditorApp.h"
+#else
+#include "../../../../GEAR2D_Alpha/GEAR2D/app/Editor2DApp.h"
+#endif
 
 geColorControl::geColorControl():
 	geGUIBase(GEGUI_COLOR_CONTROL, "Color Control")
@@ -71,7 +76,11 @@ void geColorControl::onSize(float cx, float cy, int flag)
 bool geColorControl::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	geColorDlg* view = new geColorDlg(this);
+#ifndef GEAR2D
 	view->showView(EditorApp::getMainWindowHandle());
+#else
+	view->showView(Editor2DApp::getMainWindowHandle());
+#endif
 	return true;
 }
 
@@ -84,3 +93,4 @@ bool geColorControl::onMouseMove(float x, float y, int flag)
 {
 	return true;
 }
+#endif

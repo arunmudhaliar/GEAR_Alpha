@@ -113,8 +113,8 @@ void RoundedRectControl::create(float cx, float cy, float deltaHeight)
 	float angle=180;
 	for(int xx=m_step;xx>=0;xx--)
 	{
-		m_prounded_left_top_vertList[(xx+1)*2+0]=m_prounded_left_top_vertList[0]+deltaHeight*gxMath::COSF(angle);
-		m_prounded_left_top_vertList[(xx+1)*2+1]=m_prounded_left_top_vertList[1]+deltaHeight*gxMath::SINF(angle);
+		m_prounded_left_top_vertList[(xx+1)*2+0]=m_prounded_left_top_vertList[0]+deltaHeight*pxMath::COSF(angle);
+		m_prounded_left_top_vertList[(xx+1)*2+1]=m_prounded_left_top_vertList[1]+deltaHeight*pxMath::SINF(angle);
 
 		float color_height=m_prounded_left_top_vertList[(xx+1)*2+1];
 		m_prounded_left_top_colorList[(xx+1)*4+0]=m_rgb_top[0]+m_rgb_delta[0]*(color_height/cy);
@@ -135,8 +135,8 @@ void RoundedRectControl::create(float cx, float cy, float deltaHeight)
 	angle=270;
 	for(int xx=m_step;xx>=0;xx--)
 	{
-		m_prounded_right_top_vertList[(xx+1)*2+0]=m_prounded_right_top_vertList[0]+deltaHeight*gxMath::COSF(angle);
-		m_prounded_right_top_vertList[(xx+1)*2+1]=m_prounded_right_top_vertList[1]+deltaHeight*gxMath::SINF(angle);
+		m_prounded_right_top_vertList[(xx+1)*2+0]=m_prounded_right_top_vertList[0]+deltaHeight*pxMath::COSF(angle);
+		m_prounded_right_top_vertList[(xx+1)*2+1]=m_prounded_right_top_vertList[1]+deltaHeight*pxMath::SINF(angle);
 
 		float color_height=m_prounded_right_top_vertList[(xx+1)*2+1];
 		m_prounded_right_top_colorList[(xx+1)*4+0]=m_rgb_top[0]+m_rgb_delta[0]*(color_height/cy);
@@ -159,8 +159,8 @@ void RoundedRectControl::create(float cx, float cy, float deltaHeight)
 		angle=0;
 		for(int xx=m_step;xx>=0;xx--)
 		{
-			m_prounded_right_bottom_vertList[(xx+1)*2+0]=m_prounded_right_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
-			m_prounded_right_bottom_vertList[(xx+1)*2+1]=m_prounded_right_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
+			m_prounded_right_bottom_vertList[(xx+1)*2+0]=m_prounded_right_bottom_vertList[0]+deltaHeight*pxMath::COSF(angle);
+			m_prounded_right_bottom_vertList[(xx+1)*2+1]=m_prounded_right_bottom_vertList[1]+deltaHeight*pxMath::SINF(angle);
 
 			float color_height=m_prounded_right_bottom_vertList[(xx+1)*2+1];
 			m_prounded_right_bottom_colorList[(xx+1)*4+0]=m_rgb_top[0]+m_rgb_delta[0]*(color_height/cy);
@@ -181,8 +181,8 @@ void RoundedRectControl::create(float cx, float cy, float deltaHeight)
 		angle=90;
 		for(int xx=m_step;xx>=0;xx--)
 		{
-			m_prounded_left_bottom_vertList[(xx+1)*2+0]=m_prounded_left_bottom_vertList[0]+deltaHeight*gxMath::COSF(angle);
-			m_prounded_left_bottom_vertList[(xx+1)*2+1]=m_prounded_left_bottom_vertList[1]+deltaHeight*gxMath::SINF(angle);
+			m_prounded_left_bottom_vertList[(xx+1)*2+0]=m_prounded_left_bottom_vertList[0]+deltaHeight*pxMath::COSF(angle);
+			m_prounded_left_bottom_vertList[(xx+1)*2+1]=m_prounded_left_bottom_vertList[1]+deltaHeight*pxMath::SINF(angle);
 
 			float color_height=m_prounded_left_bottom_vertList[(xx+1)*2+1];
 			m_prounded_left_bottom_colorList[(xx+1)*4+0]=m_rgb_top[0]+m_rgb_delta[0]*(color_height/cy);

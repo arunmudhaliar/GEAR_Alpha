@@ -1,5 +1,9 @@
 #include "geWindowColumn.h"
+#ifndef GEAR2D
 #include "../EditorApp.h"
+#else
+#include "../../../../GEAR2D_Alpha/GEAR2D/app/Editor2DApp.h"
+#endif
 
 stWindowColumnRow::stWindowColumnRow(const char* name, float ypos)
 {

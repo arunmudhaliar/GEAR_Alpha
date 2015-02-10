@@ -1,3 +1,4 @@
+#ifndef GEAR2D
 #ifndef GECOLORCONTROL_H
 #define GECOLORCONTROL_H
 
@@ -32,4 +33,5 @@ private:
 	geVector4f m_cColor;
 };
 
+#endif
 #endif

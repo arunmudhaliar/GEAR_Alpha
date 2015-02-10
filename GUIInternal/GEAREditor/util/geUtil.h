@@ -4,8 +4,10 @@
 #include <string.h>
 #include <gl\GL.h>
 #include <gl\glut.h>
+#ifndef GEAR2D
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 #include "../../../GEAREngine/src/core/vector4.h"
+#endif
 
 class geUtil
 {
@@ -26,6 +28,7 @@ public:
 		return value;
 	}
 
+#ifndef GEAR2D
 	static void drawGizmo(float scale, gxHWShader* shader, int selectedAxiz=0)
 	{
 		float lines[]=
@@ -125,6 +128,7 @@ public:
 
 		glEnable(GL_DEPTH_TEST);
 	}
+#endif
 
 	static void drawGizmoCones(float scale, int selectedAxiz=0)
 	{
@@ -216,12 +220,59 @@ public:
 	static void convertPathToUnixFormat(char* path)
 	{
 		//win32 to unix style path
-		for(int x=0;x<strlen(path);x++)
+		for(int x=0;x<(int)strlen(path);x++)
 		{
 			if(path[x]=='\\')
 				path[x]='/';
 		}
 		//
+	}
+	
+	static bool isSubString(const char* str, const char* substr)
+	{
+		const char* fond_str=STRCHR_nocase(str, substr[0]);
+		if(fond_str==NULL) return false;
+
+		bool bFound=false;
+
+		while(!bFound)
+		{
+			int sub_strlen=strlen(substr);
+			int str_len=strlen(fond_str);
+			if(sub_strlen>str_len) return false;
+
+			bFound=true;
+			for(int x=0;x<sub_strlen; x++)
+			{
+				if(tolower(substr[x])!=tolower(*fond_str))
+				{
+					bFound=false;
+					break;
+				}
+				fond_str++;
+			}
+
+			if(bFound)
+				return bFound;
+
+			fond_str=STRCHR_nocase(fond_str, substr[0]);
+			if(fond_str==NULL) return false;
+		}
+
+		return false;
+	}
+
+private:
+
+	static const char* STRCHR_nocase(const char* str, char value)
+	{
+		for(int x=0;x<(int)strlen(str);x++)
+		{
+			if(tolower(str[x])==tolower(value))
+				return &str[x];
+		}
+
+		return NULL;
 	}
 };
 

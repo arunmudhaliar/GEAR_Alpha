@@ -1353,7 +1353,7 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 
 void gearSceneWorldEditor::onMouseWheel(int zDelta, int x, int y, int flag)
 {
-	if(!isPointInsideClientArea(x, y)) return;
+	//if(!isPointInsideClientArea(x, y)) return;
 
 	m_bStopFollowCam=true;
 	//monoWrapper::mono_engine_mouseWheel(m_pMainWorldPtr, zDelta, x, y, flag);

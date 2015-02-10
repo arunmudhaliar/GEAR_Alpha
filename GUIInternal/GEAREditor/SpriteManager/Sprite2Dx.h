@@ -13,7 +13,9 @@ public:
 	~Sprite2Dx();
 	
 	virtual void draw(/*const matrix4x4f& parentTM, */geVector2f* pos=NULL);
-    virtual void draw(gxHWShader* shader);
+#ifndef GEAR2D
+	virtual void draw(gxHWShader* shader);
+#endif
 
     virtual void onSpritePreRender(){};
     virtual void onSpritePostRender(){};

@@ -31,7 +31,9 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name):
 	{
 		if(strlen(name)>sizeof(m_szName))
 		{
+#ifndef GEAR2D
 			DEBUG_PRINT("ERROR geGUIBase::geGUIBase() strlen(name)>sizeof(m_szName)");
+#endif
 		}
 		STRCPY(m_szName, name);
 	}
@@ -56,7 +58,9 @@ void geGUIBase::setName(const char* name)
 {
 	if(strlen(name)>sizeof(m_szName))
 	{
+#ifndef GEAR2D
 		DEBUG_PRINT("ERROR geGUIBase::setName() strlen(name)>sizeof(m_szName)");
+#endif
 	}
 
 	STRCPY(m_szName, name);

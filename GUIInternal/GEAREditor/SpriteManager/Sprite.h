@@ -6,7 +6,9 @@
 //#include "../engine/core/transformf.h"
 #include "../core/geTexture.h"
 #include "../util/geVector2.h"
+#ifndef GEAR2D
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
+#endif
 //#include "../engine/core/rect.h"
 #include "../../../GEAREngine/src/core/transform.h"
 
@@ -38,7 +40,9 @@ public:
 	void loadTexture(CGETextureManager* textureManager, const char *pszFileName);
 	
 	virtual void draw(/*const matrix4x4f& parentTM, */geVector2f* pos=NULL){};
+#ifndef GEAR2D
 	virtual void draw(gxHWShader* shader){};
+#endif
 
 	void setClip(float clipX, float clipY, float width, float height);
 	//void setClip(const bxRectf& rect)  {   setClip(rect.m_pos.x, rect.m_pos.y, rect.m_size.x, rect.m_size.y); }

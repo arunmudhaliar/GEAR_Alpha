@@ -1,3 +1,4 @@
+#ifndef GEAR2D
 #include "geTextureThumbnail.h"
 #include "geGUIManager.h"
 
@@ -91,3 +92,4 @@ bool geTextureThumbnail::onMouseMove(float x, float y, int flag)
 {
 	return true;
 }
+#endif

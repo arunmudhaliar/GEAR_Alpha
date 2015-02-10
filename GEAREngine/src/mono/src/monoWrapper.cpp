@@ -132,11 +132,76 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 	g_pMonoobject3d = mono_class_from_name (g_pImage, "MonoGEAR", "object3d");
 	g_pMonoScript = mono_class_from_name (g_pImage, "MonoGEAR", "monoScript");
 
+#if 0
+	int table_id []={
+			MONO_TABLE_MODULE,
+	MONO_TABLE_TYPEREF,
+	MONO_TABLE_TYPEDEF,
+	MONO_TABLE_FIELD_POINTER,
+	MONO_TABLE_FIELD,
+	MONO_TABLE_METHOD_POINTER,
+	MONO_TABLE_METHOD,
+	MONO_TABLE_PARAM_POINTER,
+	MONO_TABLE_PARAM,
+	MONO_TABLE_INTERFACEIMPL,
+	MONO_TABLE_MEMBERREF, /* 0xa */
+	MONO_TABLE_CONSTANT,
+	MONO_TABLE_CUSTOMATTRIBUTE,
+	MONO_TABLE_FIELDMARSHAL,
+	MONO_TABLE_DECLSECURITY,
+	MONO_TABLE_CLASSLAYOUT,
+	MONO_TABLE_FIELDLAYOUT, /* 0x10 */
+	MONO_TABLE_STANDALONESIG,
+	MONO_TABLE_EVENTMAP,
+	MONO_TABLE_EVENT_POINTER,
+	MONO_TABLE_EVENT,
+	MONO_TABLE_PROPERTYMAP,
+	MONO_TABLE_PROPERTY_POINTER,
+	MONO_TABLE_PROPERTY,
+	MONO_TABLE_METHODSEMANTICS,
+	MONO_TABLE_METHODIMPL,
+	MONO_TABLE_MODULEREF, /* 0x1a */
+	MONO_TABLE_TYPESPEC,
+	MONO_TABLE_IMPLMAP,
+	MONO_TABLE_FIELDRVA,
+	MONO_TABLE_UNUSED6,
+	MONO_TABLE_UNUSED7,
+	MONO_TABLE_ASSEMBLY, /* 0x20 */
+	MONO_TABLE_ASSEMBLYPROCESSOR,
+	MONO_TABLE_ASSEMBLYOS,
+	MONO_TABLE_ASSEMBLYREF,
+	MONO_TABLE_ASSEMBLYREFPROCESSOR,
+	MONO_TABLE_ASSEMBLYREFOS,
+	MONO_TABLE_FILE,
+	MONO_TABLE_EXPORTEDTYPE,
+	MONO_TABLE_MANIFESTRESOURCE,
+	MONO_TABLE_NESTEDCLASS,
+	MONO_TABLE_GENERICPARAM, /* 0x2a */
+	MONO_TABLE_METHODSPEC,
+	MONO_TABLE_GENERICPARAMCONSTRAINT
+	};
 	//
+	int nn=sizeof(table_id)/4;
+	for(int y=0;y<sizeof(table_id)/4;y++)
+	{
+		const MonoTableInfo* mono_table = mono_image_get_table_info (g_pUserImage, table_id[y]);
+		int tmpp=mono_table_info_get_rows (mono_table);
+		tmpp=0;
+		//unsigned int monodata[MONO_FILE_SIZE];
+		//for(int x=0;x<mono_table_info_get_rows (mono_table);x++)
+		//{
+		//	mono_metadata_decode_row (mono_table, x, monodata, MONO_FILE_SIZE);
+		//	const char* ttt=mono_metadata_string_heap (g_pUserImage, monodata[MONO_FILE_NAME]);
+		//	ttt=ttt;
+		//}
+	}
+#endif
+
 	int nUserDefinedClasses = mono_image_get_table_rows (g_pUserImage, MONO_TABLE_TYPEDEF);
+	
 	for(int x=1;x<nUserDefinedClasses;x++)
 	{
-		MonoClass* uklass = mono_class_get (g_pUserImage, (x+1) | MONO_TOKEN_TYPE_DEF);
+		MonoClass* uklass = mono_class_get (g_pUserImage, (x+1) | MONO_TOKEN_TYPE_DEF);		
 		const char* klassname=mono_class_get_name(uklass);
 		const char* klassnamespace=mono_class_get_namespace(uklass);
 
@@ -173,6 +238,7 @@ monoScript* monoWrapper::mono_getMonoScripDef(const char* scriptname)
 			return script;
 	}
 
+	DEBUG_PRINT("Script not found %s", scriptname);
 	return NULL;
 }
 

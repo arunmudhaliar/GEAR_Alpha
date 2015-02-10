@@ -1,4 +1,5 @@
 #include "object3d.h"
+#include "../mono/src/monoWrapper.h"
 
 extern "C" {
 extern DECLSPEC const char* object3d_getName(object3d* obj)
@@ -631,6 +632,17 @@ void object3d::write(gxFile& file)
 	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
 	file.Write(m_iAssetFileCRC);
 	writeAnimationController(file);
+
+	//
+	file.Write(m_cAttachedScriptInstances.size());
+	for(std::vector<monoScriptObjectInstance*>::iterator it = m_cAttachedScriptInstances.begin(); it != m_cAttachedScriptInstances.end(); ++it)
+	{
+		monoScriptObjectInstance* scriptinstance = *it;
+		file.Write(scriptinstance->getScriptPtr()->getMonoScript().c_str());
+		//scriptinstance->update();
+	}
+	//
+
 	file.Write((int)m_cChilds.size());
 
 #ifdef USE_BXLIST
@@ -660,6 +672,24 @@ void object3d::read(gxFile& file)
 	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
 	file.Read(m_iAssetFileCRC);
 	readAnimationController(file);
+
+	//
+	int nAttachedScripts=0;
+	file.Read(nAttachedScripts);
+	for(int x=0;x<nAttachedScripts;x++)
+	{
+		char* scriptname=file.ReadString();
+		char temp_scriptname[1024];
+		GX_STRCPY(temp_scriptname, scriptname);
+		GX_DELETE_ARY(scriptname);
+		DEBUG_PRINT("attached script %s", temp_scriptname);
+		monoScript* script = monoWrapper::mono_getMonoScripDef(temp_scriptname);
+
+		attachMonoScrip(script);
+		if(script==NULL)
+			DEBUG_PRINT("script==NULL");
+	}
+	//
 }
 
 void object3d::writeAnimationController(gxFile& file)
@@ -695,7 +725,8 @@ void object3d::attachMonoScrip(monoScript* script)
 
 monoScriptObjectInstance* object3d::getMonoScriptInstance(int index)
 {
-	return m_cAttachedScriptInstances[index];
+	monoScriptObjectInstance* instance = m_cAttachedScriptInstances.at(index);
+	return instance;
 }
 
 int object3d::getMonoScriptInstanceCount()

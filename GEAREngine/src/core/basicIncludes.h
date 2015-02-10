@@ -3,10 +3,14 @@
 
 
 #ifdef _WIN32
+#ifndef GEAR2D
 #if EXPORT_DLL
 #define DECLSPEC __declspec(dllexport)
 #else
 #define DECLSPEC __declspec(dllimport)
+#endif
+#else
+#define DECLSPEC
 #endif
 //#define DllImport   __declspec( dllimport )
 //#define DECLSPEC   __declspec( dllexport )

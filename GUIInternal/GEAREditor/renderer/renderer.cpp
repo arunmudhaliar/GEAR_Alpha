@@ -13,9 +13,10 @@ rendererBase::rendererBase(HWND hWnd, ERENDERER technique):
 	m_hDC(0),
 	m_hRC(0)
 #else
-rendererBase::rendererBase(ERENDERER technique)
+rendererBase::rendererBase(SDL_Window* window, ERENDERER technique)
 #endif
 {
+    m_pWindow=window;
 	m_bSecondryRenderer=false;
 	g_eRenderingTechnique=technique;
 	//m_pProjectionMatrixPtr=NULL;
@@ -108,6 +109,24 @@ bool rendererBase::setupRenderer(rendererBase* mainRenderer)
 	}
 	//glGetIntegerv​(GL_MAJOR_VERSION​, &major_version);
 	//glGetIntegerv​(GL_MINOR_VERSION​, &minor_version);
+#else
+    m_bSecondryRenderer=(mainRenderer)?true:false;
+    if(m_bSecondryRenderer)
+    {
+        m_pContext = mainRenderer->m_pContext;
+    }
+    else
+    {
+        m_pContext = SDL_GL_CreateContext( m_pWindow );
+        if( m_pContext == NULL )
+        {
+            printf("ERROR SDL_GL_CreateContext\n");
+            return false;
+        }
+    }
+    
+    if(!makeCurrent())
+        return false;
 #endif
 
 	return true;
@@ -115,26 +134,29 @@ bool rendererBase::setupRenderer(rendererBase* mainRenderer)
 
 bool rendererBase::makeCurrent()
 {
+#ifdef _WIN32
 	if(!wglMakeCurrent(m_hDC,m_hRC))								// Try To Activate The Rendering Context
 	{
 		destroyRenderer();												// Reset The Display
 		MessageBox(NULL,"Can't Activate The GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return false;											// Return GX_FALSE
 	}
-
+#else
+    SDL_GL_MakeCurrent(m_pWindow, m_pContext);
+#endif
+    
 	return true;
 }
 
 void rendererBase::destroyRenderer()
 {
-#ifdef _WIN32
 	killGL();
-#endif
 }
 
-#ifdef _WIN32
+
 bool rendererBase::killGL()
 {
+#ifdef _WIN32
 	bool flag=false;
 	
 	if(m_hRC && !m_bSecondryRenderer)													// Do We Have A Rendering Context?
@@ -154,8 +176,16 @@ bool rendererBase::killGL()
 	}
 	
 	return flag;
-}
+#else
+    if(!m_bSecondryRenderer)
+    {
+        SDL_GL_MakeCurrent(NULL, NULL);
+        SDL_GL_DeleteContext(m_pContext);
+    }
+    return true;
 #endif
+}
+
 
 void rendererBase::setViewPort(float cx, float cy)
 {
@@ -185,5 +215,7 @@ void rendererBase::swapGLBuffer()
 {
 #ifdef _WIN32
 	SwapBuffers(m_hDC);
+#else
+    SDL_GL_SwapWindow(m_pWindow);
 #endif
 }

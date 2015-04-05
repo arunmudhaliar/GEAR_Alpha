@@ -1,17 +1,20 @@
 #include "gearSceneSettings.h"
 
-gearSceneSettings::gearSceneSettings():
-geWindow("Settings View")
+gearSceneSettings::gearSceneSettings(geFontManager* fontmanager):
+geWindow("Settings View", fontmanager)
 {
 	m_pSettingsAndroidParentNode=NULL;
 	m_pSettingsAndroid=NULL;
 
 	m_pSettingsGlobalParentNode=NULL;
 	m_pSettingsGlobal=NULL;
+    
+    m_pSettingsTreeView = new geTreeView(fontmanager);
 }
 
 gearSceneSettings::~gearSceneSettings()
 {
+    GE_DELETE(m_pSettingsTreeView);
 }
 
 void gearSceneSettings::onCreate()
@@ -21,15 +24,15 @@ void gearSceneSettings::onCreate()
 	m_cszSprites[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[1].setClip(173, 321, 16, 16);
 
-	m_cSettingsTreeView.create(m_pRenderer, this, "SettingsTV", this);
+	m_pSettingsTreeView->create(m_pRenderer, this, "SettingsTV", this);
 
-	geTreeNode* rootNode=m_cSettingsTreeView.getRoot();
+	geTreeNode* rootNode=m_pSettingsTreeView->getRoot();
 
 	m_pSettingsGlobalParentNode = new geTreeNode(m_pRenderer, rootNode, "Global", &m_cszSprites[0], 0);
-	m_pSettingsGlobal = new geSettingsGlobal(m_pRenderer, m_pSettingsGlobalParentNode, "", NULL);
+	m_pSettingsGlobal = new geSettingsGlobal(m_pRenderer, m_pSettingsGlobalParentNode, "", NULL, m_pFontManagerPtr);
 
 	m_pSettingsAndroidParentNode = new geTreeNode(m_pRenderer, rootNode, "Android", &m_cszSprites[1], 0);
-	m_pSettingsAndroid = new geSettingsAndroid(m_pRenderer, m_pSettingsAndroidParentNode, "", NULL);
+	m_pSettingsAndroid = new geSettingsAndroid(m_pRenderer, m_pSettingsAndroidParentNode, "", NULL, m_pFontManagerPtr);
 }
 
 void gearSceneSettings::onDraw()
@@ -42,7 +45,7 @@ void gearSceneSettings::onDraw()
 	}
 #endif
 
-	m_cSettingsTreeView.draw();
+	m_pSettingsTreeView->draw();
 }
 
 void gearSceneSettings::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)

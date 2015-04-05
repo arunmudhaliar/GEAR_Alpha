@@ -43,7 +43,7 @@ public:
 		geWindowColumn* pWindowColumn;
 	};
 
-	geSettingsFog(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, stFog* fog_struct);
+	geSettingsFog(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, stFog* fog_struct, geFontManager* fontmanager);
 	virtual ~geSettingsFog();
 
 	virtual void drawNode();

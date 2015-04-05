@@ -9,14 +9,14 @@
 class gearSceneProject : public geWindow, public MTreeViewObserver
 {
 public:
-	gearSceneProject();
+	gearSceneProject(geFontManager* fontmanager);
 	~gearSceneProject();
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
 
 	//void setFileViewScenePtr(gearSceneFileView* fileView)	{	m_pFileViewScenePtr=fileView;	
 	void populateProjectView();
-	geTreeNode* getSelectedNode()	{	return m_cAssetTreeView.getSelectedNode();	}
+	geTreeNode* getSelectedNode()	{	return m_pAssetTreeView->getSelectedNode();	}
 
 protected:
 	virtual void onCreate();
@@ -27,15 +27,17 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 	virtual void onDragEnter(int x, int y);
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 	virtual void onDragLeave();
-
+//#endif
+    
 private:
 
 	void destroyTVUserData(geGUIBase* parent);
 
-	geTreeView m_cAssetTreeView;
+	geTreeView* m_pAssetTreeView;
 
 	Sprite2Dx m_cszSprites[5];
 	//gearSceneFileView* m_pFileViewScenePtr;	//must not delete this pointer

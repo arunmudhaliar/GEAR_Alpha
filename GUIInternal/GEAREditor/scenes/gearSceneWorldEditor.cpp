@@ -2,14 +2,16 @@
 #include "../EditorApp.h"
 #include "../gui/geToolBarSeperator.h"
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
+#ifdef _WIN32
 #include "../../resource.h"
+#endif
 #if USE_NVPROFILER
 #include "../../../GEAREngine/src/util/nvProfiler.h"
 #include "../../../GEAREngine/src/util/nvProfiler.cpp"
 #endif
 
-gearSceneWorldEditor::gearSceneWorldEditor():
-geWindow("World Editor")
+gearSceneWorldEditor::gearSceneWorldEditor(geFontManager* fontmanager):
+geWindow("World Editor", fontmanager)
 {
 	m_pSelectedObj=NULL;
 	m_pMainWorldPtr=NULL;
@@ -45,7 +47,7 @@ gearSceneWorldEditor::~gearSceneWorldEditor()
 void gearSceneWorldEditor::onCreate()
 {
 #if USE_NVPROFILER
-	nvProfiler::InitNVPM(EditorApp::getMainRenderer()->getRenderingContext());
+	nvProfiler::InitNVPM(EditorGEARApp::getMainRenderer()->getRenderingContext());
 #endif
 
 	monoWrapper::mono_engine_init(2);
@@ -55,24 +57,24 @@ void gearSceneWorldEditor::onCreate()
 
 	char metaDataFolder[512];
 	memset(metaDataFolder, 0, sizeof(metaDataFolder));
-	sprintf(metaDataFolder, "%s/%s", EditorApp::getProjectHomeDirectory(), "MetaData");
+	sprintf(metaDataFolder, "%s/%s", EditorGEARApp::getProjectHomeDirectory(), "MetaData");
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(0), metaDataFolder);
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(1), metaDataFolder);
 
-	m_pLocalOrGlobalAxis=new geToolBarButton(m_pRenderer, "Local", getToolBar());
+	m_pLocalOrGlobalAxis=new geToolBarButton(m_pRenderer, "Local", getToolBar(), m_pFontManagerPtr);
 	m_pLocalOrGlobalAxis->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pLocalOrGlobalAxis);
 	m_bTransformThroughLocalAxis=true;
 
-	m_pTranslateGizmo=new geToolBarButton(m_pRenderer, "t", getToolBar());
+	m_pTranslateGizmo=new geToolBarButton(m_pRenderer, "t", getToolBar(), m_pFontManagerPtr);
 	m_pTranslateGizmo->loadImage("res//icons16x16.png", 7, 153);
 	m_pTranslateGizmo->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pTranslateGizmo);
-	m_pRotateGizmo=new geToolBarButton(m_pRenderer, "r", getToolBar());
+	m_pRotateGizmo=new geToolBarButton(m_pRenderer, "r", getToolBar(), m_pFontManagerPtr);
 	m_pRotateGizmo->loadImage("res//icons16x16.png", 27, 153);
 	m_pRotateGizmo->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pRotateGizmo);
-	m_pScaleGizmo=new geToolBarButton(m_pRenderer, "s", getToolBar());
+	m_pScaleGizmo=new geToolBarButton(m_pRenderer, "s", getToolBar(), m_pFontManagerPtr);
 	m_pScaleGizmo->loadImage("res//icons16x16.png", 49, 153);
 	m_pScaleGizmo->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pScaleGizmo);
@@ -80,61 +82,61 @@ void gearSceneWorldEditor::onCreate()
 	//enable translate gizmo
 	m_pTranslateGizmo->buttonPressed(false);
 
-	m_pHorizontalSlider_LightAmbient = new geHorizontalSlider();
+	m_pHorizontalSlider_LightAmbient = new geHorizontalSlider(m_pFontManagerPtr);
 	m_pHorizontalSlider_LightAmbient->create(m_pRenderer, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
 	m_pHorizontalSlider_LightAmbient->setGUIObserver(this);
 	m_pHorizontalSlider_LightAmbient->setSliderValue(0.4f);
 	getToolBar()->appendToolBarControl(m_pHorizontalSlider_LightAmbient);
 
-	geToolBarSeperator* seperator = new geToolBarSeperator(m_pRenderer, getToolBar(), 20);
+	geToolBarSeperator* seperator = new geToolBarSeperator(m_pRenderer, getToolBar(), 20, m_pFontManagerPtr);
 	getToolBar()->appendToolBarControl(seperator);
-	geToolBarSeperator* seperator2 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40);
+	geToolBarSeperator* seperator2 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40, m_pFontManagerPtr);
 	getToolBar()->appendToolBarControl(seperator2);
 
-	m_pTBGridView=new geToolBarButton(m_pRenderer, "grid", getToolBar());
+	m_pTBGridView=new geToolBarButton(m_pRenderer, "grid", getToolBar(), m_pFontManagerPtr);
 	m_pTBGridView->loadImage("res//icons16x16.png", 112, 384);
 	//m_pTBGridView->setClientAreaSecondryActiveForeColor(0.5f, 0.3f, 0.2f, 1.0f);
 	//m_pTBGridView->applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 	m_pTBGridView->buttonPressed(false);
 	getToolBar()->appendToolBarControl(m_pTBGridView);
 
-	geToolBarSeperator* seperator3 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40);
+	geToolBarSeperator* seperator3 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40, m_pFontManagerPtr);
 	getToolBar()->appendToolBarControl(seperator3);
 
 	//play-pause-stop
-	m_pPlayButton=new geToolBarButton(m_pRenderer, "play", getToolBar());
+	m_pPlayButton=new geToolBarButton(m_pRenderer, "play", getToolBar(), m_pFontManagerPtr);
 	m_pPlayButton->loadImage("res//icons16x16.png", 26, 216);
 	m_pPlayButton->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pPlayButton);
-	m_pPauseButton=new geToolBarButton(m_pRenderer, "pause", getToolBar());
+	m_pPauseButton=new geToolBarButton(m_pRenderer, "pause", getToolBar(), m_pFontManagerPtr);
 	m_pPauseButton->loadImage("res//icons16x16.png", 90, 216);
 	m_pPauseButton->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pPauseButton);
 	//
 
-	geToolBarSeperator* seperator4 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40);
+	geToolBarSeperator* seperator4 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40, m_pFontManagerPtr);
 	getToolBar()->appendToolBarControl(seperator4);
 
-	m_pHorizontalSlider_TimeScale = new geHorizontalSlider();
+	m_pHorizontalSlider_TimeScale = new geHorizontalSlider(m_pFontManagerPtr);
 	m_pHorizontalSlider_TimeScale->create(m_pRenderer, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
 	m_pHorizontalSlider_TimeScale->setGUIObserver(this);
 	m_pHorizontalSlider_TimeScale->setSliderValue(1.0f);
 	getToolBar()->appendToolBarControl(m_pHorizontalSlider_TimeScale);
 
-	geToolBarSeperator* seperator5 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40);
+	geToolBarSeperator* seperator5 = new geToolBarSeperator(m_pRenderer, getToolBar(), 40, m_pFontManagerPtr);
 	getToolBar()->appendToolBarControl(seperator5);
 
-	m_pTBOnlyLightPass=new geToolBarButton(m_pRenderer, "onlylightpass", getToolBar());
+	m_pTBOnlyLightPass=new geToolBarButton(m_pRenderer, "onlylightpass", getToolBar(), m_pFontManagerPtr);
 	m_pTBOnlyLightPass->loadImage("res//icons16x16.png", 153, 342);
 	m_pTBOnlyLightPass->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pTBOnlyLightPass);
 
-	m_pTBShowOOBB=new geToolBarButton(m_pRenderer, "showoobb", getToolBar());
+	m_pTBShowOOBB=new geToolBarButton(m_pRenderer, "showoobb", getToolBar(), m_pFontManagerPtr);
 	m_pTBShowOOBB->loadImage("res//icons16x16.png", 133, 258);
 	m_pTBShowOOBB->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pTBShowOOBB);
 
-	m_pTBShowOctree=new geToolBarButton(m_pRenderer, "showoctree", getToolBar());
+	m_pTBShowOctree=new geToolBarButton(m_pRenderer, "showoctree", getToolBar(), m_pFontManagerPtr);
 	m_pTBShowOctree->loadImage("res//icons16x16.png", 70, 69);
 	m_pTBShowOctree->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pTBShowOctree);
@@ -686,7 +688,10 @@ void gearSceneWorldEditor::drawSelectedObject()
 				distance_frm_cam/=500.0f;
 
 			m_cLightBillBoardSprite.setClip(277, 383, 18, 18);
-			m_cLightBillBoardSprite.setDirection(&m_pMainWorldPtr->getActiveCamera()->getYAxis(), &m_pMainWorldPtr->getActiveCamera()->getZAxis()/**/);
+            vector3f yaxis(m_pMainWorldPtr->getActiveCamera()->getYAxis());
+            vector3f zaxis(m_pMainWorldPtr->getActiveCamera()->getZAxis());
+            
+			m_cLightBillBoardSprite.setDirection(&yaxis, &zaxis);
 			m_cLightBillBoardSprite.scale(distance_frm_cam*0.5f);
 			const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * m_cLightBillBoardSprite)).getMatrix();
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
@@ -806,42 +811,45 @@ void gearSceneWorldEditor::drawStats()
 	glTranslatef(-m_cSize.x*0.5f, -(m_cSize.y+getTopMarginOffsetHeight())*0.5f+getTopMarginOffsetHeight(), -1.0f);
 		char buffer[128];
 		sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 		int cnt=3;
 		sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "GLSL %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "nSelectedObjectTriangles : %d", m_nSelectedObjectTriangles);
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 
-		sprintf(buffer, "Total Material : %d", monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
-		sprintf(buffer, "Total Animation : %d", monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		sprintf(buffer, "Total Material : %d", (int)monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		sprintf(buffer, "Total Animation : %d", (int)monoWrapper::mono_engine_getWorld(0)->getAnimationSetList()->size());
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		////int last_gl_err=glGetError();
 		////if(last_gl_err!=GL_NO_ERROR)
 		////	m_iLastGLError=last_gl_err;
 		//sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
-		//geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		//geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+
+        sprintf(buffer, "m_cMousePrevPos : %f, %f", m_cMousePrevPos.x, m_cMousePrevPos.y);
+        geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 
 		sprintf(buffer, "Total Layer Objects : %d", m_pMainWorldPtr->getLayerManager()->getTotalLayerObject());
-		geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 
-		geGUIBase* selectedNodeInHirarchy=EditorApp::getSceneHierarchy()->getSelectedTreeNode();
+		geGUIBase* selectedNodeInHirarchy=EditorGEARApp::getSceneHierarchy()->getSelectedTreeNode();
 		if(selectedNodeInHirarchy)
 		{
 			object3d* obj=(object3d*)selectedNodeInHirarchy->getUserData();
 			if(obj && obj->getAnimationController())
 			{
 				sprintf(buffer, "Current Frame : %4.2f", obj->getAnimationController()->getCurrentFrame());
-				geGUIManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geGUIManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+				geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, 0+geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 			}
 		}
 
@@ -1046,7 +1054,7 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	m_cMultiPassFBO.UnBindFBO();
 	z1=z2=0.0f;
 
-	GLint viewport[4]={viewPortRect.m_pos.x, viewPortRect.m_pos.y, viewPortRect.m_size.x, viewPortRect.m_size.y}; 
+	GLint viewport[4]={(int)viewPortRect.m_pos.x, (int)viewPortRect.m_pos.y, (int)viewPortRect.m_size.x, (int)viewPortRect.m_size.y};
 	//float ptY=Scene::getCommonData()->getScreenHeight();
 	CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 0, viewTM, projectionTM, viewport, &x1, &y1, &z1));
 	CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 1, viewTM, projectionTM, viewport, &x2, &y2, &z2));
@@ -1154,7 +1162,7 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 
 		if(pickedObj!=m_pSelectedObj && pickedObj!=NULL)
 		{
-			EditorApp::getSceneHierarchy()->selectObject3dInTreeView(pickedObj);
+			EditorGEARApp::getSceneHierarchy()->selectObject3dInTreeView(pickedObj);
 		}
 	}
 
@@ -1170,7 +1178,7 @@ bool gearSceneWorldEditor::onMouseLButtonUp(float x, float y, int nFlag)
 	}
 
 	if(m_iAxisSelected>0)
-		EditorApp::getSceneHierarchy()->recreateOctree();
+		EditorGEARApp::getSceneHierarchy()->recreateOctree();
 
 	m_iAxisSelected=-1;
 	monoWrapper::mono_engine_mouseLButtonUp(m_pMainWorldPtr, x, y, nFlag);
@@ -1249,7 +1257,7 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 				vector3f minV;
 				vector3f maxV;
 
-				float d=camera->getPosition().length();
+				//float d=camera->getPosition().length();
 				GLdouble viewTM[16];
 				GLdouble projectionTM[16];
 				for(int m=0;m<16;m++)
@@ -1264,7 +1272,7 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 				z1=z2=depth=0.0f;
 
 				gxRectf viewPortRect=m_pMainWorldPtr->getRenderer()->getViewPortRect();
-				GLint viewport[4]={viewPortRect.m_pos.x, viewPortRect.m_pos.y, viewPortRect.m_size.x, viewPortRect.m_size.y}; 
+				GLint viewport[4]={(int)viewPortRect.m_pos.x, (int)viewPortRect.m_pos.y, (int)viewPortRect.m_size.x, (int)viewPortRect.m_size.y};
 				//float ptY=Scene::getCommonData()->getScreenHeight();
 				CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 0, viewTM, projectionTM, viewport, &x1, &y1, &z1));
 				CHECK_GL_ERROR(gluUnProject(x, viewPortRect.m_size.y - y, 1, viewTM, projectionTM, viewport, &x2, &y2, &z2));
@@ -1336,7 +1344,7 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 					if(bTranslateGizmo || bRotateGizmo || bScaleGizmo)
 					{
 						m_pMainWorldPtr->transformationChangedf();
-						EditorApp::getScenePropertyEditor()->updateTransformPropertyOfCurrentSelectedObject();
+						EditorGEARApp::getScenePropertyEditor()->updateTransformPropertyOfCurrentSelectedObject();
 					}
 
 					m_cMousePrevPosInWorld = current_pos_in_world;
@@ -1393,7 +1401,7 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 	{
 		if(m_pPlayButton->isButtonPressed())
 		{
-			EditorApp::getSceneConsole()->appendConsoleRunRootNode();
+			EditorGEARApp::getSceneConsole()->appendConsoleRunRootNode();
 			monoWrapper::mono_game_start();
 			m_bMonoGameInitialized=true;
 		}
@@ -1487,15 +1495,17 @@ bool gearSceneWorldEditor::onKeyUp(int charValue, int flag)
 
 void gearSceneWorldEditor::onCommand(int cmd)
 {
+#ifdef _WIN32
 	switch(cmd)
 	{
 	case ID_POSTPROCESSOR_BLURPROCESSOR:
 		{
 			m_bEnablePostProcessorBlur=!m_bEnablePostProcessorBlur;
-			//EditorApp::getScenePropertyEditor()->populatePropertyOfBlurShader(engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_BLUR_SHADER));
+			//EditorGEARApp::getScenePropertyEditor()->populatePropertyOfBlurShader(engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_BLUR_SHADER));
 		}
 		break;
 	}
+#endif
 }
 
 void gearSceneWorldEditor::stopSimulation()

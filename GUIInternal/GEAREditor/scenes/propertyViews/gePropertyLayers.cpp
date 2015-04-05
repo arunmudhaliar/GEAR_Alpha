@@ -1,18 +1,18 @@
 #include "gePropertyLayers.h"
 #include "../../EditorApp.h"
 
-gePropertyLayers::gePropertyLayers(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	geTreeNode(renderer, parent, name, sprite, 10)
+gePropertyLayers::gePropertyLayers(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager):
+	geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 {
 	LayerManager* layerManager = monoWrapper::mono_engine_getWorld(0)->getLayerManager();
 
 	//window column
-	geWindowColumn* pWindowColumn = new geWindowColumn();
+	geWindowColumn* pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
 	stWindowColumnRow* row=NULL;
 	pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.15f);
 	for(int x=0;x<MAX_LAYER;x++)
 	{
-		m_pTextBoxLayers[x] = new geTextBox(layerManager->getLayer(x)->getLayerName());
+		m_pTextBoxLayers[x] = new geTextBox(layerManager->getLayer(x)->getLayerName(), m_pFontManagerPtr);
 		m_pTextBoxLayers[x]->create(renderer, this, layerManager->getLayer(x)->getLayerName(), 0, 0, 150, 16);
 		m_pTextBoxLayers[x]->setGUIObserver(this);
 
@@ -38,7 +38,7 @@ void gePropertyLayers::drawNode()
 {
 	drawRect(&m_cVBClientArea);
 
-	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 	{

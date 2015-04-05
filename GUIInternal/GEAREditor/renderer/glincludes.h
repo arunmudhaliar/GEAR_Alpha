@@ -14,11 +14,10 @@
 #define DllImport   __declspec( dllimport )
 #define DllExport   __declspec( dllexport )
 
-#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
-    #import <OpenGLES/ES1/gl.h>
-    #import <OpenGLES/ES1/glext.h>
-    #import <OpenGLES/ES2/gl.h>
-    #import <OpenGLES/ES2/glext.h>
+#ifdef __APPLE__
+    #include <OpenGL/gl.h>
+    #include <OpenGL/glu.h>
+    #include <OpenGL/glext.h>
 #elif defined(_WIN32)
     #include <Windows.h>
     #include "glew.h"
@@ -35,4 +34,5 @@
     #include <GLES2/gl2ext.h>
 #endif
 
+#include <memory.h>
 #endif

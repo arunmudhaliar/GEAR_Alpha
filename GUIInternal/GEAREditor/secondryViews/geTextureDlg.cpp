@@ -7,7 +7,9 @@
 
 #include <assert.h>
 #include <dirent.h>
+#ifdef _WIN32
 #include <direct.h>
+#endif
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -16,8 +18,8 @@
 
 //static int find_textures(rendererGL10* renderer, const char *dirname, geGUIBase* dlg, std::vector<geTextureThumnail*>& textureThumbList);
 
-geTextureDlgMainWindow::geTextureDlgMainWindow():
-geWindow("Texture Dialog")
+geTextureDlgMainWindow::geTextureDlgMainWindow(geFontManager* fontmanager):
+geWindow("Texture Dialog", fontmanager)
 {
 }
 
@@ -33,15 +35,17 @@ void geTextureDlgMainWindow::onDraw()
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
 		geTextureThumbnail* thumb=(geTextureThumbnail*)tvnode;
-		geGUIManager::g_pFontArial10_80Ptr->drawString(gxUtil::getFileNameFromPath(thumb->getTexturePtr()->getTextureName()), tvnode->getPos().x, tvnode->getPos().y+ tvnode->getSize().y +geGUIManager::g_pFontArial10_80Ptr->getLineHeight(), m_cSize.x);
-
+        if(thumb->getTexturePtr())
+        {
+            geFontManager::g_pFontArial10_80Ptr->drawString(gxUtil::getFileNameFromPath(thumb->getTexturePtr()->getTextureName()), tvnode->getPos().x, tvnode->getPos().y+ tvnode->getSize().y +geFontManager::g_pFontArial10_80Ptr->getLineHeight(), m_cSize.x);
+        }
 		if(tvnode->getPos().y>m_cSize.y)
 			break;
 	}
 }
 
-geTextureDlgInfoWindow::geTextureDlgInfoWindow():
-geWindow("Info")
+geTextureDlgInfoWindow::geTextureDlgInfoWindow(geFontManager* fontmanager):
+geWindow("Info", fontmanager)
 {
 }
 
@@ -59,11 +63,12 @@ void geTextureDlgInfoWindow::onDraw()
 	}
 }
 
-geTextureDlg::geTextureDlg(geTextureThumbnail* pObserverControlPtr):
-	geSecondryView("Texture Dialog")
+geTextureDlg::geTextureDlg(geTextureThumbnail* pObserverControlPtr, geFontManager* fontmanager, rendererGL10* mainRenderer):
+	geSecondryView("Texture Dialog", fontmanager, mainRenderer)
 {
 	m_pObserverControlPtr=pObserverControlPtr;
-	setSize(geVector2f(1024.0f, 600.0f));
+    geVector2f tmp(1024.0f, 600.0f);
+	setSize(tmp);
 	m_pWindow=NULL;
 	m_pInfoWindow=NULL;
 }
@@ -86,18 +91,18 @@ geTextureDlg::~geTextureDlg()
 void geTextureDlg::onCreate()
 {
 	//main window
-	m_pWindow = new geTextureDlgMainWindow();
+	m_pWindow = new geTextureDlgMainWindow(m_pFontManager);
 	m_pWindow->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
-	geLayout* mainLayout = m_cLayoutManager.getRootLayout()->createAsParent(m_pWindow);
+	geLayout* mainLayout = m_pLayoutManager->getRootLayout()->createAsParent(m_pWindow);
 	//
 
 	//info window
-	m_pInfoWindow = new geTextureDlgInfoWindow();
+	m_pInfoWindow = new geTextureDlgInfoWindow(m_pFontManager);
 	m_pInfoWindow->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, 250, false);
 	mainLayout->createBottom(m_pInfoWindow, 0.2f);
 	//
 
-	find_textures(m_pSecondryRenderer, EditorApp::getProjectHomeDirectory(), m_pWindow, m_vTextureThumbs);
+	find_textures(m_pSecondryRenderer, EditorGEARApp::getProjectHomeDirectory(), m_pWindow, m_vTextureThumbs);
 
 	int startX=10;
 	int startY=10;
@@ -164,7 +169,7 @@ gxTexture* geTextureDlg::loadTextureFromMeta(CTextureManager& textureManager, un
 gxTexture* geTextureDlg::loadTextureFromFile(CTextureManager& textureManager, const char* filename)
 {
 	char metaInfoFileName[256];
-	const char* onlyFilename = gxUtil::getFileNameFromPath(filename);
+//	const char* onlyFilename = gxUtil::getFileNameFromPath(filename);
 
 	sprintf(metaInfoFileName, "%s.meta", filename);
 
@@ -244,7 +249,7 @@ int geTextureDlg::find_textures(rendererGL10* renderer, const char *dirname, geG
 						
 						gxTexture* texture= loadTextureFromFile(*monoWrapper::mono_engine_getWorld(0)->getTextureManager(), buffer);
 
-						geTextureThumbnail* thumbnail = new geTextureThumbnail();
+						geTextureThumbnail* thumbnail = new geTextureThumbnail(m_pFontManager);
 						thumbnail->create(renderer, dlg, texture, 260, 10, 70, 70);
 						m_vTextureThumbs.push_back(thumbnail);
 					}

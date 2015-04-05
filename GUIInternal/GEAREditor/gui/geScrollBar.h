@@ -16,7 +16,7 @@ public:
 class geScrollBar : public geGUIBase
 {
 public:
-	geScrollBar();
+	geScrollBar(geFontManager* fontmanager);
 
 	void create(rendererGL10* renderer, geGUIBase* parent, MScrollBarObserver* observer);
 	virtual ~geScrollBar();

@@ -5,20 +5,20 @@
 #include "../gui/geTreeView.h"
 #include "../../../GEAREngine/src/core/gxMesh.h"
 
-#include "propertyViews\gePropertyObject3d.h"
-#include "propertyViews\gePropertyTransform.h"
-#include "propertyViews\gePropertyMaterial.h"
-#include "propertyViews\gePropertyAnimationSet.h"
-#include "propertyViews\gePropertySaveMetaData.h"
-#include "propertyViews\gePropertyLight.h"
-#include "propertyViews\gePropertyBlurProcessor.h"
-#include "propertyViews\gePropertyAddComponent.h"
-#include "propertyViews\gePropertyCamera.h"
-#include "propertyViews\gePropertyOpenOnEditor.h"
-#include "propertyViews\gePropertyOctree.h"
-#include "propertyViews\gePropertyLayers.h"
-#include "propertyViews\geSettingsFog.h"
-#include "propertyViews\gePropertyScriptComponent.h"
+#include "propertyViews/gePropertyObject3d.h"
+#include "propertyViews/gePropertyTransform.h"
+#include "propertyViews/gePropertyMaterial.h"
+#include "propertyViews/gePropertyAnimationSet.h"
+#include "propertyViews/gePropertySaveMetaData.h"
+#include "propertyViews/gePropertyLight.h"
+#include "propertyViews/gePropertyBlurProcessor.h"
+#include "propertyViews/gePropertyAddComponent.h"
+#include "propertyViews/gePropertyCamera.h"
+#include "propertyViews/gePropertyOpenOnEditor.h"
+#include "propertyViews/gePropertyOctree.h"
+#include "propertyViews/gePropertyLayers.h"
+#include "propertyViews/geSettingsFog.h"
+#include "propertyViews/gePropertyScriptComponent.h"
 
 class gearScenePropertyEditor : public geWindow, public MTreeViewObserver
 {
@@ -33,7 +33,7 @@ public:
 		gePropertyScriptComponent* m_pSettingsMonoScript;
 	};
 
-	gearScenePropertyEditor();
+	gearScenePropertyEditor(geFontManager* fontmanager);
 	~gearScenePropertyEditor();
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
@@ -58,7 +58,7 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 
 private:
-	geTreeView m_cPropertiesTreeView;
+	geTreeView* m_pPropertiesTreeView;
 	Sprite2Dx m_cszSprites[15];
 
 	geTreeNode* m_pObject3dParentNode;

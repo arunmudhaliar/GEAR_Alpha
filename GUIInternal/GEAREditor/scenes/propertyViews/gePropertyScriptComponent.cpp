@@ -2,11 +2,11 @@
 #include "../../AssetImporter.h"
 #include "../../EditorApp.h"
 
-gePropertyScriptComponent::gePropertyScriptComponent(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	geTreeNode(renderer, parent, name, sprite, 10)
+gePropertyScriptComponent::gePropertyScriptComponent(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager):
+	geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 {
 
-	m_pWindowColumn = new geWindowColumn();
+	m_pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
 	m_pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.4f);
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
@@ -25,7 +25,7 @@ void gePropertyScriptComponent::drawNode()
 {
 	drawRect(&m_cVBClientArea);
 
-	//geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	//geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 	{
@@ -79,7 +79,7 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
 	//{
 	//	stWindowColumnRow* firstrow = m_pWindowColumn->addRow("Script");
 	//	geStaticTextBox* scripteditbox = new geStaticTextBox("");
-	//	scripteditbox->create(m_pRenderer, this, monoScript->getScriptPtr()->getMonoScript().c_str(), 0, 0, -7, geGUIManager::g_pFontArial10_80Ptr);
+	//	scripteditbox->create(m_pRenderer, this, monoScript->getScriptPtr()->getMonoScript().c_str(), 0, 0, -7, geFontManager::g_pFontArial10_80Ptr);
 	//	m_pWindowColumn->addControl(firstrow, scripteditbox, 16.0f);
 	//	lastControl=scripteditbox;
 	//}
@@ -88,7 +88,7 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
 	for(int x=0;x<monoScript->getScriptPtr()->getMonoVarCount();x++)
 	{
 		stWindowColumnRow* row = m_pWindowColumn->addRow(monoScript->getScriptPtr()->getMonoVarName(x));
-		geTextBox* variableeditbox = new geTextBox("");
+		geTextBox* variableeditbox = new geTextBox("", m_pFontManagerPtr);
 		variableeditbox->create(m_pRenderer, this, "", 0, 0, 30, 15);
 		m_pWindowColumn->addControl(row, variableeditbox, 16.0f);
 		lastControl=variableeditbox;

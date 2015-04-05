@@ -12,15 +12,15 @@
 class gePropertyAnimationSet : public geTreeNode, public MGUIObserver
 {
 public:
-	gePropertyAnimationSet(rendererGL10* renderer, geGUIBase* parent, object3d* ownerObj, gxAnimationSet* animSet, Sprite2Dx* sprite):
-	  geTreeNode(renderer, parent, animSet->getAnimationName(), sprite, 10)
+	gePropertyAnimationSet(rendererGL10* renderer, geGUIBase* parent, object3d* ownerObj, gxAnimationSet* animSet, Sprite2Dx* sprite, geFontManager* fontmanager):
+	  geTreeNode(renderer, parent, animSet->getAnimationName(), sprite, fontmanager, 10)
 	{
 		m_pButtonSetAnimation=NULL;
 		m_pOwnerObj=ownerObj;
 		m_pAnimSetPtr=animSet;
 		setSize(m_cSize.x, m_cSize.y*1.2f);
 
-		m_pButtonSetAnimation = new geButton("");
+		m_pButtonSetAnimation = new geButton("", fontmanager);
 		m_pButtonSetAnimation->create(renderer, this, "Set", 0, 3);
 		m_pButtonSetAnimation->setSize(m_pButtonSetAnimation->getSize().x, m_pButtonSetAnimation->getSize().y);
 		m_pButtonSetAnimation->setGUIObserver(this);
@@ -51,7 +51,7 @@ public:
 	{
 		drawRect(&m_cVBClientArea);
 
-		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
 		{

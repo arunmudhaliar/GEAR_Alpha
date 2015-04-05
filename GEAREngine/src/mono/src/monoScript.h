@@ -2,10 +2,10 @@
 #define MONOSCRIPT_H
 
 #include <vector>
-#include <mono\metadata\mono-config.h>
-#include <mono\metadata\metadata.h>
-#include <mono\metadata\assembly.h>
-#include <mono\jit\jit.h>
+#include <mono/metadata/mono-config.h>
+#include <mono/metadata/metadata.h>
+#include <mono/metadata/assembly.h>
+#include <mono/jit/jit.h>
 #include "../../core/basicIncludes.h"
 #include <string>
 
@@ -22,7 +22,7 @@ public:
 	bool isMonoScript()	{ 	return m_bMonoScript;	}
 	MonoMethod* getSetHandleMethod()	{	return m_pSetHandle_method;	}
 
-	int getMonoVarCount()	{	return m_vMonoVars.size();	}
+	int getMonoVarCount()	{	return (int)m_vMonoVars.size();	}
 	const char* getMonoVarName(int index);
 	MonoClassField* getMonoVar(int index);
 

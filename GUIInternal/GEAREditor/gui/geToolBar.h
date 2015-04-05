@@ -10,8 +10,8 @@
 class geToolBarButton : public geButtonBase
 {
 public:
-	geToolBarButton();
-	geToolBarButton(rendererGL10* renderer, const char* name, geGUIBase* parent);
+	geToolBarButton(geFontManager* fontManager);
+	geToolBarButton(rendererGL10* renderer, const char* name, geGUIBase* parent, geFontManager* fontManager);
 	virtual ~geToolBarButton();
 
 	virtual void draw();
@@ -41,8 +41,8 @@ private:
 class geToolBar : public geGUIBase
 {
 public:
-	geToolBar();
-	geToolBar(unsigned short uGUIID, const char* name);
+	geToolBar(geFontManager* fontmanager);
+	geToolBar(unsigned short uGUIID, const char* name, geFontManager* fontmanager);
 	virtual ~geToolBar();
 
 	void create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy);

@@ -236,7 +236,7 @@ float gxFont::getCharWidth(char charValue)
 int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCentered, bool bShadowed, float elapsetime)
 {
     int retVal=1;
-    int actual_len=strlen(str);
+    int actual_len=(int)strlen(str);
     int len=(elapsetime==0.0f)?actual_len:(int)(elapsetime/CHAR_DELAY);
     if(len>actual_len){len=actual_len;}
     else

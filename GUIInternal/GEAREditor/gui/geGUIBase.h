@@ -6,7 +6,21 @@
 #include "../util/geVector2.h"
 #include <vector>
 #include "../util/geUtil.h"
-#include "../win32/MDropSource.h"
+
+//#if !defined(__APPLE__) //disable Drag-Drop
+    #include "../OSSpecific/MDropData.h"
+//#endif
+
+#ifdef __APPLE__
+    #define MK_LBUTTON  (1<<0)
+    #define MK_RBUTTON  (1<<1)
+    #define MK_CONTROL  (1<<2)
+    #define MK_MBUTTON  (1<<3)
+    #define MK_SHIFT    (1<<4)
+    #define ERROR_ENVVAR_NOT_FOUND  0
+#endif
+
+#include "../util/geFontManager.h"
 
 #define GEGUI_BASE				3000
 #define GEGUI_LAYOUT_MANAGER	GEGUI_BASE+1
@@ -51,7 +65,7 @@ public:
 		EGRADIENT_HORIZONTAL_LEFT
 	};
 
-	geGUIBase(unsigned short uGUIID, const char* name);
+	geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fontManager);
 	virtual ~geGUIBase();
 
 	int getGUIID()	{	return m_uGUIID;	}
@@ -92,10 +106,12 @@ public:
 	bool MouseMove(float x, float y, int flag);
 	void MouseWheel(int zDelta, int x, int y, int flag);
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 	void DragEnter(int x, int y);
-	void DragDrop(int x, int y, MDataObject* dropObject);
+	void DragDrop(int x, int y, MDropData* dropObject);
 	void DragLeave();
-
+//#endif
+    
 	bool KeyDown(int charValue, int flag);
 	bool KeyUp(int charValue, int flag);
 
@@ -139,6 +155,8 @@ public:
 
 	void notifyParent(int msg);
 
+    geFontManager* getFontManager()     {   return m_pFontManagerPtr;   }
+    
 protected:
 
 	virtual void onCreate();
@@ -167,9 +185,11 @@ protected:
 
 	virtual void onAppendChild(geGUIBase* child);
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 	virtual void onDragEnter(int x, int y);
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 	virtual void onDragLeave();
+//#endif
 
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);
@@ -191,6 +211,8 @@ protected:
 	bool isMouseBoundCheckEnabled()		{	return m_bMouseBoundCheckEnabled;	}
 	void setMouseBoundCheck(bool flag)	{	m_bMouseBoundCheckEnabled=flag;		}
 
+    void doDragDropSynchronous(MDropData* dropData);
+    
 	unsigned short m_uGUIID;
 	char m_szName[256];
 
@@ -217,6 +239,7 @@ protected:
 	float m_fszClientAreaSecondryActiveForeColor[4];
 	
 	stVertexBuffer m_cVBClientArea;
+    geFontManager* m_pFontManagerPtr;
 };
 
 class MGUIObserver

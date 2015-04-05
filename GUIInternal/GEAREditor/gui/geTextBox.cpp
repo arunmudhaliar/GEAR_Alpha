@@ -4,8 +4,8 @@
 geTextBox* geTextBox::g_pCurrentSelectedTextBoxPtr=NULL;
 geTextBox* geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
 
-geTextBox::geTextBox():
-	geGUIBase(GEGUI_TEXTBOX, "Text Box")
+geTextBox::geTextBox(geFontManager* fontmanager):
+	geGUIBase(GEGUI_TEXTBOX, "Text Box", fontmanager)
 {
 	m_bStartSelection=false;
 	m_bShowSelection=false;
@@ -21,8 +21,8 @@ geTextBox::geTextBox():
 	m_pStartCharPtr=NULL;
 }
 
-geTextBox::geTextBox(const char* name):
-	geGUIBase(GEGUI_TEXTBOX, name)
+geTextBox::geTextBox(const char* name, geFontManager* fontmanager):
+	geGUIBase(GEGUI_TEXTBOX, name, fontmanager)
 {
 	m_bStartSelection=false;
 	m_bShowSelection=false;
@@ -48,7 +48,7 @@ void geTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* na
 {
 	createBase(renderer, parent);
 
-	int width=geGUIManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	//int width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(cx, cy);
 	setPos(x, y);
 
@@ -84,7 +84,7 @@ void geTextBox::draw()
 			}
 		}
 
-		float full_width=geGUIManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, strlen(m_pStartCharPtr), 0);
+		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, (int)strlen(m_pStartCharPtr), 0);
 		if(rightX>m_cSize.x-10 /*&& diff>0*/)
 		{
 			if(full_width>m_cSize.x)
@@ -109,7 +109,7 @@ void geTextBox::draw()
 	}
 	drawLine(m_cVBClientAreaLine, 0.13f, 0.13f, 0.13f, 1.0f, 3, false);
 	drawLine(&m_cVBClientAreaLine[4], 0.3f, 0.3f, 0.3f, 1.0f, 3, false);
-	geGUIManager::g_pFontArial10_80Ptr->drawString(m_pStartCharPtr, 0, geGUIManager::g_pFontArial10_80Ptr->getLineHeight()-5, m_cSize.x);
+	geFontManager::g_pFontArial10_80Ptr->drawString(m_pStartCharPtr, 0, geFontManager::g_pFontArial10_80Ptr->getLineHeight()-5, m_cSize.x);
 	glPopMatrix();
 }
 	
@@ -159,7 +159,7 @@ void geTextBox::setCursorPos(int index)
 	m_iCursorPos=index;
 	m_fCursorPosInPixels=0;
 	for(int x=0;x<m_iCursorPos;x++)
-		m_fCursorPosInPixels+=geGUIManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[x]);
+		m_fCursorPosInPixels+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[x]);
 }
 
 float geTextBox::getVirtualEndBound(int& index)
@@ -169,7 +169,7 @@ float geTextBox::getVirtualEndBound(int& index)
 	for(index=0;index<strlen(m_pStartCharPtr);index++)
 	{
 		float temp=cursorPos;
-		cursorPos+=geGUIManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[index]);
+		cursorPos+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[index]);
 		if(cursorPos>m_cSize.x)
 		{
 			cursorPos=temp;
@@ -193,7 +193,7 @@ bool geTextBox::onMouseLButtonDown(float x, float y, int nFlag)
 
 	m_fPrevMouseXPos=x;
 	m_fSelectionStartXPos=x-m_cPos.x;
-	float full_width=getVirtualEndBound(m_iCursorPos);//geGUIManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, strlen(m_pStartCharPtr), 0);
+	float full_width=getVirtualEndBound(m_iCursorPos);//geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, strlen(m_pStartCharPtr), 0);
 	if(m_fSelectionStartXPos>full_width)
 	{
 		m_fSelectionStartXPos=full_width;
@@ -215,13 +215,13 @@ bool geTextBox::onMouseLButtonUp(float x, float y, int nFlag)
 	if(!m_bStartSelection)
 	{
 		//insert cursor
-		int len=strlen(m_pStartCharPtr);
+		int len=(int)strlen(m_pStartCharPtr);
 		float cursorPos=0;
 		bool bflag=false;
 		for(int m=0;m<len;m++)
 		{
 			float startX=cursorPos;
-			cursorPos+=geGUIManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[m]);
+			cursorPos+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[m]);
 			float endX=cursorPos;
 			if(x-m_cPos.x>startX && x-m_cPos.x<endX)
 			{
@@ -251,7 +251,7 @@ bool geTextBox::onMouseLButtonUp(float x, float y, int nFlag)
 	if(!m_bStartSelection)
 	{
 		float full_width=getVirtualEndBound(m_iCursorPos);
-		//float line_width=geGUIManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, len, 0);
+		//float line_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, len, 0);
 		const float selection_vertLst[8] =
 		{
 			full_width,	0,
@@ -306,7 +306,7 @@ bool geTextBox::onMouseMove(float x, float y, int flag)
 			}
 		}
 
-		float full_width=geGUIManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, strlen(m_pStartCharPtr), 0);
+		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, (int)strlen(m_pStartCharPtr), 0);
 		if(rightX>m_cSize.x-10 /*&& diff>0*/)
 		{
 			if(full_width>m_cSize.x)
@@ -322,8 +322,8 @@ bool geTextBox::onMouseMove(float x, float y, int flag)
 		full_width	=cursorPos;//reassign the virtual full width
 		for(int m=len-1;m>=0;m--)
 		{
-			float endX=cursorPos;
-			cursorPos-=geGUIManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[m]);
+			//float endX=cursorPos;
+			cursorPos-=geFontManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[m]);
 			if(leftX>cursorPos)
 			{
 				m_iStartCursorSelectionPos=m;
@@ -335,8 +335,8 @@ bool geTextBox::onMouseMove(float x, float y, int flag)
 		cursorPos=0;
 		for(int m=0;m<len;m++)
 		{
-			float startX=cursorPos;
-			cursorPos+=geGUIManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[m]);
+			//float startX=cursorPos;
+			cursorPos+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(m_pStartCharPtr[m]);
 			if(rightX<cursorPos)
 			{
 				m_iEndCursorSelectionPos=m+1;
@@ -359,7 +359,7 @@ bool geTextBox::onMouseMove(float x, float y, int flag)
 			rightX=full_width;
 			//if(rightX>m_cSize.x)
 			//	rightX=m_cSize.x;
-			setCursorPos(strlen(m_pStartCharPtr));
+			setCursorPos((int)strlen(m_pStartCharPtr));
 		}
 
 		const float selection_vertLst[8] =
@@ -388,11 +388,11 @@ bool geTextBox::onKeyDown(int charValue, int flag)
 	if(geTextBox::g_pCurrentlyActiveTextBoxPtr!=this)
 		return false;
 
-	//replace the selection block
-	if(m_iEndCursorSelectionPos>=strlen(m_pStartCharPtr))
-	{
-		m_iEndCursorSelectionPos=m_iEndCursorSelectionPos;
-	}
+//	//replace the selection block
+//	if(m_iEndCursorSelectionPos>=strlen(m_pStartCharPtr))
+//	{
+//		m_iEndCursorSelectionPos=m_iEndCursorSelectionPos;
+//	}
 
 	bool bReplaced=bReplaced=replaceSelection(m_pStartCharPtr, m_iStartCursorSelectionPos, m_iEndCursorSelectionPos);
 
@@ -405,7 +405,7 @@ bool geTextBox::onKeyDown(int charValue, int flag)
 		m_bShowSelection=false;
 	}
 
-	for(int x=strlen(m_pStartCharPtr);x>=m_iCursorPos;x--)
+	for(int x=(int)strlen(m_pStartCharPtr);x>=m_iCursorPos;x--)
 	{
 		m_pStartCharPtr[x+1]=m_pStartCharPtr[x];
 	}
@@ -422,7 +422,7 @@ bool geTextBox::onKeyDown(int charValue, int flag)
 	else
 	{
 		m_pStartCharPtr[m_iCursorPos]=charValue;
-		float full_width=geGUIManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, strlen(m_szName), 0);
+		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(m_pStartCharPtr, (int)strlen(m_szName), 0);
 		if(full_width>m_cSize.x)
 		{
 			int temp=0;
@@ -450,7 +450,7 @@ bool replaceSelection(char* str, int start, int end)
 {
 	if(end>start)
 	{
-		int remaining_len=strlen(&str[end]);
+		int remaining_len=(int)strlen(&str[end]);
 		if(remaining_len==0)
 		{
 			strcpy(&str[start], "");

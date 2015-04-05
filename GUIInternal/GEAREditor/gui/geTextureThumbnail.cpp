@@ -2,8 +2,8 @@
 #include "geTextureThumbnail.h"
 #include "geGUIManager.h"
 
-geTextureThumbnail::geTextureThumbnail():
-	geGUIBase(GEGUI_TEXTURE_THUMBNAIL, "TextureThumbnail")
+geTextureThumbnail::geTextureThumbnail(geFontManager* fontmanager):
+	geGUIBase(GEGUI_TEXTURE_THUMBNAIL, "TextureThumbnail", fontmanager)
 {
 	m_pTexturePtr=NULL;
 }

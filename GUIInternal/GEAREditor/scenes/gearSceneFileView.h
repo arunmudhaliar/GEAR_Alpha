@@ -10,7 +10,7 @@
 class gearSceneFileView : public geWindow, public MTreeViewObserver, public MGUIObserver
 {
 public:
-	gearSceneFileView();
+	gearSceneFileView(geFontManager* fontManager);
 	~gearSceneFileView();
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
@@ -28,7 +28,9 @@ protected:
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 	virtual void onTextChange(geGUIBase* btn);
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+//#if !defined(__APPLE__) //disable Drag-Drop
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
+//#endif
 
 private:
 	void destroyTVUserData(geGUIBase* parent);
@@ -40,7 +42,7 @@ private:
 	void tryLoadTexturesFromObject3d(object3d* obj3d, const char* filepath);
 
 	Sprite2Dx m_cszSprites[5];
-	geTreeView m_cFileTreeView;
+	geTreeView* m_pFileTreeView;
 	geTextBox* m_pSerachStringTextBoxPtr;
 	char m_szDirectoryPath[512];
 

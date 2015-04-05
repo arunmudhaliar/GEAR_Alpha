@@ -7,7 +7,7 @@
 //
 
 #include "Timer.h"
-#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
+#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE) || defined(__APPLE__)
 	#include <CoreFoundation/CFDate.h>
 #elif defined(WIN32)
 	#include <Windows.h>
@@ -42,7 +42,7 @@ void Timer::init()
 void Timer::update()
 {
 	double curTime=0.0;
-#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
+#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE) || defined(__APPLE__)
 	curTime=CFAbsoluteTimeGetCurrent();
 #elif defined(WIN32)
 	curTime=(double)timeGetTime()/1000.0;
@@ -73,7 +73,7 @@ void Timer::update()
 void Timer::update(float targetFPS)
 {
 	double curTime=0.0;
-#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
+#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE) || defined(__APPLE__)
 	curTime=CFAbsoluteTimeGetCurrent();
 #elif defined(WIN32)
 	curTime=(double)timeGetTime()/1000.0;
@@ -87,7 +87,7 @@ void Timer::update(float targetFPS)
 	}
 	while(m_fDT<(1.0f/targetFPS))
 	{
-	#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
+	#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE) || defined(__APPLE__)
 		curTime=CFAbsoluteTimeGetCurrent();
 	#elif defined(WIN32)
 		curTime=(double)timeGetTime()/1000.0;
@@ -109,7 +109,7 @@ void Timer::reset()
 	m_fDT=0.0f;		
 	m_iDT=0;			
 	m_fElapsedTime=0.0f;
-#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
+#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE) || defined(__APPLE__)
 	m_fPrevTime=CFAbsoluteTimeGetCurrent();
 #elif defined(WIN32)
 	m_fPrevTime=(double)timeGetTime()/1000.0;
@@ -121,22 +121,24 @@ void Timer::reset()
 
 double Timer::getCurrentTimeInSec()
 {
-#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
+#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE) || defined(__APPLE__)
 	return CFAbsoluteTimeGetCurrent();
 #elif defined(WIN32)
 	return (double)timeGetTime()/1000.0;
 #elif defined(ANDROID)
 	return (double)_getTime()/1000.0;
 #endif
+    return 0.0;
 }
 
 unsigned long Timer::getCurrentTimeInMilliSec()
 {
-#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
+#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE) || defined(__APPLE__)
 	return CFAbsoluteTimeGetCurrent()*1000;
 #elif defined(WIN32)
 	return timeGetTime();
 #elif defined(ANDROID)
 	return _getTime();
 #endif
+    return 0;
 }

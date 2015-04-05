@@ -12,7 +12,7 @@
 class gearScenePreview : public geWindow
 {
 public:
-	gearScenePreview();
+	gearScenePreview(geFontManager* fontmanager);
 	~gearScenePreview();
 
 	void draw();

@@ -45,6 +45,7 @@ SoundSample::~SoundSample()
 #endif
 }
 
+#if defined(USE_OPENAL) || defined(USE_OPENSL)
 #if defined(USE_OPENAL)
 bool SoundSample::loadFromFile(gxFile& file)
 #elif defined(USE_OPENSL)
@@ -237,3 +238,4 @@ bool SoundSample::loadFromFile(gxFile& file, const SLEngineItf engineEngine, con
     
     return true;
 }
+#endif

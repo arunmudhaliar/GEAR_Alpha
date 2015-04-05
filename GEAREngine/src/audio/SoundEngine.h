@@ -58,7 +58,7 @@ public:
     
     bool destroySoundSource(SoundSource* source);
     
-    int getSourceCount()    {   return m_pszSources.size();     }
+    int getSourceCount()    {   return (int)m_pszSources.size();     }
     
     SoundSource* createInstanceOf(SoundSource* source);
     

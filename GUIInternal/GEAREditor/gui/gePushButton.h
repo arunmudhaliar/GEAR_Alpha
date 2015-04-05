@@ -6,11 +6,11 @@
 class gePushButton : public geButtonBase
 {
 public:
-	gePushButton();
-	gePushButton(const char* name);
+	gePushButton(geFontManager* fontManager);
+	gePushButton(const char* name, geFontManager* fontManager);
 
 protected:
-	gePushButton(unsigned short uGUIID, const char* name);
+	gePushButton(unsigned short uGUIID, const char* name, geFontManager* fontManager);
 
 public:
 	virtual ~gePushButton();

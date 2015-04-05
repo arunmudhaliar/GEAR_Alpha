@@ -73,6 +73,8 @@ void HWShaderManager::LoadDefaultShaders()
 	resource_dir_root_path="res/shadersWin32/";
 #elif defined(ANDROID)
 	resource_dir_root_path="/storage/emulated/0/gear/shadersAndroid/";
+#elif defined(__APPLE__)
+    resource_dir_root_path="res/shadersWin32/";
 #else
 	DEBUG_PRINT("ERROR : Shaders not implemented for this platform ");
 	return;
@@ -176,7 +178,7 @@ gxHWShader* HWShaderManager::LoadShaderFromBuffer(const char* name, const char* 
 HWShaderManager::stHWShaderSnippet* HWShaderManager::LoadCodeSnippet(const char* filename)
 {
 	//read snippet code
-	int fileSz=0;
+	long fileSz=0;
 	FILE* fp=fopen(filename, "r");
 	if(fp==NULL) return NULL;
 

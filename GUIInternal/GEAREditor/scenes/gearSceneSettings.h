@@ -10,7 +10,7 @@
 class gearSceneSettings : public geWindow, public MTreeViewObserver, public MGUIObserver
 {
 public:
-	gearSceneSettings();
+	gearSceneSettings(geFontManager* fontmanager);
 	~gearSceneSettings();
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
@@ -27,7 +27,7 @@ protected:
 private:
 	Sprite2Dx m_cszSprites[10];
 
-	geTreeView m_cSettingsTreeView;
+	geTreeView* m_pSettingsTreeView;
 
 	geTreeNode* m_pSettingsAndroidParentNode;
 	geSettingsAndroid* m_pSettingsAndroid;

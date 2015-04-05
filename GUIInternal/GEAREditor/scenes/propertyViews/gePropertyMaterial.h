@@ -45,12 +45,14 @@ public:
 	};
 	std::vector<stSubMapView*> m_vSubMap;
 
-	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo);
+	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo, geFontManager* fontManager);
 	virtual ~gePropertyMaterial();
 
 	virtual void drawNode();
 	virtual void onTextChange(geGUIBase* textbox);
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+//#if !defined(__APPLE__) //disable Drag-Drop
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
+//#endif
 	virtual void onColorChange(geGUIBase* colorControl);
 	virtual void onCommand(int cmd);
 	virtual void onSliderChange(geGUIBase* slider);

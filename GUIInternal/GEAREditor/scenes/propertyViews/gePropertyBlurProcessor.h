@@ -10,12 +10,12 @@
 class gePropertyBlurProcessor : public geTreeNode, public MGUIObserver
 {
 public:
-	gePropertyBlurProcessor(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	  geTreeNode(renderer, parent, name, sprite, 10)
+	gePropertyBlurProcessor(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager):
+	  geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 	{
 		setSize(m_cSize.x, 30.0f);
 
-		m_pPushBtn_Object3dVisible = new gePushButton("");
+		m_pPushBtn_Object3dVisible = new gePushButton("", fontmanager);
 		m_pPushBtn_Object3dVisible->create(renderer, this, "", 15, 10);
 		m_pPushBtn_Object3dVisible->setGUIObserver(this);
 
@@ -44,7 +44,7 @@ public:
 	{
 		drawRect(&m_cVBClientArea);
 
-		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 		{

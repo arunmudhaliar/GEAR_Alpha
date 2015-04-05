@@ -1,8 +1,8 @@
 #include "geWindow.h"
 #include "geGUIManager.h"
 
-geWindow::geWindow(const char* name):
-	geGUIBase(GEGUI_WINDOW, name)
+geWindow::geWindow(const char* name, geFontManager* fontmanager):
+	geGUIBase(GEGUI_WINDOW, name, fontmanager)
 {
 	m_bCanMove=false;
 	m_pToolBar=NULL;
@@ -20,7 +20,7 @@ void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float 
 	m_fTitleWidth=0;
 	for(int index=0;index<(int)strlen(m_szName);index++)
 	{
-		m_fTitleWidth+=geGUIManager::g_pFontArial10_84Ptr->getCharWidth(m_szName[index]);
+		m_fTitleWidth+=geFontManager::g_pFontArial10_84Ptr->getCharWidth(m_szName[index]);
 	}
 
 	m_bCanMove=false;
@@ -33,7 +33,7 @@ void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float 
 	m_pToolBar=NULL;
 	if(bCreateToolBar)
 	{
-		m_pToolBar = new geToolBar();
+		m_pToolBar = new geToolBar(m_pFontManagerPtr);
 		m_pToolBar->create(renderer, this, 0, -GE_TOOLBAR_HEIGHT/*GE_WND_TITLE_HEIGHT*/, cx, GE_TOOLBAR_HEIGHT);
 	}
 
@@ -87,7 +87,7 @@ void geWindow::drawTitleAndToolBar(float xoff, float yoff, bool bActiveWindow, b
 	{
 		m_cRoundedRectangle.draw(1, 3);
 	}
-	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 15, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 15, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	//drawTriangle(&m_cVBLayoutToggleButtonLine[3*0], 0.05f, 0.05f, 0.05f, 1.0f, 3);
 	if(m_pToolBar && bActiveWindow)
 	{

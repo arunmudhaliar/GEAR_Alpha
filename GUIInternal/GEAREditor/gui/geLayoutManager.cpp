@@ -2,8 +2,8 @@
 #include "../win32/cursorUtil.h"
 #include <assert.h>
 
-geLayoutManager::geLayoutManager():
-	geGUIBase(GEGUI_LAYOUT_MANAGER, "LayoutManager")
+geLayoutManager::geLayoutManager(geFontManager* fontmanager):
+	geGUIBase(GEGUI_LAYOUT_MANAGER, "LayoutManager", fontmanager)
 {
 	m_pRootLayout=NULL;
 	m_pSelectedLayout=NULL;
@@ -27,7 +27,7 @@ void geLayoutManager::create(rendererGL10* renderer, float x, float y, float cx,
 	setPos(x, y);
 	setSize(cx, cy);
 
-	m_pRootLayout = new geLayout("layout");
+	m_pRootLayout = new geLayout("layout", m_pFontManagerPtr);
 	m_pRootLayout->create(renderer, NULL, x, y, cx, cy);
 	m_pRootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
 
@@ -59,35 +59,35 @@ void geLayoutManager::mouseMoveWithGrabbedWindow(int x, int y, geWindow* grabbed
 
 void geLayoutManager::dropGrabbedWindow(int x, int y, geWindow* grabbedWindow)
 {
-	if(m_pRootLayout)
-	{
-		geLayout* layouttodrop=m_pRootLayout->dropWindowOnMe(grabbedWindow);
-	}
+//	if(m_pRootLayout)
+//	{
+//		geLayout* layouttodrop=m_pRootLayout->dropWindowOnMe(grabbedWindow);
+//	}
 }
 
 bool geLayoutManager::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	cursorUtil::changeCursor(0);
-	geLayout* layoutToResize=NULL;
-	if(layoutToResize=m_pRootLayout->checkResizableOnRightSide(x, y))
+	//geLayout* layoutToResize=NULL;
+	if(m_pRootLayout->checkResizableOnRightSide(x, y))
 	{
 		m_pRootLayout->getResizableOnLeftSide(x, y, &m_vLeftResizeList);
 		m_pRootLayout->getResizableOnRightSide(x, y, &m_vRightResizeList);
 		cursorUtil::changeCursor(2);
 	}
-	else if(layoutToResize=m_pRootLayout->checkResizableOnLeftSide(x, y))
+	else if(m_pRootLayout->checkResizableOnLeftSide(x, y))
 	{
 		m_pRootLayout->getResizableOnLeftSide(x, y, &m_vLeftResizeList);
 		m_pRootLayout->getResizableOnRightSide(x, y, &m_vRightResizeList);
 		cursorUtil::changeCursor(2);
 	}
-	else if(layoutToResize=m_pRootLayout->checkResizableOnTopSide(x, y))
+	else if(m_pRootLayout->checkResizableOnTopSide(x, y))
 	{
 		m_pRootLayout->getResizableOnTopSide(x, y, &m_vTopResizeList);
 		m_pRootLayout->getResizableOnBottomSide(x, y, &m_vBottomResizeList);
 		cursorUtil::changeCursor(1);
 	}
-	else if(layoutToResize=m_pRootLayout->checkResizableOnBottomSide(x, y))
+	else if(m_pRootLayout->checkResizableOnBottomSide(x, y))
 	{
 		m_pRootLayout->getResizableOnTopSide(x, y, &m_vTopResizeList);
 		m_pRootLayout->getResizableOnBottomSide(x, y, &m_vBottomResizeList);
@@ -255,7 +255,7 @@ void geLayoutManager::expandOrContractLeftAndRightLayoutsOnMouseDrag(int x, int 
 		}
 	}
 
-	if((!bRightListExpand && diff.x<0 || bRightListExpand) && (!bLeftListExpand && diff.x>0 || bLeftListExpand))
+	if(((!bRightListExpand && diff.x<0) || bRightListExpand) && ((!bLeftListExpand && diff.x>0) || bLeftListExpand))
 	for(std::vector<geLayout*>::iterator it = m_vRightResizeList.begin(); it != m_vRightResizeList.end(); ++it)
 	{
 		geLayout* obj = *it;
@@ -265,7 +265,7 @@ void geLayoutManager::expandOrContractLeftAndRightLayoutsOnMouseDrag(int x, int 
 		obj->setSize(layout_sz.x-diff.x, layout_sz.y);
 	}
 
-	if(!bStop && (!bRightListExpand && diff.x<0 || bRightListExpand) && (!bLeftListExpand && diff.x>0 || bLeftListExpand))
+	if(!bStop && ((!bRightListExpand && diff.x<0) || bRightListExpand) && ((!bLeftListExpand && diff.x>0) || bLeftListExpand))
 	{
 		for(std::vector<geLayout*>::iterator it = m_vLeftResizeList.begin(); it != m_vLeftResizeList.end(); ++it)
 		{
@@ -305,7 +305,7 @@ void geLayoutManager::expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int 
 		}
 	}
 
-	if((!bRightListExpand && diff.y<0 || bRightListExpand) && (!bLeftListExpand && diff.y>0 || bLeftListExpand))
+	if(((!bRightListExpand && diff.y<0) || bRightListExpand) && ((!bLeftListExpand && diff.y>0) || bLeftListExpand))
 	for(std::vector<geLayout*>::iterator it = m_vBottomResizeList.begin(); it != m_vBottomResizeList.end(); ++it)
 	{
 		geLayout* obj = *it;
@@ -315,7 +315,7 @@ void geLayoutManager::expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int 
 		obj->setSize(layout_sz.x, layout_sz.y-diff.y);
 	}
 
-	if(!bStop && (!bRightListExpand && diff.y<0 || bRightListExpand) && (!bLeftListExpand && diff.y>0 || bLeftListExpand))
+	if(!bStop && ((!bRightListExpand && diff.y<0) || bRightListExpand) && ((!bLeftListExpand && diff.y>0) || bLeftListExpand))
 	{
 		for(std::vector<geLayout*>::iterator it = m_vTopResizeList.begin(); it != m_vTopResizeList.end(); ++it)
 		{
@@ -326,6 +326,7 @@ void geLayoutManager::expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int 
 	}
 }
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 void geLayoutManager::onDragEnter(int x, int y)
 {
 	geLayout* selectedLayout = m_pRootLayout->selectLayout(x, y);
@@ -333,7 +334,7 @@ void geLayoutManager::onDragEnter(int x, int y)
 		selectedLayout->DragEnter(x, y);
 }
 
-void geLayoutManager::onDragDrop(int x, int y, MDataObject* dropObject)
+void geLayoutManager::onDragDrop(int x, int y, MDropData* dropObject)
 {
 	geLayout* selectedLayout = m_pRootLayout->selectLayout(x, y);
 	if(selectedLayout)
@@ -344,6 +345,7 @@ void geLayoutManager::onDragLeave()
 {
 	//there is only one window. so practically no dragLeave on logical windows
 }
+//#endif
 
 bool geLayoutManager::onKeyDown(int charValue, int flag)
 {

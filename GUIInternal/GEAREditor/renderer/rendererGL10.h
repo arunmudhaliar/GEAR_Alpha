@@ -9,7 +9,7 @@ public:
 #ifdef _WIN32
 	rendererGL10(HWND hWnd);
 #else
-	rendererGL10();
+	rendererGL10(SDL_Window* window);
 #endif
 	~rendererGL10();
 

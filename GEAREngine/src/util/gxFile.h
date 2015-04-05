@@ -46,7 +46,9 @@ public:
 	void	Read(float& v) const;
 	void	Read(double& v) const;
     void    Read(unsigned long& v) const;
+#if !defined(__APPLE__)
 	void	Read(__int64& v) const;
+#endif
     void    ReadBuffer(unsigned char* buffer, unsigned long cnt) const;
 
 	void	Write(char v) const;
@@ -59,7 +61,9 @@ public:
 	void	Write(unsigned int v) const;
 	void	Write(float v) const;
 	void	Write(double v) const;
+#if !defined(__APPLE__)
 	void	Write(__int64 v) const;
+#endif
 	void	WriteBuffer(unsigned char* buffer, unsigned long cnt) const;
 
 private:

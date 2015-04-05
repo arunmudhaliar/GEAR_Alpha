@@ -6,7 +6,9 @@
 
 #include <assert.h>
 #include <dirent.h>
-#include <direct.h>
+#if !defined(__APPLE__)
+    #include <direct.h>
+#endif
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,22 +17,24 @@
 #include "../win32/MDropSource.h"
 #include"assetUserData.h"
 
-static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray);
+static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager);
 
-gearSceneProject::gearSceneProject():
-geWindow("Project")
+gearSceneProject::gearSceneProject(geFontManager* fontmanager):
+geWindow("Project", fontmanager)
 {
 	//m_pFileViewScenePtr=NULL;
+    m_pAssetTreeView = new geTreeView(fontmanager);
 }
 
 gearSceneProject::~gearSceneProject()
 {
-	destroyTVUserData(m_cAssetTreeView.getRoot());
+	destroyTVUserData(m_pAssetTreeView->getRoot());
+    GE_DELETE(m_pAssetTreeView)
 }
 
 void gearSceneProject::onCreate()
 {
-	m_cAssetTreeView.create(m_pRenderer, this, "AssetsTV", this);
+	m_pAssetTreeView->create(m_pRenderer, this, "AssetsTV", this);
 
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(362, 70, 16, 16);
@@ -42,12 +46,12 @@ void gearSceneProject::onCreate()
 
 void gearSceneProject::populateProjectView()
 {
-	destroyTVUserData(m_cAssetTreeView.getRoot());
-	m_cAssetTreeView.clearAndDestroyAll();
+	destroyTVUserData(m_pAssetTreeView->getRoot());
+	m_pAssetTreeView->clearAndDestroyAll();
 
-	find_directory(m_pRenderer, EditorApp::getProjectHomeDirectory(), m_cAssetTreeView.getRoot(), m_cszSprites);
-	m_cAssetTreeView.getRoot()->traverseSetWidth(m_cSize.x);
-	m_cAssetTreeView.refreshTreeView();
+	find_directory(m_pRenderer, EditorGEARApp::getProjectHomeDirectory(), m_pAssetTreeView->getRoot(), m_cszSprites, m_pFontManagerPtr);
+	m_pAssetTreeView->getRoot()->traverseSetWidth(m_cSize.x);
+	m_pAssetTreeView->refreshTreeView();
 }
 
 void gearSceneProject::onDraw()
@@ -60,12 +64,12 @@ void gearSceneProject::onDraw()
 	}
 #endif
 
-	m_cAssetTreeView.draw();
+	m_pAssetTreeView->draw();
 }
 
 void gearSceneProject::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
 {
-	EditorApp::getSceneFileView()->populateFiles(((assetUserData*)tvnode->getUserData())->getAssetPath());
+	EditorGEARApp::getSceneFileView()->populateFiles(((assetUserData*)tvnode->getUserData())->getAssetPath());
 }
 
 void gearSceneProject::destroyTVUserData(geGUIBase* parent)
@@ -95,7 +99,7 @@ bool gearSceneProject::onMouseLButtonUp(float x, float y, int nFlag)
 
 bool gearSceneProject::onMouseMove(float x, float y, int flag)
 {
-	//geTreeNode* selectedNode=m_cAssetTreeView.getSelectedNode();
+	//geTreeNode* selectedNode=m_pAssetTreeView->getSelectedNode();
 	//if((flag&MK_LBUTTON) && selectedNode)
 	//{
 	//	MDataObject* dataObject = new MDataObject(selectedNode);
@@ -117,12 +121,13 @@ void gearSceneProject::onMouseWheel(int zDelta, int x, int y, int flag)
 	geWindow::onMouseWheel(zDelta, x, y, flag);
 }
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 void gearSceneProject::onDragEnter(int x, int y)
 {
 
 }
 
-void gearSceneProject::onDragDrop(int x, int y, MDataObject* dropObject)
+void gearSceneProject::onDragDrop(int x, int y, MDropData* dropObject)
 {
 
 }
@@ -130,8 +135,9 @@ void gearSceneProject::onDragDrop(int x, int y, MDataObject* dropObject)
 void gearSceneProject::onDragLeave()
 {
 }
+//#endif
 
-static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray)
+static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager)
 {
     DIR *dir;
     char buffer[PATH_MAX + 2];
@@ -206,13 +212,13 @@ static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNod
                 /* Scan sub-directory recursively */
                 if (strcmp (ent->d_name, ".") != 0  &&  strcmp (ent->d_name, "..") != 0)
 				{
-					geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, &spriteArray[0]);
+					geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, &spriteArray[0], fontmanager);
 
 					assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, buffer, NULL);
 					newtvNode->setUserData(userdata);
 
 					newtvNode->closeNode();
-                    find_directory (renderer, buffer, newtvNode, spriteArray);
+                    find_directory (renderer, buffer, newtvNode, spriteArray, fontmanager);
                 }
                 break;
 

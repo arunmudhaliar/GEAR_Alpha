@@ -7,8 +7,7 @@
 #include <mono/metadata/tokentype.h>
 #include <mono/jit/jit.h>
 
-
-#include "../../../GEAREngine/src/GEAREngine.h"
+#include "../../GEAREngine.h"   //TODO: Need to check this path
 #include "monoScript.h"
 
 class DECLSPEC monoWrapper
@@ -60,7 +59,7 @@ public:
 	static void mono_object3d_onObject3dChildAppend(object3d* parent, object3d* child);
 	static void mono_object3d_onObject3dChildRemove(object3d* parent, object3d* child);
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__APPLE__)
 	static int traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist);
 	static bool compileCSharpScripts(std::vector<std::string>* csharpfilelist);
 	static char exec_cmd(char const *cmd, char *buf);

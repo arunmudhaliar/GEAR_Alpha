@@ -138,7 +138,7 @@ public:
 	void setName(const char* name)	{	GX_STRCPY(m_cszName, name);	}
 
 	//child: child-parent
-	int getChildCount()				{	return m_cChilds.size();	}
+	int getChildCount()				{	return (int)m_cChilds.size();	}
 	object3d* getChild(int index)	{	return m_cChilds[index];	}
 	object3d* find(const char* name);
 	void setParent(object3d* pParentPtr)	{	m_pParentPtr=pParentPtr;	}

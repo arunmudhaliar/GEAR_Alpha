@@ -4,13 +4,17 @@
 
 bool geTextureThumbnailExtended::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	geTextureDlg* newTextureDlg	 = new geTextureDlg(this);
-	newTextureDlg->showView(EditorApp::getMainWindowHandle());
-
+    geTextureDlg* newTextureDlg	 = new geTextureDlg(this, m_pFontManagerPtr, m_pRenderer);
+#if _WIN32
+	newTextureDlg->showView(EditorGEARApp::getMainWindowHandle());
+#else
+    newTextureDlg->showView();
+#endif
 	return true;
 }
 
-void geTextureThumbnailExtended::onDragDrop(int x, int y, MDataObject* dropObject)
+//#if !defined(__APPLE__) //disable Drag-Drop
+void geTextureThumbnailExtended::onDragDrop(int x, int y, MDropData* dropObject)
 {
 	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
 	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
@@ -34,9 +38,10 @@ void geTextureThumbnailExtended::onDragDrop(int x, int y, MDataObject* dropObjec
 			if(map)
 			{
 				char absolutepath[1024];
-				sprintf(absolutepath, "%s/Assets%s", EditorApp::getProjectHomeDirectory(), relativePath);
+				sprintf(absolutepath, "%s/Assets%s", EditorGEARApp::getProjectHomeDirectory(), relativePath);
 				m_pTexturePtr=map->load(*monoWrapper::mono_engine_getWorld(0)->getTextureManager(), absolutepath);
 			}
 		}
 	}
 }
+//#endif

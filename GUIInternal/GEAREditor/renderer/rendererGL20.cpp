@@ -3,7 +3,7 @@
 #ifdef _WIN32
 rendererGL20::rendererGL20(HWND hWnd):rendererBase(hWnd, rendererBase::gl_programmable_pipeline)
 #else
-rendererGL20::rendererGL20():rendererBase(rendererBase::gl_programmable_pipeline)
+rendererGL20::rendererGL20(SDL_Window* window):rendererBase(window, rendererBase::gl_programmable_pipeline)
 #endif
 {
 }

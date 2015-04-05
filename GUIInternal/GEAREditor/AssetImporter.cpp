@@ -10,42 +10,68 @@
 #include <sys/types.h>
 #include <assert.h>
 #include <dirent.h>
+#ifdef _WIN32
 #include <direct.h>
+#endif
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef _WIN32
 #include <Windows.h>
 #include <CommCtrl.h>
+#endif
 
+//#ifdef _WIN32
 #include "../../FreeImage/FreeImage.h"
+//#endif
 
 AssetImporter::AssetImporter()
 {
+    m_pAssetImportDlg=NULL;
 }
 
 AssetImporter::~AssetImporter()
 {
 }
 
+#ifdef _WIN32
 bool AssetImporter::importAssets(const char* assetsfolder, HWND hWndDlg, int progressBarID, int statictextID)
+#else
+bool AssetImporter::importAssets(const char* assetsfolder, geAssetImportDlg* assetImportDlg)
+#endif
 {
+    m_pAssetImportDlg=assetImportDlg;
+    
 	//if metaData folder doesn't exist create it
 	char temp_buffer[1024];
-	sprintf(temp_buffer, "%s/MetaData", EditorApp::getProjectHomeDirectory());
+	sprintf(temp_buffer, "%s/MetaData", EditorGEARApp::getProjectHomeDirectory());
+#ifdef _WIN32
 	if(_mkdir(temp_buffer)==0)
+#else
+    if(mkdir(temp_buffer, 0777)==0)
+#endif
 	{
 		//created a new metaDirectory
 	}
 
+#ifdef _WIN32
 	m_hWndProgress=hWndDlg;
-	m_iProgressBarID=progressBarID;
-	m_iStatictextID=statictextID;
+    m_iProgressBarID=progressBarID;
+    m_iStatictextID=statictextID;
+#endif
+
 	m_nAssetsToProcess=0;
-	traverseAndCountAssetDirectory(EditorApp::getProjectHomeDirectory());
+	traverseAndCountAssetDirectory(EditorGEARApp::getProjectHomeDirectory());
+#ifdef _WIN32
 	SendDlgItemMessage(hWndDlg, m_iProgressBarID, PBM_SETRANGE, 0, MAKELPARAM(0, m_nAssetsToProcess));
+#endif
 	m_nAssetsToProcess=0;
-	traverseAssetDirectory(EditorApp::getProjectHomeDirectory());
+	traverseAssetDirectory(EditorGEARApp::getProjectHomeDirectory());
+#ifdef _WIN32
 	SendDlgItemMessage(m_hWndProgress, m_iStatictextID, WM_SETTEXT, 0, (LPARAM)"Complete");
+#else
+    m_pAssetImportDlg->setBuffer("Complete");
+#endif
 	return true;
 }
 
@@ -204,7 +230,7 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
             case DT_REG:
                 {
 					bool bImage=false;
-					bool bTGA=false;
+//					bool bTGA=false;
 					bool bFBX=false;
 
 					if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG") ||
@@ -234,10 +260,10 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 						memset(&fst, 0, sizeof(fst));
 						if(stat(buffer, &fst)==0) 
 						{
-							const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer);
+//							const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer);
 							int crc32=gxCrc32::Calc((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer));
 							char crcFileName[512];
-							sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc32);
+							sprintf(crcFileName, "%s/%s/%x", EditorGEARApp::getProjectHomeDirectory(), "MetaData", crc32);
 
 							stMetaHeader metaHeader;
 							memset(&metaHeader, 0, sizeof(metaHeader));
@@ -262,16 +288,36 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 								bCreateMetaFile=true;
 							}
 
+#ifdef _WIN32
 							SendDlgItemMessage(m_hWndProgress, m_iStatictextID, WM_SETTEXT, 0, (LPARAM)buffer);
+#else
+                            m_pAssetImportDlg->setBuffer(buffer);
+#endif
 
 							if(bCreateMetaFile)
 							{
 								bool bWriteMetaInfo=false;
+#if __APPLE__   //some how freeimage fail to load png files
+                                if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG"))
+                                {
+                                    if(bImage && import_png_to_metadata(buffer, crcFileName, fst))
+                                    {
+                                        bWriteMetaInfo=true;
+                                    }
+                                }
+                                else
+                                {
+                                    if(bImage && import_using_freeImageLib(buffer, crcFileName, fst))
+                                    {
+                                        bWriteMetaInfo=true;
+                                    }
+                                }
+#else
 								if(bImage && import_using_freeImageLib(buffer, crcFileName, fst))
 								{
 									bWriteMetaInfo=true;
 								}
-
+#endif
 								if(bFBX && import_fbx_to_metadata(buffer, crcFileName, fst))
 								{
 									bWriteMetaInfo=true;
@@ -313,7 +359,9 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 						}
 
 						m_nAssetsToProcess++;
+#ifdef _WIN32
 						SendDlgItemMessage(m_hWndProgress, m_iProgressBarID, PBM_SETPOS, m_nAssetsToProcess, 0);
+#endif
 					}
 				}
                 break;
@@ -359,7 +407,7 @@ void AssetImporter::readMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile, s
 bool AssetImporter::readMetaHeader(int crc, stMetaHeader& metaHeader, struct stat& fst)
 {
 	char crcFileName[512];
-	sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc);
+	sprintf(crcFileName, "%s/%s/%x", EditorGEARApp::getProjectHomeDirectory(), "MetaData", crc);
 
 	memset(&metaHeader, 0, sizeof(metaHeader));
 	gxFile metaFile;
@@ -385,11 +433,12 @@ void AssetImporter::writeMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile)
 
 int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char* crcFileName, struct stat srcStat)
 {
+//#ifdef _WIN32
 	std::vector<gxMaterial*> materialList;
 	std::vector<gxAnimationSet*> animationSetList;
 
 	fbxImporter importer;
-	object3d* obj3d=importer.loadMyFBX(fbx_file_name, &materialList, &animationSetList, EditorApp::getProjectHomeDirectory());
+	object3d* obj3d=importer.loadMyFBX(fbx_file_name, &materialList, &animationSetList, EditorGEARApp::getProjectHomeDirectory());
 
 	for(std::vector<gxMaterial*>::iterator it = materialList.begin(); it != materialList.end(); ++it)
 	{
@@ -406,6 +455,7 @@ int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char*
 
 	GX_DELETE(obj3d);
 
+//#endif
 	return 1;
 }
 
@@ -457,7 +507,7 @@ int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMate
 	if(stat(buffer, &fst)==0) 
 	{
 		char crcFileName[512];
-		sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc32);
+		sprintf(crcFileName, "%s/%s/%x", EditorGEARApp::getProjectHomeDirectory(), "MetaData", crc32);
 
 		stMetaHeader metaHeader;
 		memset(&metaHeader, 0, sizeof(metaHeader));
@@ -565,7 +615,7 @@ int AssetImporter::import_png_to_metadata(const char* png_file_name, const char*
 {
 	int width, height;
 	png_byte color_type;
-	png_byte color_bpp;
+//	png_byte color_bpp;
 	png_byte bit_depth;
     png_byte header[8];    // 8 is the maximum size that can be checked
 
@@ -671,9 +721,9 @@ int AssetImporter::import_png_to_metadata(const char* png_file_name, const char*
 		return 0;
 	}
 
-	int out_format=0;
+//	int out_format=0;
 
-	int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
+	int rowbytes = (int)png_get_rowbytes(png_ptr, info_ptr);
 
 	// Allocate the image_data as a big block, to be given to opengl
 	png_byte *image_data = new png_byte[rowbytes * height];
@@ -755,6 +805,7 @@ int AssetImporter::import_png_to_metadata(const char* png_file_name, const char*
 
 bool AssetImporter::import_using_freeImageLib(const char* filename, const char* crcFileName, struct stat srcStat)
 {
+//#ifdef _WIN32
 	//image format
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded
@@ -863,6 +914,7 @@ bool AssetImporter::import_using_freeImageLib(const char* filename, const char* 
 	//Free FreeImage's copy of the data
 	FreeImage_Unload(dib);
 
+//#endif
 	//return success
 	return true;
 }
@@ -874,5 +926,5 @@ int AssetImporter::calcCRC32(unsigned char* data)
 
 const char* AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(const char* path)
 {
-	return &path[strlen(EditorApp::getProjectHomeDirectory())+strlen("/Assets")];
+	return &path[strlen(EditorGEARApp::getProjectHomeDirectory())+strlen("/Assets")];
 }

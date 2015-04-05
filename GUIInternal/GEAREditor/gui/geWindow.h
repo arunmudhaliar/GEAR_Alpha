@@ -16,7 +16,7 @@ class geLayout;
 class geWindow : public geGUIBase
 {
 public:
-	geWindow(const char* name);
+	geWindow(const char* name, geFontManager* fontmanager);
 	virtual ~geWindow();
 
 	void create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy, bool bCreateToolBar=false);

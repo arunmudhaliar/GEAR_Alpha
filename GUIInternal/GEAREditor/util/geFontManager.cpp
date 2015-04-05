@@ -238,7 +238,7 @@ float geFont::getCharWidth(char charValue)
 int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCentered, bool bShadowed, float elapsetime)
 {
     int retVal=1;
-    int actual_len=strlen(str);
+    int actual_len=(int)strlen(str);
     int len=(elapsetime==0.0f)?actual_len:(int)(elapsetime/CHAR_DELAY);
     if(len>actual_len){len=actual_len;}
     else
@@ -1028,6 +1028,20 @@ bool geFont::canNeglectNextWord(const char* str, int cx, int nChar, int iCurInde
 
 //========================================================================================
 
+geFontManager geFontManager::g_cFontManager;
+geFont* geFontManager::g_pFontArial10_84Ptr=NULL;
+geFont* geFontManager::g_pFontArial10_80Ptr=NULL;
+
+void geFontManager::InitializeFonts()
+{
+    g_cFontManager.init();
+    g_pFontArial10_84Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_84.ecf");
+    g_pFontArial10_80Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_80.ecf");
+    
+    g_pFontArial10_84Ptr->setRGBA(0.7f, 0.7f, 0.7f);
+    g_pFontArial10_80Ptr->setRGBA(0.5f, 0.5f, 0.5f);
+}
+    
 geFontManager::geFontManager()
 {
 #if defined (USE_ProgrammablePipeLine_test)

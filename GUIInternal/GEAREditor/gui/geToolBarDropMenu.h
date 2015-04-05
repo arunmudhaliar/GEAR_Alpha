@@ -12,8 +12,10 @@ class geToolBarDropMenu : public geButtonBase
 public:
 	struct stDropMenuItem
 	{
+#ifdef _WIN32
 		HMENU menu_handle;
 		HMENU sub_menu_handle;
+#endif
 		char name[256];
 		int menuid;
 		stDropMenuItem* parent;
@@ -21,8 +23,8 @@ public:
 		bool hasCheck;
 	};
 
-	geToolBarDropMenu();
-	geToolBarDropMenu(rendererGL10* renderer, const char* name, geGUIBase* parent);
+	geToolBarDropMenu(geFontManager* fontManager);
+	geToolBarDropMenu(rendererGL10* renderer, const char* name, geGUIBase* parent, geFontManager* fontManager);
 	virtual ~geToolBarDropMenu();
 
 	virtual void draw();
@@ -31,7 +33,7 @@ public:
 	stDropMenuItem* appendMenuItem(const char* name, int menuID, stDropMenuItem* parent=NULL, bool bSeperator=false, bool bCheck=false);
 	void setMenuItem(int menuID);
 	void setMenuItem(const char* itemname);
-	int getMenuItemCount()	{	return m_vMenuItems.size();	}
+	int getMenuItemCount()	{	return (int)m_vMenuItems.size();	}
 
 	void checkMenuItem(int menuID, bool bCheck);
 

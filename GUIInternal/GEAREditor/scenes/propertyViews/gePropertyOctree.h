@@ -20,7 +20,7 @@ public:
 	geButton* m_pButtonApply;
 	stWindowColumnRow* m_pRows[3];
 
-	gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite);
+	gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontManager);
 	virtual ~gePropertyOctree();
 
 	void getOctreeVars(int& nTransformPerNodes, int& nLevels);
@@ -30,7 +30,9 @@ public:
 	virtual void drawNode();
 
 	virtual void onSliderChange(geGUIBase* slider);
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+//#if !defined(__APPLE__) //disable Drag-Drop
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
+//#endif
 	virtual void onButtonClicked(geGUIBase* btn);
 };
 

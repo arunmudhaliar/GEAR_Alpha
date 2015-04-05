@@ -11,7 +11,7 @@
 class gePropertyObject3d : public geTreeNode, public MGUIObserver
 {
 public:
-	gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite);
+	gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager);
 
 	virtual ~gePropertyObject3d();
 

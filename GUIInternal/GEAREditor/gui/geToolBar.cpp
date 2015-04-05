@@ -2,18 +2,18 @@
 #include "geGUIManager.h"
 
 
-geToolBarButton::geToolBarButton():
-	geButtonBase(GEGUI_TOOLBAR_BUTTON, "ToolBarButton")
+geToolBarButton::geToolBarButton(geFontManager* fontManager):
+	geButtonBase(GEGUI_TOOLBAR_BUTTON, "ToolBarButton", fontManager)
 {
 	//no implementation
 }
 
-geToolBarButton::geToolBarButton(rendererGL10* renderer, const char* name, geGUIBase* parent):
-	geButtonBase(GEGUI_TOOLBAR_BUTTON, name)
+geToolBarButton::geToolBarButton(rendererGL10* renderer, const char* name, geGUIBase* parent, geFontManager* fontManager):
+	geButtonBase(GEGUI_TOOLBAR_BUTTON, name, fontManager)
 {
 	createBase(renderer, parent);
 
-	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
 	setSize(width+20, parent->getSize().y);
 
 	setClientAreaPrimaryActiveForeColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -50,7 +50,7 @@ void geToolBarButton::draw()
 	}
 	else
 	{
-		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 10, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()-5, m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 10, geFontManager::g_pFontArial10_84Ptr->getLineHeight()-5, m_cSize.x);
 	}
 	glPopMatrix();
 }
@@ -144,13 +144,13 @@ void geToolBarButton::onCancelEngagedControls()
 }
 
 ////////////////////////////////////////////////////////////////////////////
-geToolBar::geToolBar():
-	geGUIBase(GEGUI_TOOLBAR, "ToolBar")
+geToolBar::geToolBar(geFontManager* fontmanager):
+	geGUIBase(GEGUI_TOOLBAR, "ToolBar", fontmanager)
 {
 }
 
-geToolBar::geToolBar(unsigned short uGUIID, const char* name):
-	geGUIBase(uGUIID, name)
+geToolBar::geToolBar(unsigned short uGUIID, const char* name, geFontManager* fontmanager):
+	geGUIBase(uGUIID, name, fontmanager)
 {
 }
 

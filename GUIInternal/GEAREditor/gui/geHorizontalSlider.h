@@ -6,7 +6,7 @@
 class geHorizontalSlider : public geGUIBase
 {
 public:
-	geHorizontalSlider();
+	geHorizontalSlider(geFontManager* fontmanager);
 
 public:
 	virtual ~geHorizontalSlider();

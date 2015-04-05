@@ -194,6 +194,8 @@ GLuint& FBO::AttachDepthBuffer()
 	CHECK_GL_ERROR(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
 #elif defined(ANDROID)
 	CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
+#elif defined(__APPLE__)
+    CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
 #else
 	#error "Need to look in to this in fbo.cpp"
 #endif
@@ -225,7 +227,7 @@ GLuint& FBO::AttachTextureBuffer(int index)
 
 void FBO::DrawFBO(int index)
 {
-    GLuint* t=m_szTexture.at(index);
+//    GLuint* t=m_szTexture.at(index);
 
 #if defined (USE_ProgrammablePipeLine)
     return;

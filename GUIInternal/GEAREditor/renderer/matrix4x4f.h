@@ -26,7 +26,7 @@ public:
 	
 	geMatrix4x4f(float v)
 	{
-		for(register int x=0;x<16;x++)
+		for(int x=0;x<16;x++)
 		{
 			m[x]=v;
 		}		
@@ -49,7 +49,7 @@ public:
 	
 	void copy(const geMatrix4x4f& matrix)
 	{
-		for(register int x=0;x<16;x++)
+		for(int x=0;x<16;x++)
 		{
 			m[x]=matrix.m[x];
 		}		
@@ -114,7 +114,7 @@ public:
 		 * dst - pointer to array of 16 no's (invert matrix)
 		 *
 		 *************************************************************/
-		register int i;
+		int i;
 		float tmp[12];	/* temp array for pairs */
 		float src[16];	/* array of transpose source matrix */
 		float det;		/* determinant */

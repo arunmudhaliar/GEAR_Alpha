@@ -9,7 +9,7 @@
 class gearSceneHierarchy : public geWindow, public MEngineObserver, public MObject3dObserver, public MTreeViewObserver, public MGUIObserver
 {
 public:
-	gearSceneHierarchy();
+	gearSceneHierarchy(geFontManager* fontManager);
 	~gearSceneHierarchy();
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
@@ -45,10 +45,12 @@ protected:
 
 	virtual bool onMouseMove(float x, float y, int flag);
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 	virtual void onDragEnter(int x, int y);
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 	virtual void onDragLeave();
-
+//#endif
+    
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);
 
@@ -60,7 +62,7 @@ private:
 	void destroyTVUserData(geGUIBase* parent);
 	void createTVNode(geTreeNode* parentNode, object3d* obj, const char* filename);
 
-	geTreeView m_cGameObjectsTreeView;
+	geTreeView* m_pGameObjectsTreeView;
 	Sprite2Dx m_cszSprites[5];
 	geToolBarDropMenu* m_pCreateToolBarDropMenuBtnPtr;
 	geToolBarButton* m_pClearBtn;

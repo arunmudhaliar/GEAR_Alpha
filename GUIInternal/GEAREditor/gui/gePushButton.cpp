@@ -1,18 +1,18 @@
 #include "gePushButton.h"
 #include "geGUIManager.h"
 
-gePushButton::gePushButton():
-	geButtonBase(GEGUI_PUSH_BUTTON, "Push Button")
+gePushButton::gePushButton(geFontManager* fontManager):
+	geButtonBase(GEGUI_PUSH_BUTTON, "Push Button", fontManager)
 {
 }
 
-gePushButton::gePushButton(const char* name):
-	geButtonBase(GEGUI_PUSH_BUTTON, name)
+gePushButton::gePushButton(const char* name, geFontManager* fontManager):
+	geButtonBase(GEGUI_PUSH_BUTTON, name, fontManager)
 {
 }
 
-gePushButton::gePushButton(unsigned short uGUIID, const char* name):
-	geButtonBase(uGUIID, name)
+gePushButton::gePushButton(unsigned short uGUIID, const char* name, geFontManager* fontManager):
+	geButtonBase(uGUIID, name, fontManager)
 {
 }
 
@@ -24,7 +24,7 @@ gePushButton::~gePushButton()
 void gePushButton::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y)
 {
 	createBase(renderer, parent);
-	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+//	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(14, 14);
 	setPos(x, y);
 
@@ -47,7 +47,7 @@ void gePushButton::draw()
 	{
 		drawRect(&m_cVBCheckMark);
 	}
-	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 17, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()-5, m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 17, geFontManager::g_pFontArial10_84Ptr->getLineHeight()-5, m_cSize.x);
 	glPopMatrix();
 }
 	

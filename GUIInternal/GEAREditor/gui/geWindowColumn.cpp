@@ -49,8 +49,8 @@ void stWindowColumnRow::setName(const char* name)
 }
 
 //=====================================================================
-geWindowColumn::geWindowColumn():
-geGUIBase(GEGUI_WINDOW_COLUMN, "window column")
+geWindowColumn::geWindowColumn(geFontManager* fontmanager):
+geGUIBase(GEGUI_WINDOW_COLUMN, "window column", fontmanager)
 {
 	m_cszColumnRatio=0.5f;
 }
@@ -116,7 +116,7 @@ void geWindowColumn::draw()
 	{
 		stWindowColumnRow* row = *it;
 		
-		geGUIManager::g_pFontArial10_80Ptr->drawString(row->getName(), 10.0f, row->getYPoistion()/*+row->getHeight()*/+geGUIManager::g_pFontArial10_80Ptr->getLineHeight()*0.5f, m_cSize.x);
+		geFontManager::g_pFontArial10_80Ptr->drawString(row->getName(), 10.0f, row->getYPoistion()/*+row->getHeight()*/+geFontManager::g_pFontArial10_80Ptr->getLineHeight()*0.5f, m_cSize.x);
 	}
 }
 

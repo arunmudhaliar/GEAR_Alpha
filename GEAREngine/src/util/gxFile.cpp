@@ -158,10 +158,12 @@ void gxFile::Read(unsigned long& v) const
 	fread((void*)&v, sizeof(unsigned long), 1, m_pFP);    
 }
 
+#if !defined(__APPLE__)
 void gxFile::Read(__int64& v) const
 {
 	fread((void*)&v, sizeof(__int64), 1, m_pFP);
 }
+#endif
 
 void gxFile::ReadBuffer(unsigned char* buffer, unsigned long cnt) const
 {
@@ -222,10 +224,12 @@ void gxFile::Write(double v) const
 	Write(&v, sizeof(double));
 }
 
+#if !defined(__APPLE__)
 void gxFile::Write(__int64 v) const
 {
 	Write(&v, sizeof(__int64));
 }
+#endif
 
 void gxFile::WriteBuffer(unsigned char* buffer, unsigned long cnt) const
 {

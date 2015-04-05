@@ -1,17 +1,16 @@
 #include "geGUIManager.h"
 
-geFontManager geGUIManager::g_cFontManager;
-geFont* geGUIManager::g_pFontArial10_84Ptr=NULL;
-geFont* geGUIManager::g_pFontArial10_80Ptr=NULL;
 CGETextureManager geGUIManager::g_cTextureManager;
 
-geGUIManager::geGUIManager()
+geGUIManager::geGUIManager(geFontManager* fontmanager)
 {
+    m_pLayoutManager = new geLayoutManager(fontmanager);
 }
 
 geGUIManager::~geGUIManager()
 {
 	reset();
+    GX_DELETE(m_pLayoutManager);
 }
 
 void geGUIManager::reset()
@@ -26,14 +25,7 @@ void geGUIManager::reset()
 
 void geGUIManager::init(rendererGL10* renderer)
 {
-	g_cFontManager.init();
-	g_pFontArial10_84Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_84.ecf");
-	g_pFontArial10_80Ptr=g_cFontManager.loadFont("res//fonts//arial_iphone10_80.ecf");
-
-	g_pFontArial10_84Ptr->setRGBA(0.7f, 0.7f, 0.7f);
-	g_pFontArial10_80Ptr->setRGBA(0.5f, 0.5f, 0.5f);
-
-	m_cLayoutManager.create(renderer, 0, 0, 1184, 567);
+	m_pLayoutManager->create(renderer, 0, 0, 1184, 567);
 }
 
 void geGUIManager::appendWindow(geWindow* window)
@@ -43,7 +35,7 @@ void geGUIManager::appendWindow(geWindow* window)
 
 void geGUIManager::size(int cx, int cy)
 {
-	m_cLayoutManager.setSize(cx, cy);
+	m_pLayoutManager->setSize(cx, cy);
 }
 
 void geGUIManager::update(float dt)
@@ -57,66 +49,68 @@ void geGUIManager::update(float dt)
 
 void geGUIManager::draw()
 {
-	m_cLayoutManager.draw();
+	m_pLayoutManager->draw();
 }
 
 void geGUIManager::MouseLButtonDown(float x, float y, int nFlag)
 {
-	m_cLayoutManager.MouseLButtonDown(x, y, nFlag);
+	m_pLayoutManager->MouseLButtonDown(x, y, nFlag);
 }
 
 void geGUIManager::MouseLButtonUp(float x, float y, int nFlag)
 {
-	m_cLayoutManager.MouseLButtonUp(x, y, nFlag);
+	m_pLayoutManager->MouseLButtonUp(x, y, nFlag);
 }
 
 void geGUIManager::MouseMove(float x, float y, int flag)
 {
-	m_cLayoutManager.MouseMove(x, y, flag);
+	m_pLayoutManager->MouseMove(x, y, flag);
 }
 
 void geGUIManager::MouseWheel(int zDelta, int x, int y, int flag)
 {
-	m_cLayoutManager.MouseWheel(zDelta, x, y, flag);
+	m_pLayoutManager->MouseWheel(zDelta, x, y, flag);
 }
 
 void geGUIManager::MouseRButtonDown(float x, float y, int nFlag)
 {
-	m_cLayoutManager.MouseRButtonDown(x, y, nFlag);
+	m_pLayoutManager->MouseRButtonDown(x, y, nFlag);
 }
 
 void geGUIManager::MouseRButtonUp(float x, float y, int nFlag)
 {
-	m_cLayoutManager.MouseRButtonUp(x, y, nFlag);
+	m_pLayoutManager->MouseRButtonUp(x, y, nFlag);
 }
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 void geGUIManager::DragEnter(int x, int y)
 {
-	m_cLayoutManager.DragEnter(x, y);
+	m_pLayoutManager->DragEnter(x, y);
 }
 
-void geGUIManager::DragDrop(int x, int y, MDataObject* dropObject)
+void geGUIManager::DragDrop(int x, int y, MDropData* dropObject)
 {
-	m_cLayoutManager.DragDrop(x, y, dropObject);
+	m_pLayoutManager->DragDrop(x, y, dropObject);
 }
 
 void geGUIManager::DragLeave()
 {
-	m_cLayoutManager.DragLeave();
+	m_pLayoutManager->DragLeave();
 }
+//#endif
 
 bool geGUIManager::KeyDown(int charValue, int flag)
 {
-	return m_cLayoutManager.KeyDown(charValue, flag);
+	return m_pLayoutManager->KeyDown(charValue, flag);
 }
 
 bool geGUIManager::KeyUp(int charValue, int flag)
 {
-	return m_cLayoutManager.KeyUp(charValue, flag);
+	return m_pLayoutManager->KeyUp(charValue, flag);
 }
 
 void geGUIManager::DoCommand(int cmd)
 {
-	m_cLayoutManager.DoCommand(cmd);
+	m_pLayoutManager->DoCommand(cmd);
 
 }

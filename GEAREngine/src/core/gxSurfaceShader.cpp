@@ -304,8 +304,8 @@ bool gxSurfaceShader::parseKeyWord(std::string::const_iterator& start, std::stri
 
 bool gxSurfaceShader::parseArgInsideRoundBrace(std::string::const_iterator& start, std::string::const_iterator& end, std::vector<std::string>& args, int argCount)
 {
-	int cnt=argCount-1;
-	bool bOnlyOneArgument = (cnt)?false:true;
+//	int cnt=argCount-1;
+//	bool bOnlyOneArgument = (cnt)?false:true;
 
 	if(findOpeningRoundBrace(start, end))	//find the first "
 	{
@@ -597,7 +597,7 @@ bool gxSurfaceShader::parseProperties(std::string::const_iterator& start, std::s
 	std::string::const_iterator it=start;
 	while(it!=end)
 	{
-		char ch=*it;
+//		char ch=*it;
 		if(findClosingCurlyBrace(it, end))
 		{
 			start=it;
@@ -635,7 +635,7 @@ bool gxSurfaceShader::parseSubShader_tag(std::string::const_iterator& start, std
 	std::string::const_iterator it=start;
 	while(it!=end)
 	{
-		char ch=*it;
+//		char ch=*it;
 		if(findClosingCurlyBrace(it, end))
 		{
 			start=it;
@@ -649,7 +649,7 @@ bool gxSurfaceShader::parseSubShader_tag(std::string::const_iterator& start, std
 			{
 				//check for CULL
 				str.assign(it, end);
-				int pos=str.find("CULLFACE");
+				int pos=(int)str.find("CULLFACE");
 				if(pos>=0)
 				{
 					std::vector<std::string> args;
@@ -866,11 +866,11 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 				}
 				//
 
-				int pos=str.find("__includeModule");
+				int pos=(int)str.find("__includeModule");
 				if(pos>=0)
 				{
 					it=it+pos+strlen("__includeModule");
-					int properties_depth=-1;
+//					int properties_depth=-1;
 					if(findOpeningCurlyBrace(it, end))
 					{
 						std::string key;
@@ -887,7 +887,7 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 				}
 
 				str.assign(it, end);
-				pos=str.find("__tag");
+				pos=(int)str.find("__tag");
 				if(pos>=0)
 				{
 					it=it+pos+strlen("__tag");
@@ -897,7 +897,7 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 				}
 
 				str.assign(it, end);
-				pos=str.find("__vertex");
+				pos=(int)str.find("__vertex");
 				if(pos>=0)
 				{
 					it=it+pos+strlen("__vertex");
@@ -907,7 +907,7 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 				}
 
 				str.assign(it, end);
-				pos=str.find("__fragment");
+				pos=(int)str.find("__fragment");
 				if(pos>=0)
 				{
 					it=it+pos+strlen("__fragment");
@@ -947,7 +947,7 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 				int pos=0;
 				do
 				{
-					pos=str.find("__Pass");
+					pos=(int)str.find("__Pass");
 					if(pos>=0)
 					{
 						it=it+pos+strlen("__Pass");
@@ -968,7 +968,7 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 						else return false;
 					}
 					str.assign(it, end);
-					pos=str.find("__Pass");
+					pos=(int)str.find("__Pass");
 				}while(pos>=0);
 			}
 			break;
@@ -999,7 +999,7 @@ bool gxSurfaceShader::parseShader(std::string::const_iterator& start, std::strin
 		case -1:
 			{
 				str.assign(it, end);
-				int pos=str.find("Properties");
+				int pos=(int)str.find("Properties");
 				if(pos>=0)
 				{
 					it=it+pos+strlen("Properties");
@@ -1011,7 +1011,7 @@ bool gxSurfaceShader::parseShader(std::string::const_iterator& start, std::strin
 				str.assign(it, end);
 				do
 				{
-					pos=str.find("SubShader");
+					pos=(int)str.find("SubShader");
 					if(pos>=0)
 					{
 						it=it+pos+strlen("SubShader");
@@ -1020,7 +1020,7 @@ bool gxSurfaceShader::parseShader(std::string::const_iterator& start, std::strin
 							return false;
 					}
 					str.assign(it, end);
-					pos=str.find("SubShader");
+					pos=(int)str.find("SubShader");
 				}while(pos>=0);
 			}
 			break;
@@ -1043,7 +1043,7 @@ bool gxSurfaceShader::parse(std::string::const_iterator& start, std::string::con
 	case -1:
 		{
 			str.assign(it, end);
-			int pos=str.find("Shader");
+			int pos=(int)str.find("Shader");
 			if(pos>=0)
 			{
 				it=it+pos+strlen("Shader");
@@ -1121,7 +1121,7 @@ gxSurfaceShader::~gxSurfaceShader()
 bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 {
 	m_cFileName.assign(gxUtil::getFileNameFromPath(filename));
-	int fileSz=0;
+	long fileSz=0;
 	FILE* fp=fopen(filename, "r");
 	if(fp==NULL) return false;
 
@@ -1239,7 +1239,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			}
 			//
 
-			pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, cMainShaderSource.c_str(), cMainShaderSource.size());
+			pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, cMainShaderSource.c_str(), (int)cMainShaderSource.size());
 			if(!pMainShader)
 				DEBUG_PRINT("%s\nParse Success but GLSL compiler failed. Pass(%d)\n", constructed_glsl_filename, cntr);
 			else

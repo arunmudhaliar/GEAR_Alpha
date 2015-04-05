@@ -10,7 +10,7 @@ public:
 	static const char* getFolderPathFromFileName(const char* filename)
 	{
 		GX_STRCPY(g_directoryPath, filename);
-		for(int x=strlen(g_directoryPath)-1;x>=0;x--)
+		for(int x=(int)strlen(g_directoryPath)-1;x>=0;x--)
 		{
 			if(g_directoryPath[x]=='\\' || g_directoryPath[x]=='/')
 			{
@@ -24,7 +24,7 @@ public:
 
 	static const char* getFileNameFromPath(const char* path)
 	{
-		for(int x=strlen(path)-1;x>=0;x--)
+		for(int x=(int)strlen(path)-1;x>=0;x--)
 		{
 			if(path[x]=='\\' || path[x]=='/')
 			{
@@ -137,8 +137,8 @@ public:
 
 		while(!bFound)
 		{
-			int sub_strlen=strlen(substr);
-			int str_len=strlen(fond_str);
+			int sub_strlen=(int)strlen(substr);
+			int str_len=(int)strlen(fond_str);
 			if(sub_strlen>str_len) return false;
 
 			bFound=true;

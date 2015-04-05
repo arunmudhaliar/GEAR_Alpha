@@ -10,7 +10,7 @@
 class gePropertyScriptComponent : public geTreeNode, public MGUIObserver
 {
 public:
-	gePropertyScriptComponent(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite);
+	gePropertyScriptComponent(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager);
 	virtual ~gePropertyScriptComponent();
 
 	virtual void drawNode();

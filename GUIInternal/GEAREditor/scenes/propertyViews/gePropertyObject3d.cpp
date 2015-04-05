@@ -1,34 +1,34 @@
 #include "gePropertyObject3d.h"
 #include "../../EditorApp.h"
-#include "../../win32/ConfirmationDialog.h"
+#include "../../OSSpecific/ConfirmationDialog.h"
 
-gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	geTreeNode(renderer, parent, name, sprite, 10)
+gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager):
+	geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 {
 	setSize(m_cSize.x, 60.0f);
 
 	//geButton* btn=new geButton();
 	//btn->create(this, "button1", 40, 10);
 
-	m_pPushBtn_Object3dVisible = new gePushButton("");
+	m_pPushBtn_Object3dVisible = new gePushButton("", fontmanager);
 	m_pPushBtn_Object3dVisible->create(renderer, this, "", 15, 10);
 	m_pPushBtn_Object3dVisible->setGUIObserver(this);
 
-	m_pTextBoxMeshName = new geTextBox("MeshName");
+	m_pTextBoxMeshName = new geTextBox("MeshName", m_pFontManagerPtr);
 	m_pTextBoxMeshName->create(renderer, this, "MeshName", 35, 10, 200, 16);
 
-	m_pPushBtn_Object3dStatic = new gePushButton("");
+	m_pPushBtn_Object3dStatic = new gePushButton("", fontmanager);
 	m_pPushBtn_Object3dStatic->create(renderer, this, "", m_pTextBoxMeshName->getPos().x+m_pTextBoxMeshName->getSize().x+10, 10);
 	m_pPushBtn_Object3dStatic->setGUIObserver(this);
 
-	m_pTagDropDownMenu=new geToolBarDropMenu(m_pRenderer, "Tag", this);
+	m_pTagDropDownMenu=new geToolBarDropMenu(m_pRenderer, "Tag", this, fontmanager);
 	m_pTagDropDownMenu->setGUIObserver(this);
 	m_pTagDropDownMenu->setPos(35, 35);
 	m_pTagDropDownMenu->appendMenuItem("Tag0", 0x00006000);
 	m_pTagDropDownMenu->appendMenuItem("Tag1", 0x00006001);
 	m_pTagDropDownMenu->setMenuItem(0x00006000);
 
-	m_pLayerDropDownMenu=new geToolBarDropMenu(m_pRenderer, "Layer", this);
+	m_pLayerDropDownMenu=new geToolBarDropMenu(m_pRenderer, "Layer", this, fontmanager);
 	m_pLayerDropDownMenu->setGUIObserver(this);
 	m_pLayerDropDownMenu->setPos(150, 35);
 
@@ -47,10 +47,10 @@ void gePropertyObject3d::drawNode()
 {
 	drawRect(&m_cVBClientArea);
 
-	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
-	geGUIManager::g_pFontArial10_84Ptr->drawString("Static", m_pPushBtn_Object3dStatic->getPos().x+m_pPushBtn_Object3dStatic->getSize().x+5, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()+5, m_cSize.x);
-	geGUIManager::g_pFontArial10_84Ptr->drawString("Tag", 10, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()+33, m_cSize.x);
-	geGUIManager::g_pFontArial10_84Ptr->drawString("Layer", m_pLayerDropDownMenu->getPos().x-37, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()+33, m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString("Static", m_pPushBtn_Object3dStatic->getPos().x+m_pPushBtn_Object3dStatic->getSize().x+5, geFontManager::g_pFontArial10_84Ptr->getLineHeight()+5, m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString("Tag", 10, geFontManager::g_pFontArial10_84Ptr->getLineHeight()+33, m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString("Layer", m_pLayerDropDownMenu->getPos().x-37, geFontManager::g_pFontArial10_84Ptr->getLineHeight()+33, m_cSize.x);
 
 	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 	{
@@ -98,6 +98,7 @@ void gePropertyObject3d::populatePropertyOfObject(object3d* obj)
 
 void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 {
+//#ifdef _WIN32
 	if(btn==m_pPushBtn_Object3dVisible)
 	{
 		if(m_pPushBtn_Object3dVisible->isCheck())
@@ -112,10 +113,10 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 		if(m_pObject3dPtr->getChildCount())
 		{
 			
-			LRESULT result = ConfirmationDialog::ShowConfirmationDialog("Do you want to change this object and its child or not ?");
-			if(result==IDYES)
+			ConfirmationDialog::ConfirmationDialogButton result = ConfirmationDialog::ShowConfirmationDialog("Do you want to change this object and its child or not ?");
+            if(result==ConfirmationDialog::ConfirmationDialogButton::BTN_YES)
 				bRecursive=true;
-			else if(result==IDCANCEL)
+			else if(result==ConfirmationDialog::ConfirmationDialogButton::BTN_NO || result==ConfirmationDialog::ConfirmationDialogButton::BTN_CANCEL)
 			{
 				m_pPushBtn_Object3dStatic->setCheck(!bOldCheck);
 				return;
@@ -135,10 +136,12 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 		m_pPushBtn_Object3dStatic->refresh();
 		//TODO: We need to remove/add to octree based on this flag.
 	}
+//#endif
 }
 
 void gePropertyObject3d::onCommand(int cmd)
 {
+#ifdef _WIN32
 	if(cmd>=0x00006500 && cmd<0x00006500+MAX_LAYER)
 	{
 		bool bRecursive=false;
@@ -156,4 +159,5 @@ void gePropertyObject3d::onCommand(int cmd)
 		m_pObject3dPtr->setLayer(cmd-0x00006500, bRecursive);
 		m_pLayerDropDownMenu->setMenuItem(cmd);
 	}
+#endif
 }

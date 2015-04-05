@@ -11,7 +11,7 @@
 class gePropertyLayers : public geTreeNode, public MGUIObserver
 {
 public:
-	gePropertyLayers(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite);
+	gePropertyLayers(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager);
 	virtual ~gePropertyLayers();
 	virtual void drawNode();
 	virtual void onTextChange(geGUIBase* textbox);

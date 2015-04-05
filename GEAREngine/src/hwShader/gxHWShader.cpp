@@ -37,13 +37,13 @@ bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer
 	const char* define_vertex="#define GEAR_VERTEX_SHADER\n";
 	const char* define_fragment="#define GEAR_FRAGMENT_SHADER\n";
 
-	int vSz=shaderBuffer_size+strlen(define_vertex);
+	int vSz=shaderBuffer_size+(int)strlen(define_vertex);
 	char* vsource=new char[vSz];
 	memset((void*)vsource, 0, vSz);
 	strcpy(vsource, define_vertex);
 	strncpy(&vsource[strlen(define_vertex)], shaderBuffer, shaderBuffer_size);
 
-	int fSz=shaderBuffer_size+strlen(define_fragment);
+	int fSz=shaderBuffer_size+(int)strlen(define_fragment);
 	char* fsource=new char[fSz];
 	memset((void*)fsource, 0, fSz);
 	strcpy(fsource, define_fragment);
@@ -108,7 +108,7 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	}
 
 	fseek(fp, 0, SEEK_END);
-	fileSz=ftell(fp);
+	fileSz=(int)ftell(fp);
 	fclose(fp);
 	
 	if(!fileSz)
@@ -127,7 +127,7 @@ bool gxHWShader::loadShader(const char* shaderFile)
 		DEBUG_PRINT("Shader %s FILE open ERROR #2", shaderFile);
 		return false;
 	}
-	int vSz=fileSz+strlen(define_vertex);
+	int vSz=fileSz+(int)strlen(define_vertex);
 	char* vsource=new char[vSz];
 	memset((void*)vsource, 0, vSz);
 	strcpy(vsource, define_vertex);
@@ -143,7 +143,7 @@ bool gxHWShader::loadShader(const char* shaderFile)
 		DEBUG_PRINT("Shader %s FILE open ERROR #3", shaderFile);
 		return false;
 	}
-	int fSz=fileSz+strlen(define_fragment);
+	int fSz=fileSz+(int)strlen(define_fragment);
 	char* fsource=new char[fSz];
 	memset((void*)fsource, 0, fSz);
 	strcpy(fsource, define_fragment);

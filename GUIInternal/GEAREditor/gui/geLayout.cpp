@@ -1,7 +1,7 @@
 #include "geLayout.h"
 
-geLayout::geLayout(const char* name):
-	geGUIBase(GEGUI_LAYOUT, name)
+geLayout::geLayout(const char* name, geFontManager* fontmanager):
+	geGUIBase(GEGUI_LAYOUT, name, fontmanager)
 {
 	m_pActiveWindowPointer=NULL;
 }
@@ -307,7 +307,9 @@ geLayout* geLayout::getBottomMostParentLayout()
 
 geLayout* geLayout::createLeft(geWindow* window, float ratio)
 {
+#ifdef _WIN32
 	OutputDebugString("createLeft\n");
+#endif
 
 	geLayout* pParentOfNewLayout = this;
 	//check if i am on the right side of my parent
@@ -316,7 +318,7 @@ geLayout* geLayout::createLeft(geWindow* window, float ratio)
 		pParentOfNewLayout=getRightMostParentLayout();
 	}
 	
-	geLayout* pLayout = new geLayout("layout");
+	geLayout* pLayout = new geLayout("layout", m_pFontManagerPtr);
 	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x, this->getPos().y, this->getSize().x*ratio,  this->getSize().y);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?LEFT_TO_PARENT:RIGHT_TO_PARENT);
 
@@ -340,8 +342,10 @@ geLayout* geLayout::createLeft(geWindow* window, float ratio)
 
 geLayout* geLayout::createRight(geWindow* window, float ratio)
 {
+#ifdef _WIN32
 	OutputDebugString("createRight\n");
-
+#endif
+    
 	geLayout* pParentOfNewLayout = this;
 	//check if i am on the right side of my parent
 	if(getLayoutDirection()==LEFT_TO_PARENT)
@@ -349,7 +353,7 @@ geLayout* geLayout::createRight(geWindow* window, float ratio)
 		pParentOfNewLayout=getLeftMostParentLayout();
 	}
 
-	geLayout* pLayout = new geLayout("layout");
+	geLayout* pLayout = new geLayout("layout", m_pFontManagerPtr);
 	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x+this->getSize().x*(1.0f-ratio), this->getPos().y, this->getSize().x*ratio,  this->getSize().y);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?RIGHT_TO_PARENT:LEFT_TO_PARENT);
 
@@ -372,8 +376,10 @@ geLayout* geLayout::createRight(geWindow* window, float ratio)
 
 geLayout* geLayout::createTop(geWindow* window, float ratio)
 {
+#ifdef _WIN32
 	OutputDebugString("createTop\n");
-
+#endif
+    
 	geLayout* pParentOfNewLayout = this;
 	//check if i am on the right side of my parent
 	if(getLayoutDirection()==BOTTOM_TO_PARENT)
@@ -381,7 +387,7 @@ geLayout* geLayout::createTop(geWindow* window, float ratio)
 		pParentOfNewLayout=getBottomMostParentLayout();
 	}
 
-	geLayout* pLayout = new geLayout("layout");
+	geLayout* pLayout = new geLayout("layout", m_pFontManagerPtr);
 	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y*ratio);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?TOP_TO_PARENT:BOTTOM_TO_PARENT);
 
@@ -405,8 +411,10 @@ geLayout* geLayout::createTop(geWindow* window, float ratio)
 
 geLayout* geLayout::createBottom(geWindow* window, float ratio)
 {
+#ifdef _WIN32
 	OutputDebugString("createBottom\n");
-
+#endif
+    
 	geLayout* pParentOfNewLayout = this;
 	//check if i am on the right side of my parent
 	if(getLayoutDirection()==TOP_TO_PARENT)
@@ -414,7 +422,7 @@ geLayout* geLayout::createBottom(geWindow* window, float ratio)
 		pParentOfNewLayout=getTopMostParentLayout();
 	}
 
-	geLayout* pLayout = new geLayout("layout");
+	geLayout* pLayout = new geLayout("layout", m_pFontManagerPtr);
 	pLayout->create(m_pRenderer, pParentOfNewLayout, this->getPos().x, this->getPos().y+this->getSize().y*(1.0f-ratio), this->getSize().x,  this->getSize().y*ratio);
 	pLayout->setLayoutDirection((pParentOfNewLayout==this)?BOTTOM_TO_PARENT:TOP_TO_PARENT);
 
@@ -437,7 +445,7 @@ geLayout* geLayout::createBottom(geWindow* window, float ratio)
 
 geLayout* geLayout::createAsParent(geWindow* window)
 {
-	geLayout* pLayout = new geLayout("layout");
+	geLayout* pLayout = new geLayout("layout", m_pFontManagerPtr);
 	pLayout->create(m_pRenderer, this, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y);
 	pLayout->setLayoutDirection(LAYOUT_PARENT);
 	this->setSize(this->getSize().x,  this->getSize().y);

@@ -12,15 +12,20 @@
 #include <stdarg.h>
 
 #include <assert.h>
+#ifdef _WIN32
 #include <malloc.h>
 #include <conio.h>
+#else
+#include <malloc/malloc.h>
+#endif
+
 
 
 int read_png_file(const char* file_name, bool& bAlpha, unsigned int& cx, unsigned int& cy, unsigned int& bpp)
 {
 	int width, height;
 	png_byte color_type;
-	png_byte color_bpp;
+//	png_byte color_bpp;
 	png_byte bit_depth;
     png_byte header[8];    // 8 is the maximum size that can be checked
 
@@ -126,9 +131,9 @@ int read_png_file(const char* file_name, bool& bAlpha, unsigned int& cx, unsigne
 		return 0;
 	}
 
-	int out_format=0;
+//	int out_format=0;
 
-	int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
+	int rowbytes = (int)png_get_rowbytes(png_ptr, info_ptr);
 
 	// Allocate the image_data as a big block, to be given to opengl
 	png_byte *image_data = new png_byte[rowbytes * height];

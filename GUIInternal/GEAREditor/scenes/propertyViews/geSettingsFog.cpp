@@ -1,39 +1,39 @@
 #include "geSettingsFog.h"
 #include "../../EditorApp.h"
 
-geSettingsFog::geSettingsFog(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, stFog* fog_struct):
-	geTreeNode(renderer, parent, name, sprite, 10)
+geSettingsFog::geSettingsFog(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, stFog* fog_struct, geFontManager* fontmanager):
+	geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 {
 	//setSize(m_cSize.x, 115.0f);
 
 	m_pFog_struct=fog_struct;
 
-	m_pPushBtn_Fog = new gePushButton("");
+	m_pPushBtn_Fog = new gePushButton("", fontmanager);
 	m_pPushBtn_Fog->create(renderer, this, "", 15, 10);
 	m_pPushBtn_Fog->setGUIObserver(this);
 
 	//fog
-	m_cFogSubView.edit_fog_start = new geHorizontalSlider();
+	m_cFogSubView.edit_fog_start = new geHorizontalSlider(m_pFontManagerPtr);
 	m_cFogSubView.edit_fog_start->create(m_pRenderer, this, "slider", 10, 65, 130);
 	m_cFogSubView.edit_fog_start->setSliderValue(0.0f);
 	m_cFogSubView.edit_fog_start->setGUIObserver(this);
 
-	m_cFogSubView.edit_fog_end = new geHorizontalSlider();
+	m_cFogSubView.edit_fog_end = new geHorizontalSlider(m_pFontManagerPtr);
 	m_cFogSubView.edit_fog_end->create(m_pRenderer, this, "slider", 10, 65, 130);
 	m_cFogSubView.edit_fog_end->setSliderValue(1.0f);
 	m_cFogSubView.edit_fog_end->setGUIObserver(this);
 
-	m_cFogSubView.edit_fog_density = new geHorizontalSlider();
+	m_cFogSubView.edit_fog_density = new geHorizontalSlider(m_pFontManagerPtr);
 	m_cFogSubView.edit_fog_density->create(m_pRenderer, this, "slider", 10, 65, 130);
 	m_cFogSubView.edit_fog_density->setSliderValue(1.0f);
 	m_cFogSubView.edit_fog_density->setGUIObserver(this);
 
-	m_cFogSubView.color_fog_color = new geColorControl();
+	m_cFogSubView.color_fog_color = new geColorControl(fontmanager);
 	m_cFogSubView.color_fog_color->create(m_pRenderer, this, 10, 10);
 	m_cFogSubView.color_fog_color->setControlColor(1.0, 1.0, 1.0, 1.0);
 	m_cFogSubView.color_fog_color->setGUIObserver(this);
 
-	m_cFogSubView.menu_fog_type=new geToolBarDropMenu(m_pRenderer, "FogType", this);
+	m_cFogSubView.menu_fog_type=new geToolBarDropMenu(m_pRenderer, "FogType", this, fontmanager);
 	m_cFogSubView.menu_fog_type->setGUIObserver(this);
 	m_cFogSubView.menu_fog_type->setPos(10, 35);
 	m_cFogSubView.menu_fog_type->appendMenuItem("Linear", 0x00005100);
@@ -42,7 +42,7 @@ geSettingsFog::geSettingsFog(rendererGL10* renderer, geGUIBase* parent, const ch
 	m_cFogSubView.menu_fog_type->setMenuItem(0);
 
 	//window column
-	m_cFogSubView.pWindowColumn = new geWindowColumn();
+	m_cFogSubView.pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
 	m_cFogSubView.pWindowColumn->create(m_pRenderer, this, 35, 300.0f, 10.0f, 0.35f);
 	stWindowColumnRow* row = m_cFogSubView.pWindowColumn->addRow("Fog start");
 	m_cFogSubView.pWindowColumn->addControl(row, m_cFogSubView.edit_fog_start, m_cFogSubView.edit_fog_start->getSize().y*3);

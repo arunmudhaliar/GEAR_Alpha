@@ -13,11 +13,12 @@ public:
 		BTN_STATE_CANCEL
 	};
 
-	geButtonBase()
+	geButtonBase(geFontManager* fontManager)
 	{
+        m_pFontManagerPtr=fontManager;
 		m_eState=BTN_STATE_NORMAL;
 	}
-	geButtonBase(unsigned short uGUIID, const char* name);
+	geButtonBase(unsigned short uGUIID, const char* name, geFontManager* fontManager);
 	virtual ~geButtonBase();
 
 	virtual void onCancelEngagedControls();
@@ -41,11 +42,11 @@ protected:
 class geButton : public geButtonBase
 {
 public:
-	geButton();
-	geButton(const char* name);
+	geButton(geFontManager* fontManager);
+	geButton(const char* name, geFontManager* fontManager);
 
 protected:
-	geButton(unsigned short uGUIID, const char* name);
+	geButton(unsigned short uGUIID, const char* name, geFontManager* fontManager);
 
 public:
 	virtual ~geButton();

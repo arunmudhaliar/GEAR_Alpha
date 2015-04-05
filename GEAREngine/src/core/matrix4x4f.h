@@ -28,7 +28,7 @@ public:
 	
 	matrix4x4f(float v)
 	{
-		for(register int x=0;x<16;x++)
+		for(int x=0;x<16;x++)
 		{
 			m[x]=v;
 		}
@@ -59,7 +59,7 @@ public:
 	
 	void copy(const matrix4x4f& matrix)
 	{
-		for(register int x=0;x<16;x++)
+		for( int x=0;x<16;x++)
 		{
 			m[x]=matrix.m[x];
 		}
@@ -196,7 +196,7 @@ public:
 		 * dst - pointer to array of 16 no's (invert matrix)
 		 *
 		 *************************************************************/
-		register int i;
+		int i;
 		float tmp[12];	/* temp array for pairs */
 		float src[16];	/* array of transpose source matrix */
 		float det;		/* determinant */
@@ -462,7 +462,7 @@ public:
 		setRotationMatrix(angle, vector3f(axis[0], axis[1], axis[2]));
 	}
 
-	void setDirection(vector3f* dir, vector3f* up=NULL)
+	void setDirection(const vector3f* dir, const vector3f* up=NULL)
 	{
 		vector3f aDir, aLeft, aUp;
 		

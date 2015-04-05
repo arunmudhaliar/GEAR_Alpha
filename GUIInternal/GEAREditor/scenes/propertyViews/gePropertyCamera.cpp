@@ -1,11 +1,11 @@
 #include "gePropertyCamera.h"
 #include "../../EditorApp.h"
 
-gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	geTreeNode(renderer, parent, name, sprite, 10)
+gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontManager):
+	geTreeNode(renderer, parent, name, sprite, fontManager, 10)
 {
 	//camera type
-	m_pCameraTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "CameraType", this);
+	m_pCameraTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "CameraType", this, fontManager);
 	m_pCameraTypeToolBarDropMenuBtnPtr->setGUIObserver(this);
 	m_pCameraTypeToolBarDropMenuBtnPtr->setPos(10, 35);
 
@@ -13,32 +13,32 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 	m_pCameraTypeToolBarDropMenuBtnPtr->appendMenuItem("Orthographic", 0x00007001);
 
 	//camera culling
-	m_pCameraCullingToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "Camera Culling", this);
+	m_pCameraCullingToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "Camera Culling", this, fontManager);
 	m_pCameraCullingToolBarDropMenuBtnPtr->setGUIObserver(this);
 	m_pCameraCullingToolBarDropMenuBtnPtr->setPos(10, 65);
 
 	//attenuations
-	m_pHorizontalSlider_FOV = new geHorizontalSlider();
+	m_pHorizontalSlider_FOV = new geHorizontalSlider(fontManager);
 	m_pHorizontalSlider_FOV->create(m_pRenderer, this, "slider", 10, 65, 130);
 	m_pHorizontalSlider_FOV->setSliderValue(1.0f);
 	m_pHorizontalSlider_FOV->setGUIObserver(this);
 
-	m_pHorizontalSlider_Near = new geHorizontalSlider();
+	m_pHorizontalSlider_Near = new geHorizontalSlider(fontManager);
 	m_pHorizontalSlider_Near->create(m_pRenderer, this, "slider", 10, 85, 130);
 	m_pHorizontalSlider_Near->setSliderValue(1.0f);
 	m_pHorizontalSlider_Near->setGUIObserver(this);
 
-	m_pHorizontalSlider_Far = new geHorizontalSlider();
+	m_pHorizontalSlider_Far = new geHorizontalSlider(fontManager);
 	m_pHorizontalSlider_Far->create(m_pRenderer, this, "slider", 10, 105, 130);
 	m_pHorizontalSlider_Far->setSliderValue(1.0f);
 	m_pHorizontalSlider_Far->setGUIObserver(this);
 
-	m_pButtonApplyMainCamera = new geButton("");
+	m_pButtonApplyMainCamera = new geButton("", fontManager);
 	m_pButtonApplyMainCamera->create(renderer, this, "Set as main camera", 15, 10);
 	m_pButtonApplyMainCamera->setGUIObserver(this);
 
 	//window column
-	geWindowColumn* pWindowColumn = new geWindowColumn();
+	geWindowColumn* pWindowColumn = new geWindowColumn(fontManager);
 	pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.4f);
 	stWindowColumnRow* row = pWindowColumn->addRow("Type");
 	pWindowColumn->addControl(row, m_pCameraTypeToolBarDropMenuBtnPtr, 30.0f);
@@ -69,10 +69,12 @@ gePropertyCamera::~gePropertyCamera()
 
 }
 
-void gePropertyCamera::onDragDrop(int x, int y, MDataObject* dropObject)
+//#if !defined(__APPLE__) //disable Drag-Drop
+void gePropertyCamera::onDragDrop(int x, int y, MDropData* dropObject)
 {
 
 }
+//#endif
 
 void gePropertyCamera::drawNode()
 {

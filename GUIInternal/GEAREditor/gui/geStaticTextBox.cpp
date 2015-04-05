@@ -1,15 +1,15 @@
 #include "geStaticTextBox.h"
 #include "geGUIManager.h"
 
-geStaticTextBox::geStaticTextBox():
-geGUIBase(GEGUI_STATICTEXTBOX, "Static Text Box")
+geStaticTextBox::geStaticTextBox(geFontManager* fontmanager):
+geGUIBase(GEGUI_STATICTEXTBOX, "Static Text Box", fontmanager)
 {
 	m_pFont=NULL;
 	m_fYOffset=0.0f;
 }
 
-geStaticTextBox::geStaticTextBox(const char* name):
-	geGUIBase(GEGUI_STATICTEXTBOX, name)
+geStaticTextBox::geStaticTextBox(const char* name, geFontManager* fontmanager):
+	geGUIBase(GEGUI_STATICTEXTBOX, name, fontmanager)
 {
 	m_pFont=NULL;
 	m_fYOffset=0.0f;
@@ -25,7 +25,7 @@ void geStaticTextBox::create(rendererGL10* renderer, geGUIBase* parent, const ch
 
 	m_pFont=pFont;
 	m_fYOffset=yoffset;
-	int width=m_pFont->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	int width=m_pFont->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
 	setSize(width, m_pFont->getLineHeight());
 	setPos(x, y);
 

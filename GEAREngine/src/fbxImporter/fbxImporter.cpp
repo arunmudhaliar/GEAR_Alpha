@@ -302,17 +302,17 @@ bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node
 	The time unit in FBX (FbxTime) is 1/46186158000 of one second.
 	*/
 
-	int numStacks = fbxScene.GetSrcObjectCount(FBX_TYPE(FbxAnimStack));
+	int numStacks = fbxScene.GetSrcObjectCount<FbxAnimStack>();
 	gxAnimation* animationController=NULL;
 	gxAnimationTrack* animTrack=NULL;
 
 	for(int x=0;x<numStacks;x++)
 	{
-		FbxAnimStack* pAnimStack = FbxCast<FbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(FbxAnimStack), x));
-		int numAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(FbxAnimLayer));
+		FbxAnimStack* pAnimStack = FbxCast<FbxAnimStack>(fbxScene.GetSrcObject<FbxAnimStack>(x));
+		int numAnimLayers = pAnimStack->GetMemberCount<FbxAnimLayer>();
 		for(int y=0;y<numAnimLayers;y++)
 		{
-			FbxAnimLayer* lAnimLayer = pAnimStack->GetMember(FBX_TYPE(FbxAnimLayer), y);
+			FbxAnimLayer* lAnimLayer = pAnimStack->GetMember<FbxAnimLayer>(y);
 			FbxAnimCurve* lAnimCurve_translationX = fbxNode.LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
 			FbxAnimCurve* lAnimCurve_translationY = fbxNode.LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
 			FbxAnimCurve* lAnimCurve_translationZ = fbxNode.LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
@@ -998,7 +998,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxM
 		if(vTriList[m].arrayList.size()==0)
 			continue;
 
-		int* triIndexPtr=triInfoArray[m].allocateMemory(vTriList[m].arrayList.size());
+		int* triIndexPtr=triInfoArray[m].allocateMemory((int)vTriList[m].arrayList.size());
 		for(int n=0;n<(int)vTriList[m].arrayList.size();n++)
 		{
 			triIndexPtr[n]=vTriList[m].arrayList[n];
@@ -1018,12 +1018,12 @@ void fbxImporter::createTangentBuffer(gxMesh* newMesh, FbxMesh &fbxMesh, const F
 	FbxVector4 *tangentbuffer = new FbxVector4[vertexCount];
 	int *normalbufferCount = new int[vertexCount];
     vector3f *tan2 = tan1 + vertexCount;
-    ZeroMemory(tan1, vertexCount * sizeof(vector3f) * 2);
-    ZeroMemory(normalbuffer, vertexCount * sizeof(FbxVector4));
-    ZeroMemory(normalbufferCount, vertexCount * sizeof(int));
-    ZeroMemory(tangentbuffer, vertexCount * sizeof(FbxVector4));
+    memset(tan1, 0, vertexCount * sizeof(vector3f) * 2);
+    memset(normalbuffer, 0, vertexCount * sizeof(FbxVector4));
+    memset(normalbufferCount, 0, vertexCount * sizeof(int));
+    memset(tangentbuffer, 0, vertexCount * sizeof(FbxVector4));
 
-	for (long x = 0; x < fbxMesh.GetPolygonCount(); x++)
+	for (int x = 0; x < fbxMesh.GetPolygonCount(); x++)
     {
 		int vertexIndex0=fbxMesh.GetPolygonVertex(x, 0);
 		int vertexIndex1=fbxMesh.GetPolygonVertex(x, 1);
@@ -1097,7 +1097,7 @@ void fbxImporter::createTangentBuffer(gxMesh* newMesh, FbxMesh &fbxMesh, const F
 
 	for (long a = 0; a < vertexCount; a++)
     {
-        FbxVector4& temp = normalbuffer[a]/normalbufferCount[a];
+        FbxVector4 temp = normalbuffer[a]/normalbufferCount[a];
 		temp.Normalize();
 		vector3f n(temp.mData[0], temp.mData[1], temp.mData[2]);
         vector3f& t = tan1[a];
@@ -1155,14 +1155,16 @@ void fbxImporter::triangulateFBXRecursive(FbxGeometryConverter &fbxConverter, Fb
 			case FbxNodeAttribute::eNurbsSurface:
 			{
 				fbxConverter.ConvertNurbsSurfaceToNurbsInPlace(&fbxNode);
-				fbxConverter.TriangulateInPlace(&fbxNode);
+				fbxConverter.Triangulate(fbxNode.GetNodeAttribute(), false);
 			break;
 			}
 			case FbxNodeAttribute::eNurbs:
 			case FbxNodeAttribute::ePatch:
 			case FbxNodeAttribute::eMesh:
-				fbxConverter.TriangulateInPlace(&fbxNode);
+				fbxConverter.Triangulate(fbxNode.GetNodeAttribute(), false);
 			break;
+                default:
+                break;
 		}
 	}
     

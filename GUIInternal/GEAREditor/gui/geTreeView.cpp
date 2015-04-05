@@ -1,16 +1,16 @@
 #include "geTreeView.h"
 #include "geGUIManager.h"
 
-geTreeNode::geTreeNode():
-	geGUIBase(GEGUI_TREEVIEW_NODE, "TreeView Node")
+geTreeNode::geTreeNode(geFontManager* fontmanager):
+	geGUIBase(GEGUI_TREEVIEW_NODE, "TreeView Node", fontmanager)
 {
 	//no implementation
 	m_pParentTreeView=NULL;
 	m_pSprite=NULL;
 }
 
-geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, float xoffset):
-	geGUIBase(GEGUI_TREEVIEW_NODE, name)
+geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager, float xoffset):
+	geGUIBase(GEGUI_TREEVIEW_NODE, name, fontmanager)
 {
 	createBase(renderer, parent);
 
@@ -37,12 +37,12 @@ geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* na
 	const float togglebutton_linevertLst[6*2] =
 	{
 		5,		(GE_TREEVIEWNODE_CY-4),
-		5+8,	(GE_TREEVIEWNODE_CY-4)-(h>>2),
-		5,		(GE_TREEVIEWNODE_CY-4)-(h>>1),
+		5+8,	(float)((GE_TREEVIEWNODE_CY-4)-(h>>2)),
+		5,		(float)((GE_TREEVIEWNODE_CY-4)-(h>>1)),
 
 		5+4,	(GE_TREEVIEWNODE_CY-4),
-		5+8,	(GE_TREEVIEWNODE_CY-4)-(h>>1),
-		5,		(GE_TREEVIEWNODE_CY-4)-(h>>1),
+		5+8,	(float)((GE_TREEVIEWNODE_CY-4)-(h>>1)),
+		5,		(float)((GE_TREEVIEWNODE_CY-4)-(h>>1)),
 	};
 	memcpy(m_cVBLayoutToggleButtonLine, togglebutton_linevertLst, sizeof(togglebutton_linevertLst));
 
@@ -94,7 +94,7 @@ void geTreeNode::drawNode()
 		drawRect(&m_cVBClientArea);
 	}
 
-	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 	{
@@ -307,7 +307,7 @@ geTreeNode* geTreeNode::getBottomMostNode()
 		if(m_vControls.size()==0)
 			return this;
 
-		geGUIBase* tvnode_bottomNode=NULL;
+		//geGUIBase* tvnode_bottomNode=NULL;
 		for(std::vector<geGUIBase*>::reverse_iterator rit = m_vControls.rbegin(); rit != m_vControls.rend(); ++rit)
 		{
 			geGUIBase* tvnode = *rit;
@@ -320,6 +320,8 @@ geTreeNode* geTreeNode::getBottomMostNode()
 	}
 	else
 		return this;
+    
+    return NULL;
 }
 
 geTreeNode* geTreeNode::getParentBottomNextNode(geTreeNode* childnodeToCheck)
@@ -347,6 +349,8 @@ geTreeNode* geTreeNode::getParentBottomNextNode(geTreeNode* childnodeToCheck)
 			tvnode_bottomNode=tvnode;
 		}
 	}
+    
+    return NULL;
 }
 
 geTreeNode* geTreeNode::getBottomNode()
@@ -459,30 +463,33 @@ void geTreeNode::onNotify(int msg)
 }
 
 /////////////////////////////////////////////////////////////////
-geTreeView::geTreeView():
-	geGUIBase(GEGUI_TREEVIEW, "TreeView")
+geTreeView::geTreeView(geFontManager* fontmanager):
+	geGUIBase(GEGUI_TREEVIEW, "TreeView", fontmanager)
 {
 	m_pRootNode=NULL;
 	m_fVirtualYPos=0.0f;
 	m_pTVObserver=NULL;
 	m_pCurrentSelectedNodePtr=NULL;
 	m_bSelectionChanged=false;
+    m_pVerticalScrollBar = new geScrollBar(fontmanager);
 }
 
-geTreeView::geTreeView(const char* name):
-	geGUIBase(GEGUI_TREEVIEW, name)
+geTreeView::geTreeView(const char* name, geFontManager* fontmanager):
+	geGUIBase(GEGUI_TREEVIEW, name, fontmanager)
 {
 	m_pRootNode=NULL;
 	m_fVirtualYPos=0.0f;
 	m_pTVObserver=NULL;
 	m_pCurrentSelectedNodePtr=NULL;
 	m_bSelectionChanged=false;
+    m_pVerticalScrollBar = new geScrollBar(fontmanager);
 }
 
 geTreeView::~geTreeView()
 {
 	GE_DELETE(m_pRootNode);
 	m_cSelectedNodes.clear();
+    GE_DELETE(m_pVerticalScrollBar);
 }
 
 void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* name, MTreeViewObserver* pObserver)
@@ -493,11 +500,11 @@ void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* n
 	setPos(0, 0);
 	setSize(parent->getSize().x, parent->getSize().y-parent->getTopMarginOffsetHeight());
 
-	m_cVerticalScrollBar.create(renderer, this, this);
+	m_pVerticalScrollBar->create(renderer, this, this);
 
 	m_fVirtualYPos=0.0f;
 
-	m_pRootNode = new geTreeNode(renderer, NULL, "root", NULL);
+	m_pRootNode = new geTreeNode(renderer, NULL, "root", NULL, m_pFontManagerPtr);
 	m_pRootNode->setParentTreeView(this);
 	m_pCurrentSelectedNodePtr=NULL;
 }
@@ -509,10 +516,11 @@ void geTreeView::draw()
 	m_pRootNode->draw();
 	glPopMatrix();
 
-	m_cVerticalScrollBar.draw();
+	m_pVerticalScrollBar->draw();
 }
 
-void geTreeView::onDragDrop(int x, int y, MDataObject* dropObject)
+//#if !defined(__APPLE__) //disable Drag-Drop
+void geTreeView::onDragDrop(int x, int y, MDropData* dropObject)
 {
 	int xoff=-m_pRootNode->getXOffset();
 	int yoff=(int)m_fVirtualYPos-GE_TREEVIEWNODE_CY;
@@ -535,6 +543,7 @@ void geTreeView::onDragDrop(int x, int y, MDataObject* dropObject)
 
 	geGUIBase::onDragDrop(x, y, dropObject);
 }
+//#endif
 
 void geTreeView::onCommand(int cmd)
 {
@@ -554,7 +563,7 @@ void geTreeView::onCommand(int cmd)
 
 bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	if(m_cVerticalScrollBar.MouseLButtonDown(x, y, nFlag))
+	if(m_pVerticalScrollBar->MouseLButtonDown(x, y, nFlag))
 		return false;
 
 	int xoff=-m_pRootNode->getXOffset();
@@ -649,7 +658,7 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 		
 		m_iTotalHeightOfAllNodes=0;
 		m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
-		m_cVerticalScrollBar.setConetentHeight(m_iTotalHeightOfAllNodes);
+		m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
 		return true;
 	}
 
@@ -658,7 +667,7 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 
 bool geTreeView::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	m_cVerticalScrollBar.MouseLButtonUp(x, y, nFlag);
+	m_pVerticalScrollBar->MouseLButtonUp(x, y, nFlag);
 
 	if(m_bSelectionChanged)
 	{
@@ -681,7 +690,7 @@ bool geTreeView::onMouseLButtonUp(float x, float y, int nFlag)
 
 bool geTreeView::onMouseMove(float x, float y, int flag)
 {
-	m_cVerticalScrollBar.MouseMove(x, y, flag);
+	m_pVerticalScrollBar->MouseMove(x, y, flag);
 
 	//arun-check: need to optimize
 	int xoff=-m_pRootNode->getXOffset();
@@ -704,13 +713,13 @@ bool geTreeView::onMouseMove(float x, float y, int flag)
 
 void geTreeView::onMouseWheel(int zDelta, int x, int y, int flag)
 {
-	m_cVerticalScrollBar.scrollMouseWheel(zDelta, x, y, flag);
+	m_pVerticalScrollBar->scrollMouseWheel(zDelta, x, y, flag);
 	geGUIBase::onMouseWheel(zDelta, x, y, flag);
 }
 
 geTreeNode* geTreeView::getTVNode(float x, float y)
 {
-	if(m_cVerticalScrollBar.isPointInsideClientArea(x, y))
+	if(m_pVerticalScrollBar->isPointInsideClientArea(x, y))
 		return NULL;
 
 	int xoff=-m_pRootNode->getXOffset();
@@ -723,14 +732,14 @@ geTreeNode* geTreeView::getTVNode(float x, float y)
 
 void geTreeView::onSize(float cx, float cy, int flag)
 {
-	m_cVerticalScrollBar.setPos(cx-SCROLLBAR_SIZE, 0);
-	m_cVerticalScrollBar.setSize(SCROLLBAR_SIZE, cy);
+	m_pVerticalScrollBar->setPos(cx-SCROLLBAR_SIZE, 0);
+	m_pVerticalScrollBar->setSize(SCROLLBAR_SIZE, cy);
 
 	if(m_pRootNode)
 	{
 		//m_iTotalHeightOfAllNodes=0;
 		//m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
-		m_cVerticalScrollBar.setConetentHeight(m_iTotalHeightOfAllNodes);
+		m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
 	}
 
 	geGUIBase::onSize(cx, cy, flag);
@@ -738,8 +747,8 @@ void geTreeView::onSize(float cx, float cy, int flag)
 
 void geTreeView::onResizeComplete()
 {
-	m_cVerticalScrollBar.setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
-	m_cVerticalScrollBar.setSize(SCROLLBAR_SIZE, m_cSize.y);
+	m_pVerticalScrollBar->setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
+	m_pVerticalScrollBar->setSize(SCROLLBAR_SIZE, m_cSize.y);
 	if(m_pRootNode)
 	{
 		if(m_pRootNode->getSize().x!=m_cSize.x)
@@ -747,7 +756,7 @@ void geTreeView::onResizeComplete()
 
 		m_iTotalHeightOfAllNodes=0;
 		m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
-		m_cVerticalScrollBar.setConetentHeight(m_iTotalHeightOfAllNodes);
+		m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
 	}
 
 	geGUIBase::onResizeComplete();
@@ -755,7 +764,7 @@ void geTreeView::onResizeComplete()
 
 void geTreeView::onCancelEngagedControls()
 {
-	m_cVerticalScrollBar.CancelEngagedControls();
+	m_pVerticalScrollBar->CancelEngagedControls();
 	m_pRootNode->CancelEngagedControls();
 	m_bSelectionChanged=false;
 	geGUIBase::onCancelEngagedControls();
@@ -784,34 +793,34 @@ void geTreeView::clearAndDestroyAll()
 	m_cSelectedNodes.clear();
 	GE_DELETE(m_pRootNode);
 	m_fVirtualYPos=0.0f;
-	m_cVerticalScrollBar.setConetentHeight(0);
+	m_pVerticalScrollBar->setConetentHeight(0);
 
-	m_pRootNode = new geTreeNode(m_pRenderer, NULL, "root", NULL);
+	m_pRootNode = new geTreeNode(m_pRenderer, NULL, "root", NULL, m_pFontManagerPtr);
 	m_pRootNode->setParentTreeView(this);
 }
 
 void geTreeView::refreshTreeView(bool bDoNotResetScrollBarPosition)
 {
 	m_bSelectionChanged=false;
-	float old_ypos=m_cVerticalScrollBar.getScrollGrabberYPos();
-	m_cVerticalScrollBar.setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
-	m_cVerticalScrollBar.setSize(SCROLLBAR_SIZE, m_cSize.y);
-	m_cVerticalScrollBar.resetScrollBar();
+	float old_ypos=m_pVerticalScrollBar->getScrollGrabberYPos();
+	m_pVerticalScrollBar->setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
+	m_pVerticalScrollBar->setSize(SCROLLBAR_SIZE, m_cSize.y);
+	m_pVerticalScrollBar->resetScrollBar();
 
 	if(m_pRootNode)
 	{
 		m_iTotalHeightOfAllNodes=0;
 		m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
 		if(bDoNotResetScrollBarPosition)
-			m_cVerticalScrollBar.setScrollGrabberYPos(old_ypos);
-		m_cVerticalScrollBar.setConetentHeight(m_iTotalHeightOfAllNodes);
+			m_pVerticalScrollBar->setScrollGrabberYPos(old_ypos);
+		m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
 	}
 
 }
 
 void geTreeView::quick_refreshTreeViewForOnlyVerticalScrollBar(float deltaheight)
 {
-	m_cVerticalScrollBar.setConetentHeight(m_cVerticalScrollBar.getContentHeight()+deltaheight);
+	m_pVerticalScrollBar->setConetentHeight(m_pVerticalScrollBar->getContentHeight()+deltaheight);
 }
 
 bool geTreeView::onKeyDown(int charValue, int flag)
@@ -1024,5 +1033,5 @@ void geTreeView::selectNode(geTreeNode* nodetoselect)
 	m_pTVObserver->onTVSelectionChange(nodetoselect, this);
 	m_iTotalHeightOfAllNodes=0;
 	m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
-	m_cVerticalScrollBar.setConetentHeight(m_iTotalHeightOfAllNodes);
+	m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
 }

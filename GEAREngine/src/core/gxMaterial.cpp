@@ -63,13 +63,13 @@ void gxMaterial::write(gxFile& file)
 	}
 
 	file.Write(m_cMainShaderName.c_str());
-	file.Write(m_vDependencyCRCList.size());
+	file.Write((int)m_vDependencyCRCList.size());
 	for(int x=0;x<m_vDependencyCRCList.size();x++)
 	{
 		file.Write(m_vDependencyCRCList[x]);
 	}
 
-	file.Write(m_vTextureNameFromFBXFile.size());
+	file.Write((int)m_vTextureNameFromFBXFile.size());
 	for(int x=0;x<m_vTextureNameFromFBXFile.size();x++)
 	{
 		file.Write(m_vTextureNameFromFBXFile[x].c_str());

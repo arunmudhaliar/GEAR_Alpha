@@ -9,8 +9,8 @@
 class geTextureThumbnailExtended : public geTextureThumbnail
 {
 public:
-	geTextureThumbnailExtended():
-	  geTextureThumbnail()
+	geTextureThumbnailExtended(geFontManager* fontmanager):
+	  geTextureThumbnail(fontmanager)
 	{
 	}
 
@@ -18,7 +18,9 @@ public:
 	{
 	}
 
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+//#if !defined(__APPLE__) //disable Drag-Drop
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
+//#endif
 	virtual bool onMouseLButtonDown(float x, float y, int nFlag);
 
 };

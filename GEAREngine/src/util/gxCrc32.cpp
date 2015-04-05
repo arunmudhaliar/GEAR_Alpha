@@ -235,7 +235,7 @@ const unsigned int gxCrc32::CrcTable[] =
 		/// </param>
 		void gxCrc32::Update( unsigned char* buffer )
 		{
-			Update( buffer, 0, strlen((char*)buffer) );
+			Update( buffer, 0, (int)strlen((char*)buffer) );
 		}
 
 

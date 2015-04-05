@@ -328,7 +328,7 @@ object3d* object3d::appendChild(object3d* child)
 
 bool object3d::removeChild(object3d* child)
 {
-	int old_sz=m_cChilds.size();
+	int old_sz=(int)m_cChilds.size();
 	if(old_sz==0) return false;
 
 #ifdef USE_BXLIST
@@ -634,7 +634,7 @@ void object3d::write(gxFile& file)
 	writeAnimationController(file);
 
 	//
-	file.Write(m_cAttachedScriptInstances.size());
+	file.Write((int)m_cAttachedScriptInstances.size());
 	for(std::vector<monoScriptObjectInstance*>::iterator it = m_cAttachedScriptInstances.begin(); it != m_cAttachedScriptInstances.end(); ++it)
 	{
 		monoScriptObjectInstance* scriptinstance = *it;

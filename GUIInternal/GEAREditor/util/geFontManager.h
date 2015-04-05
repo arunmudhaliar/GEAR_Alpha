@@ -131,6 +131,12 @@ private:
 public:
 	void setRenderer(gxRenderer* renderer);
 #endif
+    
+public:
+    static void InitializeFonts();
+    static geFontManager g_cFontManager;
+    static geFont* g_pFontArial10_84Ptr;
+    static geFont* g_pFontArial10_80Ptr;
 };
 
 #endif

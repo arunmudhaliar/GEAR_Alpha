@@ -31,7 +31,7 @@ public:
 			GX_DELETE_ARY(snippet);
 		}
 		char* snippet;
-		int size;
+		long size;
 	};
 
 	HWShaderManager();

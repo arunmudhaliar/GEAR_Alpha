@@ -1,7 +1,7 @@
 #include "GEAREngine.h"
-#ifdef _WIN32
-#include "fbxImporter\fbxImporter.h"
-#endif
+//#ifdef _WIN32
+#include "fbxImporter/fbxImporter.h"
+//#endif
 #include "core/object3d.h"
 #include "core/gxMesh.h"
 #include "core/gxSkinnedMesh.h"
@@ -16,6 +16,8 @@ vector2i g_cMousePrevPos;
 
 extern DECLSPEC void engine_setEngineObserver(MEngineObserver* observer)
 {
+    fbxImporter importer;
+    
 	g_EngineObserver=observer;
 }
 

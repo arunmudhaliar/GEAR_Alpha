@@ -24,7 +24,7 @@ private:
 class geWindowColumn : public geGUIBase
 {
 public:
-	geWindowColumn();
+	geWindowColumn(geFontManager* fontmanager);
 	virtual ~geWindowColumn();
 
 	void create(rendererGL10* renderer, geGUIBase* parent, int y, float minimum_coloumn_width, float minimum_space_between_controls, float ratio=0.5f);

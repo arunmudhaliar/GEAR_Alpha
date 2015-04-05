@@ -1,12 +1,12 @@
 #include "gePropertyOpenOnEditor.h"
 #include "../../EditorApp.h"
 
-gePropertyOpenOnEditor::gePropertyOpenOnEditor(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	geTreeNode(renderer, parent, name, sprite, 10)
+gePropertyOpenOnEditor::gePropertyOpenOnEditor(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager):
+	geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 {
 	setSize(m_cSize.x, 70.0f);
 
-	m_pButtonOpenOnEditor = new geButton("");
+	m_pButtonOpenOnEditor = new geButton("", fontmanager);
 	m_pButtonOpenOnEditor->create(renderer, this, "Open in editor", 15, 20);
 	m_pButtonOpenOnEditor->setGUIObserver(this);
 
@@ -45,17 +45,32 @@ void gePropertyOpenOnEditor::onButtonClicked(geGUIBase* btn)
 			//GetCurrentDirectory(sizeof(buffer), buffer);
 			memset(buffer, 0, sizeof(buffer));
 			memset(responsebuffer, 0, sizeof(responsebuffer));
+#if _WIN32
 #ifdef _DEBUG
-			sprintf(buffer, "%s\\CSharpProjectMaker.exe gearProject %s %s\\Debug\\MonoGEAR.dll", EditorApp::getAppDirectory().c_str(), EditorApp::getProjectHomeDirectory(), EditorApp::getAppDirectory().c_str());
+			sprintf(buffer, "%s\\CSharpProjectMaker.exe gearProject %s %s\\Debug\\MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
 #else
-			sprintf(buffer, "%s\\CSharpProjectMaker.exe gearProject %s %s\\Release\\MonoGEAR.dll", EditorApp::getAppDirectory().c_str(), EditorApp::getProjectHomeDirectory(), EditorApp::getAppDirectory().c_str());
+			sprintf(buffer, "%s\\CSharpProjectMaker.exe gearProject %s %s\\Release\\MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
+#endif
+#else
+#ifdef _DEBUG
+            sprintf(buffer, "mono %s/CSharpProjectMaker.exe gearProject %s %s/MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), "", EditorGEARApp::getAppDirectory().c_str());
+#else
+            sprintf(buffer, "mono %s/CSharpProjectMaker.exe gearProject %s %s/MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), "", EditorGEARApp::getAppDirectory().c_str());
+#endif
 #endif
 			printf("\n================Creating Visual Studio Project===============\n");
 			if(monoWrapper::exec_cmd(buffer, responsebuffer)==0)
 			{
 				memset(buffer, 0, sizeof(buffer));
 				memset(responsebuffer, 0, sizeof(responsebuffer));
-				sprintf(buffer, "start %s/gearProject.sln", EditorApp::getProjectHomeDirectory());
+#if _WIN32
+				sprintf(buffer, "start %s/gearProject.sln", EditorGEARApp::getProjectHomeDirectory());
+#elif __APPLE__
+                //open -n /Applications/MonoDevelop.app
+                sprintf(buffer, "open -n /Applications/Unity/MonoDevelop.app %s/gearProject.sln", EditorGEARApp::getProjectHomeDirectory());
+#else
+#error not implemented
+#endif
 				printf("\n================Opening Visual Studio===============\n");
 				if(monoWrapper::exec_cmd(buffer, responsebuffer)==0)
 				{

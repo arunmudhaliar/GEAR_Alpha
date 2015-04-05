@@ -23,7 +23,7 @@ int OctreeNode::getLevel()
 
 int OctreeNode::getNumOfObjects()
 {
-	return m_cObjLst.size();
+	return (int)m_cObjLst.size();
 }
 
 object3d* OctreeNode::getObject(int index)

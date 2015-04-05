@@ -10,7 +10,7 @@
 class geColorDlg : public geSecondryView, public MGUIObserver
 {
 public:
-	geColorDlg(geColorControl* pObserverControlPtr);
+	geColorDlg(geColorControl* pObserverControlPtr, geFontManager* fontManager, rendererGL10* mainRenderer);
 	virtual ~geColorDlg();
 
 	virtual void onCreate();

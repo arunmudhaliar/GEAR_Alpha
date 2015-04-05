@@ -9,7 +9,7 @@
 class gearSceneConsole : public geWindow, public MTreeViewObserver, public MGUIObserver
 {
 public:
-	gearSceneConsole();
+	gearSceneConsole(geFontManager* fontManager);
 	~gearSceneConsole();
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
@@ -35,7 +35,7 @@ private:
 	geToolBarButton* m_pClearBtn;
 	geToolBarButton* m_pClearAllBtn;
 	geToolBarButton* m_pDontLogBtn;
-	geTreeView m_cConsoleTreeView;
+	geTreeView* m_pConsoleTreeView;
 	geTreeNode* m_pCurrentBuildRootNodePtr;
 };
 

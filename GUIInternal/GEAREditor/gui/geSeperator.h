@@ -12,7 +12,7 @@ public:
 		STYLE_3D
 	};
 
-	geSeperator();
+	geSeperator(geFontManager* fontmanager);
 	virtual ~geSeperator();
 
 	void create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx);

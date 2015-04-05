@@ -2,8 +2,14 @@
 #define GEUTIL_H
 
 #include <string.h>
-#include <gl\GL.h>
-#include <gl\glut.h>
+
+#if __APPLE__
+    #include <OpenGL/gl.h>
+    #include <OpenGL/glu.h>
+    #include <OpenGL/glext.h>
+    #include <GLUT/glut.h>
+#endif
+
 #ifndef GEAR2D
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 #include "../../../GEAREngine/src/core/vector4.h"
@@ -237,8 +243,8 @@ public:
 
 		while(!bFound)
 		{
-			int sub_strlen=strlen(substr);
-			int str_len=strlen(fond_str);
+			int sub_strlen=(int)strlen(substr);
+			int str_len=(int)strlen(fond_str);
 			if(sub_strlen>str_len) return false;
 
 			bFound=true;

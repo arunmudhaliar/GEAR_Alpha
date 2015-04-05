@@ -6,14 +6,19 @@
 #include "../../GEAREngine/src/core/object3d.h"
 #include "../../GEAREngine/src/core/gxMetaStructures.h"
 
+#include "secondryViews/geAssetImportDlg.h"
+
 class AssetImporter
 {
 public:
 	AssetImporter();
 	~AssetImporter();
 
+#ifdef _WIN32
 	bool importAssets(const char* assetsfolder, HWND hWndDlg, int progressBarID, int statictextID);
-
+#else
+    bool importAssets(const char* assetsfolder, geAssetImportDlg* assetImportDlg);
+#endif
 
 	static int import_material_to_metadata(const char* fbx_file_name, gxMaterial* material);
 
@@ -36,9 +41,12 @@ private:
 	bool import_using_freeImageLib(const char* filename, const char* crcFileName, struct stat srcStat);
 
 	int m_nAssetsToProcess;
-	int m_iProgressBarID;
-	int m_iStatictextID;
+#if !defined(__APPLE__)
 	HWND m_hWndProgress;
+    int m_iProgressBarID;
+    int m_iStatictextID;
+#endif
+    geAssetImportDlg* m_pAssetImportDlg;
 };
 
 #endif

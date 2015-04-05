@@ -1,8 +1,8 @@
 #include "geButton.h"
 #include "geGUIManager.h"
 
-geButtonBase::geButtonBase(unsigned short uGUIID, const char* name):
-	geGUIBase(uGUIID, name)
+geButtonBase::geButtonBase(unsigned short uGUIID, const char* name, geFontManager* fontManager):
+	geGUIBase(uGUIID, name, fontManager)
 {
 	m_eState = BTN_STATE_NORMAL;
 	m_bMouseHover=false;
@@ -61,17 +61,17 @@ void geButtonBase::onButtonClicked()
 }
 
 ///////////////////////////////////////////////////
-geButton::geButton():
-	geButtonBase(GEGUI_BUTTON, "Button")
+geButton::geButton(geFontManager* fontManager):
+	geButtonBase(GEGUI_BUTTON, "Button", fontManager)
 {
 }
 
-geButton::geButton(const char* name):
-	geButtonBase(GEGUI_BUTTON, name)
+geButton::geButton(const char* name, geFontManager* fontManager):
+	geButtonBase(GEGUI_BUTTON, name, fontManager)
 {
 }
-geButton::geButton(unsigned short uGUIID, const char* name):
-	geButtonBase(uGUIID, name)
+geButton::geButton(unsigned short uGUIID, const char* name, geFontManager* fontManager):
+	geButtonBase(uGUIID, name, fontManager)
 {
 }
 
@@ -84,7 +84,7 @@ void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* nam
 {
 	createBase(renderer, parent);
 
-	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	//int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
 	setSize(cx, cy);
 	setPos(x, y);
 
@@ -98,7 +98,7 @@ void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* nam
 void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y)
 {
 	createBase(renderer, parent);
-	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
 	setSize(width+20, 20);
 	setPos(x, y);
 
@@ -116,7 +116,7 @@ void geButton::draw()
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
 	drawRect(&m_cVBClientArea);
 	drawLine(m_cVBClientAreaLine, 0.1, 0.1, 0.1, 1.0f);
-	geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 10, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()-2, m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 10, geFontManager::g_pFontArial10_84Ptr->getLineHeight()-2, m_cSize.x);
 	glPopMatrix();
 }
 	

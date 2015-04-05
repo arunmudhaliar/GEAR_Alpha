@@ -1,31 +1,31 @@
 #include "gePropertyOctree.h"
 #include "../../EditorApp.h"
 
-gePropertyOctree::gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	geTreeNode(renderer, parent, name, sprite, 10)
+gePropertyOctree::gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontManager):
+	geTreeNode(renderer, parent, name, sprite, fontManager, 10)
 {
-	EditorApp::setPropertyOctree(this);
+	EditorGEARApp::setPropertyOctree(this);
 
 	setSize(m_cSize.x, 80.0f);
 
 	//package name
-	m_pNoOfTransformObjectPerNode = new geHorizontalSlider();
+	m_pNoOfTransformObjectPerNode = new geHorizontalSlider(m_pFontManagerPtr);
 	m_pNoOfTransformObjectPerNode->create(m_pRenderer, this, "slider", 10, 65, 130);
 	m_pNoOfTransformObjectPerNode->setSliderValue(0.5f);
 	m_pNoOfTransformObjectPerNode->setGUIObserver(this);
 
-	m_pNoOfLevels = new geHorizontalSlider();
+	m_pNoOfLevels = new geHorizontalSlider(m_pFontManagerPtr);
 	m_pNoOfLevels->create(m_pRenderer, this, "slider", 10, 65, 130);
 	m_pNoOfLevels->setSliderValue(0.2f);
 	m_pNoOfLevels->setGUIObserver(this);
 
 
-	m_pButtonApply = new geButton("");
+	m_pButtonApply = new geButton("", fontManager);
 	m_pButtonApply->create(renderer, this, "Apply", 15, 10);
 	m_pButtonApply->setGUIObserver(this);
 
 	//window column
-	geWindowColumn* pWindowColumn = new geWindowColumn();
+	geWindowColumn* pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
 	pWindowColumn->create(m_pRenderer, this, 20, 300.0f, 10.0f, 0.44f);
 	m_pRows[0] = pWindowColumn->addRow("No of objects per node: 6");
 	pWindowColumn->addControl(m_pRows[0], m_pNoOfTransformObjectPerNode, 15.0f);
@@ -46,10 +46,12 @@ gePropertyOctree::~gePropertyOctree()
 
 }
 
-void gePropertyOctree::onDragDrop(int x, int y, MDataObject* dropObject)
+//#if !defined(__APPLE__) //disable Drag-Drop
+void gePropertyOctree::onDragDrop(int x, int y, MDropData* dropObject)
 {
 
 }
+//#endif
 
 void gePropertyOctree::drawNode()
 {
@@ -100,7 +102,7 @@ void gePropertyOctree::onButtonClicked(geGUIBase* btn)
 {
 	if(btn==m_pButtonApply && m_pButtonApply->isButtonPressed())
 	{
-		EditorApp::getSceneHierarchy()->recreateOctree();
+		EditorGEARApp::getSceneHierarchy()->recreateOctree();
 	}
 }
 

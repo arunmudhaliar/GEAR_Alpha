@@ -3,7 +3,12 @@
 
 #include <string.h>
 
-#define STRCPY(dst, src)	strcpy_s(dst, sizeof(dst), src)
+#ifdef _WIN32
+    #define STRCPY(dst, src)	strcpy_s(dst, sizeof(dst), src)
+#else
+    #define STRCPY(dst, src)	strcpy(dst, src)
+#endif
+
 #define SPRINTF(dst, format, ...)	sprintf_s(dst, sizeof(dst), format, ...)
 
 #define GE_DELETE(x)		if(x){delete x; x=NULL;}

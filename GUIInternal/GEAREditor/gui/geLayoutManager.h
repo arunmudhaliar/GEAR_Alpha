@@ -8,7 +8,7 @@
 class geLayoutManager : public geGUIBase
 {
 public:
-	geLayoutManager();
+	geLayoutManager(geFontManager* fontmanager);
 	virtual ~geLayoutManager();
 
 	void create(rendererGL10* renderer, float x, float y, float cx, float cy);
@@ -36,9 +36,11 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 	virtual void onDragEnter(int x, int y);
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 	virtual void onDragLeave();
+//#endif
 
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);

@@ -25,7 +25,7 @@ public:
 
 	geButton* m_pButtonApplyMainCamera;
 
-	gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite);
+	gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontManager);
 	virtual ~gePropertyCamera();
 
 
@@ -36,7 +36,9 @@ public:
 	virtual void onTextChange(geGUIBase* textbox);
 	virtual void onSliderChange(geGUIBase* slider);
 	virtual void onColorChange(geGUIBase* colorControl);
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+//#if !defined(__APPLE__) //disable Drag-Drop
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
+//#endif
 	virtual void onButtonClicked(geGUIBase* btn);
 
 	virtual void onCommand(int cmd);

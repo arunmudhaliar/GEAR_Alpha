@@ -6,7 +6,11 @@
 //#include <windows.h>									// Standard windows header
 #include <stdio.h>										// Standard I/O header 
 #include <string.h>
-#include <malloc.h>
+#if __APPLE__
+    #include <malloc/malloc.h>
+#else
+    #include <malloc.h>
+#endif
 #include "../core/basicIncludes.h"
 //#include <gl\gl.h>										// Header for OpenGL32 library
 //#include "Texture.h"

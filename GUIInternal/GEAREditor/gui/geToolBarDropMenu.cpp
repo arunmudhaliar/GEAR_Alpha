@@ -6,18 +6,18 @@
 #include "../../../../GEAR2D_Alpha/GEAR2D/app/Editor2DApp.h"
 #endif
 
-geToolBarDropMenu::geToolBarDropMenu():
-	geButtonBase(GEGUI_TOOLBAR_DROPMENU, "ToolBarButton")
+geToolBarDropMenu::geToolBarDropMenu(geFontManager* fontManager):
+	geButtonBase(GEGUI_TOOLBAR_DROPMENU, "ToolBarButton", fontManager)
 {
 	//no implementation
 }
 
-geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, geGUIBase* parent):
-	geButtonBase(GEGUI_TOOLBAR_DROPMENU, name)
+geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, geGUIBase* parent, geFontManager* fontManager):
+	geButtonBase(GEGUI_TOOLBAR_DROPMENU, name, fontManager)
 {
 	createBase(renderer, parent);
 
-	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
 	setSize(width+27, GE_TOOLBAR_HEIGHT);
 
 	setClientAreaPrimaryActiveForeColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -55,7 +55,7 @@ void geToolBarDropMenu::draw()
 	}
 	else
 	{
-		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 17, geGUIManager::g_pFontArial10_84Ptr->getLineHeight()-4, m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 17, geFontManager::g_pFontArial10_84Ptr->getLineHeight()-4, m_cSize.x);
 	}
 
 	drawTriangle(m_cVBLayoutToggleButtonLine, 0.4f, 0.4f, 0.4f, 1.0f, 3);
@@ -148,6 +148,7 @@ bool calculatePosOfMyChild(geGUIBase* compareme, geGUIBase* parent, int& x, int&
 
 void geToolBarDropMenu::onButtonClicked()
 {
+#ifdef _WIN32
 	for(int x=0;x<m_vMenuItems.size();x++)
 	{
 		stDropMenuItem* item=m_vMenuItems[x];
@@ -233,8 +234,8 @@ void geToolBarDropMenu::onButtonClicked()
 		pt.x=x+treeView->getPositionOnScreen().x;
 		pt.y=y-treeView->getPositionOnScreen().y+((geTreeView*)treeView)->getVirtualYPos();
 #ifndef GEAR2D
-		ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
-		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+		ClientToScreen(EditorGEARApp::getMainWindowHandle(), &pt);
+		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorGEARApp::getMainWindowHandle(), NULL);
 #else
 		ClientToScreen(Editor2DApp::getMainWindowHandle(), &pt);
 		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, Editor2DApp::getMainWindowHandle(), NULL);
@@ -247,8 +248,8 @@ void geToolBarDropMenu::onButtonClicked()
 		pt.x=getPositionOnScreen().x;
 		pt.y=-getPositionOnScreen().y;
 #ifndef GEAR2D
-		ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
-		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+		ClientToScreen(EditorGEARApp::getMainWindowHandle(), &pt);
+		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorGEARApp::getMainWindowHandle(), NULL);
 #else
 		ClientToScreen(Editor2DApp::getMainWindowHandle(), &pt);
 		TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, Editor2DApp::getMainWindowHandle(), NULL);
@@ -258,6 +259,7 @@ void geToolBarDropMenu::onButtonClicked()
 	if(m_pGUIObserver)
 		m_pGUIObserver->onButtonClicked(this);
 	buttonNormal(true);
+#endif
 }
 
 bool geToolBarDropMenu::onMouseLButtonDown(float x, float y, int nFlag)
@@ -328,12 +330,13 @@ geToolBarDropMenu::stDropMenuItem* geToolBarDropMenu::appendMenuItem(const char*
 
 void geToolBarDropMenu::onSetName()
 {
-	int width=geGUIManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(m_szName, strlen(m_szName), 0);
+	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(m_szName, (int)strlen(m_szName), 0);
 	setSize(width+27, GE_TOOLBAR_HEIGHT);
 }
 
 void geToolBarDropMenu::checkMenuItem(int menuID, bool bCheck)
 {
+#ifdef _WIN32
 	for(std::vector<stDropMenuItem*>::iterator it = m_vMenuItems.begin(); it != m_vMenuItems.end(); ++it)
 	{
 		stDropMenuItem* menuitem = *it;
@@ -344,7 +347,7 @@ void geToolBarDropMenu::checkMenuItem(int menuID, bool bCheck)
 			break;
 		}
 	}
-
+#endif
 }
 
 void geToolBarDropMenu::setMenuItem(int menuID)

@@ -11,12 +11,12 @@
 class gePropertySaveMetaData : public geTreeNode, public MGUIObserver
 {
 public:
-	gePropertySaveMetaData(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	  geTreeNode(renderer, parent, name, sprite, 10)
+	gePropertySaveMetaData(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager):
+	  geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 	{
 		setSize(m_cSize.x, 40.0f);
 
-		m_pButtonSave = new geButton("");
+		m_pButtonSave = new geButton("", fontmanager);
 		m_pButtonSave->create(renderer, this, "Save Meta", 15, 10);
 		m_pButtonSave->setGUIObserver(this);
 		m_pButtonSave->setClientAreaPrimaryActiveForeColor(0.6f, 0.43f, 0.25f, 1.0f);
@@ -38,9 +38,9 @@ public:
 	{
 		drawRect(&m_cVBClientArea);
 
-		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
-		geGUIManager::g_pFontArial10_80Ptr->drawString("Update meta file with the current change.", m_pButtonSave->getPos().x+m_pButtonSave->getSize().x+20, geGUIManager::g_pFontArial10_80Ptr->getLineHeight()+10, m_cSize.x);
+		geFontManager::g_pFontArial10_80Ptr->drawString("Update meta file with the current change.", m_pButtonSave->getPos().x+m_pButtonSave->getSize().x+20, geFontManager::g_pFontArial10_80Ptr->getLineHeight()+10, m_cSize.x);
 
 		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 		{

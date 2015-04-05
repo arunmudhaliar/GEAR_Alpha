@@ -14,8 +14,8 @@ gearScenePropertyEditor::stMonoScriptTVNode::~stMonoScriptTVNode()
 
 /////////////////////////////////////////////////////////////////////////////
 
-gearScenePropertyEditor::gearScenePropertyEditor():
-geWindow("Property Editor")
+gearScenePropertyEditor::gearScenePropertyEditor(geFontManager* fontmanager):
+geWindow("Property Editor", fontmanager)
 {
 	m_pObject3dParentNode=NULL;
 	m_pMaterialParent=NULL;
@@ -49,6 +49,7 @@ geWindow("Property Editor")
 
 	m_pFogParentNode = NULL;
 	m_pSettingsFog = NULL;
+    m_pPropertiesTreeView = new geTreeView(fontmanager);
 }
 
 gearScenePropertyEditor::~gearScenePropertyEditor()
@@ -68,11 +69,13 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 	GE_DELETE(m_pOctreeParentNode);
 	GE_DELETE(m_pLayersParentNode);
 	GE_DELETE(m_pFogParentNode);
+    
+    GE_DELETE(m_pPropertiesTreeView);
 }
 
 void gearScenePropertyEditor::onCreate()
 {
-	m_cPropertiesTreeView.create(m_pRenderer, this, "propertyeditorTV", this);
+	m_pPropertiesTreeView->create(m_pRenderer, this, "propertyeditorTV", this);
 
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(68, 488, 16, 16);
@@ -97,38 +100,38 @@ void gearScenePropertyEditor::onCreate()
 	m_cszSprites[10].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[10].setClip(277, 27, 16, 16);
 
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 
 	m_pObject3dParentNode = new geTreeNode(m_pRenderer, rootNode, "Object3d", &m_cszSprites[0], 0);
-	m_pObject3dPropertyNode = new gePropertyObject3d(m_pRenderer, m_pObject3dParentNode, "", NULL);
+	m_pObject3dPropertyNode = new gePropertyObject3d(m_pRenderer, m_pObject3dParentNode, "", NULL, m_pFontManagerPtr);
 	m_pTransformParentNode = new geTreeNode(m_pRenderer, rootNode, "Transform", &m_cszSprites[1], 0);
-	m_pTransformPropertyNode = new gePropertyTransform(m_pRenderer, m_pTransformParentNode, "", NULL);
+	m_pTransformPropertyNode = new gePropertyTransform(m_pRenderer, m_pTransformParentNode, "", NULL, m_pFontManagerPtr);
 	m_pMaterialParent = new geTreeNode(m_pRenderer, rootNode, "Material", &m_cszSprites[2], 0);
 	m_pAnimationParentNode  = new geTreeNode(m_pRenderer, rootNode, "Animation", &m_cszSprites[3], 0);
 	m_pSaveMetaDataParentNode = new geTreeNode(m_pRenderer, rootNode, "Save MetaData", &m_cszSprites[4], 0);
-	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pRenderer, m_pSaveMetaDataParentNode, "", NULL);
+	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pRenderer, m_pSaveMetaDataParentNode, "", NULL, m_pFontManagerPtr);
 	m_pLightParentNode = new geTreeNode(m_pRenderer, rootNode, "Light", &m_cszSprites[5], 0);
-	m_pLightPropertyNode = new gePropertyLight(m_pRenderer, m_pLightParentNode, "", NULL);
+	m_pLightPropertyNode = new gePropertyLight(m_pRenderer, m_pLightParentNode, "", NULL, m_pFontManagerPtr);
 	m_pAddComponentParentNode = new geTreeNode(m_pRenderer, rootNode, "Add Component", &m_cszSprites[8], 0);
-	m_pAddComponentProperty = new gePropertyAddComponent(m_pRenderer, m_pAddComponentParentNode, "", NULL);
+	m_pAddComponentProperty = new gePropertyAddComponent(m_pRenderer, m_pAddComponentParentNode, "", NULL, m_pFontManagerPtr);
 
 	m_pCameraParentNode = new geTreeNode(m_pRenderer, rootNode, "Camera", &m_cszSprites[7], 0);
-	m_pCameraPropertyNode = new gePropertyCamera(m_pRenderer, m_pCameraParentNode, "", NULL);
+	m_pCameraPropertyNode = new gePropertyCamera(m_pRenderer, m_pCameraParentNode, "", NULL, m_pFontManagerPtr);
 
 	m_pPostProcessorBlurShaderNode = new geTreeNode(m_pRenderer, rootNode, "Blur Processor", &m_cszSprites[5], 0);
-	m_pBlurProcessorPropertyNode = new gePropertyBlurProcessor(m_pRenderer, m_pPostProcessorBlurShaderNode, "", NULL);
+	m_pBlurProcessorPropertyNode = new gePropertyBlurProcessor(m_pRenderer, m_pPostProcessorBlurShaderNode, "", NULL, m_pFontManagerPtr);
 
 	m_pOpenOnEditorParentNode = new geTreeNode(m_pRenderer, rootNode, "Script Editor", &m_cszSprites[5], 0);
-	m_pPropertyOpenOnEditor = new gePropertyOpenOnEditor(m_pRenderer, m_pOpenOnEditorParentNode, "", NULL);
+	m_pPropertyOpenOnEditor = new gePropertyOpenOnEditor(m_pRenderer, m_pOpenOnEditorParentNode, "", NULL, m_pFontManagerPtr);
 
 	m_pOctreeParentNode = new geTreeNode(m_pRenderer, rootNode, "Octree", &m_cszSprites[5], 0);
-	m_pPropertyOctree = new gePropertyOctree(m_pRenderer, m_pOctreeParentNode, "", NULL);
+	m_pPropertyOctree = new gePropertyOctree(m_pRenderer, m_pOctreeParentNode, "", NULL, m_pFontManagerPtr);
 
 	m_pLayersParentNode = new geTreeNode(m_pRenderer, rootNode, "Layers", &m_cszSprites[9], 0);
-	m_pPropertyLayers = new gePropertyLayers(m_pRenderer, m_pLayersParentNode, "", NULL);
+	m_pPropertyLayers = new gePropertyLayers(m_pRenderer, m_pLayersParentNode, "", NULL, m_pFontManagerPtr);
 
 	m_pFogParentNode = new geTreeNode(m_pRenderer, rootNode, "Fog", &m_cszSprites[9], 0);
-	m_pSettingsFog = new geSettingsFog(m_pRenderer, m_pFogParentNode, "", NULL, monoWrapper::mono_engine_getWorld(0)->getRenderer()->getFog());
+	m_pSettingsFog = new geSettingsFog(m_pRenderer, m_pFogParentNode, "", NULL, monoWrapper::mono_engine_getWorld(0)->getRenderer()->getFog(), m_pFontManagerPtr);
 
 	removeAllProperties();
 }
@@ -143,7 +146,7 @@ void gearScenePropertyEditor::onDraw()
 	}
 #endif
 
-	m_cPropertiesTreeView.draw();
+	m_pPropertiesTreeView->draw();
 }
 
 void gearScenePropertyEditor::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
@@ -152,6 +155,7 @@ void gearScenePropertyEditor::onTVSelectionChange(geTreeNode* tvnode, geTreeView
 
 bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 {
+#if !defined(__APPLE__) //disable Drag-Drop
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return;
 
@@ -177,13 +181,13 @@ bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 		}
 		return true;
 	}
-
+#endif
 	return true;
 }
 
 void gearScenePropertyEditor::removeAllProperties()
 {
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 
 	rootNode->removeTVChild(m_pObject3dParentNode);
 	rootNode->removeTVChild(m_pTransformParentNode);
@@ -221,67 +225,67 @@ void gearScenePropertyEditor::populatePropertyOfBlurShader(gxHWShader* blurShade
 {
 	removeAllProperties();
 
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 	//blur
 	m_pBlurProcessorPropertyNode->populatePropertyOfBlurShader(blurShader);
 	rootNode->appnendTVChild(m_pPostProcessorBlurShaderNode);
 
-	m_cPropertiesTreeView.refreshTreeView();
-	m_cPropertiesTreeView.resetSelectedNodePtr();
+	m_pPropertiesTreeView->refreshTreeView();
+	m_pPropertiesTreeView->resetSelectedNodePtr();
 }
 
 void gearScenePropertyEditor::populatePropertyOfOpenInEditor()
 {
 	removeAllProperties();
 
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 	rootNode->appnendTVChild(m_pOpenOnEditorParentNode);
 
-	m_cPropertiesTreeView.refreshTreeView();
-	m_cPropertiesTreeView.resetSelectedNodePtr();
+	m_pPropertiesTreeView->refreshTreeView();
+	m_pPropertiesTreeView->resetSelectedNodePtr();
 }
 
 void gearScenePropertyEditor::populatePropertyOfOctree()
 {
 	removeAllProperties();
 
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 	rootNode->appnendTVChild(m_pOctreeParentNode);
 
-	m_cPropertiesTreeView.refreshTreeView();
-	m_cPropertiesTreeView.resetSelectedNodePtr();
+	m_pPropertiesTreeView->refreshTreeView();
+	m_pPropertiesTreeView->resetSelectedNodePtr();
 }
 
 void gearScenePropertyEditor::populatePropertyOfLayers()
 {
 	removeAllProperties();
 
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 	rootNode->appnendTVChild(m_pLayersParentNode);
 
-	m_cPropertiesTreeView.refreshTreeView();
-	m_cPropertiesTreeView.resetSelectedNodePtr();
+	m_pPropertiesTreeView->refreshTreeView();
+	m_pPropertiesTreeView->resetSelectedNodePtr();
 }
 
 void gearScenePropertyEditor::populateSettingsOfFog()
 {
 	removeAllProperties();
 
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 	rootNode->appnendTVChild(m_pFogParentNode);
 
-	m_cPropertiesTreeView.refreshTreeView();
-	m_cPropertiesTreeView.resetSelectedNodePtr();
+	m_pPropertiesTreeView->refreshTreeView();
+	m_pPropertiesTreeView->resetSelectedNodePtr();
 }
 
 void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 {
 	removeAllProperties();
 
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 	if(obj==NULL)
 	{
-		m_cPropertiesTreeView.refreshTreeView();
+		m_pPropertiesTreeView->refreshTreeView();
 		return;
 	}
 
@@ -304,7 +308,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		{
 			//if(!mesh->getTriInfo(x)->getMaterial())
 			//	continue;
-			gePropertyMaterial* materialProperty = new gePropertyMaterial(m_pRenderer, m_pMaterialParent, "", NULL, mesh->getTriInfo(x));
+			gePropertyMaterial* materialProperty = new gePropertyMaterial(m_pRenderer, m_pMaterialParent, "", NULL, mesh->getTriInfo(x), m_pFontManagerPtr);
 		}
 
 		rootNode->appnendTVChild(m_pMaterialParent);
@@ -332,7 +336,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		{
 			gxAnimationSet* animationSet = *it;
 
-			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(m_pRenderer, m_pAnimationParentNode, obj, animationSet, &m_cszSprites[6]);
+			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(m_pRenderer, m_pAnimationParentNode, obj, animationSet, &m_cszSprites[6], m_pFontManagerPtr);
 			pAnimationSetNode->setUserData(animationSet);
 		}
 		rootNode->appnendTVChild(m_pAnimationParentNode);
@@ -360,7 +364,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 			monoScriptObjectInstance* monoInstance = obj->getMonoScriptInstance(x);
 			stMonoScriptTVNode* monoScriptTVNode = new stMonoScriptTVNode();
 			monoScriptTVNode->m_pMonoScriptParentNode = new geTreeNode(m_pRenderer, rootNode, monoInstance->getScriptPtr()->getMonoScript().c_str(), &m_cszSprites[10], 0);
-			monoScriptTVNode->m_pSettingsMonoScript = new gePropertyScriptComponent(m_pRenderer, monoScriptTVNode->m_pMonoScriptParentNode, "", NULL);
+			monoScriptTVNode->m_pSettingsMonoScript = new gePropertyScriptComponent(m_pRenderer, monoScriptTVNode->m_pMonoScriptParentNode, "", NULL, m_pFontManagerPtr);
 			monoScriptTVNode->m_pMonoScriptParentNode->closeNode();
 
 			monoScriptTVNode->m_pSettingsMonoScript->populatePropertyOfMonoScripts(obj, monoInstance);
@@ -368,13 +372,13 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		}
 	}
 
-	m_cPropertiesTreeView.refreshTreeView();
-	m_cPropertiesTreeView.resetSelectedNodePtr();
+	m_pPropertiesTreeView->refreshTreeView();
+	m_pPropertiesTreeView->resetSelectedNodePtr();
 }
 
 void gearScenePropertyEditor::updateTransformPropertyOfCurrentSelectedObject()
 {
-	geTreeNode* rootNode=m_cPropertiesTreeView.getRoot();
+	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 
 	std::vector<geGUIBase*>* controlList=rootNode->getChildControls();
 	if(std::find(controlList->begin(), controlList->end(), m_pTransformParentNode)!=controlList->end())

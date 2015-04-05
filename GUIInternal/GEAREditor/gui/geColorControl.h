@@ -8,7 +8,7 @@
 class geColorControl : public geGUIBase
 {
 public:
-	geColorControl();
+	geColorControl(geFontManager* fontManager);
 
 public:
 	virtual ~geColorControl();

@@ -25,9 +25,9 @@ public:
 
 	void renderPass(gxRenderer* renderer, gxHWShader* shader);
 
-	void setDiffuseColor(vector4f& clr)		{	m_cDiffuse=clr;	}
-	void setAmbientColor(vector4f& clr)		{	m_cAmbient=clr;	}
-	void setSpecularColor(vector4f& clr)	{	m_cSpecular=clr;	}
+	void setDiffuseColor(const vector4f& clr)		{	m_cDiffuse=clr;	}
+	void setAmbientColor(const vector4f& clr)		{	m_cAmbient=clr;	}
+	void setSpecularColor(const vector4f& clr)	{	m_cSpecular=clr;	}
 
 	const vector4f& getDiffuseColor()	{	return m_cDiffuse;	}
 	const vector4f& getSpecularColor()	{	return m_cSpecular;	}

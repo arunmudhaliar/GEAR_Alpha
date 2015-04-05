@@ -8,7 +8,7 @@
 class geTextureThumbnail : public geGUIBase
 {
 public:
-	geTextureThumbnail();
+	geTextureThumbnail(geFontManager* fontmanager);
 
 public:
 	virtual ~geTextureThumbnail();

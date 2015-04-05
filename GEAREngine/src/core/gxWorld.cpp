@@ -453,8 +453,10 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 				sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
 #elif defined(ANDROID)
 				sprintf(mainshaderfilename, "//storage//emulated//0//gear//shadersAndroid//surfaceShader//%s.shader", material->getMainshaderName());
+#elif __APPLE__
+                sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
 #else
-				//not implemented
+                #error not implemented
 #endif
 				material->setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
 				

@@ -109,6 +109,7 @@ public:
 
         return ((state==SL_PLAYSTATE_PLAYING));
 #endif
+        return false;
     }
     
     void resetFlags()   {   m_bPaused=false;    }

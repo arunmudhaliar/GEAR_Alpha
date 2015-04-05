@@ -3,18 +3,20 @@
 #include "../EditorApp.h"
 #include "../gui/geGUIManager.h"
 
-gearSceneConsole::gearSceneConsole():
-geWindow("Console View")
+gearSceneConsole::gearSceneConsole(geFontManager* fontManager):
+geWindow("Console View", fontManager)
 {
 	m_pCurrentBuildRootNodePtr=NULL;
 	m_pClearBtn=NULL;
 	m_pClearAllBtn=NULL;
 	m_pDontLogBtn=NULL;
 	m_uCurrentRunElapsedTime=0;
+    m_pConsoleTreeView = new geTreeView(fontManager);
 }
 
 gearSceneConsole::~gearSceneConsole()
 {
+    GE_DELETE(m_pConsoleTreeView);
 }
 
 void gearSceneConsole::onCreate()
@@ -22,20 +24,20 @@ void gearSceneConsole::onCreate()
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(110, 258, 16, 16);
 
-	m_cConsoleTreeView.create(m_pRenderer, this, "AssetsFileTV", this);
+	m_pConsoleTreeView->create(m_pRenderer, this, "AssetsFileTV", this);
 
 	//clear btn
-	m_pClearBtn=new geToolBarButton(m_pRenderer, "Clear", getToolBar());
+	m_pClearBtn=new geToolBarButton(m_pRenderer, "Clear", getToolBar(), m_pFontManagerPtr);
 	m_pClearBtn->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pClearBtn);
 
 	//clear all btn
-	m_pClearAllBtn=new geToolBarButton(m_pRenderer, "Clear All", getToolBar());
+	m_pClearAllBtn=new geToolBarButton(m_pRenderer, "Clear All", getToolBar(), m_pFontManagerPtr);
 	m_pClearAllBtn->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pClearAllBtn);
 
 	//don't log all btn
-	m_pDontLogBtn=new geToolBarButton(m_pRenderer, "Don't Log", getToolBar());
+	m_pDontLogBtn=new geToolBarButton(m_pRenderer, "Don't Log", getToolBar(), m_pFontManagerPtr);
 	m_pDontLogBtn->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pDontLogBtn);
 
@@ -52,7 +54,7 @@ void gearSceneConsole::onDraw()
 	}
 #endif
 
-	m_cConsoleTreeView.draw();
+	m_pConsoleTreeView->draw();
 }
 
 void gearSceneConsole::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
@@ -86,10 +88,10 @@ void gearSceneConsole::appendConsoleRunRootNode()
 	//	return;
 
 	char buffer[32];
-	sprintf(buffer, "#%d Run (0)", m_cConsoleTreeView.getRoot()->getTVNodeChildCount());
+	sprintf(buffer, "#%d Run (0)", m_pConsoleTreeView->getRoot()->getTVNodeChildCount());
 
-	m_cConsoleTreeView.getRoot()->openNode();
-	for(std::vector<geGUIBase*>::iterator it = m_cConsoleTreeView.getRoot()->getChildControls()->begin(); it != m_cConsoleTreeView.getRoot()->getChildControls()->end(); ++it)
+	m_pConsoleTreeView->getRoot()->openNode();
+	for(std::vector<geGUIBase*>::iterator it = m_pConsoleTreeView->getRoot()->getChildControls()->begin(); it != m_pConsoleTreeView->getRoot()->getChildControls()->end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		if(tvnode->getGUIID()==GEGUI_TREEVIEW_NODE)
@@ -99,9 +101,9 @@ void gearSceneConsole::appendConsoleRunRootNode()
 		}
 	}
 
-	m_pCurrentBuildRootNodePtr = new geTreeNode(m_pRenderer, m_cConsoleTreeView.getRoot(), buffer, &m_cszSprites[0]);
+	m_pCurrentBuildRootNodePtr = new geTreeNode(m_pRenderer, m_pConsoleTreeView->getRoot(), buffer, &m_cszSprites[0], m_pFontManagerPtr);
 	m_pCurrentBuildRootNodePtr->traverseSetWidth(m_cSize.x);
-	m_cConsoleTreeView.refreshTreeView();
+	m_pConsoleTreeView->refreshTreeView();
 
 	//reset the timer
 	m_uCurrentRunElapsedTime=Timer::getCurrentTimeInMilliSec();
@@ -120,13 +122,13 @@ void gearSceneConsole::appendConsoleMsg(const char* msg, int msgtype)
 	switch (msgtype)
 	{
 	case 0:	//info
-		sprintf(msg_buffer, "(%d) info: %s", now, msg);
+		sprintf(msg_buffer, "(%ld) info: %s", now, msg);
 		break;
 	case 1:	//warning
-		sprintf(msg_buffer, "(%d) warning: %s", now, msg);
+		sprintf(msg_buffer, "(%ld) warning: %s", now, msg);
 		break;
 	case 2:	//error
-		sprintf(msg_buffer, "(%d) ERROR: %s", now, msg);
+		sprintf(msg_buffer, "(%ld) ERROR: %s", now, msg);
 		break;
 	default:
 		break;
@@ -135,24 +137,24 @@ void gearSceneConsole::appendConsoleMsg(const char* msg, int msgtype)
 
 	if(m_pCurrentBuildRootNodePtr)
 	{
-		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL);
+		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL, m_pFontManagerPtr);
 	}
 	else
 	{
 		appendConsoleRunRootNode();
-		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL);
+		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL, m_pFontManagerPtr);
 	}
 
 	char buffer[32];
-	sprintf(buffer, "#%d Run (%d)", m_cConsoleTreeView.getRoot()->getTVNodeChildCount(), m_pCurrentBuildRootNodePtr->getTVNodeChildCount());
+	sprintf(buffer, "#%d Run (%d)", m_pConsoleTreeView->getRoot()->getTVNodeChildCount(), m_pCurrentBuildRootNodePtr->getTVNodeChildCount());
 	m_pCurrentBuildRootNodePtr->setName(buffer);
 
 	newtvConsoleNode->traverseSetWidth(m_cSize.x);
 	//for performance reason we wont use refreshTreeView instead use quick_refreshTreeViewForOnlyVerticalScrollBar
-	//m_cConsoleTreeView.refreshTreeView();
+	//m_pConsoleTreeView->refreshTreeView();
 	if(m_pCurrentBuildRootNodePtr->isOpenNode())
 	{
-		m_cConsoleTreeView.quick_refreshTreeViewForOnlyVerticalScrollBar(newtvConsoleNode->getSize().y);
+		m_pConsoleTreeView->quick_refreshTreeViewForOnlyVerticalScrollBar(newtvConsoleNode->getSize().y);
 	}
 }
 
@@ -161,10 +163,10 @@ void gearSceneConsole::clearConsoleCurrentRun()
 	if(m_pCurrentBuildRootNodePtr)
 	{
 		m_pCurrentBuildRootNodePtr->destroyAllTVChilds();
-		m_cConsoleTreeView.resetSelectedNodePtr();
-		m_cConsoleTreeView.refreshTreeView();
+		m_pConsoleTreeView->resetSelectedNodePtr();
+		m_pConsoleTreeView->refreshTreeView();
 		char buffer[32];
-		sprintf(buffer, "#%d Run (%d)", m_cConsoleTreeView.getRoot()->getTVNodeChildCount(), m_pCurrentBuildRootNodePtr->getTVNodeChildCount());
+		sprintf(buffer, "#%d Run (%d)", m_pConsoleTreeView->getRoot()->getTVNodeChildCount(), m_pCurrentBuildRootNodePtr->getTVNodeChildCount());
 		m_pCurrentBuildRootNodePtr->setName(buffer);
 		//reset the timer
 		m_uCurrentRunElapsedTime=Timer::getCurrentTimeInMilliSec();
@@ -173,10 +175,10 @@ void gearSceneConsole::clearConsoleCurrentRun()
 
 void gearSceneConsole::clearConsoleAllRun()
 {
-	m_cConsoleTreeView.getRoot()->destroyAllTVChilds();
+	m_pConsoleTreeView->getRoot()->destroyAllTVChilds();
 	m_pCurrentBuildRootNodePtr=NULL;
-	m_cConsoleTreeView.resetSelectedNodePtr();
-	m_cConsoleTreeView.refreshTreeView();
+	m_pConsoleTreeView->resetSelectedNodePtr();
+	m_pConsoleTreeView->refreshTreeView();
 }
 
 void gearSceneConsole::onButtonClicked(geGUIBase* btn)

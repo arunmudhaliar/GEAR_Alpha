@@ -338,7 +338,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 	noscaleMV.noScale();
 	matrix4x4f cMVInverse = noscaleMV.getInverse();
 	cMVInverse.transpose();
-	const float* u_modelview_inverse_m4x4=cMVInverse.getMatrix();
+//	const float* u_modelview_inverse_m4x4=cMVInverse.getMatrix();
 
 	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
     const float* u_mvp_m4x4=cMVP.getMatrix();
@@ -725,8 +725,8 @@ bool gxMesh::createTBN_Data()
 	float* tc=diffuse_uv_coordPtr;
 
 	float* ac1= NULL;
-	float* ac2= NULL;
-	float* ac3= NULL;
+//	float* ac2= NULL;
+//	float* ac3= NULL;
 
 	vector3f dv2v1;
 	vector3f dv3v1;

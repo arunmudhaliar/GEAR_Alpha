@@ -24,7 +24,7 @@ public:
 	geHorizontalSlider* m_pHorizontalSlider_LinearAttenuation;
 	geHorizontalSlider* m_pHorizontalSlider_QuadraticAttenuation;
 
-	gePropertyLight(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite);
+	gePropertyLight(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager);
 	virtual ~gePropertyLight();
 
 
@@ -35,7 +35,9 @@ public:
 	virtual void onTextChange(geGUIBase* textbox);
 	virtual void onSliderChange(geGUIBase* slider);
 	virtual void onColorChange(geGUIBase* colorControl);
-	virtual void onDragDrop(int x, int y, MDataObject* dropObject);
+//#if !defined(__APPLE__) //disable Drag-Drop
+	virtual void onDragDrop(int x, int y, MDropData* dropObject);
+//#endif
 	virtual void onButtonClicked(geGUIBase* btn);
 
 	virtual void onCommand(int cmd);

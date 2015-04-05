@@ -1,6 +1,5 @@
 #include "geGUIBase.h"
 
-
 geGUIBase::geGUIBase()
 {
 	m_pRenderer=NULL;
@@ -16,8 +15,9 @@ geGUIBase::geGUIBase()
 	setClientAreaSecondryActiveForeColor(0.5f, 0.5f, 0.5f);
 }
 
-geGUIBase::geGUIBase(unsigned short uGUIID, const char* name):
-	m_uGUIID(uGUIID)
+geGUIBase::geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fontManager):
+	m_uGUIID(uGUIID),
+    m_pFontManagerPtr(fontManager)
 {
 	m_pRenderer=NULL;
 	setSizable(false);
@@ -571,6 +571,7 @@ void geGUIBase::onCreate()
 {
 }
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 void geGUIBase::DragEnter(int x, int y)
 {
 	if(isPointInsideWindow(x, y))
@@ -591,7 +592,7 @@ void geGUIBase::DragEnter(int x, int y)
 	}
 }
 
-void geGUIBase::DragDrop(int x, int y, MDataObject* dropObject)
+void geGUIBase::DragDrop(int x, int y, MDropData* dropObject)
 {
 	if(isPointInsideWindow(x, y) /*|| !isMouseBoundCheckEnabled()*/)
 	{
@@ -638,13 +639,30 @@ void geGUIBase::onDragEnter(int x, int y)
 {
 }
 
-void geGUIBase::onDragDrop(int x, int y, MDataObject* dropObject)
+void geGUIBase::onDragDrop(int x, int y, MDropData* dropObject)
 {
 }
 
 void geGUIBase::onDragLeave()
 {
 }
+
+void geGUIBase::doDragDropSynchronous(MDropData *dropData)
+{
+    SDL_Event event;
+    event.type = SDL_DROPFILE;
+    event.drop.file = (char*)dropData;
+    
+    SDL_PumpEvents();
+    while (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))
+    {
+        //stop the thread
+        SDL_PumpEvents();
+    }
+    SDL_FlushEvent(SDL_MOUSEMOTION);
+    SDL_PushEvent(&event);
+}
+//#endif
 
 void geGUIBase::onAppendChild(geGUIBase* child)
 {

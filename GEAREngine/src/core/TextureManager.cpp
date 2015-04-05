@@ -204,6 +204,7 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 				internalformat=GL_RGBA;
 			}
 			break;
+#if !defined(__APPLE__)	//TODO: need to fix this for android
 		case eTexture2D_RGB565:
 			{
 				bAlpha=false;
@@ -242,6 +243,7 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 				internalformat=GL_RGBA;
 			}
 			break;
+#endif
 #endif
 		case eTexture2D_Unknown:
 			{

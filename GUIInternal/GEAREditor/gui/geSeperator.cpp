@@ -1,7 +1,7 @@
 #include "geSeperator.h"
 
-geSeperator::geSeperator():
-	geGUIBase(GEGUI_SEPERATOR, "Seperator")
+geSeperator::geSeperator(geFontManager* fontmanager):
+	geGUIBase(GEGUI_SEPERATOR, "Seperator", fontmanager)
 {
 }
 

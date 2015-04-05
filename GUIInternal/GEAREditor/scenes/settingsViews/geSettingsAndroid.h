@@ -11,9 +11,10 @@
 class geSettingsAndroid : public geTreeNode, public MGUIObserver
 {
 public:
-	geSettingsAndroid(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite):
-	  geTreeNode(renderer, parent, name, sprite, 10)
+	geSettingsAndroid(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager):
+	  geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 	{
+#ifdef _WIN32
 		setSize(m_cSize.x, 100.0f);
 
 		//m_pPushBtn_Object3dVisible = new gePushButton("");
@@ -90,6 +91,7 @@ public:
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
 		setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 		applyPrimaryColorToVBClientArea();
+#endif
 	}
 
 	virtual ~geSettingsAndroid()
@@ -100,7 +102,7 @@ public:
 	{
 		drawRect(&m_cVBClientArea);
 
-		geGUIManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
 		{

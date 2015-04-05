@@ -1,11 +1,12 @@
 #include "geColorDlg.h"
 #include "../EditorApp.h"
 
-geColorDlg::geColorDlg(geColorControl* pObserverControlPtr):
-	geSecondryView("Color Dialog")
+geColorDlg::geColorDlg(geColorControl* pObserverControlPtr, geFontManager* fontManager, rendererGL10* mainRenderer):
+	geSecondryView("Color Dialog", fontManager, mainRenderer)
 {
 	m_pObserverControlPtr=pObserverControlPtr;
-	setSize(geVector2f(200.0f, 320.0f));
+    geVector2f tmp(200.0f, 320.0f);
+	setSize(tmp);
 	m_pWindow=NULL;
 	m_fCircleRadius=1.0f;
 }
@@ -24,10 +25,10 @@ void geColorDlg::onCreate()
 {
 	m_fCircleRadius=75.0f;
 
-	m_pWindow = new geWindow("Color Dialog");
+	m_pWindow = new geWindow("Color Dialog", m_pFontManager);
 	m_pWindow->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
-	m_cLayoutManager.getRootLayout()->createAsParent(m_pWindow);
-	//m_pRootLayout->createAsParent(EditorApp::getSceneWorldEditor());
+	m_pLayoutManager->getRootLayout()->createAsParent(m_pWindow);
+	//m_pRootLayout->createAsParent(EditorGEARApp::getSceneWorldEditor());
 
 	float rgba[4]={1.0f, 1.0f, 1.0f, 1.0f};
 	if(m_pObserverControlPtr)
@@ -40,18 +41,18 @@ void geColorDlg::onCreate()
 
 	for(int x=0;x<3;x++)
 	{
-		m_pHorizontalSlider_RGBA[x] = new geHorizontalSlider();
+		m_pHorizontalSlider_RGBA[x] = new geHorizontalSlider(m_pFontManager);
 		m_pHorizontalSlider_RGBA[x]->create(m_pSecondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+x*15, 120.0f);
 		m_pHorizontalSlider_RGBA[x]->setSliderValue(rgba[x]);
 		m_pHorizontalSlider_RGBA[x]->setGUIObserver(this);
 	}
 	
-	m_pHorizontalSlider_RGBA[3] = new geHorizontalSlider();
+	m_pHorizontalSlider_RGBA[3] = new geHorizontalSlider(m_pFontManager);
 	m_pHorizontalSlider_RGBA[3]->create(m_pSecondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+3*15+10, 120.0f);
 	m_pHorizontalSlider_RGBA[3]->setSliderValue(rgba[3]);
 	m_pHorizontalSlider_RGBA[3]->setGUIObserver(this);
 
-	m_pColorControl = new geColorControl();
+	m_pColorControl = new geColorControl(m_pFontManager);
 	m_pColorControl->create(m_pSecondryRenderer, m_pWindow, m_cSize.x-50.0f, m_fCircleRadius*2.0f);
 	m_pColorControl->setControlColor(rgba[0], rgba[1], rgba[2], rgba[3]);
 
@@ -66,7 +67,7 @@ void geColorDlg::onCreate()
 
 	//color
 	int d3=(COLOR_DLG_MAX_RESOLUTION-1)/3;
-	float cntr=0;
+//	float cntr=0;
 	for(int xx=0;xx<COLOR_DLG_MAX_RESOLUTION-1;xx++)
 	{
 		int reminder=xx%(d3);
@@ -161,13 +162,13 @@ void geColorDlg::onDraw()
 
 	char buffer[32];
 	sprintf(buffer, "R : %d", (int)(m_pHorizontalSlider_RGBA[0]->getSliderValue()*255));
-	geGUIManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geGUIManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+0*15, m_cSize.x);
+	geFontManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geFontManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+0*15, m_cSize.x);
 	sprintf(buffer, "G : %d", (int)(m_pHorizontalSlider_RGBA[1]->getSliderValue()*255));
-	geGUIManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geGUIManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+1*15, m_cSize.x);
+	geFontManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geFontManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+1*15, m_cSize.x);
 	sprintf(buffer, "B : %d", (int)(m_pHorizontalSlider_RGBA[2]->getSliderValue()*255));
-	geGUIManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geGUIManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+2*15, m_cSize.x);
+	geFontManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geFontManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+2*15, m_cSize.x);
 	sprintf(buffer, "A : %d", (int)(m_pHorizontalSlider_RGBA[3]->getSliderValue()*255));
-	geGUIManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geGUIManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+3*15+10, m_cSize.x);
+	geFontManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geFontManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+3*15+10, m_cSize.x);
 }
 
 void geColorDlg::onDestroy()

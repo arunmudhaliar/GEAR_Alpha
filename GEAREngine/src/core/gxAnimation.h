@@ -19,7 +19,7 @@ public:
 	gxAnimationSet* getActiveAnimationSet()		{	return m_pActiveAnimationSetPtr;	}
 	std::vector<gxAnimationSet*>* getAnimationSetList	()		{	return &m_vAnimationSet; }
 	gxAnimationSet* getAnimationSet(int index)	{	return m_vAnimationSet[index];	}
-	int getAnimSetCount()	{	return m_vAnimationSet.size();	}
+	int getAnimSetCount()	{	return (int)m_vAnimationSet.size();	}
 
 	void write(gxFile& file);
 	void read(gxFile& file);

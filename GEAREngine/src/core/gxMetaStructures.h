@@ -1,7 +1,7 @@
 #ifndef GXMETASTRUCTURES_H
 #define GXMETASTRUCTURES_H
 
-#ifdef ANDROID
+#if defined(ANDROID) || defined(__APPLE__)
 	typedef long long __int64;
 #endif
 

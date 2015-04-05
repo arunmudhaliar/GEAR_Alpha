@@ -19,7 +19,7 @@ public:
 	geTextBox* m_pszTextBoxScale[3];
 	object3d* m_pObject3dPtr;
 
-	gePropertyTransform(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite);
+	gePropertyTransform(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontManager);
 	virtual ~gePropertyTransform();
 
 	virtual void drawNode();

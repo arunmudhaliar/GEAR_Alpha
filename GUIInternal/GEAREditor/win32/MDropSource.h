@@ -1,6 +1,7 @@
 #ifndef MDROPSOURCE_H
 #define MDROPSOURCE_H
 
+#if !defined(__APPLE__) //disable Drag-Drop
 #include <Ole2.h>
 #include "../gui/geGUIBase.h"
 
@@ -209,4 +210,5 @@ private:
 	std::vector<geGUIBase*>* m_vpActualDataObjectPtrList;
 };
 
+#endif
 #endif

@@ -8,8 +8,8 @@
 #include "../../../../GEAR2D_Alpha/GEAR2D/app/Editor2DApp.h"
 #endif
 
-geColorControl::geColorControl():
-	geGUIBase(GEGUI_COLOR_CONTROL, "Color Control")
+geColorControl::geColorControl(geFontManager* fontManager):
+	geGUIBase(GEGUI_COLOR_CONTROL, "Color Control", fontManager)
 {
 }
 
@@ -75,11 +75,16 @@ void geColorControl::onSize(float cx, float cy, int flag)
 
 bool geColorControl::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	geColorDlg* view = new geColorDlg(this);
-#ifndef GEAR2D
-	view->showView(EditorApp::getMainWindowHandle());
+    geColorDlg* view = new geColorDlg(this, m_pFontManagerPtr, m_pRenderer);
+
+#ifdef _WIN32
+    #ifndef GEAR2D
+        view->showView(EditorGEARApp::getMainWindowHandle());
+    #else
+        view->showView(Editor2DApp::getMainWindowHandle());
+    #endif
 #else
-	view->showView(Editor2DApp::getMainWindowHandle());
+    view->showView();
 #endif
 	return true;
 }

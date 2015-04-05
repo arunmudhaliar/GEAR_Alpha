@@ -22,10 +22,10 @@ public:
 		BOTTOM_TO_PARENT
 	};
 
-	geLayout()
+	geLayout(geFontManager* fontmanager)
 	{
 	}
-	geLayout(const char* name);
+	geLayout(const char* name, geFontManager* fontmanager);
 	virtual ~geLayout();
 
 	void create(rendererGL10* renderer, geLayout* pParentLayout, float x, float y, float cx, float cy);

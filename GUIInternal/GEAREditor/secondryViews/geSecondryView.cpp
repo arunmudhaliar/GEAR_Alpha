@@ -1,27 +1,44 @@
 #include "geSecondryView.h"
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 #include "../EditorApp.h"
 
-geSecondryView::geSecondryView(const char* name)
+geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, rendererGL10* mainRenderer)
 {
+    m_pPrimaryRenderer=mainRenderer;
 	strcpy(m_szName, name);
 	m_pSecondryRenderer=NULL;
+    m_pLayoutManager = new geLayoutManager(fontmanager);
+    m_pFontManager = fontmanager;
+    m_pSecondryWindow=NULL;
+    m_iExtraWindowFlags = 0;
 }
 
 geSecondryView::~geSecondryView()
 {
 	GE_DELETE(m_pSecondryRenderer);
 	//restore gl context to the EditorApp
-	EditorApp::getMainRenderer()->makeCurrent();
+	m_pPrimaryRenderer->makeCurrent();
 	//
+    GX_DELETE(m_pLayoutManager);
 }
 
+#ifdef _WIN32
 void geSecondryView::createRenderer(HWND hwnd)
+#else
+void geSecondryView::createRenderer(SDL_Window* window)
+#endif
 {
+#ifdef _WIN32
 	m_pSecondryRenderer = new rendererGL10(hwnd);
-	m_pSecondryRenderer->setupRenderer(EditorApp::getMainRenderer());
+#else
+    m_pSecondryRenderer = new rendererGL10(window);
+#endif
+    
+	m_pSecondryRenderer->setupRenderer(m_pPrimaryRenderer);
 
-	m_cLayoutManager.create(m_pSecondryRenderer, 0, 0, 1184, 567);
+	m_pLayoutManager->create(m_pSecondryRenderer, 0, 0, m_cSize.x, m_cSize.y);
 	//m_pRootLayout = new geLayout();
 	//m_pRootLayout->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y);
 	//m_pRootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
@@ -35,13 +52,18 @@ void geSecondryView::setSize(geVector2f& sz)
 	m_cSize=sz;
 }
 
-void geSecondryView::setPos(geVector2f& pos)
+void geSecondryView::setPos(geVector2i& pos)
 {
 	m_cPos=pos;
 }
 
+#ifdef _WIN32
 void geSecondryView::showView(HWND parentHWND)
+#else
+void geSecondryView::showView(int extraWindowFlags)
+#endif
 {
+#ifdef _WIN32
 	static TCHAR szAppName2[] = TEXT ("childWnd");
 	DWORD dwStyle = WS_CHILD | WS_OVERLAPPEDWINDOW | WS_POPUPWINDOW;
 	DWORD dwExStyle = WS_EX_TOOLWINDOW;
@@ -53,8 +75,8 @@ void geSecondryView::showView(HWND parentHWND)
 						szAppName2,       
                         TEXT(m_szName),
                         dwStyle,
-						(int)m_cPos.x,       
-                        (int)m_cPos.y, 
+						m_cPos.x,
+                        m_cPos.y, 
                         (int)m_cSize.x,       
                         (int)m_cSize.y,       
                         parentHWND,              
@@ -78,11 +100,222 @@ void geSecondryView::showView(HWND parentHWND)
 	//		DispatchMessage  (&msg) ;
 	//	}
 	//}
+#else
+    
+    //createSecondryWindow();
+    //SDL_Thread *thread = SDL_CreateThread( secondryThread, "testThread", (void *)this);
+    //SDL_DetachThread(thread);
+    //int threadReturnValue;
+    //SDL_WaitThread(thread, &threadReturnValue);
+    m_iExtraWindowFlags = extraWindowFlags;
+    secondryThread((void *)this);
+#endif
+}
+
+SDL_Window* geSecondryView::createSecondryWindow()
+{
+    m_pSecondryWindow = SDL_CreateWindow(
+                                         m_szName,             // window title
+                                         m_cPos.x,     // x position, centered
+                                         m_cPos.y,     // y position, centered
+                                         (int)m_cSize.x,                        // width, in pixels
+                                         (int)m_cSize.y,                        // height, in pixels
+                                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | m_iExtraWindowFlags        // flags
+                                         );
+    
+    return m_pSecondryWindow;
+}
+
+int geSecondryView::secondryThread( void *ptr )
+{
+    geSecondryView* view = (geSecondryView*)ptr;
+    
+    view->createSecondryWindow();
+    
+    SDL_ShowWindow(view->getSecondryWindow());
+    
+    view->createRenderer(view->getSecondryWindow());
+    view->getRenderer()->setViewPort(view->m_cSize.x, view->m_cSize.y);
+    view->setSize(view->m_cSize);
+    
+    bool quit=false;
+    //While application is running
+    while( !quit )
+    {
+        SDL_Event e;
+        //Handle events on queue
+        while( SDL_PollEvent( &e ) != 0 )
+        {
+            //User requests quit
+            if(e.type==SDL_WINDOWEVENT)
+            {
+                SDL_WindowEvent* windowEvent = (SDL_WindowEvent*)&e;
+                if( windowEvent->event == SDL_WINDOWEVENT_CLOSE )
+                {
+                    quit = true;
+                }
+                else
+                {
+                    view->processEvent(view->getSecondryWindow(), e);
+                }
+            }
+            else
+            {
+                //process other events
+                view->processEvent(view->getSecondryWindow(), e);
+            }
+        }
+        
+        
+        view->getRenderer()->makeCurrent();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        view->drawView();
+        view->getRenderer()->swapGLBuffer();
+        //view->m_pPrimaryRenderer->makeCurrent();
+        
+        
+        //It is very important in shared contexts to make sure the driver is done with all Objects before signaling other threads that they can use them!
+        //GLsync fenceId = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+
+        //SDL_Delay(rand()%10);
+    }
+    
+    SDL_DestroyWindow(view->getSecondryWindow());
+    
+    //It is very important in shared contexts to make sure the driver is done with all Objects before signaling other threads that they can use them!
+    GLsync fenceId = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+    GLenum result;
+    while(true)
+    {
+        glClientWaitSync(fenceId, GL_SYNC_FLUSH_COMMANDS_BIT, GLuint64(5000000000)); //5 Second timeout
+        if(result != GL_TIMEOUT_EXPIRED) break; //we ignore timeouts and wait until all OpenGL commands are processed!
+    }
+    
+    view->destroyView();
+    
+    return 0;
+}
+
+void geSecondryView::processEvent(SDL_Window * window, SDL_Event& e)
+{
+    if(e.type==SDL_WINDOWEVENT)
+    {
+        SDL_WindowEvent* windowEvent = (SDL_WindowEvent*)&e;
+        
+        switch (windowEvent->event) {
+            case SDL_WINDOWEVENT_RESIZED:
+            case SDL_WINDOWEVENT_MAXIMIZED:
+            case SDL_WINDOWEVENT_MINIMIZED:
+            case SDL_WINDOWEVENT_RESTORED:
+            case SDL_WINDOWEVENT_SIZE_CHANGED:
+            {
+                int window_cx=1;
+                int window_cy=1;
+                SDL_GetWindowSize(window, &window_cx, &window_cy);
+                //editorApp.size(window_cx, window_cy);
+                getRenderer()->setViewPort(window_cx, window_cy);
+                sizeView(window_cx, window_cy);
+            }
+                break;
+                
+            default:
+                break;
+        }
+    }
+    else if(e.type==SDL_MOUSEBUTTONDOWN)
+    {
+        int mouse_x = 0, mouse_y = 0;
+        SDL_GetMouseState( &mouse_x, &mouse_y );
+        
+        SDL_MouseButtonEvent* mouseBtnEvent = (SDL_MouseButtonEvent*)&e;
+        switch (mouseBtnEvent->button) {
+            case SDL_BUTTON_LEFT:
+            {
+                //DEBUG_PRINT("Left Mouse Down");
+                geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
+                int nFlags=MK_LBUTTON;
+                mouseLButtonDown(mouse_x, mouse_y, nFlags);
+            }
+                break;
+            case SDL_BUTTON_MIDDLE:
+            {
+                //DEBUG_PRINT("Middle Mouse Down");
+            }
+                break;
+            case SDL_BUTTON_RIGHT:
+            {
+                //DEBUG_PRINT("Right Mouse Down");
+            }
+                break;
+            default:
+                break;
+        }
+    }
+    else if(e.type==SDL_MOUSEBUTTONUP)
+    {
+        int mouse_x = 0, mouse_y = 0;
+        SDL_GetMouseState( &mouse_x, &mouse_y );
+        
+        SDL_MouseButtonEvent* mouseBtnEvent = (SDL_MouseButtonEvent*)&e;
+        switch (mouseBtnEvent->button) {
+            case SDL_BUTTON_LEFT:
+            {
+                //DEBUG_PRINT("Left Mouse Up");
+                geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
+                int nFlags=MK_LBUTTON;
+                mouseLButtonUp(mouse_x, mouse_y, nFlags);
+            }
+                break;
+            case SDL_BUTTON_MIDDLE:
+            {
+                //DEBUG_PRINT("Middle Mouse Up");
+            }
+                break;
+            case SDL_BUTTON_RIGHT:
+            {
+                //DEBUG_PRINT("Right Mouse Up");
+            }
+                break;
+            default:
+                break;
+        }
+    }
+    else if(e.type==SDL_MOUSEMOTION)
+    {
+        int mouse_x = 0, mouse_y = 0;
+        SDL_GetMouseState( &mouse_x, &mouse_y );
+        
+        //        DEBUG_PRINT("m_x=%d, m_y%d", mouse_x, mouse_y);
+        SDL_MouseMotionEvent* mouseMotionEvent = (SDL_MouseMotionEvent*)&e;
+        switch (mouseMotionEvent->state) {
+            case 1:
+                mouseMove(mouseMotionEvent->x, mouseMotionEvent->y, MK_LBUTTON);
+                break;
+            case 2:
+                mouseMove(mouseMotionEvent->x, mouseMotionEvent->y, MK_MBUTTON);
+                break;
+            case 4:
+                mouseMove(mouseMotionEvent->x, mouseMotionEvent->y, MK_RBUTTON);
+                break;
+                
+            default:
+                break;
+        }
+    }
+    else if(e.type==SDL_MOUSEWHEEL)
+    {
+        int mouse_x = 0, mouse_y = 0;
+        SDL_GetMouseState( &mouse_x, &mouse_y );
+        
+        int nFlags=0;
+        SDL_MouseWheelEvent* mouseWheelEvent = (SDL_MouseWheelEvent*)&e;
+        //editorApp.MouseWheel(mouseWheelEvent->y, mouse_x, mouse_y, nFlags);
+    }
 }
 
 void geSecondryView::drawView()
 {
-	m_cLayoutManager.draw();
+	m_pLayoutManager->draw();
 	onDraw();
 }
 
@@ -93,9 +326,10 @@ void geSecondryView::sizeView(float cx, float cy)
 	if(cy<=1.0f)
 		cy=1.0f;
 
-	m_cLayoutManager.setSize(cx, cy);
+	m_pLayoutManager->setSize(cx, cy);
 
-	setSize(geVector2f(cx, cy));
+    geVector2f tmp(cx, cy);
+	setSize(tmp);
 	onSize(cx, cy);
 
 	m_cPrevScale.set(cx, cy);
@@ -104,6 +338,7 @@ void geSecondryView::sizeView(float cx, float cy)
 void geSecondryView::destroyView()
 {
 	onDestroy();
+    m_pPrimaryRenderer->makeCurrent();
 	delete this;
 }
 
@@ -139,27 +374,27 @@ void geSecondryView::mouseWheel(int zDelta, int x, int y, int flag)
 
 bool geSecondryView::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	return m_cLayoutManager.MouseLButtonDown(x, y, nFlag);
+	return m_pLayoutManager->MouseLButtonDown(x, y, nFlag);
 }
 void geSecondryView::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	m_cLayoutManager.MouseLButtonUp(x, y, nFlag);
+	m_pLayoutManager->MouseLButtonUp(x, y, nFlag);
 }
 bool geSecondryView::onMouseRButtonDown(float x, float y, int nFlag)
 {
-	return m_cLayoutManager.MouseRButtonDown(x, y, nFlag);
+	return m_pLayoutManager->MouseRButtonDown(x, y, nFlag);
 }
 void geSecondryView::onMouseRButtonUp(float x, float y, int nFlag)
 {
-	m_cLayoutManager.MouseRButtonUp(x, y, nFlag);
+	m_pLayoutManager->MouseRButtonUp(x, y, nFlag);
 }
 bool geSecondryView::onMouseMove(float x, float y, int flag)
 {
-	return m_cLayoutManager.MouseMove(x, y, flag);
+	return m_pLayoutManager->MouseMove(x, y, flag);
 }
 void geSecondryView::onMouseWheel(int zDelta, int x, int y, int flag)
 {
-	m_cLayoutManager.MouseWheel(zDelta, x, y, flag);
+	m_pLayoutManager->MouseWheel(zDelta, x, y, flag);
 }
 
 void geSecondryView::onCreate()
@@ -178,6 +413,7 @@ void geSecondryView::onDestroy()
 {
 }
 
+#ifdef _WIN32
 LRESULT CALLBACK geSecondryView::SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(Msg)
@@ -209,7 +445,7 @@ LRESULT CALLBACK geSecondryView::SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WP
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			viewPtr->drawView();
 			viewPtr->getRenderer()->swapGLBuffer();
-			EditorApp::getMainRenderer()->makeCurrent();
+			EditorGEARApp::getMainRenderer()->makeCurrent();
 			UpdateWindow(GetParent(hWndDlg));
 			return 0;
 		}
@@ -272,3 +508,4 @@ LRESULT CALLBACK geSecondryView::SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WP
 
 	return FALSE;
 }
+#endif

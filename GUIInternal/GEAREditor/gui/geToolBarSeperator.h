@@ -6,8 +6,8 @@
 class geToolBarSeperator : public geGUIBase
 {
 public:
-	geToolBarSeperator(rendererGL10* renderer, geGUIBase* parent, float width):
-		geGUIBase(GEGUI_TOOLBAR_SEPERATOR, "ToolBar Seperator")
+	geToolBarSeperator(rendererGL10* renderer, geGUIBase* parent, float width, geFontManager* fontmanager):
+		geGUIBase(GEGUI_TOOLBAR_SEPERATOR, "ToolBar Seperator", fontmanager)
 	{
 		createBase(renderer, parent);
 

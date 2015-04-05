@@ -19,7 +19,7 @@
 class gearSceneWorldEditor : public geWindow, public MWorldObserver, public MGUIObserver
 {
 public:
-	gearSceneWorldEditor();
+	gearSceneWorldEditor(geFontManager* fontmanager);
 	~gearSceneWorldEditor();
 
 	void draw();

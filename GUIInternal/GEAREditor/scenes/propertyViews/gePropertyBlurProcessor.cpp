@@ -5,13 +5,14 @@ bool calculatePosOfMyChild2(geGUIBase* compareme, geGUIBase* parent, int& x, int
 
 void gePropertyBlurProcessor::onButtonClicked(geGUIBase* btn)
 {
+#ifdef _WIN32
 	if(btn==m_pPushBtn_Object3dVisible)
 	{
 		HMENU hPopupMenu = CreatePopupMenu();
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004003, "Directional Light");
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004002, "Point Light");
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-		//geTreeNode* selectedNode=m_cGameObjectsTreeView.getSelectedNode();
+		//geTreeNode* selectedNode=m_pGameObjectsTreeView->getSelectedNode();
 		int disableFlag = 0;//(selectedNode)?0:MF_DISABLED;
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING | disableFlag, 0x00004001, "Create Object on Selected Node");
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");
@@ -36,10 +37,11 @@ void gePropertyBlurProcessor::onButtonClicked(geGUIBase* btn)
 			POINT pt;
 			pt.x=x+treeView->getPositionOnScreen().x;
 			pt.y=y-treeView->getPositionOnScreen().y;
-			ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
-			TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+			ClientToScreen(EditorGEARApp::getMainWindowHandle(), &pt);
+			TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorGEARApp::getMainWindowHandle(), NULL);
 		}
 	}
+#endif
 }
 
 bool calculatePosOfMyChild2(geGUIBase* compareme, geGUIBase* parent, int& x, int& y)

@@ -10,7 +10,7 @@
 class geGUIManager
 {
 public:
-	geGUIManager();
+	geGUIManager(geFontManager* fontmanager);
 	~geGUIManager();
 
 	void init(rendererGL10* renderer);
@@ -30,16 +30,18 @@ public:
 	void MouseMove(float x, float y, int flag);
 	void MouseWheel(int zDelta, int x, int y, int flag);
 
+//#if !defined(__APPLE__) //disable Drag-Drop
 	void DragEnter(int x, int y);
-	void DragDrop(int x, int y, MDataObject* dropObject);
+	void DragDrop(int x, int y, MDropData* dropObject);
 	void DragLeave();
-
+//#endif
+    
 	bool KeyDown(int charValue, int flag);
 	bool KeyUp(int charValue, int flag);
 
 	void DoCommand(int cmd);
 
-	geLayoutManager* getLayoutManager()		{	return &m_cLayoutManager;	}
+	geLayoutManager* getLayoutManager()		{	return m_pLayoutManager;	}
 
 private:
 	std::vector<geWindow*> m_vWindowObjects;
@@ -47,11 +49,8 @@ private:
 	geWindow* m_pSelectedWindow;
 	geVector2i m_cMousePreviousPos;
 
-	geLayoutManager m_cLayoutManager;
+	geLayoutManager* m_pLayoutManager;
 public:
-	static geFontManager g_cFontManager;
-	static geFont* g_pFontArial10_84Ptr;
-	static geFont* g_pFontArial10_80Ptr;
 	static CGETextureManager g_cTextureManager;
 };
 

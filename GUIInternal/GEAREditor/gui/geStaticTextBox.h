@@ -7,8 +7,8 @@
 class geStaticTextBox : public geGUIBase
 {
 public:
-	geStaticTextBox();
-	geStaticTextBox(const char* name);
+	geStaticTextBox(geFontManager* fontmanager);
+	geStaticTextBox(const char* name, geFontManager* fontmanager);
 
 public:
 	virtual ~geStaticTextBox();

@@ -6,7 +6,9 @@
 
 #include <assert.h>
 #include <dirent.h>
+#ifdef _WIN32
 #include <direct.h>
+#endif
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,32 +17,38 @@
 #include "assetUserData.h"
 #include "../../../GEAREngine/src/core/gxMetaStructures.h"
 #include "../../../GEAREngine/src/core/gxAnimationSet.h"
+#ifdef _WIN32
 #include <Windows.h>
 #include "../../resource.h"
+#endif
 #include "../../../GEAREngine/src/core/gxSkinnedMesh.h"
 
+#ifdef _WIN32
 LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
+#endif
 char g_cszPrefabName[256];
 
-gearSceneFileView::gearSceneFileView():
-geWindow("File View")
+gearSceneFileView::gearSceneFileView(geFontManager* fontManager):
+geWindow("File View", fontManager)
 {
 	m_pSerachStringTextBoxPtr=NULL;
 	m_pPreviewObj_Cube=NULL;
 	memset(m_szDirectoryPath, 0, sizeof(m_szDirectoryPath));
+    m_pFileTreeView = new geTreeView(fontManager);
 }
 
 gearSceneFileView::~gearSceneFileView()
 {
 	GE_DELETE(m_pPreviewObj_Cube);
-	destroyTVUserData(m_cFileTreeView.getRoot());
+	destroyTVUserData(m_pFileTreeView->getRoot());
+    GE_DELETE(m_pFileTreeView);
 }
 
 void gearSceneFileView::onCreate()
 {
-	m_cFileTreeView.create(m_pRenderer, this, "AssetsFileTV", this);
+	m_pFileTreeView->create(m_pRenderer, this, "AssetsFileTV", this);
 
-	m_pSerachStringTextBoxPtr=new geTextBox();
+	m_pSerachStringTextBoxPtr=new geTextBox(m_pFontManagerPtr);
 	m_pSerachStringTextBoxPtr->create(m_pRenderer, getToolBar(), "", 0, 1, 100, 13);
 	m_pSerachStringTextBoxPtr->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pSerachStringTextBoxPtr);
@@ -72,7 +80,7 @@ void gearSceneFileView::onDraw()
 	}
 #endif
 
-	m_cFileTreeView.draw();
+	m_pFileTreeView->draw();
 }
 
 void gearSceneFileView::read3dFile(gxFile& file, object3d* obj)
@@ -238,7 +246,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		if(relativePath)
 		{
 			char metaInfoFileName[1024];
-			sprintf(metaInfoFileName, "%s/Assets%s.meta", EditorApp::getProjectHomeDirectory(), relativePath);
+			sprintf(metaInfoFileName, "%s/Assets%s.meta", EditorGEARApp::getProjectHomeDirectory(), relativePath);
 
 			gxFile metaInfoFile;
 			if(metaInfoFile.OpenFile(metaInfoFileName))
@@ -247,7 +255,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				metaInfoFile.Read(crc);
 				metaInfoFile.CloseFile();
 
-				sprintf(crcFile, "%s/MetaData/%x", EditorApp::getProjectHomeDirectory(), crc);
+				sprintf(crcFile, "%s/MetaData/%x", EditorGEARApp::getProjectHomeDirectory(), crc);
 			}
 		}
 
@@ -328,7 +336,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 
 			if(!matchingMaterial)
 			{
-				sprintf(crcFile, "%s/MetaData/%x", EditorApp::getProjectHomeDirectory(), crc32);
+				sprintf(crcFile, "%s/MetaData/%x", EditorGEARApp::getProjectHomeDirectory(), crc32);
 				if(file_meta.OpenFile(crcFile))
 				{
 					stMetaHeader metaHeader;
@@ -367,7 +375,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		}
 		else if(util::GE_IS_EXTENSION(relativePath, ".cs") || util::GE_IS_EXTENSION(relativePath, ".CS"))
 		{
-			EditorApp::getScenePropertyEditor()->populatePropertyOfOpenInEditor();
+			EditorGEARApp::getScenePropertyEditor()->populatePropertyOfOpenInEditor();
 		}
 		else if(util::GE_IS_EXTENSION(relativePath, ".png") || util::GE_IS_EXTENSION(relativePath, ".PNG") ||
 			util::GE_IS_EXTENSION(relativePath, ".tga") || util::GE_IS_EXTENSION(relativePath, ".TGA") ||
@@ -404,7 +412,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			obj=m_pPreviewObj_Cube;
 		}
 	}
-	EditorApp::getScenePreview()->selectedObject3D(obj);
+	EditorGEARApp::getScenePreview()->selectedObject3D(obj);
 }
 
 void gearSceneFileView::populateFileView()
@@ -414,14 +422,14 @@ void gearSceneFileView::populateFileView()
 
 void gearSceneFileView::populateFiles(const char* dirPath)
 {
-	EditorApp::getScenePreview()->selectedObject3D(NULL);
+	EditorGEARApp::getScenePreview()->selectedObject3D(NULL);
 	STRCPY(m_szDirectoryPath, dirPath);
-	destroyTVUserData(m_cFileTreeView.getRoot());
-	m_cFileTreeView.clearAndDestroyAll();
+	destroyTVUserData(m_pFileTreeView->getRoot());
+	m_pFileTreeView->clearAndDestroyAll();
 
-	gearSceneFileView::find_files(m_pRenderer, dirPath, m_pSerachStringTextBoxPtr->getName(), m_cFileTreeView.getRoot(), m_cszSprites);
-	m_cFileTreeView.getRoot()->traverseSetWidth(m_cSize.x);
-	m_cFileTreeView.refreshTreeView();
+	gearSceneFileView::find_files(m_pRenderer, dirPath, m_pSerachStringTextBoxPtr->getName(), m_pFileTreeView->getRoot(), m_cszSprites);
+	m_pFileTreeView->getRoot()->traverseSetWidth(m_cSize.x);
+	m_pFileTreeView->refreshTreeView();
 }
 
 void gearSceneFileView::destroyTVUserData(geGUIBase* parent)
@@ -456,13 +464,14 @@ bool gearSceneFileView::onMouseLButtonUp(float x, float y, int nFlag)
 
 bool gearSceneFileView::onMouseMove(float x, float y, int flag)
 {
+//#ifdef _WIN32
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return geWindow::onMouseMove(x, y, flag);
 
-	std::vector<geTreeNode*>* selectedNodeList=m_cFileTreeView.getSelectedNodeList();
+	std::vector<geTreeNode*>* selectedNodeList=m_pFileTreeView->getSelectedNodeList();
 	if((flag&MK_LBUTTON) && selectedNodeList->size())
 	{
-		if(/*m_cFileTreeView.getScrollBar()->isScrollBarVisible() && */m_cFileTreeView.getScrollBar()->isScrollBarGrabbed()/* && x>m_cSize.x-SCROLLBAR_SIZE*/)
+		if(/*m_pFileTreeView->getScrollBar()->isScrollBarVisible() && */m_pFileTreeView->getScrollBar()->isScrollBarGrabbed()/* && x>m_cSize.x-SCROLLBAR_SIZE*/)
 			return  true;
 		std::vector<geGUIBase*>* newlist = new std::vector<geGUIBase*>();
 
@@ -472,17 +481,23 @@ bool gearSceneFileView::onMouseMove(float x, float y, int flag)
 			newlist->push_back(node);
 		}
 
-		MDataObject* dataObject = new MDataObject(newlist, this);
-		MDropSource* dropSource = new MDropSource();
-
-		DWORD lpd=0;
-		HRESULT ok=DoDragDrop(dataObject, dropSource, DROPEFFECT_MOVE, &lpd);
-
-		dataObject->Release();
-		dropSource->Release();
+        
+        MDropData* dataObject = new MDropData(newlist, this);
+        doDragDropSynchronous(dataObject);
+        //GE_DELETE(dataObject);
+        
+//		MDataObject* dataObject = new MDataObject(newlist, this);
+//		MDropSource* dropSource = new MDropSource();
+//
+//		DWORD lpd=0;
+//		HRESULT ok=DoDragDrop(dataObject, dropSource, DROPEFFECT_MOVE, &lpd);
+//
+//		dataObject->Release();
+//		dropSource->Release();
 		return true;
 	}
-
+//#endif
+    
 	return geWindow::onMouseMove(x, y, flag);
 }
 
@@ -497,21 +512,24 @@ void gearSceneFileView::onTextChange(geGUIBase* textBox)
 		populateFiles(m_szDirectoryPath);
 }
 
-void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
+//#if !defined(__APPLE__) //disable Drag-Drop
+void gearSceneFileView::onDragDrop(int x, int y, MDropData* dropObject)
 {
-	geTreeNode* rootNode = m_cFileTreeView.getRoot();
+	//geTreeNode* rootNode = m_pFileTreeView->getRoot();
 
 	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
 	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 	{
 		geGUIBase* droppedDataObject = *it;
 
-		if(dropObject->getSourcePtr()==EditorApp::getSceneHierarchy())
+		if(dropObject->getSourcePtr()==EditorGEARApp::getSceneHierarchy())
 		{
-			if(DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INPUT_DLG), EditorApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(Proj_InputDlgProc))==IDCANCEL)
+#if TODO
+			if(DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INPUT_DLG), EditorGEARApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(Proj_InputDlgProc))==IDCANCEL)
 			{
 				continue;
 			}
+#endif
 			object3d* obj=(object3d*)droppedDataObject->getUserData();
 			//create prefab
 			char prefabFileName[512];
@@ -529,7 +547,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
 				if(stat(absolutepath, &fst)==0) 
 				{
 					char crcFileName[512];
-					sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", crc32);
+					sprintf(crcFileName, "%s/%s/%x", EditorGEARApp::getProjectHomeDirectory(), "MetaData", crc32);
 
 					obj->setAssetFileCRC(crc32, absolutepath);
 					if(AssetImporter::saveObject3DToMetaData(crcFileName, obj, fst))
@@ -552,6 +570,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDataObject* dropObject)
 		}
 	}
 }
+//#endif
 
 int gearSceneFileView::find_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray)
 {
@@ -631,7 +650,7 @@ int gearSceneFileView::find_files(rendererGL10* renderer, const char *dirname, c
 						else
 							sprite=&spriteArray[1];
 
-						geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, sprite);
+						geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, sprite, parentNode->getFontManager());
 						assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer), NULL);
 						newtvNode->setUserData(userdata);
 						newtvNode->closeNode();
@@ -668,6 +687,7 @@ int gearSceneFileView::find_files(rendererGL10* renderer, const char *dirname, c
     return ok;
 }
 
+#ifdef _WIN32
 LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(Msg)
@@ -722,3 +742,4 @@ LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM
 
 	return FALSE;
 }
+#endif

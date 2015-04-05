@@ -1,7 +1,7 @@
 #include "geScrollBar.h"
 
-geScrollBar::geScrollBar():
-	geGUIBase(GEGUI_SCROLLBAR, "scrollBar")
+geScrollBar::geScrollBar(geFontManager* fontmanager):
+	geGUIBase(GEGUI_SCROLLBAR, "scrollBar", fontmanager)
 {
 	m_fHeightRatio=1.0f;
 	m_fScrollGrabberYPos=0.0f;

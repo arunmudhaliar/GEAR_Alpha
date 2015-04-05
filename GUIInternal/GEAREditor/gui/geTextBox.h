@@ -6,8 +6,8 @@
 class geTextBox : public geGUIBase
 {
 public:
-	geTextBox();
-	geTextBox(const char* name);
+	geTextBox(geFontManager* fontmanager);
+	geTextBox(const char* name, geFontManager* fontmanager);
 
 public:
 	virtual ~geTextBox();

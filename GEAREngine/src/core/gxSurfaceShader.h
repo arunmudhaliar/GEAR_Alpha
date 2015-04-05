@@ -296,7 +296,7 @@ public:
 
 	void appendTextureMap(stTextureMap* texmap);
 
-	int getShaderPassCount()				{	return m_vShaderProgram.size();	}
+	int getShaderPassCount()				{	return (int)m_vShaderProgram.size();	}
 	gxHWShader* getShaderPass(int pass)		{	return (pass<m_vShaderProgram.size())?m_vShaderProgram[pass]:NULL;	}
 	stPass* getShaderPassStruct(int pass)	{	return (pass<m_cSubShader.m_vPass.size())?m_cSubShader.m_vPass[pass]:NULL;}
 

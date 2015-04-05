@@ -18,7 +18,7 @@ void gePropertySaveMetaData::onButtonClicked(geGUIBase* btn)
 				if(AssetImporter::readMetaHeader(obj->getAssetFileCRC(), metaHeader, fst))
 				{
 					char crcFileName[512];
-					sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", obj->getAssetFileCRC());
+					sprintf(crcFileName, "%s/%s/%x", EditorGEARApp::getProjectHomeDirectory(), "MetaData", obj->getAssetFileCRC());
 					AssetImporter::saveObject3DToMetaData(crcFileName, obj, fst);
 					saveMaterialRecursiveToMeta(obj);
 				}
@@ -43,7 +43,7 @@ void gePropertySaveMetaData::saveMaterialRecursiveToMeta(object3d* obj)
 				if(AssetImporter::readMetaHeader(material->getAssetFileCRC(), metaHeader, fst))
 				{
 					char crcFileName[512];
-					sprintf(crcFileName, "%s/%s/%x", EditorApp::getProjectHomeDirectory(), "MetaData", material->getAssetFileCRC());
+					sprintf(crcFileName, "%s/%s/%x", EditorGEARApp::getProjectHomeDirectory(), "MetaData", material->getAssetFileCRC());
 					AssetImporter::saveMaterialToMetaData(crcFileName, material, fst);
 				}
 			}

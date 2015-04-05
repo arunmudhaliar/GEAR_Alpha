@@ -2,8 +2,8 @@
 #include "../EditorApp.h"
 //#include "../../../GEAREngine/src/core/Timer.h"
 
-gearScenePreview::gearScenePreview():
-geWindow("Preview")
+gearScenePreview::gearScenePreview(geFontManager* fontmanager):
+geWindow("Preview", fontmanager)
 {
 	m_pSelectedObj=NULL;
 	m_pPreviewWorldPtr=NULL;
@@ -62,7 +62,7 @@ void gearScenePreview::draw()
 	glPushMatrix();
 	glTranslatef(0, 0, -1);
 	glDisable(GL_DEPTH_TEST);
-	CHECK_GL_ERROR(geGUIManager::g_pFontArial10_84Ptr->drawString("1 object selected", 5, 5+geGUIManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x));
+	CHECK_GL_ERROR(geFontManager::g_pFontArial10_84Ptr->drawString("1 object selected", 5, 5+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x));
 	glEnable(GL_DEPTH_TEST);
 	glPopMatrix();
 	//

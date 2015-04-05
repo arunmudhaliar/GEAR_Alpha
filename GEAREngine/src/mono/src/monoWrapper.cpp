@@ -70,6 +70,9 @@ void monoWrapper::loadMonoModules()
 	mono_set_dirs("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc"); 
 	//mono_set_dirs("../Mono-2.10.6/lib", "../Mono-2.10.6/etc");
 	//mono_set_dirs("C:/Mono-3.2.3/lib", "C:/Mono-3.2.3/etc");
+#elif defined(__APPLE__)
+    ///Users/amudaliar/Desktop/monoForMac/lib
+    mono_set_dirs("/Users/amudaliar/Desktop/monoForMac/lib/", "/Users/amudaliar/Desktop/monoForMac/etc");
 #else
 	mono_set_dirs("/storage/emulated/0/gear/", "/storage/emulated/0/gear/");
 #endif
@@ -101,11 +104,12 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 	//destroyMono();
 
 	destroyUserDefinedMonoClassDefs();
-#ifdef _WIN32
-	g_monoscriptlist.clear();
-	traverseForCSharpFiles(projecthomedirectory, &g_monoscriptlist);
-	compileCSharpScripts(&g_monoscriptlist);
+    
+    g_monoscriptlist.clear();
+    traverseForCSharpFiles(projecthomedirectory, &g_monoscriptlist);
+    compileCSharpScripts(&g_monoscriptlist);
 
+#ifdef _WIN32
 #if _DEBUG
 	const char* monogeardllfile="./Debug/MonoGEAR.dll";
 	const char* userexecutablefile="./Debug/out.exe";
@@ -113,6 +117,9 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 	const char* monogeardllfile="./Release/MonoGEAR.dll";
 	const char* userexecutablefile="./Release/out.exe";
 #endif
+#elif defined(__APPLE__)
+    const char* monogeardllfile="./MonoGEAR.dll";
+    const char* userexecutablefile="./out.exe";
 #else
 	const char* monogeardllfile="/storage/emulated/0/gear/MonoGEAR.dll";
 	const char* userexecutablefile="/storage/emulated/0/gear/out.exe";
@@ -365,8 +372,12 @@ int monoWrapper::mono_engine_test_function_for_mono()
 	MonoObject* returnValue=mono_runtime_invoke(g_monogear_engine_test_function_for_mono, NULL, NULL, NULL);
 	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
 
+#if !defined(__APPLE__)
 	//don't know this casting is right or wrong		- arun-check
 	return (int)underlyingType;
+#else
+    return 0;
+#endif
 #endif
 	return 0;
 }
@@ -445,7 +456,7 @@ void monoWrapper::mono_engine_renderSingleObject(gxWorld* world, object3d* obj, 
 	void* args[4]={&world, &obj, &lightPtr, &renderFlag};
 	mono_runtime_invoke(g_pMethod_engine_renderSingleObject, NULL, args, NULL);
 #else
-	engine_renderSingleObject(world, obj, light);
+	engine_renderSingleObject(world, obj, light, renderFlag);
 #endif
 }
 
@@ -563,7 +574,7 @@ void monoWrapper::mono_object3d_onObject3dChildRemove(object3d* parent, object3d
 #endif
 }
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__APPLE__)
 int monoWrapper::traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist)
 {
     DIR *dir;
@@ -658,12 +669,20 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 		command_buffer += csharpfile +" ";
 	}
 
-	//command_buffer += "-o "+EditorApp::getProjectHomeDirectory()+"/MetaData/out.exe";
+	//command_buffer += "-o "+EditorGEARApp::getProjectHomeDirectory()+"/MetaData/out.exe";
 
+#if _WIN32
 #if _DEBUG
 	command_buffer += "-v -o Debug//out.exe -r:Debug//MonoGEAR.dll";
 #else
 	command_buffer += "-v -o Release//out.exe -r:Release//MonoGEAR.dll";
+#endif
+#elif __APPLE__
+#if _DEBUG
+    command_buffer += "-v -o out.exe -r:MonoGEAR.dll";
+#else
+    command_buffer += "-v -o out.exe -r:MonoGEAR.dll";
+#endif
 #endif
 
 	char responsebuffer[4096];
@@ -682,7 +701,11 @@ char monoWrapper::exec_cmd(char const *cmd, char *buf)
 	FILE *fpo;
 	int size;
 	int ret;
+#ifdef _WIN32
 	if((fpo = _popen(cmd, "r") )== NULL)
+#else
+    if((fpo = popen(cmd, "r") )== NULL)
+#endif
 	{
 		sprintf(start, "error");
 		size = 6;
@@ -700,7 +723,11 @@ char monoWrapper::exec_cmd(char const *cmd, char *buf)
 		}
 	}
 	strcpy(buf, start);
+#ifdef _WIN32
 	ret = _pclose(fpo);
+#else
+    ret = pclose(fpo);
+#endif
 	return (ret);
 }/* exec_cmd */
 
@@ -711,7 +738,11 @@ char monoWrapper::exec_cmd(char const *cmd)
 	FILE *fpo;
 	int size;
 	int ret;
+#ifdef _WIN32
 	if((fpo = _popen(cmd, "r") )== NULL)
+#else
+    if((fpo = popen(cmd, "r") )== NULL)
+#endif
 	{
 		size = 6;
 	}
@@ -726,7 +757,11 @@ char monoWrapper::exec_cmd(char const *cmd)
 		}
 	}
 
-	ret = _pclose(fpo);
+#ifdef _WIN32
+    ret = _pclose(fpo);
+#else
+    ret = pclose(fpo);
+#endif
 	return (ret);
 }/* exec_cmd */
 

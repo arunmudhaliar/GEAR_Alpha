@@ -9,7 +9,7 @@
 class geTextureDlgMainWindow : public geWindow
 {
 public:
-	geTextureDlgMainWindow();
+	geTextureDlgMainWindow(geFontManager* fontmanager);
 	~geTextureDlgMainWindow();
 	virtual void onDraw();
 };
@@ -17,7 +17,7 @@ public:
 class geTextureDlgInfoWindow : public geWindow
 {
 public:
-	geTextureDlgInfoWindow();
+	geTextureDlgInfoWindow(geFontManager* fontmanager);
 	~geTextureDlgInfoWindow();
 	virtual void onDraw();
 };
@@ -25,7 +25,7 @@ public:
 class geTextureDlg : public geSecondryView, public MGUIObserver
 {
 public:
-	geTextureDlg(geTextureThumbnail* pObserverControlPtr);
+	geTextureDlg(geTextureThumbnail* pObserverControlPtr, geFontManager* fontmanager, rendererGL10* mainRenderer);
 	virtual ~geTextureDlg();
 
 	virtual void onCreate();

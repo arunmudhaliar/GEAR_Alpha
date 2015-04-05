@@ -3,8 +3,8 @@
 
 #define SLIDER_GRABBER_SZ	10.0f
 
-geHorizontalSlider::geHorizontalSlider():
-	geGUIBase(GEGUI_HORIZONTAL_SLIDER, "Horizontal Slider")
+geHorizontalSlider::geHorizontalSlider(geFontManager* fontmanager):
+	geGUIBase(GEGUI_HORIZONTAL_SLIDER, "Horizontal Slider", fontmanager)
 {
 }
 

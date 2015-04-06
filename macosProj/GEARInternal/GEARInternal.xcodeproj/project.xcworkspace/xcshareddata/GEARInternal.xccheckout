@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>9EB4863B-640F-4902-A71C-017F22828E47</string>
+	<key>IDESourceControlProjectName</key>
+	<string>GEARInternal</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>F1F4B91EF9BE1C38F295582AFFA3A3DD4E9E20A8</key>
+		<string>https://github.com/arunmudhaliar/GEAR_Alpha.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>macosProj/GEARInternal/GEARInternal.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>F1F4B91EF9BE1C38F295582AFFA3A3DD4E9E20A8</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/arunmudhaliar/GEAR_Alpha.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>F1F4B91EF9BE1C38F295582AFFA3A3DD4E9E20A8</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>F1F4B91EF9BE1C38F295582AFFA3A3DD4E9E20A8</string>
+			<key>IDESourceControlWCCName</key>
+			<string>dev</string>
+		</dict>
+	</array>
+</dict>
+</plist>

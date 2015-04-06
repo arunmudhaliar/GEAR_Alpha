@@ -184,12 +184,12 @@ int geSecondryView::secondryThread( void *ptr )
     
     //It is very important in shared contexts to make sure the driver is done with all Objects before signaling other threads that they can use them!
     GLsync fenceId = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
-    GLenum result;
-    while(true)
-    {
-        glClientWaitSync(fenceId, GL_SYNC_FLUSH_COMMANDS_BIT, GLuint64(5000000000)); //5 Second timeout
-        if(result != GL_TIMEOUT_EXPIRED) break; //we ignore timeouts and wait until all OpenGL commands are processed!
-    }
+//    GLenum result;
+//    while(true)
+//    {
+//        glClientWaitSync(fenceId, GL_SYNC_FLUSH_COMMANDS_BIT, GLuint64(5000000000)); //5 Second timeout
+//        if(result != GL_TIMEOUT_EXPIRED) break; //we ignore timeouts and wait until all OpenGL commands are processed!
+//    }
     
     view->destroyView();
     

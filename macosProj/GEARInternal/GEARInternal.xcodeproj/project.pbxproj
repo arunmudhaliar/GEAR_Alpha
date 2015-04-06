@@ -1,0 +1,989 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5554F0001AD2703000FD80AF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EFFF1AD2703000FD80AF /* main.cpp */; };
+		5554F0021AD2707000FD80AF /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0011AD2707000FD80AF /* libfreeimage.a */; };
+		5554F0041AD2708700FD80AF /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0031AD2708700FD80AF /* libfbxsdk.a */; };
+		5554F0061AD2709C00FD80AF /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0051AD2709C00FD80AF /* GLUT.framework */; };
+		5554F0081AD270A600FD80AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0071AD270A600FD80AF /* OpenGL.framework */; };
+		5554F00A1AD270D000FD80AF /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0091AD270D000FD80AF /* SDL2.framework */; };
+		5554F0E61AD2717000FD80AF /* AssetImporter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0131AD2717000FD80AF /* AssetImporter.cpp */; };
+		5554F0E71AD2717000FD80AF /* geTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0171AD2717000FD80AF /* geTextureManager.cpp */; };
+		5554F0E81AD2717000FD80AF /* EditorApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F01A1AD2717000FD80AF /* EditorApp.cpp */; };
+		5554F0E91AD2717000FD80AF /* geButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F01D1AD2717000FD80AF /* geButton.cpp */; };
+		5554F0EA1AD2717000FD80AF /* geColorControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F01F1AD2717000FD80AF /* geColorControl.cpp */; };
+		5554F0EB1AD2717000FD80AF /* geGUIBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0211AD2717000FD80AF /* geGUIBase.cpp */; };
+		5554F0EC1AD2717000FD80AF /* geGUIManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0231AD2717000FD80AF /* geGUIManager.cpp */; };
+		5554F0ED1AD2717000FD80AF /* geHorizontalSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0251AD2717000FD80AF /* geHorizontalSlider.cpp */; };
+		5554F0EE1AD2717000FD80AF /* geLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0271AD2717000FD80AF /* geLayout.cpp */; };
+		5554F0EF1AD2717000FD80AF /* geLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0291AD2717000FD80AF /* geLayoutManager.cpp */; };
+		5554F0F01AD2717000FD80AF /* gePushButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F02B1AD2717000FD80AF /* gePushButton.cpp */; };
+		5554F0F11AD2717000FD80AF /* geScrollBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F02D1AD2717000FD80AF /* geScrollBar.cpp */; };
+		5554F0F21AD2717000FD80AF /* geSeperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F02F1AD2717000FD80AF /* geSeperator.cpp */; };
+		5554F0F31AD2717000FD80AF /* geStaticTextBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0311AD2717000FD80AF /* geStaticTextBox.cpp */; };
+		5554F0F41AD2717000FD80AF /* geTextBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0331AD2717000FD80AF /* geTextBox.cpp */; };
+		5554F0F51AD2717000FD80AF /* geTextureThumbnail.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0351AD2717000FD80AF /* geTextureThumbnail.cpp */; };
+		5554F0F61AD2717000FD80AF /* geToolBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0371AD2717000FD80AF /* geToolBar.cpp */; };
+		5554F0F71AD2717000FD80AF /* geToolBarDropMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0391AD2717000FD80AF /* geToolBarDropMenu.cpp */; };
+		5554F0F81AD2717000FD80AF /* geTreeView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F03C1AD2717000FD80AF /* geTreeView.cpp */; };
+		5554F0F91AD2717000FD80AF /* geWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F03E1AD2717000FD80AF /* geWindow.cpp */; };
+		5554F0FA1AD2717000FD80AF /* geWindowColumn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0401AD2717000FD80AF /* geWindowColumn.cpp */; };
+		5554F0FB1AD2717000FD80AF /* RoundedRectControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0421AD2717000FD80AF /* RoundedRectControl.cpp */; };
+		5554F0FC1AD2717000FD80AF /* ConfirmationDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0451AD2717000FD80AF /* ConfirmationDialog.cpp */; };
+		5554F0FD1AD2717000FD80AF /* renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F04C1AD2717000FD80AF /* renderer.cpp */; };
+		5554F0FE1AD2717000FD80AF /* rendererGL10.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F04E1AD2717000FD80AF /* rendererGL10.cpp */; };
+		5554F0FF1AD2717000FD80AF /* rendererGL20.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0501AD2717000FD80AF /* rendererGL20.cpp */; };
+		5554F1001AD2717000FD80AF /* gearSceneConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0551AD2717000FD80AF /* gearSceneConsole.cpp */; };
+		5554F1011AD2717000FD80AF /* gearSceneFileView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0571AD2717000FD80AF /* gearSceneFileView.cpp */; };
+		5554F1021AD2717000FD80AF /* gearSceneHierarchy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0591AD2717000FD80AF /* gearSceneHierarchy.cpp */; };
+		5554F1031AD2717000FD80AF /* gearScenePreview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F05B1AD2717000FD80AF /* gearScenePreview.cpp */; };
+		5554F1041AD2717000FD80AF /* gearSceneProject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F05D1AD2717000FD80AF /* gearSceneProject.cpp */; };
+		5554F1051AD2717000FD80AF /* gearScenePropertyEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F05F1AD2717000FD80AF /* gearScenePropertyEditor.cpp */; };
+		5554F1061AD2717000FD80AF /* gearSceneSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0611AD2717000FD80AF /* gearSceneSettings.cpp */; };
+		5554F1071AD2717000FD80AF /* gearSceneWorldEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0631AD2717000FD80AF /* gearSceneWorldEditor.cpp */; };
+		5554F1081AD2717000FD80AF /* geNullMaterialExtended.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0661AD2717000FD80AF /* geNullMaterialExtended.cpp */; };
+		5554F1091AD2717000FD80AF /* gePropertyAddComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0681AD2717000FD80AF /* gePropertyAddComponent.cpp */; };
+		5554F10A1AD2717000FD80AF /* gePropertyBlurProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F06B1AD2717000FD80AF /* gePropertyBlurProcessor.cpp */; };
+		5554F10B1AD2717000FD80AF /* gePropertyCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F06D1AD2717000FD80AF /* gePropertyCamera.cpp */; };
+		5554F10C1AD2717000FD80AF /* gePropertyLayers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F06F1AD2717000FD80AF /* gePropertyLayers.cpp */; };
+		5554F10D1AD2717000FD80AF /* gePropertyLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0711AD2717000FD80AF /* gePropertyLight.cpp */; };
+		5554F10E1AD2717000FD80AF /* gePropertyMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0731AD2717000FD80AF /* gePropertyMaterial.cpp */; };
+		5554F10F1AD2717000FD80AF /* gePropertyObject3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0761AD2717000FD80AF /* gePropertyObject3d.cpp */; };
+		5554F1101AD2717000FD80AF /* gePropertyOctree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0781AD2717000FD80AF /* gePropertyOctree.cpp */; };
+		5554F1111AD2717000FD80AF /* gePropertyOpenOnEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F07A1AD2717000FD80AF /* gePropertyOpenOnEditor.cpp */; };
+		5554F1121AD2717000FD80AF /* gePropertySaveMetaData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F07C1AD2717000FD80AF /* gePropertySaveMetaData.cpp */; };
+		5554F1131AD2717000FD80AF /* gePropertyScriptComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F07E1AD2717000FD80AF /* gePropertyScriptComponent.cpp */; };
+		5554F1141AD2717000FD80AF /* gePropertyTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0801AD2717000FD80AF /* gePropertyTransform.cpp */; };
+		5554F1151AD2717000FD80AF /* geSettingsFog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0821AD2717000FD80AF /* geSettingsFog.cpp */; };
+		5554F1161AD2717000FD80AF /* geTextureThumbnailExtended.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0841AD2717000FD80AF /* geTextureThumbnailExtended.cpp */; };
+		5554F1171AD2717000FD80AF /* geAssetImportDlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F08A1AD2717000FD80AF /* geAssetImportDlg.cpp */; };
+		5554F1181AD2717000FD80AF /* geColorDlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F08C1AD2717000FD80AF /* geColorDlg.cpp */; };
+		5554F1191AD2717000FD80AF /* geSecondryView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F08E1AD2717000FD80AF /* geSecondryView.cpp */; };
+		5554F11A1AD2717000FD80AF /* geTestDlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0901AD2717000FD80AF /* geTestDlg.cpp */; };
+		5554F11B1AD2717000FD80AF /* geTextureDlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0921AD2717000FD80AF /* geTextureDlg.cpp */; };
+		5554F11C1AD2717000FD80AF /* Sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0951AD2717000FD80AF /* Sprite.cpp */; };
+		5554F11D1AD2717000FD80AF /* Sprite2Dx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0971AD2717000FD80AF /* Sprite2Dx.cpp */; };
+		5554F11E1AD2717000FD80AF /* geFontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F09C1AD2717000FD80AF /* geFontManager.cpp */; };
+		5554F12B1AD2717000FD80AF /* arial_iphone10_80.ecf in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0B81AD2717000FD80AF /* arial_iphone10_80.ecf */; };
+		5554F12C1AD2717000FD80AF /* arial_iphone10_84.ecf in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0B91AD2717000FD80AF /* arial_iphone10_84.ecf */; };
+		5554F12D1AD2717000FD80AF /* icons16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0BA1AD2717000FD80AF /* icons16x16.png */; };
+		5554F12E1AD2717000FD80AF /* light.png in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0BB1AD2717000FD80AF /* light.png */; };
+		5554F12F1AD2717000FD80AF /* cube.preview in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0BD1AD2717000FD80AF /* cube.preview */; };
+		5554F1301AD2717000FD80AF /* Material.mat.preview in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0BE1AD2717000FD80AF /* Material.mat.preview */; };
+		5554F1311AD2717000FD80AF /* blurshader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C11AD2717000FD80AF /* blurshader.glsl */; };
+		5554F1321AD2717000FD80AF /* fog_exp2_shader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C21AD2717000FD80AF /* fog_exp2_shader.glsl */; };
+		5554F1331AD2717000FD80AF /* fog_exp_shader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C31AD2717000FD80AF /* fog_exp_shader.glsl */; };
+		5554F1341AD2717000FD80AF /* fog_linear_shader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C41AD2717000FD80AF /* fog_linear_shader.glsl */; };
+		5554F1351AD2717000FD80AF /* fontshader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C51AD2717000FD80AF /* fontshader.glsl */; };
+		5554F1361AD2717000FD80AF /* guishader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C61AD2717000FD80AF /* guishader.glsl */; };
+		5554F1371AD2717000FD80AF /* only_diffuse.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C71AD2717000FD80AF /* only_diffuse.glsl */; };
+		5554F1381AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C81AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl */; };
+		5554F1391AD2717000FD80AF /* shadowmap.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C91AD2717000FD80AF /* shadowmap.glsl */; };
+		5554F13A1AD2717000FD80AF /* fragment_main.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CB1AD2717000FD80AF /* fragment_main.snippet */; };
+		5554F13B1AD2717000FD80AF /* light_unifrom_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CC1AD2717000FD80AF /* light_unifrom_vars.snippet */; };
+		5554F13C1AD2717000FD80AF /* material_unifrom_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CD1AD2717000FD80AF /* material_unifrom_vars.snippet */; };
+		5554F13D1AD2717000FD80AF /* matrices_uniform_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CE1AD2717000FD80AF /* matrices_uniform_vars.snippet */; };
+		5554F13E1AD2717000FD80AF /* vertex_attrib_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CF1AD2717000FD80AF /* vertex_attrib_vars.snippet */; };
+		5554F13F1AD2717000FD80AF /* vertex_main.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D01AD2717000FD80AF /* vertex_main.snippet */; };
+		5554F1401AD2717000FD80AF /* vertex_varying_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D11AD2717000FD80AF /* vertex_varying_vars.snippet */; };
+		5554F1411AD2717000FD80AF /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D31AD2717000FD80AF /* .gitignore */; };
+		5554F1421AD2717000FD80AF /* Diffuse.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D41AD2717000FD80AF /* Diffuse.shader */; };
+		5554F1431AD2717000FD80AF /* Diffuse_vlit.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D51AD2717000FD80AF /* Diffuse_vlit.shader */; };
+		5554F1441AD2717000FD80AF /* MultiTex.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D61AD2717000FD80AF /* MultiTex.shader */; };
+		5554F1451AD2717000FD80AF /* NormalMap.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D71AD2717000FD80AF /* NormalMap.shader */; };
+		5554F1461AD2717000FD80AF /* NormalMapSeperateEmissive.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D81AD2717000FD80AF /* NormalMapSeperateEmissive.shader */; };
+		5554F1471AD2717000FD80AF /* NormalMapSeperateSpecular.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */; };
+		5554F1481AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */; };
+		5554F1491AD2717000FD80AF /* NormalMapSpecular.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */; };
+		5554F14D1AD2729100FD80AF /* libGEAREngine.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F14C1AD2729100FD80AF /* libGEAREngine.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5554EFDC1AD26F9A00FD80AF /* GEARInternal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GEARInternal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5554EFE01AD26F9A00FD80AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5554EFFF1AD2703000FD80AF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		5554F0011AD2707000FD80AF /* libfreeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreeimage.a; path = ../../FreeImage/macos/libfreeimage.a; sourceTree = "<group>"; };
+		5554F0031AD2708700FD80AF /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../../../../../../Applications/Autodesk/FBXSDK/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
+		5554F0051AD2709C00FD80AF /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		5554F0071AD270A600FD80AF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		5554F0091AD270D000FD80AF /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		5554F0131AD2717000FD80AF /* AssetImporter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AssetImporter.cpp; sourceTree = "<group>"; };
+		5554F0141AD2717000FD80AF /* AssetImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssetImporter.h; sourceTree = "<group>"; };
+		5554F0161AD2717000FD80AF /* geTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geTexture.h; sourceTree = "<group>"; };
+		5554F0171AD2717000FD80AF /* geTextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geTextureManager.cpp; sourceTree = "<group>"; };
+		5554F0181AD2717000FD80AF /* geTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geTextureManager.h; sourceTree = "<group>"; };
+		5554F0191AD2717000FD80AF /* steTexturePacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = steTexturePacket.h; sourceTree = "<group>"; };
+		5554F01A1AD2717000FD80AF /* EditorApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditorApp.cpp; sourceTree = "<group>"; };
+		5554F01B1AD2717000FD80AF /* EditorApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditorApp.h; sourceTree = "<group>"; };
+		5554F01D1AD2717000FD80AF /* geButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geButton.cpp; sourceTree = "<group>"; };
+		5554F01E1AD2717000FD80AF /* geButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geButton.h; sourceTree = "<group>"; };
+		5554F01F1AD2717000FD80AF /* geColorControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geColorControl.cpp; sourceTree = "<group>"; };
+		5554F0201AD2717000FD80AF /* geColorControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geColorControl.h; sourceTree = "<group>"; };
+		5554F0211AD2717000FD80AF /* geGUIBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geGUIBase.cpp; sourceTree = "<group>"; };
+		5554F0221AD2717000FD80AF /* geGUIBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geGUIBase.h; sourceTree = "<group>"; };
+		5554F0231AD2717000FD80AF /* geGUIManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geGUIManager.cpp; sourceTree = "<group>"; };
+		5554F0241AD2717000FD80AF /* geGUIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geGUIManager.h; sourceTree = "<group>"; };
+		5554F0251AD2717000FD80AF /* geHorizontalSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geHorizontalSlider.cpp; sourceTree = "<group>"; };
+		5554F0261AD2717000FD80AF /* geHorizontalSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geHorizontalSlider.h; sourceTree = "<group>"; };
+		5554F0271AD2717000FD80AF /* geLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geLayout.cpp; sourceTree = "<group>"; };
+		5554F0281AD2717000FD80AF /* geLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geLayout.h; sourceTree = "<group>"; };
+		5554F0291AD2717000FD80AF /* geLayoutManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geLayoutManager.cpp; sourceTree = "<group>"; };
+		5554F02A1AD2717000FD80AF /* geLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geLayoutManager.h; sourceTree = "<group>"; };
+		5554F02B1AD2717000FD80AF /* gePushButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePushButton.cpp; sourceTree = "<group>"; };
+		5554F02C1AD2717000FD80AF /* gePushButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePushButton.h; sourceTree = "<group>"; };
+		5554F02D1AD2717000FD80AF /* geScrollBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geScrollBar.cpp; sourceTree = "<group>"; };
+		5554F02E1AD2717000FD80AF /* geScrollBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geScrollBar.h; sourceTree = "<group>"; };
+		5554F02F1AD2717000FD80AF /* geSeperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geSeperator.cpp; sourceTree = "<group>"; };
+		5554F0301AD2717000FD80AF /* geSeperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geSeperator.h; sourceTree = "<group>"; };
+		5554F0311AD2717000FD80AF /* geStaticTextBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geStaticTextBox.cpp; sourceTree = "<group>"; };
+		5554F0321AD2717000FD80AF /* geStaticTextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geStaticTextBox.h; sourceTree = "<group>"; };
+		5554F0331AD2717000FD80AF /* geTextBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geTextBox.cpp; sourceTree = "<group>"; };
+		5554F0341AD2717000FD80AF /* geTextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geTextBox.h; sourceTree = "<group>"; };
+		5554F0351AD2717000FD80AF /* geTextureThumbnail.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geTextureThumbnail.cpp; sourceTree = "<group>"; };
+		5554F0361AD2717000FD80AF /* geTextureThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geTextureThumbnail.h; sourceTree = "<group>"; };
+		5554F0371AD2717000FD80AF /* geToolBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geToolBar.cpp; sourceTree = "<group>"; };
+		5554F0381AD2717000FD80AF /* geToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geToolBar.h; sourceTree = "<group>"; };
+		5554F0391AD2717000FD80AF /* geToolBarDropMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geToolBarDropMenu.cpp; sourceTree = "<group>"; };
+		5554F03A1AD2717000FD80AF /* geToolBarDropMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geToolBarDropMenu.h; sourceTree = "<group>"; };
+		5554F03B1AD2717000FD80AF /* geToolBarSeperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geToolBarSeperator.h; sourceTree = "<group>"; };
+		5554F03C1AD2717000FD80AF /* geTreeView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geTreeView.cpp; sourceTree = "<group>"; };
+		5554F03D1AD2717000FD80AF /* geTreeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geTreeView.h; sourceTree = "<group>"; };
+		5554F03E1AD2717000FD80AF /* geWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geWindow.cpp; sourceTree = "<group>"; };
+		5554F03F1AD2717000FD80AF /* geWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geWindow.h; sourceTree = "<group>"; };
+		5554F0401AD2717000FD80AF /* geWindowColumn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geWindowColumn.cpp; sourceTree = "<group>"; };
+		5554F0411AD2717000FD80AF /* geWindowColumn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geWindowColumn.h; sourceTree = "<group>"; };
+		5554F0421AD2717000FD80AF /* RoundedRectControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RoundedRectControl.cpp; sourceTree = "<group>"; };
+		5554F0431AD2717000FD80AF /* RoundedRectControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedRectControl.h; sourceTree = "<group>"; };
+		5554F0451AD2717000FD80AF /* ConfirmationDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConfirmationDialog.cpp; sourceTree = "<group>"; };
+		5554F0461AD2717000FD80AF /* ConfirmationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfirmationDialog.h; sourceTree = "<group>"; };
+		5554F0471AD2717000FD80AF /* MDropData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDropData.h; sourceTree = "<group>"; };
+		5554F0491AD2717000FD80AF /* glew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glew.h; sourceTree = "<group>"; };
+		5554F04A1AD2717000FD80AF /* glincludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glincludes.h; sourceTree = "<group>"; };
+		5554F04B1AD2717000FD80AF /* matrix4x4f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix4x4f.h; sourceTree = "<group>"; };
+		5554F04C1AD2717000FD80AF /* renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer.cpp; sourceTree = "<group>"; };
+		5554F04D1AD2717000FD80AF /* renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer.h; sourceTree = "<group>"; };
+		5554F04E1AD2717000FD80AF /* rendererGL10.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rendererGL10.cpp; sourceTree = "<group>"; };
+		5554F04F1AD2717000FD80AF /* rendererGL10.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rendererGL10.h; sourceTree = "<group>"; };
+		5554F0501AD2717000FD80AF /* rendererGL20.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rendererGL20.cpp; sourceTree = "<group>"; };
+		5554F0511AD2717000FD80AF /* rendererGL20.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rendererGL20.h; sourceTree = "<group>"; };
+		5554F0521AD2717000FD80AF /* wglew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wglew.h; sourceTree = "<group>"; };
+		5554F0541AD2717000FD80AF /* assetUserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = assetUserData.h; sourceTree = "<group>"; };
+		5554F0551AD2717000FD80AF /* gearSceneConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneConsole.cpp; sourceTree = "<group>"; };
+		5554F0561AD2717000FD80AF /* gearSceneConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneConsole.h; sourceTree = "<group>"; };
+		5554F0571AD2717000FD80AF /* gearSceneFileView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneFileView.cpp; sourceTree = "<group>"; };
+		5554F0581AD2717000FD80AF /* gearSceneFileView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneFileView.h; sourceTree = "<group>"; };
+		5554F0591AD2717000FD80AF /* gearSceneHierarchy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneHierarchy.cpp; sourceTree = "<group>"; };
+		5554F05A1AD2717000FD80AF /* gearSceneHierarchy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneHierarchy.h; sourceTree = "<group>"; };
+		5554F05B1AD2717000FD80AF /* gearScenePreview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearScenePreview.cpp; sourceTree = "<group>"; };
+		5554F05C1AD2717000FD80AF /* gearScenePreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearScenePreview.h; sourceTree = "<group>"; };
+		5554F05D1AD2717000FD80AF /* gearSceneProject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneProject.cpp; sourceTree = "<group>"; };
+		5554F05E1AD2717000FD80AF /* gearSceneProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneProject.h; sourceTree = "<group>"; };
+		5554F05F1AD2717000FD80AF /* gearScenePropertyEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearScenePropertyEditor.cpp; sourceTree = "<group>"; };
+		5554F0601AD2717000FD80AF /* gearScenePropertyEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearScenePropertyEditor.h; sourceTree = "<group>"; };
+		5554F0611AD2717000FD80AF /* gearSceneSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneSettings.cpp; sourceTree = "<group>"; };
+		5554F0621AD2717000FD80AF /* gearSceneSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneSettings.h; sourceTree = "<group>"; };
+		5554F0631AD2717000FD80AF /* gearSceneWorldEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneWorldEditor.cpp; sourceTree = "<group>"; };
+		5554F0641AD2717000FD80AF /* gearSceneWorldEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneWorldEditor.h; sourceTree = "<group>"; };
+		5554F0661AD2717000FD80AF /* geNullMaterialExtended.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geNullMaterialExtended.cpp; sourceTree = "<group>"; };
+		5554F0671AD2717000FD80AF /* geNullMaterialExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geNullMaterialExtended.h; sourceTree = "<group>"; };
+		5554F0681AD2717000FD80AF /* gePropertyAddComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyAddComponent.cpp; sourceTree = "<group>"; };
+		5554F0691AD2717000FD80AF /* gePropertyAddComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyAddComponent.h; sourceTree = "<group>"; };
+		5554F06A1AD2717000FD80AF /* gePropertyAnimationSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyAnimationSet.h; sourceTree = "<group>"; };
+		5554F06B1AD2717000FD80AF /* gePropertyBlurProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyBlurProcessor.cpp; sourceTree = "<group>"; };
+		5554F06C1AD2717000FD80AF /* gePropertyBlurProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyBlurProcessor.h; sourceTree = "<group>"; };
+		5554F06D1AD2717000FD80AF /* gePropertyCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyCamera.cpp; sourceTree = "<group>"; };
+		5554F06E1AD2717000FD80AF /* gePropertyCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyCamera.h; sourceTree = "<group>"; };
+		5554F06F1AD2717000FD80AF /* gePropertyLayers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyLayers.cpp; sourceTree = "<group>"; };
+		5554F0701AD2717000FD80AF /* gePropertyLayers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyLayers.h; sourceTree = "<group>"; };
+		5554F0711AD2717000FD80AF /* gePropertyLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyLight.cpp; sourceTree = "<group>"; };
+		5554F0721AD2717000FD80AF /* gePropertyLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyLight.h; sourceTree = "<group>"; };
+		5554F0731AD2717000FD80AF /* gePropertyMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyMaterial.cpp; sourceTree = "<group>"; };
+		5554F0741AD2717000FD80AF /* gePropertyMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyMaterial.h; sourceTree = "<group>"; };
+		5554F0751AD2717000FD80AF /* gePropertyMeshPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyMeshPreview.h; sourceTree = "<group>"; };
+		5554F0761AD2717000FD80AF /* gePropertyObject3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyObject3d.cpp; sourceTree = "<group>"; };
+		5554F0771AD2717000FD80AF /* gePropertyObject3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyObject3d.h; sourceTree = "<group>"; };
+		5554F0781AD2717000FD80AF /* gePropertyOctree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyOctree.cpp; sourceTree = "<group>"; };
+		5554F0791AD2717000FD80AF /* gePropertyOctree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyOctree.h; sourceTree = "<group>"; };
+		5554F07A1AD2717000FD80AF /* gePropertyOpenOnEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyOpenOnEditor.cpp; sourceTree = "<group>"; };
+		5554F07B1AD2717000FD80AF /* gePropertyOpenOnEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyOpenOnEditor.h; sourceTree = "<group>"; };
+		5554F07C1AD2717000FD80AF /* gePropertySaveMetaData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertySaveMetaData.cpp; sourceTree = "<group>"; };
+		5554F07D1AD2717000FD80AF /* gePropertySaveMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertySaveMetaData.h; sourceTree = "<group>"; };
+		5554F07E1AD2717000FD80AF /* gePropertyScriptComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyScriptComponent.cpp; sourceTree = "<group>"; };
+		5554F07F1AD2717000FD80AF /* gePropertyScriptComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyScriptComponent.h; sourceTree = "<group>"; };
+		5554F0801AD2717000FD80AF /* gePropertyTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gePropertyTransform.cpp; sourceTree = "<group>"; };
+		5554F0811AD2717000FD80AF /* gePropertyTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gePropertyTransform.h; sourceTree = "<group>"; };
+		5554F0821AD2717000FD80AF /* geSettingsFog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geSettingsFog.cpp; sourceTree = "<group>"; };
+		5554F0831AD2717000FD80AF /* geSettingsFog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geSettingsFog.h; sourceTree = "<group>"; };
+		5554F0841AD2717000FD80AF /* geTextureThumbnailExtended.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geTextureThumbnailExtended.cpp; sourceTree = "<group>"; };
+		5554F0851AD2717000FD80AF /* geTextureThumbnailExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geTextureThumbnailExtended.h; sourceTree = "<group>"; };
+		5554F0871AD2717000FD80AF /* geSettingsAndroid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geSettingsAndroid.h; sourceTree = "<group>"; };
+		5554F0881AD2717000FD80AF /* geSettingsGlobal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geSettingsGlobal.h; sourceTree = "<group>"; };
+		5554F08A1AD2717000FD80AF /* geAssetImportDlg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geAssetImportDlg.cpp; sourceTree = "<group>"; };
+		5554F08B1AD2717000FD80AF /* geAssetImportDlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geAssetImportDlg.h; sourceTree = "<group>"; };
+		5554F08C1AD2717000FD80AF /* geColorDlg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geColorDlg.cpp; sourceTree = "<group>"; };
+		5554F08D1AD2717000FD80AF /* geColorDlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geColorDlg.h; sourceTree = "<group>"; };
+		5554F08E1AD2717000FD80AF /* geSecondryView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geSecondryView.cpp; sourceTree = "<group>"; };
+		5554F08F1AD2717000FD80AF /* geSecondryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geSecondryView.h; sourceTree = "<group>"; };
+		5554F0901AD2717000FD80AF /* geTestDlg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geTestDlg.cpp; sourceTree = "<group>"; };
+		5554F0911AD2717000FD80AF /* geTestDlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geTestDlg.h; sourceTree = "<group>"; };
+		5554F0921AD2717000FD80AF /* geTextureDlg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geTextureDlg.cpp; sourceTree = "<group>"; };
+		5554F0931AD2717000FD80AF /* geTextureDlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geTextureDlg.h; sourceTree = "<group>"; };
+		5554F0951AD2717000FD80AF /* Sprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sprite.cpp; sourceTree = "<group>"; };
+		5554F0961AD2717000FD80AF /* Sprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sprite.h; sourceTree = "<group>"; };
+		5554F0971AD2717000FD80AF /* Sprite2Dx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sprite2Dx.cpp; sourceTree = "<group>"; };
+		5554F0981AD2717000FD80AF /* Sprite2Dx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sprite2Dx.h; sourceTree = "<group>"; };
+		5554F09A1AD2717000FD80AF /* geCrc32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geCrc32.h; sourceTree = "<group>"; };
+		5554F09B1AD2717000FD80AF /* geDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geDefines.h; sourceTree = "<group>"; };
+		5554F09C1AD2717000FD80AF /* geFontManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geFontManager.cpp; sourceTree = "<group>"; };
+		5554F09D1AD2717000FD80AF /* geFontManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geFontManager.h; sourceTree = "<group>"; };
+		5554F09E1AD2717000FD80AF /* geUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geUtil.h; sourceTree = "<group>"; };
+		5554F09F1AD2717000FD80AF /* geVector2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geVector2.h; sourceTree = "<group>"; };
+		5554F0A01AD2717000FD80AF /* geVector3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geVector3.h; sourceTree = "<group>"; };
+		5554F0A11AD2717000FD80AF /* geVector4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geVector4.h; sourceTree = "<group>"; };
+		5554F0A21AD2717000FD80AF /* objC_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objC_util.h; sourceTree = "<group>"; };
+		5554F0A31AD2717000FD80AF /* pxMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pxMath.h; sourceTree = "<group>"; };
+		5554F0B81AD2717000FD80AF /* arial_iphone10_80.ecf */ = {isa = PBXFileReference; lastKnownFileType = file; path = arial_iphone10_80.ecf; sourceTree = "<group>"; };
+		5554F0B91AD2717000FD80AF /* arial_iphone10_84.ecf */ = {isa = PBXFileReference; lastKnownFileType = file; path = arial_iphone10_84.ecf; sourceTree = "<group>"; };
+		5554F0BA1AD2717000FD80AF /* icons16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icons16x16.png; sourceTree = "<group>"; };
+		5554F0BB1AD2717000FD80AF /* light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = light.png; sourceTree = "<group>"; };
+		5554F0BD1AD2717000FD80AF /* cube.preview */ = {isa = PBXFileReference; lastKnownFileType = file; path = cube.preview; sourceTree = "<group>"; };
+		5554F0BE1AD2717000FD80AF /* Material.mat.preview */ = {isa = PBXFileReference; lastKnownFileType = file; path = Material.mat.preview; sourceTree = "<group>"; };
+		5554F0C11AD2717000FD80AF /* blurshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = blurshader.glsl; sourceTree = "<group>"; };
+		5554F0C21AD2717000FD80AF /* fog_exp2_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fog_exp2_shader.glsl; sourceTree = "<group>"; };
+		5554F0C31AD2717000FD80AF /* fog_exp_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fog_exp_shader.glsl; sourceTree = "<group>"; };
+		5554F0C41AD2717000FD80AF /* fog_linear_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fog_linear_shader.glsl; sourceTree = "<group>"; };
+		5554F0C51AD2717000FD80AF /* fontshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fontshader.glsl; sourceTree = "<group>"; };
+		5554F0C61AD2717000FD80AF /* guishader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guishader.glsl; sourceTree = "<group>"; };
+		5554F0C71AD2717000FD80AF /* only_diffuse.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = only_diffuse.glsl; sourceTree = "<group>"; };
+		5554F0C81AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = only_diffuse_with_color_pointer.glsl; sourceTree = "<group>"; };
+		5554F0C91AD2717000FD80AF /* shadowmap.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shadowmap.glsl; sourceTree = "<group>"; };
+		5554F0CB1AD2717000FD80AF /* fragment_main.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fragment_main.snippet; sourceTree = "<group>"; };
+		5554F0CC1AD2717000FD80AF /* light_unifrom_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = light_unifrom_vars.snippet; sourceTree = "<group>"; };
+		5554F0CD1AD2717000FD80AF /* material_unifrom_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = material_unifrom_vars.snippet; sourceTree = "<group>"; };
+		5554F0CE1AD2717000FD80AF /* matrices_uniform_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = matrices_uniform_vars.snippet; sourceTree = "<group>"; };
+		5554F0CF1AD2717000FD80AF /* vertex_attrib_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_attrib_vars.snippet; sourceTree = "<group>"; };
+		5554F0D01AD2717000FD80AF /* vertex_main.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_main.snippet; sourceTree = "<group>"; };
+		5554F0D11AD2717000FD80AF /* vertex_varying_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_varying_vars.snippet; sourceTree = "<group>"; };
+		5554F0D31AD2717000FD80AF /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		5554F0D41AD2717000FD80AF /* Diffuse.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Diffuse.shader; sourceTree = "<group>"; };
+		5554F0D51AD2717000FD80AF /* Diffuse_vlit.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Diffuse_vlit.shader; sourceTree = "<group>"; };
+		5554F0D61AD2717000FD80AF /* MultiTex.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MultiTex.shader; sourceTree = "<group>"; };
+		5554F0D71AD2717000FD80AF /* NormalMap.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMap.shader; sourceTree = "<group>"; };
+		5554F0D81AD2717000FD80AF /* NormalMapSeperateEmissive.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateEmissive.shader; sourceTree = "<group>"; };
+		5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateSpecular.shader; sourceTree = "<group>"; };
+		5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateSpecularEmissive.shader; sourceTree = "<group>"; };
+		5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSpecular.shader; sourceTree = "<group>"; };
+		5554F14C1AD2729100FD80AF /* libGEAREngine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGEAREngine.dylib; path = ../GEAREngine/build/Debug/libGEAREngine.dylib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5554EFD91AD26F9A00FD80AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5554F14D1AD2729100FD80AF /* libGEAREngine.dylib in Frameworks */,
+				5554F00A1AD270D000FD80AF /* SDL2.framework in Frameworks */,
+				5554F0081AD270A600FD80AF /* OpenGL.framework in Frameworks */,
+				5554F0061AD2709C00FD80AF /* GLUT.framework in Frameworks */,
+				5554F0041AD2708700FD80AF /* libfbxsdk.a in Frameworks */,
+				5554F0021AD2707000FD80AF /* libfreeimage.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5554EFD31AD26F9A00FD80AF = {
+			isa = PBXGroup;
+			children = (
+				5554F14C1AD2729100FD80AF /* libGEAREngine.dylib */,
+				5554F00B1AD2717000FD80AF /* GUIInternal */,
+				5554F0091AD270D000FD80AF /* SDL2.framework */,
+				5554F0071AD270A600FD80AF /* OpenGL.framework */,
+				5554F0051AD2709C00FD80AF /* GLUT.framework */,
+				5554F0031AD2708700FD80AF /* libfbxsdk.a */,
+				5554F0011AD2707000FD80AF /* libfreeimage.a */,
+				5554EFDE1AD26F9A00FD80AF /* GEARInternal */,
+				5554EFDD1AD26F9A00FD80AF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5554EFDD1AD26F9A00FD80AF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5554EFDC1AD26F9A00FD80AF /* GEARInternal.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5554EFDE1AD26F9A00FD80AF /* GEARInternal */ = {
+			isa = PBXGroup;
+			children = (
+				5554EFDF1AD26F9A00FD80AF /* Supporting Files */,
+			);
+			path = GEARInternal;
+			sourceTree = "<group>";
+		};
+		5554EFDF1AD26F9A00FD80AF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5554EFFF1AD2703000FD80AF /* main.cpp */,
+				5554EFE01AD26F9A00FD80AF /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5554F00B1AD2717000FD80AF /* GUIInternal */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0121AD2717000FD80AF /* GEAREditor */,
+				5554F0B61AD2717000FD80AF /* res */,
+			);
+			name = GUIInternal;
+			path = ../../GUIInternal;
+			sourceTree = "<group>";
+		};
+		5554F0121AD2717000FD80AF /* GEAREditor */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0131AD2717000FD80AF /* AssetImporter.cpp */,
+				5554F0141AD2717000FD80AF /* AssetImporter.h */,
+				5554F0151AD2717000FD80AF /* core */,
+				5554F01A1AD2717000FD80AF /* EditorApp.cpp */,
+				5554F01B1AD2717000FD80AF /* EditorApp.h */,
+				5554F01C1AD2717000FD80AF /* gui */,
+				5554F0441AD2717000FD80AF /* OSSpecific */,
+				5554F0481AD2717000FD80AF /* renderer */,
+				5554F0531AD2717000FD80AF /* scenes */,
+				5554F0891AD2717000FD80AF /* secondryViews */,
+				5554F0941AD2717000FD80AF /* SpriteManager */,
+				5554F0991AD2717000FD80AF /* util */,
+			);
+			path = GEAREditor;
+			sourceTree = "<group>";
+		};
+		5554F0151AD2717000FD80AF /* core */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0161AD2717000FD80AF /* geTexture.h */,
+				5554F0171AD2717000FD80AF /* geTextureManager.cpp */,
+				5554F0181AD2717000FD80AF /* geTextureManager.h */,
+				5554F0191AD2717000FD80AF /* steTexturePacket.h */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		5554F01C1AD2717000FD80AF /* gui */ = {
+			isa = PBXGroup;
+			children = (
+				5554F01D1AD2717000FD80AF /* geButton.cpp */,
+				5554F01E1AD2717000FD80AF /* geButton.h */,
+				5554F01F1AD2717000FD80AF /* geColorControl.cpp */,
+				5554F0201AD2717000FD80AF /* geColorControl.h */,
+				5554F0211AD2717000FD80AF /* geGUIBase.cpp */,
+				5554F0221AD2717000FD80AF /* geGUIBase.h */,
+				5554F0231AD2717000FD80AF /* geGUIManager.cpp */,
+				5554F0241AD2717000FD80AF /* geGUIManager.h */,
+				5554F0251AD2717000FD80AF /* geHorizontalSlider.cpp */,
+				5554F0261AD2717000FD80AF /* geHorizontalSlider.h */,
+				5554F0271AD2717000FD80AF /* geLayout.cpp */,
+				5554F0281AD2717000FD80AF /* geLayout.h */,
+				5554F0291AD2717000FD80AF /* geLayoutManager.cpp */,
+				5554F02A1AD2717000FD80AF /* geLayoutManager.h */,
+				5554F02B1AD2717000FD80AF /* gePushButton.cpp */,
+				5554F02C1AD2717000FD80AF /* gePushButton.h */,
+				5554F02D1AD2717000FD80AF /* geScrollBar.cpp */,
+				5554F02E1AD2717000FD80AF /* geScrollBar.h */,
+				5554F02F1AD2717000FD80AF /* geSeperator.cpp */,
+				5554F0301AD2717000FD80AF /* geSeperator.h */,
+				5554F0311AD2717000FD80AF /* geStaticTextBox.cpp */,
+				5554F0321AD2717000FD80AF /* geStaticTextBox.h */,
+				5554F0331AD2717000FD80AF /* geTextBox.cpp */,
+				5554F0341AD2717000FD80AF /* geTextBox.h */,
+				5554F0351AD2717000FD80AF /* geTextureThumbnail.cpp */,
+				5554F0361AD2717000FD80AF /* geTextureThumbnail.h */,
+				5554F0371AD2717000FD80AF /* geToolBar.cpp */,
+				5554F0381AD2717000FD80AF /* geToolBar.h */,
+				5554F0391AD2717000FD80AF /* geToolBarDropMenu.cpp */,
+				5554F03A1AD2717000FD80AF /* geToolBarDropMenu.h */,
+				5554F03B1AD2717000FD80AF /* geToolBarSeperator.h */,
+				5554F03C1AD2717000FD80AF /* geTreeView.cpp */,
+				5554F03D1AD2717000FD80AF /* geTreeView.h */,
+				5554F03E1AD2717000FD80AF /* geWindow.cpp */,
+				5554F03F1AD2717000FD80AF /* geWindow.h */,
+				5554F0401AD2717000FD80AF /* geWindowColumn.cpp */,
+				5554F0411AD2717000FD80AF /* geWindowColumn.h */,
+				5554F0421AD2717000FD80AF /* RoundedRectControl.cpp */,
+				5554F0431AD2717000FD80AF /* RoundedRectControl.h */,
+			);
+			path = gui;
+			sourceTree = "<group>";
+		};
+		5554F0441AD2717000FD80AF /* OSSpecific */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0451AD2717000FD80AF /* ConfirmationDialog.cpp */,
+				5554F0461AD2717000FD80AF /* ConfirmationDialog.h */,
+				5554F0471AD2717000FD80AF /* MDropData.h */,
+			);
+			path = OSSpecific;
+			sourceTree = "<group>";
+		};
+		5554F0481AD2717000FD80AF /* renderer */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0491AD2717000FD80AF /* glew.h */,
+				5554F04A1AD2717000FD80AF /* glincludes.h */,
+				5554F04B1AD2717000FD80AF /* matrix4x4f.h */,
+				5554F04C1AD2717000FD80AF /* renderer.cpp */,
+				5554F04D1AD2717000FD80AF /* renderer.h */,
+				5554F04E1AD2717000FD80AF /* rendererGL10.cpp */,
+				5554F04F1AD2717000FD80AF /* rendererGL10.h */,
+				5554F0501AD2717000FD80AF /* rendererGL20.cpp */,
+				5554F0511AD2717000FD80AF /* rendererGL20.h */,
+				5554F0521AD2717000FD80AF /* wglew.h */,
+			);
+			path = renderer;
+			sourceTree = "<group>";
+		};
+		5554F0531AD2717000FD80AF /* scenes */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0541AD2717000FD80AF /* assetUserData.h */,
+				5554F0551AD2717000FD80AF /* gearSceneConsole.cpp */,
+				5554F0561AD2717000FD80AF /* gearSceneConsole.h */,
+				5554F0571AD2717000FD80AF /* gearSceneFileView.cpp */,
+				5554F0581AD2717000FD80AF /* gearSceneFileView.h */,
+				5554F0591AD2717000FD80AF /* gearSceneHierarchy.cpp */,
+				5554F05A1AD2717000FD80AF /* gearSceneHierarchy.h */,
+				5554F05B1AD2717000FD80AF /* gearScenePreview.cpp */,
+				5554F05C1AD2717000FD80AF /* gearScenePreview.h */,
+				5554F05D1AD2717000FD80AF /* gearSceneProject.cpp */,
+				5554F05E1AD2717000FD80AF /* gearSceneProject.h */,
+				5554F05F1AD2717000FD80AF /* gearScenePropertyEditor.cpp */,
+				5554F0601AD2717000FD80AF /* gearScenePropertyEditor.h */,
+				5554F0611AD2717000FD80AF /* gearSceneSettings.cpp */,
+				5554F0621AD2717000FD80AF /* gearSceneSettings.h */,
+				5554F0631AD2717000FD80AF /* gearSceneWorldEditor.cpp */,
+				5554F0641AD2717000FD80AF /* gearSceneWorldEditor.h */,
+				5554F0651AD2717000FD80AF /* propertyViews */,
+				5554F0861AD2717000FD80AF /* settingsViews */,
+			);
+			path = scenes;
+			sourceTree = "<group>";
+		};
+		5554F0651AD2717000FD80AF /* propertyViews */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0661AD2717000FD80AF /* geNullMaterialExtended.cpp */,
+				5554F0671AD2717000FD80AF /* geNullMaterialExtended.h */,
+				5554F0681AD2717000FD80AF /* gePropertyAddComponent.cpp */,
+				5554F0691AD2717000FD80AF /* gePropertyAddComponent.h */,
+				5554F06A1AD2717000FD80AF /* gePropertyAnimationSet.h */,
+				5554F06B1AD2717000FD80AF /* gePropertyBlurProcessor.cpp */,
+				5554F06C1AD2717000FD80AF /* gePropertyBlurProcessor.h */,
+				5554F06D1AD2717000FD80AF /* gePropertyCamera.cpp */,
+				5554F06E1AD2717000FD80AF /* gePropertyCamera.h */,
+				5554F06F1AD2717000FD80AF /* gePropertyLayers.cpp */,
+				5554F0701AD2717000FD80AF /* gePropertyLayers.h */,
+				5554F0711AD2717000FD80AF /* gePropertyLight.cpp */,
+				5554F0721AD2717000FD80AF /* gePropertyLight.h */,
+				5554F0731AD2717000FD80AF /* gePropertyMaterial.cpp */,
+				5554F0741AD2717000FD80AF /* gePropertyMaterial.h */,
+				5554F0751AD2717000FD80AF /* gePropertyMeshPreview.h */,
+				5554F0761AD2717000FD80AF /* gePropertyObject3d.cpp */,
+				5554F0771AD2717000FD80AF /* gePropertyObject3d.h */,
+				5554F0781AD2717000FD80AF /* gePropertyOctree.cpp */,
+				5554F0791AD2717000FD80AF /* gePropertyOctree.h */,
+				5554F07A1AD2717000FD80AF /* gePropertyOpenOnEditor.cpp */,
+				5554F07B1AD2717000FD80AF /* gePropertyOpenOnEditor.h */,
+				5554F07C1AD2717000FD80AF /* gePropertySaveMetaData.cpp */,
+				5554F07D1AD2717000FD80AF /* gePropertySaveMetaData.h */,
+				5554F07E1AD2717000FD80AF /* gePropertyScriptComponent.cpp */,
+				5554F07F1AD2717000FD80AF /* gePropertyScriptComponent.h */,
+				5554F0801AD2717000FD80AF /* gePropertyTransform.cpp */,
+				5554F0811AD2717000FD80AF /* gePropertyTransform.h */,
+				5554F0821AD2717000FD80AF /* geSettingsFog.cpp */,
+				5554F0831AD2717000FD80AF /* geSettingsFog.h */,
+				5554F0841AD2717000FD80AF /* geTextureThumbnailExtended.cpp */,
+				5554F0851AD2717000FD80AF /* geTextureThumbnailExtended.h */,
+			);
+			path = propertyViews;
+			sourceTree = "<group>";
+		};
+		5554F0861AD2717000FD80AF /* settingsViews */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0871AD2717000FD80AF /* geSettingsAndroid.h */,
+				5554F0881AD2717000FD80AF /* geSettingsGlobal.h */,
+			);
+			path = settingsViews;
+			sourceTree = "<group>";
+		};
+		5554F0891AD2717000FD80AF /* secondryViews */ = {
+			isa = PBXGroup;
+			children = (
+				5554F08A1AD2717000FD80AF /* geAssetImportDlg.cpp */,
+				5554F08B1AD2717000FD80AF /* geAssetImportDlg.h */,
+				5554F08C1AD2717000FD80AF /* geColorDlg.cpp */,
+				5554F08D1AD2717000FD80AF /* geColorDlg.h */,
+				5554F08E1AD2717000FD80AF /* geSecondryView.cpp */,
+				5554F08F1AD2717000FD80AF /* geSecondryView.h */,
+				5554F0901AD2717000FD80AF /* geTestDlg.cpp */,
+				5554F0911AD2717000FD80AF /* geTestDlg.h */,
+				5554F0921AD2717000FD80AF /* geTextureDlg.cpp */,
+				5554F0931AD2717000FD80AF /* geTextureDlg.h */,
+			);
+			path = secondryViews;
+			sourceTree = "<group>";
+		};
+		5554F0941AD2717000FD80AF /* SpriteManager */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0951AD2717000FD80AF /* Sprite.cpp */,
+				5554F0961AD2717000FD80AF /* Sprite.h */,
+				5554F0971AD2717000FD80AF /* Sprite2Dx.cpp */,
+				5554F0981AD2717000FD80AF /* Sprite2Dx.h */,
+			);
+			path = SpriteManager;
+			sourceTree = "<group>";
+		};
+		5554F0991AD2717000FD80AF /* util */ = {
+			isa = PBXGroup;
+			children = (
+				5554F09A1AD2717000FD80AF /* geCrc32.h */,
+				5554F09B1AD2717000FD80AF /* geDefines.h */,
+				5554F09C1AD2717000FD80AF /* geFontManager.cpp */,
+				5554F09D1AD2717000FD80AF /* geFontManager.h */,
+				5554F09E1AD2717000FD80AF /* geUtil.h */,
+				5554F09F1AD2717000FD80AF /* geVector2.h */,
+				5554F0A01AD2717000FD80AF /* geVector3.h */,
+				5554F0A11AD2717000FD80AF /* geVector4.h */,
+				5554F0A21AD2717000FD80AF /* objC_util.h */,
+				5554F0A31AD2717000FD80AF /* pxMath.h */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		5554F0B61AD2717000FD80AF /* res */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0B71AD2717000FD80AF /* fonts */,
+				5554F0BA1AD2717000FD80AF /* icons16x16.png */,
+				5554F0BB1AD2717000FD80AF /* light.png */,
+				5554F0BC1AD2717000FD80AF /* preview */,
+				5554F0BF1AD2717000FD80AF /* shadersWin32 */,
+			);
+			path = res;
+			sourceTree = "<group>";
+		};
+		5554F0B71AD2717000FD80AF /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0B81AD2717000FD80AF /* arial_iphone10_80.ecf */,
+				5554F0B91AD2717000FD80AF /* arial_iphone10_84.ecf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+		5554F0BC1AD2717000FD80AF /* preview */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0BD1AD2717000FD80AF /* cube.preview */,
+				5554F0BE1AD2717000FD80AF /* Material.mat.preview */,
+			);
+			path = preview;
+			sourceTree = "<group>";
+		};
+		5554F0BF1AD2717000FD80AF /* shadersWin32 */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0C01AD2717000FD80AF /* hwshader */,
+				5554F0CA1AD2717000FD80AF /* snippets */,
+				5554F0D21AD2717000FD80AF /* surfaceShader */,
+			);
+			path = shadersWin32;
+			sourceTree = "<group>";
+		};
+		5554F0C01AD2717000FD80AF /* hwshader */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0C11AD2717000FD80AF /* blurshader.glsl */,
+				5554F0C21AD2717000FD80AF /* fog_exp2_shader.glsl */,
+				5554F0C31AD2717000FD80AF /* fog_exp_shader.glsl */,
+				5554F0C41AD2717000FD80AF /* fog_linear_shader.glsl */,
+				5554F0C51AD2717000FD80AF /* fontshader.glsl */,
+				5554F0C61AD2717000FD80AF /* guishader.glsl */,
+				5554F0C71AD2717000FD80AF /* only_diffuse.glsl */,
+				5554F0C81AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl */,
+				5554F0C91AD2717000FD80AF /* shadowmap.glsl */,
+			);
+			path = hwshader;
+			sourceTree = "<group>";
+		};
+		5554F0CA1AD2717000FD80AF /* snippets */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0CB1AD2717000FD80AF /* fragment_main.snippet */,
+				5554F0CC1AD2717000FD80AF /* light_unifrom_vars.snippet */,
+				5554F0CD1AD2717000FD80AF /* material_unifrom_vars.snippet */,
+				5554F0CE1AD2717000FD80AF /* matrices_uniform_vars.snippet */,
+				5554F0CF1AD2717000FD80AF /* vertex_attrib_vars.snippet */,
+				5554F0D01AD2717000FD80AF /* vertex_main.snippet */,
+				5554F0D11AD2717000FD80AF /* vertex_varying_vars.snippet */,
+			);
+			path = snippets;
+			sourceTree = "<group>";
+		};
+		5554F0D21AD2717000FD80AF /* surfaceShader */ = {
+			isa = PBXGroup;
+			children = (
+				5554F0D31AD2717000FD80AF /* .gitignore */,
+				5554F0D41AD2717000FD80AF /* Diffuse.shader */,
+				5554F0D51AD2717000FD80AF /* Diffuse_vlit.shader */,
+				5554F0D61AD2717000FD80AF /* MultiTex.shader */,
+				5554F0D71AD2717000FD80AF /* NormalMap.shader */,
+				5554F0D81AD2717000FD80AF /* NormalMapSeperateEmissive.shader */,
+				5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */,
+				5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */,
+				5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */,
+			);
+			path = surfaceShader;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5554EFDB1AD26F9A00FD80AF /* GEARInternal */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5554EFF91AD26F9A00FD80AF /* Build configuration list for PBXNativeTarget "GEARInternal" */;
+			buildPhases = (
+				5554EFD81AD26F9A00FD80AF /* Sources */,
+				5554EFD91AD26F9A00FD80AF /* Frameworks */,
+				5554EFDA1AD26F9A00FD80AF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GEARInternal;
+			productName = GEARInternal;
+			productReference = 5554EFDC1AD26F9A00FD80AF /* GEARInternal.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5554EFD41AD26F9A00FD80AF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				ORGANIZATIONNAME = ea;
+				TargetAttributes = {
+					5554EFDB1AD26F9A00FD80AF = {
+						CreatedOnToolsVersion = 6.2;
+					};
+				};
+			};
+			buildConfigurationList = 5554EFD71AD26F9A00FD80AF /* Build configuration list for PBXProject "GEARInternal" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5554EFD31AD26F9A00FD80AF;
+			productRefGroup = 5554EFDD1AD26F9A00FD80AF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5554EFDB1AD26F9A00FD80AF /* GEARInternal */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5554EFDA1AD26F9A00FD80AF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5554F12E1AD2717000FD80AF /* light.png in Resources */,
+				5554F1351AD2717000FD80AF /* fontshader.glsl in Resources */,
+				5554F1321AD2717000FD80AF /* fog_exp2_shader.glsl in Resources */,
+				5554F1361AD2717000FD80AF /* guishader.glsl in Resources */,
+				5554F1311AD2717000FD80AF /* blurshader.glsl in Resources */,
+				5554F12D1AD2717000FD80AF /* icons16x16.png in Resources */,
+				5554F1481AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader in Resources */,
+				5554F13F1AD2717000FD80AF /* vertex_main.snippet in Resources */,
+				5554F1381AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl in Resources */,
+				5554F1471AD2717000FD80AF /* NormalMapSeperateSpecular.shader in Resources */,
+				5554F13D1AD2717000FD80AF /* matrices_uniform_vars.snippet in Resources */,
+				5554F1371AD2717000FD80AF /* only_diffuse.glsl in Resources */,
+				5554F1441AD2717000FD80AF /* MultiTex.shader in Resources */,
+				5554F1421AD2717000FD80AF /* Diffuse.shader in Resources */,
+				5554F1461AD2717000FD80AF /* NormalMapSeperateEmissive.shader in Resources */,
+				5554F12F1AD2717000FD80AF /* cube.preview in Resources */,
+				5554F1341AD2717000FD80AF /* fog_linear_shader.glsl in Resources */,
+				5554F1391AD2717000FD80AF /* shadowmap.glsl in Resources */,
+				5554F1451AD2717000FD80AF /* NormalMap.shader in Resources */,
+				5554F1491AD2717000FD80AF /* NormalMapSpecular.shader in Resources */,
+				5554F12B1AD2717000FD80AF /* arial_iphone10_80.ecf in Resources */,
+				5554F12C1AD2717000FD80AF /* arial_iphone10_84.ecf in Resources */,
+				5554F13C1AD2717000FD80AF /* material_unifrom_vars.snippet in Resources */,
+				5554F1401AD2717000FD80AF /* vertex_varying_vars.snippet in Resources */,
+				5554F1331AD2717000FD80AF /* fog_exp_shader.glsl in Resources */,
+				5554F1301AD2717000FD80AF /* Material.mat.preview in Resources */,
+				5554F13E1AD2717000FD80AF /* vertex_attrib_vars.snippet in Resources */,
+				5554F1431AD2717000FD80AF /* Diffuse_vlit.shader in Resources */,
+				5554F13A1AD2717000FD80AF /* fragment_main.snippet in Resources */,
+				5554F1411AD2717000FD80AF /* .gitignore in Resources */,
+				5554F13B1AD2717000FD80AF /* light_unifrom_vars.snippet in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5554EFD81AD26F9A00FD80AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5554F0EB1AD2717000FD80AF /* geGUIBase.cpp in Sources */,
+				5554F1111AD2717000FD80AF /* gePropertyOpenOnEditor.cpp in Sources */,
+				5554F1031AD2717000FD80AF /* gearScenePreview.cpp in Sources */,
+				5554F0EF1AD2717000FD80AF /* geLayoutManager.cpp in Sources */,
+				5554F1051AD2717000FD80AF /* gearScenePropertyEditor.cpp in Sources */,
+				5554F0F31AD2717000FD80AF /* geStaticTextBox.cpp in Sources */,
+				5554F0F91AD2717000FD80AF /* geWindow.cpp in Sources */,
+				5554F1161AD2717000FD80AF /* geTextureThumbnailExtended.cpp in Sources */,
+				5554F0FF1AD2717000FD80AF /* rendererGL20.cpp in Sources */,
+				5554F0E91AD2717000FD80AF /* geButton.cpp in Sources */,
+				5554F0E71AD2717000FD80AF /* geTextureManager.cpp in Sources */,
+				5554F0FE1AD2717000FD80AF /* rendererGL10.cpp in Sources */,
+				5554F1061AD2717000FD80AF /* gearSceneSettings.cpp in Sources */,
+				5554F1041AD2717000FD80AF /* gearSceneProject.cpp in Sources */,
+				5554F10A1AD2717000FD80AF /* gePropertyBlurProcessor.cpp in Sources */,
+				5554F0F71AD2717000FD80AF /* geToolBarDropMenu.cpp in Sources */,
+				5554F1131AD2717000FD80AF /* gePropertyScriptComponent.cpp in Sources */,
+				5554F0EE1AD2717000FD80AF /* geLayout.cpp in Sources */,
+				5554F1091AD2717000FD80AF /* gePropertyAddComponent.cpp in Sources */,
+				5554F10F1AD2717000FD80AF /* gePropertyObject3d.cpp in Sources */,
+				5554F10D1AD2717000FD80AF /* gePropertyLight.cpp in Sources */,
+				5554F1071AD2717000FD80AF /* gearSceneWorldEditor.cpp in Sources */,
+				5554F1171AD2717000FD80AF /* geAssetImportDlg.cpp in Sources */,
+				5554F0FC1AD2717000FD80AF /* ConfirmationDialog.cpp in Sources */,
+				5554F0E61AD2717000FD80AF /* AssetImporter.cpp in Sources */,
+				5554F0F61AD2717000FD80AF /* geToolBar.cpp in Sources */,
+				5554F11C1AD2717000FD80AF /* Sprite.cpp in Sources */,
+				5554F0F51AD2717000FD80AF /* geTextureThumbnail.cpp in Sources */,
+				5554F0FD1AD2717000FD80AF /* renderer.cpp in Sources */,
+				5554F11B1AD2717000FD80AF /* geTextureDlg.cpp in Sources */,
+				5554F11D1AD2717000FD80AF /* Sprite2Dx.cpp in Sources */,
+				5554F10C1AD2717000FD80AF /* gePropertyLayers.cpp in Sources */,
+				5554F1181AD2717000FD80AF /* geColorDlg.cpp in Sources */,
+				5554F0FB1AD2717000FD80AF /* RoundedRectControl.cpp in Sources */,
+				5554F0EA1AD2717000FD80AF /* geColorControl.cpp in Sources */,
+				5554F0F41AD2717000FD80AF /* geTextBox.cpp in Sources */,
+				5554F0FA1AD2717000FD80AF /* geWindowColumn.cpp in Sources */,
+				5554F1121AD2717000FD80AF /* gePropertySaveMetaData.cpp in Sources */,
+				5554F1151AD2717000FD80AF /* geSettingsFog.cpp in Sources */,
+				5554F0F21AD2717000FD80AF /* geSeperator.cpp in Sources */,
+				5554F0EC1AD2717000FD80AF /* geGUIManager.cpp in Sources */,
+				5554F1191AD2717000FD80AF /* geSecondryView.cpp in Sources */,
+				5554F1081AD2717000FD80AF /* geNullMaterialExtended.cpp in Sources */,
+				5554F1101AD2717000FD80AF /* gePropertyOctree.cpp in Sources */,
+				5554F1021AD2717000FD80AF /* gearSceneHierarchy.cpp in Sources */,
+				5554F1141AD2717000FD80AF /* gePropertyTransform.cpp in Sources */,
+				5554F0E81AD2717000FD80AF /* EditorApp.cpp in Sources */,
+				5554F10E1AD2717000FD80AF /* gePropertyMaterial.cpp in Sources */,
+				5554F0F01AD2717000FD80AF /* gePushButton.cpp in Sources */,
+				5554F0F11AD2717000FD80AF /* geScrollBar.cpp in Sources */,
+				5554F11E1AD2717000FD80AF /* geFontManager.cpp in Sources */,
+				5554F0ED1AD2717000FD80AF /* geHorizontalSlider.cpp in Sources */,
+				5554F1001AD2717000FD80AF /* gearSceneConsole.cpp in Sources */,
+				5554F11A1AD2717000FD80AF /* geTestDlg.cpp in Sources */,
+				5554F10B1AD2717000FD80AF /* gePropertyCamera.cpp in Sources */,
+				5554F0F81AD2717000FD80AF /* geTreeView.cpp in Sources */,
+				5554F0001AD2703000FD80AF /* main.cpp in Sources */,
+				5554F1011AD2717000FD80AF /* gearSceneFileView.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5554EFF71AD26F9A00FD80AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		5554EFF81AD26F9A00FD80AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		5554EFFA1AD26F9A00FD80AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					USE_FBO,
+					USEMONOENGINE,
+					"USE_ProgrammablePipeLine=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"/Users/amudaliar/Desktop/monoForMac/include/mono-2.0",
+				);
+				INFOPLIST_FILE = GEARInternal/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FreeImage/macos,
+					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/release",
+					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/macosProj/GEAREngine/build/Debug,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 /Applications/Autodesk/FBXSDK/2015.1/include";
+			};
+			name = Debug;
+		};
+		5554EFFB1AD26F9A00FD80AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					USE_FBO,
+					USEMONOENGINE,
+					"USE_ProgrammablePipeLine=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"/Users/amudaliar/Desktop/monoForMac/include/mono-2.0",
+				);
+				INFOPLIST_FILE = GEARInternal/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FreeImage/macos,
+					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/release",
+					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/macosProj/GEAREngine/build/Debug,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 /Applications/Autodesk/FBXSDK/2015.1/include";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5554EFD71AD26F9A00FD80AF /* Build configuration list for PBXProject "GEARInternal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5554EFF71AD26F9A00FD80AF /* Debug */,
+				5554EFF81AD26F9A00FD80AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5554EFF91AD26F9A00FD80AF /* Build configuration list for PBXNativeTarget "GEARInternal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5554EFFA1AD26F9A00FD80AF /* Debug */,
+				5554EFFB1AD26F9A00FD80AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5554EFD41AD26F9A00FD80AF /* Project object */;
+}

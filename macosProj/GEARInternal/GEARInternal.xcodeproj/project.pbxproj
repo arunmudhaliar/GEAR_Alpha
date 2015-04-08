@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5554F0001AD2703000FD80AF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EFFF1AD2703000FD80AF /* main.cpp */; };
+		5554F0001AD2703000FD80AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5554EFFF1AD2703000FD80AF /* main.m */; };
 		5554F0021AD2707000FD80AF /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0011AD2707000FD80AF /* libfreeimage.a */; };
 		5554F0041AD2708700FD80AF /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0031AD2708700FD80AF /* libfbxsdk.a */; };
 		5554F0061AD2709C00FD80AF /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0051AD2709C00FD80AF /* GLUT.framework */; };
@@ -102,12 +102,16 @@
 		5554F1481AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */; };
 		5554F1491AD2717000FD80AF /* NormalMapSpecular.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */; };
 		5554F14D1AD2729100FD80AF /* libGEAREngine.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F14C1AD2729100FD80AF /* libGEAREngine.dylib */; };
+		5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5576F3041AD2DD5E008642F5 /* AppKit.framework */; };
+		5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5576F3061AD2F052008642F5 /* MenuImp.mm */; };
+		55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */; };
+		55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5554EFDC1AD26F9A00FD80AF /* GEARInternal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GEARInternal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5554EFE01AD26F9A00FD80AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5554EFFF1AD2703000FD80AF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		5554EFFF1AD2703000FD80AF /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5554F0011AD2707000FD80AF /* libfreeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreeimage.a; path = ../../FreeImage/macos/libfreeimage.a; sourceTree = "<group>"; };
 		5554F0031AD2708700FD80AF /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../../../../../../Applications/Autodesk/FBXSDK/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
 		5554F0051AD2709C00FD80AF /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -280,6 +284,13 @@
 		5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateSpecularEmissive.shader; sourceTree = "<group>"; };
 		5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSpecular.shader; sourceTree = "<group>"; };
 		5554F14C1AD2729100FD80AF /* libGEAREngine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGEAREngine.dylib; path = ../GEAREngine/build/Debug/libGEAREngine.dylib; sourceTree = "<group>"; };
+		5576F3041AD2DD5E008642F5 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		5576F3061AD2F052008642F5 /* MenuImp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuImp.mm; sourceTree = "<group>"; };
+		5576F3081AD2F153008642F5 /* MenuImp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuImp.h; sourceTree = "<group>"; };
+		5576F3091AD30242008642F5 /* MenuCPPInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuCPPInterface.h; sourceTree = "<group>"; };
+		55BEFD371AD59EC40071A2D5 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		55BEFD3B1AD59F480071A2D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -287,6 +298,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */,
 				5554F14D1AD2729100FD80AF /* libGEAREngine.dylib in Frameworks */,
 				5554F00A1AD270D000FD80AF /* SDL2.framework in Frameworks */,
 				5554F0081AD270A600FD80AF /* OpenGL.framework in Frameworks */,
@@ -302,6 +314,7 @@
 		5554EFD31AD26F9A00FD80AF = {
 			isa = PBXGroup;
 			children = (
+				5576F3041AD2DD5E008642F5 /* AppKit.framework */,
 				5554F14C1AD2729100FD80AF /* libGEAREngine.dylib */,
 				5554F00B1AD2717000FD80AF /* GUIInternal */,
 				5554F0091AD270D000FD80AF /* SDL2.framework */,
@@ -333,7 +346,10 @@
 		5554EFDF1AD26F9A00FD80AF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				5554EFFF1AD2703000FD80AF /* main.cpp */,
+				55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */,
+				55BEFD371AD59EC40071A2D5 /* AppDelegate.h */,
+				55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */,
+				5554EFFF1AD2703000FD80AF /* main.m */,
 				5554EFE01AD26F9A00FD80AF /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -428,9 +444,12 @@
 		5554F0441AD2717000FD80AF /* OSSpecific */ = {
 			isa = PBXGroup;
 			children = (
+				5576F3061AD2F052008642F5 /* MenuImp.mm */,
+				5576F3081AD2F153008642F5 /* MenuImp.h */,
 				5554F0451AD2717000FD80AF /* ConfirmationDialog.cpp */,
 				5554F0461AD2717000FD80AF /* ConfirmationDialog.h */,
 				5554F0471AD2717000FD80AF /* MDropData.h */,
+				5576F3091AD30242008642F5 /* MenuCPPInterface.h */,
 			);
 			path = OSSpecific;
 			sourceTree = "<group>";
@@ -737,6 +756,7 @@
 				5554F12B1AD2717000FD80AF /* arial_iphone10_80.ecf in Resources */,
 				5554F12C1AD2717000FD80AF /* arial_iphone10_84.ecf in Resources */,
 				5554F13C1AD2717000FD80AF /* material_unifrom_vars.snippet in Resources */,
+				55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */,
 				5554F1401AD2717000FD80AF /* vertex_varying_vars.snippet in Resources */,
 				5554F1331AD2717000FD80AF /* fog_exp_shader.glsl in Resources */,
 				5554F1301AD2717000FD80AF /* Material.mat.preview in Resources */,
@@ -755,6 +775,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */,
 				5554F0EB1AD2717000FD80AF /* geGUIBase.cpp in Sources */,
 				5554F1111AD2717000FD80AF /* gePropertyOpenOnEditor.cpp in Sources */,
 				5554F1031AD2717000FD80AF /* gearScenePreview.cpp in Sources */,
@@ -798,6 +819,7 @@
 				5554F0EC1AD2717000FD80AF /* geGUIManager.cpp in Sources */,
 				5554F1191AD2717000FD80AF /* geSecondryView.cpp in Sources */,
 				5554F1081AD2717000FD80AF /* geNullMaterialExtended.cpp in Sources */,
+				55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */,
 				5554F1101AD2717000FD80AF /* gePropertyOctree.cpp in Sources */,
 				5554F1021AD2717000FD80AF /* gearSceneHierarchy.cpp in Sources */,
 				5554F1141AD2717000FD80AF /* gePropertyTransform.cpp in Sources */,
@@ -811,12 +833,23 @@
 				5554F11A1AD2717000FD80AF /* geTestDlg.cpp in Sources */,
 				5554F10B1AD2717000FD80AF /* gePropertyCamera.cpp in Sources */,
 				5554F0F81AD2717000FD80AF /* geTreeView.cpp in Sources */,
-				5554F0001AD2703000FD80AF /* main.cpp in Sources */,
+				5554F0001AD2703000FD80AF /* main.m in Sources */,
 				5554F1011AD2717000FD80AF /* gearSceneFileView.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				55BEFD3B1AD59F480071A2D5 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		5554EFF71AD26F9A00FD80AF /* Debug */ = {

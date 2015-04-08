@@ -177,22 +177,14 @@ void geToolBarDropMenu::onButtonClicked()
 		item->menu_handle=hCurrentPopupMenu;
 		if(item->type==0)
 		{
-			//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, item->menuid, item->name);
 			minfo.wID = item->menuid;
 			minfo.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA; 
-			//MIIM_SUBMENU
 			if(item->sub_menu_handle!=NULL)
 			{
 				minfo.hSubMenu=item->sub_menu_handle;
 				minfo.fMask|=MIIM_SUBMENU;
 				
 			}
-
-			//if(item->hasCheck)
-			//{
-			//	minfo.fMask|=MIIM_CHECKMARKS;
-			//	minfo.fState|=MFS_CHECKED;
-			//}
 
 			minfo.fType = MFT_STRING;
 			minfo.dwTypeData = item->name;
@@ -206,7 +198,6 @@ void geToolBarDropMenu::onButtonClicked()
 		}
 		else if(item->type==1)
 		{
-			//InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 			minfo.wID = 0;
 			minfo.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA; 
 			minfo.fType = MFT_SEPARATOR;
@@ -214,6 +205,7 @@ void geToolBarDropMenu::onButtonClicked()
 		}
 	}
 	//
+    
 	geGUIBase* baseGUI=this;
 	geGUIBase* rootTVNode=this;
 	geVector2f absPos;

@@ -44,6 +44,7 @@ public:
 	HWND getWindowHandle()		{	return m_hWnd;	}
 #endif
     
+    SDL_Window* getWindow()     {   return m_pWindow;   }
 private:
 	bool killGL();
 

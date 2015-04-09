@@ -21,7 +21,7 @@ public:
 		//m_pPushBtn_Object3dVisible->create(renderer, this, "", 15, 10);
 		//m_pPushBtn_Object3dVisible->setGUIObserver(this);
 
-		char buffer[1024];
+		char buffer[FILENAME_MAX];
 		//ant home
 		memset(buffer, 0, sizeof(buffer));
 		int ret=GetEnvironmentVariable("ANT_HOME", buffer, sizeof(buffer));

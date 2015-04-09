@@ -679,7 +679,7 @@ void object3d::read(gxFile& file)
 	for(int x=0;x<nAttachedScripts;x++)
 	{
 		char* scriptname=file.ReadString();
-		char temp_scriptname[1024];
+		char temp_scriptname[FILENAME_MAX];
 		GX_STRCPY(temp_scriptname, scriptname);
 		GX_DELETE_ARY(scriptname);
 		DEBUG_PRINT("attached script %s", temp_scriptname);

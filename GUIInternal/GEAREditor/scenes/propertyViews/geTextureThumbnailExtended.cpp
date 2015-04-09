@@ -37,7 +37,7 @@ void geTextureThumbnailExtended::onDragDrop(int x, int y, MDropData* dropObject)
 			gxSubMap* map = (gxSubMap*)getUserData();
 			if(map)
 			{
-				char absolutepath[1024];
+				char absolutepath[FILENAME_MAX];
 				sprintf(absolutepath, "%s/Assets%s", EditorGEARApp::getProjectHomeDirectory(), relativePath);
 				m_pTexturePtr=map->load(*monoWrapper::mono_engine_getWorld(0)->getTextureManager(), absolutepath);
 			}

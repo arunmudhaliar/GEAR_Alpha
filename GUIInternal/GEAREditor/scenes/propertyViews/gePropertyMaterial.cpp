@@ -65,7 +65,7 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDropData* dropObject)
 			}
 
 			//if material not found in world then load from meta
-			char crcFile[1024];
+			char crcFile[FILENAME_MAX];
 			sprintf(crcFile, "%s/%x", world->getMetaDataFolder(), crc32);
 			gxFile file_meta;
 			if(file_meta.OpenFile(crcFile))
@@ -79,7 +79,7 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDropData* dropObject)
 
 				HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 				//load surface shader
-				char mainshaderfilename[1024];
+				char mainshaderfilename[FILENAME_MAX];
 				sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
 				material->setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
 

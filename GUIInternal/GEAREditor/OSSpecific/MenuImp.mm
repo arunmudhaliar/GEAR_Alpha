@@ -23,18 +23,19 @@ void cpp_showMenu()
     
     NSMenuItem *tItem = [theMenu addItemWithTitle:@"Quit" action:@selector(test_func:) keyEquivalent:@"q"];
     //[tItem setKeyEquivalentModifierMask:NSCommandKeyMask];
+    [tItem setRepresentedObject:@"0"];
     [tItem setTarget:self];
     //[theMenu setDelegate:self];
     
     [NSMenu popUpContextMenu:theMenu withEvent:nil forView:nil];
     
-    NSMenu *mainMenu = [[NSApplication sharedApplication] mainMenu];
-    mainMenu;
+//    NSMenu *mainMenu = [[NSApplication sharedApplication] mainMenu];
+//    mainMenu;
 }
 
 - (IBAction) test_func:(id)sender
 {
-    NSLog(@"hello");
+    NSLog(@"hello %@", [sender representedObject]);
 }
 
 @end

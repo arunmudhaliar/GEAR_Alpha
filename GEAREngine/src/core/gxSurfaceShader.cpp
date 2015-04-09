@@ -1154,7 +1154,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 		{
 			stPass* currentPass = *it_pass;
 
-			char constructed_glsl_filename[1024];
+			char constructed_glsl_filename[FILENAME_MAX];
 			sprintf(constructed_glsl_filename, "%s.pass%d.glsl", filename, cntr);
 			gxHWShader* pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, NULL, 0);
 			if(pMainShader)

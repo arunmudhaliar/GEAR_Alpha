@@ -29,8 +29,8 @@ extern "C" DECLSPEC void printCallStack();
 		GLenum error = glGetError();																\
 		if (error != GL_NO_ERROR)																	\
 		{																							\
-			char errorMsg[1024];																	\
-			_snprintf(errorMsg, 1024, #fn " failed with glError %s\n%s (%d)", GetGLErrorName(error), __FILE__, __LINE__);	\
+			char errorMsg[FILENAME_MAX];																	\
+			_snprintf(errorMsg, FILENAME_MAX, #fn " failed with glError %s\n%s (%d)", GetGLErrorName(error), __FILE__, __LINE__);	\
 			DEBUG_PRINT(errorMsg);																	\
 			printCallStack();																		\
 		}																							\

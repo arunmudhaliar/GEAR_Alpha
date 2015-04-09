@@ -18,7 +18,7 @@
 #include <CommCtrl.h>
 #endif
 
-char EditorGEARApp::g_cszProjectHomeDirectory[1024];
+char EditorGEARApp::g_cszProjectHomeDirectory[FILENAME_MAX];
 
 #ifdef _WIN32
 HWND EditorApp::g_hWnd=NULL;
@@ -340,26 +340,26 @@ void EditorGEARApp::init(SDL_Window* window)
     
 int EditorGEARApp::createNewProject(const char* projectDirectory)
 {
-    char temp_buffer[1024];
+    char temp_buffer[FILENAME_MAX];
     sprintf(temp_buffer, "%s/Assets", projectDirectory);
 #ifdef _WIN32
-    if(_mkdir(temp_buffer)==0)
+    if(MKDIR(temp_buffer)==0)
 #else
-        if(mkdir(temp_buffer, 0777)==0)
+        if(MKDIR(temp_buffer, 0777)==0)
 #endif
         {
             sprintf(temp_buffer, "%s/ProjectSettings", projectDirectory);
 #ifdef _WIN32
-            if(_mkdir(temp_buffer)==0)
+            if(MKDIR(temp_buffer)==0)
 #else
-                if(mkdir(temp_buffer, 0777)==0)
+                if(MKDIR(temp_buffer, 0777)==0)
 #endif
                 {
                     sprintf(temp_buffer, "%s/MetaData", projectDirectory);
 #ifdef _WIN32
-                    if(_mkdir(temp_buffer)==0)
+                    if(MKDIR(temp_buffer)==0)
 #else
-                        if(mkdir(temp_buffer, 0777)==0)
+                        if(MKDIR(temp_buffer, 0777)==0)
 #endif
                         {
                             //add to recent projects file

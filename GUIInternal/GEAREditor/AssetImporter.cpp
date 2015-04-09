@@ -11,14 +11,14 @@
 #include <assert.h>
 #include <dirent.h>
 #ifdef _WIN32
-#include <direct.h>
+    #include <direct.h>
 #endif
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
 #ifdef _WIN32
-#include <Windows.h>
-#include <CommCtrl.h>
+    #include <Windows.h>
+    #include <CommCtrl.h>
 #endif
 
 //#ifdef _WIN32
@@ -43,12 +43,12 @@ bool AssetImporter::importAssets(const char* assetsfolder, geAssetImportDlg* ass
     m_pAssetImportDlg=assetImportDlg;
     
 	//if metaData folder doesn't exist create it
-	char temp_buffer[1024];
+	char temp_buffer[FILENAME_MAX];
 	sprintf(temp_buffer, "%s/MetaData", EditorGEARApp::getProjectHomeDirectory());
 #ifdef _WIN32
-	if(_mkdir(temp_buffer)==0)
+	if(MKDIR(temp_buffer)==0)
 #else
-    if(mkdir(temp_buffer, 0777)==0)
+    if(MKDIR(temp_buffer, 0777)==0)
 #endif
 	{
 		//created a new metaDirectory
@@ -485,8 +485,8 @@ int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMate
 {
 	bool bCreateMetaFile=false;
 	struct stat fst;
-	char buffer[1024];
-	char temp_buffer[1024];
+	char buffer[FILENAME_MAX];
+	char temp_buffer[FILENAME_MAX];
 	GX_STRCPY(temp_buffer, gxUtil::getFolderPathFromFileName(fbx_file_name));
 	sprintf(buffer, "%s/%s.mat", temp_buffer, material->getMaterialName());
 	unsigned char* relative_path=(unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer);

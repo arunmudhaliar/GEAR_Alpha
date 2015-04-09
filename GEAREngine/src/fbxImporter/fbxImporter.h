@@ -46,7 +46,7 @@ private:
 	void populateBonesToMeshNode(stBoneList* boneList, object3d* obj, object3d* rootNode);
 	void triangulateFBXRecursive(FbxGeometryConverter &fbxConverter, FbxNode &fbxNode);
 
-	char m_cszNormalizedFilePath[1024];
+	char m_cszNormalizedFilePath[FILENAME_MAX];
 	int m_iPrivateBoneIterator;
 };
 

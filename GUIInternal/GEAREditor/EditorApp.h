@@ -17,6 +17,12 @@
 #include "scenes/propertyViews/gePropertyOctree.h"
 #include <string>
 
+#ifdef _WIN32
+#define MKDIR _mkdir
+#else
+#define MKDIR mkdir
+#endif
+
 #if !defined(__APPLE__)
 LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 #endif
@@ -128,7 +134,7 @@ public:
     static void setPropertyOctree(gePropertyOctree* ptr);
     static gePropertyOctree* getPropertyOctree();
 
-    static char g_cszProjectHomeDirectory[1024];
+    static char g_cszProjectHomeDirectory[FILENAME_MAX];
 
     static gearSceneFileView* g_pSceneFileViewPtr;
     static gearSceneHierarchy* g_pSceneHierarchyPtr;

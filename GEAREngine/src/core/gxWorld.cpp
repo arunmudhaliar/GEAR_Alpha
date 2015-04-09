@@ -429,7 +429,7 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 		{
 			gxTriInfo* triInfo = mesh->getTriInfo(x);
 			int materialCRC=triInfo->getMaterialCRCFromFileReadInfo();
-			char crcFile[1024];
+			char crcFile[FILENAME_MAX];
 			sprintf(crcFile, "%s/%x", getMetaDataFolder(), materialCRC);
 
 #if !CREATE_MATERIAL_FOR_MESH_IF_NOT_FOUND_IN_METAFILE
@@ -448,7 +448,7 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 
 				HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 				//load surface shader
-				char mainshaderfilename[1024];
+				char mainshaderfilename[FILENAME_MAX];
 #ifdef _WIN32
 				sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
 #elif defined(ANDROID)
@@ -655,7 +655,7 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
 
 object3d* gxWorld::loadFromCRCFile(int crc)
 {
-	char crcFile[1024];
+	char crcFile[FILENAME_MAX];
 	sprintf(crcFile, "%s/%x", getMetaDataFolder(), crc);
 
 	object3d* obj = NULL;

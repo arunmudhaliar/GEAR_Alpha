@@ -871,7 +871,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 					USEMONOENGINE,
-					USE_ProgrammablePipeLine,
+					"USE_ProgrammablePipeLine=1",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -899,7 +899,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					USEMONOENGINE,
-					USE_ProgrammablePipeLine,
+					"USE_ProgrammablePipeLine=1",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

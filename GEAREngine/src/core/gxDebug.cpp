@@ -12,7 +12,7 @@ extern "C"
 {
 void DEBUG_PRINT(const char* format, ...)
 {
-	char buffer[1024];
+	char buffer[FILENAME_MAX];
 	va_list v;
 	va_start(v,format);
 	vsprintf(buffer, format, v);

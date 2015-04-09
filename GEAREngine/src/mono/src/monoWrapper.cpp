@@ -696,7 +696,7 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 
 char monoWrapper::exec_cmd(char const *cmd, char *buf)
 {
-	char output[1024], start[1024*20];
+	char output[FILENAME_MAX], start[FILENAME_MAX*20];
 	char *s;
 	FILE *fpo;
 	int size;
@@ -714,7 +714,7 @@ char monoWrapper::exec_cmd(char const *cmd, char *buf)
 	{
 		sprintf(start, "");
 		size =0;
-		while((s =fgets(output, 1024, fpo)) != NULL)
+		while((s =fgets(output, FILENAME_MAX, fpo)) != NULL)
 		{
 			strcat(start, output);
 			size += (strlen(output)+1);
@@ -733,7 +733,7 @@ char monoWrapper::exec_cmd(char const *cmd, char *buf)
 
 char monoWrapper::exec_cmd(char const *cmd)
 {
-	char output[1024];
+	char output[FILENAME_MAX];
 	char *s;
 	FILE *fpo;
 	int size;
@@ -749,7 +749,7 @@ char monoWrapper::exec_cmd(char const *cmd)
 	else
 	{
 		size =0;
-		while((s =fgets(output, 1024, fpo)) != NULL)
+		while((s =fgets(output, FILENAME_MAX, fpo)) != NULL)
 		{
 			printf("%s", output);
 			if(output == NULL)

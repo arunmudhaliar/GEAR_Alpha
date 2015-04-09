@@ -179,10 +179,10 @@ void gearSceneFileView::loadPreviewObjects()
 void gearSceneFileView::tryLoadTexturesFromObject3d(object3d* obj3d, const char* filepath)
 {
 	gxWorld* mainworld=monoWrapper::mono_engine_getWorld(0);
-	char buffer[1024];
+	char buffer[FILENAME_MAX];
 	memset(buffer, 0, sizeof(buffer));
 	strcpy(buffer, gxUtil::getFileNameFromPath(filepath));
-	char dirname[1024];
+	char dirname[FILENAME_MAX];
 	memset(dirname, 0, sizeof(dirname));
 	strncpy(dirname, filepath, strlen(filepath)-strlen(buffer));
 
@@ -198,7 +198,7 @@ void gearSceneFileView::tryLoadTexturesFromObject3d(object3d* obj3d, const char*
 			std::vector<gxSubMap*>* maplist=material->getSubMapList();
 			if(maplist->size()==0 || material->getListOfTextureNamesFromFBX()->size()==0) continue;
 
-			char relativetexturefilepath[1024];
+			char relativetexturefilepath[FILENAME_MAX];
 			memset(relativetexturefilepath, 0, sizeof(relativetexturefilepath));
 			sprintf(relativetexturefilepath, "%s%s", dirname, material->getListOfTextureNamesFromFBX()->at(0).c_str());
 
@@ -209,7 +209,7 @@ void gearSceneFileView::tryLoadTexturesFromObject3d(object3d* obj3d, const char*
 
 			gxSubMap* submap = maplist->at(0);
 			int textureCRC=AssetImporter::calcCRC32((unsigned char*)relativetexturefilepath);
-			char crcFile[1024];
+			char crcFile[FILENAME_MAX];
 			sprintf(crcFile, "%s/%x", mainworld->getMetaDataFolder(), textureCRC);
 			if(submap->loadTextureFromMeta(*mainworld->getTextureManager(), textureCRC))
 			{
@@ -242,10 +242,10 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 	if(obj==NULL)
 	{
 		const char* relativePath=((assetUserData*)tvnode->getUserData())->getAssetPath();
-		char crcFile[1024];
+		char crcFile[FILENAME_MAX];
 		if(relativePath)
 		{
-			char metaInfoFileName[1024];
+			char metaInfoFileName[FILENAME_MAX];
 			sprintf(metaInfoFileName, "%s/Assets%s.meta", EditorGEARApp::getProjectHomeDirectory(), relativePath);
 
 			gxFile metaInfoFile;
@@ -348,7 +348,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 
 					HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 					//load surface shader
-					char mainshaderfilename[1024];
+					char mainshaderfilename[FILENAME_MAX];
 					sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
 					material->setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
 
@@ -391,7 +391,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 		{
 			HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 			//load surface shader
-			char mainshaderfilename[1024];
+			char mainshaderfilename[FILENAME_MAX];
 			sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", m_cPreviewMaterial.getMainshaderName());
 			m_cPreviewMaterial.setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
 

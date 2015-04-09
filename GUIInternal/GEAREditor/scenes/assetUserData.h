@@ -36,7 +36,7 @@ public:
 	void setAssetObjectPtr(void* ptr, ASSETUSERDATA_TYPE typeID)	{	assetObjectPtr= ptr; type=typeID;	}
 
 private:
-	char assetPath[1024];
+	char assetPath[FILENAME_MAX];
 	ASSETUSERDATA_TYPE type;
 	void* assetObjectPtr;
 };

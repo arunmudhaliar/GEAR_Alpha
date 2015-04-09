@@ -363,8 +363,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             {
                 //DEBUG_PRINT("Left Mouse Down");
                 geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
-                int nFlags=MK_LBUTTON;
-                editorApp.MouseLButtonDown(mouse_x, mouse_y, nFlags);
+                editorApp.MouseLButtonDown(mouse_x, mouse_y, MK_LBUTTON);
             }
                 break;
             case SDL_BUTTON_MIDDLE:
@@ -379,6 +378,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             case SDL_BUTTON_RIGHT:
             {
                 //DEBUG_PRINT("Right Mouse Down");
+                editorApp.MouseRButtonDown(mouse_x, mouse_y, MK_RBUTTON);
             }
                 break;
             default:
@@ -396,8 +396,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             {
                 //DEBUG_PRINT("Left Mouse Up");
                 geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
-                int nFlags=MK_LBUTTON;
-                editorApp.MouseLButtonUp(mouse_x, mouse_y, nFlags);
+                editorApp.MouseLButtonUp(mouse_x, mouse_y, MK_LBUTTON);
             }
                 break;
             case SDL_BUTTON_MIDDLE:
@@ -408,6 +407,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             case SDL_BUTTON_RIGHT:
             {
                 //DEBUG_PRINT("Right Mouse Up");
+                editorApp.MouseRButtonUp(mouse_x, mouse_y, MK_RBUTTON);
             }
                 break;
             default:

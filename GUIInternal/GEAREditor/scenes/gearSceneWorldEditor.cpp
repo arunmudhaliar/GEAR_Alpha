@@ -813,8 +813,10 @@ void gearSceneWorldEditor::drawStats()
 		sprintf(buffer, "FPS : %3.2f", Timer::getFPS());
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 		int cnt=3;
-		sprintf(buffer, "OpenGL %d.%d", rendererBase::g_iOGLMajorVersion, rendererBase::g_iOGLMinorVersion);
+		sprintf(buffer, "OpenGL Renderer : %s", glGetString(GL_RENDERER));
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+        sprintf(buffer, "OpenGL Version : %s", glGetString(GL_VERSION));
+        geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "GLSL %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
@@ -836,8 +838,8 @@ void gearSceneWorldEditor::drawStats()
 		//sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
 		//geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 
-        sprintf(buffer, "m_cMousePrevPos : %f, %f", m_cMousePrevPos.x, m_cMousePrevPos.y);
-        geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+//        sprintf(buffer, "m_cMousePrevPos : %f, %f", m_cMousePrevPos.x, m_cMousePrevPos.y);
+//        geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 
 		sprintf(buffer, "Total Layer Objects : %d", m_pMainWorldPtr->getLayerManager()->getTotalLayerObject());
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);

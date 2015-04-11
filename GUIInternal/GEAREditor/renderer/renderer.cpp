@@ -118,6 +118,10 @@ bool rendererBase::setupRenderer(rendererBase* mainRenderer)
     else
     {
         m_pContext = SDL_GL_CreateContext( m_pWindow );
+        printf("%s %s\n", glGetString(GL_RENDERER), glGetString(GL_VERSION));
+//        glGetIntegerv(GL_MAJOR_VERSION, &g_iOGLMajorVersion);
+//        glGetIntegerv(GL_MINOR_VERSION, &g_iOGLMinorVersion);
+
         if( m_pContext == NULL )
         {
             printf("ERROR SDL_GL_CreateContext\n");

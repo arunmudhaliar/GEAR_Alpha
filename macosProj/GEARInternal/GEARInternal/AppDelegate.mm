@@ -372,13 +372,13 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
                 //geTestDlg* view = new geTestDlg(&geFontManager::g_cFontManager, editorApp.m_pRendererGL10);
                 //view->showView();
                 //showMenu();
-                cpp_showMenu();
+                //cpp_showMenu();
             }
                 break;
             case SDL_BUTTON_RIGHT:
             {
                 //DEBUG_PRINT("Right Mouse Down");
-                editorApp.MouseRButtonDown(mouse_x, mouse_y, MK_RBUTTON);
+                //editorApp.MouseRButtonDown(mouse_x, mouse_y, MK_RBUTTON);
             }
                 break;
             default:
@@ -407,7 +407,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             case SDL_BUTTON_RIGHT:
             {
                 //DEBUG_PRINT("Right Mouse Up");
-                editorApp.MouseRButtonUp(mouse_x, mouse_y, MK_RBUTTON);
+                //editorApp.MouseRButtonUp(mouse_x, mouse_y, MK_RBUTTON);
             }
                 break;
             default:
@@ -433,6 +433,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
                 break;
 
             default:
+                editorApp.MouseMove(mouseMotionEvent->x, mouseMotionEvent->y, 0);
                 break;
         }
     }

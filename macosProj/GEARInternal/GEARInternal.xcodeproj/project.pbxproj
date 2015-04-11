@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5548D31E1AD950830070A09C /* libGEAREngine.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5548D31D1AD950830070A09C /* libGEAREngine.dylib */; };
 		5554F0001AD2703000FD80AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5554EFFF1AD2703000FD80AF /* main.m */; };
 		5554F0021AD2707000FD80AF /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0011AD2707000FD80AF /* libfreeimage.a */; };
 		5554F0041AD2708700FD80AF /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0031AD2708700FD80AF /* libfbxsdk.a */; };
@@ -101,7 +102,6 @@
 		5554F1471AD2717000FD80AF /* NormalMapSeperateSpecular.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */; };
 		5554F1481AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */; };
 		5554F1491AD2717000FD80AF /* NormalMapSpecular.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */; };
-		5554F14D1AD2729100FD80AF /* libGEAREngine.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F14C1AD2729100FD80AF /* libGEAREngine.dylib */; };
 		5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5576F3041AD2DD5E008642F5 /* AppKit.framework */; };
 		5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5576F3061AD2F052008642F5 /* MenuImp.mm */; };
 		55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */; };
@@ -109,6 +109,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5548D31D1AD950830070A09C /* libGEAREngine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGEAREngine.dylib; path = "../../../../../Library/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug/libGEAREngine.dylib"; sourceTree = "<group>"; };
 		5554EFDC1AD26F9A00FD80AF /* GEARInternal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GEARInternal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5554EFE01AD26F9A00FD80AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5554EFFF1AD2703000FD80AF /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -283,7 +284,6 @@
 		5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateSpecular.shader; sourceTree = "<group>"; };
 		5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateSpecularEmissive.shader; sourceTree = "<group>"; };
 		5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSpecular.shader; sourceTree = "<group>"; };
-		5554F14C1AD2729100FD80AF /* libGEAREngine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGEAREngine.dylib; path = ../GEAREngine/build/Debug/libGEAREngine.dylib; sourceTree = "<group>"; };
 		5576F3041AD2DD5E008642F5 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		5576F3061AD2F052008642F5 /* MenuImp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuImp.mm; sourceTree = "<group>"; };
 		5576F3081AD2F153008642F5 /* MenuImp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuImp.h; sourceTree = "<group>"; };
@@ -298,8 +298,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5548D31E1AD950830070A09C /* libGEAREngine.dylib in Frameworks */,
 				5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */,
-				5554F14D1AD2729100FD80AF /* libGEAREngine.dylib in Frameworks */,
 				5554F00A1AD270D000FD80AF /* SDL2.framework in Frameworks */,
 				5554F0081AD270A600FD80AF /* OpenGL.framework in Frameworks */,
 				5554F0061AD2709C00FD80AF /* GLUT.framework in Frameworks */,
@@ -314,9 +314,9 @@
 		5554EFD31AD26F9A00FD80AF = {
 			isa = PBXGroup;
 			children = (
+				5548D31D1AD950830070A09C /* libGEAREngine.dylib */,
 				5554F0011AD2707000FD80AF /* libfreeimage.a */,
 				5554F0031AD2708700FD80AF /* libfbxsdk.a */,
-				5554F14C1AD2729100FD80AF /* libGEAREngine.dylib */,
 				5554F0051AD2709C00FD80AF /* GLUT.framework */,
 				5554F0071AD270A600FD80AF /* OpenGL.framework */,
 				5554F0091AD270D000FD80AF /* SDL2.framework */,
@@ -956,6 +956,7 @@
 					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FreeImage/macos,
 					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/release",
 					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/macosProj/GEAREngine/build/Debug,
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 /Applications/Autodesk/FBXSDK/2015.1/include";
@@ -989,6 +990,7 @@
 					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FreeImage/macos,
 					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/release",
 					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/macosProj/GEAREngine/build/Debug,
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 /Applications/Autodesk/FBXSDK/2015.1/include";

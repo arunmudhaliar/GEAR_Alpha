@@ -3,11 +3,18 @@
 
 #include <string.h>
 
-#if __APPLE__
+#ifdef __APPLE__
     #include <OpenGL/gl.h>
     #include <OpenGL/glu.h>
     #include <OpenGL/glext.h>
     #include <GLUT/glut.h>
+#elif defined(_WIN32)
+    #include <gl/gl.h>
+    #include <gl/glu.h>
+    //#include "glext.h>
+    #include <gl/glut.h>
+#else
+#error GL includes not found
 #endif
 
 #ifndef GEAR2D

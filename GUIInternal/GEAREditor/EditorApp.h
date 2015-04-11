@@ -23,7 +23,7 @@
 #define MKDIR mkdir
 #endif
 
-#if !defined(__APPLE__)
+#if DEPRECATED
 LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 #endif
 
@@ -33,7 +33,7 @@ public:
 	EditorApp();
 	virtual ~EditorApp();
 
-#if !defined(__APPLE__)
+#if DEPRECATED
 	virtual void init(HWND hWnd, HINSTANCE hInst);
 #else
     virtual void init(SDL_Window* window);
@@ -62,14 +62,14 @@ public:
 
 	void DoCommand(int cmd);
 
-#if !defined(__APPLE__)
+#if DEPRECATED
     static HWND getMainWindowHandle()	{	return g_hWnd;	}
 #endif
 	//static rendererGL10* getMainRenderer()	{	return g_pMainRenderer;	}
 
 	bool isInitialized()	{	return m_bInitialised;	}
 
-#if !defined(__APPLE__)
+#if DEPRECATED
 	static bool showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir);
 	static bool showOpenCommonDlg(HWND hWnd, char* out_openfilename, int out_openfilename_size, const char* filter, const char* defaultext, const char* root_dir);
 #endif
@@ -78,7 +78,7 @@ public:
 	static std::string getAppDirectory()			{	return g_cAppDirectory;	}
 
 private:
-#if !defined(__APPLE__)
+#if DEPRECATED
     static HWND g_hWnd;	//main window
 #endif
 
@@ -98,7 +98,7 @@ public:
     EditorGEARApp();
     ~EditorGEARApp();
     
-#if !defined(__APPLE__)
+#if DEPRECATED
     void init(HWND hWnd, HINSTANCE hInst);
 #else
     void init(SDL_Window* window);
@@ -106,7 +106,7 @@ public:
     
     static int createNewProject(const char* projectDirectory);
     
-#if !defined(__APPLE__)
+#if DEPRECATED
     bool importAssetToMetaData(HWND hWnd, HINSTANCE hInst);
 #else
     bool importAssetToMetaData();

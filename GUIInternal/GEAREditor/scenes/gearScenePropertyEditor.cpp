@@ -155,7 +155,7 @@ void gearScenePropertyEditor::onTVSelectionChange(geTreeNode* tvnode, geTreeView
 
 bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 {
-#if !defined(__APPLE__) //disable Drag-Drop
+#if DEPRECATED
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return;
 

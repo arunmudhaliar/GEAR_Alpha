@@ -2,7 +2,7 @@
 
 std::string ConfirmationDialog::g_ConfirmationDlgMessage ="";
 
-#ifdef _WIN32
+#if DEPRECATED
 LRESULT ConfirmationDialog::ShowConfirmationDialog(std::string msg)
 {
 	g_ConfirmationDlgMessage=msg;

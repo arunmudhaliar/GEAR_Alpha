@@ -148,7 +148,7 @@ bool calculatePosOfMyChild(geGUIBase* compareme, geGUIBase* parent, int& x, int&
 
 void geToolBarDropMenu::onButtonClicked()
 {
-#ifdef _WIN32
+#if DEPRECATED
 	for(int x=0;x<m_vMenuItems.size();x++)
 	{
 		stDropMenuItem* item=m_vMenuItems[x];

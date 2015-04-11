@@ -4,7 +4,13 @@
 #include "glincludes.h"
 #include "matrix4x4f.h"
 #include "../util/geVector2.h"
-#include <SDL2/SDL.h>
+#ifdef _WIN32
+	#include <SDL.h>
+#elif defined(__APPLE__)
+	#include <SDL2/SDL.h>
+#else
+	#error SDL not included
+#endif
 
 class rendererBase
 {
@@ -16,7 +22,7 @@ public:
 		gl_programmable_pipeline
 	};
 
-#ifdef _WIN32
+#if DEPRECATED
 	rendererBase(HWND hWnd, ERENDERER technique);
 #else
 	rendererBase(SDL_Window* window, ERENDERER technique);
@@ -39,7 +45,7 @@ public:
 
 	bool makeCurrent();
 
-#ifdef _WIN32
+#if DEPRECATED
 	HGLRC getRenderingContext()	{	return m_hRC;	}
 	HWND getWindowHandle()		{	return m_hWnd;	}
 #endif
@@ -48,7 +54,7 @@ public:
 private:
 	bool killGL();
 
-#ifdef _WIN32
+#if DEPRECATED
 	unsigned int	m_iPixelFormat;					// Holds The Results After Searching For A Match.
 	HDC				m_hDC;							// Private GDI Device Context.
 	HGLRC			m_hRC;							// Permanent Rendering Context.

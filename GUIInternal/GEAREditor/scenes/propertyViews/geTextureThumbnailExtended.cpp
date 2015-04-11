@@ -5,7 +5,7 @@
 bool geTextureThumbnailExtended::onMouseLButtonDown(float x, float y, int nFlag)
 {
     geTextureDlg* newTextureDlg	 = new geTextureDlg(this, m_pFontManagerPtr, m_pRenderer);
-#if _WIN32
+#if DEPRECATED
 	newTextureDlg->showView(EditorGEARApp::getMainWindowHandle());
 #else
     newTextureDlg->showView();

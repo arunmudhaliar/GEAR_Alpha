@@ -27,7 +27,7 @@ public:
         BTN_CANCEL,
         BTN_INVALID
     };
-#ifdef _WIN32
+#if DEPRECATED
 	static LRESULT ShowConfirmationDialog(std::string msg);
 	static INT_PTR CALLBACK YesNoCancel_DlgBox(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 #else

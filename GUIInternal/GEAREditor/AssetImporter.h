@@ -14,12 +14,7 @@ public:
 	AssetImporter();
 	~AssetImporter();
 
-#ifdef _WIN32
-	bool importAssets(const char* assetsfolder, HWND hWndDlg, int progressBarID, int statictextID);
-#else
     bool importAssets(const char* assetsfolder, geAssetImportDlg* assetImportDlg);
-#endif
-
 	static int import_material_to_metadata(const char* fbx_file_name, gxMaterial* material);
 
 	//save to crc

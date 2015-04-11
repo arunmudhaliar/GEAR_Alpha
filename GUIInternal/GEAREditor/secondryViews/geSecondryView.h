@@ -10,7 +10,13 @@
 #include "../gui/geLayout.h"
 #include "../gui/geLayoutManager.h"
 
-#include <SDL2/SDL.h>
+#ifdef _WIN32
+	#include <SDL.h>
+#elif defined(__APPLE__)
+	#include <SDL2/SDL.h>
+#else
+	#error SDL not included
+#endif
 
 class geSecondryView
 {
@@ -19,7 +25,7 @@ public:
 	virtual ~geSecondryView();
 
 	void createRenderer(
-#ifdef _WIN32
+#if DEPRECATED
                         HWND hwnd
 #else
                         SDL_Window* window
@@ -28,7 +34,7 @@ public:
 	rendererGL10* getRenderer()	{	return m_pSecondryRenderer;	}
 
 	void showView(
-#ifdef _WIN32
+#if DEPRECATED
                   HWND parentHWND
 #else
                   int extraWindowFlags=0
@@ -51,7 +57,7 @@ public:
 	bool mouseMove(float x, float y, int flag);
 	void mouseWheel(int zDelta, int x, int y, int flag);
 
-#ifdef _WIN32
+#if DEPRECATED
 	static LRESULT CALLBACK SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 #endif
     

@@ -16,7 +16,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef _WIN32
+#if DEPRECATED
     #include <Windows.h>
     #include <CommCtrl.h>
 #endif
@@ -34,11 +34,7 @@ AssetImporter::~AssetImporter()
 {
 }
 
-#ifdef _WIN32
-bool AssetImporter::importAssets(const char* assetsfolder, HWND hWndDlg, int progressBarID, int statictextID)
-#else
 bool AssetImporter::importAssets(const char* assetsfolder, geAssetImportDlg* assetImportDlg)
-#endif
 {
     m_pAssetImportDlg=assetImportDlg;
     
@@ -54,24 +50,14 @@ bool AssetImporter::importAssets(const char* assetsfolder, geAssetImportDlg* ass
 		//created a new metaDirectory
 	}
 
-#ifdef _WIN32
-	m_hWndProgress=hWndDlg;
-    m_iProgressBarID=progressBarID;
-    m_iStatictextID=statictextID;
-#endif
-
 	m_nAssetsToProcess=0;
 	traverseAndCountAssetDirectory(EditorGEARApp::getProjectHomeDirectory());
-#ifdef _WIN32
-	SendDlgItemMessage(hWndDlg, m_iProgressBarID, PBM_SETRANGE, 0, MAKELPARAM(0, m_nAssetsToProcess));
-#endif
+
 	m_nAssetsToProcess=0;
 	traverseAssetDirectory(EditorGEARApp::getProjectHomeDirectory());
-#ifdef _WIN32
-	SendDlgItemMessage(m_hWndProgress, m_iStatictextID, WM_SETTEXT, 0, (LPARAM)"Complete");
-#else
+
     m_pAssetImportDlg->setBuffer("Complete");
-#endif
+
 	return true;
 }
 
@@ -288,7 +274,7 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 								bCreateMetaFile=true;
 							}
 
-#ifdef _WIN32
+#if DEPRECATED
 							SendDlgItemMessage(m_hWndProgress, m_iStatictextID, WM_SETTEXT, 0, (LPARAM)buffer);
 #else
                             m_pAssetImportDlg->setBuffer(buffer);
@@ -359,7 +345,7 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 						}
 
 						m_nAssetsToProcess++;
-#ifdef _WIN32
+#if DEPRECATED
 						SendDlgItemMessage(m_hWndProgress, m_iProgressBarID, PBM_SETPOS, m_nAssetsToProcess, 0);
 #endif
 					}

@@ -11,9 +11,16 @@
 #include <WindowsX.h>
 #include <ShlObj.h>
 
+#ifdef _DEBUG
+#define ENABLE_MEMORY_CHECK
+#include <crtdbg.h>
+#endif
+
+#if DEPRECATED
 #include "MDragGropInterface.h"
 #include "GEAREditor\win32\MDropSource.h"
 #include "GEAREditor\win32\eventHook.h"
+
 #include "GEAREditor\secondryViews\geColorDlg.h"
 #include <direct.h>
 #include <Commdlg.h>
@@ -31,8 +38,9 @@ TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 
 EditorApp m_cEditorApp;
+#if DEPRECATED
 MDragDropInterface* m_cDropTargetInterfacePtr=NULL;	//must not delete this pointer
-
+#endif
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -738,4 +746,31 @@ LPITEMIDLIST convertPathToLpItemIdList(const char *pszPath)
 		return pidl;
 	}
 	return NULL;
+}
+
+#endif
+
+#include "../macosProj/GEARInternal/GEARInternal/appEntry.h"
+int APIENTRY _tWinMain(HINSTANCE hInstance,
+                     HINSTANCE hPrevInstance,
+                     LPTSTR    lpCmdLine,
+                     int       nCmdShow)
+{
+#if defined(_DEBUG) && defined(ENABLE_MEMORY_CHECK)
+	_CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
+	_CrtSetReportMode ( _CRT_ERROR, _CRTDBG_MODE_DEBUG);
+
+	//SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
+	SymInitialize(GetCurrentProcess(), NULL, TRUE);
+#endif
+
+	monoWrapper::initDebugConsole();
+	int return_val = macos_main();
+	monoWrapper::destroyDebugConsole();
+
+#if defined(_DEBUG) && defined(ENABLE_MEMORY_CHECK)
+	SymCleanup(GetCurrentProcess());
+#endif
+
+	return return_val;
 }

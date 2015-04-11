@@ -6,7 +6,7 @@
 class rendererGL10 : public rendererBase
 {
 public:
-#ifdef _WIN32
+#if DEPRECATED
 	rendererGL10(HWND hWnd);
 #else
 	rendererGL10(SDL_Window* window);

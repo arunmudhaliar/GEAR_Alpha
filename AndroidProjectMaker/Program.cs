@@ -19,6 +19,28 @@ namespace AndroidProjectMaker
             //strCmdText = "mkdir c://TempAndroid";
             //System.Diagnostics.Process.Start("CMD.exe", strCmdText);
             string gearprojectDirectory = args[1];
+            string os_platform = args[2];
+            string platform_command_prefix = "";
+
+            string cmd_android = "android.bat";
+            string cmd_adb = "adb.exe";
+
+            if (os_platform == "win32")
+            {
+                cmd_android = "android.bat";
+                cmd_adb = "adb.exe";
+            }
+            else if (os_platform == "macos")
+            {
+                cmd_android = "android";
+                cmd_adb = "adb";
+            }
+
+
+            if (os_platform == "win32")
+                platform_command_prefix = "";
+            else if (os_platform == "macos")
+                platform_command_prefix = "sh ";
 
             g_cGUI_mainform = new mainform();
             g_cGUI_mainform.Show();
@@ -27,7 +49,8 @@ namespace AndroidProjectMaker
             string app_bundle_identifier = "com.gear.gearapp";
             string app_name = "gearApp";
             string rootDirectory = args[0];
-            Directory.Delete(rootDirectory + "//TempAndroid", true);
+            if(Directory.Exists(rootDirectory + "//TempAndroid"))
+                Directory.Delete(rootDirectory + "//TempAndroid", true);
             DirectoryInfo dirinfo = Directory.CreateDirectory(rootDirectory+"//TempAndroid");
 
             string android_sdk_root = Environment.GetEnvironmentVariable("ANDROID_ROOT");
@@ -36,9 +59,9 @@ namespace AndroidProjectMaker
 
 
             g_cGUI_mainform.setMessage("Creating Android Project");
-            string command_buffer;
-            command_buffer = android_sdk_root + "//tools//android.bat ";
-            command_buffer += "create project --target 2 ";
+            string command_buffer="";
+            command_buffer = platform_command_prefix + android_sdk_root + "//tools//" + cmd_android;
+            command_buffer += " create project --target 2 ";
             command_buffer += "--name " + app_name + " ";
             command_buffer += "--path " + rootDirectory + "//TempAndroid ";
             command_buffer += "--activity MainActivity ";
@@ -92,7 +115,8 @@ namespace AndroidProjectMaker
             if (ndk_home == null)
                 return -97;     //NDK_HOME variable not set
 
-            command_buffer = ndk_home + "\\ndk-build --directory=" + rootDirectory + "//TempAndroid";
+            command_buffer = platform_command_prefix + ndk_home + "\\ndk-build --directory=" + rootDirectory + "//TempAndroid";
+            
             ExecuteCommandSync(command_buffer);
             if (g_iExitCode != 0)
             {
@@ -115,9 +139,9 @@ namespace AndroidProjectMaker
             #endif
              * */
 #if DEBUG
-            command_buffer = ant_home + "\\ant debug -buildfile " + rootDirectory + "//TempAndroid//build.xml";
+            command_buffer = platform_command_prefix + ant_home + "\\ant debug -buildfile " + rootDirectory + "//TempAndroid//build.xml";
 #else
-            command_buffer=ant_home+"\\ant release -buildfile "+rootDirectory+"//TempAndroid//build.xml";
+            command_buffer = platform_command_prefix + ant_home+"\\ant release -buildfile "+rootDirectory+"//TempAndroid//build.xml";
 #endif
             ExecuteCommandSync(command_buffer);
             if (g_iExitCode != 0)
@@ -143,9 +167,9 @@ namespace AndroidProjectMaker
             foreach (string file_str in necessaryfiles)
             {
 #if DEBUG
-                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + rootDirectory + "//Debug//" + file_str + " //sdcard//gear//" + file_str;
+                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb +" -d push " + rootDirectory + "//Debug//" + file_str + " //sdcard//gear//" + file_str;
 #else
-                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + rootDirectory + "//Release//" + file_str + " //sdcard//gear//" + file_str;
+                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb +" -d push " + rootDirectory + "//Release//" + file_str + " //sdcard//gear//" + file_str;
 #endif
                 ExecuteCommandSync(command_buffer);
                 if (g_iExitCode != 0)
@@ -159,7 +183,7 @@ namespace AndroidProjectMaker
             //Copy all the metadata files & Replaces any files with the same name
             foreach (string newPath in Directory.GetFiles(gearprojectDirectory + "//MetaData", "*.*", SearchOption.AllDirectories))
             {
-                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + newPath + " //sdcard//gear//MetaData//" + Path.GetFileName(newPath);
+                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d push " + newPath + " //sdcard//gear//MetaData//" + Path.GetFileName(newPath);
                 ExecuteCommandSync(command_buffer);
                 if (g_iExitCode != 0)
                 {
@@ -176,7 +200,7 @@ namespace AndroidProjectMaker
                 relativePath=relativePath.Replace(gearprojectDirectory + "//Assets", "");
                 relativePath=relativePath.Replace("\\", "//");
 
-                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + newPath + " //sdcard//gear//scenes" + relativePath;
+                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d push " + newPath + " //sdcard//gear//scenes" + relativePath;
                 ExecuteCommandSync(command_buffer);
                 if (g_iExitCode != 0)
                 {
@@ -189,7 +213,7 @@ namespace AndroidProjectMaker
             //current scene
             if (File.Exists(gearprojectDirectory + "//ProjectSettings//currentscene"))
             {
-                command_buffer = android_sdk_root + "//platform-tools//adb.exe -d push " + gearprojectDirectory + "//ProjectSettings//currentscene" + " //sdcard//gear//currentscene";
+                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d push " + gearprojectDirectory + "//ProjectSettings//currentscene" + " //sdcard//gear//currentscene";
                 ExecuteCommandSync(command_buffer);
                 if (g_iExitCode != 0)
                 {
@@ -202,9 +226,9 @@ namespace AndroidProjectMaker
             g_cGUI_mainform.setMessage("Pushing to device");
             //Pushing to device
 #if DEBUG
-            command_buffer = android_sdk_root + "//platform-tools//adb.exe -d install -r " + rootDirectory + "//TempAndroid//bin//" + app_name + "-debug.apk";
+            command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d install -r " + rootDirectory + "//TempAndroid//bin//" + app_name + "-debug.apk";
 #else
-            command_buffer=android_sdk_root+"//platform-tools//adb.exe -d install -r "+rootDirectory + "//TempAndroid//bin//"+app_name+"-release-unsigned.apk";
+            command_buffer=android_sdk_root+"//platform-tools//" + cmd_adb + " -d install -r "+rootDirectory + "//TempAndroid//bin//"+app_name+"-release-unsigned.apk";
 #endif
             ExecuteCommandSync(command_buffer);
             if (g_iExitCode != 0)
@@ -217,7 +241,7 @@ namespace AndroidProjectMaker
 
             g_cGUI_mainform.setMessage("Executing on device");
             //Executing on device
-            command_buffer = android_sdk_root + "//platform-tools//adb.exe shell am start -n " + app_bundle_identifier + "/" + app_bundle_identifier + ".MainActivity";
+            command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " shell am start -n " + app_bundle_identifier + "/" + app_bundle_identifier + ".MainActivity";
             ExecuteCommandSync(command_buffer);
             if (g_iExitCode != 0)
             {

@@ -13,7 +13,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "../EditorApp.h"
+#if DEPRECATED
 #include "../win32/MDropSource.h"
+#endif
 #include "assetUserData.h"
 #include "../../../GEAREngine/src/core/gxMetaStructures.h"
 #include "../../../GEAREngine/src/core/gxAnimationSet.h"

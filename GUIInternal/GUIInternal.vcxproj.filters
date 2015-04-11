@@ -234,9 +234,6 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyLight.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
-    <ClInclude Include="GEAREditor\win32\eventHook.h">
-      <Filter>GEAREditor\win32</Filter>
-    </ClInclude>
     <ClInclude Include="GEAREditor\secondryViews\geSecondryView.h">
       <Filter>GEAREditor\secondryViews</Filter>
     </ClInclude>

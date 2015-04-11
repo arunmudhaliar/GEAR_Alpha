@@ -172,7 +172,6 @@
     <ClInclude Include="GEAREditor\util\pxMath.h" />
     <ClInclude Include="GEAREditor\util\geVector2.h" />
     <ClInclude Include="GEAREditor\win32\cursorUtil.h" />
-    <ClInclude Include="GEAREditor\win32\eventHook.h" />
     <ClInclude Include="GEAREditor\win32\MDropSource.h" />
     <ClInclude Include="GUIInternal.h" />
     <ClInclude Include="Resource.h" />

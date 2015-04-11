@@ -20,7 +20,7 @@
 
 char EditorGEARApp::g_cszProjectHomeDirectory[FILENAME_MAX];
 
-#ifdef _WIN32
+#if DEPRECATED
 HWND EditorApp::g_hWnd=NULL;
 #endif
 
@@ -50,7 +50,7 @@ EditorApp::~EditorApp()
 	GE_DELETE(m_pRendererGL10);
 }
 
-#ifdef _WIN32
+#if DEPRECATED
 void EditorApp::init(HWND hWnd, HINSTANCE hInst)
 {
 	g_hWnd=hWnd;
@@ -59,7 +59,7 @@ void EditorApp::init(SDL_Window* window)
 {
 #endif
 	m_bInitialised=true;
-#ifdef _WIN32
+#if DEPRECATED
 	m_pRendererGL10 = new rendererGL10(hWnd);
 #else
     m_pRendererGL10 = new rendererGL10(window);
@@ -69,6 +69,10 @@ void EditorApp::init(SDL_Window* window)
 
 	m_pRendererGL10->setupRenderer();
 	m_pRendererGL10->loadDefaultRenderState();
+
+#ifdef _WIN32
+	m_pRendererGL10->swapGLBuffer();
+#endif
 
     m_pGUIManager = new geGUIManager(&geFontManager::g_cFontManager);
 	m_pGUIManager->init(m_pRendererGL10);
@@ -182,6 +186,7 @@ void EditorApp::DoCommand(int cmd)
 	m_pGUIManager->DoCommand(cmd);
 }
 
+#if DEPRECATED
 #ifdef _WIN32
 bool EditorApp::showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir)
 {
@@ -243,7 +248,7 @@ LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, 
 	return FALSE;
 }
 #endif
-
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -258,15 +263,16 @@ EditorGEARApp::~EditorGEARApp()
 {
         
 }
-    int assetImport_secondryThread( void *ptr )
-    {
-        geAssetImportDlg* assetImporterDlg = (geAssetImportDlg*)ptr;
-        AssetImporter assetImporter;
-        assetImporter.importAssets(EditorGEARApp::getProjectHomeDirectory(), assetImporterDlg);
-        return 0;
-    }
+
+int assetImport_secondryThread( void *ptr )
+{
+    geAssetImportDlg* assetImporterDlg = (geAssetImportDlg*)ptr;
+    AssetImporter assetImporter;
+    assetImporter.importAssets(EditorGEARApp::getProjectHomeDirectory(), assetImporterDlg);
+    return 0;
+}
     
-#if !defined(__APPLE__)
+#if DEPRECATED
 void EditorGEARApp::init(HWND hWnd, HINSTANCE hInst)
 {
     EditorApp::init(hWnd, hInst);
@@ -377,7 +383,7 @@ int EditorGEARApp::createNewProject(const char* projectDirectory)
     return -1;
 }
 
-#ifdef _WIN32
+#if DEPRECATED
 bool EditorGEARApp::importAssetToMetaData(HWND hWnd, HINSTANCE hInst)
 {
     HWND hWndprogress=CreateDialog(hInst, MAKEINTRESOURCE(IDD_ASSET_IMPORT_PROGRESS_DLG), hWnd, reinterpret_cast<DLGPROC>(Proj_AssetImportDlgProc));

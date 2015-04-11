@@ -5,7 +5,7 @@ bool calculatePosOfMyChild2(geGUIBase* compareme, geGUIBase* parent, int& x, int
 
 void gePropertyBlurProcessor::onButtonClicked(geGUIBase* btn)
 {
-#ifdef _WIN32
+#if DEPRECATED
 	if(btn==m_pPushBtn_Object3dVisible)
 	{
 		HMENU hPopupMenu = CreatePopupMenu();

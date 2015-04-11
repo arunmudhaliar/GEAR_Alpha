@@ -14,7 +14,9 @@
 #include <string.h>
 #include "../EditorApp.h"
 
+#if DEPRECATED
 #include "../win32/MDropSource.h"
+#endif
 #include"assetUserData.h"
 
 static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager);

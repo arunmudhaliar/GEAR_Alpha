@@ -77,7 +77,7 @@ bool geColorControl::onMouseLButtonDown(float x, float y, int nFlag)
 {
     geColorDlg* view = new geColorDlg(this, m_pFontManagerPtr, m_pRenderer);
 
-#ifdef _WIN32
+#if DEPRECATED
     #ifndef GEAR2D
         view->showView(EditorGEARApp::getMainWindowHandle());
     #else

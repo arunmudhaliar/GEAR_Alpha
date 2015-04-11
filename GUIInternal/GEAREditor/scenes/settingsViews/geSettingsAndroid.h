@@ -29,13 +29,13 @@ public:
 		{
 			if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
 			{
-				m_pTextBoxAntRoot = new geTextBox("ANT_HOME environment variable not set.");
+				m_pTextBoxAntRoot = new geTextBox("ANT_HOME environment variable not set.", m_pFontManagerPtr);
 				m_pTextBoxAntRoot->create(renderer, this, "ANT_HOME environment variable not set.", 0, 0, 300, 16);
 			}
 		}
 		else
 		{
-			m_pTextBoxAntRoot = new geTextBox(buffer);
+			m_pTextBoxAntRoot = new geTextBox(buffer, m_pFontManagerPtr);
 			m_pTextBoxAntRoot->create(renderer, this, buffer, 0, 0, 300, 16);
 		}
 
@@ -46,29 +46,29 @@ public:
 		{
 			if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
 			{
-				m_pTextBoxAndroidRoot = new geTextBox("ANDROID_ROOT environment variable not set.");
+				m_pTextBoxAndroidRoot = new geTextBox("ANDROID_ROOT environment variable not set.", m_pFontManagerPtr);
 				m_pTextBoxAndroidRoot->create(renderer, this, "ANDROID_ROOT environment variable not set.", 0, 0, 300, 16);
 			}
 		}
 		else
 		{
-			m_pTextBoxAndroidRoot = new geTextBox(buffer);
+			m_pTextBoxAndroidRoot = new geTextBox(buffer, m_pFontManagerPtr);
 			m_pTextBoxAndroidRoot->create(renderer, this, buffer, 0, 0, 300, 16);
 		}
 		//package name
-		m_pTextBoxBundleIdentifier = new geTextBox("com.example.app");
+		m_pTextBoxBundleIdentifier = new geTextBox("com.example.app", m_pFontManagerPtr);
 		m_pTextBoxBundleIdentifier->create(renderer, this, "com.example.app", 0, 0, 300, 16);
 
 		//bundle version
-		m_pTextBoxBundleVersion = new geTextBox("1.0.0");
+		m_pTextBoxBundleVersion = new geTextBox("1.0.0", m_pFontManagerPtr);
 		m_pTextBoxBundleVersion->create(renderer, this, "1.0.0", 0, 0, 300, 16);
 
 		//bundle version code
-		m_pTextBoxBundleVersionCode = new geTextBox("1");
+		m_pTextBoxBundleVersionCode = new geTextBox("1", m_pFontManagerPtr);
 		m_pTextBoxBundleVersionCode->create(renderer, this, "1", 0, 0, 300, 16);
 
 		//window column
-		geWindowColumn* pWindowColumn = new geWindowColumn();
+		geWindowColumn* pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
 		pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.35f);
 		stWindowColumnRow* row = pWindowColumn->addRow("ANT_HOME");
 		pWindowColumn->addControl(row, m_pTextBoxAntRoot);

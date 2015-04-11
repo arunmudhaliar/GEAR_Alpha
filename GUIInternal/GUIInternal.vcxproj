@@ -41,16 +41,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../Mono-2.10.6/include/mono-2.0;../GEAREngine/src/zlib-1.2.4;..\openal\include;..\GEAREngine\src\physics;../FBXSDK/2014.2/include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);..\openal\lib;../FBXSDK/2014.2/lib/vs2010/x86/$(Configuration);C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86;../FreeImage/$(Configuration)</LibraryPath>
+    <IncludePath>../Mono-2.10.6/include/mono-2.0;../GEAREngine/src/zlib-1.2.4;..\openal\include;..\GEAREngine\src\physics;../FBXSDK/2014.2/include;..\SDL2-2.0.3Win32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);..\openal\lib;../FBXSDK/2014.2/lib/vs2010/x86/$(Configuration);C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86;../FreeImage/$(Configuration);..\SDL2-2.0.3Win32\lib\x86</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>../Mono-2.10.6/include/mono-2.0;../GEAREngine/src/zlib-1.2.4;..\openal\include;..\GEAREngine\src\physics;../FBXSDK/2014.2/include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);..\openal\lib;../FBXSDK/2014.2/lib/vs2010/x86/$(Configuration);C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86;../FreeImage/$(Configuration)</LibraryPath>
+    <IncludePath>../Mono-2.10.6/include/mono-2.0;../GEAREngine/src/zlib-1.2.4;..\openal\include;..\GEAREngine\src\physics;../FBXSDK/2014.2/include;..\SDL2-2.0.3Win32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(OutDir);..\openal\lib;../FBXSDK/2014.2/lib/vs2010/x86/$(Configuration);C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86;../FreeImage/$(Configuration);..\SDL2-2.0.3Win32\lib\x86</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -64,7 +64,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glut32.lib;openal32.lib;DbgHelp.lib;FreeImaged.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glut32.lib;openal32.lib;DbgHelp.lib;FreeImaged.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
@@ -84,7 +84,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glut32.lib;openal32.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glut32.lib;openal32.lib;FreeImage.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -94,6 +94,7 @@
     <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\macosProj\GEARInternal\GEARInternal\appEntry.h" />
     <ClInclude Include="GEAREditor\AssetImporter.h" />
     <ClInclude Include="GEAREditor\core\geTexture.h" />
     <ClInclude Include="GEAREditor\core\steTexturePacket.h" />
@@ -119,6 +120,8 @@
     <ClInclude Include="GEAREditor\gui\geWindow.h" />
     <ClInclude Include="GEAREditor\gui\geWindowColumn.h" />
     <ClInclude Include="GEAREditor\gui\RoundedRectControl.h" />
+    <ClInclude Include="GEAREditor\OSSpecific\ConfirmationDialog.h" />
+    <ClInclude Include="GEAREditor\OSSpecific\MDropData.h" />
     <ClInclude Include="GEAREditor\renderer\glincludes.h" />
     <ClInclude Include="GEAREditor\renderer\matrix4x4f.h" />
     <ClInclude Include="GEAREditor\renderer\renderer.h" />
@@ -153,6 +156,7 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.h" />
     <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsAndroid.h" />
     <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsGlobal.h" />
+    <ClInclude Include="GEAREditor\secondryViews\geAssetImportDlg.h" />
     <ClInclude Include="GEAREditor\secondryViews\geColorDlg.h" />
     <ClInclude Include="GEAREditor\secondryViews\geSecondryView.h" />
     <ClInclude Include="GEAREditor\secondryViews\geTextureDlg.h" />
@@ -167,17 +171,16 @@
     <ClInclude Include="GEAREditor\util\objC_util.h" />
     <ClInclude Include="GEAREditor\util\pxMath.h" />
     <ClInclude Include="GEAREditor\util\geVector2.h" />
-    <ClInclude Include="GEAREditor\win32\ConfirmationDialog.h" />
     <ClInclude Include="GEAREditor\win32\cursorUtil.h" />
     <ClInclude Include="GEAREditor\win32\eventHook.h" />
     <ClInclude Include="GEAREditor\win32\MDropSource.h" />
     <ClInclude Include="GUIInternal.h" />
-    <ClInclude Include="MDragGropInterface.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\macosProj\GEARInternal\GEARInternal\appEntry.cpp" />
     <ClCompile Include="GEAREditor\AssetImporter.cpp" />
     <ClCompile Include="GEAREditor\core\geTextureManager.cpp" />
     <ClCompile Include="GEAREditor\EditorApp.cpp" />
@@ -200,6 +203,7 @@
     <ClCompile Include="GEAREditor\gui\geWindow.cpp" />
     <ClCompile Include="GEAREditor\gui\geWindowColumn.cpp" />
     <ClCompile Include="GEAREditor\gui\RoundedRectControl.cpp" />
+    <ClCompile Include="GEAREditor\OSSpecific\ConfirmationDialog.cpp" />
     <ClCompile Include="GEAREditor\renderer\renderer.cpp" />
     <ClCompile Include="GEAREditor\renderer\rendererGL10.cpp" />
     <ClCompile Include="GEAREditor\renderer\rendererGL20.cpp" />
@@ -226,13 +230,13 @@
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyTransform.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\geSettingsFog.cpp" />
     <ClCompile Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.cpp" />
+    <ClCompile Include="GEAREditor\secondryViews\geAssetImportDlg.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geColorDlg.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geSecondryView.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geTextureDlg.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite2Dx.cpp" />
     <ClCompile Include="GEAREditor\util\geFontManager.cpp" />
-    <ClCompile Include="GEAREditor\win32\ConfirmationDialog.cpp" />
     <ClCompile Include="GUIInternal.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

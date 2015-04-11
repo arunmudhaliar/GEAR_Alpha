@@ -1,5 +1,5 @@
 #include "geSecondryView.h"
-#ifdef _WIN32
+#if DEPRECATED
 #include <Windows.h>
 #endif
 #include "../EditorApp.h"
@@ -13,6 +13,11 @@ geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, ren
     m_pFontManager = fontmanager;
     m_pSecondryWindow=NULL;
     m_iExtraWindowFlags = 0;
+
+#ifdef _WIN32
+	//In windows SDL window position (0, 0) starts from client space, so shifting y postion down 100px. 
+	m_cPos.set(100, 100);
+#endif
 }
 
 geSecondryView::~geSecondryView()
@@ -24,13 +29,13 @@ geSecondryView::~geSecondryView()
     GX_DELETE(m_pLayoutManager);
 }
 
-#ifdef _WIN32
+#if DEPRECATED
 void geSecondryView::createRenderer(HWND hwnd)
 #else
 void geSecondryView::createRenderer(SDL_Window* window)
 #endif
 {
-#ifdef _WIN32
+#if DEPRECATED
 	m_pSecondryRenderer = new rendererGL10(hwnd);
 #else
     m_pSecondryRenderer = new rendererGL10(window);
@@ -57,13 +62,13 @@ void geSecondryView::setPos(geVector2i& pos)
 	m_cPos=pos;
 }
 
-#ifdef _WIN32
+#if DEPRECATED
 void geSecondryView::showView(HWND parentHWND)
 #else
 void geSecondryView::showView(int extraWindowFlags)
 #endif
 {
-#ifdef _WIN32
+#if DEPRECATED
 	static TCHAR szAppName2[] = TEXT ("childWnd");
 	DWORD dwStyle = WS_CHILD | WS_OVERLAPPEDWINDOW | WS_POPUPWINDOW;
 	DWORD dwExStyle = WS_EX_TOOLWINDOW;
@@ -171,7 +176,7 @@ int geSecondryView::secondryThread( void *ptr )
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         view->drawView();
         view->getRenderer()->swapGLBuffer();
-        //view->m_pPrimaryRenderer->makeCurrent();
+        view->m_pPrimaryRenderer->makeCurrent();
         
         
         //It is very important in shared contexts to make sure the driver is done with all Objects before signaling other threads that they can use them!
@@ -191,6 +196,7 @@ int geSecondryView::secondryThread( void *ptr )
 //        if(result != GL_TIMEOUT_EXPIRED) break; //we ignore timeouts and wait until all OpenGL commands are processed!
 //    }
     
+	//SDL_GL_MakeCurrent(NULL, NULL);
     view->destroyView();
     
     return 0;
@@ -413,7 +419,7 @@ void geSecondryView::onDestroy()
 {
 }
 
-#ifdef _WIN32
+#if DEPRECATED
 LRESULT CALLBACK geSecondryView::SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(Msg)

@@ -46,6 +46,9 @@
     <Filter Include="GEAREditor\scenes\settingsViews">
       <UniqueIdentifier>{be95fd8f-043d-4853-b43c-7c5dfaa5984a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GEAREditor\OSSpecific">
+      <UniqueIdentifier>{2161bf4a-3979-4ae1-9940-297398d2741b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -155,9 +158,6 @@
     </ClInclude>
     <ClInclude Include="GEAREditor\util\geVector2.h">
       <Filter>GEAREditor\util</Filter>
-    </ClInclude>
-    <ClInclude Include="MDragGropInterface.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GEAREditor\win32\MDropSource.h">
       <Filter>GEAREditor\win32</Filter>
@@ -300,8 +300,17 @@
     <ClInclude Include="GEAREditor\scenes\propertyViews\gePropertyScriptComponent.h">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClInclude>
-    <ClInclude Include="GEAREditor\win32\ConfirmationDialog.h">
-      <Filter>GEAREditor\win32</Filter>
+    <ClInclude Include="GEAREditor\secondryViews\geAssetImportDlg.h">
+      <Filter>GEAREditor\secondryViews</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\OSSpecific\ConfirmationDialog.h">
+      <Filter>GEAREditor\OSSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\OSSpecific\MDropData.h">
+      <Filter>GEAREditor\OSSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\macosProj\GEARInternal\GEARInternal\appEntry.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -473,8 +482,14 @@
     <ClCompile Include="GEAREditor\scenes\propertyViews\gePropertyScriptComponent.cpp">
       <Filter>GEAREditor\scenes\propertyViews</Filter>
     </ClCompile>
-    <ClCompile Include="GEAREditor\win32\ConfirmationDialog.cpp">
-      <Filter>GEAREditor\win32</Filter>
+    <ClCompile Include="GEAREditor\secondryViews\geAssetImportDlg.cpp">
+      <Filter>GEAREditor\secondryViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\OSSpecific\ConfirmationDialog.cpp">
+      <Filter>GEAREditor\OSSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\macosProj\GEARInternal\GEARInternal\appEntry.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

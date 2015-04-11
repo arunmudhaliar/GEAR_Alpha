@@ -6,7 +6,7 @@ unsigned int rendererBase::g_nTrisRendered=0;
 int rendererBase::g_iOGLMajorVersion=0;
 int rendererBase::g_iOGLMinorVersion=0;
 
-#ifdef _WIN32
+#if DEPRECATED
 rendererBase::rendererBase(HWND hWnd, ERENDERER technique):
 	m_hWnd(hWnd),
 	m_iPixelFormat(0),
@@ -32,7 +32,7 @@ rendererBase::~rendererBase()
 
 bool rendererBase::setupRenderer(rendererBase* mainRenderer)
 {
-#ifdef _WIN32
+#if DEPRECATED
 	m_bSecondryRenderer=(mainRenderer)?true:false;
 
 	static	PIXELFORMATDESCRIPTOR pfd=							// pfd Tells Windows How We Want Things To Be
@@ -119,8 +119,17 @@ bool rendererBase::setupRenderer(rendererBase* mainRenderer)
     {
         m_pContext = SDL_GL_CreateContext( m_pWindow );
         printf("%s %s\n", glGetString(GL_RENDERER), glGetString(GL_VERSION));
-//        glGetIntegerv(GL_MAJOR_VERSION, &g_iOGLMajorVersion);
-//        glGetIntegerv(GL_MINOR_VERSION, &g_iOGLMinorVersion);
+
+#ifdef _WIN32
+		glewInit();
+		if (!GLEW_VERSION_2_0)
+		{
+			MessageBox(NULL, "OpenGL 2.0 not supported. Shaders won't work !!!", "ERROR", MB_OK|MB_ICONEXCLAMATION);
+		}
+
+		glGetIntegerv(GL_MAJOR_VERSION, &g_iOGLMajorVersion);
+		glGetIntegerv(GL_MINOR_VERSION, &g_iOGLMinorVersion);
+#endif
 
         if( m_pContext == NULL )
         {
@@ -138,7 +147,7 @@ bool rendererBase::setupRenderer(rendererBase* mainRenderer)
 
 bool rendererBase::makeCurrent()
 {
-#ifdef _WIN32
+#if DEPRECATED
 	if(!wglMakeCurrent(m_hDC,m_hRC))								// Try To Activate The Rendering Context
 	{
 		destroyRenderer();												// Reset The Display
@@ -146,7 +155,7 @@ bool rendererBase::makeCurrent()
 		return false;											// Return GX_FALSE
 	}
 #else
-    SDL_GL_MakeCurrent(m_pWindow, m_pContext);
+    int ret=SDL_GL_MakeCurrent(m_pWindow, m_pContext);
 #endif
     
 	return true;
@@ -160,7 +169,7 @@ void rendererBase::destroyRenderer()
 
 bool rendererBase::killGL()
 {
-#ifdef _WIN32
+#if DEPRECATED
 	bool flag=false;
 	
 	if(m_hRC && !m_bSecondryRenderer)													// Do We Have A Rendering Context?
@@ -217,7 +226,7 @@ void rendererBase::loadDefaultRenderState()
 
 void rendererBase::swapGLBuffer()
 {
-#ifdef _WIN32
+#if DEPRECATED
 	SwapBuffers(m_hDC);
 #else
     SDL_GL_SwapWindow(m_pWindow);

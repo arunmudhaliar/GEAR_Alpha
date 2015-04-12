@@ -120,6 +120,18 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Build" id="Ovo-ed-L60" userLabel="Build">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Build" id="vbd-Xr-BXN">
+                        <items>
+                            <menuItem title="Build For Android" keyEquivalent="1" id="isd-hO-0OC" userLabel="Layers Property">
+                                <connections>
+                                    <action selector="buildForAndroid:" target="Voe-Tx-rLC" id="JzU-OV-YJI"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="Window" id="aUF-d1-5bR">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">

@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #include <SDL2/SDL.h>
 #include "EditorApp.h"
+#include "appEntry.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
@@ -19,7 +20,6 @@
 -(IBAction) openOctreeProperty:(id)sender;
 -(IBAction) openLayersProperty:(id)sender;
 
-int macos_main();
-void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp);
+-(IBAction) buildForAndroid:(id)sender;
 @end
 

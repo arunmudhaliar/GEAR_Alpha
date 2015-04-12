@@ -102,6 +102,7 @@
 		5554F1471AD2717000FD80AF /* NormalMapSeperateSpecular.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */; };
 		5554F1481AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */; };
 		5554F1491AD2717000FD80AF /* NormalMapSpecular.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */; };
+		556F65C91AD9C85700CDF3C8 /* appEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 556F65C71AD9C85700CDF3C8 /* appEntry.cpp */; };
 		5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5576F3041AD2DD5E008642F5 /* AppKit.framework */; };
 		5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5576F3061AD2F052008642F5 /* MenuImp.mm */; };
 		55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */; };
@@ -284,6 +285,8 @@
 		5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateSpecular.shader; sourceTree = "<group>"; };
 		5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateSpecularEmissive.shader; sourceTree = "<group>"; };
 		5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSpecular.shader; sourceTree = "<group>"; };
+		556F65C71AD9C85700CDF3C8 /* appEntry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = appEntry.cpp; sourceTree = "<group>"; };
+		556F65C81AD9C85700CDF3C8 /* appEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appEntry.h; sourceTree = "<group>"; };
 		5576F3041AD2DD5E008642F5 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		5576F3061AD2F052008642F5 /* MenuImp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuImp.mm; sourceTree = "<group>"; };
 		5576F3081AD2F153008642F5 /* MenuImp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuImp.h; sourceTree = "<group>"; };
@@ -346,6 +349,8 @@
 		5554EFDF1AD26F9A00FD80AF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				556F65C71AD9C85700CDF3C8 /* appEntry.cpp */,
+				556F65C81AD9C85700CDF3C8 /* appEntry.h */,
 				55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */,
 				55BEFD371AD59EC40071A2D5 /* AppDelegate.h */,
 				55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */,
@@ -817,6 +822,7 @@
 				5554F1151AD2717000FD80AF /* geSettingsFog.cpp in Sources */,
 				5554F0F21AD2717000FD80AF /* geSeperator.cpp in Sources */,
 				5554F0EC1AD2717000FD80AF /* geGUIManager.cpp in Sources */,
+				556F65C91AD9C85700CDF3C8 /* appEntry.cpp in Sources */,
 				5554F1191AD2717000FD80AF /* geSecondryView.cpp in Sources */,
 				5554F1081AD2717000FD80AF /* geNullMaterialExtended.cpp in Sources */,
 				55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */,

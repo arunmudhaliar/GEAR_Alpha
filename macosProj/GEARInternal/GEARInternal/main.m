@@ -338,7 +338,7 @@ int main(int argc, const char * argv[]) {
 //                //geTestDlg* view = new geTestDlg(&geFontManager::g_cFontManager, editorApp.m_pRendererGL10);
 //                //view->showView();
 //                //showMenu();
-//                cpp_showMenu();
+//                cpp_createMenu();
 //            }
 //                break;
 //            case SDL_BUTTON_RIGHT:

@@ -89,6 +89,9 @@ public:
 
 	//static rendererGL10* g_pMainRenderer;
 	static std::string g_cAppDirectory;
+    
+    //app-specific events
+    static Uint32 g_iAppSpecificEventType_MenuItemCmd;
 };
 
 

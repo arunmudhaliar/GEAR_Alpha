@@ -98,7 +98,6 @@ void gePropertyObject3d::populatePropertyOfObject(object3d* obj)
 
 void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 {
-//#ifdef _WIN32
 	if(btn==m_pPushBtn_Object3dVisible)
 	{
 		if(m_pPushBtn_Object3dVisible->isCheck())
@@ -136,28 +135,25 @@ void gePropertyObject3d::onButtonClicked(geGUIBase* btn)
 		m_pPushBtn_Object3dStatic->refresh();
 		//TODO: We need to remove/add to octree based on this flag.
 	}
-//#endif
 }
 
 void gePropertyObject3d::onCommand(int cmd)
 {
-#ifdef _WIN32
 	if(cmd>=0x00006500 && cmd<0x00006500+MAX_LAYER)
 	{
 		bool bRecursive=false;
 		if(m_pObject3dPtr->getChildCount())
 		{
-			LRESULT result = ConfirmationDialog::ShowConfirmationDialog("Do you want to change this object and its child or not ?");
-			if(result==IDYES)
+			ConfirmationDialog::ConfirmationDialogButton result = ConfirmationDialog::ShowConfirmationDialog("Do you want to change this object and its child or not ?");
+			if(result==ConfirmationDialog::ConfirmationDialogButton::BTN_YES)
 				bRecursive=true;
-			else if(result==IDNO)
+			else if(result==ConfirmationDialog::ConfirmationDialogButton::BTN_NO)
 				bRecursive=false;
-			else if(result==IDCANCEL)
+			else if(result==ConfirmationDialog::ConfirmationDialogButton::BTN_CANCEL)
 				return;
 		}
 
 		m_pObject3dPtr->setLayer(cmd-0x00006500, bRecursive);
 		m_pLayerDropDownMenu->setMenuItem(cmd);
 	}
-#endif
 }

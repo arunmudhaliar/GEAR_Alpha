@@ -14,10 +14,12 @@
 
 @interface MenuObjC : NSObject  //<NSMenuDelegate>
 {
+    NSMenu* m_pPopupMenu;
 }
 
-- (void) showMenu;
-- (IBAction) test_func:(id)sender;
+- (NSMenu*) createMenu: (std::vector<stDropMenuItem*>&) list;
+- (void) showMenu:(NSPoint)pt;
+- (IBAction) onMenuItemClick:(id)sender;
 @end
 
 

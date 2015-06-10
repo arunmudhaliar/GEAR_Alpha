@@ -131,7 +131,7 @@ bool calculatePosOfMyChild(geGUIBase* compareme, geGUIBase* parent, int& x, int&
 						y+=compareme->getSize().y;
 						y-=parent->getSize().y;
 
-						compareme=compareme;
+						//compareme=compareme;
 						//calculate and return
 						return true;
 					}
@@ -148,6 +148,63 @@ bool calculatePosOfMyChild(geGUIBase* compareme, geGUIBase* parent, int& x, int&
 
 void geToolBarDropMenu::onButtonClicked()
 {
+    void* menuobject = cpp_createMenu(m_vMenuItems);
+    
+    geGUIBase* baseGUI=this;
+    geGUIBase* rootTVNode=this;
+    geVector2f absPos;
+    while(baseGUI)
+    {
+        rootTVNode=baseGUI;
+        baseGUI=baseGUI->getParent();
+    }
+    
+    if(rootTVNode && rootTVNode->getGUIID()==GEGUI_TREEVIEW_NODE)
+    {
+        geGUIBase* treeView = ((geTreeNode*)rootTVNode)->getParentTreeView();
+        int x, y;
+        x=y=0;
+        calculatePosOfMyChild(this, rootTVNode, x, y);
+        
+        vector2i pt;
+        pt.x=x+treeView->getPositionOnScreen().x;
+        pt.y=y-treeView->getPositionOnScreen().y+((geTreeView*)treeView)->getVirtualYPos();
+#ifndef GEAR2D
+#ifdef _WIN32
+        ClientToScreen(EditorGEARApp::getMainWindowHandle(), &pt);
+        TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorGEARApp::getMainWindowHandle(), NULL);
+#else
+        cpp_showPopupMenu(menuobject, pt.x, m_pRenderer->getViewPortSz().y-pt.y);
+#endif
+#else
+        ClientToScreen(Editor2DApp::getMainWindowHandle(), &pt);
+        TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, Editor2DApp::getMainWindowHandle(), NULL);
+#endif
+        
+    }
+    else if(rootTVNode)
+    {
+        vector2i pt;
+        pt.x=getPositionOnScreen().x;
+        pt.y=-getPositionOnScreen().y;
+#ifndef GEAR2D
+#ifdef _Win32
+        ClientToScreen(EditorGEARApp::getMainWindowHandle(), &pt);
+        TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorGEARApp::getMainWindowHandle(), NULL);
+#else
+        cpp_showPopupMenu(menuobject, pt.x, m_pRenderer->getViewPortSz().y-pt.y);
+#endif
+#else
+        ClientToScreen(Editor2DApp::getMainWindowHandle(), &pt);
+        TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, Editor2DApp::getMainWindowHandle(), NULL);
+#endif
+    }
+    
+    if(m_pGUIObserver)
+        m_pGUIObserver->onButtonClicked(this);
+    buttonNormal(true);
+
+    
 #if DEPRECATED
 	for(int x=0;x<m_vMenuItems.size();x++)
 	{
@@ -306,7 +363,7 @@ void geToolBarDropMenu::clearMenu()
 	m_pActiveItemPtr=NULL;
 }
 
-geToolBarDropMenu::stDropMenuItem* geToolBarDropMenu::appendMenuItem(const char* name, int menuID, stDropMenuItem* parent, bool bSeperator, bool bCheck)
+stDropMenuItem* geToolBarDropMenu::appendMenuItem(const char* name, int menuID, stDropMenuItem* parent, bool bSeperator, bool bCheck)
 {
 	stDropMenuItem* newItem = new stDropMenuItem();
 	strcpy(newItem->name, name);
@@ -328,18 +385,20 @@ void geToolBarDropMenu::onSetName()
 
 void geToolBarDropMenu::checkMenuItem(int menuID, bool bCheck)
 {
-#ifdef _WIN32
+//#ifdef _WIN32
 	for(std::vector<stDropMenuItem*>::iterator it = m_vMenuItems.begin(); it != m_vMenuItems.end(); ++it)
 	{
 		stDropMenuItem* menuitem = *it;
 		if(menuitem->menuid==menuID)
 		{
+#ifdef _WIN32
 			CheckMenuItem(menuitem->menu_handle, 0, MF_BYPOSITION | (bCheck)?MF_CHECKED:MF_UNCHECKED);
+#endif
 			menuitem->hasCheck=bCheck;
 			break;
 		}
 	}
-#endif
+//#endif
 }
 
 void geToolBarDropMenu::setMenuItem(int menuID)

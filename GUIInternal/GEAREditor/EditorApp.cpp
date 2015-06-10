@@ -33,6 +33,7 @@ gearSceneWorldEditor* EditorGEARApp::g_pSceneWorldEditorPtr=NULL;
 gearSceneConsole* EditorGEARApp::g_pSceneConsolePtr=NULL;
 gePropertyOctree* EditorGEARApp::g_pPropertyOctreePtr=NULL;
 std::string EditorApp::g_cAppDirectory="";
+Uint32 EditorApp::g_iAppSpecificEventType_MenuItemCmd=-1;
 
 //rendererGL10* EditorApp::g_pMainRenderer=NULL;
 
@@ -41,6 +42,7 @@ EditorApp::EditorApp()
 	m_bInitialised=false;
 	m_pRendererGL10 = NULL;
     m_pGUIManager = NULL;
+    g_iAppSpecificEventType_MenuItemCmd=-1;
 }
 
 EditorApp::~EditorApp()
@@ -77,6 +79,9 @@ void EditorApp::init(SDL_Window* window)
     m_pGUIManager = new geGUIManager(&geFontManager::g_cFontManager);
 	m_pGUIManager->init(m_pRendererGL10);
     geFontManager::InitializeFonts();
+    
+    //App specific events
+    g_iAppSpecificEventType_MenuItemCmd = SDL_RegisterEvents(1);
 }
 
 void EditorApp::size(int cx, int cy)

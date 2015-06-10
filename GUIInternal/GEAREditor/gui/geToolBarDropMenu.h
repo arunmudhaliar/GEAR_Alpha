@@ -4,25 +4,13 @@
 #include "geButton.h"
 #include <vector>
 #include "../SpriteManager/Sprite2Dx.h"
+#include "../OSSpecific/MenuCPPInterface.h"
 
 #define GE_TOOLBAR_HEIGHT	17
 
 class geToolBarDropMenu : public geButtonBase
 {
 public:
-	struct stDropMenuItem
-	{
-#ifdef _WIN32
-		HMENU menu_handle;
-		HMENU sub_menu_handle;
-#endif
-		char name[256];
-		int menuid;
-		stDropMenuItem* parent;
-		int type;
-		bool hasCheck;
-	};
-
 	geToolBarDropMenu(geFontManager* fontManager);
 	geToolBarDropMenu(rendererGL10* renderer, const char* name, geGUIBase* parent, geFontManager* fontManager);
 	virtual ~geToolBarDropMenu();

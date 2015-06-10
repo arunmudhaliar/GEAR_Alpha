@@ -208,7 +208,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
                 //geTestDlg* view = new geTestDlg(&geFontManager::g_cFontManager, editorApp.m_pRendererGL10);
                 //view->showView();
                 //showMenu();
-                //cpp_showMenu();
+                //cpp_createMenu();
             }
                 break;
             case SDL_BUTTON_RIGHT:
@@ -291,5 +291,9 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
         editorApp.DragDrop(mouse_x, mouse_y, dropData);
         GE_DELETE(dropData);
         //SDL_FlushEvent(SDL_MOUSEMOTION);
+    }
+    else if(e.type==EditorApp::g_iAppSpecificEventType_MenuItemCmd)
+    {
+        editorApp.DoCommand(e.user.code);
     }
 }

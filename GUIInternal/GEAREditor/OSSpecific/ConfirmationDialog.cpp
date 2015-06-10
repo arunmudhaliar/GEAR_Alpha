@@ -55,9 +55,9 @@ ConfirmationDialog::ConfirmationDialogButton ConfirmationDialog::ShowConfirmatio
     g_ConfirmationDlgMessage=msg;
     
     const SDL_MessageBoxButtonData buttons[] = {
-        { /* .flags, .buttonid, .text */        0, BTN_NO, "no" },
-        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, BTN_YES, "yes" },
-        { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, BTN_CANCEL, "cancel" },
+        { /* .flags, .buttonid, .text */        0, BTN_NO, "No" },
+        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, BTN_YES, "Yes" },
+        { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, BTN_CANCEL, "Cancel" },
     };
     const SDL_MessageBoxColorScheme colorScheme = {
         { /* .colors (.r, .g, .b) */

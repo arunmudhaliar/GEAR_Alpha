@@ -8,6 +8,7 @@
 #include "../../gui/geGUIManager.h"
 #include "../../AssetImporter.h"
 #include "../../gui/geToolBarDropMenu.h"
+#include "../../OSSpecific/MenuCPPInterface.h"
 
 class gePropertyAddComponent : public geTreeNode, public MGUIObserver
 {
@@ -22,7 +23,7 @@ public:
 		m_pAddComponentToolBarDropMenuBtnPtr->setPos(15, 10);
 
 		int base=0x00005200;
-		geToolBarDropMenu::stDropMenuItem* mitem = m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("Physics", base++);
+		stDropMenuItem* mitem = m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("Physics", base++);
 		m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("RigidBody", base++, mitem);
 		m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("Box Collider", base++, mitem);
 		m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("Sphere Collider", base++, mitem);

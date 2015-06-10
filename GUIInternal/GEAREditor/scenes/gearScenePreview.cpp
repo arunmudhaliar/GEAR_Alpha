@@ -190,10 +190,10 @@ bool gearScenePreview::onMouseMove(float x, float y, int flag)
 		else
 			m_pSelectedObj->updateLocalPositionf((d/500.0f)*Pos_dx*aDirX, (d/500.0f)*Pos_dy*aDirY, 0);
 	}
-	else*/ if(flag&MK_RBUTTON)
+	else*/
 #endif
+    if(flag&MK_RBUTTON)
 	{
-
 		vector3f aUP(0, 0, 1);
 		//aUP=camera->getYAxis();
 		vector3f aVect(m_pSelectedObj->getAABB().getCenter());

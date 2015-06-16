@@ -44,3 +44,4 @@ obj
 *.suo
 *.sdf
 /GUIInternal/recentProjects
+*.xcworkspace

@@ -20,7 +20,7 @@
 
 char EditorGEARApp::g_cszProjectHomeDirectory[FILENAME_MAX];
 
-#if DEPRECATED
+#if _WIN32
 HWND EditorApp::g_hWnd=NULL;
 #endif
 
@@ -67,6 +67,15 @@ void EditorApp::init(SDL_Window* window)
     m_pRendererGL10 = new rendererGL10(window);
 #endif
     
+#ifdef _WIN32
+	SDL_SysWMinfo info;
+	SDL_VERSION(&info.version);
+	if(SDL_GetWindowWMInfo(m_pRendererGL10->getWindow(), &info))
+	{
+		g_hWnd = info.info.win.window;
+	}
+#endif
+
 	//EditorApp::g_pMainRenderer=m_pRendererGL10;
 
 	m_pRendererGL10->setupRenderer();
@@ -190,6 +199,13 @@ void EditorApp::DoCommand(int cmd)
 
 	m_pGUIManager->DoCommand(cmd);
 }
+
+#if _WIN32
+HWND EditorApp::getMainWindowHandle()
+{
+	return g_hWnd;
+}
+#endif
 
 #if DEPRECATED
 #ifdef _WIN32

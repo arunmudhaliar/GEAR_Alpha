@@ -18,6 +18,10 @@
 #include <string>
 
 #ifdef _WIN32
+#include <SDL_syswm.h>	//for SDL_SysWMinfo
+#endif
+
+#ifdef _WIN32
 #define MKDIR _mkdir
 #else
 #define MKDIR mkdir
@@ -62,8 +66,8 @@ public:
 
 	void DoCommand(int cmd);
 
-#if DEPRECATED
-    static HWND getMainWindowHandle()	{	return g_hWnd;	}
+#if _WIN32
+    static HWND getMainWindowHandle();
 #endif
 	//static rendererGL10* getMainRenderer()	{	return g_pMainRenderer;	}
 
@@ -78,7 +82,7 @@ public:
 	static std::string getAppDirectory()			{	return g_cAppDirectory;	}
 
 private:
-#if DEPRECATED
+#if _WIN32
     static HWND g_hWnd;	//main window
 #endif
 

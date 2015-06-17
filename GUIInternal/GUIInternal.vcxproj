@@ -89,6 +89,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="GEAREditor\OSSpecific\MenuImp.mm" />
     <None Include="GUIInternal.ico" />
     <None Include="ReadMe.txt" />
     <None Include="small.ico" />
@@ -122,6 +123,8 @@
     <ClInclude Include="GEAREditor\gui\RoundedRectControl.h" />
     <ClInclude Include="GEAREditor\OSSpecific\ConfirmationDialog.h" />
     <ClInclude Include="GEAREditor\OSSpecific\MDropData.h" />
+    <ClInclude Include="GEAREditor\OSSpecific\MenuCPPInterface.h" />
+    <ClInclude Include="GEAREditor\OSSpecific\MenuImp.h" />
     <ClInclude Include="GEAREditor\renderer\glincludes.h" />
     <ClInclude Include="GEAREditor\renderer\matrix4x4f.h" />
     <ClInclude Include="GEAREditor\renderer\renderer.h" />
@@ -203,6 +206,7 @@
     <ClCompile Include="GEAREditor\gui\geWindowColumn.cpp" />
     <ClCompile Include="GEAREditor\gui\RoundedRectControl.cpp" />
     <ClCompile Include="GEAREditor\OSSpecific\ConfirmationDialog.cpp" />
+    <ClCompile Include="GEAREditor\OSSpecific\MenuImpWin32.cpp" />
     <ClCompile Include="GEAREditor\renderer\renderer.cpp" />
     <ClCompile Include="GEAREditor\renderer\rendererGL10.cpp" />
     <ClCompile Include="GEAREditor\renderer\rendererGL20.cpp" />

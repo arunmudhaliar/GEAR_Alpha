@@ -8,7 +8,21 @@
 #ifndef MENUIMP
 #define MENUIMP
 
-//#import <Foundation/Foundation.h>
+#ifdef _WIN32
+
+#include <stdio.h>
+#include <vector>
+#include "MenuCPPInterface.h"
+
+class MenuWin32
+{
+public:
+	HMENU createMenu(std::vector<stDropMenuItem*>& list);
+	void showMenu(float x, float y);
+	HMENU m_pPopupMenu;
+};
+
+#else
 #import <AppKit/AppKit.h>
 #import "MenuCPPInterface.h"
 
@@ -21,6 +35,6 @@
 - (void) showMenu:(NSPoint)pt;
 - (IBAction) onMenuItemClick:(id)sender;
 @end
-
+#endif
 
 #endif

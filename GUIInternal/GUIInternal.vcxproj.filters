@@ -58,6 +58,9 @@
     <None Include="GUIInternal.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="GEAREditor\OSSpecific\MenuImp.mm">
+      <Filter>GEAREditor\OSSpecific</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -309,6 +312,12 @@
     <ClInclude Include="..\macosProj\GEARInternal\GEARInternal\appEntry.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\OSSpecific\MenuCPPInterface.h">
+      <Filter>GEAREditor\OSSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\OSSpecific\MenuImp.h">
+      <Filter>GEAREditor\OSSpecific</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -487,6 +496,9 @@
     </ClCompile>
     <ClCompile Include="..\macosProj\GEARInternal\GEARInternal\appEntry.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\OSSpecific\MenuImpWin32.cpp">
+      <Filter>GEAREditor\OSSpecific</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

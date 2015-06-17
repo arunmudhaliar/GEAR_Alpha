@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpProjectMaker", "..\CS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidProjectMaker", "..\AndroidProjectMaker\AndroidProjectMaker.csproj", "{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GEAREngine", "..\GEAREngine\GEAREngine\GEAREngine.vcxproj", "{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GUIInternal", "GUIInternal.vcxproj", "{26F81658-AD70-4115-9ABE-B45B4CDFFF37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -20,16 +24,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|Win32.ActiveCfg = Debug|x86
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|x86.ActiveCfg = Debug|x86
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|x86.Build.0 = Debug|x86
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|Mixed Platforms.Build.0 = Release|x86
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|Win32.ActiveCfg = Release|x86
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|x86.ActiveCfg = Release|x86
-		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|x86.Build.0 = Release|x86
 		{A20FE9A6-C182-4D14-81DC-13F5F15500CF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{A20FE9A6-C182-4D14-81DC-13F5F15500CF}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{A20FE9A6-C182-4D14-81DC-13F5F15500CF}.Debug|Win32.ActiveCfg = Debug|x86
@@ -40,6 +34,16 @@ Global
 		{A20FE9A6-C182-4D14-81DC-13F5F15500CF}.Release|Win32.ActiveCfg = Release|x86
 		{A20FE9A6-C182-4D14-81DC-13F5F15500CF}.Release|x86.ActiveCfg = Release|x86
 		{A20FE9A6-C182-4D14-81DC-13F5F15500CF}.Release|x86.Build.0 = Release|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|Win32.ActiveCfg = Debug|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|x86.ActiveCfg = Debug|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Debug|x86.Build.0 = Debug|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|Mixed Platforms.Build.0 = Release|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|Win32.ActiveCfg = Release|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|x86.ActiveCfg = Release|x86
+		{9C2D0346-C622-4657-B1C4-73DD7A3AE9CB}.Release|x86.Build.0 = Release|x86
 		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Debug|Win32.ActiveCfg = Debug|x86
@@ -50,31 +54,35 @@ Global
 		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Release|Win32.ActiveCfg = Release|x86
 		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Release|x86.ActiveCfg = Release|x86
 		{F13F1BE3-D4F9-4630-BDC2-CEECAD2C619D}.Release|x86.Build.0 = Release|x86
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|Win32.ActiveCfg = Debug|Win32
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|Win32.Build.0 = Debug|Win32
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|x86.ActiveCfg = Debug|Win32
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|Win32.ActiveCfg = Release|Win32
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|Win32.Build.0 = Release|Win32
-		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|x86.ActiveCfg = Release|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Debug|Win32.Build.0 = Debug|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Debug|x86.ActiveCfg = Debug|Win32
+		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Debug|x86.Build.0 = Debug|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Release|Mixed Platforms.ActiveCfg = Release|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Release|Win32.ActiveCfg = Release|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Release|Win32.Build.0 = Release|Win32
 		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Release|x86.ActiveCfg = Release|Win32
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = ..\AndroidProjectMaker\AndroidProjectMaker.csproj
+		{2464DB15-6DC2-4A2D-AC77-4D9B7F96CB96}.Release|x86.Build.0 = Release|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|Win32.ActiveCfg = Debug|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|Win32.Build.0 = Debug|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|x86.ActiveCfg = Debug|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Debug|x86.Build.0 = Debug|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|Win32.ActiveCfg = Release|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|Win32.Build.0 = Release|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|x86.ActiveCfg = Release|Win32
+		{26F81658-AD70-4115-9ABE-B45B4CDFFF37}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = ..\AndroidProjectMaker\AndroidProjectMaker.csproj
 	EndGlobalSection
 EndGlobal

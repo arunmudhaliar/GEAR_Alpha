@@ -61,6 +61,21 @@ int macos_main()
                                            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | SDL_WINDOW_RESIZABLE        // flags
                                            );
 
+#ifdef _WIN32
+	// Load our menu definitions
+	HMENU hMenu = LoadMenu(GetModuleHandle(0), MAKEINTRESOURCE(IDC_GUIINTERNAL));
+	// Attach the menu to the window
+	SDL_SysWMinfo info;
+	SDL_VERSION(&info.version);
+	if(SDL_GetWindowWMInfo(window, &info))
+	{
+		SetMenu(info.info.win.window, hMenu);
+	}
+
+	// This tells SDL we want to process system events
+	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+#endif
+	
     SDL_MaximizeWindow(window);
 
     int window_cx=1;
@@ -166,7 +181,7 @@ int macos_main()
 
 void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
 {
-    if(e.type==SDL_WINDOWEVENT)
+    /*if(e.type==SDL_WINDOWEVENT)
     {
         SDL_WindowEvent* windowEvent = (SDL_WindowEvent*)&e;
 
@@ -188,7 +203,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
                 break;
         }
     }
-    else if(e.type==SDL_MOUSEBUTTONDOWN)
+    else*/ if(e.type==SDL_MOUSEBUTTONDOWN)
     {
         int mouse_x = 0, mouse_y = 0;
         SDL_GetMouseState( &mouse_x, &mouse_y );
@@ -292,8 +307,72 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
         GE_DELETE(dropData);
         //SDL_FlushEvent(SDL_MOUSEMOTION);
     }
+#ifdef __APPLE__
     else if(e.type==EditorApp::g_iAppSpecificEventType_MenuItemCmd)
     {
         editorApp.DoCommand(e.user.code);
     }
+#endif
+
+#ifdef _WIN32
+	else if (e.type==SDL_SYSWMEVENT)
+	{
+		SDL_SysWMEvent* wmEvent = (SDL_SysWMEvent*)&e;
+		// event.syswm.msg contains a pointer to SDL_SysWMmsg
+		// which contains the event information
+        switch(wmEvent->msg->msg.win.msg)
+        {
+			//// The user selected the command from the menu or used
+			//// a hot key
+            case WM_COMMAND:
+			{          
+				// Find which sub command was selected
+				switch(LOWORD(wmEvent->msg->msg.win.wParam))
+                {
+				case ID_PROJECT_BUILDFORANDROID:
+					{
+						printf("\n================ANDROID BUILD ENGINE===============\n");
+						char inputbuffer[1024*6];
+
+						sprintf(inputbuffer, "%s//AndroidProjectMaker.exe %s %s", EditorApp::getAppDirectory().c_str(), EditorApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory());
+						if(monoWrapper::exec_cmd(inputbuffer)!=0)
+						{
+							printf("\nERROR\n");
+						}
+						printf("\n======================================================\n");
+					}
+					break;
+				case ID_EDIT_ACTIVECAMERAPROPERTY:
+					{
+						object3d* cam=monoWrapper::mono_engine_getWorld(0)->getActiveCamera();
+						EditorGEARApp::getSceneWorldEditor()->selectedObject3D(cam);
+						EditorGEARApp::getScenePropertyEditor()->populatePropertyOfObject(cam);
+					}
+					break;
+				case ID_EDIT_OCTREEPROPERTY:
+					{
+						EditorGEARApp::getScenePropertyEditor()->populatePropertyOfOctree();
+					}
+					break;
+				case ID_EDIT_LAYERSPROPERTY:
+					{
+						EditorGEARApp::getScenePropertyEditor()->populatePropertyOfLayers();
+					}
+					break;
+				case ID_EDIT_FOGSETTINGS:
+					{
+						EditorGEARApp::getScenePropertyEditor()->populateSettingsOfFog();
+					}
+					break;
+				default:
+					{
+						editorApp.DoCommand(LOWORD(wmEvent->msg->msg.win.wParam));
+					}
+                }
+                break;
+			}
+			break;
+        }
+	}
+#endif
 }

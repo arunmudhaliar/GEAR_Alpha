@@ -176,7 +176,7 @@ void geToolBarDropMenu::onButtonClicked()
 //        //TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorGEARApp::getMainWindowHandle(), NULL);
 //#else
 		int ypos=0;
-#ifdef APPLE
+#ifdef __APPLE__
 		ypos=m_pRenderer->getViewPortSz().y-pt.y;
 #elif defined(_WIN32)
 		ypos=pt.y;
@@ -200,7 +200,7 @@ void geToolBarDropMenu::onButtonClicked()
 //        TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorGEARApp::getMainWindowHandle(), NULL);
 //#else
 	int ypos=0;
-#ifdef APPLE
+#ifdef __APPLE__
 		ypos=m_pRenderer->getViewPortSz().y-pt.y;
 #elif defined(_WIN32)
 		ypos=pt.y;

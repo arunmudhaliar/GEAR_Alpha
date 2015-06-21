@@ -181,7 +181,7 @@ int macos_main()
 
 void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
 {
-    /*if(e.type==SDL_WINDOWEVENT)
+    if(e.type==SDL_WINDOWEVENT)
     {
         SDL_WindowEvent* windowEvent = (SDL_WindowEvent*)&e;
 
@@ -203,7 +203,63 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
                 break;
         }
     }
-    else*/ if(e.type==SDL_MOUSEBUTTONDOWN)
+    else if(e.type==SDL_KEYDOWN)
+    {
+        SDL_KeyboardEvent* keyBoardEvent = (SDL_KeyboardEvent*)&e;
+        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        if(geTextBox::g_pCurrentlyActiveTextBoxPtr)
+        {
+            //if(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT])
+            //    break;
+            bool bShiftKeyPressed=(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]);
+//            char ch=MapVirtualKey(wParam, MAPVK_VK_TO_CHAR);
+//            if(ch>=0x41 && ch<=0x5A)
+//            {
+//                if(!(shift_keystate&0x8000))
+//                    ch=ch+32;
+//            }
+//            else if(ch>=0x31 && ch<=0x39)
+//            {
+//                if((shift_keystate&0x8000))
+//                    ch=ch-16;
+//            }
+            
+            bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyDown(keyBoardEvent->keysym.scancode, 0/*lParam*/);   //TODO: need to check if lparam is used somewere in the code or not.
+        }
+        else
+        {
+            editorApp.KeyDown(keyBoardEvent->keysym.scancode, 0/*lParam*/);
+        }
+    }
+    else if(e.type==SDL_KEYUP)
+    {
+        SDL_KeyboardEvent* keyBoardEvent = (SDL_KeyboardEvent*)&e;
+        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        if(geTextBox::g_pCurrentlyActiveTextBoxPtr)
+        {
+            //if(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT])
+            //    break;
+            bool bShiftKeyPressed=(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]);
+            //            char ch=MapVirtualKey(wParam, MAPVK_VK_TO_CHAR);
+            //            if(ch>=0x41 && ch<=0x5A)
+            //            {
+            //                if(!(shift_keystate&0x8000))
+            //                    ch=ch+32;
+            //            }
+            //            else if(ch>=0x31 && ch<=0x39)
+            //            {
+            //                if((shift_keystate&0x8000))
+            //                    ch=ch-16;
+            //            }
+            
+            bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyUp(keyBoardEvent->keysym.scancode, 0/*lParam*/);   //TODO: need to check if lparam is used somewere in the code or not.
+        }
+        else
+        {
+            editorApp.KeyUp(keyBoardEvent->keysym.scancode, 0/*lParam*/);
+        }
+    }
+    else if(e.type==SDL_MOUSEBUTTONDOWN)
     {
         int mouse_x = 0, mouse_y = 0;
         SDL_GetMouseState( &mouse_x, &mouse_y );

@@ -71,37 +71,6 @@
 		5554F11C1AD2717000FD80AF /* Sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0951AD2717000FD80AF /* Sprite.cpp */; };
 		5554F11D1AD2717000FD80AF /* Sprite2Dx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0971AD2717000FD80AF /* Sprite2Dx.cpp */; };
 		5554F11E1AD2717000FD80AF /* geFontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F09C1AD2717000FD80AF /* geFontManager.cpp */; };
-		5554F12B1AD2717000FD80AF /* arial_iphone10_80.ecf in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0B81AD2717000FD80AF /* arial_iphone10_80.ecf */; };
-		5554F12C1AD2717000FD80AF /* arial_iphone10_84.ecf in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0B91AD2717000FD80AF /* arial_iphone10_84.ecf */; };
-		5554F12D1AD2717000FD80AF /* icons16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0BA1AD2717000FD80AF /* icons16x16.png */; };
-		5554F12E1AD2717000FD80AF /* light.png in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0BB1AD2717000FD80AF /* light.png */; };
-		5554F12F1AD2717000FD80AF /* cube.preview in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0BD1AD2717000FD80AF /* cube.preview */; };
-		5554F1301AD2717000FD80AF /* Material.mat.preview in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0BE1AD2717000FD80AF /* Material.mat.preview */; };
-		5554F1311AD2717000FD80AF /* blurshader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C11AD2717000FD80AF /* blurshader.glsl */; };
-		5554F1321AD2717000FD80AF /* fog_exp2_shader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C21AD2717000FD80AF /* fog_exp2_shader.glsl */; };
-		5554F1331AD2717000FD80AF /* fog_exp_shader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C31AD2717000FD80AF /* fog_exp_shader.glsl */; };
-		5554F1341AD2717000FD80AF /* fog_linear_shader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C41AD2717000FD80AF /* fog_linear_shader.glsl */; };
-		5554F1351AD2717000FD80AF /* fontshader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C51AD2717000FD80AF /* fontshader.glsl */; };
-		5554F1361AD2717000FD80AF /* guishader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C61AD2717000FD80AF /* guishader.glsl */; };
-		5554F1371AD2717000FD80AF /* only_diffuse.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C71AD2717000FD80AF /* only_diffuse.glsl */; };
-		5554F1381AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C81AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl */; };
-		5554F1391AD2717000FD80AF /* shadowmap.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0C91AD2717000FD80AF /* shadowmap.glsl */; };
-		5554F13A1AD2717000FD80AF /* fragment_main.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CB1AD2717000FD80AF /* fragment_main.snippet */; };
-		5554F13B1AD2717000FD80AF /* light_unifrom_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CC1AD2717000FD80AF /* light_unifrom_vars.snippet */; };
-		5554F13C1AD2717000FD80AF /* material_unifrom_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CD1AD2717000FD80AF /* material_unifrom_vars.snippet */; };
-		5554F13D1AD2717000FD80AF /* matrices_uniform_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CE1AD2717000FD80AF /* matrices_uniform_vars.snippet */; };
-		5554F13E1AD2717000FD80AF /* vertex_attrib_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0CF1AD2717000FD80AF /* vertex_attrib_vars.snippet */; };
-		5554F13F1AD2717000FD80AF /* vertex_main.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D01AD2717000FD80AF /* vertex_main.snippet */; };
-		5554F1401AD2717000FD80AF /* vertex_varying_vars.snippet in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D11AD2717000FD80AF /* vertex_varying_vars.snippet */; };
-		5554F1411AD2717000FD80AF /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D31AD2717000FD80AF /* .gitignore */; };
-		5554F1421AD2717000FD80AF /* Diffuse.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D41AD2717000FD80AF /* Diffuse.shader */; };
-		5554F1431AD2717000FD80AF /* Diffuse_vlit.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D51AD2717000FD80AF /* Diffuse_vlit.shader */; };
-		5554F1441AD2717000FD80AF /* MultiTex.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D61AD2717000FD80AF /* MultiTex.shader */; };
-		5554F1451AD2717000FD80AF /* NormalMap.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D71AD2717000FD80AF /* NormalMap.shader */; };
-		5554F1461AD2717000FD80AF /* NormalMapSeperateEmissive.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D81AD2717000FD80AF /* NormalMapSeperateEmissive.shader */; };
-		5554F1471AD2717000FD80AF /* NormalMapSeperateSpecular.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */; };
-		5554F1481AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */; };
-		5554F1491AD2717000FD80AF /* NormalMapSpecular.shader in Resources */ = {isa = PBXBuildFile; fileRef = 5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */; };
 		556F65C91AD9C85700CDF3C8 /* appEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 556F65C71AD9C85700CDF3C8 /* appEntry.cpp */; };
 		5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5576F3041AD2DD5E008642F5 /* AppKit.framework */; };
 		5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5576F3061AD2F052008642F5 /* MenuImp.mm */; };
@@ -256,37 +225,6 @@
 		5554F0A11AD2717000FD80AF /* geVector4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geVector4.h; sourceTree = "<group>"; };
 		5554F0A21AD2717000FD80AF /* objC_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objC_util.h; sourceTree = "<group>"; };
 		5554F0A31AD2717000FD80AF /* pxMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pxMath.h; sourceTree = "<group>"; };
-		5554F0B81AD2717000FD80AF /* arial_iphone10_80.ecf */ = {isa = PBXFileReference; lastKnownFileType = file; path = arial_iphone10_80.ecf; sourceTree = "<group>"; };
-		5554F0B91AD2717000FD80AF /* arial_iphone10_84.ecf */ = {isa = PBXFileReference; lastKnownFileType = file; path = arial_iphone10_84.ecf; sourceTree = "<group>"; };
-		5554F0BA1AD2717000FD80AF /* icons16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icons16x16.png; sourceTree = "<group>"; };
-		5554F0BB1AD2717000FD80AF /* light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = light.png; sourceTree = "<group>"; };
-		5554F0BD1AD2717000FD80AF /* cube.preview */ = {isa = PBXFileReference; lastKnownFileType = file; path = cube.preview; sourceTree = "<group>"; };
-		5554F0BE1AD2717000FD80AF /* Material.mat.preview */ = {isa = PBXFileReference; lastKnownFileType = file; path = Material.mat.preview; sourceTree = "<group>"; };
-		5554F0C11AD2717000FD80AF /* blurshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = blurshader.glsl; sourceTree = "<group>"; };
-		5554F0C21AD2717000FD80AF /* fog_exp2_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fog_exp2_shader.glsl; sourceTree = "<group>"; };
-		5554F0C31AD2717000FD80AF /* fog_exp_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fog_exp_shader.glsl; sourceTree = "<group>"; };
-		5554F0C41AD2717000FD80AF /* fog_linear_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fog_linear_shader.glsl; sourceTree = "<group>"; };
-		5554F0C51AD2717000FD80AF /* fontshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fontshader.glsl; sourceTree = "<group>"; };
-		5554F0C61AD2717000FD80AF /* guishader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guishader.glsl; sourceTree = "<group>"; };
-		5554F0C71AD2717000FD80AF /* only_diffuse.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = only_diffuse.glsl; sourceTree = "<group>"; };
-		5554F0C81AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = only_diffuse_with_color_pointer.glsl; sourceTree = "<group>"; };
-		5554F0C91AD2717000FD80AF /* shadowmap.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shadowmap.glsl; sourceTree = "<group>"; };
-		5554F0CB1AD2717000FD80AF /* fragment_main.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fragment_main.snippet; sourceTree = "<group>"; };
-		5554F0CC1AD2717000FD80AF /* light_unifrom_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = light_unifrom_vars.snippet; sourceTree = "<group>"; };
-		5554F0CD1AD2717000FD80AF /* material_unifrom_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = material_unifrom_vars.snippet; sourceTree = "<group>"; };
-		5554F0CE1AD2717000FD80AF /* matrices_uniform_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = matrices_uniform_vars.snippet; sourceTree = "<group>"; };
-		5554F0CF1AD2717000FD80AF /* vertex_attrib_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_attrib_vars.snippet; sourceTree = "<group>"; };
-		5554F0D01AD2717000FD80AF /* vertex_main.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_main.snippet; sourceTree = "<group>"; };
-		5554F0D11AD2717000FD80AF /* vertex_varying_vars.snippet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_varying_vars.snippet; sourceTree = "<group>"; };
-		5554F0D31AD2717000FD80AF /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		5554F0D41AD2717000FD80AF /* Diffuse.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Diffuse.shader; sourceTree = "<group>"; };
-		5554F0D51AD2717000FD80AF /* Diffuse_vlit.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Diffuse_vlit.shader; sourceTree = "<group>"; };
-		5554F0D61AD2717000FD80AF /* MultiTex.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MultiTex.shader; sourceTree = "<group>"; };
-		5554F0D71AD2717000FD80AF /* NormalMap.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMap.shader; sourceTree = "<group>"; };
-		5554F0D81AD2717000FD80AF /* NormalMapSeperateEmissive.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateEmissive.shader; sourceTree = "<group>"; };
-		5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateSpecular.shader; sourceTree = "<group>"; };
-		5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSeperateSpecularEmissive.shader; sourceTree = "<group>"; };
-		5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NormalMapSpecular.shader; sourceTree = "<group>"; };
 		556F65C71AD9C85700CDF3C8 /* appEntry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = appEntry.cpp; sourceTree = "<group>"; };
 		556F65C81AD9C85700CDF3C8 /* appEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appEntry.h; sourceTree = "<group>"; };
 		5576F3041AD2DD5E008642F5 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -376,7 +314,6 @@
 			isa = PBXGroup;
 			children = (
 				5554F0121AD2717000FD80AF /* GEAREditor */,
-				5554F0B61AD2717000FD80AF /* res */,
 			);
 			name = GUIInternal;
 			path = ../../GUIInternal;
@@ -608,92 +545,6 @@
 			path = util;
 			sourceTree = "<group>";
 		};
-		5554F0B61AD2717000FD80AF /* res */ = {
-			isa = PBXGroup;
-			children = (
-				5554F0B71AD2717000FD80AF /* fonts */,
-				5554F0BA1AD2717000FD80AF /* icons16x16.png */,
-				5554F0BB1AD2717000FD80AF /* light.png */,
-				5554F0BC1AD2717000FD80AF /* preview */,
-				5554F0BF1AD2717000FD80AF /* shadersWin32 */,
-			);
-			path = res;
-			sourceTree = "<group>";
-		};
-		5554F0B71AD2717000FD80AF /* fonts */ = {
-			isa = PBXGroup;
-			children = (
-				5554F0B81AD2717000FD80AF /* arial_iphone10_80.ecf */,
-				5554F0B91AD2717000FD80AF /* arial_iphone10_84.ecf */,
-			);
-			path = fonts;
-			sourceTree = "<group>";
-		};
-		5554F0BC1AD2717000FD80AF /* preview */ = {
-			isa = PBXGroup;
-			children = (
-				5554F0BD1AD2717000FD80AF /* cube.preview */,
-				5554F0BE1AD2717000FD80AF /* Material.mat.preview */,
-			);
-			path = preview;
-			sourceTree = "<group>";
-		};
-		5554F0BF1AD2717000FD80AF /* shadersWin32 */ = {
-			isa = PBXGroup;
-			children = (
-				5554F0C01AD2717000FD80AF /* hwshader */,
-				5554F0CA1AD2717000FD80AF /* snippets */,
-				5554F0D21AD2717000FD80AF /* surfaceShader */,
-			);
-			path = shadersWin32;
-			sourceTree = "<group>";
-		};
-		5554F0C01AD2717000FD80AF /* hwshader */ = {
-			isa = PBXGroup;
-			children = (
-				5554F0C11AD2717000FD80AF /* blurshader.glsl */,
-				5554F0C21AD2717000FD80AF /* fog_exp2_shader.glsl */,
-				5554F0C31AD2717000FD80AF /* fog_exp_shader.glsl */,
-				5554F0C41AD2717000FD80AF /* fog_linear_shader.glsl */,
-				5554F0C51AD2717000FD80AF /* fontshader.glsl */,
-				5554F0C61AD2717000FD80AF /* guishader.glsl */,
-				5554F0C71AD2717000FD80AF /* only_diffuse.glsl */,
-				5554F0C81AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl */,
-				5554F0C91AD2717000FD80AF /* shadowmap.glsl */,
-			);
-			path = hwshader;
-			sourceTree = "<group>";
-		};
-		5554F0CA1AD2717000FD80AF /* snippets */ = {
-			isa = PBXGroup;
-			children = (
-				5554F0CB1AD2717000FD80AF /* fragment_main.snippet */,
-				5554F0CC1AD2717000FD80AF /* light_unifrom_vars.snippet */,
-				5554F0CD1AD2717000FD80AF /* material_unifrom_vars.snippet */,
-				5554F0CE1AD2717000FD80AF /* matrices_uniform_vars.snippet */,
-				5554F0CF1AD2717000FD80AF /* vertex_attrib_vars.snippet */,
-				5554F0D01AD2717000FD80AF /* vertex_main.snippet */,
-				5554F0D11AD2717000FD80AF /* vertex_varying_vars.snippet */,
-			);
-			path = snippets;
-			sourceTree = "<group>";
-		};
-		5554F0D21AD2717000FD80AF /* surfaceShader */ = {
-			isa = PBXGroup;
-			children = (
-				5554F0D31AD2717000FD80AF /* .gitignore */,
-				5554F0D41AD2717000FD80AF /* Diffuse.shader */,
-				5554F0D51AD2717000FD80AF /* Diffuse_vlit.shader */,
-				5554F0D61AD2717000FD80AF /* MultiTex.shader */,
-				5554F0D71AD2717000FD80AF /* NormalMap.shader */,
-				5554F0D81AD2717000FD80AF /* NormalMapSeperateEmissive.shader */,
-				5554F0D91AD2717000FD80AF /* NormalMapSeperateSpecular.shader */,
-				5554F0DA1AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader */,
-				5554F0DB1AD2717000FD80AF /* NormalMapSpecular.shader */,
-			);
-			path = surfaceShader;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -751,38 +602,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5554F12E1AD2717000FD80AF /* light.png in Resources */,
-				5554F1351AD2717000FD80AF /* fontshader.glsl in Resources */,
-				5554F1321AD2717000FD80AF /* fog_exp2_shader.glsl in Resources */,
-				5554F1361AD2717000FD80AF /* guishader.glsl in Resources */,
-				5554F1311AD2717000FD80AF /* blurshader.glsl in Resources */,
-				5554F12D1AD2717000FD80AF /* icons16x16.png in Resources */,
-				5554F1481AD2717000FD80AF /* NormalMapSeperateSpecularEmissive.shader in Resources */,
-				5554F13F1AD2717000FD80AF /* vertex_main.snippet in Resources */,
-				5554F1381AD2717000FD80AF /* only_diffuse_with_color_pointer.glsl in Resources */,
-				5554F1471AD2717000FD80AF /* NormalMapSeperateSpecular.shader in Resources */,
-				5554F13D1AD2717000FD80AF /* matrices_uniform_vars.snippet in Resources */,
-				5554F1371AD2717000FD80AF /* only_diffuse.glsl in Resources */,
-				5554F1441AD2717000FD80AF /* MultiTex.shader in Resources */,
-				5554F1421AD2717000FD80AF /* Diffuse.shader in Resources */,
-				5554F1461AD2717000FD80AF /* NormalMapSeperateEmissive.shader in Resources */,
-				5554F12F1AD2717000FD80AF /* cube.preview in Resources */,
-				5554F1341AD2717000FD80AF /* fog_linear_shader.glsl in Resources */,
-				5554F1391AD2717000FD80AF /* shadowmap.glsl in Resources */,
-				5554F1451AD2717000FD80AF /* NormalMap.shader in Resources */,
-				5554F1491AD2717000FD80AF /* NormalMapSpecular.shader in Resources */,
-				5554F12B1AD2717000FD80AF /* arial_iphone10_80.ecf in Resources */,
-				5554F12C1AD2717000FD80AF /* arial_iphone10_84.ecf in Resources */,
-				5554F13C1AD2717000FD80AF /* material_unifrom_vars.snippet in Resources */,
 				55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */,
-				5554F1401AD2717000FD80AF /* vertex_varying_vars.snippet in Resources */,
-				5554F1331AD2717000FD80AF /* fog_exp_shader.glsl in Resources */,
-				5554F1301AD2717000FD80AF /* Material.mat.preview in Resources */,
-				5554F13E1AD2717000FD80AF /* vertex_attrib_vars.snippet in Resources */,
-				5554F1431AD2717000FD80AF /* Diffuse_vlit.shader in Resources */,
-				5554F13A1AD2717000FD80AF /* fragment_main.snippet in Resources */,
-				5554F1411AD2717000FD80AF /* .gitignore in Resources */,
-				5554F13B1AD2717000FD80AF /* light_unifrom_vars.snippet in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

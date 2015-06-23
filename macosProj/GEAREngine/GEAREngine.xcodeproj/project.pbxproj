@@ -884,7 +884,6 @@
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/debug\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
-					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FBXSDK/macos/2015.1/lib/clang/release,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
@@ -913,7 +912,6 @@
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/debug\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
-					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FBXSDK/macos/2015.1/lib/clang/release,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";

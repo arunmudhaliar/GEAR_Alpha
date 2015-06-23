@@ -974,10 +974,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FreeImage/macos,
-					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/macosProj/GEAREngine/build/Debug,
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug",
-					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FBXSDK/macos/2015.1/lib/clang/release,
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
+					"\"$(SRCROOT)/../../FreeImage/macos\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
@@ -1009,10 +1008,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FreeImage/macos,
-					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/macosProj/GEAREngine/build/Debug,
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug",
-					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FBXSDK/macos/2015.1/lib/clang/release,
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
+					"\"$(SRCROOT)/../../FreeImage/macos\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";

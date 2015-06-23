@@ -802,6 +802,7 @@
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
 					"\"$(SRCROOT)/../../FreeImage/macos\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};
@@ -836,6 +837,7 @@
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
 					"\"$(SRCROOT)/../../FreeImage/macos\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};

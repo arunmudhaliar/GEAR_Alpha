@@ -1,0 +1,9 @@
+prefix=/Users/amudaliar/Desktop/monoForMac
+exec_prefix=${prefix}
+libdir=/Users/amudaliar/Desktop/monoForMac/lib
+sourcesdir=${libdir}/monodoc/sources
+
+Name: Monodoc
+Description: Monodoc - Mono Documentation Tools
+Version: 2.10.9
+Libs: /r:${prefix}/lib/mono/monodoc/monodoc.dll 

@@ -1,0 +1,9 @@
+prefix=/Library/Frameworks/Mono.framework/Versions/3.12.1
+assemblies_dir=${prefix}/lib/mono/2.0
+Libraries=${assemblies_dir}/Mono.WebServer2.dll
+Executable=${assemblies_dir}/xsp2.exe
+ 
+Name: xsp2
+Description: Mono.WebServer2.dll - ASP.NET hosting support classes for .NET 2.0
+Version: 3.0
+Libs: -r:${assemblies_dir}/Mono.WebServer2.dll

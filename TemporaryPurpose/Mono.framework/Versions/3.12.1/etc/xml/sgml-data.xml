@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD XML Catalogs V1.0//EN"
+  "file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/schema/xml-core/catalog.dtd">
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+<delegateSystem systemIdStartString="http://xml.ascc.net/xml/resource/qaml-xml" catalog="file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/qaml/catalog.xml"/>
+<delegateSystem systemIdStartString="http://www.w3.org/Graphics/SVG/1.1/" catalog="file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/svg/catalog.xml"/>
+<delegateSystem systemIdStartString="http://www.w3.org/TR/2001/REC-SVG-20010904/" catalog="file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/svg/catalog.xml"/>
+<delegateSystem systemIdStartString="/Library/Frameworks/Mono.framework/Versions/3.12.1/share/sgml/dtd/qaml-xml.dtd" catalog="file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/qaml/catalog.xml"/>
+<delegatePublic publicIdStartString="ISO 8879:1986//ENTITIES" catalog="file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/entities/xml-iso-entities-8879.1986/catalog.xml"/>
+<delegatePublic publicIdStartString="-//W3C//DTD SVG" catalog="file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/svg/catalog.xml"/>
+<delegateSystem systemIdStartString="/Library/Frameworks/Mono.framework/Versions/3.12.1/share/sgml/dtd/svg" catalog="file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/svg/catalog.xml"/>
+<delegatePublic publicIdStartString="+//ISBN 82-7640-023//DTD Frequently Asked Questions//EN" catalog="file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/qaml/catalog.xml"/>
+<delegatePublic publicIdStartString="+//IDN faq.org//DTD Frequently Asked Questions" catalog="file:///Library/Frameworks/Mono.framework/Versions/3.12.1/share/xml/qaml/catalog.xml"/>
+</catalog>

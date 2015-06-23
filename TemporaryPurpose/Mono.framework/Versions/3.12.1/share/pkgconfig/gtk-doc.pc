@@ -1,0 +1,7 @@
+prefix=/Library/Frameworks/Mono.framework/Versions/3.12.1
+exec_prefix=${prefix}
+data_dir=/Library/Frameworks/Mono.framework/Versions/3.12.1/share/gtk-doc/data
+
+Name: gtk-doc
+Description: API documentation generator
+Version: 1.18

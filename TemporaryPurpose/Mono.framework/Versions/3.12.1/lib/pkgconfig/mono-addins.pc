@@ -1,0 +1,12 @@
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+pkglibdir=${prefix}/lib/mono/mono-addins
+
+Libraries=${pkglibdir}/Mono.Addins.dll
+
+Name: Mono.Addins
+Description: 
+Version: 1.0
+
+Requires: 
+Libs:  -r:${pkglibdir}/Mono.Addins.dll

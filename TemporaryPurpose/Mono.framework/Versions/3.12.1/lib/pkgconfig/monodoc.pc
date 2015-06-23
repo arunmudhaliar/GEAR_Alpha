@@ -1,0 +1,9 @@
+prefix=/Library/Frameworks/Mono.framework/Versions/3.12.1
+exec_prefix=${prefix}
+libdir=/Library/Frameworks/Mono.framework/Versions/3.12.1/lib
+sourcesdir=${libdir}/monodoc/sources
+
+Name: Monodoc
+Description: Monodoc - Mono Documentation Tools
+Version: 3.12.1
+Libs: /r:${prefix}/lib/mono/monodoc/monodoc.dll 

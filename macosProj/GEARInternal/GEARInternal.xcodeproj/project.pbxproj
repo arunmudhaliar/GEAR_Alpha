@@ -11,7 +11,6 @@
 		5548D31E1AD950830070A09C /* libGEAREngine.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5548D31D1AD950830070A09C /* libGEAREngine.dylib */; };
 		5554F0001AD2703000FD80AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5554EFFF1AD2703000FD80AF /* main.m */; };
 		5554F0021AD2707000FD80AF /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0011AD2707000FD80AF /* libfreeimage.a */; };
-		5554F0041AD2708700FD80AF /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0031AD2708700FD80AF /* libfbxsdk.a */; };
 		5554F0061AD2709C00FD80AF /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0051AD2709C00FD80AF /* GLUT.framework */; };
 		5554F0081AD270A600FD80AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0071AD270A600FD80AF /* OpenGL.framework */; };
 		5554F00A1AD270D000FD80AF /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0091AD270D000FD80AF /* SDL2.framework */; };
@@ -106,6 +105,7 @@
 		556F65C91AD9C85700CDF3C8 /* appEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 556F65C71AD9C85700CDF3C8 /* appEntry.cpp */; };
 		5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5576F3041AD2DD5E008642F5 /* AppKit.framework */; };
 		5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5576F3061AD2F052008642F5 /* MenuImp.mm */; };
+		558F92AC1B39E3F100FCA130 /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 558F92AB1B39E3F100FCA130 /* libfbxsdk.a */; };
 		55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */; };
 		55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */; };
 /* End PBXBuildFile section */
@@ -118,7 +118,6 @@
 		5554EFE01AD26F9A00FD80AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5554EFFF1AD2703000FD80AF /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5554F0011AD2707000FD80AF /* libfreeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreeimage.a; path = ../../FreeImage/macos/libfreeimage.a; sourceTree = "<group>"; };
-		5554F0031AD2708700FD80AF /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../../../../../../Applications/Autodesk/FBXSDK/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
 		5554F0051AD2709C00FD80AF /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		5554F0071AD270A600FD80AF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		5554F0091AD270D000FD80AF /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
@@ -294,6 +293,7 @@
 		5576F3061AD2F052008642F5 /* MenuImp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuImp.mm; sourceTree = "<group>"; };
 		5576F3081AD2F153008642F5 /* MenuImp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuImp.h; sourceTree = "<group>"; };
 		5576F3091AD30242008642F5 /* MenuCPPInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuCPPInterface.h; sourceTree = "<group>"; };
+		558F92AB1B39E3F100FCA130 /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
 		55BEFD371AD59EC40071A2D5 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		55BEFD3B1AD59F480071A2D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -305,11 +305,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				5548D31E1AD950830070A09C /* libGEAREngine.dylib in Frameworks */,
+				558F92AC1B39E3F100FCA130 /* libfbxsdk.a in Frameworks */,
 				5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */,
 				5554F00A1AD270D000FD80AF /* SDL2.framework in Frameworks */,
 				5554F0081AD270A600FD80AF /* OpenGL.framework in Frameworks */,
 				5554F0061AD2709C00FD80AF /* GLUT.framework in Frameworks */,
-				5554F0041AD2708700FD80AF /* libfbxsdk.a in Frameworks */,
 				5554F0021AD2707000FD80AF /* libfreeimage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -329,9 +329,9 @@
 		5554EFD31AD26F9A00FD80AF = {
 			isa = PBXGroup;
 			children = (
+				558F92AB1B39E3F100FCA130 /* libfbxsdk.a */,
 				5548D31D1AD950830070A09C /* libGEAREngine.dylib */,
 				5554F0011AD2707000FD80AF /* libfreeimage.a */,
-				5554F0031AD2708700FD80AF /* libfbxsdk.a */,
 				5554F0051AD2709C00FD80AF /* GLUT.framework */,
 				5554F0071AD270A600FD80AF /* OpenGL.framework */,
 				5554F0091AD270D000FD80AF /* SDL2.framework */,
@@ -975,12 +975,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FreeImage/macos,
-					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/release",
 					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/macosProj/GEAREngine/build/Debug,
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug",
+					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FBXSDK/macos/2015.1/lib/clang/release,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 /Applications/Autodesk/FBXSDK/2015.1/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};
 			name = Debug;
 		};
@@ -1010,12 +1010,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FreeImage/macos,
-					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/release",
 					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/macosProj/GEAREngine/build/Debug,
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug",
+					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FBXSDK/macos/2015.1/lib/clang/release,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 /Applications/Autodesk/FBXSDK/2015.1/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};
 			name = Release;
 		};

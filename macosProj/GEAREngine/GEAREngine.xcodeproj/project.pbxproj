@@ -146,8 +146,8 @@
 		5554EFCA1AD26E5D00FD80AF /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFC91AD26E5D00FD80AF /* CoreFoundation.framework */; };
 		5554EFCC1AD26E6500FD80AF /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFCB1AD26E6500FD80AF /* OpenAL.framework */; };
 		5554EFCE1AD26E6C00FD80AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */; };
-		5554EFD01AD26E8400FD80AF /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFCF1AD26E8400FD80AF /* libfbxsdk.a */; };
 		5554EFD21AD26EA200FD80AF /* libmono-2.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */; };
+		558F92AA1B39E38B00FCA130 /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 558F92A91B39E38B00FCA130 /* libfbxsdk.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -294,8 +294,8 @@
 		5554EFC91AD26E5D00FD80AF /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		5554EFCB1AD26E6500FD80AF /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		5554EFCF1AD26E8400FD80AF /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../../../../../../Applications/Autodesk/FBXSDK/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
 		5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libmono-2.0.1.dylib"; path = "../../../../../Desktop/monoForMac/lib/libmono-2.0.1.dylib"; sourceTree = "<group>"; };
+		558F92A91B39E38B00FCA130 /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -304,10 +304,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5554EFD21AD26EA200FD80AF /* libmono-2.0.1.dylib in Frameworks */,
-				5554EFD01AD26E8400FD80AF /* libfbxsdk.a in Frameworks */,
 				5554EFCE1AD26E6C00FD80AF /* OpenGL.framework in Frameworks */,
 				5554EFCC1AD26E6500FD80AF /* OpenAL.framework in Frameworks */,
 				5554EFCA1AD26E5D00FD80AF /* CoreFoundation.framework in Frameworks */,
+				558F92AA1B39E38B00FCA130 /* libfbxsdk.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -317,8 +317,8 @@
 		5554EA6A1AD26C7C00FD80AF = {
 			isa = PBXGroup;
 			children = (
+				558F92A91B39E38B00FCA130 /* libfbxsdk.a */,
 				5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */,
-				5554EFCF1AD26E8400FD80AF /* libfbxsdk.a */,
 				5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */,
 				5554EFCB1AD26E6500FD80AF /* OpenAL.framework */,
 				5554EFC91AD26E5D00FD80AF /* CoreFoundation.framework */,
@@ -876,17 +876,18 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					/Applications/Autodesk/FBXSDK/2015.1/include,
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/Users/amudaliar/Desktop/monoForMac/lib,
 					"$(inherited)",
-					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/libstdcpp/release",
-					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/release",
-					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/debug",
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/debug\"",
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
+					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FBXSDK/macos/2015.1/lib/clang/release,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "/Applications/Autodesk/FBXSDK/2015.1/include /Users/amudaliar/Desktop/monoForMac/include/mono-2.0";
+				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};
 			name = Debug;
 		};
@@ -904,17 +905,18 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					/Applications/Autodesk/FBXSDK/2015.1/include,
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/Users/amudaliar/Desktop/monoForMac/lib,
 					"$(inherited)",
-					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/libstdcpp/release",
-					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/release",
-					"$(SYSTEM_APPS_DIR)/Autodesk/FBXSDK/2015.1/lib/clang/debug",
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/debug\"",
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
+					/Users/amudaliar/TEMP_PROJ/GEARREPO/dev/FBXSDK/macos/2015.1/lib/clang/release,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "/Applications/Autodesk/FBXSDK/2015.1/include /Users/amudaliar/Desktop/monoForMac/include/mono-2.0";
+				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};
 			name = Release;
 		};

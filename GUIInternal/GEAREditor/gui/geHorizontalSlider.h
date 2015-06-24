@@ -16,12 +16,14 @@ public:
 	virtual void draw();
 	float getSliderValue()				{	return m_fSliderPos;	}
 	void setSliderValue(float value, bool bCallObserver=true);
-
+    
 	float getSliderValueWithInRange();
 	void setSliderValueWithInRange(float value);
 
 	void setRange(float min, float max);
-
+    
+    bool isGrabbed() {return m_bGrabbed;}
+    
 protected:
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);

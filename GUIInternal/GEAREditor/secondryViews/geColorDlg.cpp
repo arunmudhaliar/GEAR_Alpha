@@ -47,9 +47,14 @@ void geColorDlg::onCreate()
 		m_pHorizontalSlider_RGBA[x]->setGUIObserver(this);
 	}
 	
+    m_selectedColor.x = rgba[0];
+    m_selectedColor.y = rgba[1];
+    m_selectedColor.z = rgba[2];
+    m_selectedColor.w = MAX(m_selectedColor.x, MAX(m_selectedColor.y, m_selectedColor.z));
+    
 	m_pHorizontalSlider_RGBA[3] = new geHorizontalSlider(m_pFontManager);
 	m_pHorizontalSlider_RGBA[3]->create(m_pSecondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+3*15+10, 120.0f);
-	m_pHorizontalSlider_RGBA[3]->setSliderValue(rgba[3]);
+	m_pHorizontalSlider_RGBA[3]->setSliderValue(m_selectedColor.w);
 	m_pHorizontalSlider_RGBA[3]->setGUIObserver(this);
 
 	m_pColorControl = new geColorControl(m_pFontManager);
@@ -142,7 +147,8 @@ void geColorDlg::onDraw()
 	glDisable(GL_BLEND);
 
 	//pointer
-	glColor3f(0.0f, 0.0f, 0.0f);
+    float pointer_clr = 1.0f-luminance;
+	glColor3f(pointer_clr, pointer_clr, pointer_clr);
 	glVertexPointer(2, GL_FLOAT, 0, &m_pszColorPointerVertices[0].x);
 
 	glPushMatrix();
@@ -226,23 +232,38 @@ bool geColorDlg::onMouseMove(float x, float y, int flag)
 
 void geColorDlg::onSliderChange(geGUIBase* slider)
 {
-	geVector3f rgb(m_pHorizontalSlider_RGBA[0]->getSliderValue(), m_pHorizontalSlider_RGBA[1]->getSliderValue(), m_pHorizontalSlider_RGBA[2]->getSliderValue());
+    auto currentColor =  geVector4f(m_pHorizontalSlider_RGBA[0]->getSliderValue(), m_pHorizontalSlider_RGBA[1]->getSliderValue(), m_pHorizontalSlider_RGBA[2]->getSliderValue(), m_pHorizontalSlider_RGBA[3]->getSliderValue());
+    
+    auto colorDiff = currentColor - m_selectedColor;
+    
+    //Luminance has changed
+    if(m_pHorizontalSlider_RGBA[3]->isGrabbed())
+    {
+        currentColor.x = m_selectedColor.x * currentColor.w;
+        currentColor.y = m_selectedColor.y * currentColor.w;
+        currentColor.z = m_selectedColor.z * currentColor.w;
+        
+        m_selectedColor.w = currentColor.w;
+    }
+    else if(    colorDiff.x != 0.0f
+            ||  colorDiff.y != 0.0f
+            ||  colorDiff.z != 0.0f)//Color has changed
+    {
+        currentColor.w = MAX(currentColor.x, MAX(currentColor.y, currentColor.z));
+        
+        m_selectedColor.x = currentColor.x / MAX(currentColor.w, 0.001f);
+        m_selectedColor.y = currentColor.y / MAX(currentColor.w, 0.001f);
+        m_selectedColor.z = currentColor.z / MAX(currentColor.w, 0.001f);
+    }
 
-	float luminance_old_value = m_pHorizontalSlider_RGBA[3]->getSliderValue();
-	float luminance = MIN(luminance_old_value, rgb.x+rgb.y+rgb.z);
-	//luminance=CLAMP(luminance, 0.0f, 1.0f);
-	rgb.x = MIN(rgb.x, luminance);
-	rgb.y = MIN(rgb.y, luminance);
-	rgb.z = MIN(rgb.z, luminance);
+	m_pHorizontalSlider_RGBA[0]->setSliderValue(currentColor.x, false);
+	m_pHorizontalSlider_RGBA[1]->setSliderValue(currentColor.y, false);
+	m_pHorizontalSlider_RGBA[2]->setSliderValue(currentColor.z, false);
+	m_pHorizontalSlider_RGBA[3]->setSliderValue(currentColor.w, false);
 
-	m_pHorizontalSlider_RGBA[0]->setSliderValue(rgb.x, false);
-	m_pHorizontalSlider_RGBA[1]->setSliderValue(rgb.y, false);
-	m_pHorizontalSlider_RGBA[2]->setSliderValue(rgb.z, false);
-	m_pHorizontalSlider_RGBA[3]->setSliderValue(luminance, false);
-
-	m_pColorControl->setControlColor(rgb.x, rgb.y, rgb.z, 1.0f);
+	m_pColorControl->setControlColor(currentColor.x, currentColor.y, currentColor.z, 1.0f);
 	if(m_pObserverControlPtr)
-		m_pObserverControlPtr->setControlColor(rgb.x, rgb.y, rgb.z, 1.0f);
+		m_pObserverControlPtr->setControlColor(currentColor.x, currentColor.y, currentColor.z, 1.0f);
 
 	//rgb to xyz
 	matrix4x4f xyzTM;
@@ -254,12 +275,7 @@ void geColorDlg::onSliderChange(geGUIBase* slider)
 	vector3f zaxis(cos(DEG2RAD(300.0f)), sin(DEG2RAD(300.0f)), 0.0f);
 	xyzTM.setZAxis(zaxis);
 
-	//float avg_rgb=(ABS(res.x)+ABS(res.y)+ABS(res.z))/3.0f;
-	//if(avg_rgb>=1.0f)
-	//	m_pHorizontalSlider_RGBA[3]->setSliderValue(1.0f, false);
-	//else
-	//	m_pHorizontalSlider_RGBA[3]->setSliderValue(avg_rgb, false);
-
-	vector3f res(xyzTM*vector3f(rgb.x, rgb.y, rgb.z));
+	vector3f res(xyzTM*vector3f(currentColor.x, currentColor.y, currentColor.z));
 	m_cPointerPos.set(m_fCircleRadius*res.x, m_fCircleRadius*res.y);
+
 }

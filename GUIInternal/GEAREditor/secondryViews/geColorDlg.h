@@ -36,6 +36,9 @@ protected:
 	geColorControl* m_pColorControl;
 
 	geColorControl* m_pObserverControlPtr;	//must not delete this pointer
+    
+private:
+    geVector4f m_selectedColor;
 };
 
 #endif

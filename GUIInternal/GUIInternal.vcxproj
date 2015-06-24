@@ -240,6 +240,7 @@
     <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite2Dx.cpp" />
     <ClCompile Include="GEAREditor\util\geFontManager.cpp" />
+    <ClCompile Include="GEAREditor\win32\cursorUtil.cpp" />
     <ClCompile Include="GUIInternal.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

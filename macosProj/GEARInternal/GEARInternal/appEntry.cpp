@@ -37,7 +37,7 @@ int macos_main()
 #ifdef __APPLE__
     EditorGEARApp::setProjectHomeDirectory("/Users/amudaliar/TEMP_PROJ/GEARPROJETCS/animation");
 #elif defined(_WIN32)
-	EditorGEARApp::setProjectHomeDirectory("C://MYPROJECTS//GEAR_PROJECTS//animation");
+	//EditorGEARApp::setProjectHomeDirectory("C://MYPROJECTS//GEAR_PROJECTS//animation");
 #else
 	#error Home directory not set for this platform
 #endif

@@ -500,6 +500,9 @@
     <ClCompile Include="GEAREditor\OSSpecific\MenuImpWin32.cpp">
       <Filter>GEAREditor\OSSpecific</Filter>
     </ClCompile>
+    <ClCompile Include="GEAREditor\win32\cursorUtil.cpp">
+      <Filter>GEAREditor\win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GUIInternal.rc">

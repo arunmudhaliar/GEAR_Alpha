@@ -38,9 +38,9 @@ TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 
 EditorApp m_cEditorApp;
-#if DEPRECATED
+//#if DEPRECATED
 MDragDropInterface* m_cDropTargetInterfacePtr=NULL;	//must not delete this pointer
-#endif
+//#endif
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -603,8 +603,14 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return (INT_PTR)FALSE;
 }
+#endif
 
-LRESULT CALLBACK Proj_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
+
+
+char* browseFolder(HWND hWndParent, const char* title, const char* root_dir=NULL);
+LPITEMIDLIST convertPathToLpItemIdList(const char *pszPath);
+
+LRESULT CALLBACK projectSelector_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(Msg)
 	{
@@ -632,13 +638,13 @@ LRESULT CALLBACK Proj_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 			case ID_PROJ_DLG_OPEN_NEW_PROJECT:
 			{
 				char* project_directory=browseFolder(hWndDlg, _T("Select an empty folder to create project."));
-				if(EditorApp::createNewProject(project_directory)!=0)
+				if(EditorGEARApp::createNewProject(project_directory)!=0)
 				{
 					MessageBox(hWndDlg, "Project creation failed", "Error.", MB_OK | MB_ICONERROR);
 					GE_DELETE_ARY(project_directory);
 					return true;
 				}
-				EditorApp::setProjectHomeDirectory(project_directory);
+				EditorGEARApp::setProjectHomeDirectory(project_directory);
 				GE_DELETE_ARY(project_directory);
 				EndDialog(hWndDlg, 1);
 				return true;
@@ -658,7 +664,7 @@ LRESULT CALLBACK Proj_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 					// Get actual text in buffer
 					char temp_buffer[1024];
 					SendDlgItemMessage(hWndDlg, IDC_PROJ_DLG_RECENT_PROJECT_LIST, LB_GETTEXT, (WPARAM) itemIndex, (LPARAM) temp_buffer );
-					EditorApp::setProjectHomeDirectory(temp_buffer);
+					EditorGEARApp::setProjectHomeDirectory(temp_buffer);
 					EndDialog(hWndDlg, 2);
 				}
 				return true;
@@ -748,7 +754,7 @@ LPITEMIDLIST convertPathToLpItemIdList(const char *pszPath)
 	return NULL;
 }
 
-#endif
+
 
 #include "../macosProj/GEARInternal/GEARInternal/appEntry.h"
 int APIENTRY _tWinMain(HINSTANCE hInstance,
@@ -764,9 +770,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	SymInitialize(GetCurrentProcess(), NULL, TRUE);
 #endif
 
-	monoWrapper::initDebugConsole();
-	int return_val = macos_main();
-	monoWrapper::destroyDebugConsole();
+	int return_val=0;
+	if(DialogBox(hInstance, MAKEINTRESOURCE(IDD_PROJ_DLG), NULL, reinterpret_cast<DLGPROC>(projectSelector_DlgProc))!=0)
+	{
+		monoWrapper::initDebugConsole();
+		return_val = macos_main();
+		monoWrapper::destroyDebugConsole();
+	}
 
 #if defined(_DEBUG) && defined(ENABLE_MEMORY_CHECK)
 	SymCleanup(GetCurrentProcess());

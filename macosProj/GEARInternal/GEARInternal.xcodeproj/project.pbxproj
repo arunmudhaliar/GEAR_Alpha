@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		55291B3A1B37623600537BB5 /* cursorUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55291B391B37623600537BB5 /* cursorUtil.cpp */; };
+		55466F391B3C581300F4802B /* projectSelectorDialogue.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55466F381B3C581300F4802B /* projectSelectorDialogue.xib */; };
+		55466F3B1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h in Sources */ = {isa = PBXBuildFile; fileRef = 55466F3A1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h */; };
 		5548D31E1AD950830070A09C /* libGEAREngine.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5548D31D1AD950830070A09C /* libGEAREngine.dylib */; };
 		5554F0001AD2703000FD80AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5554EFFF1AD2703000FD80AF /* main.m */; };
 		5554F0021AD2707000FD80AF /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0011AD2707000FD80AF /* libfreeimage.a */; };
@@ -83,6 +85,8 @@
 /* Begin PBXFileReference section */
 		55291B311B37487700537BB5 /* cursorUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorUtil.h; sourceTree = "<group>"; };
 		55291B391B37623600537BB5 /* cursorUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorUtil.cpp; sourceTree = "<group>"; };
+		55466F381B3C581300F4802B /* projectSelectorDialogue.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = projectSelectorDialogue.xib; sourceTree = "<group>"; };
+		55466F3A1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = projectSelectorDialogueWindowController.h; sourceTree = "<group>"; };
 		5548D31D1AD950830070A09C /* libGEAREngine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGEAREngine.dylib; path = "../../../../../Library/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug/libGEAREngine.dylib"; sourceTree = "<group>"; };
 		5554EFDC1AD26F9A00FD80AF /* GEARInternal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GEARInternal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5554EFE01AD26F9A00FD80AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -302,6 +306,8 @@
 		5554EFDF1AD26F9A00FD80AF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				55466F381B3C581300F4802B /* projectSelectorDialogue.xib */,
+				55466F3A1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h */,
 				556F65C71AD9C85700CDF3C8 /* appEntry.cpp */,
 				556F65C81AD9C85700CDF3C8 /* appEntry.h */,
 				55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */,
@@ -329,8 +335,8 @@
 				5554F01B1AD2717000FD80AF /* EditorApp.h */,
 				5554F0131AD2717000FD80AF /* AssetImporter.cpp */,
 				5554F0141AD2717000FD80AF /* AssetImporter.h */,
-				5554F0151AD2717000FD80AF /* core */,
 				5554F01C1AD2717000FD80AF /* gui */,
+				5554F0151AD2717000FD80AF /* core */,
 				5554F0441AD2717000FD80AF /* OSSpecific */,
 				5554F0481AD2717000FD80AF /* renderer */,
 				5554F0531AD2717000FD80AF /* scenes */,
@@ -605,6 +611,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55466F391B3C581300F4802B /* projectSelectorDialogue.xib in Resources */,
 				55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */,
 				558F92B61B39F9A200FCA130 /* gearicon.iconset in Resources */,
 			);
@@ -629,6 +636,7 @@
 				5554F1161AD2717000FD80AF /* geTextureThumbnailExtended.cpp in Sources */,
 				5554F0FF1AD2717000FD80AF /* rendererGL20.cpp in Sources */,
 				5554F0E91AD2717000FD80AF /* geButton.cpp in Sources */,
+				55466F3B1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h in Sources */,
 				5554F0E71AD2717000FD80AF /* geTextureManager.cpp in Sources */,
 				5554F0FE1AD2717000FD80AF /* rendererGL10.cpp in Sources */,
 				5554F1061AD2717000FD80AF /* gearSceneSettings.cpp in Sources */,

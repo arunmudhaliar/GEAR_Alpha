@@ -21,6 +21,8 @@
 
 #include "../../../GUIInternal/GEAREditor/OSSpecific/MenuCPPInterface.h"
 
+
+
 #include <stdlib.h>
 
 @interface AppDelegate ()
@@ -40,7 +42,10 @@
     const char* android_home = getenv("ANDROID_HOME");
     const char* ndk_home = getenv("NDK_HOME");
     
-    macos_main();
+    m_projectSelectorDialogueWindowController = [[projectSelectorDialogueWindowController alloc] init];
+    [m_projectSelectorDialogueWindowController showWindow:self];
+    
+    //macos_main();
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

@@ -34,13 +34,13 @@ int macos_main()
 
     EditorGEARApp editorApp;
 
-#ifdef __APPLE__
-    EditorGEARApp::setProjectHomeDirectory("/Users/amudaliar/TEMP_PROJ/GEARPROJETCS/animation");
-#elif defined(_WIN32)
-	//EditorGEARApp::setProjectHomeDirectory("C://MYPROJECTS//GEAR_PROJECTS//animation");
-#else
-	#error Home directory not set for this platform
-#endif
+//#ifdef __APPLE__
+//    EditorGEARApp::setProjectHomeDirectory("/Users/amudaliar/TEMP_PROJ/GEARPROJETCS/animation");
+//#elif defined(_WIN32)
+//	//EditorGEARApp::setProjectHomeDirectory("C://MYPROJECTS//GEAR_PROJECTS//animation");
+//#else
+//	#error Home directory not set for this platform
+//#endif
 
     EditorGEARApp::setAppDirectory(cCurrentPath);
 

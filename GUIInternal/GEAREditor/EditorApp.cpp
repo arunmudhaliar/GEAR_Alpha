@@ -207,7 +207,7 @@ HWND EditorApp::getMainWindowHandle()
 }
 #endif
 
-#if DEPRECATED
+
 #ifdef _WIN32
 bool EditorApp::showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir)
 {
@@ -241,6 +241,8 @@ bool EditorApp::showOpenCommonDlg(HWND hWnd, char* out_openfilename, int out_ope
 	openFileDialog.lpstrDefExt = defaultext;
 	return GetOpenFileName(&openFileDialog);
 }
+
+#if DEPRECATED
 LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(Msg)

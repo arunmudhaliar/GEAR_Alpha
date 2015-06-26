@@ -390,7 +390,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
 						printf("\n================ANDROID BUILD ENGINE===============\n");
 						char inputbuffer[1024*6];
 
-						sprintf(inputbuffer, "%s//AndroidProjectMaker.exe %s %s", EditorApp::getAppDirectory().c_str(), EditorApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory());
+						sprintf(inputbuffer, "%s//AndroidProjectMaker.exe %s %s win32", EditorApp::getAppDirectory().c_str(), EditorApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory());
 						if(monoWrapper::exec_cmd(inputbuffer)!=0)
 						{
 							printf("\nERROR\n");
@@ -418,6 +418,80 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
 				case ID_EDIT_FOGSETTINGS:
 					{
 						EditorGEARApp::getScenePropertyEditor()->populateSettingsOfFog();
+					}
+					break;
+				case ID_FILE_SAVESCENE:
+					{
+						std::string root_dir = EditorGEARApp::getProjectHomeDirectory();
+						root_dir+="/Assets";
+						std::replace( root_dir.begin(), root_dir.end(), '/', '\\');
+						char output_buffer[MAX_PATH];
+						if(EditorGEARApp::showSaveCommonDlg(EditorGEARApp::getMainWindowHandle(), output_buffer, MAX_PATH, "GEAR Scene (*.gearscene)\0*.gearscene\0", "gearscene", root_dir.c_str()))
+						{
+							if(EditorGEARApp::getSceneHierarchy()->saveCurrentScene(output_buffer))
+							{
+								EditorGEARApp::getSceneProject()->populateProjectView();
+								EditorGEARApp::getSceneFileView()->populateFileView();
+
+								//update the currentscene file
+								root_dir = EditorGEARApp::getProjectHomeDirectory();
+								root_dir+="/ProjectSettings/currentscene";
+								gxFile currenSceneFile;
+								if(currenSceneFile.OpenFile(root_dir.c_str(), gxFile::FILE_w))
+								{
+									const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(output_buffer);
+									char unix_path[MAX_PATH];
+									memset(unix_path, 0, MAX_PATH);
+									strcpy(unix_path, relativepath);
+									geUtil::convertPathToUnixFormat(unix_path);
+									currenSceneFile.Write(unix_path);
+									currenSceneFile.CloseFile();
+
+									std::string wndTitle ="GEAR Alpha [";
+									wndTitle+=relativepath;
+									wndTitle+=+"]";
+									SetWindowText(EditorGEARApp::getMainWindowHandle(), wndTitle.c_str());
+								}
+								//
+							}
+						}
+					}
+					break;
+				case ID_FILE_OPENSCENE:
+					{
+						std::string root_dir = EditorGEARApp::getProjectHomeDirectory();
+						root_dir+="/Assets";
+						std::replace( root_dir.begin(), root_dir.end(), '/', '\\');
+						char output_buffer[MAX_PATH];
+						if(EditorGEARApp::showOpenCommonDlg(EditorGEARApp::getMainWindowHandle(), output_buffer, MAX_PATH, "GEAR Scene (*.gearscene)\0*.gearscene\0", "gearscene", root_dir.c_str()))
+						{
+							if(EditorGEARApp::getSceneHierarchy()->loadScene(output_buffer))
+							{
+								EditorGEARApp::getSceneProject()->populateProjectView();
+								EditorGEARApp::getSceneFileView()->populateFileView();
+
+								//update the currentscene file
+								root_dir = EditorGEARApp::getProjectHomeDirectory();
+								root_dir+="/ProjectSettings/currentscene";
+								gxFile currenSceneFile;
+								if(currenSceneFile.OpenFile(root_dir.c_str(), gxFile::FILE_w))
+								{
+									const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(output_buffer);
+									char unix_path[MAX_PATH];
+									memset(unix_path, 0, MAX_PATH);
+									strcpy(unix_path, relativepath);
+									geUtil::convertPathToUnixFormat(unix_path);
+									currenSceneFile.Write(unix_path);
+									currenSceneFile.CloseFile();
+
+									std::string wndTitle ="GEAR Alpha [";
+									wndTitle+=relativepath;
+									wndTitle+=+"]";
+									SetWindowText(EditorGEARApp::getMainWindowHandle(), wndTitle.c_str());
+								}
+								//
+							}
+						}
 					}
 					break;
 				default:

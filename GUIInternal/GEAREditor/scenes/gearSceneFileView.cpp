@@ -526,7 +526,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDropData* dropObject)
 
 		if(dropObject->getSourcePtr()==EditorGEARApp::getSceneHierarchy())
 		{
-#if TODO
+#ifdef _WIN32
 			if(DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INPUT_DLG), EditorGEARApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(Proj_InputDlgProc))==IDCANCEL)
 			{
 				continue;

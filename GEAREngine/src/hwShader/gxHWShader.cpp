@@ -117,7 +117,11 @@ bool gxHWShader::loadShader(const char* shaderFile)
 		return false;
 	}
 	
+#ifdef ANDROID
+	const char* define_vertex="#define GEAR_VERTEX_SHADER\n";
+#else
 	const char* define_vertex="#version 120\n#define GEAR_VERTEX_SHADER\n";
+#endif
 	const char* define_fragment="#define GEAR_FRAGMENT_SHADER\n";
 
 	//vertex shader source

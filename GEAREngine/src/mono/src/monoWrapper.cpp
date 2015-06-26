@@ -106,8 +106,11 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 	destroyUserDefinedMonoClassDefs();
     
     g_monoscriptlist.clear();
+
+#ifndef ANDROID
     traverseForCSharpFiles(projecthomedirectory, &g_monoscriptlist);
     compileCSharpScripts(&g_monoscriptlist);
+#endif
 
 #ifdef _WIN32
 #if _DEBUG

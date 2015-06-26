@@ -73,7 +73,7 @@ public:
 
 	bool isInitialized()	{	return m_bInitialised;	}
 
-#if DEPRECATED
+#if _WIN32
 	static bool showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir);
 	static bool showOpenCommonDlg(HWND hWnd, char* out_openfilename, int out_openfilename_size, const char* filter, const char* defaultext, const char* root_dir);
 #endif

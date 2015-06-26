@@ -36,10 +36,12 @@
     // Insert code here to initialize your application
     
     putenv("ANDROID_HOME=/Users/amudaliar/adt-bundle-mac-x86_64-20131030/sdk");
+    putenv("ANDROID_ROOT=/Users/amudaliar/adt-bundle-mac-x86_64-20131030/sdk");
     putenv("NDK_HOME=/Users/amudaliar/android-ndk-r9c");
     //ANT_HOME
     //putenv("ANT_HOME=");
     const char* android_home = getenv("ANDROID_HOME");
+    const char* android_root = getenv("ANDROID_ROOT");
     const char* ndk_home = getenv("NDK_HOME");
     
     m_projectSelectorDialogueWindowController = [[projectSelectorDialogueWindowController alloc] init];

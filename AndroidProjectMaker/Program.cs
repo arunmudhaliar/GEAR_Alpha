@@ -20,7 +20,6 @@ namespace AndroidProjectMaker
             //System.Diagnostics.Process.Start("CMD.exe", strCmdText);
             string gearprojectDirectory = args[1];
             string os_platform = args[2];
-            string platform_command_prefix = "";
 
             string cmd_android = "android.bat";
             string cmd_adb = "adb.exe";
@@ -37,10 +36,10 @@ namespace AndroidProjectMaker
             }
 
 
-            if (os_platform == "win32")
-                platform_command_prefix = "";
-            else if (os_platform == "macos")
-                platform_command_prefix = "sh ";
+            //if (os_platform == "win32")
+            //    platform_command_prefix = "";
+            //else if (os_platform == "macos")
+            //    platform_command_prefix = "sh ";
 
             g_cGUI_mainform = new mainform();
             g_cGUI_mainform.Show();
@@ -60,14 +59,14 @@ namespace AndroidProjectMaker
 
             g_cGUI_mainform.setMessage("Creating Android Project");
             string command_buffer="";
-            command_buffer = platform_command_prefix + android_sdk_root + "//tools//" + cmd_android;
+            command_buffer = android_sdk_root + "/tools/" + cmd_android;
             command_buffer += " create project --target 2 ";
             command_buffer += "--name " + app_name + " ";
-            command_buffer += "--path " + rootDirectory + "//TempAndroid ";
+            command_buffer += "--path " + rootDirectory + "/TempAndroid ";
             command_buffer += "--activity MainActivity ";
             command_buffer += "--package " + app_bundle_identifier;
 
-            ExecuteCommandSync(command_buffer, rootDirectory);
+            ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
             if (g_iExitCode != 0)
             {
                 g_cGUI_mainform.setMessage("Error creating android project");
@@ -115,9 +114,9 @@ namespace AndroidProjectMaker
             if (ndk_home == null)
                 return -97;     //NDK_HOME variable not set
 
-            command_buffer = platform_command_prefix + ndk_home + "\\ndk-build --directory=" + rootDirectory + "//TempAndroid";
+            command_buffer = ndk_home + "/ndk-build --directory=" + rootDirectory + "/TempAndroid";
 
-            ExecuteCommandSync(command_buffer, rootDirectory);
+            ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
             if (g_iExitCode != 0)
             {
                 g_cGUI_mainform.setMessage("Error in Compilation 1");
@@ -139,11 +138,11 @@ namespace AndroidProjectMaker
             #endif
              * */
 #if DEBUG
-            command_buffer = platform_command_prefix + ant_home + "\\ant debug -buildfile " + rootDirectory + "//TempAndroid//build.xml";
+            command_buffer = ant_home + "/ant debug -buildfile " + rootDirectory + "/TempAndroid/build.xml";
 #else
-            command_buffer = platform_command_prefix + ant_home+"\\ant release -buildfile "+rootDirectory+"//TempAndroid//build.xml";
+            command_buffer = ant_home+"/ant release -buildfile "+rootDirectory+"/TempAndroid//build.xml";
 #endif
-            ExecuteCommandSync(command_buffer, rootDirectory);
+            ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
             if (g_iExitCode != 0)
             {
                 g_cGUI_mainform.setMessage("Error in Compilation 2");
@@ -152,8 +151,8 @@ namespace AndroidProjectMaker
 
 #if !DEBUG
             g_cGUI_mainform.setMessage("JarSigner");
-            command_buffer = "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore " + rootDirectory + "//android_keystore//debug.keystore  -storepass android " + rootDirectory + "//TempAndroid//bin//" + app_name + "-release-unsigned.apk androiddebugkey";
-            ExecuteCommandSync(command_buffer, rootDirectory);
+            command_buffer = "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore " + rootDirectory + "/android_keystore/debug.keystore  -storepass android " + rootDirectory + "/TempAndroid/bin/" + app_name + "-release-unsigned.apk androiddebugkey";
+            ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
             if (g_iExitCode != 0)
             {
                 g_cGUI_mainform.setMessage("Error while signing the apk");
@@ -167,14 +166,14 @@ namespace AndroidProjectMaker
             foreach (string file_str in necessaryfiles)
             {
 #if DEBUG
-                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb +" -d push " + rootDirectory + "//Debug//" + file_str + " //sdcard//gear//" + file_str;
+                command_buffer = android_sdk_root + "/platform-tools/" + cmd_adb +" -d push " + rootDirectory + "/Debug/" + file_str + " /sdcard/gear/" + file_str;
 #else
-                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb +" -d push " + rootDirectory + "//Release//" + file_str + " //sdcard//gear//" + file_str;
+                command_buffer = android_sdk_root + "/platform-tools/" + cmd_adb +" -d push " + rootDirectory + "/Release/" + file_str + " /sdcard/gear/" + file_str;
 #endif
-                ExecuteCommandSync(command_buffer, rootDirectory);
+                ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
                 if (g_iExitCode != 0)
                 {
-                    ExecuteCommandSync("adb kill-server", rootDirectory);
+                    ExecuteCommandSync("adb kill-server", rootDirectory, os_platform);
                     g_cGUI_mainform.setMessage("USB device error while pushing files to device.");
                     return -98;
                 }
@@ -183,11 +182,11 @@ namespace AndroidProjectMaker
             //Copy all the metadata files & Replaces any files with the same name
             foreach (string newPath in Directory.GetFiles(gearprojectDirectory + "//MetaData", "*.*", SearchOption.AllDirectories))
             {
-                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d push " + newPath + " //sdcard//gear//MetaData//" + Path.GetFileName(newPath);
-                ExecuteCommandSync(command_buffer, rootDirectory);
+                command_buffer = android_sdk_root + "/platform-tools/" + cmd_adb + " -d push " + newPath + " /sdcard/gear/MetaData/" + Path.GetFileName(newPath);
+                ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
                 if (g_iExitCode != 0)
                 {
-                    ExecuteCommandSync("adb kill-server", rootDirectory);
+                    ExecuteCommandSync("adb kill-server", rootDirectory, os_platform);
                     g_cGUI_mainform.setMessage("USB device error while pushing meta data files to device.");
                     return -99;
                 }
@@ -198,13 +197,13 @@ namespace AndroidProjectMaker
             {
                 string relativePath = newPath;
                 relativePath=relativePath.Replace(gearprojectDirectory + "//Assets", "");
-                relativePath=relativePath.Replace("\\", "//");
+                relativePath=relativePath.Replace("\\", "/");
 
-                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d push " + newPath + " //sdcard//gear//scenes" + relativePath;
-                ExecuteCommandSync(command_buffer, rootDirectory);
+                command_buffer = android_sdk_root + "/platform-tools/" + cmd_adb + " -d push " + newPath + " /sdcard/gear/scenes" + relativePath;
+                ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
                 if (g_iExitCode != 0)
                 {
-                    ExecuteCommandSync("adb kill-server", rootDirectory);
+                    ExecuteCommandSync("adb kill-server", rootDirectory, os_platform);
                     g_cGUI_mainform.setMessage("USB device error while pushing scenes files to device.");
                     return -99;
                 }
@@ -213,11 +212,11 @@ namespace AndroidProjectMaker
             //current scene
             if (File.Exists(gearprojectDirectory + "//ProjectSettings//currentscene"))
             {
-                command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d push " + gearprojectDirectory + "//ProjectSettings//currentscene" + " //sdcard//gear//currentscene";
-                ExecuteCommandSync(command_buffer, rootDirectory);
+                command_buffer = android_sdk_root + "/platform-tools/" + cmd_adb + " -d push " + gearprojectDirectory + "/ProjectSettings/currentscene" + " /sdcard/gear/currentscene";
+                ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
                 if (g_iExitCode != 0)
                 {
-                    ExecuteCommandSync("adb kill-server", rootDirectory);
+                    ExecuteCommandSync("adb kill-server", rootDirectory, os_platform);
                     g_cGUI_mainform.setMessage("USB device error while pushing current scenes file to device.");
                     return -99;
                 }
@@ -226,30 +225,30 @@ namespace AndroidProjectMaker
             g_cGUI_mainform.setMessage("Pushing to device");
             //Pushing to device
 #if DEBUG
-            command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d install -r " + rootDirectory + "//TempAndroid//bin//" + app_name + "-debug.apk";
+            command_buffer = android_sdk_root + "/platform-tools/" + cmd_adb + " -d install -r " + rootDirectory + "/TempAndroid/bin/" + app_name + "-debug.apk";
 #else
-            command_buffer=android_sdk_root+"//platform-tools//" + cmd_adb + " -d install -r "+rootDirectory + "//TempAndroid//bin//"+app_name+"-release-unsigned.apk";
+            command_buffer=android_sdk_root+"/platform-tools/" + cmd_adb + " -d install -r "+rootDirectory + "/TempAndroid/bin/"+app_name+"-release-unsigned.apk";
 #endif
-            ExecuteCommandSync(command_buffer, rootDirectory);
+            ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
             if (g_iExitCode != 0)
             {
-                ExecuteCommandSync("adb kill-server", rootDirectory);
+                ExecuteCommandSync("adb kill-server", rootDirectory, os_platform);
                 g_cGUI_mainform.setMessage("USB device error while pushing apk to device.");
                 return -86;
             }
-            ExecuteCommandSync("adb kill-server", rootDirectory);
+            ExecuteCommandSync("adb kill-server", rootDirectory, os_platform);
 
             g_cGUI_mainform.setMessage("Executing on device");
             //Executing on device
-            command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " shell am start -n " + app_bundle_identifier + "/" + app_bundle_identifier + ".MainActivity";
-            ExecuteCommandSync(command_buffer, rootDirectory);
+            command_buffer = android_sdk_root + "/platform-tools/" + cmd_adb + " shell am start -n " + app_bundle_identifier + "/" + app_bundle_identifier + ".MainActivity";
+            ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
             if (g_iExitCode != 0)
             {
-                ExecuteCommandSync("adb kill-server", rootDirectory);
+                ExecuteCommandSync("adb kill-server", rootDirectory, os_platform);
                 g_cGUI_mainform.setMessage("Error opening the application on device.");
                 return -85;
             }
-            ExecuteCommandSync("adb kill-server", rootDirectory);
+            ExecuteCommandSync("adb kill-server", rootDirectory, os_platform);
 
             return 0;
         }
@@ -259,7 +258,7 @@ namespace AndroidProjectMaker
         /// <span class="code-SummaryComment"></summary></span>
         /// <span class="code-SummaryComment"><param name="command">string command</param></span>
         /// <span class="code-SummaryComment"><returns>string, as output of the command.</returns></span>
-        public static void ExecuteCommandSync(object command, string workingDirectory)
+        public static void ExecuteCommandSync(object command, string workingDirectory, string platform)
         {
             //try
             //{
@@ -297,8 +296,12 @@ namespace AndroidProjectMaker
                     int timeout = 3 * 60 * 1000;    //3 minutes
                     g_iExitCode = 0;
 
-                    System.Diagnostics.ProcessStartInfo procStartInfo =
-                        new System.Diagnostics.ProcessStartInfo("cmd", "/c " + command);
+                    System.Diagnostics.ProcessStartInfo procStartInfo = null;
+
+                    if (platform=="win32")
+                        procStartInfo = new System.Diagnostics.ProcessStartInfo("cmd", "/c " + command);
+                    else if (platform == "macos")
+                        procStartInfo = new System.Diagnostics.ProcessStartInfo("sh", ""+command);
 
                     process.StartInfo = procStartInfo;
                     process.StartInfo.UseShellExecute = false;

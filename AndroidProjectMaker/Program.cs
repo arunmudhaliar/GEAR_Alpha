@@ -67,7 +67,7 @@ namespace AndroidProjectMaker
             command_buffer += "--activity MainActivity ";
             command_buffer += "--package " + app_bundle_identifier;
 
-            ExecuteCommandSync(command_buffer);
+            ExecuteCommandSync(command_buffer, rootDirectory);
             if (g_iExitCode != 0)
             {
                 g_cGUI_mainform.setMessage("Error creating android project");
@@ -116,8 +116,8 @@ namespace AndroidProjectMaker
                 return -97;     //NDK_HOME variable not set
 
             command_buffer = platform_command_prefix + ndk_home + "\\ndk-build --directory=" + rootDirectory + "//TempAndroid";
-            
-            ExecuteCommandSync(command_buffer);
+
+            ExecuteCommandSync(command_buffer, rootDirectory);
             if (g_iExitCode != 0)
             {
                 g_cGUI_mainform.setMessage("Error in Compilation 1");
@@ -143,7 +143,7 @@ namespace AndroidProjectMaker
 #else
             command_buffer = platform_command_prefix + ant_home+"\\ant release -buildfile "+rootDirectory+"//TempAndroid//build.xml";
 #endif
-            ExecuteCommandSync(command_buffer);
+            ExecuteCommandSync(command_buffer, rootDirectory);
             if (g_iExitCode != 0)
             {
                 g_cGUI_mainform.setMessage("Error in Compilation 2");
@@ -153,7 +153,7 @@ namespace AndroidProjectMaker
 #if !DEBUG
             g_cGUI_mainform.setMessage("JarSigner");
             command_buffer = "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore " + rootDirectory + "//android_keystore//debug.keystore  -storepass android " + rootDirectory + "//TempAndroid//bin//" + app_name + "-release-unsigned.apk androiddebugkey";
-            ExecuteCommandSync(command_buffer);
+            ExecuteCommandSync(command_buffer, rootDirectory);
             if (g_iExitCode != 0)
             {
                 g_cGUI_mainform.setMessage("Error while signing the apk");
@@ -171,10 +171,10 @@ namespace AndroidProjectMaker
 #else
                 command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb +" -d push " + rootDirectory + "//Release//" + file_str + " //sdcard//gear//" + file_str;
 #endif
-                ExecuteCommandSync(command_buffer);
+                ExecuteCommandSync(command_buffer, rootDirectory);
                 if (g_iExitCode != 0)
                 {
-                    ExecuteCommandSync("adb kill-server");
+                    ExecuteCommandSync("adb kill-server", rootDirectory);
                     g_cGUI_mainform.setMessage("USB device error while pushing files to device.");
                     return -98;
                 }
@@ -184,10 +184,10 @@ namespace AndroidProjectMaker
             foreach (string newPath in Directory.GetFiles(gearprojectDirectory + "//MetaData", "*.*", SearchOption.AllDirectories))
             {
                 command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d push " + newPath + " //sdcard//gear//MetaData//" + Path.GetFileName(newPath);
-                ExecuteCommandSync(command_buffer);
+                ExecuteCommandSync(command_buffer, rootDirectory);
                 if (g_iExitCode != 0)
                 {
-                    ExecuteCommandSync("adb kill-server");
+                    ExecuteCommandSync("adb kill-server", rootDirectory);
                     g_cGUI_mainform.setMessage("USB device error while pushing meta data files to device.");
                     return -99;
                 }
@@ -201,10 +201,10 @@ namespace AndroidProjectMaker
                 relativePath=relativePath.Replace("\\", "//");
 
                 command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d push " + newPath + " //sdcard//gear//scenes" + relativePath;
-                ExecuteCommandSync(command_buffer);
+                ExecuteCommandSync(command_buffer, rootDirectory);
                 if (g_iExitCode != 0)
                 {
-                    ExecuteCommandSync("adb kill-server");
+                    ExecuteCommandSync("adb kill-server", rootDirectory);
                     g_cGUI_mainform.setMessage("USB device error while pushing scenes files to device.");
                     return -99;
                 }
@@ -214,10 +214,10 @@ namespace AndroidProjectMaker
             if (File.Exists(gearprojectDirectory + "//ProjectSettings//currentscene"))
             {
                 command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " -d push " + gearprojectDirectory + "//ProjectSettings//currentscene" + " //sdcard//gear//currentscene";
-                ExecuteCommandSync(command_buffer);
+                ExecuteCommandSync(command_buffer, rootDirectory);
                 if (g_iExitCode != 0)
                 {
-                    ExecuteCommandSync("adb kill-server");
+                    ExecuteCommandSync("adb kill-server", rootDirectory);
                     g_cGUI_mainform.setMessage("USB device error while pushing current scenes file to device.");
                     return -99;
                 }
@@ -230,26 +230,26 @@ namespace AndroidProjectMaker
 #else
             command_buffer=android_sdk_root+"//platform-tools//" + cmd_adb + " -d install -r "+rootDirectory + "//TempAndroid//bin//"+app_name+"-release-unsigned.apk";
 #endif
-            ExecuteCommandSync(command_buffer);
+            ExecuteCommandSync(command_buffer, rootDirectory);
             if (g_iExitCode != 0)
             {
-                ExecuteCommandSync("adb kill-server");
+                ExecuteCommandSync("adb kill-server", rootDirectory);
                 g_cGUI_mainform.setMessage("USB device error while pushing apk to device.");
                 return -86;
             }
-            ExecuteCommandSync("adb kill-server");
+            ExecuteCommandSync("adb kill-server", rootDirectory);
 
             g_cGUI_mainform.setMessage("Executing on device");
             //Executing on device
             command_buffer = android_sdk_root + "//platform-tools//" + cmd_adb + " shell am start -n " + app_bundle_identifier + "/" + app_bundle_identifier + ".MainActivity";
-            ExecuteCommandSync(command_buffer);
+            ExecuteCommandSync(command_buffer, rootDirectory);
             if (g_iExitCode != 0)
             {
-                ExecuteCommandSync("adb kill-server");
+                ExecuteCommandSync("adb kill-server", rootDirectory);
                 g_cGUI_mainform.setMessage("Error opening the application on device.");
                 return -85;
             }
-            ExecuteCommandSync("adb kill-server");
+            ExecuteCommandSync("adb kill-server", rootDirectory);
 
             return 0;
         }
@@ -259,7 +259,7 @@ namespace AndroidProjectMaker
         /// <span class="code-SummaryComment"></summary></span>
         /// <span class="code-SummaryComment"><param name="command">string command</param></span>
         /// <span class="code-SummaryComment"><returns>string, as output of the command.</returns></span>
-        public static void ExecuteCommandSync(object command)
+        public static void ExecuteCommandSync(object command, string workingDirectory)
         {
             //try
             //{
@@ -305,6 +305,8 @@ namespace AndroidProjectMaker
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.RedirectStandardError = true;
                     process.StartInfo.CreateNoWindow = true;
+                    process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    process.StartInfo.WorkingDirectory = workingDirectory;
 
                     StringBuilder output = new StringBuilder();
                     StringBuilder error = new StringBuilder();
@@ -366,35 +368,35 @@ namespace AndroidProjectMaker
             }
         }
 
-        /// <span class="code-SummaryComment"><summary></span>
-        /// Execute the command Asynchronously.
-        /// <span class="code-SummaryComment"></summary></span>
-        /// <span class="code-SummaryComment"><param name="command">string command.</param></span>
-        public static void ExecuteCommandAsync(string command)
-        {
-            try
-            {
-                //Asynchronously start the Thread to process the Execute command request.
-                Thread objThread = new Thread(new ParameterizedThreadStart(ExecuteCommandSync));
-                //Make the thread as background thread.
-                objThread.IsBackground = true;
-                //Set the Priority of the thread.
-                objThread.Priority = ThreadPriority.AboveNormal;
-                //Start the thread.
-                objThread.Start(command);
-            }
-            catch (ThreadStartException objException)
-            {
-                // Log the exception
-            }
-            catch (ThreadAbortException objException)
-            {
-                // Log the exception
-            }
-            catch (Exception objException)
-            {
-                // Log the exception
-            }
-        }
+        ///// <span class="code-SummaryComment"><summary></span>
+        ///// Execute the command Asynchronously.
+        ///// <span class="code-SummaryComment"></summary></span>
+        ///// <span class="code-SummaryComment"><param name="command">string command.</param></span>
+        //public static void ExecuteCommandAsync(string command)
+        //{
+        //    try
+        //    {
+        //        //Asynchronously start the Thread to process the Execute command request.
+        //        Thread objThread = new Thread(new ParameterizedThreadStart(ExecuteCommandSync));
+        //        //Make the thread as background thread.
+        //        objThread.IsBackground = true;
+        //        //Set the Priority of the thread.
+        //        objThread.Priority = ThreadPriority.AboveNormal;
+        //        //Start the thread.
+        //        objThread.Start(command);
+        //    }
+        //    catch (ThreadStartException objException)
+        //    {
+        //        // Log the exception
+        //    }
+        //    catch (ThreadAbortException objException)
+        //    {
+        //        // Log the exception
+        //    }
+        //    catch (Exception objException)
+        //    {
+        //        // Log the exception
+        //    }
+        //}
     }
 }

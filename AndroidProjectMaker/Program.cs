@@ -138,9 +138,9 @@ namespace AndroidProjectMaker
             #endif
              * */
 #if DEBUG
-            command_buffer = ant_home + "/ant debug -buildfile " + rootDirectory + "/TempAndroid/build.xml";
+            command_buffer = ant_home + "/bin/ant debug -buildfile " + rootDirectory + "/TempAndroid/build.xml";
 #else
-            command_buffer = ant_home+"/ant release -buildfile "+rootDirectory+"/TempAndroid//build.xml";
+            command_buffer = ant_home+"/bin/ant release -buildfile "+rootDirectory+"/TempAndroid//build.xml";
 #endif
             ExecuteCommandSync(command_buffer, rootDirectory, os_platform);
             if (g_iExitCode != 0)

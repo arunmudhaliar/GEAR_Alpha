@@ -14,24 +14,24 @@ public:
 	geSettingsAndroid(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager):
 	  geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 	{
-#ifdef _WIN32
+//#ifdef _WIN32
 		setSize(m_cSize.x, 100.0f);
 
 		//m_pPushBtn_Object3dVisible = new gePushButton("");
 		//m_pPushBtn_Object3dVisible->create(renderer, this, "", 15, 10);
 		//m_pPushBtn_Object3dVisible->setGUIObserver(this);
 
-		char buffer[FILENAME_MAX];
+		char* buffer;
 		//ant home
-		memset(buffer, 0, sizeof(buffer));
-		int ret=GetEnvironmentVariable("ANT_HOME", buffer, sizeof(buffer));
-		if(ret==0)
+		//memset(buffer, 0, sizeof(buffer));
+		buffer=getenv("ANT_HOME");
+		if(buffer==NULL)
 		{
-			if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
-			{
+			//if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
+			//{
 				m_pTextBoxAntRoot = new geTextBox("ANT_HOME environment variable not set.", m_pFontManagerPtr);
 				m_pTextBoxAntRoot->create(renderer, this, "ANT_HOME environment variable not set.", 0, 0, 300, 16);
-			}
+			//}
 		}
 		else
 		{
@@ -40,15 +40,15 @@ public:
 		}
 
 		//android root
-		memset(buffer, 0, sizeof(buffer));
-		ret=GetEnvironmentVariable("ANDROID_ROOT", buffer, sizeof(buffer));
-		if(ret==0)
+		//memset(buffer, 0, sizeof(buffer));
+		buffer=getenv("ANDROID_ROOT");
+		if(buffer==NULL)
 		{
-			if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
-			{
+			//if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
+			//{
 				m_pTextBoxAndroidRoot = new geTextBox("ANDROID_ROOT environment variable not set.", m_pFontManagerPtr);
 				m_pTextBoxAndroidRoot->create(renderer, this, "ANDROID_ROOT environment variable not set.", 0, 0, 300, 16);
-			}
+			//}
 		}
 		else
 		{
@@ -91,7 +91,7 @@ public:
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
 		setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 		applyPrimaryColorToVBClientArea();
-#endif
+//#endif
 	}
 
 	virtual ~geSettingsAndroid()

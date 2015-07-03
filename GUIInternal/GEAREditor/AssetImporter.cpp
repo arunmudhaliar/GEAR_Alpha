@@ -735,7 +735,7 @@ int AssetImporter::import_png_to_metadata(const char* png_file_name, const char*
 	}
 	// set the individual row_pointers to point at the correct offsets of image_data
 	for (int i = 0; i < height; ++i)
-		row_pointers[i/*height - 1 - i*/] = image_data + i * rowbytes;
+		row_pointers[/*i*/height - 1 - i] = image_data + i * rowbytes;
 
     png_read_image(png_ptr, row_pointers);
 

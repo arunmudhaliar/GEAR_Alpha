@@ -1,4 +1,5 @@
 #include "geGUIBase.h"
+#include "../win32/cursorUtil.h"
 
 geGUIBase::geGUIBase()
 {
@@ -649,6 +650,8 @@ void geGUIBase::onDragLeave()
 
 void geGUIBase::doDragDropSynchronous(MDropData *dropData)
 {
+	cursorUtil::changeCursor(4);
+
     SDL_Event event;
     event.type = SDL_DROPFILE;
     event.drop.file = (char*)dropData;
@@ -661,6 +664,9 @@ void geGUIBase::doDragDropSynchronous(MDropData *dropData)
     }
     SDL_FlushEvent(SDL_MOUSEMOTION);
     SDL_PushEvent(&event);
+
+	cursorUtil::changeCursor(0);
+
 }
 //#endif
 

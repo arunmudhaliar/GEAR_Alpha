@@ -43,7 +43,6 @@ public:
 
 	bool createOctree(gxWorld* world, int minTransformObj=10, int maxLevel=8);
 	void pushToRootNode(object3d* obj);
-	void overlapWithChildNodes(OctreeNode* node);
 	void reset();
 	OctreeNode* getRoot()	{	return m_pRootNode;	}
 	void drawOctree(OctreeNode* node, gxHWShader* shader);
@@ -58,7 +57,8 @@ public:
 	object3d* pickBruteForce(vector3f& rayOrig, vector3f& rayDir);
 
 private:
-	bool create(OctreeNode* node);
+	bool create(OctreeNode* node, object3d* obj);
+	void overlapWithObject(OctreeNode* node, object3d* obj);
 
 	int m_nLevelReached;
 	ExpandableArray<object3d*> m_cCollidedObjLst;

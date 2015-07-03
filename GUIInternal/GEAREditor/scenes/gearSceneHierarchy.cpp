@@ -295,7 +295,15 @@ void gearSceneHierarchy::destroyTVUserData(geGUIBase* parent)
 
 void gearSceneHierarchy::onAppendToWorld(object3d* world, object3d* obj)
 {
-	recreateOctree();
+	//recreateOctree();
+	if(((gxWorld*)world)->getOctree())
+	{
+		((gxWorld*)world)->getOctree()->pushToRootNode(obj);
+	}
+	else
+	{
+		recreateOctree();
+	}
 }
 
 void gearSceneHierarchy::onRemoveFromWorld(object3d* world, object3d* obj)

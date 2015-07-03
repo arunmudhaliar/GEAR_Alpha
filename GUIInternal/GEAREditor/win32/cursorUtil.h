@@ -17,7 +17,7 @@ public:
     static void changeCursor(int index);
 
 private:
-	static SDL_Cursor* g_cszCursors[4];
+	static SDL_Cursor* g_cszCursors[5];
 };
 
 #endif

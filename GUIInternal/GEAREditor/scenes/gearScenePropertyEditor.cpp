@@ -155,14 +155,14 @@ void gearScenePropertyEditor::onTVSelectionChange(geTreeNode* tvnode, geTreeView
 
 bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 {
-#if DEPRECATED
+//#if DEPRECATED
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return;
 
-	geTreeNode* selectedNode=m_cPropertiesTreeView.getSelectedNode();
+	geTreeNode* selectedNode=m_pPropertiesTreeView->getSelectedNode();
 	if((flag&MK_LBUTTON) && selectedNode)
 	{
-		if(m_cPropertiesTreeView.getScrollBar()->isScrollBarGrabbed())
+		if(m_pPropertiesTreeView->getScrollBar()->isScrollBarGrabbed())
 			return true;
 
 		if(selectedNode->getParent()==m_pAnimationParentNode)
@@ -170,18 +170,20 @@ bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 			std::vector<geGUIBase*>* newlist = new std::vector<geGUIBase*>();
 			newlist->push_back(selectedNode);
 
-			MDataObject* dataObject = new MDataObject(newlist, this);
-			MDropSource* dropSource = new MDropSource();
+			MDropData* dataObject = new MDropData(newlist, this);
+			doDragDropSynchronous(dataObject);
 
-			DWORD lpd=0;
-			HRESULT ok=DoDragDrop(dataObject, dropSource, DROPEFFECT_MOVE, &lpd);
+			//MDataObject* dataObject = new MDataObject(newlist, this);
+			//MDropSource* dropSource = new MDropSource();
 
-			dataObject->Release();
-			dropSource->Release();
+			//DWORD lpd=0;
+			//HRESULT ok=DoDragDrop(dataObject, dropSource, DROPEFFECT_MOVE, &lpd);
+
+			//dataObject->Release();
+			//dropSource->Release();
 		}
-		return true;
 	}
-#endif
+//#endif
 	return true;
 }
 

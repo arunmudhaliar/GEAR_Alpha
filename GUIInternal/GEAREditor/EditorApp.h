@@ -15,6 +15,7 @@
 #include "scenes/gearSceneWorldEditor.h"
 #include "scenes/gearSceneConsole.h"
 #include "scenes/propertyViews/gePropertyOctree.h"
+#include "scenes/gearSceneAnimationEditor.h"
 #include <string>
 
 #ifdef _WIN32

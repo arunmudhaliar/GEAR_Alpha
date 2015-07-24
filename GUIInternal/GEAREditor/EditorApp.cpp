@@ -322,6 +322,11 @@ void EditorGEARApp::init(SDL_Window* window)
     geLayout* worldEditorLayout=m_pGUIManager->getLayoutManager()->getRootLayout()->createAsParent(worldEditorWnd);
     setSceneWorldEditor(worldEditorWnd);
     
+	//gearSceneAnimationEditor* animEditorWnd = new gearSceneAnimationEditor(m_pGUIManager->getLayoutManager()->getFontManager());
+	//animEditorWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250);
+	//m_pGUIManager->appendWindow(animEditorWnd);
+	//geLayout* animEditorLayout=worldEditorLayout->createBottom(animEditorWnd, 0.2f);
+
     gearSceneProject* projectWindow = new gearSceneProject(m_pGUIManager->getLayoutManager()->getFontManager());
     projectWindow->create(m_pRendererGL10, NULL, 0, 0, 300, 200, true);
     m_pGUIManager->appendWindow(projectWindow);

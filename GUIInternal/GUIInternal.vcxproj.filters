@@ -318,6 +318,9 @@
     <ClInclude Include="GEAREditor\OSSpecific\MenuImp.h">
       <Filter>GEAREditor\OSSpecific</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearSceneAnimationEditor.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -502,6 +505,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\win32\cursorUtil.cpp">
       <Filter>GEAREditor\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearSceneAnimationEditor.cpp">
+      <Filter>GEAREditor\scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -515,6 +515,66 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 #endif
 }
 
+void gxWorld::tryLoadTexturesFromObject3d(object3d* obj3d, const char* filepath)
+{
+	gxWorld* mainworld=this;
+	char buffer[FILENAME_MAX];
+	memset(buffer, 0, sizeof(buffer));
+	strcpy(buffer, gxUtil::getFileNameFromPath(filepath));
+	char dirname[FILENAME_MAX];
+	memset(dirname, 0, sizeof(dirname));
+	strncpy(dirname, filepath, strlen(filepath)-strlen(buffer));
+
+
+	if(obj3d->getID()==OBJECT3D_MESH || obj3d->getID()==OBJECT3D_SKINNED_MESH)
+	{
+		gxMesh* mesh = (gxMesh*)obj3d;
+		for(int x=0;x<mesh->getNoOfTriInfo();x++)
+		{
+			gxTriInfo* triInfo = mesh->getTriInfo(x);
+			gxMaterial* material = triInfo->getMaterial();
+			if(!material) continue;
+			std::vector<gxSubMap*>* maplist=material->getSubMapList();
+			if(maplist->size()==0 || material->getListOfTextureNamesFromFBX()->size()==0) continue;
+
+			char relativetexturefilepath[FILENAME_MAX];
+			memset(relativetexturefilepath, 0, sizeof(relativetexturefilepath));
+			sprintf(relativetexturefilepath, "%s%s", dirname, material->getListOfTextureNamesFromFBX()->at(0).c_str());
+
+			////tif hack
+			//if(gxUtil::GX_IS_EXTENSION(relativetexturefilepath, ".tif") || gxUtil::GX_IS_EXTENSION(relativetexturefilepath, ".TIF"))
+			//	strcpy(&relativetexturefilepath[strlen(relativetexturefilepath)-3], "png");
+			////
+
+			gxSubMap* submap = maplist->at(0);
+			int textureCRC=gxCrc32::Calc((unsigned char*)relativetexturefilepath);
+			char crcFile[FILENAME_MAX];
+			sprintf(crcFile, "%s/%x", mainworld->getMetaDataFolder(), textureCRC);
+			if(submap->loadTextureFromMeta(*mainworld->getTextureManager(), textureCRC))
+			{
+				submap->setTextureCRC(textureCRC);
+			}
+		}
+	}
+
+#ifdef USE_BXLIST
+	stLinkNode<object3d*>* node=obj3d->getChildList()->getHead();
+	while(node)
+	{
+		object3d* childobj=node->getData();
+		tryLoadTexturesFromObject3d(childobj);
+		node=node->getNext();
+	}
+#else
+	std::vector<object3d*>* childList=obj3d->getChildList();
+	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
+	{
+		object3d* childobj = *it;
+		tryLoadTexturesFromObject3d(childobj, filepath);
+	}
+#endif
+}
+
 void gxWorld::loadAnmationFromObject3d(object3d* obj3d, int crc)
 {
 	gxAnimation* animationController = obj3d->getAnimationController();

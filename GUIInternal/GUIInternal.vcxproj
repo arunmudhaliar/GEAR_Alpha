@@ -132,6 +132,7 @@
     <ClInclude Include="GEAREditor\renderer\rendererGL20.h" />
     <ClInclude Include="GEAREditor\renderer\wglew.h" />
     <ClInclude Include="GEAREditor\scenes\assetUserData.h" />
+    <ClInclude Include="GEAREditor\scenes\gearSceneAnimationEditor.h" />
     <ClInclude Include="GEAREditor\scenes\gearSceneConsole.h" />
     <ClInclude Include="GEAREditor\scenes\gearSceneFileView.h" />
     <ClInclude Include="GEAREditor\scenes\gearSceneHierarchy.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="GEAREditor\renderer\renderer.cpp" />
     <ClCompile Include="GEAREditor\renderer\rendererGL10.cpp" />
     <ClCompile Include="GEAREditor\renderer\rendererGL20.cpp" />
+    <ClCompile Include="GEAREditor\scenes\gearSceneAnimationEditor.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneConsole.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneFileView.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneHierarchy.cpp" />

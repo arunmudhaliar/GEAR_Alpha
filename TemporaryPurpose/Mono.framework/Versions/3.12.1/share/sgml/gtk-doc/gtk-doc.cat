@@ -1,6 +1,0 @@
-  -- ...................................................................... --
-  -- DSSL stylesheet ...................................................... --
-  -- ...................................................................... --
-
-PUBLIC "-//Gtk//DOCUMENT Gtk-doc HTML Stylesheet//EN"
-  "/Library/Frameworks/Mono.framework/Versions/3.12.1/share/gtk-doc/data/gtk-doc.dsl"

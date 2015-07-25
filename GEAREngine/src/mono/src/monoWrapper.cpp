@@ -379,6 +379,7 @@ int monoWrapper::mono_engine_test_function_for_mono()
 	//don't know this casting is right or wrong		- arun-check
 	return (int)underlyingType;
 #else
+    UNUSED(underlyingType);
     return 0;
 #endif
 #endif
@@ -691,7 +692,7 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 	char responsebuffer[4096];
 	exec_cmd(command_buffer.c_str(), responsebuffer);
 	printf("\n================GMCS COMPILATION RESULT===============\n");
-	printf(responsebuffer);
+	printf("%s", responsebuffer);
 	printf("\n======================================================\n");
 
 	return true;

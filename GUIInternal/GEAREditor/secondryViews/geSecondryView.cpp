@@ -189,6 +189,7 @@ int geSecondryView::secondryThread( void *ptr )
     
     //It is very important in shared contexts to make sure the driver is done with all Objects before signaling other threads that they can use them!
     GLsync fenceId = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+    UNUSED(fenceId);
 //    GLenum result;
 //    while(true)
 //    {
@@ -310,12 +311,14 @@ void geSecondryView::processEvent(SDL_Window * window, SDL_Event& e)
     }
     else if(e.type==SDL_MOUSEWHEEL)
     {
+        /*
         int mouse_x = 0, mouse_y = 0;
         SDL_GetMouseState( &mouse_x, &mouse_y );
         
         int nFlags=0;
         SDL_MouseWheelEvent* mouseWheelEvent = (SDL_MouseWheelEvent*)&e;
         //editorApp.MouseWheel(mouseWheelEvent->y, mouse_x, mouse_y, nFlags);
+         */
     }
 }
 

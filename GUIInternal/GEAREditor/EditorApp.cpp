@@ -310,6 +310,7 @@ void EditorGEARApp::init(SDL_Window* window)
     
     geAssetImportDlg* assetImporterDlg = new geAssetImportDlg(&geFontManager::g_cFontManager, m_pRendererGL10);
     SDL_Thread *thread = SDL_CreateThread( assetImport_secondryThread, "testThread", (void *)assetImporterDlg);
+    UNUSED(thread);
     assetImporterDlg->showView();
     //assetImporterDlg->destroyView();
 
@@ -356,6 +357,7 @@ void EditorGEARApp::init(SDL_Window* window)
     hierarchyWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250, true);
     m_pGUIManager->appendWindow(hierarchyWnd);
     geLayout* hierarchyLayout=projectLayout->createTop(hierarchyWnd, 0.45f);
+    UNUSED(hierarchyLayout);
     setSceneHierarchy(hierarchyWnd);
     //hierarchyLayout->appendWindow(
     
@@ -363,12 +365,14 @@ void EditorGEARApp::init(SDL_Window* window)
     fileViewWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250, true);
     m_pGUIManager->appendWindow(fileViewWnd);
     geLayout* fileViewLayout=projectLayout->createRight(fileViewWnd, 0.55f);
+    UNUSED(fileViewLayout);
     setSceneFileView(fileViewWnd);
     
     gearScenePreview* previewWnd = new gearScenePreview(m_pGUIManager->getLayoutManager()->getFontManager());
     previewWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250);
     m_pGUIManager->appendWindow(previewWnd);
     geLayout* previewLayout=propertyEditorLayout->createBottom(previewWnd, 0.35f);
+    UNUSED(previewLayout);
     setScenePreview(previewWnd);
 }
     

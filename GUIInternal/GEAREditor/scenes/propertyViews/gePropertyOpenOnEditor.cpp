@@ -74,7 +74,7 @@ void gePropertyOpenOnEditor::onButtonClicked(geGUIBase* btn)
 				printf("\n================Opening Visual Studio===============\n");
 				if(monoWrapper::exec_cmd(buffer, responsebuffer)==0)
 				{
-					printf(responsebuffer);
+					printf("%s", responsebuffer);
 					printf("\nSuccess\n");
 				}
 			}

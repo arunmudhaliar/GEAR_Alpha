@@ -144,6 +144,9 @@ unsigned int gxFont::loadBuffer(unsigned char* buffer, bool bAlpha, unsigned int
 
 void gxFont::draw()
 {
+#if defined (USE_ProgrammablePipeLine)
+#else
+#if ARUN_COMMENTED
     const int vertLst[8] =
 	{
 		m_iBitmapWidth*65536,	0,
@@ -160,9 +163,6 @@ void gxFont::draw()
 		0,      65536,
 	};
 
-#if defined (USE_ProgrammablePipeLine)
-#else
-#if ARUN_COMMENTED
     glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_FIXED, 0, vertLst);
 

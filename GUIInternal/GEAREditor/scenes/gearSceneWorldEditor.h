@@ -7,7 +7,9 @@
 #include "../gui/geHorizontalSlider.h"
 #include "../../../GEAREngine/src/hwShader/HWShaderManager.h"
 
-#define USE_FBO
+#ifndef USE_FBO
+    #define USE_FBO
+#endif
 #if defined USE_FBO
 #include "../../../GEAREngine/src/core/fbo.h"
 #endif

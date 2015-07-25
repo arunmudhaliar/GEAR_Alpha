@@ -154,11 +154,11 @@ bool rendererBase::makeCurrent()
 		MessageBox(NULL,"Can't Activate The GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return false;											// Return GX_FALSE
 	}
+    return true;
 #else
     int ret=SDL_GL_MakeCurrent(m_pWindow, m_pContext);
+    return ret==0;
 #endif
-    
-	return true;
 }
 
 void rendererBase::destroyRenderer()

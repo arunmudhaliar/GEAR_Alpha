@@ -171,7 +171,6 @@ void gearSceneHierarchy::onDragEnter(int x, int y)
 
 void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 {
-	geTreeNode* rootNode = m_pGameObjectsTreeView->getRoot();
 	geTreeNode* selectedNode=m_pGameObjectsTreeView->getTVNode(x, y/*-getTopMarginOffsetHeight()*/);
 
 	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
@@ -185,7 +184,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 			if (util::GE_IS_EXTENSION(relativePath, ".fbx") || util::GE_IS_EXTENSION(relativePath, ".FBX") ||
 				util::GE_IS_EXTENSION(relativePath, ".prefab") || util::GE_IS_EXTENSION(relativePath, ".PREFAB"))
 			{
-				object3d* obj = engine_loadAndAppendMesh(EditorGEARApp::getSceneWorldEditor()->getMainWorld(), relativePath);
+				engine_loadAndAppendMesh(EditorGEARApp::getSceneWorldEditor()->getMainWorld(), relativePath);
 			}
 			else if(util::GE_IS_EXTENSION(relativePath, ".cs") || util::GE_IS_EXTENSION(relativePath, ".CS"))
 			{
@@ -237,8 +236,8 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 					object3d* selectedObj=(object3d*)selectedNode->getUserData();
 					gxAnimation* animationController = selectedObj->createAnimationController();	//wont create new if there is already an animatiion controller exists
 					animationController->appendAnimationSet(animSet);
-					selectedObj->applyAnimationSetRecursive(animationController->getAnimationSetList()->size()-1);
-					animationController->play(animationController->getAnimationSetList()->size()-1);
+					selectedObj->applyAnimationSetRecursive((int)animationController->getAnimationSetList()->size()-1);
+					animationController->play((int)animationController->getAnimationSetList()->size()-1);
 				}
 			}
 		}

@@ -24,7 +24,13 @@
 	#include <GLES2/gl2.h>
 	#include <GLES2/gl2ext.h>
 #elif __APPLE__
+#ifdef DllImport
+#undef DllImport
+#endif
     #define DllImport
+#ifdef DECLSPEC
+#undef DECLSPEC
+#endif
     #define DECLSPEC// __attribute__((visibility("default")))
     #include <OpenGL/gl.h>
 #endif
@@ -53,5 +59,7 @@
 
 #define GX_SWAP_INT(x1, x2)     { int t=x1; x1=x2; x2=t;    }
 #define GX_SWAP_FLOAT(x1, x2)   { float t=x1; x1=x2; x2=t;    }
+
+#define UNUSED(x)   (void)x
 
 #endif

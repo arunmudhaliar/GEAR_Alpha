@@ -311,6 +311,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 			//if(!mesh->getTriInfo(x)->getMaterial())
 			//	continue;
 			gePropertyMaterial* materialProperty = new gePropertyMaterial(m_pRenderer, m_pMaterialParent, "", NULL, mesh->getTriInfo(x), m_pFontManagerPtr);
+            UNUSED(materialProperty);
 		}
 
 		rootNode->appnendTVChild(m_pMaterialParent);

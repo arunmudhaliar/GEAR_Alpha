@@ -212,6 +212,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             //if(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT])
             //    break;
             bool bShiftKeyPressed=(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]);
+            UNUSED(bShiftKeyPressed);
 //            char ch=MapVirtualKey(wParam, MAPVK_VK_TO_CHAR);
 //            if(ch>=0x41 && ch<=0x5A)
 //            {
@@ -225,6 +226,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
 //            }
             
             bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyDown(keyBoardEvent->keysym.scancode, 0/*lParam*/);   //TODO: need to check if lparam is used somewere in the code or not.
+            UNUSED(bCaptured);
         }
         else
         {
@@ -240,6 +242,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             //if(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT])
             //    break;
             bool bShiftKeyPressed=(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]);
+            UNUSED(bShiftKeyPressed);
             //            char ch=MapVirtualKey(wParam, MAPVK_VK_TO_CHAR);
             //            if(ch>=0x41 && ch<=0x5A)
             //            {
@@ -253,6 +256,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             //            }
             
             bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyUp(keyBoardEvent->keysym.scancode, 0/*lParam*/);   //TODO: need to check if lparam is used somewere in the code or not.
+            UNUSED(bCaptured);
         }
         else
         {

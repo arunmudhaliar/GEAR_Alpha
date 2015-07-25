@@ -5,7 +5,7 @@
 /Functions:	LoadTGA(tgaTexture * texture, char * filename)							*
 /			LoadCompressedTGA(tgaTexture * texture, char * filename, FILE * fTGA)	*
 /			LoadUncompressedTGA(tgaTexture * texture, char * filename, FILE * fTGA)*	
-/*******************************************************************************/
+*******************************************************************************/
 #include "Tga.h"
 
 
@@ -14,7 +14,7 @@
 /function:  Open and test the file to make sure it is a valid TGA file			*	
 /parems:	texture, pointer to a Texture structure								*
 /			filename, string pointing to file to open							*
-/********************************************************************************/
+********************************************************************************/
 
 bool LoadTGA(tgaTexture * texture, const char * filename)				// Load a TGA file
 {

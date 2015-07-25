@@ -241,8 +241,6 @@ object3d* fbxImporter::tryImportFBXSkinnedMesh(FbxNode &fbxNode, const FbxMatrix
 					continue;
 
 				FbxNode*	currentFbxLimb	= cluster->GetLink();
-				const char*	currentLimbName = currentFbxLimb->GetName();
-
 				int vertexIndexCount = cluster->GetControlPointIndicesCount();
 				for (int k = 0; k < vertexIndexCount; ++k)
 				{
@@ -270,7 +268,7 @@ object3d* fbxImporter::tryImportFBXSkinnedMesh(FbxNode &fbxNode, const FbxMatrix
 		importFBXMesh(newSkinnedMesh, fbxNode, geometryOffset, materialList, rootObject3d, boneInfluenceList, boneList);
 		newSkinnedMesh->setName(fbxNode.GetName());
 
-		newSkinnedMesh->allocateBoneList(boneList->bonelst.size());
+		newSkinnedMesh->allocateBoneList((int)boneList->bonelst.size());
 		delete [] boneInfluenceList;
 		return newSkinnedMesh;
 	}
@@ -332,7 +330,7 @@ bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node
 				animationController=rootObject3d->createAnimationController();	//wont create new if there is already an animatiion controller exists
 				if(animTrack==NULL)
 				{
-					int nAnimSet=animationController->getAnimationSetList()->size();
+					int nAnimSet=(int)animationController->getAnimationSetList()->size();
 					gxAnimationSet* animSet=NULL;
 					if(nAnimSet)
 						animSet=animationController->getAnimationSetList()->at(nAnimSet-1);
@@ -539,10 +537,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	FbxMatrix transform;
 	FbxMatrix fbxGeometryOffset = getFBXGeometryTransform(fbxNode);
 	FbxMatrix local_tm = fbxNode.EvaluateLocalTransform();
-
-	object3d* temp_parent_obj=parent_obj_node;
 	FbxMesh *fbxMesh = fbxNode.GetMesh();
-
 
 	if(fbxMesh)
 	{

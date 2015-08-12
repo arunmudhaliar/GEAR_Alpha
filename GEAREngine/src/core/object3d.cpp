@@ -207,13 +207,13 @@ void object3d::update(float dt)
 	}
 #endif
 
-#ifdef _WIN32	//arun:special case
+//#ifdef _WIN32	//arun:special case
 	if(m_pAnimationController)
 	{
 		m_pAnimationController->update(dt);
 		updateAnimationFrameToObject3d((int)m_pAnimationController->getCurrentFrame());
 	}
-#endif
+//#endif
 
 #ifdef USE_BXLIST
 	stLinkNode<object3d*>* node=m_cChilds.getHead();

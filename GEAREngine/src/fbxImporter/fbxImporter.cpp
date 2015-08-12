@@ -574,7 +574,7 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 	FbxVector4 row2 = local_tm.GetRow(1);
 	FbxVector4 row3 = local_tm.GetRow(2);
 	FbxVector4 row4 = local_tm.GetRow(3);
-	row4=lTmpVector;
+	//row4=lTmpVector;
 	parent_obj_node->setXAxis(vector3f((float)row1.mData[0], (float)row1.mData[1], (float)row1.mData[2]));
 	parent_obj_node->setYAxis(vector3f((float)row2.mData[0], (float)row2.mData[1], (float)row2.mData[2]));
 	parent_obj_node->setZAxis(vector3f((float)row3.mData[0], (float)row3.mData[1], (float)row3.mData[2]));
@@ -914,7 +914,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxM
 			//FbxVector4 v = pivot.MultT(vertex);
 			//vertex=globalTM.MultT(v);
 			vertex=geometryOffset.MultNormalize(vertex);
-			vertex=vertex-rotationpivot;
+			//vertex=vertex-rotationpivot;
 
 			FbxVector4 normal;
 			fbxMesh.GetPolygonVertexNormal(x, y, normal);

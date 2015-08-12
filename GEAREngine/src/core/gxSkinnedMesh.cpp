@@ -142,13 +142,14 @@ void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
 	matrix4x4f bone_backup(*bone);
 	if(bone!=this /*&& bone!=this->getParent()*/)
 	{
-		m_pszBoneOffsetList[m_iPrivateIterator]=*bone->getWorldMatrix();
+		//m_pszBoneOffsetList[m_iPrivateIterator]=*bone->getWorldMatrix();
 		*(matrix4x4f*)bone = *bone * this->getWorldMatrix()->getInverse();
 	}
 	m_pszInvBoneTMList[m_iPrivateIterator]=bone->getWorldMatrix()->getInverse();
 	
-	//reassign the original value to bone
-	*(matrix4x4f*)bone=bone_backup;
+//	//reassign the original value to bone
+//    if(bone!=this)
+//        *(matrix4x4f*)bone=bone_backup;
 
 	m_iPrivateIterator++;
 

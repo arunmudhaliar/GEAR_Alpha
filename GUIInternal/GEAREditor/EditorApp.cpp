@@ -19,6 +19,7 @@
 #endif
 
 char EditorGEARApp::g_cszProjectHomeDirectory[FILENAME_MAX];
+EditorApp* EditorApp::g_pEditorAppInstance = NULL;
 
 #if _WIN32
 HWND EditorApp::g_hWnd=NULL;
@@ -39,6 +40,7 @@ Uint32 EditorApp::g_iAppSpecificEventType_MenuItemCmd=-1;
 
 EditorApp::EditorApp()
 {
+	EditorApp::g_pEditorAppInstance = this;
 	m_bInitialised=false;
 	m_pRendererGL10 = NULL;
     m_pGUIManager = NULL;

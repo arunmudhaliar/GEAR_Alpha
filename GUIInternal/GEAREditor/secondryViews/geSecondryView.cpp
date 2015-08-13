@@ -176,13 +176,14 @@ int geSecondryView::secondryThread( void *ptr )
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         view->drawView();
         view->getRenderer()->swapGLBuffer();
+		EditorApp* editor = EditorApp::g_pEditorAppInstance;
         view->m_pPrimaryRenderer->makeCurrent();
-        
+		editor->draw();
         
         //It is very important in shared contexts to make sure the driver is done with all Objects before signaling other threads that they can use them!
         //GLsync fenceId = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
 
-        //SDL_Delay(rand()%10);
+        SDL_Delay(rand()%10);
     }
     
     SDL_DestroyWindow(view->getSecondryWindow());

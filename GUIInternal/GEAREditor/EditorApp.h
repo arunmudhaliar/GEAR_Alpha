@@ -88,6 +88,8 @@ private:
 #endif
 
 public:
+
+	static EditorApp* g_pEditorAppInstance;
 	geGUIManager* m_pGUIManager;
 	rendererGL10* m_pRendererGL10;
 	bool m_bInitialised;

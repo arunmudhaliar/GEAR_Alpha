@@ -773,8 +773,13 @@ object3d* gxWorld::loadFromCRCFile(int crc)
 	if(m_pEngineObserver)
 		m_pEngineObserver->onAppendToWorld(this, root_object_node);
 
+    //cache the transform
+    matrix4x4f temp(*root_object_node);
 	populateBonesToMeshNode(root_object_node, root_object_node);
-
+    
+    //restore the original transform
+    root_object_node->copy(temp);
+    
 	return root_object_node;
 }
 

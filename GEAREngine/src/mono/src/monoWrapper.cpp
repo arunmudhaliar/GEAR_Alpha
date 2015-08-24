@@ -2,7 +2,7 @@
 
 #include <sys/types.h>
 #include <assert.h>
-#include <dirent.h>
+#include "dirent.h"
 #ifdef _WIN32
 #include <direct.h>
 #endif

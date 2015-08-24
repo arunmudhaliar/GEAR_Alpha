@@ -9,7 +9,7 @@
 
 #include <sys/types.h>
 #include <assert.h>
-#include <dirent.h>
+#include "../../GEAREngine/src/mono/src/dirent.h"
 #ifdef _WIN32
     #include <direct.h>
 #endif

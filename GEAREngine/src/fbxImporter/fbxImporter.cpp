@@ -141,7 +141,12 @@ object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManag
 			}
 		}
 
+		matrix4x4f temp(*object3d_root_object);
+
 		populateBonesToMeshNode(&boneList, object3d_root_object, object3d_root_object);
+
+		//restore the original transform
+		object3d_root_object->copy(temp);
 		return object3d_root_object;
 	}
 

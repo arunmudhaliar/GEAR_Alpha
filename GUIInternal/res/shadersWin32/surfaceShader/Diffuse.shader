@@ -8,6 +8,7 @@ __Pass{
 
 	__tag{
 		CULLFACE( GL_BACK )
+		SHADOW( NORMAL )
 	}
 	
 	__vertex{

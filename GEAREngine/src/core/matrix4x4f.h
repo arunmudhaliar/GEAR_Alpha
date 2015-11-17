@@ -40,6 +40,18 @@ public:
 		copy(matrix);
 	}
 	
+	matrix4x4f(float _m00, float _m01, float _m02, float _m03,
+				float _m10, float _m11, float _m12, float _m13,
+				float _m20, float _m21, float _m22, float _m23,
+				float _m30, float _m31, float _m32, float _m33
+				)
+	{
+		m[0]=_m00; m[1]=_m01; m[2]=_m02; m[3]=_m03;
+		m[4]=_m10; m[5]=_m11; m[6]=_m12; m[7]=_m13;
+		m[8]=_m20; m[9]=_m21; m[10]=_m22; m[11]=_m23;
+		m[12]=_m30; m[13]=_m31; m[14]=_m32; m[15]=_m33;
+	}
+
 	virtual ~matrix4x4f()
 	{}
 	

@@ -106,7 +106,7 @@ private:
 
 #if defined USE_FBO
 	FBO m_cMultiPassFBO;
-	FBO m_cShadowMapFBO;
+	//FBO m_cShadowMapFBO;
 	FBO m_cFOGFBO;
 #endif
 	bool m_bEnablePostProcessorBlur;

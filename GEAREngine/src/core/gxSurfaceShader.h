@@ -42,6 +42,7 @@ struct stPass
 		GEAR_ScreenParams=false;
 		cull_face=GL_BACK;	//default value
 		glslShaderPtr=NULL;
+		shadow = 0;
 	}
 
 	~stPass()
@@ -65,6 +66,7 @@ struct stPass
 	bool GEAR_Time;
 	bool GEAR_ScreenParams;
 	unsigned int cull_face;
+	unsigned int shadow;	//0 - OFF, 1 - Normal
 
 	std::string vertex_buffer;
 	std::string fragment_buffer;

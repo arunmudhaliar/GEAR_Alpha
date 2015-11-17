@@ -831,7 +831,7 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 	//40-down
 
 	geTreeNode* pSelectedNodePtr = m_pCurrentSelectedNodePtr;
-	if(charValue==38)
+	if (charValue == SDL_SCANCODE_UP)//38
 	{
 		geTreeNode* topNode=NULL;
 		if(pSelectedNodePtr)
@@ -863,7 +863,7 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 			}
 		}
 	}
-	else if(charValue==40)
+	else if (charValue == SDL_SCANCODE_DOWN)//40
 	{
 		geTreeNode* bottomNode=NULL;
 		if(pSelectedNodePtr)
@@ -895,7 +895,7 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 			}
 		}
 	}
-	else if(charValue==37)
+	else if (charValue == SDL_SCANCODE_LEFT)//37
 	{
 		if(pSelectedNodePtr)
 		{
@@ -924,7 +924,7 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 			}
 		}
 	}
-	else if(charValue==39)
+	else if (charValue == SDL_SCANCODE_RIGHT)//39
 	{
 		if(pSelectedNodePtr)
 		{

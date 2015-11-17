@@ -31,6 +31,11 @@ void gxRenderer::setViewPort(float x, float y, float cx, float cy)
 	CHECK_GL_ERROR(glViewport((int)x, (int)y, (int)cx, (int)cy));
 }
 
+void gxRenderer::createShadowMap()
+{
+	m_cShadowMap.createShadowMap();
+}
+
 void gxRenderer::setProjectionMatrixToGL(matrix4x4f* matrix)
 {
 	m_pProjectionMatrixPtr=matrix;

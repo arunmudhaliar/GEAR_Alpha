@@ -676,6 +676,22 @@ bool gxSurfaceShader::parseSubShader_tag(std::string::const_iterator& start, std
 						pass.cull_face=GL_FRONT_AND_BACK;
 					}
 				}
+				
+				pos = (int)str.find("SHADOW");
+				if (pos >= 0)
+				{
+					std::vector<std::string> args;
+					std::string::const_iterator tmp_it = it + pos + strlen("SHADOW");
+					if (!parseAlphaNumericArgInsideRoundBrace(tmp_it, end, args, 1))
+						return false;
+
+					char* tmp = (char*)args.at(0).c_str();
+					std::string argVar(gxUtil::trimwhitespace(tmp));
+					if (argVar.compare("NORMAL") == 0)
+					{
+						pass.shadow = 1;
+					}
+				}
 			}
 			break;
 		}
@@ -1224,10 +1240,16 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
 			cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
 			cMainShaderSource+=currentPass->vertex_buffer+"\n";
-			cMainShaderSource+=hwShaderManager->getShaderSnippet(2)->snippet;
+			if (currentPass->shadow==1)
+				cMainShaderSource += hwShaderManager->getShaderSnippet(6)->snippet;
+			else
+				cMainShaderSource+=hwShaderManager->getShaderSnippet(2)->snippet;
 			cMainShaderSource += "#elif defined (GEAR_FRAGMENT_SHADER)\n";
 			cMainShaderSource+=currentPass->fragment_buffer+"\n";
-			cMainShaderSource+=hwShaderManager->getShaderSnippet(3)->snippet;
+			if (currentPass->shadow == 1)
+				cMainShaderSource+=hwShaderManager->getShaderSnippet(7)->snippet;
+			else
+				cMainShaderSource+=hwShaderManager->getShaderSnippet(3)->snippet;
 			cMainShaderSource += "#endif\n";
 
 			//create the tmp glsl file

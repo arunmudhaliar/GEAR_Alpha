@@ -19,6 +19,8 @@
 
 #include "../../../GUIInternal/GEAREditor/OSSpecific/MenuCPPInterface.h"
 
+bool g_mControlKeyPressed = false;
+
 int macos_main()
 {
     char cCurrentPath[FILENAME_MAX];
@@ -207,6 +209,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
     {
         SDL_KeyboardEvent* keyBoardEvent = (SDL_KeyboardEvent*)&e;
         const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+		g_mControlKeyPressed = (keyBoardEvent->keysym.scancode == SDL_SCANCODE_LCTRL) || (keyBoardEvent->keysym.scancode == SDL_SCANCODE_RCTRL);
         if(geTextBox::g_pCurrentlyActiveTextBoxPtr)
         {
             //if(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT])
@@ -237,6 +240,8 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
     {
         SDL_KeyboardEvent* keyBoardEvent = (SDL_KeyboardEvent*)&e;
         const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+		g_mControlKeyPressed = !((keyBoardEvent->keysym.scancode == SDL_SCANCODE_LCTRL) || (keyBoardEvent->keysym.scancode == SDL_SCANCODE_RCTRL));
+
         if(geTextBox::g_pCurrentlyActiveTextBoxPtr)
         {
             //if(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT])
@@ -274,7 +279,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             {
                 //DEBUG_PRINT("Left Mouse Down");
                 geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
-                editorApp.MouseLButtonDown(mouse_x, mouse_y, MK_LBUTTON);
+				editorApp.MouseLButtonDown(mouse_x, mouse_y, MK_LBUTTON | ((g_mControlKeyPressed)?MK_CONTROL:0));
             }
                 break;
             case SDL_BUTTON_MIDDLE:
@@ -307,7 +312,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             {
                 //DEBUG_PRINT("Left Mouse Up");
                 geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
-                editorApp.MouseLButtonUp(mouse_x, mouse_y, MK_LBUTTON);
+				editorApp.MouseLButtonUp(mouse_x, mouse_y, MK_LBUTTON | ((g_mControlKeyPressed) ? MK_CONTROL : 0));
             }
                 break;
             case SDL_BUTTON_MIDDLE:
@@ -334,13 +339,13 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
         SDL_MouseMotionEvent* mouseMotionEvent = (SDL_MouseMotionEvent*)&e;
         switch (mouseMotionEvent->state) {
             case 1:
-                editorApp.MouseMove(mouseMotionEvent->x, mouseMotionEvent->y, MK_LBUTTON);
+				editorApp.MouseMove(mouseMotionEvent->x, mouseMotionEvent->y, MK_LBUTTON | ((g_mControlKeyPressed) ? MK_CONTROL : 0));
                 break;
             case 2:
-                editorApp.MouseMove(mouseMotionEvent->x, mouseMotionEvent->y, MK_MBUTTON);
+				editorApp.MouseMove(mouseMotionEvent->x, mouseMotionEvent->y, MK_MBUTTON | ((g_mControlKeyPressed) ? MK_CONTROL : 0));
                 break;
             case 4:
-                editorApp.MouseMove(mouseMotionEvent->x, mouseMotionEvent->y, MK_RBUTTON);
+				editorApp.MouseMove(mouseMotionEvent->x, mouseMotionEvent->y, MK_RBUTTON | ((g_mControlKeyPressed) ? MK_CONTROL : 0));
                 break;
 
             default:
@@ -353,7 +358,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
         int mouse_x = 0, mouse_y = 0;
         SDL_GetMouseState( &mouse_x, &mouse_y );
 
-        int nFlags=0;
+		int nFlags = (g_mControlKeyPressed) ? MK_CONTROL : 0;
         SDL_MouseWheelEvent* mouseWheelEvent = (SDL_MouseWheelEvent*)&e;
         editorApp.MouseWheel(mouseWheelEvent->y, mouse_x, mouse_y, nFlags);
     }

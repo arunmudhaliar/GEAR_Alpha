@@ -684,6 +684,9 @@
     <ClCompile Include="..\src\mono\src\monoScript.cpp">
       <Filter>engine\mono</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\gxShadowMap.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\fbxImporter\fbxImporter.h">
@@ -1630,6 +1633,9 @@
     </ClInclude>
     <ClInclude Include="..\src\mono\src\monoScript.h">
       <Filter>engine\mono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\gxShadowMap.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

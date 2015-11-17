@@ -284,8 +284,8 @@ void gxMesh::renderForShadowMap(gxRenderer* renderer)
 	gxHWShader* shader = hwShaderManager->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_SHADOWMAP_SHADER);	//no need to enable it, since its been enabled/disable by the caller.
 	int vIN_Position = shader->getAttribLoc("a_vertex_coord_v4");
 
-	const float* u_mvp_m4x4 = getWorldMatrix()->getMatrix();
-	shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+	//const float* u_mvp_m4x4 = getWorldMatrix()->getMatrix();
+	//shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 
 	if(m_bVBO)
 	{
@@ -298,8 +298,8 @@ void gxMesh::renderForShadowMap(gxRenderer* renderer)
 	}
 	CHECK_GL_ERROR(glEnableVertexAttribArray(vIN_Position));
 
-	float diffuse[]={0.7f, 0.0f, 0.0f, 1.0f};
-	CHECK_GL_ERROR(glUniform4fv(shader->getUniformLoc("diffuse"), 1, diffuse));
+	//float diffuse[]={0.7f, 0.0f, 0.0f, 1.0f};
+	//CHECK_GL_ERROR(glUniform4fv(shader->getUniformLoc("diffuse"), 1, diffuse));
 
 	for(int x=0;x<m_nTriInfoArray;x++)
 	{
@@ -323,6 +323,8 @@ void gxMesh::renderForShadowMap(gxRenderer* renderer)
 
 void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 {
+	bool bShadowPass = renderer->getRenderPassType() == gxRenderer::RENDER_SHADOWMAP;
+
 	int pass=0;
 	gxLight* light_ob=NULL;
 	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
@@ -358,14 +360,22 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		gxHWShader* shader=surfaceshader->getShaderPass(pass);
 		stPass* pass_struct = surfaceshader->getShaderPassStruct(pass);
 
-		if(pass_struct->cull_face)
+		if (bShadowPass)
 		{
 			CHECK_GL_ERROR(glEnable(GL_CULL_FACE));
-			CHECK_GL_ERROR(glCullFace(pass_struct->cull_face));
+			CHECK_GL_ERROR(glCullFace(GL_FRONT));
 		}
 		else
 		{
-			CHECK_GL_ERROR(glDisable(GL_CULL_FACE));
+			if (pass_struct->cull_face)
+			{
+				CHECK_GL_ERROR(glEnable(GL_CULL_FACE));
+				CHECK_GL_ERROR(glCullFace(pass_struct->cull_face));
+			}
+			else
+			{
+				CHECK_GL_ERROR(glDisable(GL_CULL_FACE));
+			}
 		}
 
 		shader->enableProgram();
@@ -498,22 +508,42 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		std::vector<stMaterialPass*>* material_pass=material->getShaderPassList();
 		stMaterialPass*	mpass=material_pass->at(pass);
 
-		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, ++cntr)
+		if (!bShadowPass)
 		{
-			gxSubMap* submap = *it;
-			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
-			int texenv1=0;
-			int texenv2=0;
-#ifdef _WIN32
-			texenv1=GL_TEXTURE_ENV_MODE;
-			texenv2=GL_MODULATE;
-#endif
-			gxUV* base_uv=(cntr<m_nUVChannels)?&m_pszUVChannels[cntr]:((m_nUVChannels)?&m_pszUVChannels[0]:NULL);
-			if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, texenv1, texenv2, 2, shader, shader_var->texture_uv_in_name.c_str()))
+			for (std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, ++cntr)
 			{
-				shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
-				nTexUsed++;
+				gxSubMap* submap = *it;
+				stShaderProperty_Texture2D* shader_var = submap->getShaderTextureProperty();
+				int texenv1 = 0;
+				int texenv2 = 0;
+#ifdef _WIN32
+				texenv1 = GL_TEXTURE_ENV_MODE;
+				texenv2 = GL_MODULATE;
+#endif
+				gxUV* base_uv = (cntr < m_nUVChannels) ? &m_pszUVChannels[cntr] : ((m_nUVChannels) ? &m_pszUVChannels[0] : NULL);
+				if (applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, texenv1, texenv2, 2, shader, shader_var->texture_uv_in_name.c_str()))
+				{
+					shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
+					nTexUsed++;
+				}
 			}
+
+			//shadowmap
+			if (pass_struct->shadow == 1)
+			{
+				float* depth_bias_mvp = renderer->getShadowMap()->getDepthBiasMVP().getOGLMatrix();
+				//GEAR_SHADOW_DEPTH_BIAS_MVP
+				int GEAR_SHADOW_DEPTH_BIAS_MVP = shader->getUniformLoc("GEAR_SHADOW_DEPTH_BIAS_MVP");
+				CHECK_GL_ERROR(glUniformMatrix4fv(GEAR_SHADOW_DEPTH_BIAS_MVP, 1, false, depth_bias_mvp));
+
+				CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0 + nTexUsed));
+				CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, renderer->getShadowMap()->getFBO().getFBODepthBuffer()));
+#if defined(TEXENV_ISSUE) && defined(_WIN32)
+				glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
+#endif
+				shader->sendUniform1i("sampler2d_ShadowMap", nTexUsed);
+			}
+			//
 		}
 
 		if(m_bVBO)
@@ -531,11 +561,27 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		renderer->m_nDrawCalls++;
 
 		cntr=0;
-		for(std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, cntr++)
+		if (!bShadowPass)
 		{
-			gxSubMap* submap = *it;
-			stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
-			disableTextureOperations(cntr, shader, shader_var->texture_uv_in_name.c_str());
+			for (std::vector<gxSubMap*>::iterator it = mpass->vUsedSubMap.begin(); it != mpass->vUsedSubMap.end(); ++it, cntr++)
+			{
+				gxSubMap* submap = *it;
+				stShaderProperty_Texture2D* shader_var = submap->getShaderTextureProperty();
+				disableTextureOperations(cntr, shader, shader_var->texture_uv_in_name.c_str());
+			}
+
+#if defined (USE_ProgrammablePipeLine)
+			if (pass_struct->shadow == 1)
+			{
+				CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0 + cntr));
+				//CHECK_GL_ERROR(glDisableVertexAttribArray(shader->getAttribLoc(texCoordAttribName)));
+				//glDisable(GL_TEXTURE_2D);
+				CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
+				//glDisable(GL_TEXTURE_2D);
+			}
+#else
+#error "Not Implemented"
+#endif
 		}
 
 		CHECK_GL_ERROR(glDisableVertexAttribArray(vIN_Position));

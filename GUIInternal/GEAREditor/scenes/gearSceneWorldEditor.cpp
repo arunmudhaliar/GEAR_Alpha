@@ -211,11 +211,11 @@ void gearSceneWorldEditor::onCreate()
 #endif
 
 	//m_cShadowMapFBO.ReInitFBO(512, 512);
- //   m_cShadowMapFBO.CreateDepthBuffer();
- //   m_cShadowMapFBO.AttachDepthBuffer();
-	//m_cShadowMapFBO.CreateDepthShadowTextureBuffer();
- //   m_cShadowMapFBO.AttachShadowTextureBuffer();
- //   m_cShadowMapFBO.UnBindFBO();
+	//m_cShadowMapFBO.CreateDepthBuffer();
+	//m_cShadowMapFBO.AttachDepthBuffer();
+	////m_cShadowMapFBO.CreateDepthShadowTextureBuffer();
+	////m_cShadowMapFBO.AttachShadowTextureBuffer();
+	//m_cShadowMapFBO.UnBindFBO();
 #endif
 
 	m_cLightBillBoardSprite.setOffset(0, 0);
@@ -241,7 +241,7 @@ void gearSceneWorldEditor::draw()
 	CHECK_GL_ERROR(onDraw());
 
 	//engine render funcs
-	//CHECK_GL_ERROR(drawShadowMapPass());
+	CHECK_GL_ERROR(drawShadowMapPass());
 	CHECK_GL_ERROR(drawWorld());
 	CHECK_GL_ERROR(drawFBO2FrameBuffer());
 
@@ -446,57 +446,7 @@ void gearSceneWorldEditor::onDraw()
 
 void gearSceneWorldEditor::drawShadowMapPass()
 {
-	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
-	if(lightList->size()==0)
-		return;
-
-	gxLight* light=lightList->at(0);
-
-	m_cShadowMapFBO.BindFBO();
-	//projection
-	//glm::vec3 lightInvDir = glm::vec3(0.5f,2,2);
-	//// Compute the MVP matrix from the light's point of view
-	//glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10,10,-10,10,-10,20);
-	//glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0,0,0), glm::vec3(0,1,0));
-	//glm::mat4 depthModelMatrix = glm::mat4(1.0);
-	//glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
-	//
-	matrix4x4f depthProjectionMatrix;//=m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix();
-	depthProjectionMatrix.setOrtho(-512, 512, -512, 512, 0, 10000);
-	matrix4x4f depthViewMatrix;
-	//vector3f up(1, 0, 0);
-	vector3f forward(-light->getPosition());
-    forward.normalize();
-    vector3f up(0, 0, 1);
-    vector3f left(up.cross(forward));
-    left.normalize();
-    up=forward.cross(left);
-    up.normalize();
-	depthViewMatrix.setXAxis(left);
-	depthViewMatrix.setYAxis(up);
-	depthViewMatrix.setZAxis(forward);
-	//depthViewMatrix.setPosition(light->getPosition());
-
-	matrix4x4f depthModelMatrix;
-	depthModelMatrix.setPosition(light->getPosition());
-
-	//depthViewMatrix.setDirection(&-light->getPosition(), &light->getYAxis());
-	matrix4x4f depthMVP(depthProjectionMatrix * depthViewMatrix.getInverse() * depthModelMatrix);
-
-	//const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * m_cLightBillBoardSprite)).getMatrix();
-
-	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
-	CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_SHADOWMAP);
-
-	gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_SHADOWMAP_SHADER);
-	shader->enableProgram();
-	shader->sendUniformTMfv("u_depth_mvp_m4x4", depthMVP.getOGLMatrix(), false, 4);
 	m_pMainWorldPtr->renderShadow(m_pMainWorldPtr->getRenderer(), object3d::eObject3dBase_RenderFlag_NormalRenderPass);
-	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-
-	shader->disableProgram();
-	m_cShadowMapFBO.UnBindFBO();
 }
 
 void gearSceneWorldEditor::drawWorld()
@@ -876,7 +826,7 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 	glDisable(GL_DEPTH_TEST);
 #if defined USE_FBO
 		drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, 0.0f, m_cSize.x, m_cSize.y);
-		//drawFBO(m_cShadowMapFBO.getFBOTextureDepthShadowBuffer(), m_cSize.x-210, -(getTopMarginOffsetHeight())+m_cSize.y-210, 200, 200);
+		drawFBO(m_pMainWorldPtr->getRenderer()->getShadowMap()->getFBO().getFBODepthBuffer(), m_cSize.x - 310, -(getTopMarginOffsetHeight()) + m_cSize.y - 310, 300, 300);
 #ifdef ENABLE_FOG
 		drawFBO(m_cFOGFBO.getFBOTextureBuffer(0), m_cSize.x-310, m_cSize.y-310, 300, 300);
 		drawFBO(m_cMultiPassFBO.getFBODepthBuffer(), -310, m_cSize.y-310, 300, 300);

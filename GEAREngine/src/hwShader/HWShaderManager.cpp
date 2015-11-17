@@ -99,6 +99,12 @@ void HWShaderManager::LoadDefaultShaders()
 	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/material_unifrom_vars.snippet").c_str());
 	if(snippet)
 		m_cvHWShaderSnippets.push_back(snippet);
+	snippet = LoadCodeSnippet((resource_dir_root_path + "snippets/vertex_with_shadow_main.snippet").c_str());
+	if (snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
+	snippet = LoadCodeSnippet((resource_dir_root_path + "snippets/fragment_with_shadow_main.snippet").c_str());
+	if (snippet)
+		m_cvHWShaderSnippets.push_back(snippet);
 
 	//HW shaders
 	gxHWShader* pShader=new gxHWShader();

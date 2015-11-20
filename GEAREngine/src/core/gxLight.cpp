@@ -16,6 +16,24 @@ object3d(OBJECT3D_LIGHT)
 	m_fConstantAttenuation = 0.1f;
 	m_fLinearAttenuation = 0.0025f;
 	m_fQuadraticAttenuation = 0.0006f;
+
+	//shadow mapping
+	m_cShadowMapFBO.ReInitFBO(GX_SHADOW_MAP_SIZE, GX_SHADOW_MAP_SIZE);
+	m_cShadowMapFBO.CreateDepthBuffer();
+	m_cShadowMapFBO.AttachDepthBuffer();
+	m_cShadowMapFBO.UnBindFBO();
+
+	matrix4x4f biasMatrix(
+		0.5, 0.0, 0.0, 0.0,
+		0.0, 0.5, 0.0, 0.0,
+		0.0, 0.0, 0.5, 0.0,
+		0.5, 0.5, 0.5, 1.0
+		);
+	m_cBiasMatrix = biasMatrix;	//TODO: optimize this.
+
+	m_cDepthProjectionMatrix.setOrtho(-100, 100,
+		-100, 100, 0, 1000);
+	//
 }
 
 gxLight::~gxLight()
@@ -25,6 +43,23 @@ gxLight::~gxLight()
 void gxLight::update(float dt)
 {
 	object3d::update(dt);
+
+	matrix4x4f depthViewMatrix;
+	vector3f light_pos(getPosition());
+	vector3f forward(light_pos);
+	forward.normalize();
+	vector3f up(0, 0, 1);
+	vector3f left(up.cross(forward));
+	left.normalize();
+	up = forward.cross(left);
+	up.normalize();
+	depthViewMatrix.setXAxis(left);
+	depthViewMatrix.setYAxis(up);
+	depthViewMatrix.setZAxis(forward);
+	depthViewMatrix.setPosition(light_pos);
+
+	m_cDepthMVP = m_cDepthProjectionMatrix * depthViewMatrix.getInverse();
+	m_cDepthBiasMVP = m_cBiasMatrix * m_cDepthMVP;
 }
 
 void gxLight::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)

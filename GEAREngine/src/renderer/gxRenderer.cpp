@@ -1,6 +1,5 @@
 #include "gxRenderer.h"
 
-
 gxRenderer::gxRenderer()
 {
 	m_pProjectionMatrixPtr=NULL;
@@ -29,11 +28,6 @@ void gxRenderer::setViewPort(float x, float y, float cx, float cy)
 	m_cOrthogonalProjectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y+viewportRect.m_size.y, centerAlignedPos.y, -100.0f, 1000.0f);
 	m_cViewPortRect.set(x, y, cx, cy);
 	CHECK_GL_ERROR(glViewport((int)x, (int)y, (int)cx, (int)cy));
-}
-
-void gxRenderer::createShadowMap()
-{
-	m_cShadowMap.createShadowMap();
 }
 
 void gxRenderer::setProjectionMatrixToGL(matrix4x4f* matrix)

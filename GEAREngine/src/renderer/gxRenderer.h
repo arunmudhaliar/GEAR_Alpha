@@ -5,7 +5,6 @@
 #include "../core/rect.h"
 #include "../core/TextureManager.h"
 #include "stFog.h"
-#include "../core/gxShadowMap.h"
 
 class DECLSPEC gxRenderer
 {
@@ -47,9 +46,7 @@ public:
 	vector3f getMainCameraEye()				{	return m_cMainCameraEyePos;	}
 
 	stFog* getFog()	{	return &m_cFog; }
-	gxShadowMap* getShadowMap()	{ return &m_cShadowMap; }
 
-	void createShadowMap();
 private:
 
 	gxRectf	m_cViewPortRect;
@@ -63,7 +60,6 @@ private:
 	vector3f m_cMainCameraEyePos;
 
 	stFog m_cFog;
-	gxShadowMap m_cShadowMap;
 };
 
 #endif

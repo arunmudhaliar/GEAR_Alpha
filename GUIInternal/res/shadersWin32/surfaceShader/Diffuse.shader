@@ -8,7 +8,6 @@ __Pass{
 
 	__tag{
 		CULLFACE( GL_BACK )
-		SHADOW( NORMAL )
 	}
 	
 	__vertex{
@@ -40,6 +39,11 @@ __Pass{
 		MaterialStruct
 	}
 	
+	__tag{
+		CULLFACE( GL_BACK )
+		SHADOW( NORMAL )
+	}
+
 	__vertex{
 		 
 		varying vec4 vOUT_Position;

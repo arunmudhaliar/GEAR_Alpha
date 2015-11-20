@@ -29,7 +29,6 @@ gxWorld::gxWorld():
 
 	m_cTextureManager.LoadDefaultTextures();
 	m_cRenderer.setGEARTexture1x1(m_cTextureManager.getGEARTexture1x1());
-	m_cRenderer.createShadowMap();
 
 #ifdef USE_BULLET
 	m_cPhysicsEngine.initPhysics();
@@ -251,49 +250,35 @@ void gxWorld::renderShadow(gxRenderer* renderer, int renderFlag)
 	if (lightList->size() == 0)
 		return;
 
-	gxLight* light = lightList->at(0);
-
-	FBO& shadowMapFBO = m_cRenderer.getShadowMap()->getFBO();
-	shadowMapFBO.BindFBO();
-	m_cRenderer.getShadowMap()->updateMatrix(light->getPosition());
-
-	//matrix4x4f depthProjectionMatrix;
-	//depthProjectionMatrix.setOrtho(-m_cRenderer.getShadowMap()->getFBOWidth()*0.5f, m_cRenderer.getShadowMap()->getFBOWidth()*0.5f,
-	//	-m_cRenderer.getShadowMap()->getFBOHeight()*0.5f, m_cRenderer.getShadowMap()->getFBOHeight()*0.5f, 0, 10000);
-	//matrix4x4f depthViewMatrix;
-
-	//vector3f light_pos(light->getPosition());
-	//vector3f forward(light_pos);
-	//forward.normalize();
-	//vector3f up(0, 0, 1);
-	//vector3f left(up.cross(forward));
-	//left.normalize();
-	//up = forward.cross(left);
-	//up.normalize();
-	//depthViewMatrix.setXAxis(left);
-	//depthViewMatrix.setYAxis(up);
-	//depthViewMatrix.setZAxis(forward);
-	//depthViewMatrix.setPosition(light_pos);
-
-	//matrix4x4f depthMVP(depthProjectionMatrix * depthViewMatrix.getInverse());
+	CHECK_GL_ERROR(glShadeModel(GL_FLAT));
 	CHECK_GL_ERROR(glPushAttrib(GL_VIEWPORT_BIT));
-	CHECK_GL_ERROR(glViewport(0, 0, shadowMapFBO.getFBOWidth(), shadowMapFBO.getFBOHeight()));
-	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
-	CHECK_GL_ERROR(glClear(GL_DEPTH_BUFFER_BIT));
 
 	gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_SHADOWMAP_SHADER);
 	shader->enableProgram();
-	shader->sendUniformTMfv("u_depth_mvp_m4x4", m_cRenderer.getShadowMap()->getDepthMVP().getOGLMatrix(), false, 4);
-
 	m_cRenderer.setRenderPassType(gxRenderer::RENDER_SHADOWMAP);
-	object3d::render(renderer, NULL, renderFlag);
+
+	for (std::vector<gxLight*>::iterator it = lightList->begin(); it != lightList->end(); ++it)
+	{
+		gxLight* light = *it;
+		if (!light->isBaseFlag(eObject3dBaseFlag_Visible))
+			continue;
+
+		FBO& shadowMapFBO = light->getShadowMapFBO();
+		shadowMapFBO.BindFBO();
+		CHECK_GL_ERROR(glViewport(0, 0, shadowMapFBO.getFBOWidth(), shadowMapFBO.getFBOHeight()));
+		CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
+		CHECK_GL_ERROR(glClear(GL_DEPTH_BUFFER_BIT));
+
+		//m_cRenderer.getShadowMap()->updateMatrix(light->getWorldMatrix(), m_cRenderer.getViewMatrix());
+		shader->sendUniformTMfv("u_depth_mvp_m4x4", light->getShadowDepthMVP().getOGLMatrix(), false, 4);
+		object3d::render(renderer, NULL, renderFlag);
+		shadowMapFBO.UnBindFBO();
+	}
 
 	CHECK_GL_ERROR(glPopAttrib());
 	m_cRenderer.setRenderPassType(gxRenderer::RENDER_NORMAL);
-
 	shader->disableProgram();
-
-	shadowMapFBO.UnBindFBO();
+	CHECK_GL_ERROR(glShadeModel(GL_SMOOTH));
 }
 
 /*

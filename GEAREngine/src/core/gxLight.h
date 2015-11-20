@@ -3,6 +3,9 @@
 
 #include "object3d.h"
 #include "vector4.h"
+#include "fbo.h"
+
+#define GX_SHADOW_MAP_SIZE	1024
 
 //http://antonholmquist.com/blog/opengl-es-2-0-shader-lighting-examples/
 //http://xissburg.com/faster-gaussian-blur-in-glsl/
@@ -46,6 +49,11 @@ public:
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);
 
+	//shadow mapping
+	matrix4x4f& getShadowDepthMVP()		{ return m_cDepthMVP; }
+	matrix4x4f& getShadowDepthBiasMVP()	{ return m_cDepthBiasMVP; }
+	FBO& getShadowMapFBO()				{ return m_cShadowMapFBO; }
+
 private:
 	ELIGHT_TYPE m_eType;
 	vector4f m_cDiffuse;
@@ -54,6 +62,15 @@ private:
 	float m_fConstantAttenuation;
 	float m_fLinearAttenuation;
 	float m_fQuadraticAttenuation;
+
+	//shadow mapping
+	FBO m_cShadowMapFBO;
+
+	matrix4x4f m_cDepthMVP;
+	matrix4x4f m_cBiasMatrix;
+	matrix4x4f m_cDepthBiasMVP;
+	matrix4x4f m_cDepthProjectionMatrix;
+
 };
 
 #endif

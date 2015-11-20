@@ -816,7 +816,7 @@ void gearSceneWorldEditor::drawStats()
 
 void gearSceneWorldEditor::drawFBO2FrameBuffer()
 {
-	glViewport(m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x, m_cSize.y-getTopMarginOffsetHeight());	
+	glViewport(m_cPos.x + getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y) - (m_cPos.y + getIamOnLayout()->getPos().y + m_cSize.y), m_cSize.x, m_cSize.y - getTopMarginOffsetHeight());
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glLoadMatrixf(m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix()->getMatrix());
@@ -825,8 +825,20 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 
 	glDisable(GL_DEPTH_TEST);
 #if defined USE_FBO
-		drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, 0.0f, m_cSize.x, m_cSize.y);
-		drawFBO(m_pMainWorldPtr->getRenderer()->getShadowMap()->getFBO().getFBODepthBuffer(), m_cSize.x - 310, -(getTopMarginOffsetHeight()) + m_cSize.y - 310, 300, 300);
+	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, 0.0f, m_cSize.x, m_cSize.y);
+
+	int nLight = -1;
+	int offset = 10;
+	int lightFBOSz = 100;
+	for (std::vector<gxLight*>::iterator it = m_pMainWorldPtr->getLightList()->begin(); it != m_pMainWorldPtr->getLightList()->end(); ++it)
+	{
+		nLight++;
+		gxLight* light = *it;
+		if (!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			continue;
+
+		drawFBO(light->getShadowMapFBO().getFBODepthBuffer(), offset + nLight * (lightFBOSz + 10) + (nLight+1) * (lightFBOSz + 10) - m_cSize.x, -(getTopMarginOffsetHeight()) + m_cSize.y - (lightFBOSz + 10), lightFBOSz, lightFBOSz);
+	}
 #ifdef ENABLE_FOG
 		drawFBO(m_cFOGFBO.getFBOTextureBuffer(0), m_cSize.x-310, m_cSize.y-310, 300, 300);
 		drawFBO(m_cMultiPassFBO.getFBODepthBuffer(), -310, m_cSize.y-310, 300, 300);

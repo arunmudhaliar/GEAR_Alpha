@@ -55,6 +55,9 @@
     <Filter Include="engine\mono">
       <UniqueIdentifier>{bbea2c65-a6b3-41e1-bfbd-63dd406e2226}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\postProcessor">
+      <UniqueIdentifier>{956c33e2-103b-4208-80fd-19bd88fd0e76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp">
@@ -683,6 +686,18 @@
     </ClCompile>
     <ClCompile Include="..\src\mono\src\monoScript.cpp">
       <Filter>engine\mono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\postProcessor\PostProcessor.cpp">
+      <Filter>engine\postProcessor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\postProcessor\BrightPassFilter.cpp">
+      <Filter>engine\postProcessor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\postProcessor\BlurFilter.cpp">
+      <Filter>engine\postProcessor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\postProcessor\ToneMappingFilter.cpp">
+      <Filter>engine\postProcessor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1630,6 +1645,18 @@
     </ClInclude>
     <ClInclude Include="..\src\mono\src\monoScript.h">
       <Filter>engine\mono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\postProcessor\PostProcessor.h">
+      <Filter>engine\postProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\postProcessor\BrightPassFilter.h">
+      <Filter>engine\postProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\postProcessor\BlurFilter.h">
+      <Filter>engine\postProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\postProcessor\ToneMappingFilter.h">
+      <Filter>engine\postProcessor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

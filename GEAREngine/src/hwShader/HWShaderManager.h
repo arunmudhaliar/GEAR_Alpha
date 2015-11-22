@@ -47,6 +47,7 @@ public:
     
 	stHWShaderSnippet* getShaderSnippet(int index)	{	return m_cvHWShaderSnippets[index];	}
 	gxHWShader* LoadShaderFromBuffer(const char* name, const char* buffer, int size);
+	gxHWShader* LoadShaderFromFile(const char* relativePath);
 
 	gxSurfaceShader* LoadSurfaceShader(const char* filename);
 	std::vector<gxSurfaceShader*>* getSurfaceShaderList()	{	return &m_cvHWSurfaceShader;	}

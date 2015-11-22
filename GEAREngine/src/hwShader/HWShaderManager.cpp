@@ -13,6 +13,8 @@ void HWShaderManager::Init()
 {
 #if defined (USE_ProgrammablePipeLine)
         LoadDefaultShaders();
+#else
+#error "Not implemented"
 #endif
 }
 
@@ -40,6 +42,8 @@ void HWShaderManager::Reset()
 		GX_DELETE(surfaceshader);
 	}
 	m_cvHWSurfaceShader.clear();
+#else
+#error "Not implemented"
 #endif
 }
 
@@ -158,7 +162,34 @@ void HWShaderManager::LoadDefaultShaders()
 	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMapSeperateSpecular.shader").c_str());
 	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMapSeperateEmissive.shader").c_str());
 	LoadSurfaceShader((resource_dir_root_path+"surfaceShader/NormalMapSeperateSpecularEmissive.shader").c_str());
+#else
+#error "Not implemented."
 #endif
+}
+
+gxHWShader* HWShaderManager::LoadShaderFromFile(const char* relativePath)
+{
+	std::string resource_dir_root_path;
+
+#if defined(WIN32)
+	resource_dir_root_path = "res/shadersWin32/";
+#elif defined(ANDROID)
+	resource_dir_root_path = "/storage/emulated/0/gear/shadersAndroid/";
+#elif defined(__APPLE__)
+	resource_dir_root_path = "res/shadersWin32/";
+#else
+	DEBUG_PRINT("ERROR : Shaders not implemented for this platform ");
+	return;
+#endif
+
+	//HW shaders
+	gxHWShader* pShader = new gxHWShader();
+	if (pShader->loadShader((resource_dir_root_path + relativePath).c_str()))
+		m_cvHWShaderLst.push_back(pShader);
+	else
+		GX_DELETE(pShader);
+
+	return pShader;
 }
 
 gxHWShader* HWShaderManager::LoadShaderFromBuffer(const char* name, const char* buffer, int size)

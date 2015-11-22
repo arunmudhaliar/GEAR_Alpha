@@ -271,6 +271,10 @@
     <ClCompile Include="..\src\physics\LinearMath\btQuickprof.cpp" />
     <ClCompile Include="..\src\physics\LinearMath\btSerializer.cpp" />
     <ClCompile Include="..\src\physics\LinearMath\btVector3.cpp" />
+    <ClCompile Include="..\src\postProcessor\BlurFilter.cpp" />
+    <ClCompile Include="..\src\postProcessor\BrightPassFilter.cpp" />
+    <ClCompile Include="..\src\postProcessor\PostProcessor.cpp" />
+    <ClCompile Include="..\src\postProcessor\ToneMappingFilter.cpp" />
     <ClCompile Include="..\src\renderer\gxRenderer.cpp" />
     <ClCompile Include="..\src\tga\TGALoader.cpp" />
     <ClCompile Include="..\src\util\FontManager.cpp" />
@@ -583,6 +587,10 @@
     <ClInclude Include="..\src\physics\vectormath\sse\vectormath_aos.h" />
     <ClInclude Include="..\src\physics\vectormath\sse\vec_aos.h" />
     <ClInclude Include="..\src\physics\vectormath\vmInclude.h" />
+    <ClInclude Include="..\src\postProcessor\BlurFilter.h" />
+    <ClInclude Include="..\src\postProcessor\BrightPassFilter.h" />
+    <ClInclude Include="..\src\postProcessor\PostProcessor.h" />
+    <ClInclude Include="..\src\postProcessor\ToneMappingFilter.h" />
     <ClInclude Include="..\src\renderer\glew.h" />
     <ClInclude Include="..\src\renderer\gxRenderer.h" />
     <ClInclude Include="..\src\renderer\stFog.h" />

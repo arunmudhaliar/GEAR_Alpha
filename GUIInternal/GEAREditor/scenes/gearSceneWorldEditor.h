@@ -16,6 +16,9 @@
 
 #include "../../../GEAREngine/src/audio/SoundEngine.h"
 
+#include "../../../GEAREngine/src/postProcessor/BrightPassFilter.h"
+#include "../../../GEAREngine/src/postProcessor/BlurFilter.h"
+#include "../../../GEAREngine/src/postProcessor/ToneMappingFilter.h"
 //#define ENABLE_FOG
 
 class gearSceneWorldEditor : public geWindow, public MWorldObserver, public MGUIObserver
@@ -106,7 +109,6 @@ private:
 
 #if defined USE_FBO
 	FBO m_cMultiPassFBO;
-	//FBO m_cShadowMapFBO;
 	FBO m_cFOGFBO;
 #endif
 	bool m_bEnablePostProcessorBlur;
@@ -115,6 +117,10 @@ private:
 
 	bool m_bStopFollowCam;
 	vector3f m_cDebugPos;
+
+	BrightPassFilter m_cBrightPassFilter;
+	BlurFilter m_cBlurFilter;
+	ToneMappingFilter m_cToneMappingFilter;
 };
 
 #endif

@@ -201,6 +201,10 @@ void gearSceneWorldEditor::onCreate()
     m_cMultiPassFBO.AttachTextureBuffer(0);
     m_cMultiPassFBO.UnBindFBO();
 
+	m_cBrightPassFilter.init(&m_cMultiPassFBO);
+	m_cBlurFilter.init(&m_cBrightPassFilter.getOutPutFBO());
+	m_cToneMappingFilter.init(&m_cMultiPassFBO, &m_cBlurFilter.getOutPutFBO());
+
 #ifdef ENABLE_FOG
 	m_cFOGFBO.ReInitFBO(512, 512);
     m_cFOGFBO.CreateDepthBuffer();
@@ -209,13 +213,6 @@ void gearSceneWorldEditor::onCreate()
     m_cFOGFBO.AttachTextureBuffer(0);
     m_cFOGFBO.UnBindFBO();
 #endif
-
-	//m_cShadowMapFBO.ReInitFBO(512, 512);
-	//m_cShadowMapFBO.CreateDepthBuffer();
-	//m_cShadowMapFBO.AttachDepthBuffer();
-	////m_cShadowMapFBO.CreateDepthShadowTextureBuffer();
-	////m_cShadowMapFBO.AttachShadowTextureBuffer();
-	//m_cShadowMapFBO.UnBindFBO();
 #endif
 
 	m_cLightBillBoardSprite.setOffset(0, 0);
@@ -827,9 +824,30 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 #if defined USE_FBO
 	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, 0.0f, m_cSize.x, m_cSize.y);
 
+	int thumbnailFBOSz = 200;
+	//bright pass
+	m_cBrightPassFilter.beginBlit();
+	m_cBrightPassFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
+	m_cBrightPassFilter.endBlit();
+	drawFBO(m_cBrightPassFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10), thumbnailFBOSz, thumbnailFBOSz);
+	//
+	//blur pass
+	m_cBlurFilter.beginBlit();
+	m_cBlurFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
+	m_cBlurFilter.endBlit();
+	drawFBO(m_cBlurFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 3, thumbnailFBOSz, thumbnailFBOSz);
+	//
+
+	//tonemapping pass
+	m_cToneMappingFilter.beginBlit();
+	m_cToneMappingFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
+	m_cToneMappingFilter.endBlit();
+	drawFBO(m_cToneMappingFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 4, thumbnailFBOSz, thumbnailFBOSz);
+	//
+
+	//shadow maps
 	int nLight = -1;
 	int offset = 10;
-	int lightFBOSz = 100;
 	for (std::vector<gxLight*>::iterator it = m_pMainWorldPtr->getLightList()->begin(); it != m_pMainWorldPtr->getLightList()->end(); ++it)
 	{
 		nLight++;
@@ -837,8 +855,10 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 		if (!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 			continue;
 
-		drawFBO(light->getShadowMapFBO().getFBODepthBuffer(), offset + nLight * (lightFBOSz + 10) + (nLight+1) * (lightFBOSz + 10) - m_cSize.x, -(getTopMarginOffsetHeight()) + m_cSize.y - (lightFBOSz + 10), lightFBOSz, lightFBOSz);
+		drawFBO(light->getShadowMapFBO().getFBODepthBuffer(), offset + nLight * (thumbnailFBOSz + 10) + (nLight + 1) * (thumbnailFBOSz + 10) - m_cSize.x, -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10), thumbnailFBOSz, thumbnailFBOSz);
 	}
+	//
+
 #ifdef ENABLE_FOG
 		drawFBO(m_cFOGFBO.getFBOTextureBuffer(0), m_cSize.x-310, m_cSize.y-310, 300, 300);
 		drawFBO(m_cMultiPassFBO.getFBODepthBuffer(), -310, m_cSize.y-310, 300, 300);

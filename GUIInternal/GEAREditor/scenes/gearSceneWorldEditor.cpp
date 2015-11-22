@@ -842,7 +842,7 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 	m_cToneMappingFilter.beginBlit();
 	m_cToneMappingFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
 	m_cToneMappingFilter.endBlit();
-	drawFBO(m_cToneMappingFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 4, thumbnailFBOSz, thumbnailFBOSz);
+	drawFBO(m_cToneMappingFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 5, thumbnailFBOSz, thumbnailFBOSz);
 	//
 
 	//shadow maps
@@ -976,6 +976,10 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 		m_cMultiPassFBO.CreateTextureBuffer();
 		m_cMultiPassFBO.AttachTextureBuffer(0);
 		m_cMultiPassFBO.UnBindFBO();
+
+		m_cBrightPassFilter.resize(cx, cy);
+		m_cBlurFilter.resize(cx, cy);
+		m_cToneMappingFilter.resize(cx, cy);
 
 #ifdef ENABLE_FOG
 		m_cFOGFBO.ReInitFBO(cx, cy);

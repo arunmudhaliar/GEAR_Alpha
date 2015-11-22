@@ -40,6 +40,15 @@ void BrightPassFilter::endBlit()
 	PostProcessor::endBlit();
 }
 
+void BrightPassFilter::resize(float cx, float cy)
+{
+	PostProcessor::resize(cx, cy);
+	m_cFBO.CreateDepthBuffer();
+	m_cFBO.AttachDepthBuffer();
+	m_cFBO.CreateTextureBuffer();
+	m_cFBO.AttachTextureBuffer(0);
+}
+
 void BrightPassFilter::blit(gxRenderer* renderer)
 {
 	float cx = m_cFBO.getFBOWidth();

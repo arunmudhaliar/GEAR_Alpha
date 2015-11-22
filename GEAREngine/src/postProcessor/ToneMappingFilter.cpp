@@ -42,6 +42,15 @@ void ToneMappingFilter::endBlit()
 	PostProcessor::endBlit();
 }
 
+void ToneMappingFilter::resize(float cx, float cy)
+{
+	PostProcessor::resize(cx, cy);
+	m_cFBO.CreateDepthBuffer();
+	m_cFBO.AttachDepthBuffer();
+	m_cFBO.CreateTextureBuffer();
+	m_cFBO.AttachTextureBuffer(0);
+}
+
 void ToneMappingFilter::blit(gxRenderer* renderer)
 {
 	float cx = m_cFBO.getFBOWidth();
@@ -78,7 +87,7 @@ void ToneMappingFilter::blit(gxRenderer* renderer)
 	CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, m_pBlurSceneFBOInput->getFBOTextureBuffer(0)));
 	m_pToneMappingGLSLShaderPtr->sendUniform1i("u_bloomblur_texture", 1);
 
-	m_pToneMappingGLSLShaderPtr->sendUniform1f("u_exposure", 1.0f);
+	m_pToneMappingGLSLShaderPtr->sendUniform1f("u_exposure", 0.5f);
 
 	matrix4x4f offset;
 	float x, y;

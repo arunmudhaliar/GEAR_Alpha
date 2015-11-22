@@ -16,6 +16,8 @@ public:
 	virtual void blit(gxRenderer* renderer)=0;
 	virtual void endBlit();
 
+	virtual void resize(float cx, float cy);
+
 	std::string getName()	{ return m_cName;	 }
 	FBO& getOutPutFBO()		{ return m_cFBO;	 }
 

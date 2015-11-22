@@ -13,6 +13,7 @@ public:
 	virtual void beginBlit();
 	virtual void blit(gxRenderer* renderer);
 	virtual void endBlit();
+	virtual void resize(float cx, float cy);
 
 	void init(FBO* input);
 protected:

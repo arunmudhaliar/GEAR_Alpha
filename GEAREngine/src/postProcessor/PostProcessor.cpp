@@ -24,3 +24,8 @@ void PostProcessor::endBlit()
 	m_cFBO.UnBindFBO();
 	CHECK_GL_ERROR(glPopAttrib());
 }
+
+void PostProcessor::resize(float cx, float cy)
+{
+	m_cFBO.ReInitFBO(cx, cy);
+}

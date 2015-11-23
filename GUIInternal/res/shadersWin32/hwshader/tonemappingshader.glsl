@@ -19,16 +19,18 @@ uniform float u_exposure;
 
 void main()
 {
-	const float gamma = 2.2;
+	const float bloomfactor = 1.2;
+	const float brightMax = 6;
+	
     vec3 hdrColor = texture2D(u_diffuse_texture, v_uvcoord0).rgb;      
     vec3 bloomColor = texture2D(u_bloomblur_texture, v_uvcoord0).rgb;
-    hdrColor += bloomColor; // additive blending
-    // tone mapping
-    vec3 result = vec3(1.0) - exp(-hdrColor * u_exposure);
-    // also gamma correct while we're at it       
-    result = pow(result, vec3(1.0 / gamma));
-    vec4 color = vec4(result, 1.0);
+    hdrColor += bloomColor * bloomfactor; // additive blending
 	
+	// Perform tone-mapping
+	//float Y = dot(vec3(0.30, 0.59, 0.11), hdrColor);
+	float YD = u_exposure * (u_exposure/brightMax + 1.0) / (u_exposure + 1.0);
+	hdrColor *= YD;
+	vec4 color = vec4(hdrColor, 1.0);
 	gl_FragColor = color;
 }
 #endif

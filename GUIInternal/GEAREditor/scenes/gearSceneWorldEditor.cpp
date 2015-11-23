@@ -450,7 +450,12 @@ void gearSceneWorldEditor::drawWorld()
 {
 	m_cMultiPassFBO.BindFBO();
 	//gxCamera* active_cam=m_pMainWorldPtr->getActiveCamera()->getCameraStructure();
-	monoWrapper::mono_engine_resize(m_pMainWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/, 10.0f, 100000.0f);
+	monoWrapper::mono_engine_resize(m_pMainWorldPtr, 
+		m_cPos.x+getIamOnLayout()->getPos().x,
+		(m_pRenderer->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y),
+		m_cSize.x,
+		m_cSize.y/*-getTopMarginOffsetHeight()*/,
+		10.0f, 100000.0f);
     CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 #if USE_NVPROFILER
@@ -813,7 +818,10 @@ void gearSceneWorldEditor::drawStats()
 
 void gearSceneWorldEditor::drawFBO2FrameBuffer()
 {
-	glViewport(m_cPos.x + getIamOnLayout()->getPos().x, (m_pRenderer->getViewPortSz().y) - (m_cPos.y + getIamOnLayout()->getPos().y + m_cSize.y), m_cSize.x, m_cSize.y - getTopMarginOffsetHeight());
+	glViewport(m_cPos.x + getIamOnLayout()->getPos().x,
+		(m_pRenderer->getViewPortSz().y) - (m_cPos.y + getIamOnLayout()->getPos().y + m_cSize.y) - getTopMarginOffsetHeight(),
+		m_cSize.x,
+		m_cSize.y /*- getTopMarginOffsetHeight()*/);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glLoadMatrixf(m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix()->getMatrix());
@@ -822,28 +830,34 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 
 	glDisable(GL_DEPTH_TEST);
 #if defined USE_FBO
-	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), 0.0f, 0.0f, m_cSize.x, m_cSize.y);
 
 	int thumbnailFBOSz = 200;
 	//bright pass
 	m_cBrightPassFilter.beginBlit();
 	m_cBrightPassFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
 	m_cBrightPassFilter.endBlit();
-	drawFBO(m_cBrightPassFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10), thumbnailFBOSz, thumbnailFBOSz);
 	//
 	//blur pass
 	m_cBlurFilter.beginBlit();
 	m_cBlurFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
 	m_cBlurFilter.endBlit();
-	drawFBO(m_cBlurFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 3, thumbnailFBOSz, thumbnailFBOSz);
 	//
 
 	//tonemapping pass
 	m_cToneMappingFilter.beginBlit();
 	m_cToneMappingFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
 	m_cToneMappingFilter.endBlit();
-	drawFBO(m_cToneMappingFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 5, thumbnailFBOSz, thumbnailFBOSz);
 	//
+
+	drawFBO(m_cToneMappingFilter.getOutPutFBO().getFBOTextureBuffer(0),
+		0.0f,
+		0.0f + getTopMarginOffsetHeight(),
+		m_cSize.x,
+		m_cSize.y);
+
+	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10), thumbnailFBOSz, thumbnailFBOSz);
+	drawFBO(m_cBrightPassFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 3, thumbnailFBOSz, thumbnailFBOSz);
+	drawFBO(m_cBlurFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 5, thumbnailFBOSz, thumbnailFBOSz);
 
 	//shadow maps
 	int nLight = -1;

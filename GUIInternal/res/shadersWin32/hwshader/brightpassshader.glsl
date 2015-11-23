@@ -19,8 +19,8 @@ void main()
 {
     vec4 color = texture2D(u_diffuse_texture, v_uvcoord0);    
 	vec4 output= vec4(0.0, 0.0, 0.0, 1.0);
-	float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
-    if(brightness > 0.7)
+	float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));	//0.2126, 0.7152, 0.0722
+	if(brightness > 0.5)
         output = color;
 
     gl_FragColor = output;

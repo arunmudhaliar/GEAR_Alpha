@@ -6,7 +6,9 @@
 #include <sys/stat.h>
 
 #include <assert.h>
-#include "../../../GEAREngine/src/mono/src/dirent.h"
+
+
+#include<dirent.h>
 #ifdef _WIN32
 #include <direct.h>
 #endif

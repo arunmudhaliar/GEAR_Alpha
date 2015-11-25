@@ -18,10 +18,10 @@ void BrightPassFilter::init(FBO* input)
 	m_pBrightPassGLSLShaderPtr = engine_getHWShaderManager()->LoadShaderFromFile("hwshader/brightpassshader.glsl");
 
 	m_cFBO.BindFBO();
+    m_cFBO.CreateTextureBuffer();
+    m_cFBO.AttachTextureBuffer(0);
 	m_cFBO.CreateDepthBuffer();
 	m_cFBO.AttachDepthBuffer();
-	m_cFBO.CreateTextureBuffer();
-	m_cFBO.AttachTextureBuffer(0);
 	m_cFBO.UnBindFBO();
 
 }
@@ -43,10 +43,10 @@ void BrightPassFilter::endBlit()
 void BrightPassFilter::resize(float cx, float cy)
 {
 	PostProcessor::resize(cx, cy);
+    m_cFBO.CreateTextureBuffer();
+    m_cFBO.AttachTextureBuffer(0);
 	m_cFBO.CreateDepthBuffer();
 	m_cFBO.AttachDepthBuffer();
-	m_cFBO.CreateTextureBuffer();
-	m_cFBO.AttachTextureBuffer(0);
 }
 
 void BrightPassFilter::blit(gxRenderer* renderer)

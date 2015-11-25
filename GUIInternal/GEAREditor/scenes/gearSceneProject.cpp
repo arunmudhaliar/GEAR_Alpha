@@ -5,8 +5,9 @@
 #include <sys/stat.h>
 
 #include <assert.h>
-#include "../../../GEAREngine/src/mono/src/dirent.h"
-#if !defined(__APPLE__)
+
+#include<dirent.h>
+#ifdef _WIN32
     #include <direct.h>
 #endif
 #include <limits.h>

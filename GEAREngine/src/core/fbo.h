@@ -14,6 +14,7 @@ public:
 	void ReInitFBO(int w, int h);				//init will create and automatically bind the fbo
 	void ResetFBO();
 
+    GLuint& CreateDepthOnlyBuffer();		//return the reference of the depth buffer
 	GLuint& CreateDepthBuffer();			//return the reference of the depth buffer
 	GLuint& CreateTextureBuffer();			//return the reference of the texture buffer
 	GLuint& CreateDepthShadowTextureBuffer();

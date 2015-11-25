@@ -18,10 +18,10 @@ void BlurFilter::init(FBO* input)
 	m_pBlurGLSLShaderPtr = engine_getHWShaderManager()->LoadShaderFromFile("hwshader/blurshader.glsl");
 
 	m_cFBO.BindFBO();
+    m_cFBO.CreateTextureBuffer();
+    m_cFBO.AttachTextureBuffer(0);
 	m_cFBO.CreateDepthBuffer();
 	m_cFBO.AttachDepthBuffer();
-	m_cFBO.CreateTextureBuffer();
-	m_cFBO.AttachTextureBuffer(0);
 	m_cFBO.UnBindFBO();
 
 }
@@ -43,10 +43,10 @@ void BlurFilter::endBlit()
 void BlurFilter::resize(float cx, float cy)
 {
 	PostProcessor::resize(cx, cy);
+    m_cFBO.CreateTextureBuffer();
+    m_cFBO.AttachTextureBuffer(0);
 	m_cFBO.CreateDepthBuffer();
 	m_cFBO.AttachDepthBuffer();
-	m_cFBO.CreateTextureBuffer();
-	m_cFBO.AttachTextureBuffer(0);
 }
 
 void BlurFilter::blit(gxRenderer* renderer)

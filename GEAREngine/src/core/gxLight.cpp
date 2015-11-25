@@ -19,7 +19,7 @@ object3d(OBJECT3D_LIGHT)
 
 	//shadow mapping
 	m_cShadowMapFBO.ReInitFBO(GX_SHADOW_MAP_SIZE, GX_SHADOW_MAP_SIZE);
-	m_cShadowMapFBO.CreateDepthBuffer();
+	m_cShadowMapFBO.CreateDepthOnlyBuffer();
 	m_cShadowMapFBO.AttachDepthBuffer();
 	m_cShadowMapFBO.UnBindFBO();
 

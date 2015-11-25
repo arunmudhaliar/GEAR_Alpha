@@ -195,10 +195,10 @@ void gearSceneWorldEditor::onCreate()
 #if defined USE_FBO
 	//fbo
 	m_cMultiPassFBO.ReInitFBO(512, 512);
-    m_cMultiPassFBO.CreateDepthBuffer();
-    m_cMultiPassFBO.AttachDepthBuffer();
     m_cMultiPassFBO.CreateTextureBuffer();
     m_cMultiPassFBO.AttachTextureBuffer(0);
+    m_cMultiPassFBO.CreateDepthBuffer();
+    m_cMultiPassFBO.AttachDepthBuffer();
     m_cMultiPassFBO.UnBindFBO();
 
 	m_cBrightPassFilter.init(&m_cMultiPassFBO);
@@ -207,10 +207,10 @@ void gearSceneWorldEditor::onCreate()
 
 #ifdef ENABLE_FOG
 	m_cFOGFBO.ReInitFBO(512, 512);
-    m_cFOGFBO.CreateDepthBuffer();
-    m_cFOGFBO.AttachDepthBuffer();
     m_cFOGFBO.CreateTextureBuffer();
     m_cFOGFBO.AttachTextureBuffer(0);
+    m_cFOGFBO.CreateDepthBuffer();
+    m_cFOGFBO.AttachDepthBuffer();
     m_cFOGFBO.UnBindFBO();
 #endif
 #endif
@@ -849,7 +849,7 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 	m_cToneMappingFilter.endBlit();
 	//
 
-	drawFBO(m_cToneMappingFilter.getOutPutFBO().getFBOTextureBuffer(0),
+	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0),
 		0.0f,
 		0.0f + getTopMarginOffsetHeight(),
 		m_cSize.x,
@@ -985,10 +985,10 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 	if(cx>1.0f && cy>1.0f)
 	{
 		m_cMultiPassFBO.ReInitFBO(cx, cy);
+        m_cMultiPassFBO.CreateTextureBuffer();
+        m_cMultiPassFBO.AttachTextureBuffer(0);
 		m_cMultiPassFBO.CreateDepthBuffer();
 		m_cMultiPassFBO.AttachDepthBuffer();
-		m_cMultiPassFBO.CreateTextureBuffer();
-		m_cMultiPassFBO.AttachTextureBuffer(0);
 		m_cMultiPassFBO.UnBindFBO();
 
 		m_cBrightPassFilter.resize(cx, cy);
@@ -997,10 +997,10 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 
 #ifdef ENABLE_FOG
 		m_cFOGFBO.ReInitFBO(cx, cy);
+        m_cFOGFBO.CreateTextureBuffer();
+        m_cFOGFBO.AttachTextureBuffer(0);
 		m_cFOGFBO.CreateDepthBuffer();
 		m_cFOGFBO.AttachDepthBuffer();
-		m_cFOGFBO.CreateTextureBuffer();
-		m_cFOGFBO.AttachTextureBuffer(0);
 		m_cFOGFBO.UnBindFBO();
 #endif
 

@@ -20,10 +20,10 @@ void ToneMappingFilter::init(FBO* sceneInput, FBO* blurSceneInput)
 	m_pToneMappingGLSLShaderPtr = engine_getHWShaderManager()->LoadShaderFromFile("hwshader/tonemappingshader.glsl");
 
 	m_cFBO.BindFBO();
+    m_cFBO.CreateTextureBuffer();
+    m_cFBO.AttachTextureBuffer(0);
 	m_cFBO.CreateDepthBuffer();
 	m_cFBO.AttachDepthBuffer();
-	m_cFBO.CreateTextureBuffer();
-	m_cFBO.AttachTextureBuffer(0);
 	m_cFBO.UnBindFBO();
 
 }
@@ -45,10 +45,10 @@ void ToneMappingFilter::endBlit()
 void ToneMappingFilter::resize(float cx, float cy)
 {
 	PostProcessor::resize(cx, cy);
+    m_cFBO.CreateTextureBuffer();
+    m_cFBO.AttachTextureBuffer(0);
 	m_cFBO.CreateDepthBuffer();
 	m_cFBO.AttachDepthBuffer();
-	m_cFBO.CreateTextureBuffer();
-	m_cFBO.AttachTextureBuffer(0);
 }
 
 void ToneMappingFilter::blit(gxRenderer* renderer)

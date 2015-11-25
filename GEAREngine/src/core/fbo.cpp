@@ -106,6 +106,30 @@ void FBO::ResetFBO()
 	m_szTexture.clear();
 }
 
+GLuint& FBO::CreateDepthOnlyBuffer()
+{
+#if 0
+    // Create the render buffer for depth
+    CHECK_GL_ERROR(glGenRenderbuffers(1, &m_depthbuffer));
+    CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, m_depthbuffer));
+    CHECK_GL_ERROR(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_width, m_height));
+#else
+    
+    CHECK_GL_ERROR(glDrawBuffer(GL_NONE));
+    CHECK_GL_ERROR(glReadBuffer(GL_NONE));
+    CHECK_GL_ERROR(glGenTextures(1, &m_depthbuffer));
+    CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, m_depthbuffer));
+    CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0));
+    CHECK_GL_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, m_width, m_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL));
+    //CHECK_GL_ERROR(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
+    CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+    CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+#endif
+    return m_depthbuffer;
+}
+
 GLuint& FBO::CreateDepthBuffer()
 {
 #if 0
@@ -123,6 +147,9 @@ GLuint& FBO::CreateDepthBuffer()
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    //CHECK_GL_ERROR(glDrawBuffer(GL_NONE));
+    //CHECK_GL_ERROR(glReadBuffer(GL_NONE));
+    
 #endif
 	return m_depthbuffer;
 }
@@ -193,7 +220,7 @@ GLuint& FBO::AttachDepthBuffer()
 	CHECK_GL_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthbuffer));
 #else
 #ifdef WIN32
-	CHECK_GL_ERROR(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
+	CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
 #elif defined(ANDROID)
 	CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthbuffer, 0));
 #elif defined(__APPLE__)

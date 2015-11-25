@@ -148,6 +148,14 @@
 		5554EFCE1AD26E6C00FD80AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */; };
 		5554EFD21AD26EA200FD80AF /* libmono-2.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */; };
 		558F92AA1B39E38B00FCA130 /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 558F92A91B39E38B00FCA130 /* libfbxsdk.a */; };
+		55AB5CB91C0481D3005B8747 /* BlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */; };
+		55AB5CBA1C0481D3005B8747 /* BlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB21C0481D3005B8747 /* BlurFilter.h */; };
+		55AB5CBB1C0481D3005B8747 /* BrightPassFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB31C0481D3005B8747 /* BrightPassFilter.cpp */; };
+		55AB5CBC1C0481D3005B8747 /* BrightPassFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB41C0481D3005B8747 /* BrightPassFilter.h */; };
+		55AB5CBD1C0481D3005B8747 /* PostProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB51C0481D3005B8747 /* PostProcessor.cpp */; };
+		55AB5CBE1C0481D3005B8747 /* PostProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB61C0481D3005B8747 /* PostProcessor.h */; };
+		55AB5CBF1C0481D3005B8747 /* ToneMappingFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB71C0481D3005B8747 /* ToneMappingFilter.cpp */; };
+		55AB5CC01C0481D3005B8747 /* ToneMappingFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -296,6 +304,14 @@
 		5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libmono-2.0.1.dylib"; path = "../../../../../Desktop/monoForMac/lib/libmono-2.0.1.dylib"; sourceTree = "<group>"; };
 		558F92A91B39E38B00FCA130 /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
+		55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurFilter.cpp; sourceTree = "<group>"; };
+		55AB5CB21C0481D3005B8747 /* BlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurFilter.h; sourceTree = "<group>"; };
+		55AB5CB31C0481D3005B8747 /* BrightPassFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BrightPassFilter.cpp; sourceTree = "<group>"; };
+		55AB5CB41C0481D3005B8747 /* BrightPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrightPassFilter.h; sourceTree = "<group>"; };
+		55AB5CB51C0481D3005B8747 /* PostProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PostProcessor.cpp; sourceTree = "<group>"; };
+		55AB5CB61C0481D3005B8747 /* PostProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostProcessor.h; sourceTree = "<group>"; };
+		55AB5CB71C0481D3005B8747 /* ToneMappingFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ToneMappingFilter.cpp; sourceTree = "<group>"; };
+		55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToneMappingFilter.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -348,6 +364,7 @@
 		5554EA7E1AD26CEC00FD80AF /* src */ = {
 			isa = PBXGroup;
 			children = (
+				55AB5CB01C0481D3005B8747 /* postProcessor */,
 				5554EA7F1AD26CEC00FD80AF /* audio */,
 				5554EA861AD26CEC00FD80AF /* core */,
 				5554EAC11AD26CEC00FD80AF /* fbxImporter */,
@@ -578,6 +595,21 @@
 			path = "zlib-1.2.4";
 			sourceTree = "<group>";
 		};
+		55AB5CB01C0481D3005B8747 /* postProcessor */ = {
+			isa = PBXGroup;
+			children = (
+				55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */,
+				55AB5CB21C0481D3005B8747 /* BlurFilter.h */,
+				55AB5CB31C0481D3005B8747 /* BrightPassFilter.cpp */,
+				55AB5CB41C0481D3005B8747 /* BrightPassFilter.h */,
+				55AB5CB51C0481D3005B8747 /* PostProcessor.cpp */,
+				55AB5CB61C0481D3005B8747 /* PostProcessor.h */,
+				55AB5CB71C0481D3005B8747 /* ToneMappingFilter.cpp */,
+				55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */,
+			);
+			path = postProcessor;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -626,7 +658,9 @@
 				5554EFA91AD26CED00FD80AF /* gxFile.h in Headers */,
 				5554EDB11AD26CED00FD80AF /* monoScript.h in Headers */,
 				5554ED6B1AD26CED00FD80AF /* gxDebug.h in Headers */,
+				55AB5CBC1C0481D3005B8747 /* BrightPassFilter.h in Headers */,
 				5554ED8B1AD26CED00FD80AF /* Timer.h in Headers */,
+				55AB5CBE1C0481D3005B8747 /* PostProcessor.h in Headers */,
 				5554EFAB1AD26CED00FD80AF /* gxUtil.h in Headers */,
 				5554ED9C1AD26CED00FD80AF /* pngdebug.h in Headers */,
 				5554ED811AD26CED00FD80AF /* oobb.h in Headers */,
@@ -648,9 +682,11 @@
 				5554EDA91AD26CED00FD80AF /* pngstruct.h in Headers */,
 				5554EFC31AD26CED00FD80AF /* zconf.h in Headers */,
 				5554ED731AD26CED00FD80AF /* gxMetaStructures.h in Headers */,
+				55AB5CC01C0481D3005B8747 /* ToneMappingFilter.h in Headers */,
 				5554ED7B1AD26CED00FD80AF /* gxWorld.h in Headers */,
 				5554EDA31AD26CED00FD80AF /* pngpriv.h in Headers */,
 				5554ED9B1AD26CED00FD80AF /* pngconf.h in Headers */,
+				55AB5CBA1C0481D3005B8747 /* BlurFilter.h in Headers */,
 				5554EFB71AD26CED00FD80AF /* deflate.h in Headers */,
 				5554EFA41AD26CED00FD80AF /* FontManager.h in Headers */,
 				5554ED941AD26CED00FD80AF /* GEAREngine.h in Headers */,
@@ -720,7 +756,9 @@
 			files = (
 				5554ED7C1AD26CED00FD80AF /* LayerManager.cpp in Sources */,
 				5554EDA71AD26CED00FD80AF /* pngrutil.c in Sources */,
+				55AB5CBD1C0481D3005B8747 /* PostProcessor.cpp in Sources */,
 				5554ED591AD26CED00FD80AF /* Camera.cpp in Sources */,
+				55AB5CBF1C0481D3005B8747 /* ToneMappingFilter.cpp in Sources */,
 				5554EF9D1AD26CED00FD80AF /* gxRenderer.cpp in Sources */,
 				5554EFAA1AD26CED00FD80AF /* gxUtil.cpp in Sources */,
 				5554EFB81AD26CED00FD80AF /* infback.c in Sources */,
@@ -752,6 +790,7 @@
 				5554EFBE1AD26CED00FD80AF /* inftrees.c in Sources */,
 				5554ED9D1AD26CED00FD80AF /* pngerror.c in Sources */,
 				5554ED741AD26CED00FD80AF /* gxSkinnedMesh.cpp in Sources */,
+				55AB5CBB1C0481D3005B8747 /* BrightPassFilter.cpp in Sources */,
 				5554EFC01AD26CED00FD80AF /* trees.c in Sources */,
 				5554ED931AD26CED00FD80AF /* GEAREngine.cpp in Sources */,
 				5554EFC21AD26CED00FD80AF /* uncompr.c in Sources */,
@@ -768,6 +807,7 @@
 				5554EFB61AD26CED00FD80AF /* deflate.c in Sources */,
 				5554ED681AD26CED00FD80AF /* gxCamera.cpp in Sources */,
 				5554EDA81AD26CED00FD80AF /* pngset.c in Sources */,
+				55AB5CB91C0481D3005B8747 /* BlurFilter.cpp in Sources */,
 				5554ED711AD26CED00FD80AF /* gxMesh.cpp in Sources */,
 				5554ED971AD26CED00FD80AF /* HWShaderManager.cpp in Sources */,
 				5554EFA81AD26CED00FD80AF /* gxFile.cpp in Sources */,

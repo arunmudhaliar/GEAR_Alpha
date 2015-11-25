@@ -564,6 +564,7 @@
 				5554EFD81AD26F9A00FD80AF /* Sources */,
 				5554EFD91AD26F9A00FD80AF /* Frameworks */,
 				5554EFDA1AD26F9A00FD80AF /* Resources */,
+				55D719361C065341003C6E2F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -618,6 +619,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		55D719361C065341003C6E2F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp ../../FreeImage/macos/libfreeimage.a ${CONFIGURATION_BUILD_DIR}/libfreeimage.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a ${CONFIGURATION_BUILD_DIR}/libfbxsdk.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.dylib ${CONFIGURATION_BUILD_DIR}/libfbxsdk.dylib\ncp mono-prerequisite/out.exe ${CONFIGURATION_BUILD_DIR}/out.exe\ncp mono-prerequisite/MonoGEAR.dll ${CONFIGURATION_BUILD_DIR}/MonoGEAR.dll\ncp -r ../../GUIInternal/res/ ${CONFIGURATION_BUILD_DIR}/res/";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5554EFD81AD26F9A00FD80AF /* Sources */ = {

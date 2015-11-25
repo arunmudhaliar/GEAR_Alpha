@@ -20,7 +20,7 @@ uniform float u_exposure;
 void main()
 {
 	const float bloomfactor = 1.2;
-	const float brightMax = 6;
+	const float brightMax = 6.0;
 	
     vec3 hdrColor = texture2D(u_diffuse_texture, v_uvcoord0).rgb;      
     vec3 bloomColor = texture2D(u_bloomblur_texture, v_uvcoord0).rgb;

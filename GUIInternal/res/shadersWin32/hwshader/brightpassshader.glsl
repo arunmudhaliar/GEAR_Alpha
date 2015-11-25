@@ -18,11 +18,11 @@ varying vec2 v_uvcoord0;
 void main()
 {
     vec4 color = texture2D(u_diffuse_texture, v_uvcoord0);    
-	vec4 output= vec4(0.0, 0.0, 0.0, 1.0);
+	vec4 output_rgb= vec4(0.0, 0.0, 0.0, 1.0);
 	float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));	//0.2126, 0.7152, 0.0722
 	if(brightness > 0.5)
-        output = color;
+        output_rgb = color;
 
-    gl_FragColor = output;
+    gl_FragColor = output_rgb;
 }
 #endif

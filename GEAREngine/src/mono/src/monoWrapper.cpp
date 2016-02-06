@@ -666,7 +666,7 @@ int monoWrapper::traverseForCSharpFiles(const char *dirname, std::vector<std::st
 bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 {
 	std::string command_buffer;
-	command_buffer = "gmcs ";
+	command_buffer = "";
 
 	for(std::vector<std::string>::iterator it = list->begin(); it != list->end(); ++it)
 	{
@@ -691,15 +691,26 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 #endif
 
 	char responsebuffer[4096];
-	exec_cmd(command_buffer.c_str(), responsebuffer);
-	printf("\n================GMCS COMPILATION RESULT===============\n");
-	printf("%s", responsebuffer);
-	printf("\n======================================================\n");
-
+	if(exec_cmd(("gmcs "+command_buffer).c_str(), responsebuffer)==0)
+    {
+        printf("\n================GMCS COMPILATION RESULT===============\n");
+        printf("%s", responsebuffer);
+        printf("\n======================================================\n");
+    }
+    else if(exec_cmd(("bash mcs "+command_buffer).c_str(), responsebuffer)==0)
+    {
+        printf("\n================MCS COMPILATION RESULT===============\n");
+        printf("%s", responsebuffer);
+        printf("\n======================================================\n");
+    }
+    else
+    {
+        printf("\n\n\nERROR: ======BOTH GMCS & MCS FAILED TO COMPILE===============\n\n\n");
+    }
 	return true;
 }
 
-char monoWrapper::exec_cmd(char const *cmd, char *buf)
+int monoWrapper::exec_cmd(char const *cmd, char *buf)
 {
 	char output[FILENAME_MAX], start[FILENAME_MAX*20];
 	char *s;
@@ -736,7 +747,7 @@ char monoWrapper::exec_cmd(char const *cmd, char *buf)
 	return (ret);
 }/* exec_cmd */
 
-char monoWrapper::exec_cmd(char const *cmd)
+int monoWrapper::exec_cmd(char const *cmd)
 {
 	char output[FILENAME_MAX];
 	char *s;

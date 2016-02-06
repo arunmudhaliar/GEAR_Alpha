@@ -62,8 +62,8 @@ public:
 #if defined(_WIN32) || defined(__APPLE__)
 	static int traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist);
 	static bool compileCSharpScripts(std::vector<std::string>* csharpfilelist);
-	static char exec_cmd(char const *cmd, char *buf);
-	static char exec_cmd(char const *cmd);
+	static int exec_cmd(char const *cmd, char *buf);
+	static int exec_cmd(char const *cmd);
 #endif
 
 	static monoScript* mono_getMonoScripDef(const char* scriptname);

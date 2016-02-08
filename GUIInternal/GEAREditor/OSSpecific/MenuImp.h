@@ -1,12 +1,4 @@
-//
-//  MenuImp.m
-//  GEARInternal
-//
-//  Created by Mudaliar, Arun on 4/6/15.
-//  Copyright (c) 2015 ea. All rights reserved.
-//
-#ifndef MENUIMP
-#define MENUIMP
+#pragma once
 
 #ifdef _WIN32
 
@@ -35,6 +27,5 @@ public:
 - (void) showMenu:(NSPoint)pt;
 - (IBAction) onMenuItemClick:(id)sender;
 @end
-#endif
 
 #endif

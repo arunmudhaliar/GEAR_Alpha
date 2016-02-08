@@ -1,5 +1,4 @@
-#ifndef GEARSCENECONSOLE_H
-#define GEARSCENECONSOLE_H
+#pragma once
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
@@ -38,5 +37,3 @@ private:
 	geTreeView* m_pConsoleTreeView;
 	geTreeNode* m_pCurrentBuildRootNodePtr;
 };
-
-#endif

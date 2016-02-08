@@ -1,17 +1,6 @@
-//
-//  objC_util.h
-//  GEARv1.0
-//
-//  Created by Arun.A on 21/06/10.
-//  Copyright 2010 home. All rights reserved.
-//
-
-#ifndef OBC_UTIL_H
-#define OBC_UTIL_H
+#pragma once
 
 #include "../renderer/glincludes.h"
-
-//#include "gxDebug.h"
 #include "../zlib-1.2.4/zlib.h"
 #include <string.h>
 #include <errno.h>
@@ -22,17 +11,10 @@ public:
 	static const char* getPath(const char* path)
 	{
 #if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
-//		NSString *stringFromChar = [NSString stringWithCString:path length:strlen(path)];
-//        stringWithUTF8String
         NSString *stringFromChar = [NSString stringWithUTF8String:path];
-//		NSArray *pathArray = [stringFromChar componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"."]];
-		NSString *nsStringObject = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:stringFromChar];//  pathForResource:[pathArray objectAtIndex:0] ofType:[pathArray objectAtIndex:1]];
-		//[stringFromChar release];
-		//[pathArray release];
-
+		NSString *nsStringObject = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:stringFromChar];
 		const char* cString = [nsStringObject cStringUsingEncoding:NSASCIIStringEncoding];
-		//[nsStringObject release];
-		
+        
 		return cString;
 #else
 		return path;
@@ -399,4 +381,3 @@ public:
         return texID;
     }
 };
-#endif

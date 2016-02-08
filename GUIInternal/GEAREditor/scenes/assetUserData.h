@@ -1,5 +1,4 @@
-#ifndef ASSETUSERDATA_H
-#define ASSETUSERDATA_H
+#pragma once
 
 class assetUserData
 {
@@ -40,5 +39,3 @@ private:
 	ASSETUSERDATA_TYPE type;
 	void* assetObjectPtr;
 };
-
-#endif

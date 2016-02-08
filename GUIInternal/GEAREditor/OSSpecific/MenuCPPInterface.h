@@ -1,13 +1,4 @@
-//
-//  MenuCPPInterface.h
-//  GEARInternal
-//
-//  Created by Mudaliar, Arun on 4/6/15.
-//  Copyright (c) 2015 ea. All rights reserved.
-//
-
-#ifndef GEARInternal_MenuCPPInterface_h
-#define GEARInternal_MenuCPPInterface_h
+#pragma once
 
 #ifdef _WIN32
     #include <windows.h>
@@ -32,5 +23,3 @@ struct stDropMenuItem
 
 void* cpp_createMenu(std::vector<stDropMenuItem*>& list);
 void cpp_showPopupMenu(void* menuobj, int x, int y);
-
-#endif

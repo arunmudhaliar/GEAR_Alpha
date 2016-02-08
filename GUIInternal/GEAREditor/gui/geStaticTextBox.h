@@ -1,5 +1,4 @@
-#ifndef GESTATICTEXTBOX_H
-#define GESTATICTEXTBOX_H
+#pragma once
 
 #include "geGUIBase.h"
 #include "../util/geFontManager.h"
@@ -28,5 +27,3 @@ private:
 	geFont* m_pFont;
 	float m_fYOffset;
 };
-
-#endif

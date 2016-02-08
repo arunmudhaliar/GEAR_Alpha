@@ -1,5 +1,4 @@
-#ifndef GEPUSHBUTTON_H
-#define GEPUSHBUTTON_H
+#pragma once
 
 #include "geButton.h"
 
@@ -41,4 +40,3 @@ protected:
 	float m_cVBClientAreaLine[8];
 	bool m_bCheck;
 };
-#endif

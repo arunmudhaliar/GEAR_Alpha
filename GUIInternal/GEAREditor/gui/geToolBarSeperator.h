@@ -1,6 +1,4 @@
-#ifndef GETOOLBARSEPERATOR_H
-#define GETOOLBARSEPERATOR_H
-
+#pragma once
 #include "geToolBar.h"
 
 class geToolBarSeperator : public geGUIBase
@@ -57,5 +55,3 @@ private:
 	Sprite2Dx m_cSprite;
 	bool m_bImageLoaded;
 };
-
-#endif

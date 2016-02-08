@@ -1,5 +1,4 @@
-#ifndef ASSETIMPORTER_H
-#define ASSETIMPORTER_H
+#pragma once
 
 #include <sys/stat.h>
 #include "../../GEAREngine/src/core/gxMaterial.h"
@@ -43,5 +42,3 @@ private:
 #endif
     geAssetImportDlg* m_pAssetImportDlg;
 };
-
-#endif

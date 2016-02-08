@@ -1,5 +1,4 @@
-#ifndef GEWINDOW_H
-#define GEWINDOW_H
+#pragma once
 
 #include "geGUIBase.h"
 #include "geToolBar.h"
@@ -76,5 +75,3 @@ private:
 	float m_fTitleWidth;
 	RoundedRectControl m_cRoundedRectangle;
 };
-
-#endif

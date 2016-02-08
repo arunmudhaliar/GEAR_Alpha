@@ -1,5 +1,4 @@
-#ifndef GEUTIL_H
-#define GEUTIL_H
+#pragma once
 
 #include <string.h>
 
@@ -288,5 +287,3 @@ private:
 		return NULL;
 	}
 };
-
-#endif

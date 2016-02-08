@@ -1,5 +1,4 @@
-#ifndef GETEXTUREMANAGER_H_
-#define GETEXTUREMANAGER_H_
+#pragma once
 
 #include "../renderer/glincludes.h"
 
@@ -24,5 +23,3 @@ private:
 	std::vector<steTexturePacket*>	iTexturePacket;
     unsigned int m_iTotalTextureMemory;
 };
-
-#endif

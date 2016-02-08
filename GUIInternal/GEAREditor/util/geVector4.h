@@ -1,14 +1,4 @@
-/*
- *  vector3x.h
- *  waves2
- *
- *  Created by arun on 31/01/11.
- *  Copyright 2011 __MyCompanyName__. All rights reserved.
- *
- */
-
-#ifndef GEVECTOR4_H
-#define GEVECTOR4_H
+#pragma once
 
 #include "pxMath.h"
 
@@ -88,5 +78,3 @@ public:
 	}
 	
 };
-
-#endif

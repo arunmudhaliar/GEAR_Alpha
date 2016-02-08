@@ -1,5 +1,4 @@
-#ifndef STETEXTUREPACKET_H
-#define STETEXTUREPACKET_H
+#pragma once
 
 #include "../renderer/glincludes.h"
 #include "../util/geDefines.h"
@@ -51,5 +50,3 @@ struct steTexturePacket
 	unsigned int	m_cHeight;
 	unsigned int	m_cBpp;
 };
-
-#endif

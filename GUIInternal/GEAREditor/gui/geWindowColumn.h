@@ -1,5 +1,4 @@
-#ifndef GEWINDOWCOLUMN_H
-#define GEWINDOWCOLUMN_H
+#pragma once
 
 #include "geGUIBase.h"
 
@@ -45,5 +44,3 @@ private:
 	float m_fMinimumColumnWidth;
 	float m_fMinimumSpaceBetweenControls;
 };
-
-#endif

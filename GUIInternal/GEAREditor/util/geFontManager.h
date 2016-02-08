@@ -1,12 +1,4 @@
-//
-//  geFontManager.h
-//  waves2
-//
-//  Created by arun on 03/05/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-#ifndef GEFONTMANAGER_H
-#define GEFONTMANAGER_H
+#pragma once
 
 #include <vector>
 #include "geDefines.h"
@@ -138,5 +130,3 @@ public:
     static geFont* g_pFontArial10_84Ptr;
     static geFont* g_pFontArial10_80Ptr;
 };
-
-#endif

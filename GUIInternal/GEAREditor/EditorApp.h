@@ -1,5 +1,4 @@
-#ifndef EDITORAPP_H
-#define EDITORAPP_H
+#pragma once
 
 #include "util/geDefines.h"
 #include "renderer/rendererGL10.h"
@@ -156,4 +155,3 @@ public:
     
     static gePropertyOctree* g_pPropertyOctreePtr;
 };
-#endif

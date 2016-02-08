@@ -1,5 +1,4 @@
-#ifndef GEARSCENESETTINGS_H
-#define GEARSCENESETTINGS_H
+#pragma once
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
@@ -35,5 +34,3 @@ private:
 	geTreeNode* m_pSettingsGlobalParentNode;
 	geSettingsGlobal* m_pSettingsGlobal;
 };
-
-#endif

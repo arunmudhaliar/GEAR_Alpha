@@ -1,5 +1,4 @@
-#ifndef GESEPERATOR_H
-#define GESEPERATOR_H
+#pragma once
 
 #include "geGUIBase.h"
 
@@ -25,5 +24,3 @@ protected:
 	float m_cVBClientAreaLine[8];
 	ESEPERATOR_STYPE m_eStyle;
 };
-
-#endif

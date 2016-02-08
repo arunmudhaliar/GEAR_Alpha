@@ -1,5 +1,4 @@
-#ifndef CONFIRMATIONDIALOG_H
-#define CONFIRMATIONDIALOG_H
+#pragma once
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -35,5 +34,3 @@ public:
     static void ShowMessageDialog(std::string msg);
 #endif
 };
-
-#endif

@@ -1,14 +1,4 @@
-/*
- *  matrix4x4x.h
- *  waves2
- *
- *  Created by arun on 31/01/11.
- *  Copyright 2011 __MyCompanyName__. All rights reserved.
- *
- */
-
-#ifndef GEMATRIX4X4F_H
-#define GEMATRIX4X4F_H
+#pragma once
 
 #include "glincludes.h"
 
@@ -250,5 +240,3 @@ public:
         setPosition(-(right_plus_left/right_left), -(top_plus_bottom/top_bottom), -(far_plus_near/far_near));
     }
 };
-
-#endif

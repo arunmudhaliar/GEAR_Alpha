@@ -1,5 +1,4 @@
-#ifndef GEARSCENEHIERARCHY_H
-#define GEARSCENEHIERARCHY_H
+#pragma once
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
@@ -67,5 +66,3 @@ private:
 	geToolBarDropMenu* m_pCreateToolBarDropMenuBtnPtr;
 	geToolBarButton* m_pClearBtn;
 };
-
-#endif

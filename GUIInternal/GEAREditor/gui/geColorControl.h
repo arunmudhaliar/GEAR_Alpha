@@ -1,6 +1,5 @@
 #ifndef GEAR2D
-#ifndef GECOLORCONTROL_H
-#define GECOLORCONTROL_H
+#pragma once
 
 #include "geGUIBase.h"
 #include "../util/geVector4.h"
@@ -33,5 +32,4 @@ private:
 	geVector4f m_cColor;
 };
 
-#endif
 #endif

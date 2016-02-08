@@ -1,14 +1,4 @@
-/*
- *  geVector2x.h
- *  waves2
- *
- *  Created by arun on 01/02/11.
- *  Copyright 2011 __MyCompanyName__. All rights reserved.
- *
- */
-
-#ifndef GEVECTOR2_H
-#define GEVECTOR2_H
+#pragma once
 
 #include "pxMath.h"
 
@@ -90,5 +80,3 @@ public:
 	}
 	
 };
-
-#endif

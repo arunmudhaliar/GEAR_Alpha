@@ -1,13 +1,4 @@
-//
-//  appEntry.cpp
-//  testMenu
-//
-//  Created by Mudaliar, Arun on 4/8/15.
-//  Copyright (c) 2015 ea. All rights reserved.
-//
-
 #include "appEntry.h"
-
 
 #ifdef _WIN32
 #include <direct.h>

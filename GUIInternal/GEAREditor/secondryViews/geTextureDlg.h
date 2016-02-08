@@ -1,5 +1,4 @@
-#ifndef GETEXTUREDLG_H
-#define GETEXTUREDLG_H
+#pragma once
 
 #include "geSecondryView.h"
 #include "../gui/geHorizontalSlider.h"
@@ -46,5 +45,3 @@ protected:
 
 	std::vector<geGUIBase*> m_vTextureThumbs;
 };
-
-#endif

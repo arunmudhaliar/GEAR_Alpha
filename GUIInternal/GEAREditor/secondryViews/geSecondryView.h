@@ -1,5 +1,4 @@
-#ifndef GESECONDRYVIEW_H
-#define GESECONDRYVIEW_H
+#pragma once
 
 #include "../util/geDefines.h"
 #include "../renderer/rendererGL10.h"
@@ -91,4 +90,3 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 };
-#endif

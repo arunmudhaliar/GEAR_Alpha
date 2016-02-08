@@ -1,5 +1,4 @@
-#ifndef GEARSCENEFILEVIEW_H
-#define GEARSCENEFILEVIEW_H
+#pragma once
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
@@ -47,5 +46,3 @@ private:
 	object3d* m_pPreviewObj_Cube;
 	gxMaterial m_cPreviewMaterial;
 };
-
-#endif

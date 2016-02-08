@@ -1,5 +1,4 @@
-#ifndef GETEXTBOX_H
-#define GETEXTBOX_H
+#pragma once
 
 #include "geGUIBase.h"
 
@@ -57,5 +56,3 @@ private:
 	int m_nStringCharToDisplay;
 	char* m_pStartCharPtr;
 };
-
-#endif

@@ -1,15 +1,11 @@
-#ifndef SPRITE_H
-#define SPRITE_H
+#pragma once
 
-//#include "../SceneManager/CommonData.h"
 #include "../core/geTextureManager.h"
-//#include "../engine/core/transformf.h"
 #include "../core/geTexture.h"
 #include "../util/geVector2.h"
 #ifndef GEAR2D
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
 #endif
-//#include "../engine/core/rect.h"
 #include "../../../GEAREngine/src/core/transform.h"
 
 class Sprite : public transform
@@ -113,8 +109,4 @@ protected:
     float m_fRGB[3];
     float m_fAlphaThreshold;
 	EBLENDFLAG m_eBlendFlag;
-
-	//geVector2i m_cPos;
 };
-
-#endif

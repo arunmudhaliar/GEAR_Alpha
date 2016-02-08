@@ -1,5 +1,4 @@
-#ifndef GETREEVIEW_H
-#define GETREEVIEW_H
+#pragma once
 
 #include "geGUIBase.h"
 #include <vector>
@@ -156,5 +155,3 @@ class MTreeViewObserver
 public:
 	virtual void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)=0;
 };
-
-#endif

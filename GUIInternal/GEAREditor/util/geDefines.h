@@ -1,5 +1,4 @@
-#ifndef GEDEFINES_H
-#define GEDEFINES_H
+#pragma once
 
 #include <string.h>
 
@@ -27,5 +26,3 @@ public:
 		return (strcmp(extension_begin, ext)==0);
 	}
 };
-
-#endif

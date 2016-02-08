@@ -1,5 +1,4 @@
-#ifndef GETOOLBARDROPMENU_H
-#define GETOOLBARDROPMENU_H
+#pragma once
 
 #include "geButton.h"
 #include <vector>
@@ -52,5 +51,3 @@ private:
 	stDropMenuItem* m_pActiveItemPtr;
 	std::vector<stDropMenuItem*> m_vMenuItems;
 };
-
-#endif

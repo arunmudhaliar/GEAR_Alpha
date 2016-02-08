@@ -1,5 +1,4 @@
-#ifndef GECOLORDLG_H
-#define GECOLORDLG_H
+#pragma once
 
 #include "geSecondryView.h"
 #include "../gui/geHorizontalSlider.h"
@@ -40,5 +39,3 @@ protected:
 private:
     geVector4f m_selectedColor;
 };
-
-#endif

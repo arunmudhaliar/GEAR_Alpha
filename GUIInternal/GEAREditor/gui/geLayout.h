@@ -1,5 +1,4 @@
-#ifndef GELAYOUT_H
-#define GELAYOUT_H
+#pragma once
 
 #include "geGUIBase.h"
 #include "geWindow.h"
@@ -103,5 +102,3 @@ private:
 	ELAYOUT_DIRECTION m_eLayoutDirection;
 	float m_cVBClientAreaLine[6];
 };
-
-#endif

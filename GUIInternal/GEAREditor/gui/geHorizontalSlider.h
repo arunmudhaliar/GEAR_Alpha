@@ -1,5 +1,4 @@
-#ifndef GEHORIZONTALSLIDER_H
-#define GEHORIZONTALSLIDER_H
+#pragma once
 
 #include "geGUIBase.h"
 
@@ -44,5 +43,3 @@ private:
 	float m_fMinRange;
 	float m_fMaxRange;
 };
-
-#endif

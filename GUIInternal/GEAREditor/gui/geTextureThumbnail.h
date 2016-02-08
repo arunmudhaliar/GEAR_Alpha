@@ -1,6 +1,5 @@
 #ifndef GEAR2D
-#ifndef GETEXTURETHUMBNAIL_H
-#define GETEXTURETHUMBNAIL_H
+#pragma once
 
 #include "geGUIBase.h"
 #include "../../../GEAREngine/src/core/gxTexture.h"
@@ -33,5 +32,4 @@ private:
 	float m_cVBClientAreaLine[10];
 };
 
-#endif
 #endif

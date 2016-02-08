@@ -1,5 +1,4 @@
-#ifndef GESCROLLBAR_H
-#define GESCROLLBAR_H
+#pragma once
 
 #include "geGUIBase.h"
 
@@ -60,5 +59,3 @@ private:
 	geVector2i m_cMousePrevPos;
 	MScrollBarObserver* m_pObserverPtr;
 };
-
-#endif

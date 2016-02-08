@@ -1,5 +1,4 @@
-#ifndef GEASSETIMPORTDLG_H
-#define GEASSETIMPORTDLG_H
+#pragma once
 
 #include "geSecondryView.h"
 #include "../gui/geHorizontalSlider.h"
@@ -21,5 +20,3 @@ protected:
 	geWindow* m_pWindow;
     char m_cszBuffer[2048];
 };
-
-#endif

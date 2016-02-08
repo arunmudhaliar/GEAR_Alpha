@@ -1,5 +1,4 @@
-#ifndef CURSORUTIL_H
-#define CURSORUTIL_H
+#pragma once
 
 #ifdef _WIN32
 #include <SDL.h>
@@ -19,5 +18,3 @@ public:
 private:
 	static SDL_Cursor* g_cszCursors[5];
 };
-
-#endif

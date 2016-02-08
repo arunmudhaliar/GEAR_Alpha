@@ -1,5 +1,4 @@
-#ifndef ROUNDEDRECTCONTROL_H
-#define ROUNDEDRECTCONTROL_H
+#pragma once
 
 #include "geGUIBase.h"
 
@@ -33,5 +32,3 @@ private:
 	float* m_prounded_right_bottom_colorList;
 	float* m_prounded_left_bottom_colorList;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef GELAYOUTMANAGER_H
-#define GELAYOUTMANAGER_H
+#pragma once
 
 #include "geGUIBase.h"
 #include <vector>
@@ -59,5 +58,3 @@ private:
 	std::vector<geLayout*> m_vTopResizeList;
 	std::vector<geLayout*> m_vBottomResizeList;
 };
-
-#endif

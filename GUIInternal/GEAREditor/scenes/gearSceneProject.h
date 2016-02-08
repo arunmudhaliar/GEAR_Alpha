@@ -1,5 +1,4 @@
-#ifndef GEARSCENEPROJECT_H
-#define GEARSCENEPROJECT_H
+#pragma once
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
@@ -42,5 +41,3 @@ private:
 	Sprite2Dx m_cszSprites[5];
 	//gearSceneFileView* m_pFileViewScenePtr;	//must not delete this pointer
 };
-
-#endif

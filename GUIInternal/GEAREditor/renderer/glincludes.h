@@ -1,13 +1,4 @@
-/*
- *  glincludes.h
- *  waves
- *
- *  Created by arun on 10/01/11.
- *  Copyright 2011 __MyCompanyName__. All rights reserved.
- *
- */
-#ifndef GLINCLUDES_H
-#define GLINCLUDES_H
+#pragma once
 
 //#define GL_DEBUG
 
@@ -41,4 +32,3 @@
 #endif
 
 #include <memory.h>
-#endif

@@ -1,5 +1,4 @@
-#ifndef GEGUIBASE_H
-#define GEGUIBASE_H
+#pragma once
 
 #include "../renderer/rendererGL10.h"
 #include "../util/geDefines.h"
@@ -260,5 +259,3 @@ public:
 	{
 	}
 };
-
-#endif

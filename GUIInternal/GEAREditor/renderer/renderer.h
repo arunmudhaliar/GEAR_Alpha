@@ -1,5 +1,4 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#pragma once
 
 #include "glincludes.h"
 #include "matrix4x4f.h"
@@ -77,4 +76,3 @@ public:
 	static int g_iOGLMajorVersion;
 	static int g_iOGLMinorVersion;
 };
-#endif

@@ -1,5 +1,4 @@
-#ifndef GEBUTTON_H
-#define GEBUTTON_H
+#pragma once
 
 #include "geGUIBase.h"
 
@@ -72,5 +71,3 @@ protected:
 //private:
 	float m_cVBClientAreaLine[8];
 };
-
-#endif

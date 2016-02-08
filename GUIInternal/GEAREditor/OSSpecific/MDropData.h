@@ -1,5 +1,4 @@
-#ifndef MDROPDATA_H
-#define MDROPDATA_H
+#pragma once
 
 //#if !defined(__APPLE__) //disable Drag-Drop
 //#include <Ole2.h>
@@ -29,5 +28,3 @@ private:
 	geGUIBase* m_pSourceObjectPtr;
 	std::vector<geGUIBase*>* m_vpActualDataObjectPtrList;
 };
-
-#endif

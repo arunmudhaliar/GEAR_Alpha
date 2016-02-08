@@ -1,5 +1,4 @@
-#ifndef GEARSCENEPREVIEW_H
-#define GEARSCENEPREVIEW_H
+#pragma once
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
@@ -41,5 +40,3 @@ private:
 	bool m_bStopFollowCam;
 	vector2i m_cPrevMousePos;
 };
-
-#endif

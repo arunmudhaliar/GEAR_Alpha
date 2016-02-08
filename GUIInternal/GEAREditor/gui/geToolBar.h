@@ -1,5 +1,4 @@
-#ifndef GETOOLBAR_H
-#define GETOOLBAR_H
+#pragma once
 
 #include "geButton.h"
 #include <vector>
@@ -59,5 +58,3 @@ public:
 private:
 	std::vector<geToolBarButton*> m_vToolBarButtons;
 };
-
-#endif

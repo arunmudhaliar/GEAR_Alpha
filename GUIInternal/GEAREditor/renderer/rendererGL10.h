@@ -1,5 +1,4 @@
-#ifndef RENDERERGL10_H
-#define RENDERERGL10_H
+#pragma once
 
 #include "renderer.h"
 
@@ -15,4 +14,3 @@ public:
 
 	//static rendererGL10* g_pRendererGL10;
 };
-#endif

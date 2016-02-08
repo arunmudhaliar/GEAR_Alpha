@@ -1,5 +1,4 @@
-#ifndef GEGUIMANAGER_H
-#define GEGUIMANAGER_H
+#pragma once
 
 #include <vector>
 #include "geWindow.h"
@@ -53,5 +52,3 @@ private:
 public:
 	static CGETextureManager g_cTextureManager;
 };
-
-#endif

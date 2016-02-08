@@ -1,5 +1,4 @@
-#ifndef GETESTDLG_H
-#define GETESTDLG_H
+#pragma once
 
 #include "geSecondryView.h"
 #include "../gui/geHorizontalSlider.h"
@@ -22,5 +21,3 @@ public:
 protected:
 	geWindow* m_pWindow;
 };
-
-#endif

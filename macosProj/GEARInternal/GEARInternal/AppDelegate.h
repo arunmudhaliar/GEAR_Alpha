@@ -1,10 +1,4 @@
-//
-//  AppDelegate.h
-//  testMenu
-//
-//  Created by Mudaliar, Arun on 4/8/15.
-//  Copyright (c) 2015 ea. All rights reserved.
-//
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 #include <SDL2/SDL.h>

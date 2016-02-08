@@ -1,5 +1,4 @@
-#ifndef GEARSCENEPROPERTYEDITOR_H
-#define GEARSCENEPROPERTYEDITOR_H
+#pragma once
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
@@ -101,5 +100,3 @@ private:
 	//Scripts
 	std::vector<stMonoScriptTVNode*> m_vMonoScript;
 };
-
-#endif

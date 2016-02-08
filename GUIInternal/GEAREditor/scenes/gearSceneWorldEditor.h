@@ -1,5 +1,4 @@
-#ifndef GEARSCENEWORLDEDITOR_H
-#define GEARSCENEWORLDEDITOR_H
+#pragma once
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
@@ -122,5 +121,3 @@ private:
 	BlurFilter m_cBlurFilter;
 	ToneMappingFilter m_cToneMappingFilter;
 };
-
-#endif

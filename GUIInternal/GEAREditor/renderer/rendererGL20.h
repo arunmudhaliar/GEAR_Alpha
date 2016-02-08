@@ -1,5 +1,4 @@
-#ifndef RENDERERGL20_H
-#define RENDERERGL20_H
+#pragma once
 
 #include "renderer.h"
 
@@ -13,4 +12,3 @@ public:
 #endif
 	~rendererGL20();
 };
-#endif

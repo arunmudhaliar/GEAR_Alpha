@@ -1,7 +1,5 @@
-#ifndef SPRITE2DX_H
-#define SPRITE2DX_H
+#pragma once
 
-//#include "CommonData.h"
 #include "Sprite.h"
 
 class Sprite2Dx : public Sprite
@@ -22,6 +20,4 @@ public:
 
     void drawVerextBufferOnly(geVector2f* pos=NULL);
 };
-
-#endif
 

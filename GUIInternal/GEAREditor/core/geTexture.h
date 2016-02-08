@@ -1,5 +1,4 @@
-#ifndef GETEXTURE_H
-#define GETEXTURE_H
+#pragma once
 
 #include "steTexturePacket.h"
 
@@ -42,5 +41,3 @@ private:
 	steTexturePacket* m_pTexTurePtr;     //must not delete this pointer
 	ETEXTURE m_eTextureType;
 };
-
-#endif

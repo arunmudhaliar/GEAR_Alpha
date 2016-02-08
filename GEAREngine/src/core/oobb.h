@@ -1,12 +1,9 @@
-#ifndef OOBB_H
-#define OOBB_H
-
+#pragma once
 
 #include "vector3.h"
 #include "gxMath.h"
 #include "basicIncludes.h"
 #include "../hwShader/gxHWShader.h"
-
 
 template<class T> class OOBB;
 typedef DECLSPEC OOBB<float> gxOOBBf;
@@ -184,4 +181,3 @@ public:
 	vector3<T> m_min;
     vector3<T> m_max;
 };
-#endif

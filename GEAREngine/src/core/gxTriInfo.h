@@ -1,5 +1,4 @@
-#ifndef GXTRIINFO_H
-#define GXTRIINFO_H
+#pragma once
 
 #include "basicIncludes.h"
 #include "gxMaterial.h"
@@ -90,5 +89,3 @@ private:
 	int m_iMaterialCRC;
 	unsigned int m_uVBO_trilstID;
 };
-
-#endif

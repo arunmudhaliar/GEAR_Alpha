@@ -1,7 +1,4 @@
-#ifndef _TEXTUREMANAGER_H_
-#define _TEXTUREMANAGER_H_
-
-//#include "../util/objC_util.h"
+#pragma once
 
 #include "basicIncludes.h"
 
@@ -36,5 +33,3 @@ private:
 	char m_szMetaDataFolder[512];
 	stTexturePacket* m_pGEARTexture1x1;
 };
-
-#endif

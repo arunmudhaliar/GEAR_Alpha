@@ -1,5 +1,4 @@
-#ifndef LAYERMANAGER_H
-#define LAYERMANAGER_H
+#pragma once
 
 #include "object3d.h"
 #include <vector>
@@ -45,5 +44,3 @@ public:
 private:
 	Layer* m_pszLayers[MAX_LAYER];
 };
-
-#endif

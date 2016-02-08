@@ -1,6 +1,4 @@
-#ifndef BASICINCLUDES_H
-#define BASICINCLUDES_H
-
+#pragma once
 
 #ifdef _WIN32
     #ifndef GEAR2D
@@ -61,5 +59,3 @@
 #define GX_SWAP_FLOAT(x1, x2)   { float t=x1; x1=x2; x2=t;    }
 
 #define UNUSED(x)   (void)x
-
-#endif

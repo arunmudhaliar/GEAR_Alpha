@@ -1,5 +1,4 @@
-#ifndef FBXIMPORTER_H
-#define FBXIMPORTER_H
+#pragma once
 
 #define FBXSDK_NEW_API
 #define FBXSDK_SHARED
@@ -49,5 +48,3 @@ private:
 	char m_cszNormalizedFilePath[FILENAME_MAX];
 	int m_iPrivateBoneIterator;
 };
-
-#endif

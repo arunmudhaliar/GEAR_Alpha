@@ -1,5 +1,4 @@
-#ifndef GXMATERIAL_H
-#define GXMATERIAL_H
+#pragma once
 
 #include "vector4.h"
 #include "TextureManager.h"
@@ -81,5 +80,3 @@ private:
 	std::vector<std::string> m_vTextureNameFromFBXFile;
 	//
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef GXDEBUG_H
-#define GXDEBUG_H
+#pragma once
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -39,6 +38,4 @@ extern "C" DECLSPEC void printCallStack();
 
 #else
 #define CHECK_GL_ERROR(fn) fn
-#endif // GL_ERROR_CHECK_H_INCLUDED
-//
 #endif

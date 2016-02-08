@@ -1,5 +1,4 @@
-#ifndef GXMESH_H
-#define GXMESH_H
+#pragma once
 
 #include "object3d.h"
 #include "gxTriInfo.h"
@@ -137,5 +136,3 @@ protected:
 	gxUV* m_pszUVChannels;
 	int m_nTris_For_Internal_Use;
 };
-
-#endif

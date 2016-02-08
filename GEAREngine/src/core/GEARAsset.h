@@ -1,5 +1,4 @@
-#ifndef GEARASSET_H
-#define GEARASSET_H
+#pragma once
 
 #include "basicIncludes.h"
 #include <string>
@@ -18,5 +17,3 @@ protected:
 	unsigned int m_iAssetFileCRC;
 	std::string m_cAssetFileName;
 };
-
-#endif

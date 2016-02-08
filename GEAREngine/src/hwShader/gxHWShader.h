@@ -1,5 +1,4 @@
-#ifndef GXHWSHADER_H
-#define GXHWSHADER_H
+#pragma once
 
 #include "../renderer/gxRenderer.h"
 #include "../core/gxDebug.h"
@@ -124,5 +123,3 @@ private:
 	int m_cAttrib_vIN_Normal;
 	int m_cAttrib_Tangent;
 };
-
-#endif

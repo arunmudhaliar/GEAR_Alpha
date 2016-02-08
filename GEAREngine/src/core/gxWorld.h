@@ -1,5 +1,4 @@
-#ifndef GXWORLD_H
-#define GXWORLD_H
+#pragma once
 
 #include "object3d.h"
 #include "gxMesh.h"
@@ -110,5 +109,3 @@ private:
 	COctree* m_pOctree;
 	LayerManager m_cLayerManager;
 };
-
-#endif

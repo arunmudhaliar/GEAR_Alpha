@@ -1,5 +1,4 @@
-#ifndef GXANIMATION_H
-#define GXANIMATION_H
+#pragma once
 
 #include "gxAnimationSet.h"
 #include <vector>
@@ -61,5 +60,3 @@ extern "C" {
 	DECLSPEC int gxAnimation_getAnimSetCount(gxAnimation* animation);
 	DECLSPEC void gxAnimation_appendAnimationSet(gxAnimation* animation, gxAnimationSet* animationSet);
 }
-
-#endif

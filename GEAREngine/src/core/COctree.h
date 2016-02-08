@@ -1,5 +1,4 @@
-#ifndef OCTREE_H
-#define OCTREE_H
+#pragma once
 
 #include "gxWorld.h"
 #include "frustum.h"
@@ -67,4 +66,3 @@ private:
 	int m_nMaxLevel;
 	OctreeNode*	m_pRootNode;
 };
-#endif

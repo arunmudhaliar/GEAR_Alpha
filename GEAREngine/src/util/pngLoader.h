@@ -1,5 +1,4 @@
-#ifndef PNGLOADER_H
-#define PNGLOADER_H
+#pragma once
 
 #define PNG_feature_SUPPORTED
 #include "../lpng151/png.h"
@@ -18,8 +17,6 @@
 #else
 #include <malloc/malloc.h>
 #endif
-
-
 
 int read_png_file(const char* file_name, bool& bAlpha, unsigned int& cx, unsigned int& cy, unsigned int& bpp)
 {
@@ -203,5 +200,3 @@ int read_png_file(const char* file_name, bool& bAlpha, unsigned int& cx, unsigne
 	////DEBUG_PRINT("%s : size(%d, %d), format %d, compressed size %d bytes\n", out_filename, width, height, out_format, compressedSize);
 	return texID;
 }
-
-#endif

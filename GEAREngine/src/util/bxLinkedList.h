@@ -1,5 +1,4 @@
-#ifndef LINKEDLIST_H
-#define LINKEDLIST_H
+#pragma once
 
 #include "../core/basicIncludes.h"
 
@@ -240,4 +239,3 @@ private:
 	stLinkNode<T>* m_pTail;
 	int				m_nCnt;
 };
-#endif

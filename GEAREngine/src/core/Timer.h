@@ -1,14 +1,4 @@
-//
-//  untitled.h
-//  GEARv1.0
-//
-//  Created by Samarth on 24/06/10.
-//  Copyright 2010 __MyCompanyName__. All rights reserved.
-//
-
-//#import <Foundation/Foundation.h>
-#ifndef TIMER_H
-#define TIMER_H
+#pragma once
 
 #include "basicIncludes.h"
 
@@ -45,5 +35,3 @@ private:
 
 	static float	m_fTimeScale;	//global time scale for the engine (especially for shaders)
 };
-
-#endif

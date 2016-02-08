@@ -1,5 +1,4 @@
-#ifndef TONEMAPPINGFILTER_H
-#define TONEMAPPINGFILTER_H
+#pragma once
 
 #include "PostProcessor.h"
 #include "../hwShader/HWShaderManager.h"
@@ -21,4 +20,3 @@ protected:
 	FBO* m_pSceneFBOInput;
 	FBO* m_pBlurSceneFBOInput;
 };
-#endif

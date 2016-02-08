@@ -1,5 +1,4 @@
-#ifndef MONOSCRIPT_H
-#define MONOSCRIPT_H
+#pragma once
 
 #include <vector>
 #include <map>
@@ -57,5 +56,3 @@ private:
 	MonoMethod* m_pMethod_initMonoScript;
 	MonoMethod* m_pMethod_update;
 };
-
-#endif

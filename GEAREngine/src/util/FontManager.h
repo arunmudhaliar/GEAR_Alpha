@@ -1,12 +1,4 @@
-//
-//  FontManager.h
-//  waves2
-//
-//  Created by arun on 03/05/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-#ifndef FONTMANAGER_H
-#define FONTMANAGER_H
+#pragma once
 
 #include <vector>
 #include "../renderer/gxRenderer.h"
@@ -132,5 +124,3 @@ public:
 	void setRenderer(gxRenderer* renderer);
 #endif
 };
-
-#endif

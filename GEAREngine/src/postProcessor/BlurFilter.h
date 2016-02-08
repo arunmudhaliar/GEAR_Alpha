@@ -1,5 +1,4 @@
-#ifndef BLURFILTER_H
-#define BLURFILTER_H
+#pragma once
 
 #include "PostProcessor.h"
 #include "../hwShader/HWShaderManager.h"
@@ -20,4 +19,3 @@ protected:
 	gxHWShader* m_pBlurGLSLShaderPtr;
 	FBO* m_pFBOInput;
 };
-#endif

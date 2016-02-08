@@ -1,5 +1,4 @@
-#ifndef STFOG_H
-#define STFOG_H
+#pragma once
 
 #include "../core/vector4.h"
 
@@ -39,5 +38,3 @@ struct stFog
 	EFOG_TYPE fog_type;
 
 };
-
-#endif

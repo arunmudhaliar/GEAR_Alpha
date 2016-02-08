@@ -1,14 +1,4 @@
-/*
- *  vector2.h
- *  waves2
- *
- *  Created by arun on 01/02/11.
- *  Copyright 2011 __MyCompanyName__. All rights reserved.
- *
- */
-
-#ifndef VECTOR2_H
-#define VECTOR2_H
+#pragma once
 
 #include "gxMath.h"
 #include "basicIncludes.h"
@@ -89,5 +79,3 @@ public:
 	}
 	
 };
-
-#endif

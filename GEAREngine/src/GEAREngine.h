@@ -1,5 +1,4 @@
-#ifndef GEARENGINE_H
-#define GEARENGINE_H
+#pragma once
 
 #include "core/gxWorld.h"
 #include "renderer/gxRenderer.h"
@@ -55,12 +54,8 @@ extern "C" {
 
 	//logs
 	DECLSPEC void engine_consoleLog(const char* msg, int msgtype=0);	//0=info, 1=warning, 2=error
-
-
-
 }
 //
-
 
 class GEAREngine
 {
@@ -78,5 +73,3 @@ private:
 	std::vector<gxWorld*> m_cWorlds;
 	HWShaderManager m_cHWShaderManager;
 };
-
-#endif

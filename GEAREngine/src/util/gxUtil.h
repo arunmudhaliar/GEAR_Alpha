@@ -1,5 +1,4 @@
-#ifndef GXUTIL_H
-#define GXUTIL_H
+#pragma once
 
 #include <string>
 #include "../core/vector3.h"
@@ -178,5 +177,3 @@ private:
 	static char g_directoryPath[512];
 	static char g_filePath[512];
 };
-
-#endif

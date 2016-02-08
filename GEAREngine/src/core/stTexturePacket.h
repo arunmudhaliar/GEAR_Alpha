@@ -1,13 +1,4 @@
-//
-//  stTexturePacket.h
-//  waves2
-//
-//  Created by arun on 10/05/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-
-#ifndef STTEXTUREPACKET_H
-#define STTEXTUREPACKET_H
+#pragma once
 
 #include "basicIncludes.h"
 
@@ -58,5 +49,3 @@ struct DECLSPEC stTexturePacket
 	unsigned int	m_cHeight;
 	unsigned int	m_cBpp;
 };
-
-#endif

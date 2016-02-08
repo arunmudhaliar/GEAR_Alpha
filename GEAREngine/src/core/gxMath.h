@@ -1,5 +1,4 @@
-#ifndef GXMATH_H
-#define GXMATH_H
+#pragma once
 
 #include <stdlib.h>
 #include <math.h>
@@ -86,6 +85,3 @@ public:
 		return val;
 	}
 };
-
-
-#endif //GXMATH_H

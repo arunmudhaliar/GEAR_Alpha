@@ -1,12 +1,4 @@
-//
-//  SoundEngine.h
-//  testOpenAL
-//
-//  Created by arun on 31/05/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-#ifndef SOUNDENGINE_H
-#define SOUNDENGINE_H
+#pragma once
 
 #include "../core/basicIncludes.h"
 
@@ -95,5 +87,3 @@ private:
 	std::vector<SoundSample*> m_pszSamples;
     std::vector<SoundSource*> m_pszSources;
 };
-
-#endif

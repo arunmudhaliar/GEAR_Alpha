@@ -1,13 +1,4 @@
-//
-//  SoundSource.h
-//  testOpenAL
-//
-//  Created by arun on 31/05/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-
-#ifndef SOUNDSOURCE_H
-#define SOUNDSOURCE_H
+#pragma once
 
 #include "../core/basicIncludes.h"
 
@@ -129,5 +120,3 @@ private:
     bool m_bLoop;	//used for android
 #endif
 };
-
-#endif

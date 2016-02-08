@@ -1,12 +1,4 @@
-//
-//  rect.h
-//  waves2
-//
-//  Created by arun on 27/04/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-#ifndef RECT_H
-#define RECT_H
+#pragma once
 
 #include "vector2.h"
 #include "gxMath.h"
@@ -85,5 +77,3 @@ public:
     vector2<T> m_pos;
     vector2<T> m_size;
 };
-
-#endif

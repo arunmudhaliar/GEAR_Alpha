@@ -1,5 +1,4 @@
-#ifndef OBJECT3D_H
-#define OBJECT3D_H
+#pragma once
 
 //#define USE_BXLIST
 
@@ -262,6 +261,3 @@ extern "C" {
 	DECLSPEC bool object3d_removeChild(object3d* obj, object3d* child);
 	DECLSPEC object3d* object3d_getParent(object3d* obj);
 }
-//
-
-#endif

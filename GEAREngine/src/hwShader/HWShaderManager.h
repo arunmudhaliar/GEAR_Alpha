@@ -1,5 +1,4 @@
-#ifndef HWSHADERMANAGER_H
-#define HWSHADERMANAGER_H
+#pragma once
 
 #include "../renderer/gxRenderer.h"
 #include <vector>
@@ -62,5 +61,3 @@ private:
 	std::vector<stHWShaderSnippet*> m_cvHWShaderSnippets;
 #endif
 };
-
-#endif

@@ -1,8 +1,6 @@
-#ifndef GXEXPANDABLEARRAY_H
-#define GXEXPANDABLEARRAY_H
+#pragma once
 
 #include "../core/basicIncludes.h"
-//#define GX_DELETE(x) if(x){ delete x; x=NULL;}
 
 template<class T>
 class ExpandableArrayNode
@@ -291,4 +289,3 @@ private:
 	int m_cAllocationSize;
 	int m_cDeltaAllocationSize;
 };
-#endif

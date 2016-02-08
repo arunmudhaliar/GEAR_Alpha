@@ -1,5 +1,4 @@
-#ifndef GXANIMATIONTRACK_H
-#define GXANIMATIONTRACK_H
+#pragma once
 
 #include "basicIncludes.h"
 #include "matrix4x4f.h"
@@ -47,4 +46,3 @@ private:
 };
 
 #include "object3d.h"
-#endif

@@ -1,14 +1,4 @@
-/*
- *  matrix4x4x.h
- *  waves2
- *
- *  Created by arun on 31/01/11.
- *  Copyright 2011 __MyCompanyName__. All rights reserved.
- *
- */
-
-#ifndef MATRIX4X4F_H
-#define MATRIX4X4F_H
+#pragma once
 
 #include "basicIncludes.h"
 #include "vector3.h"
@@ -546,5 +536,3 @@ public:
 
 	void setPosition(const vector3f& pos)		{	setPosition(pos.x, pos.y, pos.z);	}
 };
-
-#endif

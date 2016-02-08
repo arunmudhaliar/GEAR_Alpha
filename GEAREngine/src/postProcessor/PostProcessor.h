@@ -1,5 +1,4 @@
-#ifndef POSTPROCESSOR_H
-#define POSTPROCESSOR_H
+#pragma once
 
 #include "../core/basicIncludes.h"
 #include "../renderer/gxRenderer.h"
@@ -26,4 +25,3 @@ protected:
 	FBO m_cFBO;
 
 };
-#endif

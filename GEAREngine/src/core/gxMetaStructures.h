@@ -1,5 +1,4 @@
-#ifndef GXMETASTRUCTURES_H
-#define GXMETASTRUCTURES_H
+#pragma once
 
 #if defined(ANDROID) || defined(__APPLE__)
 	typedef long long __int64;
@@ -31,5 +30,3 @@ struct stMetaHeader
 	__int64 lastchanged;
 	EMETA_FILETYPE filetype;
 };
-
-#endif

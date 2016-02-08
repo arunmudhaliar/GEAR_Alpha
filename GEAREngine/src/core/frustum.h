@@ -1,6 +1,4 @@
-//
-#ifndef GXFRUSTUM_H
-#define GXFRUSTUM_H
+#pragma once
 
 #include "plane.h"
 
@@ -173,4 +171,3 @@ public:
 	plane3<T>	m_cPlanes[6];
 	vector3<T>	m_cFrustumVert[8];
 };
-#endif

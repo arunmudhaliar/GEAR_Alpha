@@ -1,5 +1,4 @@
-#ifndef GXCAMERA_H
-#define GXCAMERA_H
+#pragma once
 
 #include "object3d.h"
 #include "frustum.h"
@@ -41,5 +40,3 @@ private:
 	gxFrustumf	m_cFrustum;
 	matrix4x4f	m_cDummyProjMatrix;
 };
-
-#endif

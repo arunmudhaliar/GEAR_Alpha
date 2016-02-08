@@ -1,5 +1,4 @@
-#ifndef GXSKINNEDMESH_H
-#define GXSKINNEDMESH_H
+#pragma once
 
 #include "gxMesh.h"
 
@@ -43,5 +42,3 @@ private:
 	matrix4x4f* m_pszBoneOffsetList;
 	object3d* m_pRootNodePtr;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef GXANIMATIONSET_H
-#define GXANIMATIONSET_H
+#pragma once
 
 #include "gxAnimationTrack.h"
 #include <vector>
@@ -38,5 +37,3 @@ private:
 extern "C" {
 	DECLSPEC const char* gxAnimationSet_getAnimationName(gxAnimationSet* animSet);
 }
-
-#endif

@@ -1,10 +1,4 @@
-#ifndef CAMERA_H
-#define CAMERA_H
-
-//#include "../renderer/rendererGL10.h"
-//#include "../renderer/rendererGL20.h"
-//#include "gxCamera.h"
-//#include "frustum.h"
+#pragma once
 
 #include "gxCamera.h"
 #include "object3d.h"
@@ -79,5 +73,3 @@ private:
 	unsigned int m_iLayerCullingMask;
 	bool m_bMainCamera;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef GXCRC32_H
-#define GXCRC32_H
+#pragma once
 
 #include <stdio.h>
 #include <string.h>
@@ -275,4 +274,3 @@ private:
 		//	crcData ^= CrcSeed;
 		//}
 };
-#endif

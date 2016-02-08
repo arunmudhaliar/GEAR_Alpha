@@ -1,5 +1,4 @@
-#ifndef GXFILE_H
-#define GXFILE_H
+#pragma once
 
 #include <stdio.h>
 #include "../core/basicIncludes.h"
@@ -72,5 +71,3 @@ private:
 	FILE*		m_pFP;
 	EFILEMODE	m_eFileMode;
 };
-
-#endif

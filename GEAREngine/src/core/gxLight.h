@@ -1,5 +1,4 @@
-#ifndef GXLIGHT_H
-#define GXLIGHT_H
+#pragma once
 
 #include "object3d.h"
 #include "vector4.h"
@@ -72,5 +71,3 @@ private:
 	matrix4x4f m_cDepthProjectionMatrix;
 
 };
-
-#endif

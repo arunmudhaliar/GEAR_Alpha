@@ -1,5 +1,4 @@
-#ifndef PLANE_H
-#define PLANE_H
+#pragma once
 
 #include "vector3.h"
 
@@ -157,5 +156,3 @@ public:
 	vector3<T>	normal;
 	T			d;
 };
-
-#endif

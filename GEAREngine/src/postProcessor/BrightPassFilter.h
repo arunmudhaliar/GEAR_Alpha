@@ -1,5 +1,4 @@
-#ifndef BRIGHTPASSFILTER_H
-#define BRIGHTPASSFILTER_H
+#pragma once
 
 #include "PostProcessor.h"
 #include "../hwShader/HWShaderManager.h"
@@ -20,4 +19,3 @@ protected:
 	gxHWShader* m_pBrightPassGLSLShaderPtr;
 	FBO* m_pFBOInput;
 };
-#endif

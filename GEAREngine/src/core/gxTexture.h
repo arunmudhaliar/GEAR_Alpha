@@ -1,14 +1,4 @@
-/*
- *  gxTexture.h
- *  BMXProRider
- *
- *  Created by arun on 16/08/10.
- *  Copyright 2010 __MyCompanyName__. All rights reserved.
- *
- */
-
-#ifndef GXTEXTURE_H
-#define GXTEXTURE_H
+#pragma once
 
 #include "stTexturePacket.h"
 #include "matrix4x4f.h"
@@ -65,5 +55,3 @@ private:
 	matrix4x4f m_cMatrix;
 	int m_iFileCRC;
 };
-
-#endif

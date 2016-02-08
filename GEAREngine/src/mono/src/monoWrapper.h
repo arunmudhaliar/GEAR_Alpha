@@ -1,5 +1,4 @@
-#ifndef MONOWRAPPER_H
-#define MONOWRAPPER_H
+#pragma once
 
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/metadata.h>
@@ -116,5 +115,3 @@ private:
 
 	static std::vector<monoScript*> g_monoScriptClassDefs;
 };
-
-#endif

@@ -1,10 +1,6 @@
-#ifndef __TGA_H__
-#define __TGA_H__
+#pragma once
 
-//#pragma comment(lib, "Opengl32.lib")					//Link to OpenGL32.lib so we can use OpenGL stuff
-
-//#include <windows.h>									// Standard windows header
-#include <stdio.h>										// Standard I/O header 
+#include <stdio.h>										// Standard I/O header
 #include <string.h>
 #if __APPLE__
     #include <malloc/malloc.h>
@@ -12,9 +8,6 @@
     #include <malloc.h>
 #endif
 #include "../core/basicIncludes.h"
-//#include <gl\gl.h>										// Header for OpenGL32 library
-//#include "Texture.h"
-
 
 typedef	struct									
 {
@@ -47,9 +40,6 @@ typedef struct
 
 TGAHeader tgaheader;									// TGA header
 TGA tga;												// TGA image data
-
-
-
 unsigned char uTGAcompare[12] = {0,0,2, 0,0,0,0,0,0,0,0,0};	// Uncompressed TGA Header
 unsigned char cTGAcompare[12] = {0,0,10,0,0,0,0,0,0,0,0,0};	// Compressed TGA Header
 #ifdef _WIN32
@@ -59,11 +49,3 @@ bool LoadTGA(tgaTexture * texture, const char * filename);
 #endif
 bool LoadUncompressedTGA(tgaTexture *, const char *, FILE *);	// Load an Uncompressed file
 bool LoadCompressedTGA(tgaTexture *, const char *, FILE *);		// Load a Compressed file
-
-#endif
-
-
-
-
-
-

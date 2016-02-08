@@ -1,8 +1,6 @@
-#ifndef GXSURFACESHADER_H
-#define GXSURFACESHADER_H
+#pragma once
 
 #include <stdio.h>
-//#include <conio.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -311,4 +309,3 @@ public:
 	//stShaderProperty_Texture2D* getShaderProperty_Texture2D(int index)	{	return m_vTex2D_Properties[index];	}
 	//stShaderProperty_Color* getShaderProperty_Color(int index)			{	return m_vColor_Properties[index];	}
 };
-#endif

@@ -1,12 +1,4 @@
-//
-//  aabb.h
-//  waves2
-//
-//  Created by arun on 27/04/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-#ifndef AABB_H
-#define AABB_H
+#pragma once
 
 #include "vector2.h"
 #include "gxMath.h"
@@ -329,5 +321,3 @@ public:
     vector3<T> m_min;
     vector3<T> m_max;
 };
-
-#endif

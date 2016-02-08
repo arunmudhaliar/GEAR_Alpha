@@ -1,5 +1,4 @@
-#ifndef TRANSFORM_H
-#define TRANSFORM_H
+#pragma once
 
 #include "matrix4x4f.h"
 #include "vector3.h"
@@ -284,5 +283,3 @@ extern "C" {
 	DECLSPEC float transform_getZ(transform* t);
 	DECLSPEC void transform_copy(transform* a, transform* b);
 }
-
-#endif

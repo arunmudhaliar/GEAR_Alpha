@@ -1,5 +1,4 @@
-#ifndef QUATERNION_H
-#define QUATERNION_H
+#pragma once
 
 #include "gxMath.h"
 #include "vector3.h"
@@ -206,4 +205,3 @@ public:
 	float z;
 	float w;
 };
-#endif

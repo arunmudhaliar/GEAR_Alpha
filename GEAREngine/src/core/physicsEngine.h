@@ -1,6 +1,5 @@
 #ifdef USE_BULLET
-#ifndef PHYSICSENGINE_H
-#define PHYSICSENGINE_H
+#pragma once
 
 ///btBulletDynamicsCommon.h is the main Bullet include file, contains most common include files.
 #include "../physics/btBulletDynamicsCommon.h"
@@ -35,6 +34,5 @@ private:
 	btDiscreteDynamicsWorld* m_dynamicsWorld;
 	GLDebugDrawer m_cDebugDraw;
 };
-#endif
 
 #endif	//#ifdef USE_BULLET

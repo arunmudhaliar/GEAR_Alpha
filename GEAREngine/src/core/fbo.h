@@ -1,5 +1,4 @@
-#ifndef _FBO_H
-#define _FBO_H
+#pragma once
 
 #include "basicIncludes.h"
 #include <vector>
@@ -51,4 +50,3 @@ private:
 	std::vector<unsigned int*>	m_szTexture;
 
 };
-#endif

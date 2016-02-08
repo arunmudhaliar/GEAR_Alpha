@@ -1,5 +1,4 @@
-#ifndef GXRENDERER_H
-#define GXRENDERER_H
+#pragma once
 
 #include "../core/matrix4x4f.h"
 #include "../core/rect.h"
@@ -61,5 +60,3 @@ private:
 
 	stFog m_cFog;
 };
-
-#endif

@@ -1,12 +1,4 @@
-//
-//  SoundSample.h
-//  testOpenAL
-//
-//  Created by arun on 31/05/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-#ifndef SOUNDSAMPLE_H
-#define SOUNDSAMPLE_H
+#pragma once
 
 //#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
 //	#define USE_OPENAL	1
@@ -71,5 +63,3 @@ private:
     unsigned char* m_pRawSoundBuffer;	//need to delete manually for android
 #endif
 };
-
-#endif

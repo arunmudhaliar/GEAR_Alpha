@@ -3,9 +3,9 @@
 gxMaterial::gxMaterial():
 	GEARAsset()
 {
-	m_cDiffuse.set(0.5f, 0.5f, 0.5f, 1.0f);
-	m_cAmbient.set(0.1f, 0.1f, 0.1f, 1.0f);
-	m_cSpecular.set(0.2f, 0.2f, 0.2f, 1.0f);
+	diffuseColor.set(0.5f, 0.5f, 0.5f, 1.0f);
+	ambientColor.set(0.1f, 0.1f, 0.1f, 1.0f);
+	specularColor.set(0.2f, 0.2f, 0.2f, 1.0f);
 	m_pSurfaceShaderPtr=NULL;
 	m_fAlpha=1.0f;
 	m_fShininess=10.0f;
@@ -46,10 +46,10 @@ bool gxMaterial::appendDependency(int crc)
 
 void gxMaterial::write(gxFile& file)
 {
-	file.Write(m_iAssetFileCRC);
-	file.WriteBuffer((unsigned char*)&m_cAmbient, sizeof(m_cAmbient));
-	file.WriteBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
-	file.WriteBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
+	file.Write(assetFileCRC);
+	file.WriteBuffer((unsigned char*)&ambientColor, sizeof(ambientColor));
+	file.WriteBuffer((unsigned char*)&diffuseColor, sizeof(diffuseColor));
+	file.WriteBuffer((unsigned char*)&specularColor, sizeof(specularColor));
 	file.Write(m_fAlpha);
 	file.Write(m_fShininess);
 	file.Write(m_bTwoSided);
@@ -78,10 +78,10 @@ void gxMaterial::write(gxFile& file)
 
 void gxMaterial::read(gxFile& file)
 {
-	file.Read(m_iAssetFileCRC);
-	file.ReadBuffer((unsigned char*)&m_cAmbient, sizeof(m_cAmbient));
-	file.ReadBuffer((unsigned char*)&m_cDiffuse, sizeof(m_cDiffuse));
-	file.ReadBuffer((unsigned char*)&m_cSpecular, sizeof(m_cSpecular));
+	file.Read(assetFileCRC);
+	file.ReadBuffer((unsigned char*)&ambientColor, sizeof(ambientColor));
+	file.ReadBuffer((unsigned char*)&diffuseColor, sizeof(diffuseColor));
+	file.ReadBuffer((unsigned char*)&specularColor, sizeof(specularColor));
 
 	file.Read(m_fAlpha);
 	file.Read(m_fShininess);

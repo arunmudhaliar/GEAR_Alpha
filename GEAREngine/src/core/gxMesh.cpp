@@ -870,7 +870,7 @@ void gxMesh::writeMeshData(gxFile& file)
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
 	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Write(m_iAssetFileCRC);
+	file.Write(assetFileCRC);
 	writeAnimationController(file);
 
 	file.Write(m_nTriInfoArray);
@@ -962,7 +962,7 @@ void gxMesh::read(gxFile& file)
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
 	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Read(m_iAssetFileCRC);
+	file.Read(assetFileCRC);
 	readAnimationController(file);
 
 	file.Read(m_nTriInfoArray);

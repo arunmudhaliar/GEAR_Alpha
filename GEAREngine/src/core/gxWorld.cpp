@@ -76,12 +76,12 @@ void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
 	m_cMaterialList.push_back(&m_cDefaultMaterial);	//must be removed on the world destructor
 	//
 
-	for(std::vector<gxAnimationSet*>::iterator it = m_vAnimationSetList.begin(); it != m_vAnimationSetList.end(); ++it)
+	for(std::vector<gxAnimationSet*>::iterator it = animationSetList.begin(); it != animationSetList.end(); ++it)
 	{
 		gxAnimationSet* animationSet = *it;
 		GX_DELETE(animationSet);
 	}
-	m_vAnimationSetList.clear();
+	animationSetList.clear();
 
 	m_vLightList.clear();
 	m_cLayerManager.clearLayers();
@@ -290,7 +290,7 @@ void gearSceneWorldEditor::drawShadowMapPass()
 
 	gxLight* light = lightList->at(0);
 
-	m_cShadowMapFBO.BindFBO();
+	shadowMapFBO.BindFBO();
 	//projection
 	//glm::vec3 lightInvDir = glm::vec3(0.5f,2,2);
 	//// Compute the MVP matrix from the light's point of view
@@ -300,8 +300,8 @@ void gearSceneWorldEditor::drawShadowMapPass()
 	//glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
 
 	matrix4x4f depthProjectionMatrix;
-	depthProjectionMatrix.setOrtho(-m_cShadowMapFBO.getFBOWidth()*0.5f, m_cShadowMapFBO.getFBOWidth()*0.5f,
-		-m_cShadowMapFBO.getFBOHeight()*0.5f, m_cShadowMapFBO.getFBOHeight()*0.5f, 0, 10000);
+	depthProjectionMatrix.setOrtho(-shadowMapFBO.getFBOWidth()*0.5f, shadowMapFBO.getFBOWidth()*0.5f,
+		-shadowMapFBO.getFBOHeight()*0.5f, shadowMapFBO.getFBOHeight()*0.5f, 0, 10000);
 	matrix4x4f depthViewMatrix;
 
 	vector3f light_pos(light->getPosition());
@@ -329,7 +329,7 @@ void gearSceneWorldEditor::drawShadowMapPass()
 	//matrix4x4f depthBiasMVP(depthMVP * biasMatrix);
 	//const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * m_cLightBillBoardSprite)).getMatrix();
 
-	CHECK_GL_ERROR(glViewport(0, 0, m_cShadowMapFBO.getFBOWidth(), m_cShadowMapFBO.getFBOHeight()));
+	CHECK_GL_ERROR(glViewport(0, 0, shadowMapFBO.getFBOWidth(), shadowMapFBO.getFBOHeight()));
 	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
 	CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_SHADOWMAP);
@@ -341,7 +341,7 @@ void gearSceneWorldEditor::drawShadowMapPass()
 	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 
 	shader->disableProgram();
-	m_cShadowMapFBO.UnBindFBO();
+	shadowMapFBO.UnBindFBO();
 }*/
 
 void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr, int renderFlag)
@@ -421,9 +421,9 @@ void gxWorld::createOctree(int minTransformObj, int maxLevel)
 
 bool gxWorld::appendAnimationSetToWorld(gxAnimationSet* animset)
 {
-	if(std::find(m_vAnimationSetList.begin(), m_vAnimationSetList.end(), animset)==m_vAnimationSetList.end())
+	if(std::find(animationSetList.begin(), animationSetList.end(), animset)==animationSetList.end())
 	{
-		m_vAnimationSetList.push_back(animset);
+		animationSetList.push_back(animset);
 		return true;
 	}
 

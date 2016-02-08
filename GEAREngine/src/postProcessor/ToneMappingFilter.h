@@ -16,7 +16,7 @@ public:
 
 	void init(FBO* sceneInput, FBO* blurSceneInput);
 protected:
-	gxHWShader* m_pToneMappingGLSLShaderPtr;
-	FBO* m_pSceneFBOInput;
-	FBO* m_pBlurSceneFBOInput;
+	gxHWShader* tonemappingGLSLShader;
+	FBO* inputFbo;
+	FBO* inputBlutSceneFbo;
 };

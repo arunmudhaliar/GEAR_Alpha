@@ -78,8 +78,8 @@ public:
     void setVFlip();
     void setHFlip();
     
-    void setAlphaThreshold(float threshold)   {   m_fAlphaThreshold=threshold;   }
-    float getAlphaThreshokld()                {  return m_fAlphaThreshold;       }
+    void setAlphaThreshold(float threshold)   {   alphaThreshold=threshold;   }
+    float getAlphaThreshokld()                {  return alphaThreshold;       }
     
     virtual void transformationChangedf()
     {    }
@@ -107,6 +107,6 @@ protected:
     int m_iRenderFlag;
     float m_fAlpha;
     float m_fRGB[3];
-    float m_fAlphaThreshold;
+    float alphaThreshold;
 	EBLENDFLAG m_eBlendFlag;
 };

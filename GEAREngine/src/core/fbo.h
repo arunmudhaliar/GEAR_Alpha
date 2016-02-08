@@ -27,26 +27,26 @@ public:
 
     void DrawFBO(int index);
 
-	unsigned int getFBOTextureBuffer(int index)		{	return *m_szTexture.at(index);	}
-	unsigned int getFBODepthBuffer()				{	return m_depthbuffer;			}
-	unsigned int getFBOTextureDepthShadowBuffer()	{	return m_depthShadowbuffer;		}
+	unsigned int getFBOTextureBuffer(int index)		{	return *textures.at(index);	}
+	unsigned int getFBODepthBuffer()				{	return depthBufferID;			}
+	unsigned int getFBOTextureDepthShadowBuffer()	{	return depthShadowBufferID;		}
     
-	int getFBOWidth()	{    return m_width;  }
-	int getFBOHeight()	{    return m_height; }
+	int getFBOWidth()	{    return width;  }
+	int getFBOHeight()	{    return height; }
 
 private:
 	//vars
 
 	//handle to fbo
-	GLuint m_fbo;
+	GLuint fboID;
 
 	//render buffer
-	GLuint m_depthbuffer;
-	GLuint m_depthShadowbuffer;
+	GLuint depthBufferID;
+	GLuint depthShadowBufferID;
 
-	int		m_width;
-	int		m_height;
+	int		width;
+	int		height;
 
-	std::vector<unsigned int*>	m_szTexture;
+	std::vector<unsigned int*>	textures;
 
 };

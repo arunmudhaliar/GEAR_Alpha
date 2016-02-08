@@ -2,40 +2,40 @@
 
 gxAnimation::gxAnimation()
 {
-	m_pActiveAnimationSetPtr=NULL;
-	m_bPlay=false;
+	activeAnimationSet=NULL;
+	isAnimationPlaying=false;
 
-	m_nFrames=0;
-	m_iFPS=0;
-	m_fCurrentFrame=0.0f;
-	m_fSpeed=1.0f;
+	numberOfFrames=0;
+	animationFPS=0;
+	currentAnimationFrame=0.0f;
+	animationSpeed=1.0f;
 }
 
 gxAnimation::~gxAnimation()
 {
-	m_vAnimationSet.clear();
+	animationSets.clear();
 }
 
 void gxAnimation::appendAnimationSet(gxAnimationSet* animationSet)
 {
-	m_vAnimationSet.push_back(animationSet);
+	animationSets.push_back(animationSet);
 }
 
 void gxAnimation::update(float dt)
 {
-	if(m_pActiveAnimationSetPtr && m_bPlay)
+	if(activeAnimationSet && isAnimationPlaying)
 	{
-		float nFramesToPlay=(dt*m_iFPS*m_fSpeed);
-		m_fCurrentFrame+=nFramesToPlay;
-		if(m_fCurrentFrame>=m_nFrames)
-			m_fCurrentFrame=0.0f;
+		float nFramesToPlay=(dt*animationFPS*animationSpeed);
+		currentAnimationFrame+=nFramesToPlay;
+		if(currentAnimationFrame>=numberOfFrames)
+			currentAnimationFrame=0.0f;
 	}
 }
 
 void gxAnimation::write(gxFile& file)
 {
-	file.Write((int)m_vAnimationSet.size());
-	for(std::vector<gxAnimationSet*>::iterator it = m_vAnimationSet.begin(); it != m_vAnimationSet.end(); ++it)
+	file.Write((int)animationSets.size());
+	for(std::vector<gxAnimationSet*>::iterator it = animationSets.begin(); it != animationSets.end(); ++it)
 	{
 		gxAnimationSet* animationSet = *it;
 		animationSet->write(file);
@@ -56,24 +56,24 @@ void gxAnimation::read(gxFile& file)
 
 gxAnimationSet* gxAnimation::play(gxAnimationSet* animset)
 {
-	m_pActiveAnimationSetPtr = animset;
-	m_bPlay=true;
-	m_fCurrentFrame=0;
-	m_iFPS=m_pActiveAnimationSetPtr->getFPS();
-	m_nFrames=m_pActiveAnimationSetPtr->getFrameCount();
+	activeAnimationSet = animset;
+	isAnimationPlaying=true;
+	currentAnimationFrame=0;
+	animationFPS=activeAnimationSet->getFPS();
+	numberOfFrames=activeAnimationSet->getFrameCount();
 
-	return m_pActiveAnimationSetPtr;
+	return activeAnimationSet;
 }
 
 gxAnimationSet* gxAnimation::play(int animSetIndex)
 {
-	return play(m_vAnimationSet[animSetIndex]);
+	return play(animationSets[animSetIndex]);
 }
 
 void gxAnimation::stop()
 {
-	m_bPlay=false;
-	m_fCurrentFrame=0;
+	isAnimationPlaying=false;
+	currentAnimationFrame=0;
 }
 
 void gxAnimation::pause()
@@ -83,23 +83,23 @@ void gxAnimation::pause()
 
 void gxAnimation::resume()
 {
-	m_bPlay=true;
+	isAnimationPlaying=true;
 }
 
 void gxAnimation::rewind()
 {
-	m_fCurrentFrame=0;
+	currentAnimationFrame=0;
 
 }
 
 void gxAnimation::rewindAll()
 {
-	m_fCurrentFrame=0;
+	currentAnimationFrame=0;
 }
 
 bool gxAnimation::isPlaying()
 {
-	return m_bPlay;
+	return isAnimationPlaying;
 }
 
 

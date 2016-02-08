@@ -9,10 +9,10 @@
 #include "FontManager.h"
 
 #if defined (USE_ProgrammablePipeLine)
-gxFont::gxFont(gxHWShader* pFontShaderPtr, gxRenderer* m_pRendererPtr)
+gxFont::gxFont(gxHWShader* pFontShaderPtr, gxRenderer* rendererPtr)
 {
     m_pFontShaderPtr=pFontShaderPtr;
-	m_pRendererPtr=m_pRendererPtr;
+	rendererPtr=rendererPtr;
 #else
     gxFont::gxFont()
     {
@@ -338,7 +338,7 @@ int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     if(bShadowed)
     {
         transformTM.setPosition(x+1, y+1+m_fYOffset, 0.0f);
-        transformTM= *m_pRendererPtr->getOrthoProjectionMatrix() * transformTM;
+        transformTM= *rendererPtr->getOrthoProjectionMatrix() * transformTM;
         const float* u_mvp_m4x4_shadow=transformTM.getMatrix();
         m_pFontShaderPtr->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_shadow, false, 4);
         float shadow_color[]={0.0f, 0.0f, 0.0f, 0.7f};
@@ -349,7 +349,7 @@ int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     }
     
     transformTM.setPosition(x, y+m_fYOffset, 0.0f);
-    transformTM= *m_pRendererPtr->getOrthoProjectionMatrix() * transformTM;
+    transformTM= *rendererPtr->getOrthoProjectionMatrix() * transformTM;
     const float* u_mvp_m4x4=transformTM.getMatrix();
     m_pFontShaderPtr->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
     m_pFontShaderPtr->sendUniform4fv("u_color_v4", m_cszRGBA);
@@ -1031,7 +1031,7 @@ bool gxFont::canNeglectNextWord(const char* str, int cx, int nChar, int iCurInde
 
 FontManager::FontManager()
 {
-	m_pRendererPtr=NULL;
+	rendererPtr=NULL;
 }
 
 FontManager::~FontManager()
@@ -1072,18 +1072,18 @@ void FontManager::reset(bool reload)
 
 void FontManager::setRenderer(gxRenderer* renderer)
 {
-	m_pRendererPtr=renderer;
+	rendererPtr=renderer;
 	for(int x=0;x<m_cvFontList.size();x++)
     {
         gxFont* font=m_cvFontList[x];
-		font->setRenderer(m_pRendererPtr);
+		font->setRenderer(rendererPtr);
     }
 }
 
 gxFont* FontManager::loadFont(const char* filename)
 {
 #if defined (USE_ProgrammablePipeLine)
-    gxFont* newFont=new gxFont(&m_cFontShader, m_pRendererPtr);
+    gxFont* newFont=new gxFont(&m_cFontShader, rendererPtr);
 #else
     gxFont* newFont=new gxFont();
 #endif

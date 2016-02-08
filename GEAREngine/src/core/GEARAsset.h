@@ -14,6 +14,6 @@ public:
 	std::string getAssetFileName();
 
 protected:
-	unsigned int m_iAssetFileCRC;
-	std::string m_cAssetFileName;
+	unsigned int assetFileCRC;
+	std::string assetFileName;
 };

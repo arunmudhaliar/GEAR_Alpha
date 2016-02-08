@@ -18,10 +18,10 @@ public:
 	virtual void resize(float cx, float cy);
 
 	std::string getName()	{ return m_cName;	 }
-	FBO& getOutPutFBO()		{ return m_cFBO;	 }
+	FBO& getOutPutFBO()		{ return fbo;	 }
 
 protected:
 	std::string m_cName;
-	FBO m_cFBO;
+	FBO fbo;
 
 };

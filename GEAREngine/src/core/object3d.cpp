@@ -113,7 +113,7 @@ object3d::~object3d()
 
 	//if(m_pAnimationTrack)
 	//	m_pAnimationTrack->setObject3d(NULL);
-	m_iAssetFileCRC=0;
+	assetFileCRC=0;
 	m_pParentPtr=NULL;
 	m_pAnimationTrack=NULL;
 	GX_DELETE(m_pAnimationController);
@@ -630,7 +630,7 @@ void object3d::write(gxFile& file)
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
 	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Write(m_iAssetFileCRC);
+	file.Write(assetFileCRC);
 	writeAnimationController(file);
 
 	//
@@ -670,7 +670,7 @@ void object3d::read(gxFile& file)
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
 	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Read(m_iAssetFileCRC);
+	file.Read(assetFileCRC);
 	readAnimationController(file);
 
 	//

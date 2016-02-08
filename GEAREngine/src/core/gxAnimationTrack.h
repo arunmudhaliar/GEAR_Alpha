@@ -11,22 +11,22 @@ public:
 	gxAnimationTrack();
 	~gxAnimationTrack();
 
-	void setFPS(int fps)				{	m_iFPS=fps;			}
-	void setTotalFrames(int nFrames)	{	m_nFrames=nFrames;	}
+	void setFPS(int fps)				{	animationFPS=fps;			}
+	void setTotalFrames(int nFrames)	{	numberOfFrames=nFrames;	}
 
-	int getFPS()			{	return m_iFPS;		}
-	int getTotalFrames()	{	return m_nFrames;	}
+	int getFPS()			{	return animationFPS;		}
+	int getTotalFrames()	{	return numberOfFrames;	}
 
 	matrix4x4f* allocateTrack();
 
-	matrix4x4f* getTrack()	{	return m_pTrack;	}
+	matrix4x4f* getTrack()	{	return animationTrack;	}
 
 	void setCurrentFrame(int currentFrame)
 	{
-		m_iCurrentFrame=currentFrame;
+		currentAnimationFrame=currentFrame;
 	}
 
-	int getCurrentFrame()	{	return m_iCurrentFrame;	}
+	int getCurrentFrame()	{	return currentAnimationFrame;	}
 
 	//void setObject3d(object3d* obj);
 
@@ -37,10 +37,10 @@ public:
 	void read(gxFile& file);
 
 private:
-	int m_iFPS;
-	int m_nFrames;
-	int m_iCurrentFrame;
-	matrix4x4f* m_pTrack;
+	int animationFPS;
+	int numberOfFrames;
+	int currentAnimationFrame;
+	matrix4x4f* animationTrack;
 	//object3d* m_pObjectPtr;	//must not delete this pointer
 	char m_szName[256];
 };

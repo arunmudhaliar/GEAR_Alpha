@@ -567,27 +567,27 @@ void gearSceneWorldEditor::drawCameraFrustum(Camera* camera, gxHWShader* shader)
 	gxFrustumf& frustum=camera->getFrustum();
 
 	float lineAry[]={
-		frustum.m_cFrustumVert[0].x, frustum.m_cFrustumVert[0].y, frustum.m_cFrustumVert[0].z,		//0	near
-		frustum.m_cFrustumVert[1].x, frustum.m_cFrustumVert[1].y, frustum.m_cFrustumVert[1].z,		//1
-		frustum.m_cFrustumVert[2].x, frustum.m_cFrustumVert[2].y, frustum.m_cFrustumVert[2].z,		//2
-		frustum.m_cFrustumVert[3].x, frustum.m_cFrustumVert[3].y, frustum.m_cFrustumVert[3].z,		//3
+		frustum.frustumVertices[0].x, frustum.frustumVertices[0].y, frustum.frustumVertices[0].z,		//0	near
+		frustum.frustumVertices[1].x, frustum.frustumVertices[1].y, frustum.frustumVertices[1].z,		//1
+		frustum.frustumVertices[2].x, frustum.frustumVertices[2].y, frustum.frustumVertices[2].z,		//2
+		frustum.frustumVertices[3].x, frustum.frustumVertices[3].y, frustum.frustumVertices[3].z,		//3
 
-		frustum.m_cFrustumVert[4].x, frustum.m_cFrustumVert[4].y, frustum.m_cFrustumVert[4].z,		//4	far
-		frustum.m_cFrustumVert[5].x, frustum.m_cFrustumVert[5].y, frustum.m_cFrustumVert[5].z,		//5
-		frustum.m_cFrustumVert[6].x, frustum.m_cFrustumVert[6].y, frustum.m_cFrustumVert[6].z,		//6
-		frustum.m_cFrustumVert[7].x, frustum.m_cFrustumVert[7].y, frustum.m_cFrustumVert[7].z,		//7
+		frustum.frustumVertices[4].x, frustum.frustumVertices[4].y, frustum.frustumVertices[4].z,		//4	far
+		frustum.frustumVertices[5].x, frustum.frustumVertices[5].y, frustum.frustumVertices[5].z,		//5
+		frustum.frustumVertices[6].x, frustum.frustumVertices[6].y, frustum.frustumVertices[6].z,		//6
+		frustum.frustumVertices[7].x, frustum.frustumVertices[7].y, frustum.frustumVertices[7].z,		//7
 
-		frustum.m_cFrustumVert[0].x, frustum.m_cFrustumVert[0].y, frustum.m_cFrustumVert[0].z,		//0	near
-		frustum.m_cFrustumVert[4].x, frustum.m_cFrustumVert[4].y, frustum.m_cFrustumVert[4].z,		//4	far
+		frustum.frustumVertices[0].x, frustum.frustumVertices[0].y, frustum.frustumVertices[0].z,		//0	near
+		frustum.frustumVertices[4].x, frustum.frustumVertices[4].y, frustum.frustumVertices[4].z,		//4	far
 
-		frustum.m_cFrustumVert[1].x, frustum.m_cFrustumVert[1].y, frustum.m_cFrustumVert[1].z,		//1
-		frustum.m_cFrustumVert[5].x, frustum.m_cFrustumVert[5].y, frustum.m_cFrustumVert[5].z,		//5
+		frustum.frustumVertices[1].x, frustum.frustumVertices[1].y, frustum.frustumVertices[1].z,		//1
+		frustum.frustumVertices[5].x, frustum.frustumVertices[5].y, frustum.frustumVertices[5].z,		//5
 
-		frustum.m_cFrustumVert[2].x, frustum.m_cFrustumVert[2].y, frustum.m_cFrustumVert[2].z,		//2
-		frustum.m_cFrustumVert[6].x, frustum.m_cFrustumVert[6].y, frustum.m_cFrustumVert[6].z,		//6
+		frustum.frustumVertices[2].x, frustum.frustumVertices[2].y, frustum.frustumVertices[2].z,		//2
+		frustum.frustumVertices[6].x, frustum.frustumVertices[6].y, frustum.frustumVertices[6].z,		//6
 
-		frustum.m_cFrustumVert[3].x, frustum.m_cFrustumVert[3].y, frustum.m_cFrustumVert[3].z,		//3
-		frustum.m_cFrustumVert[7].x, frustum.m_cFrustumVert[7].y, frustum.m_cFrustumVert[7].z,		//7
+		frustum.frustumVertices[3].x, frustum.frustumVertices[3].y, frustum.frustumVertices[3].z,		//3
+		frustum.frustumVertices[7].x, frustum.frustumVertices[7].y, frustum.frustumVertices[7].z,		//7
 	};
 
 	unsigned int mode=GL_LINE_LOOP;

@@ -27,47 +27,46 @@ public:
 
 	void renderPass(gxRenderer* renderer, gxHWShader* shader);
 
-	void setDiffuseColor(const vector4f& clr)		{	m_cDiffuse=clr;	}
-	void setAmbientColor(const vector4f& clr)		{	m_cAmbient=clr;	}
-	void setSpecularColor(const vector4f& clr)	{	m_cSpecular=clr;	}
+	void setDiffuseColor(const vector4f& clr)		{	diffuseColor=clr;	}
+	void setAmbientColor(const vector4f& clr)		{	ambientColor=clr;	}
+	void setSpecularColor(const vector4f& clr)	{	specularColor=clr;	}
 
-	const vector4f& getDiffuseColor()	{	return m_cDiffuse;	}
-	const vector4f& getSpecularColor()	{	return m_cSpecular;	}
-	const vector4f& getAmbientColor()	{	return m_cAmbient;	}
-	ELIGHT_TYPE	getLightType()			{	return m_eType;		}
-	void setLightType(ELIGHT_TYPE eType){	m_eType=eType;		}
+	const vector4f& getDiffuseColor()	{	return diffuseColor;	}
+	const vector4f& getSpecularColor()	{	return specularColor;	}
+	const vector4f& getAmbientColor()	{	return ambientColor;	}
+	ELIGHT_TYPE	getLightType()			{	return lightType;		}
+	void setLightType(ELIGHT_TYPE eType){	lightType=eType;		}
 
-	float getConstantAttenuation()	{	return m_fConstantAttenuation;	}
-	float getLinearAttenuation()	{	return m_fLinearAttenuation;	}
-	float getQuadraticAttenuation()	{	return m_fQuadraticAttenuation;	}
+	float getConstantAttenuation()	{	return constantAttenuation;	}
+	float getLinearAttenuation()	{	return linearAttenuation;	}
+	float getQuadraticAttenuation()	{	return quadraticAttenuation;	}
 
-	void setConstantAttenuation(float value)	{	m_fConstantAttenuation=value;	}
-	void setLinearAttenuation(float value)		{	m_fLinearAttenuation=value;		}
-	void setQuadraticAttenuation(float value)	{	m_fQuadraticAttenuation=value;	}
+	void setConstantAttenuation(float value)	{	constantAttenuation=value;	}
+	void setLinearAttenuation(float value)		{	linearAttenuation=value;		}
+	void setQuadraticAttenuation(float value)	{	quadraticAttenuation=value;	}
 
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);
 
 	//shadow mapping
-	matrix4x4f& getShadowDepthMVP()		{ return m_cDepthMVP; }
-	matrix4x4f& getShadowDepthBiasMVP()	{ return m_cDepthBiasMVP; }
-	FBO& getShadowMapFBO()				{ return m_cShadowMapFBO; }
+	matrix4x4f& getShadowDepthMVP()		{ return depthMVPMatrix; }
+	matrix4x4f& getShadowDepthBiasMVP()	{ return depthBiasMVPMatrix; }
+	FBO& getShadowMapFBO()				{ return shadowMapFBO; }
 
 private:
-	ELIGHT_TYPE m_eType;
-	vector4f m_cDiffuse;
-	vector4f m_cSpecular;
-	vector4f m_cAmbient;
-	float m_fConstantAttenuation;
-	float m_fLinearAttenuation;
-	float m_fQuadraticAttenuation;
+	ELIGHT_TYPE lightType;
+	vector4f diffuseColor;
+	vector4f specularColor;
+	vector4f ambientColor;
+	float constantAttenuation;
+	float linearAttenuation;
+	float quadraticAttenuation;
 
 	//shadow mapping
-	FBO m_cShadowMapFBO;
+	FBO shadowMapFBO;
 
-	matrix4x4f m_cDepthMVP;
-	matrix4x4f m_cBiasMatrix;
-	matrix4x4f m_cDepthBiasMVP;
-	matrix4x4f m_cDepthProjectionMatrix;
-
+	matrix4x4f depthMVPMatrix;
+	matrix4x4f biasMatrix;
+	matrix4x4f depthBiasMVPMatrix;
+	matrix4x4f depthProjectionMatrix;
 };

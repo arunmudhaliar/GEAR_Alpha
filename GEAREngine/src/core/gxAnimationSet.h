@@ -13,25 +13,24 @@ public:
 	void appendTrack(gxAnimationTrack* track);
 	//void update(float dt);
 
-	const char* getAnimationName()		{	return m_szName;	}
-
-	std::vector<gxAnimationTrack*>* getTrackList()	{	return &m_vAnimationTrack;	}
+	const char* getAnimationName()                  {	return m_szName;            }
+	std::vector<gxAnimationTrack*>* getTrackList()	{	return &animationTracks;	}
 
 	void write(gxFile& file);
 	void read(gxFile& file);
 
-	void setCRCOfMeshData(int crc)	{	m_iCRC_of_mesh_data = crc;	}
-	int getCRCOfMeshData()			{	return m_iCRC_of_mesh_data;	}
+	void setCRCOfMeshData(int crc)	{	crcOfMeshData = crc;	}
+	int getCRCOfMeshData()			{	return crcOfMeshData;	}
 
-	int getFPS()		{	return m_iFPS;		}
-	int getFrameCount()	{	return m_nFrames;	}
+	int getFPS()		{	return animationFPS;	}
+	int getFrameCount()	{	return numberOfFrames;	}
 
 private:
-	std::vector<gxAnimationTrack*> m_vAnimationTrack;
-	int m_nFrames;
-	int m_iFPS;
+	std::vector<gxAnimationTrack*> animationTracks;
+	int numberOfFrames;
+	int animationFPS;
 	char m_szName[256];
-	int m_iCRC_of_mesh_data;
+	int crcOfMeshData;
 };
 
 extern "C" {

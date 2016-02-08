@@ -48,7 +48,7 @@ public:
 
 	gxMaterial* getDefaultMaterial()					{	return &m_cDefaultMaterial;		}
 	std::vector<gxMaterial*>* getMaterialList()			{	return &m_cMaterialList;		}
-	std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &m_vAnimationSetList;	}
+	std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &animationSetList;	}
 
 	void createOctree(int minTransformObj, int maxLevel);
 	COctree* getOctree()	{	return m_pOctree;	}
@@ -90,7 +90,7 @@ private:
 	void renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list, int renderFlag);
 
 	std::vector<gxMaterial*> m_cMaterialList;
-	std::vector<gxAnimationSet*> m_vAnimationSetList;
+	std::vector<gxAnimationSet*> animationSetList;
 	std::vector<gxLight*> m_vLightList;
 	std::vector<Camera*> m_vCameraList;
 

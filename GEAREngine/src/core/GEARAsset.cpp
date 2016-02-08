@@ -2,8 +2,8 @@
 
 GEARAsset::GEARAsset()
 {
-	m_iAssetFileCRC=0;
-	std::string m_cAssetFileName;
+	assetFileCRC=0;
+	std::string assetFileName;
 }
 
 GEARAsset::~GEARAsset()
@@ -12,16 +12,16 @@ GEARAsset::~GEARAsset()
 
 void GEARAsset::setAssetFileCRC(unsigned int crc, std::string filename)
 {
-	m_iAssetFileCRC=crc;
-	m_cAssetFileName = filename;
+	assetFileCRC=crc;
+	assetFileName = filename;
 }
 
 unsigned int GEARAsset::getAssetFileCRC()
 {
-	return m_iAssetFileCRC;
+	return assetFileCRC;
 }
 
 std::string GEARAsset::getAssetFileName()
 {
-	return m_cAssetFileName;
+	return assetFileName;
 }

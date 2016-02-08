@@ -18,20 +18,20 @@ public:
 	int	getNumOfObjects();
 	object3d* getObject(int index);
 	void setAABB(vector3f min_, vector3f max_);
-	void setLevel(int level)								{	m_iLevel = level;			}
-	void setChild(int index, OctreeNode* child)			{	m_pszChild[index]=child;	}
-	OctreeNode* getChild(int index)							{	return m_pszChild[index];	}
-	std::vector<object3d*>* getObjectList()				{	return &m_cObjLst;			}
+	void setLevel(int level)							{	treeLevel = level;		}
+	void setChild(int index, OctreeNode* child)			{	childs[index]=child;	}
+	OctreeNode* getChild(int index)						{	return childs[index];	}
+	std::vector<object3d*>* getObjectList()				{	return &objectList;		}
 
-	gxAABBf& getAABB()		{	return m_oAABB;		}
-	float getRadius()				{	return m_fRadius;	}
+	gxAABBf& getAABB()          {	return aabb;	}
+	float getRadius()			{	return radius;	}
 
 private:
-	OctreeNode* m_pszChild[MAX_OCTREECHILD];
-	int m_iLevel;
-	std::vector<object3d*> m_cObjLst;
-	gxAABBf m_oAABB;
-	float m_fRadius;
+	OctreeNode* childs[MAX_OCTREECHILD];
+	int treeLevel;
+	std::vector<object3d*> objectList;
+	gxAABBf aabb;
+	float radius;
 };
 
 class DECLSPEC COctree
@@ -43,15 +43,15 @@ public:
 	bool createOctree(gxWorld* world, int minTransformObj=10, int maxLevel=8);
 	void pushToRootNode(object3d* obj);
 	void reset();
-	OctreeNode* getRoot()	{	return m_pRootNode;	}
+	OctreeNode* getRoot()	{	return rootNode;	}
 	void drawOctree(OctreeNode* node, gxHWShader* shader);
 	void resetCollidedTransformObjList();
 	void checkOverlapWithOctree(OctreeNode* node, object3d* obj);
 	void checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustum, unsigned int cullingmask);
 	
-	int	getLevelsReached()	{	return m_nLevelReached;}
-	ExpandableArray<object3d*>* getCollidedObjList()		{	return &m_cCollidedObjLst;			}
-	ExpandableArray<object3d*>* getCollidedAlphaObjList()	{	return &m_cCollidedAlphaObjLst;		}
+	int	getLevelsReached()	{	return noOfLevelsReached;   }
+	ExpandableArray<object3d*>* getCollidedObjList()		{	return &collidedObjectList;			}
+	ExpandableArray<object3d*>* getCollidedAlphaObjList()	{	return &collidedAlphaObjectList;	}
 
 	object3d* pickBruteForce(vector3f& rayOrig, vector3f& rayDir);
 
@@ -59,10 +59,10 @@ private:
 	bool create(OctreeNode* node, object3d* obj);
 	void overlapWithObject(OctreeNode* node, object3d* obj);
 
-	int m_nLevelReached;
-	ExpandableArray<object3d*> m_cCollidedObjLst;
-	ExpandableArray<object3d*> m_cCollidedAlphaObjLst;
-	int	m_nMinTransformObj;
-	int m_nMaxLevel;
-	OctreeNode*	m_pRootNode;
+	int noOfLevelsReached;
+	ExpandableArray<object3d*> collidedObjectList;
+	ExpandableArray<object3d*> collidedAlphaObjectList;
+	int	minimumTransformObjectToBreak;
+	int maximumLevelToBreak;
+	OctreeNode*	rootNode;
 };

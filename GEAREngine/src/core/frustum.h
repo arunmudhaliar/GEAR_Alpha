@@ -33,7 +33,7 @@ public:
 		}
 		
 		for(i=0;i<8;i++)
-			m_cFrustumVert[i]	= _frustum.m_cFrustumVert[i];
+			frustumVertices[i]	= _frustum.frustumVertices[i];
 	};
 	
 	bool isPointInside(vector3<T> aPoint)
@@ -121,16 +121,16 @@ public:
 			m_cPlanes[i].normalize();
 	
 		//Far Clipping Plane Vertices
-		m_cFrustumVert[4]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::FAR_PLANE], m_cPlanes[gxFrustumf::BOTTOM_PLANE],	m_cPlanes[gxFrustumf::LEFT_PLANE]);
-		m_cFrustumVert[5]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::FAR_PLANE], m_cPlanes[gxFrustumf::BOTTOM_PLANE],	m_cPlanes[gxFrustumf::RIGHT_PLANE]);
-		m_cFrustumVert[6]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::FAR_PLANE], m_cPlanes[gxFrustumf::TOP_PLANE],		m_cPlanes[gxFrustumf::RIGHT_PLANE]);
-		m_cFrustumVert[7]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::FAR_PLANE], m_cPlanes[gxFrustumf::TOP_PLANE],		m_cPlanes[gxFrustumf::LEFT_PLANE]);
+		frustumVertices[4]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::FAR_PLANE], m_cPlanes[gxFrustumf::BOTTOM_PLANE],	m_cPlanes[gxFrustumf::LEFT_PLANE]);
+		frustumVertices[5]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::FAR_PLANE], m_cPlanes[gxFrustumf::BOTTOM_PLANE],	m_cPlanes[gxFrustumf::RIGHT_PLANE]);
+		frustumVertices[6]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::FAR_PLANE], m_cPlanes[gxFrustumf::TOP_PLANE],		m_cPlanes[gxFrustumf::RIGHT_PLANE]);
+		frustumVertices[7]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::FAR_PLANE], m_cPlanes[gxFrustumf::TOP_PLANE],		m_cPlanes[gxFrustumf::LEFT_PLANE]);
 	
 		//Near Clipping Plane Vertices
-		m_cFrustumVert[0]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::NEAR_PLANE], m_cPlanes[gxFrustumf::BOTTOM_PLANE],	m_cPlanes[gxFrustumf::LEFT_PLANE]);
-		m_cFrustumVert[1]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::NEAR_PLANE], m_cPlanes[gxFrustumf::BOTTOM_PLANE],	m_cPlanes[gxFrustumf::RIGHT_PLANE]);
-		m_cFrustumVert[2]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::NEAR_PLANE], m_cPlanes[gxFrustumf::TOP_PLANE],		m_cPlanes[gxFrustumf::RIGHT_PLANE]);
-		m_cFrustumVert[3]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::NEAR_PLANE], m_cPlanes[gxFrustumf::TOP_PLANE],		m_cPlanes[gxFrustumf::LEFT_PLANE]);
+		frustumVertices[0]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::NEAR_PLANE], m_cPlanes[gxFrustumf::BOTTOM_PLANE],	m_cPlanes[gxFrustumf::LEFT_PLANE]);
+		frustumVertices[1]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::NEAR_PLANE], m_cPlanes[gxFrustumf::BOTTOM_PLANE],	m_cPlanes[gxFrustumf::RIGHT_PLANE]);
+		frustumVertices[2]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::NEAR_PLANE], m_cPlanes[gxFrustumf::TOP_PLANE],		m_cPlanes[gxFrustumf::RIGHT_PLANE]);
+		frustumVertices[3]	= gxPlane3f::intersectionPoint(m_cPlanes[gxFrustumf::NEAR_PLANE], m_cPlanes[gxFrustumf::TOP_PLANE],		m_cPlanes[gxFrustumf::LEFT_PLANE]);
 	}
 //	//is a AABB in the frustum?
 //	PXbool IsAABBInside(const AABB<T>& aAABB)
@@ -169,5 +169,5 @@ public:
 	
 	//frustum Planes
 	plane3<T>	m_cPlanes[6];
-	vector3<T>	m_cFrustumVert[8];
+	vector3<T>	frustumVertices[8];
 };

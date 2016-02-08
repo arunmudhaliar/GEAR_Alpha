@@ -3,9 +3,9 @@
 Camera::Camera():
 	object3d(OBJECT3D_CAMERA)
 {
-	m_pRendererPtr=NULL;
+	rendererPtr=NULL;
 	//m_pCameraStructPtr=NULL;
-	m_iLayerCullingMask=0xffffffff;
+	layerCullingMask=0xffffffff;
 	setName("Camera");
 	setMainCamera(false);
 }
@@ -17,15 +17,15 @@ Camera::~Camera()
 
 void Camera::resetCamera()
 {
-	m_pRendererPtr=NULL;
-	m_cProjMatrix.identity();
-	m_cInvTranfMatrix.identity();
+	rendererPtr=NULL;
+	projectionMatrix.identity();
+	inverseTransformationMatrix.identity();
 }
 
 void Camera::initCamera(gxRenderer* renderer)
 {
 	resetCamera();
-	m_pRendererPtr=renderer;
+	rendererPtr=renderer;
 
 	setFOV(45.0f);
 	setNear(10.0f);
@@ -36,76 +36,76 @@ void Camera::initCamera(gxRenderer* renderer)
 
 bool Camera::isLayerCullingMask(unsigned int flag)
 {
-	return (m_iLayerCullingMask&flag)?true:false;
+	return (layerCullingMask&flag)?true:false;
 }
 	
 void Camera::resetLayerCullingMask(unsigned int flag)
 {
-	m_iLayerCullingMask=m_iLayerCullingMask&~flag;
+	layerCullingMask=layerCullingMask&~flag;
 }
 
 void Camera::setLayerCullingMask(unsigned int flag)
 {
-	m_iLayerCullingMask|=flag;
+	layerCullingMask|=flag;
 }
 
 unsigned int Camera::getLayerCullingMask()
 {
-	return m_iLayerCullingMask;
+	return layerCullingMask;
 }
 
 void Camera::setFOV(float fov)
 {
-	m_fFOV=fov;
+	this->fov=fov;
 	perspectiveChanged();
 }
 
 void Camera::setNear(float n)
 {
-	m_fNear=n;
+	near=n;
 	perspectiveChanged();
 }
 
 void Camera::setFar(float f)
 {
-	m_fFar=f;
+	far=f;
 	perspectiveChanged();
 }
 
 void Camera::setType(EPROJECTION_TYPE type)
 {
-	m_eProjectionType=type;
+	projectionType=type;
 	perspectiveChanged();
 }
 
 void Camera::processCamera(matrix4x4f* matrix)
 {
 	if(matrix)
-		m_pRendererPtr->setViewMatrixToGL(matrix);
+		rendererPtr->setViewMatrixToGL(matrix);
 	else
-		m_pRendererPtr->setViewMatrixToGL(&m_cInvTranfMatrix);
+		rendererPtr->setViewMatrixToGL(&inverseTransformationMatrix);
 
-	m_pRendererPtr->setViewProjectionMatrix(&m_cViewProjectionMatrix);
+	rendererPtr->setViewProjectionMatrix(&viewProjectionMatrix);
 }
 
 void Camera::updateCamera()
 {
-	m_pRendererPtr->setMainCameraEye(getWorldMatrix()->getPosition());
-	m_cInvTranfMatrix = getWorldMatrix()->getInverse();
-	m_cViewProjectionMatrix = m_cProjMatrix * m_cInvTranfMatrix;
+	rendererPtr->setMainCameraEye(getWorldMatrix()->getPosition());
+	inverseTransformationMatrix = getWorldMatrix()->getInverse();
+	viewProjectionMatrix = projectionMatrix * inverseTransformationMatrix;
 }
 
 void Camera::perspectiveChanged()
 {
 	if(getProjectionType()==(int)gxCamera::PERSPECTIVE_PROJECTION)
-		m_cProjMatrix.setPerspective(m_fFOV, 1.0f, m_fNear, m_fFar);
+		projectionMatrix.setPerspective(fov, 1.0f, near, far);
 	else
 	{
-		gxRectf viewportRect(m_pRendererPtr->getViewPortRect());
+		gxRectf viewportRect(rendererPtr->getViewPortRect());
 		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
-		m_cProjMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, m_fNear, m_fFar);
+		projectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, near, far);
 	}
-	m_pRendererPtr->setProjectionMatrixToGL(&m_cProjMatrix);
+	rendererPtr->setProjectionMatrixToGL(&projectionMatrix);
 	extractFrustumPlanes();
 	updateCamera();
 }
@@ -116,22 +116,22 @@ void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearV
 
 	float aspect=cx/cy;
 	if(getProjectionType()==(int)gxCamera::PERSPECTIVE_PROJECTION)
-		m_cProjMatrix.setPerspective(m_fFOV, aspect, m_fNear, m_fFar);
+		projectionMatrix.setPerspective(fov, aspect, near, far);
 	else
 	{
-		gxRectf viewportRect(m_pRendererPtr->getViewPortRect());
+		gxRectf viewportRect(rendererPtr->getViewPortRect());
 		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
-		m_cProjMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, m_fNear, m_fFar);
+		projectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, near, far);
 	}
 	
-	m_pRendererPtr->setProjectionMatrixToGL(&m_cProjMatrix);
+	rendererPtr->setProjectionMatrixToGL(&projectionMatrix);
 	extractFrustumPlanes();
 	updateCamera();
 }
 
 vector3f Camera::getCameraSpaceLoc(const vector3f& point)
 {
-	return m_cInvTranfMatrix * point;
+	return inverseTransformationMatrix * point;
 }
 
 void Camera::transformationChangedf()
@@ -143,9 +143,9 @@ void Camera::transformationChangedf()
 
 void Camera::extractFrustumPlanes()
 {
-	matrix4x4f pvm(m_cProjMatrix * m_cInvTranfMatrix);
-	m_cFrustum.extractFrustumPlanes(pvm);
-	m_cRenderFrustum.extractFrustumPlanes(m_cProjMatrix);
+	matrix4x4f pvm(projectionMatrix * inverseTransformationMatrix);
+	frustum.extractFrustumPlanes(pvm);
+	renderFrustum.extractFrustumPlanes(projectionMatrix);
 	calculateAABB();
 }
 
@@ -157,7 +157,7 @@ void Camera::calculateAABB()
 	vector3f	max_v(-1e16f, -1e16f, -1e16f);
 	for(int i=0;i<8;i++)
 	{
-		vector3f transformedFrustumPoint(*this->getWorldMatrix() * m_cRenderFrustum.m_cFrustumVert[i]);
+		vector3f transformedFrustumPoint(*this->getWorldMatrix() * renderFrustum.frustumVertices[i]);
 		if(transformedFrustumPoint.x<min_v.x)
 			min_v.x=transformedFrustumPoint.x;
 		if(transformedFrustumPoint.y<min_v.y)
@@ -178,7 +178,7 @@ void Camera::calculateAABB()
 
 void Camera::drawFrustum(gxHWShader* shader)
 {
-	vector3f* frustumVerts = m_cRenderFrustum.m_cFrustumVert;
+	vector3f* frustumVerts = renderFrustum.frustumVertices;
 
 	float lineAry[]={
 		frustumVerts[0].x, frustumVerts[0].y, frustumVerts[0].z,		//0	near
@@ -243,16 +243,16 @@ void Camera::write(gxFile& file)
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
 	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Write(m_iAssetFileCRC);
+	file.Write(assetFileCRC);
 	writeAnimationController(file);
 
 	//write camera data
-	file.Write(m_eProjectionType);
-	file.Write(m_bMainCamera);
-	file.Write(m_fFOV);
-	file.Write(m_fNear);
-	file.Write(m_fFar);
-	file.Write(m_iLayerCullingMask);
+	file.Write(projectionType);
+	file.Write(isMainCam);
+	file.Write(fov);
+	file.Write(near);
+	file.Write(far);
+	file.Write(layerCullingMask);
 	//
 
 	file.Write((int)m_cChilds.size());
@@ -281,18 +281,18 @@ void Camera::read(gxFile& file)
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
 	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
-	file.Read(m_iAssetFileCRC);
+	file.Read(assetFileCRC);
 	readAnimationController(file);
 
 	//read camera data
 	int etype=0;
 	file.Read(etype);
-	m_eProjectionType=(EPROJECTION_TYPE)etype;
-	file.Read(m_bMainCamera);
-	file.Read(m_fFOV);
-	file.Read(m_fNear);
-	file.Read(m_fFar);
-	file.Read(m_iLayerCullingMask);
+	projectionType=(EPROJECTION_TYPE)etype;
+	file.Read(isMainCam);
+	file.Read(fov);
+	file.Read(near);
+	file.Read(far);
+	file.Read(layerCullingMask);
 	//
 
 	perspectiveChanged();

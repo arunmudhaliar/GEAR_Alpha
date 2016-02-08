@@ -30,10 +30,10 @@ public:
 
 	void drawFrustum(gxHWShader* shader);
 
-	gxFrustumf&	getFrustum()					{	return m_cFrustum;			}
-	const matrix4x4f* getProjectionMatrix()		{	return &m_cProjMatrix;		}
-	const matrix4x4f* getInverseTMViewMatrix()	{	return &m_cInvTranfMatrix;	}
-	const matrix4x4f* getViewMatrix()			{	return &m_cInvTranfMatrix;	}
+	gxFrustumf&	getFrustum()					{	return frustum;			}
+	const matrix4x4f* getProjectionMatrix()		{	return &projectionMatrix;		}
+	const matrix4x4f* getInverseTMViewMatrix()	{	return &inverseTransformationMatrix;	}
+	const matrix4x4f* getViewMatrix()			{	return &inverseTransformationMatrix;	}
 
 	void setFOV(float fov);
 	void setNear(float n);
@@ -41,35 +41,35 @@ public:
 	void setType(EPROJECTION_TYPE type);
 	void perspectiveChanged();
 
-	float getFOV()			{	return m_fFOV;	}
-	float getNear()			{	return m_fNear;	}
-	float getFar()			{	return m_fFar;	}
-	EPROJECTION_TYPE getProjectionType()	{	return m_eProjectionType;	}
+	float getFOV()			{	return fov;	}
+	float getNear()			{	return near;	}
+	float getFar()			{	return far;	}
+	EPROJECTION_TYPE getProjectionType()	{	return projectionType;	}
 
 	bool isLayerCullingMask(unsigned int flag);
 	void resetLayerCullingMask(unsigned int flag);
 	void setLayerCullingMask(unsigned int flag);
 	unsigned int getLayerCullingMask();
 	
-	void setMainCamera(bool flag)	{	m_bMainCamera=flag;	}
-	bool isMainCamera()		{	return m_bMainCamera;	}
+	void setMainCamera(bool flag)	{	isMainCam=flag;     }
+	bool isMainCamera()             {	return isMainCam;	}
 
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);
 
 private:
-	gxRenderer* m_pRendererPtr;	//must not delete this pointer
-	matrix4x4f	m_cProjMatrix;
-	matrix4x4f	m_cInvTranfMatrix;
-	matrix4x4f	m_cViewProjectionMatrix;
+	gxRenderer* rendererPtr;	//must not delete this pointer
+	matrix4x4f	projectionMatrix;
+	matrix4x4f	inverseTransformationMatrix;
+	matrix4x4f	viewProjectionMatrix;
 
-	gxFrustumf	m_cFrustum;
-	gxFrustumf	m_cRenderFrustum;	//used only for rendering purpose;
+	gxFrustumf	frustum;
+	gxFrustumf	renderFrustum;	//used only for rendering purpose;
 
-	float m_fFOV;	//in angles
-	float m_fNear;
-	float m_fFar;
-	EPROJECTION_TYPE m_eProjectionType;
-	unsigned int m_iLayerCullingMask;
-	bool m_bMainCamera;
+	float fov;	//in angles
+	float near;
+	float far;
+	EPROJECTION_TYPE projectionType;
+	unsigned int layerCullingMask;
+	bool isMainCam;
 };

@@ -9,10 +9,10 @@
 #include "geFontManager.h"
 
 #if defined (USE_ProgrammablePipeLine_test)
-geFont::geFont(gxHWShader* pFontShaderPtr, gxRenderer* m_pRendererPtr)
+geFont::geFont(gxHWShader* pFontShaderPtr, gxRenderer* rendererPtr)
 {
     m_pFontShaderPtr=pFontShaderPtr;
-	m_pRendererPtr=m_pRendererPtr;
+	rendererPtr=rendererPtr;
 #else
     geFont::geFont()
     {
@@ -338,7 +338,7 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     if(bShadowed)
     {
         transformTM.setPosition(x+1, y+1+m_fYOffset, -1.0f);
-        transformTM= *m_pRendererPtr->getOrthoProjectionMatrix() * transformTM;
+        transformTM= *rendererPtr->getOrthoProjectionMatrix() * transformTM;
         const float* u_mvp_m4x4_shadow=transformTM.getMatrix();
         m_pFontShaderPtr->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_shadow, false, 4);
         float shadow_color[]={0.0f, 0.0f, 0.0f, 0.7f};
@@ -349,7 +349,7 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     }
     
     transformTM.setPosition(x, y+m_fYOffset, -1.0f);
-    transformTM= *m_pRendererPtr->getOrthoProjectionMatrix() * transformTM;
+    transformTM= *rendererPtr->getOrthoProjectionMatrix() * transformTM;
     const float* u_mvp_m4x4=transformTM.getMatrix();
     m_pFontShaderPtr->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
     m_pFontShaderPtr->sendUniform4fv("u_color_v4", m_cszRGBA);
@@ -1045,7 +1045,7 @@ void geFontManager::InitializeFonts()
 geFontManager::geFontManager()
 {
 #if defined (USE_ProgrammablePipeLine_test)
-	m_pRendererPtr=NULL;
+	rendererPtr=NULL;
 #endif
 }
 
@@ -1082,11 +1082,11 @@ void geFontManager::reset(bool reload)
 #if defined (USE_ProgrammablePipeLine_test)
 void geFontManager::setRenderer(gxRenderer* renderer)
 {
-	m_pRendererPtr=renderer;
+	rendererPtr=renderer;
 	for(int x=0;x<m_cvFontList.size();x++)
     {
         geFont* font=m_cvFontList[x];
-		font->setRenderer(m_pRendererPtr);
+		font->setRenderer(rendererPtr);
     }
 }
 #endif
@@ -1094,7 +1094,7 @@ void geFontManager::setRenderer(gxRenderer* renderer)
 geFont* geFontManager::loadFont(const char* filename)
 {
 #if defined (USE_ProgrammablePipeLine_test)
-    geFont* newFont=new geFont(&m_cFontShader, m_pRendererPtr);
+    geFont* newFont=new geFont(&m_cFontShader, rendererPtr);
 #else
     geFont* newFont=new geFont();
 #endif

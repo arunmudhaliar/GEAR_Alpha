@@ -3,34 +3,34 @@
 gxAnimationSet::gxAnimationSet(const char* animationName)
 {
 	GX_STRCPY(m_szName, animationName);
-	m_nFrames=0;
-	m_iFPS=0;
-	m_iCRC_of_mesh_data=0;
+	numberOfFrames=0;
+	animationFPS=0;
+	crcOfMeshData=0;
 }
 
 gxAnimationSet::~gxAnimationSet()
 {
-	for(std::vector<gxAnimationTrack*>::iterator it = m_vAnimationTrack.begin(); it != m_vAnimationTrack.end(); ++it)
+	for(std::vector<gxAnimationTrack*>::iterator it = animationTracks.begin(); it != animationTracks.end(); ++it)
 	{
 		gxAnimationTrack* animationTrack = *it;
 		GX_DELETE(animationTrack);
 	}
-	m_vAnimationTrack.clear();
+	animationTracks.clear();
 }
 
 void gxAnimationSet::appendTrack(gxAnimationTrack* track)
 {
-	m_iFPS=track->getFPS();
-	if(track->getTotalFrames()>m_nFrames)
-		m_nFrames=track->getTotalFrames();
-	m_vAnimationTrack.push_back(track);
+	animationFPS=track->getFPS();
+	if(track->getTotalFrames()>numberOfFrames)
+		numberOfFrames=track->getTotalFrames();
+	animationTracks.push_back(track);
 }
 
 void gxAnimationSet::write(gxFile& file)
 {
 	file.Write(m_szName);
-	file.Write((int)m_vAnimationTrack.size());
-	for(std::vector<gxAnimationTrack*>::iterator it = m_vAnimationTrack.begin(); it != m_vAnimationTrack.end(); ++it)
+	file.Write((int)animationTracks.size());
+	for(std::vector<gxAnimationTrack*>::iterator it = animationTracks.begin(); it != animationTracks.end(); ++it)
 	{
 		gxAnimationTrack* animationTrack = *it;
 		animationTrack->write(file);

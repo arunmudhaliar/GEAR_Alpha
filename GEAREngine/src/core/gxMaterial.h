@@ -27,13 +27,13 @@ public:
 
 	bool isTwoSided()	{	return m_bTwoSided;	}
 
-	const vector4f& getAmbientClr()		{	return m_cAmbient;	}
-	const vector4f& getDiffuseClr()		{	return m_cDiffuse;	}
-	const vector4f& getSpecularClr()	{	return m_cSpecular;	}
+	const vector4f& getAmbientClr()		{	return ambientColor;	}
+	const vector4f& getDiffuseClr()		{	return diffuseColor;	}
+	const vector4f& getSpecularClr()	{	return specularColor;	}
 
-	void setAmbientClr(vector4f clr)		{	m_cAmbient=clr;		}
-	void setDiffuseClr(vector4f clr)		{	m_cDiffuse=clr;		}
-	void setSpecularClr(vector4f clr)		{	m_cSpecular=clr;	}
+	void setAmbientClr(vector4f clr)		{	ambientColor=clr;		}
+	void setDiffuseClr(vector4f clr)		{	diffuseColor=clr;		}
+	void setSpecularClr(vector4f clr)		{	specularColor=clr;	}
 
 	float getShininess()				{	return m_fShininess;	}
 	void setShininess(float value)		{	m_fShininess=value;	}
@@ -63,9 +63,9 @@ public:
 	std::vector<std::string>* getListOfTextureNamesFromFBX()	{  return &m_vTextureNameFromFBXFile;	}
 
 private:
-	vector4f m_cAmbient;
-	vector4f m_cDiffuse;
-	vector4f m_cSpecular;
+	vector4f ambientColor;
+	vector4f diffuseColor;
+	vector4f specularColor;
 	float m_fAlpha;
 	float m_fShininess;
 	bool m_bTwoSided;

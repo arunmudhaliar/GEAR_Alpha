@@ -21,7 +21,7 @@ public:
     };
     
 #if defined (USE_ProgrammablePipeLine)
-    gxFont(gxHWShader* pFontShaderPtr, gxRenderer* m_pRendererPtr);
+    gxFont(gxHWShader* pFontShaderPtr, gxRenderer* rendererPtr);
 #else
     gxFont();
 #endif
@@ -97,10 +97,10 @@ private:
     float m_fYOffset;   //for small adjustments
 #if defined (USE_ProgrammablePipeLine)
     gxHWShader* m_pFontShaderPtr;
-	gxRenderer* m_pRendererPtr;
+	gxRenderer* rendererPtr;
 public:
-	gxRenderer* getRenderer()	{	return m_pRendererPtr;	}
-	void setRenderer(gxRenderer* renderer)	{	m_pRendererPtr=renderer;	}
+	gxRenderer* getRenderer()	{	return rendererPtr;	}
+	void setRenderer(gxRenderer* renderer)	{	rendererPtr=renderer;	}
 #endif
 };
 
@@ -119,7 +119,7 @@ private:
     std::vector<gxFont*> m_cvFontList;
 #if defined (USE_ProgrammablePipeLine)
     gxHWShader m_cFontShader;
-	gxRenderer* m_pRendererPtr;
+	gxRenderer* rendererPtr;
 public:
 	void setRenderer(gxRenderer* renderer);
 #endif

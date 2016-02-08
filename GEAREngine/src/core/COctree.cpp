@@ -3,43 +3,43 @@
 OctreeNode::OctreeNode()
 {
 	for(int x=0;x<MAX_OCTREECHILD;x++)
-		m_pszChild[x]=NULL;
+		childs[x]=NULL;
 
-	m_iLevel=0;
-	m_fRadius=0.0f;
+	treeLevel=0;
+	radius=0.0f;
 }
 
 OctreeNode::~OctreeNode()
 {
-	m_cObjLst.clear();
+	objectList.clear();
 	for(int x=0;x<MAX_OCTREECHILD;x++)
-		GX_DELETE(m_pszChild[x]);
+		GX_DELETE(childs[x]);
 }
 
 int OctreeNode::getLevel()
 {
-	return m_iLevel;
+	return treeLevel;
 }
 
 int OctreeNode::getNumOfObjects()
 {
-	return (int)m_cObjLst.size();
+	return (int)objectList.size();
 }
 
 object3d* OctreeNode::getObject(int index)
 {
-	return m_cObjLst.at(index);
+	return objectList.at(index);
 }
 
 void OctreeNode::setAABB(vector3f min_, vector3f max_)
 {
-	m_oAABB.set(min_, max_);
-	m_fRadius=(max_-min_).length()*0.5f;
+	aabb.set(min_, max_);
+	radius=(max_-min_).length()*0.5f;
 }
 
 void OctreeNode::appendObject(object3d* transformObj)
 {
-	m_cObjLst.push_back(transformObj);
+	objectList.push_back(transformObj);
 }
 
 //====================================================================
@@ -47,10 +47,10 @@ void OctreeNode::appendObject(object3d* transformObj)
 //====================================================================
 COctree::COctree()
 {
-	m_nMinTransformObj = 0;
-	m_nMaxLevel = 0;
-	m_pRootNode = NULL;
-	m_nLevelReached=0;
+	minimumTransformObjectToBreak = 0;
+	maximumLevelToBreak = 0;
+	rootNode = NULL;
+	noOfLevelsReached=0;
 }
 
 COctree::~COctree()
@@ -60,24 +60,24 @@ COctree::~COctree()
 
 void COctree::reset()
 {
-	m_cCollidedObjLst.Clear();
-	m_cCollidedAlphaObjLst.Clear();
-	GX_DELETE(m_pRootNode);
+	collidedObjectList.Clear();
+	collidedAlphaObjectList.Clear();
+	GX_DELETE(rootNode);
 }
 
 bool COctree::createOctree(gxWorld* world, int minTransformObj/* =4 */, int maxLevel/* =8 */)
 {
-	m_cCollidedObjLst.Init(30, 10);
-	m_cCollidedAlphaObjLst.Init(30, 10);
-	m_pRootNode=new OctreeNode();
-	m_nMinTransformObj=minTransformObj;
-	m_nMaxLevel=maxLevel;
+	collidedObjectList.Init(30, 10);
+	collidedAlphaObjectList.Init(30, 10);
+	rootNode=new OctreeNode();
+	minimumTransformObjectToBreak=minTransformObj;
+	maximumLevelToBreak=maxLevel;
 
 	//root level is 0
-	m_pRootNode->setLevel(0);
+	rootNode->setLevel(0);
 
 	//set the AABB for the root node
-	m_pRootNode->setAABB(world->getAABB().m_min, world->getAABB().m_max);
+	rootNode->setAABB(world->getAABB().m_min, world->getAABB().m_max);
 
 	//push all mesh in to the root node
 	pushToRootNode(world);
@@ -89,8 +89,8 @@ void COctree::pushToRootNode(object3d* obj)
 {
 	if(obj && (obj->getID()==OBJECT3D_MESH || obj->getID()==OBJECT3D_SKINNED_MESH))
 	{
-		m_pRootNode->appendObject(obj);
-		create(m_pRootNode, obj);
+		rootNode->appendObject(obj);
+		create(rootNode, obj);
 	}
 
 	std::vector<object3d*>* list=obj->getChildList();
@@ -103,7 +103,7 @@ void COctree::pushToRootNode(object3d* obj)
 
 bool COctree::create(OctreeNode* node, object3d* obj)
 {
-	if(!node || node->getLevel()>=m_nMaxLevel || node->getNumOfObjects()<=m_nMinTransformObj)
+	if(!node || node->getLevel()>=maximumLevelToBreak || node->getNumOfObjects()<=minimumTransformObjectToBreak)
 		return true;
 
 	//chk the overlapping objects
@@ -135,7 +135,7 @@ void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
 			node->setChild(0, new OctreeNode());
 			node->getChild(0)->setLevel(node->getLevel()+1);
 			node->getChild(0)->setAABB(oAABBScaled.m_min, oAABBScaled.m_max);
-			m_nLevelReached=node->getChild(0)->getLevel();
+			noOfLevelsReached=node->getChild(0)->getLevel();
 		}
 		node->getChild(0)->appendObject(transform);
 	}
@@ -149,7 +149,7 @@ void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
 			node->setChild(1, new OctreeNode());
 			node->getChild(1)->setLevel(node->getLevel()+1);
 			node->getChild(1)->setAABB(oAABBScaled.m_min, oAABBScaled.m_max);
-			m_nLevelReached=node->getChild(1)->getLevel();
+			noOfLevelsReached=node->getChild(1)->getLevel();
 		}
 		node->getChild(1)->appendObject(transform);
 	}
@@ -163,7 +163,7 @@ void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
 			node->setChild(2, new OctreeNode());
 			node->getChild(2)->setLevel(node->getLevel()+1);
 			node->getChild(2)->setAABB(oAABBScaled.m_min, oAABBScaled.m_max);
-			m_nLevelReached=node->getChild(2)->getLevel();
+			noOfLevelsReached=node->getChild(2)->getLevel();
 		}
 		node->getChild(2)->appendObject(transform);
 	}
@@ -177,7 +177,7 @@ void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
 			node->setChild(3, new OctreeNode());
 			node->getChild(3)->setLevel(node->getLevel()+1);
 			node->getChild(3)->setAABB(oAABBScaled.m_min, oAABBScaled.m_max);
-			m_nLevelReached=node->getChild(3)->getLevel();
+			noOfLevelsReached=node->getChild(3)->getLevel();
 		}
 		node->getChild(3)->appendObject(transform);
 	}
@@ -191,7 +191,7 @@ void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
 			node->setChild(4, new OctreeNode());
 			node->getChild(4)->setLevel(node->getLevel()+1);
 			node->getChild(4)->setAABB(oAABBScaled.m_min, oAABBScaled.m_max);
-			m_nLevelReached=node->getChild(4)->getLevel();
+			noOfLevelsReached=node->getChild(4)->getLevel();
 		}
 		node->getChild(4)->appendObject(transform);
 	}
@@ -205,7 +205,7 @@ void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
 			node->setChild(5, new OctreeNode());
 			node->getChild(5)->setLevel(node->getLevel()+1);
 			node->getChild(5)->setAABB(oAABBScaled.m_min, oAABBScaled.m_max);
-			m_nLevelReached=node->getChild(5)->getLevel();
+			noOfLevelsReached=node->getChild(5)->getLevel();
 		}
 		node->getChild(5)->appendObject(transform);
 	}
@@ -219,7 +219,7 @@ void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
 			node->setChild(6, new OctreeNode());
 			node->getChild(6)->setLevel(node->getLevel()+1);
 			node->getChild(6)->setAABB(oAABBScaled.m_min, oAABBScaled.m_max);
-			m_nLevelReached=node->getChild(6)->getLevel();
+			noOfLevelsReached=node->getChild(6)->getLevel();
 		}
 		node->getChild(6)->appendObject(transform);
 	}
@@ -233,7 +233,7 @@ void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
 			node->setChild(7, new OctreeNode());
 			node->getChild(7)->setLevel(node->getLevel()+1);
 			node->getChild(7)->setAABB(oAABBScaled.m_min, oAABBScaled.m_max);
-			m_nLevelReached=node->getChild(7)->getLevel();
+			noOfLevelsReached=node->getChild(7)->getLevel();
 		}
 		node->getChild(7)->appendObject(transform);
 	}
@@ -241,26 +241,26 @@ void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
 
 void COctree::resetCollidedTransformObjList()
 {
-	if(m_cCollidedObjLst.GetCount()==0 && m_cCollidedAlphaObjLst.GetCount()==0) return;
+	if(collidedObjectList.GetCount()==0 && collidedAlphaObjectList.GetCount()==0) return;
 
-	ExpandableArrayNode<object3d*>* collidedtransformObjNode=m_cCollidedObjLst.GetRoot();
-	int count=m_cCollidedObjLst.GetCount();
+	ExpandableArrayNode<object3d*>* collidedtransformObjNode=collidedObjectList.GetRoot();
+	int count=collidedObjectList.GetCount();
 	while(collidedtransformObjNode && count--)
 	{
 		collidedtransformObjNode->GetData()->setVisited(false);
 		collidedtransformObjNode=collidedtransformObjNode->GetNext();
 	}
-	m_cCollidedObjLst.Clear();
+	collidedObjectList.Clear();
 
 	//alpha list
-	ExpandableArrayNode<object3d*>* collidedtransformAlphaObjNode=m_cCollidedAlphaObjLst.GetRoot();
-	int alpha_count=m_cCollidedAlphaObjLst.GetCount();
+	ExpandableArrayNode<object3d*>* collidedtransformAlphaObjNode=collidedAlphaObjectList.GetRoot();
+	int alpha_count=collidedAlphaObjectList.GetCount();
 	while(collidedtransformAlphaObjNode && alpha_count--)
 	{
 		collidedtransformAlphaObjNode->GetData()->setVisited(false);
 		collidedtransformAlphaObjNode=collidedtransformAlphaObjNode->GetNext();
 	}
-	m_cCollidedAlphaObjLst.Clear();
+	collidedAlphaObjectList.Clear();
 }
 
 void COctree::checkOverlapWithOctree(OctreeNode* node, object3d* obj)
@@ -287,9 +287,9 @@ void COctree::checkOverlapWithOctree(OctreeNode* node, object3d* obj)
 			{
 				transf->setVisited(true);
 				if(transf->isBaseFlag(object3d::eObject3dBaseFlag_Alpha))
-					m_cCollidedAlphaObjLst.Append(transf);
+					collidedAlphaObjectList.Append(transf);
 				else
-					m_cCollidedObjLst.Append(transf);
+					collidedObjectList.Append(transf);
 			}
 		}
 	}
@@ -316,9 +316,9 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 			{
 				transf->setVisited(true);
 				if(transf->isBaseFlag(object3d::eObject3dBaseFlag_Alpha))
-					m_cCollidedAlphaObjLst.Append(transf);
+					collidedAlphaObjectList.Append(transf);
 				else
-					m_cCollidedObjLst.Append(transf);
+					collidedObjectList.Append(transf);
 			}
 		}
 		return;
@@ -336,9 +336,9 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 			{
 				transf->setVisited(true);
 				if(transf->isBaseFlag(object3d::eObject3dBaseFlag_Alpha))
-					m_cCollidedAlphaObjLst.Append(transf);
+					collidedAlphaObjectList.Append(transf);
 				else
-					m_cCollidedObjLst.Append(transf);
+					collidedObjectList.Append(transf);
 			}
 		}
 	}
@@ -349,14 +349,14 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 
 object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)
 {
-	if(m_cCollidedObjLst.GetCount()==0 && m_cCollidedAlphaObjLst.GetCount()==0) return NULL;
+	if(collidedObjectList.GetCount()==0 && collidedAlphaObjectList.GetCount()==0) return NULL;
 	if(rayDir.lengthSquared()==0) return NULL;
 
 	std::vector<object3d*> raystartsfrominideobjects;
 	float smallest_distance=1e32f;
 	object3d* selectedObj=NULL;
-	ExpandableArrayNode<object3d*>* collidedtransformObjNode=m_cCollidedObjLst.GetRoot();
-	int count=m_cCollidedObjLst.GetCount();
+	ExpandableArrayNode<object3d*>* collidedtransformObjNode=collidedObjectList.GetRoot();
+	int count=collidedObjectList.GetCount();
 	while(collidedtransformObjNode && count--)
 	{
 		object3d* obj=collidedtransformObjNode->GetData();
@@ -374,8 +374,8 @@ object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)
 	}
 
 	//alpha list
-	ExpandableArrayNode<object3d*>* collidedtransformAlphaObjNode=m_cCollidedAlphaObjLst.GetRoot();
-	int alpha_count=m_cCollidedAlphaObjLst.GetCount();
+	ExpandableArrayNode<object3d*>* collidedtransformAlphaObjNode=collidedAlphaObjectList.GetRoot();
+	int alpha_count=collidedAlphaObjectList.GetCount();
 	while(collidedtransformAlphaObjNode && alpha_count--)
 	{
 		object3d* obj=collidedtransformAlphaObjNode->GetData();
@@ -415,8 +415,8 @@ void COctree::drawOctree(OctreeNode* node, gxHWShader* shader)
 	if(!node) return;
 
 #if defined (USE_ProgrammablePipeLine)
-    float r=(float)node->getLevel()/(float)m_nMaxLevel;
-	if(node->getLevel()<m_nMaxLevel)
+    float r=(float)node->getLevel()/(float)maximumLevelToBreak;
+	if(node->getLevel()<maximumLevelToBreak)
 	{
 		shader->sendUniform4f("u_diffuse_v4", r, 0.0f, 0.0f, 1.0f);
 		node->getAABB().draw(shader);
@@ -431,8 +431,8 @@ void COctree::drawOctree(OctreeNode* node, gxHWShader* shader)
 	}
 #else
 	glDisable(GL_LIGHTING);
-	float r=(float)node->getLevel()/(float)m_nMaxLevel;
-	if(node->getLevel()<m_nMaxLevel)
+	float r=(float)node->getLevel()/(float)maximumLevelToBreak;
+	if(node->getLevel()<maximumLevelToBreak)
 	{
 		glColor4f(r, 0.0f, 0.0f, 1.0f);
 		node->getAABB().draw();

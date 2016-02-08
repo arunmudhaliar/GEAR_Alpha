@@ -16,6 +16,6 @@ public:
 
 	void init(FBO* input);
 protected:
-	gxHWShader* m_pBrightPassGLSLShaderPtr;
-	FBO* m_pFBOInput;
+	gxHWShader* brightPassGLSLShader;
+	FBO* inputFbo;
 };

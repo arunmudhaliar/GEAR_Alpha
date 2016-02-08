@@ -69,6 +69,7 @@ public:
 	static monoScript* mono_getMonoScripDef(const char* scriptname);
 
 private:
+    static uint32_t         g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE;
 	static MonoObject*		g_pMonoGEAREntryPointClass_Instance_Variable;
 	static MonoDomain*		g_pMonoDomain;
 	static MonoAssembly*	g_pMonoAssembly;

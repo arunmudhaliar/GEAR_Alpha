@@ -21,6 +21,7 @@
 #include <Windows.h>
 #endif
 
+uint32_t        monoWrapper::g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE=0;
 MonoObject*		monoWrapper::g_pMonoGEAREntryPointClass_Instance_Variable = NULL;
 MonoDomain*		monoWrapper::g_pMonoDomain = NULL;
 MonoAssembly*	monoWrapper::g_pMonoAssembly = NULL;
@@ -89,6 +90,11 @@ void onMonoAssemblyLoad(MonoAssembly *assembly, void* user_data)
 
 void monoWrapper::destroyUserDefinedMonoClassDefs()
 {
+    if(g_pMonoGEAREntryPointClass_Instance_Variable)
+    {
+        mono_gchandle_free(g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE);
+    }
+    
 	for(int x=0;x<g_monoScriptClassDefs.size();x++)
 	{
 		monoScript* script = g_monoScriptClassDefs[x];
@@ -233,7 +239,8 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 
 	///* allocate memory for the object */
 	g_pMonoGEAREntryPointClass_Instance_Variable = mono_object_new(g_pMonoDomain, g_pMonoGEAREntryPointClass);
-
+    g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE = mono_gchandle_new(g_pMonoGEAREntryPointClass_Instance_Variable, false);
+    
 	bindEngineMethods();
 	///* execute the default argument-less constructor */
 	mono_runtime_object_init(g_pMonoGEAREntryPointClass_Instance_Variable);

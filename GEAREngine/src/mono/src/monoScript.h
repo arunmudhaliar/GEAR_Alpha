@@ -2,9 +2,11 @@
 #define MONOSCRIPT_H
 
 #include <vector>
+#include <map>
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/metadata.h>
 #include <mono/metadata/assembly.h>
+#include <mono/metadata/threads.h>
 #include <mono/jit/jit.h>
 #include "../../core/basicIncludes.h"
 #include <string>
@@ -37,6 +39,7 @@ private:
 	MonoMethod* m_pSetHandle_method;
 
 	std::vector<MonoClassField*> m_vMonoVars;
+    std::map<MonoObject*, unsigned int> m_vMonoObjects;
 };
 
 class monoScriptObjectInstance

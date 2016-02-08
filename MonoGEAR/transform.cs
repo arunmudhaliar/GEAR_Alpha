@@ -56,92 +56,99 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void transform_copy(IntPtr a, IntPtr b);
 
-        protected IntPtr m_pObj3dPtr;
+        protected IntPtr handle;
+
+		private transform():
+			base()
+		{
+			Console.WriteLine("PRIVATE CONSTRUCTOR CALLED in transform");
+		}
 
         public transform(IntPtr ptr):
             base()
         {
-            m_pObj3dPtr = ptr;
+			handle = ptr;
+			Console.WriteLine("transform::transform(IntPtr ptr) called "+handle);
         }
 
         protected IntPtr getHandle()
         {
-            return m_pObj3dPtr;
+			return handle;
         }
 
         protected abstract void setHandle(IntPtr ptr);
 
         public void updatePositionf(float aXdt, float aYdt, float aZdt)
         {
-            transform_updatePositionf(m_pObj3dPtr, aXdt, aYdt, aZdt);
+			transform_updatePositionf(handle, aXdt, aYdt, aZdt);
         }
 
         public void updateLocalPositionf(float aXdt, float aYdt, float aZdt)
         {
-            transform_updateLocalPositionf(m_pObj3dPtr, aXdt, aYdt, aZdt);
+			transform_updateLocalPositionf(handle, aXdt, aYdt, aZdt);
         }
 
         public void scaleX(float scale)
         {
-            transform_scaleX(m_pObj3dPtr, scale);
+			transform_scaleX(handle, scale);
         }
 
         public void scaleY(float scale)
         {
-            transform_scaleY(m_pObj3dPtr, scale);
+			transform_scaleY(handle, scale);
         }
 
         public void scaleZ(float scale)
         {
-            transform_scaleZ(m_pObj3dPtr, scale);
+			transform_scaleZ(handle, scale);
         }
 
         public void rotateLocalXf(float aAngleInDeg)
         {
-            transform_rotateLocalXf(m_pObj3dPtr, aAngleInDeg);
+			transform_rotateLocalXf(handle, aAngleInDeg);
         }
         public void rotateLocalYf(float aAngleInDeg)
         {
-            transform_rotateLocalYf(m_pObj3dPtr, aAngleInDeg);
+			transform_rotateLocalYf(handle, aAngleInDeg);
         }
         public void rotateLocalZf(float aAngleInDeg)
         {
-            transform_rotateLocalZf(m_pObj3dPtr, aAngleInDeg);
+			transform_rotateLocalZf(handle, aAngleInDeg);
         }
 
         public void rotateWorldXf(float aAngleInDeg)
         {
-            transform_rotateWorldXf(m_pObj3dPtr, aAngleInDeg);
+			transform_rotateWorldXf(handle, aAngleInDeg);
         }
         public void rotateWorldYf(float aAngleInDeg)
         {
-            transform_rotateWorldYf(m_pObj3dPtr, aAngleInDeg);
+			transform_rotateWorldYf(handle, aAngleInDeg);
         }
         public void rotateWorldZf(float aAngleInDeg)
         {
-            transform_rotateWorldZf(m_pObj3dPtr, aAngleInDeg);
+			transform_rotateWorldZf(handle, aAngleInDeg);
         }
 
         public void setPosition(float x, float y, float z)
         {
-            transform_setPosition(m_pObj3dPtr, x, y, z);
+			transform_setPosition(handle, x, y, z);
         }
         public float getX()
         {
-            return transform_getX(m_pObj3dPtr);
+			return transform_getX(handle);
         }
         public float getY()
         {
-            return transform_getY(m_pObj3dPtr);
+			return transform_getY(handle);
         }
         public float getZ()
         {
-            return transform_getZ(m_pObj3dPtr);
+			return transform_getZ(handle);
         }
 
         public void copyTranfrom(transform t)
         {
-            transform_copy(m_pObj3dPtr, t.getHandle());
+			transform_copy(handle, t.getHandle());
         }
     }
 }

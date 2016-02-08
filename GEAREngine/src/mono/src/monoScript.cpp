@@ -34,13 +34,25 @@ MonoClassField* monoScript::getMonoVar(int index)
 
 monoScript::~monoScript()
 {
+    typedef std::map<MonoObject*, unsigned int>::iterator it_type;
+    for(it_type iterator = m_vMonoObjects.begin(); iterator != m_vMonoObjects.end(); iterator++)
+    {
+        mono_gchandle_free(iterator->second);
+    }
+    
+    m_vMonoObjects.clear();
 	m_vMonoVars.clear();
 }
 
 MonoObject* monoScript::createNewObject()
 {
-	MonoObject* newmonoobj = mono_object_new(m_pMonoDomain, m_pMonoObjectClass);
-	return newmonoobj;
+    auto newmonoobj = mono_object_new(m_pMonoDomain, m_pMonoObjectClass);
+    uint32_t newmonoobj_handle = mono_gchandle_new(newmonoobj, false);
+    auto ungarbagecollected_mono_obj = mono_gchandle_get_target(newmonoobj_handle);
+    mono_runtime_object_init(ungarbagecollected_mono_obj);
+    m_vMonoObjects[ungarbagecollected_mono_obj] = newmonoobj_handle;
+    
+	return ungarbagecollected_mono_obj;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -57,7 +69,12 @@ monoScriptObjectInstance::monoScriptObjectInstance(monoScript* script, MonoObjec
 
 		m_pMethod_update =  mono_class_get_method_from_name(m_pScriptPtr->getMonoClass(), "update", 0);
 		m_pMethod_initMonoScript =  mono_class_get_method_from_name(m_pScriptPtr->getMonoClass(), "initMonoScript", 0);
-		mono_runtime_invoke(m_pMethod_initMonoScript, m_pMonoObjectInstance, NULL, NULL);
+        
+        MonoObject* exception=nullptr;
+		mono_runtime_invoke(m_pMethod_initMonoScript, m_pMonoObjectInstance, NULL, &exception);
+        if (exception) {
+            printf ("An exception was thrown in monoScriptObjectInstance::monoScriptObjectInstance() at mono_runtime_invoke.\n");
+        }
 	}
 	
 }
@@ -70,6 +87,12 @@ void monoScriptObjectInstance::update()
 {
 	if(m_pScriptPtr->isMonoScript())
 	{
-		mono_runtime_invoke(m_pMethod_update, m_pMonoObjectInstance, NULL, NULL);
+        //mono_thread_attach(mono_get_root_domain ());
+        //printf("%p, %p\n", m_pMonoObjectInstance, m_pMethod_update);
+        MonoObject* exception=nullptr;
+		mono_runtime_invoke(m_pMethod_update, m_pMonoObjectInstance, NULL, &exception);
+        if (exception) {
+            printf ("An exception was thrown in monoScriptObjectInstance::update() at mono_runtime_invoke.\n");
+        }
 	}
 }

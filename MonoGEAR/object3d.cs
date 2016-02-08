@@ -38,34 +38,35 @@ namespace MonoGEAR
         protected object3d():
             base(MonoGEAREntryPointClass.engine_createEmptyObject3d(MonoGEAREntryPointClass.engine_getWorld(0), "emptyobject"))
         {
-            Console.WriteLine("object3d() called");
+			Console.WriteLine("object3d() called "+handle);
             initObject3d();
         }
 
         public object3d(string name):
             base(MonoGEAREntryPointClass.engine_createEmptyObject3d(MonoGEAREntryPointClass.engine_getWorld(0), name))
         {
-            Console.WriteLine("object3d(string name) called");
+			Console.WriteLine("object3d(string name) called "+handle);
             initObject3d();
         }
 
         public object3d(object3d parent, string name):
             base(MonoGEAREntryPointClass.engine_createEmptyObject3d(parent.getHandle(), name))
         {
-            Console.WriteLine("object3d(object3d parent, string name) called");
+			Console.WriteLine("object3d(object3d parent, string name) called "+handle);
             initObject3d();
         }
 
         public object3d(IntPtr ptr):
             base(ptr)
         {
-            Console.WriteLine("object3d(IntPtr ptr) called");
+			Console.WriteLine("object3d(IntPtr ptr) called "+handle);
             initObject3d();
         }
 
         protected override void setHandle(IntPtr ptr)
         {
-            m_pObj3dPtr = ptr;
+			handle = ptr;
+			Console.WriteLine("object3d::setHandle(IntPtr ptr) called "+handle);
         }
 
         public static object3d load(string name)
@@ -144,12 +145,12 @@ namespace MonoGEAR
 
         public void appendChild(object3d child)
         {
-            object3d_appendChild(m_pObj3dPtr, child.getHandle());
+			object3d_appendChild(handle, child.getHandle());
         }
 
         public bool removeChild(object3d child)
         {
-            return object3d_removeChild(m_pObj3dPtr, child.getHandle());
+			return object3d_removeChild(handle, child.getHandle());
         }
         //List<object3d> m_cChildList;
 

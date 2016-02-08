@@ -107,7 +107,7 @@ namespace MonoGEAR
         /// <summary>
         /// MONOGEAR GAME LOOP
         /// </summary>
-
+#if _DISABLE
         object3d m_pRootObject3d1;
         object3d m_pRootObject3d2;
         object3d m_pRootObject3d3;
@@ -124,7 +124,7 @@ namespace MonoGEAR
         object3d m_pRootObject3d13;
 
         object3d m_pRootObjectLight0;
-
+#endif
         public void mono_game_start()
         {
 #if !_DISABLEALL

@@ -48,9 +48,9 @@ template<class T> class bxLinkedList
 public:
 	bxLinkedList()
 	{
-		m_pHead=NULL;
-		m_pTail=NULL;
-		m_nCnt=0;
+		headNode=NULL;
+		tailNode=NULL;
+		nodeCount=0;
 	}
 	
 	~bxLinkedList()
@@ -68,9 +68,9 @@ public:
 		//set the head to the newly created pointer
 		setHead(newHead);
 		
-		if(m_nCnt==0) setTail(newHead);	//if this is the first node
+		if(nodeCount==0) setTail(newHead);	//if this is the first node
 		
-		m_nCnt++;
+		nodeCount++;
 		
 		return data;
 	}
@@ -86,9 +86,9 @@ public:
 		//set the tail to the newly created pointer
 		setTail(newTail);
 		
-		if(m_nCnt==0) setHead(newTail);	//if this is the first node
+		if(nodeCount==0) setHead(newTail);	//if this is the first node
 		
-		m_nCnt++;
+		nodeCount++;
 		
 		return data;
 	}
@@ -103,9 +103,9 @@ public:
 		newNode->setNext(node->getNext());
 		node->setNext(newNode);
 
-		if(m_pHead==m_pTail) setTail(newNode);
+		if(headNode==tailNode) setTail(newNode);
 		
-		m_nCnt++;
+		nodeCount++;
 		return data;
 	}
 
@@ -121,16 +121,16 @@ public:
                 stLinkNode<T>* parentnode=node->getParent();
                 if(parentnode)
                 {
-                    if(m_pTail==node)
+                    if(tailNode==node)
                         setTail(parentnode);
                     parentnode->setNext(node->getNext());
                 }
                 
-                if(node==m_pHead)
+                if(node==headNode)
                     setHead(node->getNext());
                 
-                m_nCnt--;
-                if(m_nCnt==0) setTail(NULL);
+                nodeCount--;
+                if(nodeCount==0) setTail(NULL);
                 node->setNext(NULL);
                 node->setParent(NULL);
                 node->setData(NULL);
@@ -153,16 +153,16 @@ public:
 		stLinkNode<T>* parentnode=node->getParent();
 		if(parentnode)
 		{
-			if(m_pTail==node)
+			if(tailNode==node)
 				setTail(parentnode);
 			parentnode->setNext(node->getNext());
 		}
 
-		if(node==m_pHead)
+		if(node==headNode)
 			setHead(node->getNext());
 
-		m_nCnt--;
-		if(m_nCnt==0) setTail(NULL);
+		nodeCount--;
+		if(nodeCount==0) setTail(NULL);
 
 		T ret_data=node->getData();
 		node->setNext(NULL);
@@ -180,8 +180,8 @@ public:
 
 	T operator[](int pos) const		{	return getAt(pos);	}
 
-	int getSize()	{	return m_nCnt;	}
-	int size()		{	return m_nCnt;	}
+	int getSize()	{	return nodeCount;	}
+	int size()		{	return nodeCount;	}
 
 	bool isEmpty()	{	return (getSize()==0)?true:false;	}
 
@@ -201,29 +201,29 @@ public:
 	//clears all the node from the linkedlist.
 	void clearAll()
 	{
-		if(m_pHead)
+		if(headNode)
 		{
-			GX_DELETE(m_pHead);
+			GX_DELETE(headNode);
 		}
-		m_pHead=NULL;
-		m_pTail=NULL;
-        m_nCnt=0;
+		headNode=NULL;
+		tailNode=NULL;
+        nodeCount=0;
 	}
 
-	stLinkNode<T>* getHead() const			{	return m_pHead;	}
-    stLinkNode<T>* getTail() const			{	return m_pTail;	}
+	stLinkNode<T>* getHead() const			{	return headNode;	}
+    stLinkNode<T>* getTail() const			{	return tailNode;	}
 
 private:
-	void setHead(stLinkNode<T>* head)		{	m_pHead=head;	if(m_pHead)m_pHead->setParent(NULL);	}
-	void setTail(stLinkNode<T>* tail)	{	m_pTail=tail;	}
+	void setHead(stLinkNode<T>* head)		{	headNode=head;	if(headNode)headNode->setParent(NULL);	}
+	void setTail(stLinkNode<T>* tail)	{	tailNode=tail;	}
 	
 	stLinkNode<T>* getNode(int pos) const
 	{
-		if(pos<0 || pos>=m_nCnt)		//out of bound check
+		if(pos<0 || pos>=nodeCount)		//out of bound check
 			return NULL;
 		
 		stLinkNode<T>* node=getHead();
-		for(int x=0;x<m_nCnt;x++)
+		for(int x=0;x<nodeCount;x++)
 		{
 			if(x==pos)
 				break;					//position reached
@@ -235,7 +235,7 @@ private:
 	}
 	
 	
-	stLinkNode<T>* m_pHead;
-	stLinkNode<T>* m_pTail;
-	int				m_nCnt;
+	stLinkNode<T>* headNode;
+	stLinkNode<T>* tailNode;
+	int				nodeCount;
 };

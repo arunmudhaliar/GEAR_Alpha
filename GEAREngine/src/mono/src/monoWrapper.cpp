@@ -252,7 +252,7 @@ monoScript* monoWrapper::mono_getMonoScripDef(const char* scriptname)
 	for(int x=0;x<g_monoScriptClassDefs.size();x++)
 	{
 		monoScript* script = g_monoScriptClassDefs[x];
-		if(strcmp(_scriptname, script->getMonoScript().c_str())==0)
+		if(strcmp(_scriptname, script->getScriptFileName().c_str())==0)
 			return script;
 	}
 

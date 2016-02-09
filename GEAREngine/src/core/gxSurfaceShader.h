@@ -39,15 +39,15 @@ struct stPass
 		GEAR_Time=false;
 		GEAR_ScreenParams=false;
 		cull_face=GL_BACK;	//default value
-		glslShaderPtr=NULL;
+		glslShader=NULL;
 		shadow = 0;
 	}
 
 	~stPass()
 	{
-		vertex_buffer.clear();
-		fragment_buffer.clear();
-		vIncludeModule.clear();
+		vertexGLSLSourceBuffer.clear();
+		fragmentGLSLSourceBuffer.clear();
+		glslIncludeModuleList.clear();
 	}
 
 	bool GEAR_M;
@@ -66,10 +66,10 @@ struct stPass
 	unsigned int cull_face;
 	unsigned int shadow;	//0 - OFF, 1 - Normal
 
-	std::string vertex_buffer;
-	std::string fragment_buffer;
-	std::vector<std::string> vIncludeModule;
-	gxHWShader* glslShaderPtr;
+	std::string vertexGLSLSourceBuffer;
+	std::string fragmentGLSLSourceBuffer;
+	std::vector<std::string> glslIncludeModuleList;
+	gxHWShader* glslShader;
 };
 
 //////////Surface Shader Properties//////////
@@ -79,10 +79,10 @@ private:
 	stShaderPropertyBase(){}
 public:
 	stShaderPropertyBase(int type):
-		propertyid(type)
+		propertyID(type)
 	{
-		passPtr = NULL;
-		unifrom_GLSL_Var=-1;
+		renderPass = NULL;
+		uniformGLSLVariable=-1;
 	}
 
 	virtual ~stShaderPropertyBase()
@@ -93,11 +93,11 @@ public:
 	
 	virtual void sendToGLSL(bool bDoEnableAndDisableShader=false)=0;	//if bDoEnableAndDisableShader the do the enable/disable of shader inside sendToGLSL()
 
-	stPass* passPtr;
-	int propertyid;
+	stPass* renderPass;
+	int propertyID;
 	std::string name;	//sometimes used to identify inside glsl shader
 	std::string nameofProperty;
-	int unifrom_GLSL_Var;
+	int uniformGLSLVariable;
 };
 //
 
@@ -111,16 +111,16 @@ struct stShaderProperty_Vector : public stShaderPropertyBase
 	void sendToGLSL(bool bDoEnableAndDisableShader=false)
 	{
 		if(bDoEnableAndDisableShader)
-			passPtr->glslShaderPtr->enableProgram();
+			renderPass->glslShader->enableProgram();
 
-		if(unifrom_GLSL_Var==-1)
+		if(uniformGLSLVariable==-1)
 		{
-			unifrom_GLSL_Var = passPtr->glslShaderPtr->getUniformLoc(nameofProperty.c_str());
+			uniformGLSLVariable = renderPass->glslShader->getUniformLoc(nameofProperty.c_str());
 		}
-		CHECK_GL_ERROR(glUniform4fv(unifrom_GLSL_Var, 1, &vector.x));
+		CHECK_GL_ERROR(glUniform4fv(uniformGLSLVariable, 1, &vector.x));
 
 		if(bDoEnableAndDisableShader)
-			passPtr->glslShaderPtr->disableProgram();
+			renderPass->glslShader->disableProgram();
 	}
 
 	vector4f vector;
@@ -137,16 +137,16 @@ struct stShaderProperty_Range : public stShaderPropertyBase
 	void sendToGLSL(bool bDoEnableAndDisableShader=false)
 	{
 		if(bDoEnableAndDisableShader)
-			passPtr->glslShaderPtr->enableProgram();
+			renderPass->glslShader->enableProgram();
 
-		if(unifrom_GLSL_Var==-1)
+		if(uniformGLSLVariable==-1)
 		{
-			unifrom_GLSL_Var = passPtr->glslShaderPtr->getUniformLoc(nameofProperty.c_str());
+			uniformGLSLVariable = renderPass->glslShader->getUniformLoc(nameofProperty.c_str());
 		}
-		CHECK_GL_ERROR(glUniform1f(unifrom_GLSL_Var, range_value));
+		CHECK_GL_ERROR(glUniform1f(uniformGLSLVariable, range_value));
 
 		if(bDoEnableAndDisableShader)
-			passPtr->glslShaderPtr->disableProgram();
+			renderPass->glslShader->disableProgram();
 	}
 
 	float range_max;
@@ -164,16 +164,16 @@ struct stShaderProperty_Color : public stShaderPropertyBase
 	void sendToGLSL(bool bDoEnableAndDisableShader=false)
 	{
 		if(bDoEnableAndDisableShader)
-			passPtr->glslShaderPtr->enableProgram();
+			renderPass->glslShader->enableProgram();
 
-		if(unifrom_GLSL_Var==-1)
+		if(uniformGLSLVariable==-1)
 		{
-			unifrom_GLSL_Var = passPtr->glslShaderPtr->getUniformLoc(nameofProperty.c_str());
+			uniformGLSLVariable = renderPass->glslShader->getUniformLoc(nameofProperty.c_str());
 		}
-		CHECK_GL_ERROR(glUniform4fv(unifrom_GLSL_Var, 1, &color.x));
+		CHECK_GL_ERROR(glUniform4fv(uniformGLSLVariable, 1, &color.x));
 
 		if(bDoEnableAndDisableShader)
-			passPtr->glslShaderPtr->disableProgram();
+			renderPass->glslShader->disableProgram();
 	}
 
 	vector4f color;
@@ -211,37 +211,37 @@ public:
 	gxSubMap();
 	~gxSubMap();
 
-	void setTextureName(const char* name)	{	GX_STRCPY(m_szTextureName, name);	}
-	void setTextureCRC(int crc)				{	m_iTextureCRC=crc;	}
-	const char* getTextureName()			{	return m_szTextureName;	}
-	int getTextureCRC()						{	return m_iTextureCRC;	}
+	void setTextureName(const char* name)	{	GX_STRCPY(textureName, name);	}
+	void setTextureCRC(int crc)				{	textureCRC=crc;     }
+	const char* getTextureName()			{	return textureName;	}
+	int getTextureCRC()						{	return textureCRC;	}
+    gxTexture* getTexture()                 {	return texture;     }
 	gxTexture* load(CTextureManager& textureManager, const char* filename);
-	gxTexture* getTexture()		{	return m_pTexture;	}
 	gxTexture* loadTextureFromMeta(CTextureManager& textureManager, int crc);
 
-	void setShaderTextureProperty(stShaderProperty_Texture2D* property_tex2D)	{	m_pShaderPropertyVar = property_tex2D;	}
-	stShaderProperty_Texture2D* getShaderTextureProperty()						{	return m_pShaderPropertyVar;			}
+	void setShaderTextureProperty(stShaderProperty_Texture2D* property_tex2D)	{	shaderPropertyVariable = property_tex2D;	}
+	stShaderProperty_Texture2D* getShaderTextureProperty()						{	return shaderPropertyVariable;			}
 
 private:
-	char m_szTextureName[256];
-	int m_iTextureCRC;
-	gxTexture* m_pTexture;
-	stShaderProperty_Texture2D* m_pShaderPropertyVar;
+	char textureName[256];
+	int textureCRC;
+	gxTexture* texture;
+	stShaderProperty_Texture2D* shaderPropertyVariable;
 };
 
 struct stSubShader
 {
 	~stSubShader()
 	{
-		for(std::vector<stPass*>::iterator it = m_vPass.begin(); it != m_vPass.end(); ++it)
+		for(std::vector<stPass*>::iterator it = renderPassList.begin(); it != renderPassList.end(); ++it)
 		{
 			stPass* pass = *it;
 			GX_DELETE(pass);
 		}
-		m_vPass.clear();
+		renderPassList.clear();
 	}
 
-	std::vector<stPass*> m_vPass;
+	std::vector<stPass*> renderPassList;
 };
 class DECLSPEC gxSurfaceShader
 {
@@ -276,36 +276,34 @@ private:
 	void applyDefaultValuesOfPropertiesToGLSLShader(stPass* currentPass);
 
 protected:
-	stSubShader m_cSubShader;
-	std::vector<stShaderProperty_Texture2D*> m_vTex2D_Properties;
-	std::vector<stShaderProperty_Color*> m_vColor_Properties;
-	std::vector<stShaderProperty_Range*> m_vRange_Properties;
-	std::vector<stShaderProperty_Vector*> m_vVector_Properties;
+	stSubShader subShader;
+	std::vector<stShaderProperty_Texture2D*> texture2DPropertyList;
+	std::vector<stShaderProperty_Color*> colorPropertyList;
+	std::vector<stShaderProperty_Range*> rangePropertyList;
+	std::vector<stShaderProperty_Vector*> vectorPropertyList;
 
-	std::vector<stTextureMap*> m_vTextureMap;
-	std::vector<gxHWShader*> m_vShaderProgram;
+	std::vector<stTextureMap*> textureMapList;
+	std::vector<gxHWShader*> shaderProgramList;
 	std::string m_cName;
-	std::string m_cFileName;
+	std::string surfaceShaderFileName;
+    
 public:
 	gxSurfaceShader();
 	virtual ~gxSurfaceShader();
 
 	const char* getName()	{	return m_cName.c_str();	}
-	const char* getSurfaceShaderFileName()	{	return m_cFileName.c_str();	}
+	const char* getSurfaceShaderFileName()	{	return surfaceShaderFileName.c_str();	}
 	bool loadSurfaceShader(const char* filename);
 
 	void appendTextureMap(stTextureMap* texmap);
 
-	int getShaderPassCount()				{	return (int)m_vShaderProgram.size();	}
-	gxHWShader* getShaderPass(int pass)		{	return (pass<m_vShaderProgram.size())?m_vShaderProgram[pass]:NULL;	}
-	stPass* getShaderPassStruct(int pass)	{	return (pass<m_cSubShader.m_vPass.size())?m_cSubShader.m_vPass[pass]:NULL;}
+	int getShaderPassCount()				{	return (int)shaderProgramList.size();	}
+	gxHWShader* getShaderPass(int pass)		{	return (pass<shaderProgramList.size())?shaderProgramList[pass]:NULL;	}
+	stPass* getShaderPassStruct(int pass)	{	return (pass<subShader.renderPassList.size())?subShader.renderPassList[pass]:NULL;}
 
-	std::vector<stPass*>* getShaderPassList()	{	return &m_cSubShader.m_vPass;	}
-	std::vector<stShaderProperty_Texture2D*>* getShaderPropertyList_Texture2D()	{	return &m_vTex2D_Properties;		}
-	std::vector<stShaderProperty_Color*>* getShaderPropertyList_Color()			{	return &m_vColor_Properties;		}
-	std::vector<stShaderProperty_Range*>* getShaderPropertyList_Range()			{	return &m_vRange_Properties;		}
-	std::vector<stShaderProperty_Vector*>* getShaderPropertyList_Vector()		{	return &m_vVector_Properties;		}
-
-	//stShaderProperty_Texture2D* getShaderProperty_Texture2D(int index)	{	return m_vTex2D_Properties[index];	}
-	//stShaderProperty_Color* getShaderProperty_Color(int index)			{	return m_vColor_Properties[index];	}
+	std::vector<stPass*>* getShaderPassList()	{	return &subShader.renderPassList;	}
+	std::vector<stShaderProperty_Texture2D*>* getShaderPropertyList_Texture2D()	{	return &texture2DPropertyList;		}
+	std::vector<stShaderProperty_Color*>* getShaderPropertyList_Color()			{	return &colorPropertyList;		}
+	std::vector<stShaderProperty_Range*>* getShaderPropertyList_Range()			{	return &rangePropertyList;		}
+	std::vector<stShaderProperty_Vector*>* getShaderPropertyList_Vector()		{	return &vectorPropertyList;		}
 };

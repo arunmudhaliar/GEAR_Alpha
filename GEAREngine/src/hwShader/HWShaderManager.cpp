@@ -21,27 +21,27 @@ void HWShaderManager::Init()
 void HWShaderManager::Reset()
 {
 #if defined (USE_ProgrammablePipeLine)
-	for(std::vector<gxHWShader*>::iterator it = m_cvHWShaderLst.begin(); it != m_cvHWShaderLst.end(); ++it)
+	for(std::vector<gxHWShader*>::iterator it = hwShaderList.begin(); it != hwShaderList.end(); ++it)
 	{
 		gxHWShader* shader = *it;
 		GX_DELETE(shader);
 	}
-	m_cvHWShaderLst.clear();
+	hwShaderList.clear();
 
-	std::vector<stHWShaderSnippet*>* submaplist=&m_cvHWShaderSnippets;
+	std::vector<stHWShaderSnippet*>* submaplist=&hwShaderSnippetList;
 	for(std::vector<stHWShaderSnippet*>::iterator it = submaplist->begin(); it != submaplist->end(); ++it)
 	{
 		stHWShaderSnippet* snippet = *it;
 		GX_DELETE(snippet);
 	}
-	m_cvHWShaderSnippets.clear();
+	hwShaderSnippetList.clear();
 
-	for(std::vector<gxSurfaceShader*>::iterator it = m_cvHWSurfaceShader.begin(); it != m_cvHWSurfaceShader.end(); ++it)
+	for(std::vector<gxSurfaceShader*>::iterator it = surfaceShaderList.begin(); it != surfaceShaderList.end(); ++it)
 	{
 		gxSurfaceShader* surfaceshader = *it;
 		GX_DELETE(surfaceshader);
 	}
-	m_cvHWSurfaceShader.clear();
+	surfaceShaderList.clear();
 #else
 #error "Not implemented"
 #endif
@@ -49,7 +49,7 @@ void HWShaderManager::Reset()
 
 gxSurfaceShader* HWShaderManager::LoadSurfaceShader(const char* filename)
 {
-	for(std::vector<gxSurfaceShader*>::iterator it = m_cvHWSurfaceShader.begin(); it != m_cvHWSurfaceShader.end(); ++it)
+	for(std::vector<gxSurfaceShader*>::iterator it = surfaceShaderList.begin(); it != surfaceShaderList.end(); ++it)
 	{
 		gxSurfaceShader* surfaceshader = *it;
 		if(strcmp(gxUtil::getFileNameFromPath(filename), surfaceshader->getSurfaceShaderFileName())==0)
@@ -63,7 +63,7 @@ gxSurfaceShader* HWShaderManager::LoadSurfaceShader(const char* filename)
 		return NULL;
 	}
 
-	m_cvHWSurfaceShader.push_back(newShader);
+	surfaceShaderList.push_back(newShader);
 	return newShader;
 }
 
@@ -87,68 +87,68 @@ void HWShaderManager::LoadDefaultShaders()
 	//load code snippets
 	stHWShaderSnippet* snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/matrices_uniform_vars.snippet").c_str());
 	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
+		hwShaderSnippetList.push_back(snippet);
 	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/vertex_attrib_vars.snippet").c_str());
 	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
+		hwShaderSnippetList.push_back(snippet);
 	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/vertex_main.snippet").c_str());
 	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
+		hwShaderSnippetList.push_back(snippet);
 	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/fragment_main.snippet").c_str());
 	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
+		hwShaderSnippetList.push_back(snippet);
 	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/light_unifrom_vars.snippet").c_str());
 	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
+		hwShaderSnippetList.push_back(snippet);
 	snippet=LoadCodeSnippet((resource_dir_root_path+"snippets/material_unifrom_vars.snippet").c_str());
 	if(snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
+		hwShaderSnippetList.push_back(snippet);
 	snippet = LoadCodeSnippet((resource_dir_root_path + "snippets/vertex_with_shadow_main.snippet").c_str());
 	if (snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
+		hwShaderSnippetList.push_back(snippet);
 	snippet = LoadCodeSnippet((resource_dir_root_path + "snippets/fragment_with_shadow_main.snippet").c_str());
 	if (snippet)
-		m_cvHWShaderSnippets.push_back(snippet);
+		hwShaderSnippetList.push_back(snippet);
 
 	//HW shaders
 	gxHWShader* pShader=new gxHWShader();
     if(pShader->loadShader((resource_dir_root_path+"hwshader/only_diffuse.glsl").c_str()))	//0
-		m_cvHWShaderLst.push_back(pShader);
+		hwShaderList.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
     if(pShader->loadShader((resource_dir_root_path+"hwshader/only_diffuse_with_color_pointer.glsl").c_str()))	//1
-		m_cvHWShaderLst.push_back(pShader);
+		hwShaderList.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
     if(pShader->loadShader((resource_dir_root_path+"hwshader/guishader.glsl").c_str()))	//2
-		m_cvHWShaderLst.push_back(pShader);
+		hwShaderList.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
     if(pShader->loadShader((resource_dir_root_path+"hwshader/blurshader.glsl").c_str()))	//3
-		m_cvHWShaderLst.push_back(pShader);
+		hwShaderList.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
     if(pShader->loadShader((resource_dir_root_path+"hwshader/shadowmap.glsl").c_str()))	//4
-		m_cvHWShaderLst.push_back(pShader);
+		hwShaderList.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
     if(pShader->loadShader((resource_dir_root_path+"hwshader/fog_linear_shader.glsl").c_str()))	//5
-		m_cvHWShaderLst.push_back(pShader);
+		hwShaderList.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
     if(pShader->loadShader((resource_dir_root_path+"hwshader/fog_exp_shader.glsl").c_str()))	//6
-		m_cvHWShaderLst.push_back(pShader);
+		hwShaderList.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 	pShader=new gxHWShader();
     if(pShader->loadShader((resource_dir_root_path+"hwshader/fog_exp2_shader.glsl").c_str()))	//7
-		m_cvHWShaderLst.push_back(pShader);
+		hwShaderList.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 
@@ -185,7 +185,7 @@ gxHWShader* HWShaderManager::LoadShaderFromFile(const char* relativePath)
 	//HW shaders
 	gxHWShader* pShader = new gxHWShader();
 	if (pShader->loadShader((resource_dir_root_path + relativePath).c_str()))
-		m_cvHWShaderLst.push_back(pShader);
+		hwShaderList.push_back(pShader);
 	else
 		GX_DELETE(pShader);
 
@@ -194,7 +194,7 @@ gxHWShader* HWShaderManager::LoadShaderFromFile(const char* relativePath)
 
 gxHWShader* HWShaderManager::LoadShaderFromBuffer(const char* name, const char* buffer, int size)
 {
-	for(std::vector<gxHWShader*>::iterator it = m_cvHWShaderLst.begin(); it != m_cvHWShaderLst.end(); ++it)
+	for(std::vector<gxHWShader*>::iterator it = hwShaderList.begin(); it != hwShaderList.end(); ++it)
 	{
 		gxHWShader* hwshaderNode = *it;
 		if(strcmp(hwshaderNode->getShaderName(), name)==0)
@@ -208,7 +208,7 @@ gxHWShader* HWShaderManager::LoadShaderFromBuffer(const char* name, const char* 
 	{
 		GX_DELETE(shader);
 	}
-	m_cvHWShaderLst.push_back(shader);
+	hwShaderList.push_back(shader);
 	return shader;
 }
 
@@ -250,15 +250,15 @@ HWShaderManager::stHWShaderSnippet* HWShaderManager::LoadCodeSnippet(const char*
 #if defined (USE_ProgrammablePipeLine)
 gxHWShader* HWShaderManager::GetHWShader(int index)
 {
-	if(index>=(int)m_cvHWShaderLst.size()) return NULL;
-	return m_cvHWShaderLst[index];
+	if(index>=(int)hwShaderList.size()) return NULL;
+	return hwShaderList[index];
 }
 #endif
 
 void HWShaderManager::update(float dt)
 {
 //#if defined (USE_ProgrammablePipeLine)
-//	for(std::vector<gxHWShader*>::iterator it = m_cvHWShaderLst.begin(); it != m_cvHWShaderLst.end(); ++it)
+//	for(std::vector<gxHWShader*>::iterator it = hwShaderList.begin(); it != hwShaderList.end(); ++it)
 //	{
 //		gxHWShader* hwshaderNode = *it;
 //		hwshaderNode->updateShaderVars(dt);

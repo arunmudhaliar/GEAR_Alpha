@@ -5,14 +5,14 @@ geStaticTextBox::geStaticTextBox(geFontManager* fontmanager):
 geGUIBase(GEGUI_STATICTEXTBOX, "Static Text Box", fontmanager)
 {
 	m_pFont=NULL;
-	m_fYOffset=0.0f;
+	fontYOffset=0.0f;
 }
 
 geStaticTextBox::geStaticTextBox(const char* name, geFontManager* fontmanager):
 	geGUIBase(GEGUI_STATICTEXTBOX, name, fontmanager)
 {
 	m_pFont=NULL;
-	m_fYOffset=0.0f;
+	fontYOffset=0.0f;
 }
 
 geStaticTextBox::~geStaticTextBox()
@@ -24,7 +24,7 @@ void geStaticTextBox::create(rendererGL10* renderer, geGUIBase* parent, const ch
 	createBase(renderer, parent);
 
 	m_pFont=pFont;
-	m_fYOffset=yoffset;
+	fontYOffset=yoffset;
 	int width=m_pFont->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
 	setSize(width, m_pFont->getLineHeight());
 	setPos(x, y);
@@ -41,7 +41,7 @@ void geStaticTextBox::draw()
 	glPushMatrix();
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
 	//drawRect(&m_cVBClientArea);
-	m_pFont->drawString(m_szName, 0, m_pFont->getLineHeight()+m_fYOffset, m_cSize.x);
+	m_pFont->drawString(m_szName, 0, m_pFont->getLineHeight()+fontYOffset, m_cSize.x);
 	glPopMatrix();
 }
 	

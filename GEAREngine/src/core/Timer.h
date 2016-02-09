@@ -11,27 +11,27 @@ public:
 	static void update(float targetFPS);
 	static void reset();			//resets the timer variables
 	
-	static float getDtinSec()		{	return m_fDT;			}
-	static int getDTinMilliSec()	{	return m_iDT;			}
-	static float getFPS()			{	return m_fFPS;			}
-	static float getElapsedTime()	{	return m_fElapsedTime;	}
+	static float getDtinSec()		{	return timerDTInSec;			}
+	static int getDTinMilliSec()	{	return timerDTInMilliSec;		}
+	static float getFPS()			{	return timerFPS;                }
+	static float getElapsedTime()	{	return timerElapsedTimeInSec;	}
 	
 	static double getCurrentTimeInSec();
 	static unsigned long getCurrentTimeInMilliSec();
 	
-	static void setTimeScale(float timescale)	{ m_fTimeScale=timescale; }
-	static float getTimeScale() { return m_fTimeScale; }
+	static void setTimeScale(float timescale)	{ timerTimeScale=timescale; }
+	static float getTimeScale()                 { return timerTimeScale;    }
 
 private:
-	static float	m_fFPS;			//frames
-	static float	m_fDT;			//in sec
-	static int		m_iDT;			//in milli sec
-	static float	m_fElapsedTime;	//in sec
-	static double	m_fPrevTime;	//stored for internal purpose
+	static float	timerFPS;               //frames
+	static float	timerDTInSec;			//in sec
+	static int		timerDTInMilliSec;		//in milli sec
+	static float	timerElapsedTimeInSec;	//in sec
+	static double	timerPreviousTime;      //stored for internal purpose
     
-    static float    m_fAveragingTime;   //calculate after this much amount of secs
-    static double   m_fLastTime;        //for internal calculations of averaging fps
-    static int      m_iFrameCount;      //frame counter
+    static float    timerAveragingTime;     //calculate after this much amount of secs
+    static double   timerLastTime;          //for internal calculations of averaging fps
+    static int      timerFrameCount;        //frame counter
 
-	static float	m_fTimeScale;	//global time scale for the engine (especially for shaders)
+	static float	timerTimeScale;         //global time scale for the engine (especially for shaders)
 };

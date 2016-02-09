@@ -22,7 +22,7 @@ public:
     };
     
 #if defined (USE_ProgrammablePipeLine_test)
-    geFont(gxHWShader* pFontShaderPtr, gxRenderer* rendererPtr);
+    geFont(gxHWShader* pFontShaderPtr, gxRenderer* renderer);
 #else
     geFont();
 #endif
@@ -36,22 +36,22 @@ public:
 
     void drawOnBuffer(const char* str, int cx, int cy, unsigned int& nChar, short* vertexCoordBuffer, float* textureCoordBuffer, unsigned int& nLines, unsigned short* linebuffer, ALIGNMENT alignment) const;
     
-    unsigned int getTexID() const {   return m_iTexID;    }
+    unsigned int getTexID() const {   return fontTextureID;    }
     
-    unsigned short getLineHeight() const {   return m_iLineHeight;   }
+    unsigned short getLineHeight() const {   return lineHeight;   }
     void setLineHeight(unsigned short height)
     {
-        m_iLineHeight=height;
+        lineHeight=height;
     }
     
-    void setDeleteGLTexture(bool flag)  {   m_bDeleteGLTexture=flag;    }
+    void setDeleteGLTexture(bool flag)  {   deleteFontTexture=flag;    }
     
     void setRGBA(float r, float g, float b, float a=1.0f)
     {
-        m_cszRGBA[0]=r;        m_cszRGBA[1]=g;        m_cszRGBA[2]=b;        m_cszRGBA[3]=a;        
+        colorRGBA[0]=r;        colorRGBA[1]=g;        colorRGBA[2]=b;        colorRGBA[3]=a;        
     }
     
-    void setYOffset(float offy) {   m_fYOffset=offy;    }
+    void setYOffset(float offy) {   fontYOffset=offy;    }
 
 private:
 	unsigned int loadBuffer(unsigned char* buffer, bool bAlpha, unsigned int width, unsigned int height, unsigned int bpp);
@@ -72,35 +72,35 @@ public:
 
 private:
     
-    int m_iBitmapWidth;
-    int m_iBitmapHeight;
-    int m_iBaseChar;
-    int m_nChars;
-    short m_iSpaceWidth;
-    unsigned short m_iLineHeight;
+    int bitmapWidth;
+    int bitmapHeight;
+    int baseChar;
+    int totalChar;
+    short spaceWidth;
+    unsigned short lineHeight;
     
-    short* m_pszCharOffsetX;
-    short* m_pszCharOffsetY;
-    unsigned short* m_pszCharW;
-    unsigned short* m_pszCharH;
-    short* m_pszCharD;
-    float* m_pszU;
-    float* m_pszV;
-    float* m_pszU_width;
-    float* m_pszU_height;
+    short* charOffsetXArray;
+    short* charOffsetYArray;
+    unsigned short* charWidthArray;
+    unsigned short* charHeightArray;
+    short* charDistanceArray;
+    float* textureCoordUArray;
+    float* textureCoordVArray;
+    float* textureCoordUArray_width;
+    float* textureCoordUArray_height;
     
-    unsigned int m_iTexID;
+    unsigned int fontTextureID;
     
-    short m_cszVertCoordList[12*256];
-    float m_cszTexCoordList[12*256];
-    bool m_bDeleteGLTexture;
-    float m_cszRGBA[4];
-    float m_fYOffset;   //for small adjustments
+    short vertexCoordinateArray[12*256];
+    float textureCoordinateArray[12*256];
+    bool deleteFontTexture;
+    float colorRGBA[4];
+    float fontYOffset;   //for small adjustments
 #if defined (USE_ProgrammablePipeLine_test)
-    gxHWShader* m_pFontShaderPtr;
-	gxRenderer* rendererPtr;
+    gxHWShader* fontShader;
+	gxRenderer* renderer;
 public:
-	void setRenderer(gxRenderer* renderer)	{	rendererPtr=renderer;	}
+	void setRenderer(gxRenderer* renderer)	{	this->renderer=renderer;	}
 #endif
 };
 
@@ -119,7 +119,7 @@ private:
     std::vector<geFont*> m_cvFontList;
 #if defined (USE_ProgrammablePipeLine_test)
     gxHWShader m_cFontShader;
-	gxRenderer* rendererPtr;
+	gxRenderer* renderer;
 public:
 	void setRenderer(gxRenderer* renderer);
 #endif

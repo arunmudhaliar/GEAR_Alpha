@@ -43,7 +43,7 @@ public:
 		geSeperator* m_pSeperator;
 		gxSubMap* m_pSubMapPtr;	//for checking purpose
 	};
-	std::vector<stSubMapView*> m_vSubMap;
+	std::vector<stSubMapView*> subMapList;
 
 	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo, geFontManager* fontManager);
 	virtual ~gePropertyMaterial();

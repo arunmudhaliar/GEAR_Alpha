@@ -3,7 +3,7 @@
 Camera::Camera():
 	object3d(OBJECT3D_CAMERA)
 {
-	rendererPtr=NULL;
+	renderer=NULL;
 	//m_pCameraStructPtr=NULL;
 	layerCullingMask=0xffffffff;
 	setName("Camera");
@@ -17,7 +17,7 @@ Camera::~Camera()
 
 void Camera::resetCamera()
 {
-	rendererPtr=NULL;
+	renderer=NULL;
 	projectionMatrix.identity();
 	inverseTransformationMatrix.identity();
 }
@@ -25,7 +25,7 @@ void Camera::resetCamera()
 void Camera::initCamera(gxRenderer* renderer)
 {
 	resetCamera();
-	rendererPtr=renderer;
+	this->renderer=renderer;
 
 	setFOV(45.0f);
 	setNear(10.0f);
@@ -81,16 +81,16 @@ void Camera::setType(EPROJECTION_TYPE type)
 void Camera::processCamera(matrix4x4f* matrix)
 {
 	if(matrix)
-		rendererPtr->setViewMatrixToGL(matrix);
+		renderer->setViewMatrixToGL(matrix);
 	else
-		rendererPtr->setViewMatrixToGL(&inverseTransformationMatrix);
+		renderer->setViewMatrixToGL(&inverseTransformationMatrix);
 
-	rendererPtr->setViewProjectionMatrix(&viewProjectionMatrix);
+	renderer->setViewProjectionMatrix(&viewProjectionMatrix);
 }
 
 void Camera::updateCamera()
 {
-	rendererPtr->setMainCameraEye(getWorldMatrix()->getPosition());
+	renderer->setMainCameraEye(getWorldMatrix()->getPosition());
 	inverseTransformationMatrix = getWorldMatrix()->getInverse();
 	viewProjectionMatrix = projectionMatrix * inverseTransformationMatrix;
 }
@@ -101,11 +101,11 @@ void Camera::perspectiveChanged()
 		projectionMatrix.setPerspective(fov, 1.0f, near, far);
 	else
 	{
-		gxRectf viewportRect(rendererPtr->getViewPortRect());
+		gxRectf viewportRect(renderer->getViewPortRect());
 		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
 		projectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, near, far);
 	}
-	rendererPtr->setProjectionMatrixToGL(&projectionMatrix);
+	renderer->setProjectionMatrixToGL(&projectionMatrix);
 	extractFrustumPlanes();
 	updateCamera();
 }
@@ -119,12 +119,12 @@ void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearV
 		projectionMatrix.setPerspective(fov, aspect, near, far);
 	else
 	{
-		gxRectf viewportRect(rendererPtr->getViewPortRect());
+		gxRectf viewportRect(renderer->getViewPortRect());
 		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
 		projectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, near, far);
 	}
 	
-	rendererPtr->setProjectionMatrixToGL(&projectionMatrix);
+	renderer->setProjectionMatrixToGL(&projectionMatrix);
 	extractFrustumPlanes();
 	updateCamera();
 }
@@ -173,7 +173,7 @@ void Camera::calculateAABB()
 			max_v.z=transformedFrustumPoint.z;
 	}//for
 	
-	m_cAABB.set(min_v, max_v);
+	aabb.set(min_v, max_v);
 }
 
 void Camera::drawFrustum(gxHWShader* shader)
@@ -238,11 +238,11 @@ void Camera::drawFrustum(gxHWShader* shader)
 
 void Camera::write(gxFile& file)
 {
-	file.Write(m_iObjectID);
-	file.Write(m_eBaseFlags);
+	file.Write(objectID);
+	file.Write(baseFlag);
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
-	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.WriteBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Write(assetFileCRC);
 	writeAnimationController(file);
 
@@ -255,9 +255,9 @@ void Camera::write(gxFile& file)
 	file.Write(layerCullingMask);
 	//
 
-	file.Write((int)m_cChilds.size());
+	file.Write((int)childList.size());
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -265,7 +265,7 @@ void Camera::write(gxFile& file)
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->write(file);
@@ -275,12 +275,12 @@ void Camera::write(gxFile& file)
 
 void Camera::read(gxFile& file)
 {
-	file.Read(m_eBaseFlags);
+	file.Read(baseFlag);
 	char* temp=file.ReadString();
 	GX_STRCPY(m_cszName, temp);
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
-	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.ReadBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Read(assetFileCRC);
 	readAnimationController(file);
 

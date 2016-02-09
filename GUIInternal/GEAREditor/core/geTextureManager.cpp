@@ -7,7 +7,7 @@
 
 CGETextureManager::CGETextureManager()
 {
-    m_iTotalTextureMemory=0;
+    totalTextureMemory=0;
 }
 
 CGETextureManager::~CGETextureManager()
@@ -20,43 +20,43 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 	if(aFileName && aOpFileName)	//if both textures are there
 	{
 		int i=0;
-		for(i=0;i<(int)iTexturePacket.size();i++)
+		for(i=0;i<(int)texturePacketList.size();i++)
 		{
-			if(iTexturePacket[i]->iTextureName && (strcmp(aFileName, iTexturePacket[i]->iTextureName)==0))
+			if(texturePacketList[i]->iTextureName && (strcmp(aFileName, texturePacketList[i]->iTextureName)==0))
 			{
-				if(iTexturePacket[i]->iOpTextureName && (strcmp(aOpFileName, iTexturePacket[i]->iOpTextureName)==0))
+				if(texturePacketList[i]->iOpTextureName && (strcmp(aOpFileName, texturePacketList[i]->iOpTextureName)==0))
 					break;
 			}
 		}
-		if(i!=(int)iTexturePacket.size())	return iTexturePacket[i];	//if texture already exist in list
+		if(i!=(int)texturePacketList.size())	return texturePacketList[i];	//if texture already exist in list
 	}
 	else 
 	{
 		if(aFileName)
 		{
 			int i=0;
-			for(i=0;i<(int)iTexturePacket.size();i++)
+			for(i=0;i<(int)texturePacketList.size();i++)
 			{
-				if(iTexturePacket[i]->iTextureName && (strcmp(aFileName, iTexturePacket[i]->iTextureName)==0))
+				if(texturePacketList[i]->iTextureName && (strcmp(aFileName, texturePacketList[i]->iTextureName)==0))
 				{
-					if(!iTexturePacket[i]->iOpTextureName)
+					if(!texturePacketList[i]->iOpTextureName)
 						break;
 				}
 			}
-			if(i!=(int)iTexturePacket.size())	return iTexturePacket[i];	//if texture already exist in list
+			if(i!=(int)texturePacketList.size())	return texturePacketList[i];	//if texture already exist in list
 		}//only diffuse
 		else if(aOpFileName)
 		{
 			int i=0;
-			for(i=0;i<(int)iTexturePacket.size();i++)
+			for(i=0;i<(int)texturePacketList.size();i++)
 			{
-				if(iTexturePacket[i]->iOpTextureName && (strcmp(aOpFileName, iTexturePacket[i]->iOpTextureName)==0))
+				if(texturePacketList[i]->iOpTextureName && (strcmp(aOpFileName, texturePacketList[i]->iOpTextureName)==0))
 				{
-					if(!iTexturePacket[i]->iTextureName)
+					if(!texturePacketList[i]->iTextureName)
 						break;
 				}
 			}
-			if(i!=(int)iTexturePacket.size())	return iTexturePacket[i];	//if texture already exist in list
+			if(i!=(int)texturePacketList.size())	return texturePacketList[i];	//if texture already exist in list
 		}// only optex
 	} // if there is only one tex
 
@@ -78,7 +78,7 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 
     if(texID>0)
     {
-        m_iTotalTextureMemory+=(unsigned int)(aNewTexturePacket->m_cWidth*aNewTexturePacket->m_cHeight*aNewTexturePacket->m_cBpp);
+        totalTextureMemory+=(unsigned int)(aNewTexturePacket->m_cWidth*aNewTexturePacket->m_cHeight*aNewTexturePacket->m_cBpp);
     }
 
 	if(aFileName)
@@ -98,7 +98,7 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 	aNewTexturePacket->bAlphaTex	= alpha_tex;
 	aNewTexturePacket->iTextureID	= texID;
 
-	iTexturePacket.push_back(aNewTexturePacket);
+	texturePacketList.push_back(aNewTexturePacket);
 	
 	return aNewTexturePacket;
 }
@@ -109,11 +109,11 @@ void CGETextureManager::ReLoad()
 
 void CGETextureManager::Reset()
 {
-	for(int i=0;i<iTexturePacket.size();i++)
+	for(int i=0;i<texturePacketList.size();i++)
 	{
-		steTexturePacket* packet=iTexturePacket[i];
+		steTexturePacket* packet=texturePacketList[i];
 		GE_DELETE(packet);
 	}
-	iTexturePacket.clear();
-    m_iTotalTextureMemory=0;
+	texturePacketList.clear();
+    totalTextureMemory=0;
 }

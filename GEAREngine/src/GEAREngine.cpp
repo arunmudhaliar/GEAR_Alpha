@@ -236,12 +236,12 @@ GEAREngine::~GEAREngine()
 
 void GEAREngine::resetEngine()
 {
-	for(std::vector<gxWorld*>::iterator it = m_cWorlds.begin(); it != m_cWorlds.end(); ++it)
+	for(std::vector<gxWorld*>::iterator it = worldList.begin(); it != worldList.end(); ++it)
 	{
 		gxWorld* obj = *it;
 		GX_DELETE(obj);
 	}
-	m_cWorlds.clear();
+	worldList.clear();
 }
 
 void GEAREngine::initEngine(int nWorldToCreate)
@@ -250,6 +250,6 @@ void GEAREngine::initEngine(int nWorldToCreate)
 	{
 		gxWorld* newWorld = new gxWorld();
 		//newWorld->setLayer(0, true);	//no need to put world inside layer, by default it is considered to be in default layer
-		m_cWorlds.push_back(newWorld);
+		worldList.push_back(newWorld);
 	}
 }

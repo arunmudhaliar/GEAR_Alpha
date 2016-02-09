@@ -70,8 +70,8 @@ public:
     int getRenderFlag()             {   return m_iRenderFlag;   }
     bool isRenderFlag(int flags)    {   return ((m_iRenderFlag&flags)>0)?true:false;    }
 	
-    void setAlpha(float alpha)        {   m_fAlpha=alpha;     }
-    float getAlpha()                  {   return m_fAlpha;    }
+    void setAlpha(float alpha)        {   this->alpha=alpha;     }
+    float getAlpha()                  {   return alpha;    }
     
     void setRGB(float r, float g, float b)   {   m_fRGB[0]=r; m_fRGB[1]=g; m_fRGB[2]=b;    }
 	float* getRGB()		{	return m_fRGB;	}
@@ -105,7 +105,7 @@ protected:
 	float m_cClipWidth;
 	float m_cClipHeight;
     int m_iRenderFlag;
-    float m_fAlpha;
+    float alpha;
     float m_fRGB[3];
     float alphaThreshold;
 	EBLENDFLAG m_eBlendFlag;

@@ -3,25 +3,25 @@
 
 gxHWShader::gxHWShader()
 {
-	m_cProgram=0;
-	m_cVertShader=0;
-	m_cFragShader=0;
+	shaderProgram=0;
+	vertexShaderID=0;
+	fragmentShaderID=0;
 
 	//predefined vars
-	m_cUnifrom_GEAR_MODELVIEW=-1;
-	m_cUnifrom_GEAR_MVP=-1;
-	m_cUnifrom_GEAR_MODEL_MATRIX=-1;
-	m_cUnifrom_GEAR_MODEL_INVERSE=-1;
-	m_cUnifrom_material_diffuse=-1;
-	m_cUnifrom_material_ambient=-1;
-	m_cUnifrom_material_specular=-1;
-	m_cUnifrom_material_shininess=-1;
-	m_cUnifrom_GEAR_Time=-1;
-	m_cUnifrom_GEAR_ScreenParams=-1;
+	unifrom_GEAR_MODELVIEW=-1;
+	unifrom_GEAR_MVP=-1;
+	unifrom_GEAR_MODEL_MATRIX=-1;
+	unifrom_GEAR_MODEL_INVERSE=-1;
+	unifrom_material_diffuse=-1;
+	unifrom_material_ambient=-1;
+	unifrom_material_specular=-1;
+	unifrom_material_shininess=-1;
+	unifrom_GEAR_Time=-1;
+	unifrom_GEAR_ScreenParams=-1;
 
-	m_cAttrib_vIN_Position=-1;
-	m_cAttrib_vIN_Normal=-1;
-	m_cAttrib_Tangent=-1;
+	attrib_vIN_Position=-1;
+	attrib_vIN_Normal=-1;
+	attrib_Tangent=-1;
 	//
 
 }
@@ -50,7 +50,7 @@ bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer
 	strncpy(&fsource[strlen(define_fragment)], shaderBuffer, shaderBuffer_size);
 
 	// Create and compile vertex shader
-	if (!compileShader(&m_cVertShader, GL_VERTEX_SHADER, vsource, vSz))
+	if (!compileShader(&vertexShaderID, GL_VERTEX_SHADER, vsource, vSz))
 	{
 		DEBUG_PRINT("Failed to compile vertex shader from buffer");
 		GX_DELETE_ARY(vsource);
@@ -59,7 +59,7 @@ bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer
 	}
 	
 	// Create and compile fragment shader
-	if (!compileShader(&m_cFragShader, GL_FRAGMENT_SHADER, fsource, fSz))
+	if (!compileShader(&fragmentShaderID, GL_FRAGMENT_SHADER, fsource, fSz))
 	{
 		DEBUG_PRINT("Failed to compile fragment shader from buffer");
 		GX_DELETE_ARY(vsource);
@@ -71,14 +71,14 @@ bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer
 	GX_DELETE_ARY(fsource);
 
 	// Create shader program
-	m_cProgram = glCreateProgram();
+	shaderProgram = glCreateProgram();
 
 	attachShader();
 	
 	// Link program
 	if (!linkProgram())
 	{
-		DEBUG_PRINT("Failed to link program: %d from buffer", m_cProgram);
+		DEBUG_PRINT("Failed to link program: %d from buffer", shaderProgram);
 		destroyShader();
 		GX_DELETE_ARY(vsource);
 		GX_DELETE_ARY(fsource);
@@ -89,7 +89,7 @@ bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer
     detachShader();
 	disableProgram();
 	
-	m_cShaderName.assign(name);
+	shaderName.assign(name);
 
 	return true;
 }
@@ -157,7 +157,7 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	//
 	
 	// Create and compile vertex shader
-	if (!compileShader(&m_cVertShader, GL_VERTEX_SHADER, vsource, vSz))
+	if (!compileShader(&vertexShaderID, GL_VERTEX_SHADER, vsource, vSz))
 	{
 		DEBUG_PRINT("Failed to compile vertex shader '%s'", shaderFile);
 		GX_DELETE_ARY(vsource);
@@ -166,7 +166,7 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	}
 	
 	// Create and compile fragment shader
-	if (!compileShader(&m_cFragShader, GL_FRAGMENT_SHADER, fsource, fSz))
+	if (!compileShader(&fragmentShaderID, GL_FRAGMENT_SHADER, fsource, fSz))
 	{
 		DEBUG_PRINT("Failed to compile fragment shader '%s'", shaderFile);
 		GX_DELETE_ARY(vsource);
@@ -178,14 +178,14 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	GX_DELETE_ARY(fsource);
 
 	// Create shader program
-	m_cProgram = glCreateProgram();
+	shaderProgram = glCreateProgram();
 
 	attachShader();
 	
 	// Link program
 	if (!linkProgram())
 	{
-		DEBUG_PRINT("Failed to link program: %d (shader : %s)", m_cProgram, shaderFile);
+		DEBUG_PRINT("Failed to link program: %d (shader : %s)", shaderProgram, shaderFile);
 		destroyShader();
 		GX_DELETE_ARY(vsource);
 		GX_DELETE_ARY(fsource);
@@ -196,7 +196,7 @@ bool gxHWShader::loadShader(const char* shaderFile)
     detachShader();
 	disableProgram();
 	
-	m_cShaderName.assign(shaderFile);
+	shaderName.assign(shaderFile);
 
 	DEBUG_PRINT("Shader Loaded %s", shaderFile);
 
@@ -237,21 +237,21 @@ bool gxHWShader::linkProgram()
 {
     GLint status;
 	
-    CHECK_GL_ERROR(glLinkProgram(m_cProgram));
+    CHECK_GL_ERROR(glLinkProgram(shaderProgram));
 	
 #if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
     GLint logLength;
-    glGetProgramiv(m_cProgram, GL_INFO_LOG_LENGTH, &logLength);
+    glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 1)
     {
         GLchar *log = (GLchar *)malloc(logLength);
-        glGetProgramInfoLog(m_cProgram, logLength, &logLength, log);
+        glGetProgramInfoLog(shaderProgram, logLength, &logLength, log);
         DEBUG_PRINT("Program link log:\n%s", log);
         free(log);
     }
 #endif
 	
-    CHECK_GL_ERROR(glGetProgramiv(m_cProgram, GL_LINK_STATUS, &status));
+    CHECK_GL_ERROR(glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status));
     if (status == 0)
         return false;
 	
@@ -261,18 +261,18 @@ bool gxHWShader::linkProgram()
 void gxHWShader::attachShader()
 {
 	// Attach vertex shader to program
-	CHECK_GL_ERROR(glAttachShader(m_cProgram, m_cVertShader));
+	CHECK_GL_ERROR(glAttachShader(shaderProgram, vertexShaderID));
 	// Attach fragment shader to program
-	CHECK_GL_ERROR(glAttachShader(m_cProgram, m_cFragShader));	
+	CHECK_GL_ERROR(glAttachShader(shaderProgram, fragmentShaderID));	
 }
 
 void gxHWShader::detachShader()
 {
 	// Release vertex and fragment shaders
-	if (m_cVertShader)
-		CHECK_GL_ERROR(glDetachShader(m_cProgram, m_cVertShader));
-	if (m_cFragShader)
-		CHECK_GL_ERROR(glDetachShader(m_cProgram, m_cFragShader));
+	if (vertexShaderID)
+		CHECK_GL_ERROR(glDetachShader(shaderProgram, vertexShaderID));
+	if (fragmentShaderID)
+		CHECK_GL_ERROR(glDetachShader(shaderProgram, fragmentShaderID));
 
 	clearAttribRefVarList();
 	clearUniformRefVarList();
@@ -282,27 +282,27 @@ void gxHWShader::destroyShader()
 {
 	detachShader();
 
-	if (m_cVertShader)
+	if (vertexShaderID)
 	{
-		CHECK_GL_ERROR(glDeleteShader(m_cVertShader));
-		m_cVertShader = 0;
+		CHECK_GL_ERROR(glDeleteShader(vertexShaderID));
+		vertexShaderID = 0;
 	}
-	if (m_cFragShader)
+	if (fragmentShaderID)
 	{
-		CHECK_GL_ERROR(glDeleteShader(m_cFragShader));
-		m_cFragShader = 0;
+		CHECK_GL_ERROR(glDeleteShader(fragmentShaderID));
+		fragmentShaderID = 0;
 	}
-	if (m_cProgram)
+	if (shaderProgram)
 	{
-		CHECK_GL_ERROR(glDeleteProgram(m_cProgram));
-		m_cProgram = 0;
+		CHECK_GL_ERROR(glDeleteProgram(shaderProgram));
+		shaderProgram = 0;
 	}	
 }
 
 void gxHWShader::enableProgram()
 {
 	// Use shader program
-    CHECK_GL_ERROR(glUseProgram(m_cProgram));
+    CHECK_GL_ERROR(glUseProgram(shaderProgram));
 }
 
 void gxHWShader::disableProgram()
@@ -314,20 +314,20 @@ bool gxHWShader::validateProgram()
 {
 	GLint logLength, status;
 	
-	CHECK_GL_ERROR(glValidateProgram(m_cProgram));
+	CHECK_GL_ERROR(glValidateProgram(shaderProgram));
 
 #if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
-	glGetProgramiv(m_cProgram, GL_INFO_LOG_LENGTH, &logLength);
+	glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
 	if (logLength > 1)
 	{
 		GLchar *log = (GLchar *)malloc(logLength);
-		glGetProgramInfoLog(m_cProgram, logLength, &logLength, log);
+		glGetProgramInfoLog(shaderProgram, logLength, &logLength, log);
 		DEBUG_PRINT("Program validate log:\n%s", log);
 		free(log);
 	}
 #endif
 
-	CHECK_GL_ERROR(glGetProgramiv(m_cProgram, GL_VALIDATE_STATUS, &status));
+	CHECK_GL_ERROR(glGetProgramiv(shaderProgram, GL_VALIDATE_STATUS, &status));
 	if (status == 0)
 		return false;
 	
@@ -337,11 +337,11 @@ bool gxHWShader::validateProgram()
 void gxHWShader::showShaderLog(const char* title)
 {
 	GLint logLength;
-	CHECK_GL_ERROR(glGetProgramiv(m_cProgram, GL_INFO_LOG_LENGTH, &logLength));
+	CHECK_GL_ERROR(glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength));
 	if (logLength > 1)
 	{
 		GLchar *log = (GLchar *)malloc(logLength);
-		CHECK_GL_ERROR(glGetProgramInfoLog(m_cProgram, logLength, &logLength, log));
+		CHECK_GL_ERROR(glGetProgramInfoLog(shaderProgram, logLength, &logLength, log));
 		DEBUG_PRINT("title :%s\n%s", title, log);
 		free(log);
 	}
@@ -349,7 +349,7 @@ void gxHWShader::showShaderLog(const char* title)
 
 int gxHWShader::getAttribLoc(const char* avar)
 {
-	for(std::vector<stAttribLocation*>::iterator it = m_vAttribRefVarList.begin(); it != m_vAttribRefVarList.end(); ++it)
+	for(std::vector<stAttribLocation*>::iterator it = attribRefVariableList.begin(); it != attribRefVariableList.end(); ++it)
 	{
 		stAttribLocation* attribRefVar = *it;
 		if(strcmp(attribRefVar->attrib_ref_name, avar)==0)
@@ -358,7 +358,7 @@ int gxHWShader::getAttribLoc(const char* avar)
 		}
 	}
 
-	int loc = glGetAttribLocation(m_cProgram, avar);
+	int loc = glGetAttribLocation(shaderProgram, avar);
 	if(loc == -1)
 	{
 		DEBUG_PRINT("getAttribLoc() returned -1 for %s", avar);
@@ -369,25 +369,25 @@ int gxHWShader::getAttribLoc(const char* avar)
 	GX_STRCPY(newAttribRefVar->attrib_ref_name, avar);
 	newAttribRefVar->attrib_ref=loc;
 
-	m_vAttribRefVarList.push_back(newAttribRefVar);
+	attribRefVariableList.push_back(newAttribRefVar);
 
 	return loc;
 }
 
 void gxHWShader::clearAttribRefVarList()
 {
-	for(std::vector<stAttribLocation*>::iterator it = m_vAttribRefVarList.begin(); it != m_vAttribRefVarList.end(); ++it)
+	for(std::vector<stAttribLocation*>::iterator it = attribRefVariableList.begin(); it != attribRefVariableList.end(); ++it)
 	{
 		stAttribLocation* attribRefVar = *it;
 		GX_DELETE(attribRefVar);
 	}
 
-	m_vAttribRefVarList.clear();
+	attribRefVariableList.clear();
 }
 
 int gxHWShader::getUniformLoc(const char* uvar)
 {
-	for(std::vector<stUniformLocation*>::iterator it = m_vUniformRefVarList.begin(); it != m_vUniformRefVarList.end(); ++it)
+	for(std::vector<stUniformLocation*>::iterator it = uniformRefVariableList.begin(); it != uniformRefVariableList.end(); ++it)
 	{
 		stUniformLocation* uniformRefVarnode = *it;
 		if(strcmp(uniformRefVarnode->uniform_ref_name, uvar)==0)
@@ -396,7 +396,7 @@ int gxHWShader::getUniformLoc(const char* uvar)
 		}
 	}
 
-	int loc = glGetUniformLocation(m_cProgram, uvar);
+	int loc = glGetUniformLocation(shaderProgram, uvar);
 	if(loc == -1)
 	{
 		DEBUG_PRINT("getUniformLoc() returned -1 for %s", uvar);
@@ -407,20 +407,20 @@ int gxHWShader::getUniformLoc(const char* uvar)
 	GX_STRCPY(newUnifromRefVar->uniform_ref_name, uvar);
 	newUnifromRefVar->uniform_ref=loc;
 
-	m_vUniformRefVarList.push_back(newUnifromRefVar);
+	uniformRefVariableList.push_back(newUnifromRefVar);
 
 	return loc;
 }
 
 void gxHWShader::clearUniformRefVarList()
 {
-	for(std::vector<stUniformLocation*>::iterator it = m_vUniformRefVarList.begin(); it != m_vUniformRefVarList.end(); ++it)
+	for(std::vector<stUniformLocation*>::iterator it = uniformRefVariableList.begin(); it != uniformRefVariableList.end(); ++it)
 	{
 		stUniformLocation* uniformRefVarnode = *it;
 		GX_DELETE(uniformRefVarnode);
 	}
 
-	m_vUniformRefVarList.clear();
+	uniformRefVariableList.clear();
 }
 
 void gxHWShader::sendUniform1f(const char* name, float x)
@@ -530,127 +530,127 @@ void gxHWShader::sendAttrib1f(const char* name, float x)
 //predefined vars
 void gxHWShader::sendUniform_GEAR_MODELVIEW(const float* input)
 {
-	if(m_cUnifrom_GEAR_MODELVIEW==-1)
+	if(unifrom_GEAR_MODELVIEW==-1)
 	{
-		m_cUnifrom_GEAR_MODELVIEW = getUniformLoc("GEAR_MODELVIEW");
+		unifrom_GEAR_MODELVIEW = getUniformLoc("GEAR_MODELVIEW");
 	}
 	
-	CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODELVIEW, 1, false, input));
+	CHECK_GL_ERROR(glUniformMatrix4fv(unifrom_GEAR_MODELVIEW, 1, false, input));
 }
 
 void gxHWShader::sendUniform_GEAR_MVP(const float* input)
 {
-	if(m_cUnifrom_GEAR_MVP==-1)
+	if(unifrom_GEAR_MVP==-1)
 	{
-		m_cUnifrom_GEAR_MVP = getUniformLoc("GEAR_MVP");
+		unifrom_GEAR_MVP = getUniformLoc("GEAR_MVP");
 	}
 
-	CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MVP, 1, false, input));
+	CHECK_GL_ERROR(glUniformMatrix4fv(unifrom_GEAR_MVP, 1, false, input));
 }
 
 void gxHWShader::sendUniform_GEAR_MODEL_MATRIX(const float* input)
 {
-	if(m_cUnifrom_GEAR_MODEL_MATRIX==-1)
+	if(unifrom_GEAR_MODEL_MATRIX==-1)
 	{
-		m_cUnifrom_GEAR_MODEL_MATRIX = getUniformLoc("GEAR_MODEL_MATRIX");
+		unifrom_GEAR_MODEL_MATRIX = getUniformLoc("GEAR_MODEL_MATRIX");
 	}
 	
-	CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_MATRIX, 1, false, input));
+	CHECK_GL_ERROR(glUniformMatrix4fv(unifrom_GEAR_MODEL_MATRIX, 1, false, input));
 }
 
 void gxHWShader::sendUniform_GEAR_MODEL_INVERSE(const float* input)
 {
-	if(m_cUnifrom_GEAR_MODEL_INVERSE==-1)
+	if(unifrom_GEAR_MODEL_INVERSE==-1)
 	{
-		m_cUnifrom_GEAR_MODEL_INVERSE = getUniformLoc("GEAR_MODEL_INVERSE");
+		unifrom_GEAR_MODEL_INVERSE = getUniformLoc("GEAR_MODEL_INVERSE");
 	}
 		
-	CHECK_GL_ERROR(glUniformMatrix4fv(m_cUnifrom_GEAR_MODEL_INVERSE, 1, false, input));
+	CHECK_GL_ERROR(glUniformMatrix4fv(unifrom_GEAR_MODEL_INVERSE, 1, false, input));
 }
 
 void gxHWShader::sendUniform_material_diffuse(const float* input)
 {
-	if(m_cUnifrom_material_diffuse==-1)
+	if(unifrom_material_diffuse==-1)
 	{
-		m_cUnifrom_material_diffuse = getUniformLoc("material.diffuse");
+		unifrom_material_diffuse = getUniformLoc("material.diffuse");
 	}
 
-	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_diffuse, 1, input));
+	CHECK_GL_ERROR(glUniform4fv(unifrom_material_diffuse, 1, input));
 }
 
 void gxHWShader::sendUniform_material_ambient(const float* input)
 {
-	if(m_cUnifrom_material_ambient==-1)
+	if(unifrom_material_ambient==-1)
 	{
-		m_cUnifrom_material_ambient = getUniformLoc("material.ambient");
+		unifrom_material_ambient = getUniformLoc("material.ambient");
 	}
 	
-	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_ambient, 1, input));
+	CHECK_GL_ERROR(glUniform4fv(unifrom_material_ambient, 1, input));
 }
 
 void gxHWShader::sendUniform_material_specular(const float* input)
 {
-	if(m_cUnifrom_material_specular==-1)
+	if(unifrom_material_specular==-1)
 	{
-		m_cUnifrom_material_specular = getUniformLoc("material.specular");
+		unifrom_material_specular = getUniformLoc("material.specular");
 	}
 	
-	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_material_specular, 1, input));
+	CHECK_GL_ERROR(glUniform4fv(unifrom_material_specular, 1, input));
 }
 
 void gxHWShader::sendUniform_material_shininess(float input)
 {
-	if(m_cUnifrom_material_shininess==-1)
+	if(unifrom_material_shininess==-1)
 	{
-		m_cUnifrom_material_shininess = getUniformLoc("material.shininess");
+		unifrom_material_shininess = getUniformLoc("material.shininess");
 	}
 
-	CHECK_GL_ERROR(glUniform1f(m_cUnifrom_material_shininess, input));
+	CHECK_GL_ERROR(glUniform1f(unifrom_material_shininess, input));
 }
 
 void gxHWShader::sendUniform_GEAR_Time(const float* time)
 {
-	if(m_cUnifrom_GEAR_Time==-1)
+	if(unifrom_GEAR_Time==-1)
 	{
-		m_cUnifrom_GEAR_Time = getUniformLoc("GEAR_Time");
+		unifrom_GEAR_Time = getUniformLoc("GEAR_Time");
 	}
 	
-	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_Time, 1, time));
+	CHECK_GL_ERROR(glUniform4fv(unifrom_GEAR_Time, 1, time));
 }
 
 void gxHWShader::sendUniform_GEAR_ScreenParams(const float* screenParams)
 {
-	if(m_cUnifrom_GEAR_ScreenParams==-1)
+	if(unifrom_GEAR_ScreenParams==-1)
 	{
-		m_cUnifrom_GEAR_ScreenParams = getUniformLoc("GEAR_ScreenParams");
+		unifrom_GEAR_ScreenParams = getUniformLoc("GEAR_ScreenParams");
 	}
 
-	CHECK_GL_ERROR(glUniform4fv(m_cUnifrom_GEAR_ScreenParams, 1, screenParams));
+	CHECK_GL_ERROR(glUniform4fv(unifrom_GEAR_ScreenParams, 1, screenParams));
 }
 
 int gxHWShader::getAttrib_vIN_Position()
 {
-	if(m_cAttrib_vIN_Position==-1)
+	if(attrib_vIN_Position==-1)
 	{
-		m_cAttrib_vIN_Position=getAttribLoc("vIN_Position");
+		attrib_vIN_Position=getAttribLoc("vIN_Position");
 	}
-	return m_cAttrib_vIN_Position;
+	return attrib_vIN_Position;
 }
 
 int gxHWShader::getAttrib_vIN_Normal()
 {
-	if(m_cAttrib_vIN_Normal==-1)
+	if(attrib_vIN_Normal==-1)
 	{
-		m_cAttrib_vIN_Normal=getAttribLoc("vIN_Normal");
+		attrib_vIN_Normal=getAttribLoc("vIN_Normal");
 	}
-	return m_cAttrib_vIN_Normal;
+	return attrib_vIN_Normal;
 }
 
 int gxHWShader::getAttrib_Tangent()
 {
-	if(m_cAttrib_Tangent==-1)
+	if(attrib_Tangent==-1)
 	{
-		m_cAttrib_Tangent=getAttribLoc("Tangent");
+		attrib_Tangent=getAttribLoc("Tangent");
 	}
-	return m_cAttrib_Tangent;
+	return attrib_Tangent;
 }

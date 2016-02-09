@@ -5,7 +5,7 @@ geGUIBase::geGUIBase()
 {
 	m_pRenderer=NULL;
 	m_pSelectedControlPtr=NULL;
-	m_pParentPtr=NULL;
+	parent=NULL;
 	setMouseEntered(false);
 	setSizable(false);
 	setMouseBoundCheck(true);
@@ -23,7 +23,7 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fon
 	m_pRenderer=NULL;
 	setSizable(false);
 	m_pSelectedControlPtr=NULL;
-	m_pParentPtr=NULL;
+	parent=NULL;
 	setMouseEntered(false);
 	setMouseBoundCheck(true);
 	m_pUserData=NULL;
@@ -77,8 +77,8 @@ void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent)
 	setMouseBoundCheck(true);
 	if(parent)
 	{
-		m_pParentPtr=parent;
-		parent->appendChildControl(this);
+		this->parent=parent;
+		this->parent->appendChildControl(this);
 	}
 }
 
@@ -86,8 +86,8 @@ void geGUIBase::setParent(geGUIBase* parent)
 {
 	if(parent)
 	{
-		m_pParentPtr=parent;
-		parent->appendChildControl(this);
+		this->parent=parent;
+		this->parent->appendChildControl(this);
 	}
 }
 
@@ -773,8 +773,8 @@ void geGUIBase::onCommand(int cmd)
 
 void geGUIBase::notifyParent(int msg)
 {
-	if(m_pParentPtr)
-	m_pParentPtr->onNotify(msg);
+	if(parent)
+	parent->onNotify(msg);
 }
 
 void geGUIBase::onNotify(int msg)

@@ -24,39 +24,39 @@ public:
 	void setViewMatrixToGL(matrix4x4f* matrix);
 	void setViewProjectionMatrix(matrix4x4f* matrix);
 
-	const vector2f& getViewPortSz()			{	return m_cViewPortRect.m_size;			}
-	const gxRectf& getViewPortRect()		{	return m_cViewPortRect;					}
+	const vector2f& getViewPortSz()			{	return viewPortRectangle.m_size;			}
+	const gxRectf& getViewPortRect()		{	return viewPortRectangle;					}
 
-	matrix4x4f* getProjectionMatrix()		{	return m_pProjectionMatrixPtr;			}
-	matrix4x4f* getViewMatrix()				{	return m_pViewMatrixPtr;				}
-	matrix4x4f* getViewProjectionMatrix()	{	return m_pViewProjectionMatrixPtr;		}
-	matrix4x4f* getOrthoProjectionMatrix()	{	return &m_cOrthogonalProjectionMatrix;	}
+	matrix4x4f* getProjectionMatrix()		{	return projectionMatrix;			}
+	matrix4x4f* getViewMatrix()				{	return viewMatrix;				}
+	matrix4x4f* getViewProjectionMatrix()	{	return viewProjectionMatrix;		}
+	matrix4x4f* getOrthoProjectionMatrix()	{	return &orthogonalProjectionMatrix;	}
 
-	void setGEARTexture1x1(stTexturePacket* tex)	{	m_pGEARTexture1x1Ptr=tex;	}
-	stTexturePacket* getGEARTexture1x1()			{	return m_pGEARTexture1x1Ptr;		}
+	void setGEARTexture1x1(stTexturePacket* tex)	{	texturePacket1x1=tex;	}
+	stTexturePacket* getGEARTexture1x1()			{	return texturePacket1x1;		}
 
-	unsigned int m_nTrisRendered;
-	unsigned int m_nDrawCalls;
+	void setRenderPassType(RENDER_PASS_TYPE eType)	{	renderPassType=eType;	}
+	RENDER_PASS_TYPE getRenderPassType()			{	return renderPassType;	}
 
-	void setRenderPassType(RENDER_PASS_TYPE eType)	{	m_eRenderPassType=eType;	}
-	RENDER_PASS_TYPE getRenderPassType()			{	return m_eRenderPassType;	}
+	void setMainCameraEye(vector3f eye)		{	mainCameraEyePosition=eye;	}
+	vector3f getMainCameraEye()				{	return mainCameraEyePosition;	}
 
-	void setMainCameraEye(vector3f eye)		{	m_cMainCameraEyePos=eye;	}
-	vector3f getMainCameraEye()				{	return m_cMainCameraEyePos;	}
+	stFog* getFog()	{	return &fogStruct; }
 
-	stFog* getFog()	{	return &m_cFog; }
+    unsigned int noOfTrianglesRendered;
+    unsigned int noOfDrawCalls;
 
 private:
 
-	gxRectf	m_cViewPortRect;
-	matrix4x4f* m_pProjectionMatrixPtr;			//must not delete this pointer
-	matrix4x4f* m_pViewMatrixPtr;				//must not delete this pointer
-	matrix4x4f* m_pViewProjectionMatrixPtr;     //must not delete this pointer
-    matrix4x4f  m_cOrthogonalProjectionMatrix;
+	gxRectf	viewPortRectangle;
+	matrix4x4f* projectionMatrix;			//must not delete this pointer
+	matrix4x4f* viewMatrix;				//must not delete this pointer
+	matrix4x4f* viewProjectionMatrix;     //must not delete this pointer
+    matrix4x4f  orthogonalProjectionMatrix;
 
-	stTexturePacket* m_pGEARTexture1x1Ptr;		//must not delete this pointer
-	RENDER_PASS_TYPE m_eRenderPassType;
-	vector3f m_cMainCameraEyePos;
+	stTexturePacket* texturePacket1x1;		//must not delete this pointer
+	RENDER_PASS_TYPE renderPassType;
+	vector3f mainCameraEyePosition;
 
-	stFog m_cFog;
+	stFog fogStruct;
 };

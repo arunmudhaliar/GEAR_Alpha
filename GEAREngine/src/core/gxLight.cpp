@@ -6,7 +6,7 @@ object3d(OBJECT3D_LIGHT)
 {
 	setName("Point Light");
 	setLightType(LIGHT_POINT);
-	m_cOOBB.set(vector3f(-5, -5, -5), vector3f(5, 5, 5));
+	oobb.set(vector3f(-5, -5, -5), vector3f(5, 5, 5));
 
 	diffuseColor.set(0.7f, 0.7f, 0.7f, 1.0f);
 	ambientColor.set(0.05f, 0.05f, 0.05f, 1.0f);
@@ -91,11 +91,11 @@ void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)
 
 void gxLight::write(gxFile& file)
 {
-	file.Write(m_iObjectID);
-	file.Write(m_eBaseFlags);
+	file.Write(objectID);
+	file.Write(baseFlag);
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
-	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.WriteBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Write(assetFileCRC);
 	writeAnimationController(file);
 
@@ -109,9 +109,9 @@ void gxLight::write(gxFile& file)
 	file.Write(quadraticAttenuation);
 	//
 
-	file.Write((int)m_cChilds.size());
+	file.Write((int)childList.size());
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -119,7 +119,7 @@ void gxLight::write(gxFile& file)
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->write(file);
@@ -129,12 +129,12 @@ void gxLight::write(gxFile& file)
 
 void gxLight::read(gxFile& file)
 {
-	file.Read(m_eBaseFlags);
+	file.Read(baseFlag);
 	char* temp=file.ReadString();
 	GX_STRCPY(m_cszName, temp);
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
-	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.ReadBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Read(assetFileCRC);
 	readAnimationController(file);
 

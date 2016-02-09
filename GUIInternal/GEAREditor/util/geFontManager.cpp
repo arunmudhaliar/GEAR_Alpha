@@ -9,23 +9,23 @@
 #include "geFontManager.h"
 
 #if defined (USE_ProgrammablePipeLine_test)
-geFont::geFont(gxHWShader* pFontShaderPtr, gxRenderer* rendererPtr)
+geFont::geFont(gxHWShader* pFontShaderPtr, gxRenderer* renderer)
 {
-    m_pFontShaderPtr=pFontShaderPtr;
-	rendererPtr=rendererPtr;
+    fontShader=pFontShaderPtr;
+	this->renderer=renderer;
 #else
     geFont::geFont()
     {
 #endif
-    m_iBitmapWidth=m_iBitmapHeight=m_iBaseChar=m_nChars=0;
-    m_pszU=m_pszV=m_pszU_width=m_pszU_height=NULL;
-    m_pszCharW=m_pszCharH=NULL;
-    m_pszCharD=NULL;
-    m_pszCharOffsetX=m_pszCharOffsetY=NULL;
-    m_iTexID=0;
-    m_iSpaceWidth=0;
-    m_iLineHeight=0;
-    m_bDeleteGLTexture=true;
+    bitmapWidth=bitmapHeight=baseChar=totalChar=0;
+    textureCoordUArray=textureCoordVArray=textureCoordUArray_width=textureCoordUArray_height=NULL;
+    charWidthArray=charHeightArray=NULL;
+    charDistanceArray=NULL;
+    charOffsetXArray=charOffsetYArray=NULL;
+    fontTextureID=0;
+    spaceWidth=0;
+    lineHeight=0;
+    deleteFontTexture=true;
     setRGBA(1.0f, 1.0f, 1.0f, 1.0f);
     setYOffset(0.0f);
 }
@@ -37,24 +37,24 @@ geFont::~geFont()
 
 void geFont::reset()
 {
-    if(m_iTexID>0 && m_bDeleteGLTexture)
+    if(fontTextureID>0 && deleteFontTexture)
     {
-        glDeleteTextures(1, &m_iTexID);
-        m_iTexID=0;
+        glDeleteTextures(1, &fontTextureID);
+        fontTextureID=0;
     }
     
-    GE_DELETE_ARY(m_pszCharOffsetX);
-    GE_DELETE_ARY(m_pszCharOffsetY);
-    GE_DELETE_ARY(m_pszCharW);
-    GE_DELETE_ARY(m_pszCharH);
-    GE_DELETE_ARY(m_pszCharD);
+    GE_DELETE_ARY(charOffsetXArray);
+    GE_DELETE_ARY(charOffsetYArray);
+    GE_DELETE_ARY(charWidthArray);
+    GE_DELETE_ARY(charHeightArray);
+    GE_DELETE_ARY(charDistanceArray);
     
-    GE_DELETE_ARY(m_pszU);
-    GE_DELETE_ARY(m_pszV);
-    GE_DELETE_ARY(m_pszU_width);
-    GE_DELETE_ARY(m_pszU_height);
+    GE_DELETE_ARY(textureCoordUArray);
+    GE_DELETE_ARY(textureCoordVArray);
+    GE_DELETE_ARY(textureCoordUArray_width);
+    GE_DELETE_ARY(textureCoordUArray_height);
 #if defined (USE_ProgrammablePipeLine_test)
-    m_pFontShaderPtr=NULL;
+    fontShader=NULL;
 #endif
     
 #if defined (LOG_DEBUG_ENGINE)
@@ -64,46 +64,46 @@ void geFont::reset()
 
 bool geFont::load(gxFile& file)
 {
-    file.Read(m_iBitmapWidth);
-    file.Read(m_iBitmapHeight);
-    file.Read(m_nChars);
-    file.Read(m_iBaseChar);
-    file.Read(m_iSpaceWidth);    
+    file.Read(bitmapWidth);
+    file.Read(bitmapHeight);
+    file.Read(totalChar);
+    file.Read(baseChar);
+    file.Read(spaceWidth);    
     
 #if defined (LOG_DEBUG_ENGINE)
-    DEBUG_PRINT("font width=%d, height=%d, buffersize=%d", m_iBitmapWidth, m_iBitmapHeight, m_iBitmapHeight*m_iBitmapWidth*2);
+    DEBUG_PRINT("font width=%d, height=%d, buffersize=%d", bitmapWidth, bitmapHeight, bitmapHeight*bitmapWidth*2);
 #endif 
-    if(m_nChars==0) return false;
+    if(totalChar==0) return false;
     
-    unsigned char* buffer=new unsigned char[m_iBitmapHeight*m_iBitmapWidth*2];
+    unsigned char* buffer=new unsigned char[bitmapHeight*bitmapWidth*2];
     
-    m_pszU=new float[m_nChars];
-    m_pszV=new float[m_nChars];
-    m_pszU_width=new float[m_nChars];
-    m_pszU_height=new float[m_nChars];
-    m_pszCharW=new unsigned short[m_nChars];
-    m_pszCharH=new unsigned short[m_nChars];
-    m_pszCharD=new short[m_nChars];
-    m_pszCharOffsetX=new short[m_nChars];
-    m_pszCharOffsetY=new short[m_nChars];
+    textureCoordUArray=new float[totalChar];
+    textureCoordVArray=new float[totalChar];
+    textureCoordUArray_width=new float[totalChar];
+    textureCoordUArray_height=new float[totalChar];
+    charWidthArray=new unsigned short[totalChar];
+    charHeightArray=new unsigned short[totalChar];
+    charDistanceArray=new short[totalChar];
+    charOffsetXArray=new short[totalChar];
+    charOffsetYArray=new short[totalChar];
     
-    for(int x=0;x<m_nChars;x++)
+    for(int x=0;x<totalChar;x++)
     {
-        file.Read(m_pszCharOffsetX[x]);
-        file.Read(m_pszCharOffsetY[x]);
+        file.Read(charOffsetXArray[x]);
+        file.Read(charOffsetYArray[x]);
 
-        file.Read(m_pszCharW[x]);
-        file.Read(m_pszCharH[x]);
-        file.Read(m_pszCharD[x]);
-        file.Read(m_pszU[x]);
-        file.Read(m_pszV[x]);
-        file.Read(m_pszU_width[x]);
-        file.Read(m_pszU_height[x]);
+        file.Read(charWidthArray[x]);
+        file.Read(charHeightArray[x]);
+        file.Read(charDistanceArray[x]);
+        file.Read(textureCoordUArray[x]);
+        file.Read(textureCoordVArray[x]);
+        file.Read(textureCoordUArray_width[x]);
+        file.Read(textureCoordUArray_height[x]);
     }
     
-    file.Read(m_iLineHeight);
-    file.ReadBuffer(buffer, m_iBitmapHeight*m_iBitmapWidth*2);
-    m_iTexID=loadBuffer(buffer, true, m_iBitmapWidth, m_iBitmapHeight, 16);
+    file.Read(lineHeight);
+    file.ReadBuffer(buffer, bitmapHeight*bitmapWidth*2);
+    fontTextureID=loadBuffer(buffer, true, bitmapWidth, bitmapHeight, 16);
     GE_DELETE_ARY(buffer);
     
     return true;
@@ -151,10 +151,10 @@ void geFont::draw()
 #if ARUN_COMMENTED
     const int vertLst[8] =
 	{
-		m_iBitmapWidth*65536,	0,
+		bitmapWidth*65536,	0,
 		0,                      0,
-		m_iBitmapWidth*65536,	m_iBitmapHeight*65536,
-		0,                      m_iBitmapHeight*65536
+		bitmapWidth*65536,	bitmapHeight*65536,
+		0,                      bitmapHeight*65536
 	};
     
     const int tex[8] =
@@ -172,7 +172,7 @@ void geFont::draw()
     glClientActiveTexture(GL_TEXTURE0);
     glTexCoordPointer(2, GL_FIXED, 0, tex);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, m_iTexID);
+    glBindTexture(GL_TEXTURE_2D, fontTextureID);
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -204,7 +204,7 @@ float geFont::calculateStringWidthInPixelTillNewLine(const char* str, int nChar,
     while(diff--)
     {
         int actual_char=(unsigned char)str[iCurIndex+cntr];
-        int ch=(unsigned char)str[iCurIndex+cntr]-m_iBaseChar;
+        int ch=(unsigned char)str[iCurIndex+cntr]-baseChar;
 
         if(actual_char=='\n')
         {
@@ -212,15 +212,15 @@ float geFont::calculateStringWidthInPixelTillNewLine(const char* str, int nChar,
         }
         else if(actual_char=='\t')
         {
-            width+=(m_pszCharW[32-m_iBaseChar]*5);
+            width+=(charWidthArray[32-baseChar]*5);
             continue;
         }
-        if(ch<0 || ch>=m_nChars)
+        if(ch<0 || ch>=totalChar)
         {
             cntr++;
             continue;
         }
-        width+=((float)m_pszCharD[ch]+kerning);
+        width+=((float)charDistanceArray[ch]+kerning);
         cntr++;
     }
     
@@ -230,8 +230,8 @@ float geFont::calculateStringWidthInPixelTillNewLine(const char* str, int nChar,
 float geFont::getCharWidth(char charValue)
 {
 	float kerning=GE_DEBUG_KERNING;
-	int ch=(unsigned char)charValue-m_iBaseChar;
-	return ((float)m_pszCharD[ch]+kerning);
+	int ch=(unsigned char)charValue-baseChar;
+	return ((float)charDistanceArray[ch]+kerning);
 }
 
 #define CHAR_DELAY  0.05f
@@ -260,11 +260,11 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     for(int xx=0;xx<len;xx++)
     {
         int actual_char=(unsigned char)str[xx];
-        int ch=(unsigned char)str[xx]-m_iBaseChar;
+        int ch=(unsigned char)str[xx]-baseChar;
         
         if(actual_char=='\n')
         {
-            raster_pos_y+=(float)m_iLineHeight;
+            raster_pos_y+=(float)lineHeight;
             raster_pos_x=0.0f;
             if(bCentered)
             {
@@ -275,39 +275,39 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
         }
         else if(actual_char=='\t')
         {
-            raster_pos_x+=(m_pszCharW[32-m_iBaseChar]*5);
+            raster_pos_x+=(charWidthArray[32-baseChar]*5);
             continue;
         }
         
-        if(ch<0 || ch>=m_nChars)
+        if(ch<0 || ch>=totalChar)
         {
             continue;
         }
 
-        int offx=m_pszCharOffsetX[ch];
-        int offy=m_pszCharOffsetY[ch];
+        int offx=charOffsetXArray[ch];
+        int offy=charOffsetYArray[ch];
         
         float left=raster_pos_x+offx;
-        float right=raster_pos_x+m_pszCharW[ch]+offx;
+        float right=raster_pos_x+charWidthArray[ch]+offx;
         float top=raster_pos_y+offy;
-        float bottom=raster_pos_y+m_pszCharH[ch]+offy;
+        float bottom=raster_pos_y+charHeightArray[ch]+offy;
         
-        m_cszVertCoordList[cntr*12+0]=(short)right;     m_cszVertCoordList[cntr*12+1]=(short)top;
-        m_cszVertCoordList[cntr*12+2]=(short)left;      m_cszVertCoordList[cntr*12+3]=(short)top;
-        m_cszVertCoordList[cntr*12+4]=(short)right;     m_cszVertCoordList[cntr*12+5]=(short)bottom;
-        m_cszVertCoordList[cntr*12+6]=(short)left;      m_cszVertCoordList[cntr*12+7]=(short)bottom;
-        m_cszVertCoordList[cntr*12+8]=(short)right;     m_cszVertCoordList[cntr*12+9]=(short)bottom;
-        m_cszVertCoordList[cntr*12+10]=(short)left;     m_cszVertCoordList[cntr*12+11]=(short)top;
+        vertexCoordinateArray[cntr*12+0]=(short)right;     vertexCoordinateArray[cntr*12+1]=(short)top;
+        vertexCoordinateArray[cntr*12+2]=(short)left;      vertexCoordinateArray[cntr*12+3]=(short)top;
+        vertexCoordinateArray[cntr*12+4]=(short)right;     vertexCoordinateArray[cntr*12+5]=(short)bottom;
+        vertexCoordinateArray[cntr*12+6]=(short)left;      vertexCoordinateArray[cntr*12+7]=(short)bottom;
+        vertexCoordinateArray[cntr*12+8]=(short)right;     vertexCoordinateArray[cntr*12+9]=(short)bottom;
+        vertexCoordinateArray[cntr*12+10]=(short)left;     vertexCoordinateArray[cntr*12+11]=(short)top;
 
 
-        m_cszTexCoordList[cntr*12+0]=(m_pszU[ch]+m_pszU_width[ch]);   m_cszTexCoordList[cntr*12+1]=m_pszV[ch];
-        m_cszTexCoordList[cntr*12+2]=m_pszU[ch];                      m_cszTexCoordList[cntr*12+3]=m_pszV[ch];
-        m_cszTexCoordList[cntr*12+4]=(m_pszU[ch]+m_pszU_width[ch]);   m_cszTexCoordList[cntr*12+5]=(m_pszV[ch]+m_pszU_height[ch]);
-        m_cszTexCoordList[cntr*12+6]=m_pszU[ch];                      m_cszTexCoordList[cntr*12+7]=(m_pszV[ch]+m_pszU_height[ch]);
-        m_cszTexCoordList[cntr*12+8]=(m_pszU[ch]+m_pszU_width[ch]);   m_cszTexCoordList[cntr*12+9]=(m_pszV[ch]+m_pszU_height[ch]);
-        m_cszTexCoordList[cntr*12+10]=m_pszU[ch];                     m_cszTexCoordList[cntr*12+11]=m_pszV[ch];
+        textureCoordinateArray[cntr*12+0]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordinateArray[cntr*12+1]=textureCoordVArray[ch];
+        textureCoordinateArray[cntr*12+2]=textureCoordUArray[ch];                      textureCoordinateArray[cntr*12+3]=textureCoordVArray[ch];
+        textureCoordinateArray[cntr*12+4]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordinateArray[cntr*12+5]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordinateArray[cntr*12+6]=textureCoordUArray[ch];                      textureCoordinateArray[cntr*12+7]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordinateArray[cntr*12+8]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordinateArray[cntr*12+9]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordinateArray[cntr*12+10]=textureCoordUArray[ch];                     textureCoordinateArray[cntr*12+11]=textureCoordVArray[ch];
 
-        raster_pos_x+=((float)m_pszCharD[ch]+kerning);
+        raster_pos_x+=((float)charDistanceArray[ch]+kerning);
 		if(raster_pos_x>(float)width_limit)
 		{
 			retVal=9;	//window bound
@@ -317,17 +317,17 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     }
     
 #if defined (USE_ProgrammablePipeLine_test)
-    m_pFontShaderPtr->enableProgram();
-    //m_pFontShaderPtr->resetAllFlags();
+    fontShader->enableProgram();
+    //fontShader->resetAllFlags();
     
-    glVertexAttribPointer(m_pFontShaderPtr->getAttribLoc("a_vertex_coord_v4"), 2, GL_SHORT, GL_FALSE, 0, m_cszVertCoordList);
-    glEnableVertexAttribArray(m_pFontShaderPtr->getAttribLoc("a_vertex_coord_v4"));
+    glVertexAttribPointer(fontShader->getAttribLoc("a_vertex_coord_v4"), 2, GL_SHORT, GL_FALSE, 0, vertexCoordinateArray);
+    glEnableVertexAttribArray(fontShader->getAttribLoc("a_vertex_coord_v4"));
     
-    glVertexAttribPointer(m_pFontShaderPtr->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, m_cszTexCoordList);
-    glEnableVertexAttribArray(m_pFontShaderPtr->getAttribLoc("a_uv_coord0_v2"));
+    glVertexAttribPointer(fontShader->getAttribLoc("a_uv_coord0_v2"), 2, GL_FLOAT, GL_FALSE, 0, textureCoordinateArray);
+    glEnableVertexAttribArray(fontShader->getAttribLoc("a_uv_coord0_v2"));
     
     //glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, m_iTexID);	
+    glBindTexture(GL_TEXTURE_2D, fontTextureID);	
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -337,44 +337,44 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     
     if(bShadowed)
     {
-        transformTM.setPosition(x+1, y+1+m_fYOffset, -1.0f);
-        transformTM= *rendererPtr->getOrthoProjectionMatrix() * transformTM;
+        transformTM.setPosition(x+1, y+1+fontYOffset, -1.0f);
+        transformTM= *renderer->getOrthoProjectionMatrix() * transformTM;
         const float* u_mvp_m4x4_shadow=transformTM.getMatrix();
-        m_pFontShaderPtr->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_shadow, false, 4);
+        fontShader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_shadow, false, 4);
         float shadow_color[]={0.0f, 0.0f, 0.0f, 0.7f};
-        m_pFontShaderPtr->sendUniform4fv("u_color_v4", shadow_color);
+        fontShader->sendUniform4fv("u_color_v4", shadow_color);
         glDrawArrays(GL_TRIANGLES, 0, cntr*6);
         
         transformTM.identity(); //reset the matrix
     }
     
-    transformTM.setPosition(x, y+m_fYOffset, -1.0f);
-    transformTM= *rendererPtr->getOrthoProjectionMatrix() * transformTM;
+    transformTM.setPosition(x, y+fontYOffset, -1.0f);
+    transformTM= *renderer->getOrthoProjectionMatrix() * transformTM;
     const float* u_mvp_m4x4=transformTM.getMatrix();
-    m_pFontShaderPtr->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
-    m_pFontShaderPtr->sendUniform4fv("u_color_v4", m_cszRGBA);
+    fontShader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
+    fontShader->sendUniform4fv("u_color_v4", colorRGBA);
     glDrawArrays(GL_TRIANGLES, 0, cntr*6);
     
     glDisable(GL_BLEND);
-    glDisableVertexAttribArray(m_pFontShaderPtr->getAttribLoc("a_uv_coord0_v2"));
+    glDisableVertexAttribArray(fontShader->getAttribLoc("a_uv_coord0_v2"));
     //glDisable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
-    glDisableVertexAttribArray(m_pFontShaderPtr->getAttribLoc("a_vertex_coord_v4"));
+    glDisableVertexAttribArray(fontShader->getAttribLoc("a_vertex_coord_v4"));
     
-    m_pFontShaderPtr->disableProgram();
+    fontShader->disableProgram();
 #else
     glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(2, GL_SHORT, 0, m_cszVertCoordList);
+    glVertexPointer(2, GL_SHORT, 0, vertexCoordinateArray);
     
     //glActiveTexture(GL_TEXTURE0);
     //glClientActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_iTexID);
+    glBindTexture(GL_TEXTURE_2D, fontTextureID);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, m_cszTexCoordList);
+    glTexCoordPointer(2, GL_FLOAT, 0, textureCoordinateArray);
     
     //arun_commenting_alphatest glEnable(GL_ALPHA_TEST);
     //arun_commenting_alphatest glAlphaFuncx(GL_GREATER, 6553); //0.1f
@@ -387,15 +387,15 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     if(bShadowed)
     {   
         glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
-        glTranslatef(x+1, y+1+m_fYOffset, 0);
+        glTranslatef(x+1, y+1+fontYOffset, 0);
         glDrawArrays(GL_TRIANGLES, 0, cntr*6);
         glTranslatef(-1, -1, 0);
     }
     else
     {
-        glTranslatef(x, y+m_fYOffset, 0);
+        glTranslatef(x, y+fontYOffset, 0);
     }
-    glColor4f(m_cszRGBA[0], m_cszRGBA[1], m_cszRGBA[2], m_cszRGBA[3]);
+    glColor4f(colorRGBA[0], colorRGBA[1], colorRGBA[2], colorRGBA[3]);
     glDrawArrays(GL_TRIANGLES, 0, cntr*6);
     glPopMatrix();
     
@@ -460,7 +460,7 @@ void geFont::drawOnBuffer_justify(const char* str, int cx, int cy, unsigned int&
     for(int x=0;x<len;x++)
     {
         int actual_char=(unsigned char)str[x];
-        int ch=actual_char-m_iBaseChar;
+        int ch=actual_char-baseChar;
         
         if(actual_char=='\n')
         {
@@ -475,13 +475,13 @@ void geFont::drawOnBuffer_justify(const char* str, int cx, int cy, unsigned int&
             }
             
             bCalculateNextLine=true;
-            raster_pos_y+=(float)m_iLineHeight;
+            raster_pos_y+=(float)lineHeight;
 
             continue;
         }
         else if(actual_char=='\t')
         {
-            raster_pos_x+=(m_pszCharW[32-m_iBaseChar]*5);
+            raster_pos_x+=(charWidthArray[32-baseChar]*5);
             continue;
         }
         
@@ -510,15 +510,15 @@ void geFont::drawOnBuffer_justify(const char* str, int cx, int cy, unsigned int&
             bCalculateNextLine=false;
         }
         
-        if(ch<0 || ch>=m_nChars)
+        if(ch<0 || ch>=totalChar)
         {
             continue;
         }
         
-        if(raster_pos_x+(float)m_pszCharD[ch]+kerning>cx)
+        if(raster_pos_x+(float)charDistanceArray[ch]+kerning>cx)
         {
             bCalculateNextLine=true;
-            raster_pos_y+=(float)m_iLineHeight;
+            raster_pos_y+=(float)lineHeight;
             x--;
             continue;
         }
@@ -531,13 +531,13 @@ void geFont::drawOnBuffer_justify(const char* str, int cx, int cy, unsigned int&
                 bLineStarted=true;
         }
         
-        int offx=m_pszCharOffsetX[ch];
-        int offy=m_pszCharOffsetY[ch];
+        int offx=charOffsetXArray[ch];
+        int offy=charOffsetYArray[ch];
         
         float left=raster_pos_x+offx;
-        float right=raster_pos_x+m_pszCharW[ch]+offx;
+        float right=raster_pos_x+charWidthArray[ch]+offx;
         float top=raster_pos_y+offy;
-        float bottom=raster_pos_y+m_pszCharH[ch]+offy;
+        float bottom=raster_pos_y+charHeightArray[ch]+offy;
         
         vertexCoordBuffer[cntr*12+0]=(short)right;     vertexCoordBuffer[cntr*12+1]=(short)top;
         vertexCoordBuffer[cntr*12+2]=(short)left;      vertexCoordBuffer[cntr*12+3]=(short)top;
@@ -545,16 +545,16 @@ void geFont::drawOnBuffer_justify(const char* str, int cx, int cy, unsigned int&
         vertexCoordBuffer[cntr*12+6]=(short)left;      vertexCoordBuffer[cntr*12+7]=(short)bottom;
         vertexCoordBuffer[cntr*12+8]=(short)right;     vertexCoordBuffer[cntr*12+9]=(short)bottom;
         vertexCoordBuffer[cntr*12+10]=(short)left;     vertexCoordBuffer[cntr*12+11]=(short)top;
-        raster_pos_x+=((float)m_pszCharD[ch]+kerning);
+        raster_pos_x+=((float)charDistanceArray[ch]+kerning);
         if(actual_char==32)
             raster_pos_x+=extra_pixels_added_to_space;
         
-        textureCoordBuffer[cntr*12+0]=(m_pszU[ch]+m_pszU_width[ch]);   textureCoordBuffer[cntr*12+1]=m_pszV[ch];
-        textureCoordBuffer[cntr*12+2]=m_pszU[ch];                      textureCoordBuffer[cntr*12+3]=m_pszV[ch];
-        textureCoordBuffer[cntr*12+4]=(m_pszU[ch]+m_pszU_width[ch]);   textureCoordBuffer[cntr*12+5]=(m_pszV[ch]+m_pszU_height[ch]);
-        textureCoordBuffer[cntr*12+6]=m_pszU[ch];                      textureCoordBuffer[cntr*12+7]=(m_pszV[ch]+m_pszU_height[ch]);
-        textureCoordBuffer[cntr*12+8]=(m_pszU[ch]+m_pszU_width[ch]);   textureCoordBuffer[cntr*12+9]=(m_pszV[ch]+m_pszU_height[ch]);
-        textureCoordBuffer[cntr*12+10]=m_pszU[ch];                     textureCoordBuffer[cntr*12+11]=m_pszV[ch];
+        textureCoordBuffer[cntr*12+0]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordBuffer[cntr*12+1]=textureCoordVArray[ch];
+        textureCoordBuffer[cntr*12+2]=textureCoordUArray[ch];                      textureCoordBuffer[cntr*12+3]=textureCoordVArray[ch];
+        textureCoordBuffer[cntr*12+4]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordBuffer[cntr*12+5]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordBuffer[cntr*12+6]=textureCoordUArray[ch];                      textureCoordBuffer[cntr*12+7]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordBuffer[cntr*12+8]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordBuffer[cntr*12+9]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordBuffer[cntr*12+10]=textureCoordUArray[ch];                     textureCoordBuffer[cntr*12+11]=textureCoordVArray[ch];
         
         cntr++;
         nCharsOnLine++;
@@ -582,7 +582,7 @@ bool geFont::calculateExtraSpaceOnRightSide(const char* str, int cx, int nChar, 
     for(x=iCurIndex;x<nChar;x++)
     {
         int actual_char=(unsigned char)str[x];
-        int ch=actual_char-m_iBaseChar;
+        int ch=actual_char-baseChar;
 //        const char* current_char=&str[x];
         
         if(!bLineStarted)
@@ -606,15 +606,15 @@ bool geFont::calculateExtraSpaceOnRightSide(const char* str, int cx, int nChar, 
         }
         else if(actual_char=='\t')
         {
-            raster_pos_x+=(m_pszCharW[32-m_iBaseChar]*5);
+            raster_pos_x+=(charWidthArray[32-baseChar]*5);
             continue;
         }
-        if(ch<0 || ch>=m_nChars)
+        if(ch<0 || ch>=totalChar)
         {
             continue;
         }
 
-        if(raster_pos_x+(float)m_pszCharD[ch]+kerning>cx)
+        if(raster_pos_x+(float)charDistanceArray[ch]+kerning>cx)
         {
             if(actual_char==32 || actual_char=='\n' || actual_char=='\t')
             {
@@ -624,7 +624,7 @@ bool geFont::calculateExtraSpaceOnRightSide(const char* str, int cx, int nChar, 
             break; //found eol
         }
         
-        raster_pos_x+=((float)m_pszCharD[ch]+kerning);
+        raster_pos_x+=((float)charDistanceArray[ch]+kerning);
     }
     
     if(x==nChar)
@@ -663,12 +663,12 @@ void geFont::drawOnBuffer_center(const char* str, int cx, int cy, unsigned int& 
     for(int x=0;x<len;x++)
     {
         int actual_char=(unsigned char)str[x];
-        int ch=actual_char-m_iBaseChar;
+        int ch=actual_char-baseChar;
         //const char* temp=&str[x];
         
         if( actual_char=='\n')
         {
-            raster_pos_y+=(float)m_iLineHeight;
+            raster_pos_y+=(float)lineHeight;
             bCalculateNextLine=true;
             continue;
         }
@@ -698,22 +698,22 @@ void geFont::drawOnBuffer_center(const char* str, int cx, int cy, unsigned int& 
         if(canNeglectNextWord(str, cx, nChar, x, raster_pos_x))
         {
             bCalculateNextLine=true;
-            raster_pos_y+=(float)m_iLineHeight;
+            raster_pos_y+=(float)lineHeight;
             continue;
         }
         
 
         if(actual_char=='\t')
         {
-            raster_pos_x+=(m_pszCharW[32-m_iBaseChar]*5);
+            raster_pos_x+=(charWidthArray[32-baseChar]*5);
             continue;
         }
-        if(ch<0 || ch>=m_nChars)
+        if(ch<0 || ch>=totalChar)
         {
             continue;
         }
         
-        if(raster_pos_x+(float)m_pszCharD[ch]+kerning>cx)
+        if(raster_pos_x+(float)charDistanceArray[ch]+kerning>cx)
         {
             bCalculateNextLine=true;
         }
@@ -726,13 +726,13 @@ void geFont::drawOnBuffer_center(const char* str, int cx, int cy, unsigned int& 
                 bLineStarted=true;
         }
         
-        int offx=m_pszCharOffsetX[ch];
-        int offy=m_pszCharOffsetY[ch];
+        int offx=charOffsetXArray[ch];
+        int offy=charOffsetYArray[ch];
         
         float left=raster_pos_x+offx;
-        float right=raster_pos_x+m_pszCharW[ch]+offx;
+        float right=raster_pos_x+charWidthArray[ch]+offx;
         float top=raster_pos_y+offy;
-        float bottom=raster_pos_y+m_pszCharH[ch]+offy;
+        float bottom=raster_pos_y+charHeightArray[ch]+offy;
         
         vertexCoordBuffer[cntr*12+0]=(short)right;     vertexCoordBuffer[cntr*12+1]=(short)top;
         vertexCoordBuffer[cntr*12+2]=(short)left;      vertexCoordBuffer[cntr*12+3]=(short)top;
@@ -740,14 +740,14 @@ void geFont::drawOnBuffer_center(const char* str, int cx, int cy, unsigned int& 
         vertexCoordBuffer[cntr*12+6]=(short)left;      vertexCoordBuffer[cntr*12+7]=(short)bottom;
         vertexCoordBuffer[cntr*12+8]=(short)right;     vertexCoordBuffer[cntr*12+9]=(short)bottom;
         vertexCoordBuffer[cntr*12+10]=(short)left;     vertexCoordBuffer[cntr*12+11]=(short)top;
-        raster_pos_x+=((float)m_pszCharD[ch]+kerning);
+        raster_pos_x+=((float)charDistanceArray[ch]+kerning);
         
-        textureCoordBuffer[cntr*12+0]=(m_pszU[ch]+m_pszU_width[ch]);   textureCoordBuffer[cntr*12+1]=m_pszV[ch];
-        textureCoordBuffer[cntr*12+2]=m_pszU[ch];                      textureCoordBuffer[cntr*12+3]=m_pszV[ch];
-        textureCoordBuffer[cntr*12+4]=(m_pszU[ch]+m_pszU_width[ch]);   textureCoordBuffer[cntr*12+5]=(m_pszV[ch]+m_pszU_height[ch]);
-        textureCoordBuffer[cntr*12+6]=m_pszU[ch];                      textureCoordBuffer[cntr*12+7]=(m_pszV[ch]+m_pszU_height[ch]);
-        textureCoordBuffer[cntr*12+8]=(m_pszU[ch]+m_pszU_width[ch]);   textureCoordBuffer[cntr*12+9]=(m_pszV[ch]+m_pszU_height[ch]);
-        textureCoordBuffer[cntr*12+10]=m_pszU[ch];                     textureCoordBuffer[cntr*12+11]=m_pszV[ch];
+        textureCoordBuffer[cntr*12+0]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordBuffer[cntr*12+1]=textureCoordVArray[ch];
+        textureCoordBuffer[cntr*12+2]=textureCoordUArray[ch];                      textureCoordBuffer[cntr*12+3]=textureCoordVArray[ch];
+        textureCoordBuffer[cntr*12+4]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordBuffer[cntr*12+5]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordBuffer[cntr*12+6]=textureCoordUArray[ch];                      textureCoordBuffer[cntr*12+7]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordBuffer[cntr*12+8]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordBuffer[cntr*12+9]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordBuffer[cntr*12+10]=textureCoordUArray[ch];                     textureCoordBuffer[cntr*12+11]=textureCoordVArray[ch];
         
         cntr++;
         nCharsOnLine++;
@@ -771,20 +771,20 @@ bool geFont::calculateExtraSpaceOnBothSide(const char* str, int cx, int nChar, i
     for(x=iCurIndex;x<nChar;x++)
     {
         int actual_char=(unsigned char)str[x];
-        int ch=actual_char-m_iBaseChar;
+        int ch=actual_char-baseChar;
         //        const char* current_char=&str[x];
         
         if(!bLineStarted)
         {
             if(actual_char==32)
             {
-                if(raster_pos_x+(float)m_iSpaceWidth+kerning>cx)
+                if(raster_pos_x+(float)spaceWidth+kerning>cx)
                 {
                     raster_pos_x=0.0f;
                     return false;
                 }
                 else
-                    raster_pos_x+=(m_iSpaceWidth+kerning);
+                    raster_pos_x+=(spaceWidth+kerning);
                 continue;
             }
             else
@@ -808,15 +808,15 @@ bool geFont::calculateExtraSpaceOnBothSide(const char* str, int cx, int nChar, i
         }
         else if(actual_char=='\t')
         {
-            raster_pos_x+=(m_pszCharW[32-m_iBaseChar]*5);
+            raster_pos_x+=(charWidthArray[32-baseChar]*5);
             continue;
         }
-        if(ch<0 || ch>=m_nChars)
+        if(ch<0 || ch>=totalChar)
         {
             continue;
         }
         
-        if(raster_pos_x+(float)m_pszCharD[ch]+kerning>cx)
+        if(raster_pos_x+(float)charDistanceArray[ch]+kerning>cx)
         {
             if(actual_char==32 || actual_char=='\n' || actual_char=='\t')
             {
@@ -826,7 +826,7 @@ bool geFont::calculateExtraSpaceOnBothSide(const char* str, int cx, int nChar, i
             break; //found eol
         }
         
-        raster_pos_x+=((float)m_pszCharD[ch]+kerning);
+        raster_pos_x+=((float)charDistanceArray[ch]+kerning);
     }
     
     if(x==nChar)
@@ -869,14 +869,14 @@ void geFont::drawOnBuffer_left(const char* str, int cx, int cy, unsigned int& nC
     for(int x=0;x<len;x++)
     {
         int actual_char=(unsigned char)str[x];
-        int ch=actual_char-m_iBaseChar;
+        int ch=actual_char-baseChar;
         
         if(actual_char==32 && bLineStarted)
         {
             if(canNeglectNextWord(str, cx, nChar, x, raster_pos_x))
             {
                 raster_pos_x=0.0f;
-                raster_pos_y+=(float)m_iLineHeight;
+                raster_pos_y+=(float)lineHeight;
                 if(nLines==0)
                     linebuffer[nLines]=nCharsOnLine;
                 else
@@ -891,7 +891,7 @@ void geFont::drawOnBuffer_left(const char* str, int cx, int cy, unsigned int& nC
         else if(actual_char=='\n')
         {
             raster_pos_x=0.0f;
-            raster_pos_y+=(float)m_iLineHeight;
+            raster_pos_y+=(float)lineHeight;
             if(nLines==0)
                 linebuffer[nLines]=nCharsOnLine;
             else
@@ -904,19 +904,19 @@ void geFont::drawOnBuffer_left(const char* str, int cx, int cy, unsigned int& nC
         }
         else if(actual_char=='\t')
         {
-            raster_pos_x+=(m_pszCharW[32-m_iBaseChar]*5);
+            raster_pos_x+=(charWidthArray[32-baseChar]*5);
             continue;
         }
-        if(ch<0 || ch>=m_nChars)
+        if(ch<0 || ch>=totalChar)
         {
             continue;
         }
         
         /*
-        if(raster_pos_x+(float)m_pszCharD[ch]+kerning>cx)
+        if(raster_pos_x+(float)charDistanceArray[ch]+kerning>cx)
         {
             raster_pos_x=0.0f;
-            raster_pos_y+=(float)m_iLineHeight;
+            raster_pos_y+=(float)lineHeight;
             if(nLines==0)
                 linebuffer[nLines]=nCharsOnLine;
             else
@@ -934,13 +934,13 @@ void geFont::drawOnBuffer_left(const char* str, int cx, int cy, unsigned int& nC
                 bLineStarted=true;
         }
         
-        int offx=m_pszCharOffsetX[ch];
-        int offy=m_pszCharOffsetY[ch];
+        int offx=charOffsetXArray[ch];
+        int offy=charOffsetYArray[ch];
         
         float left=raster_pos_x+offx;
-        float right=raster_pos_x+m_pszCharW[ch]+offx;
+        float right=raster_pos_x+charWidthArray[ch]+offx;
         float top=raster_pos_y+offy;
-        float bottom=raster_pos_y+m_pszCharH[ch]+offy;
+        float bottom=raster_pos_y+charHeightArray[ch]+offy;
         
         vertexCoordBuffer[cntr*12+0]=(short)right;     vertexCoordBuffer[cntr*12+1]=(short)top;
         vertexCoordBuffer[cntr*12+2]=(short)left;      vertexCoordBuffer[cntr*12+3]=(short)top;
@@ -948,14 +948,14 @@ void geFont::drawOnBuffer_left(const char* str, int cx, int cy, unsigned int& nC
         vertexCoordBuffer[cntr*12+6]=(short)left;      vertexCoordBuffer[cntr*12+7]=(short)bottom;
         vertexCoordBuffer[cntr*12+8]=(short)right;     vertexCoordBuffer[cntr*12+9]=(short)bottom;
         vertexCoordBuffer[cntr*12+10]=(short)left;     vertexCoordBuffer[cntr*12+11]=(short)top;
-        raster_pos_x+=((float)m_pszCharD[ch]+kerning);
+        raster_pos_x+=((float)charDistanceArray[ch]+kerning);
         
-        textureCoordBuffer[cntr*12+0]=(m_pszU[ch]+m_pszU_width[ch]);   textureCoordBuffer[cntr*12+1]=m_pszV[ch];
-        textureCoordBuffer[cntr*12+2]=m_pszU[ch];                      textureCoordBuffer[cntr*12+3]=m_pszV[ch];
-        textureCoordBuffer[cntr*12+4]=(m_pszU[ch]+m_pszU_width[ch]);   textureCoordBuffer[cntr*12+5]=(m_pszV[ch]+m_pszU_height[ch]);
-        textureCoordBuffer[cntr*12+6]=m_pszU[ch];                      textureCoordBuffer[cntr*12+7]=(m_pszV[ch]+m_pszU_height[ch]);
-        textureCoordBuffer[cntr*12+8]=(m_pszU[ch]+m_pszU_width[ch]);   textureCoordBuffer[cntr*12+9]=(m_pszV[ch]+m_pszU_height[ch]);
-        textureCoordBuffer[cntr*12+10]=m_pszU[ch];                     textureCoordBuffer[cntr*12+11]=m_pszV[ch];
+        textureCoordBuffer[cntr*12+0]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordBuffer[cntr*12+1]=textureCoordVArray[ch];
+        textureCoordBuffer[cntr*12+2]=textureCoordUArray[ch];                      textureCoordBuffer[cntr*12+3]=textureCoordVArray[ch];
+        textureCoordBuffer[cntr*12+4]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordBuffer[cntr*12+5]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordBuffer[cntr*12+6]=textureCoordUArray[ch];                      textureCoordBuffer[cntr*12+7]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordBuffer[cntr*12+8]=(textureCoordUArray[ch]+textureCoordUArray_width[ch]);   textureCoordBuffer[cntr*12+9]=(textureCoordVArray[ch]+textureCoordUArray_height[ch]);
+        textureCoordBuffer[cntr*12+10]=textureCoordUArray[ch];                     textureCoordBuffer[cntr*12+11]=textureCoordVArray[ch];
         
         cntr++;
         nCharsOnLine++;
@@ -975,7 +975,7 @@ bool geFont::canNeglectNextWord(const char* str, int cx, int nChar, int iCurInde
     for(x=iCurIndex;x<nChar;x++)
     {
         int actual_char=(unsigned char)str[x];
-        int ch=actual_char-m_iBaseChar;
+        int ch=actual_char-baseChar;
 
         if(!bWordStarted)
         {
@@ -1002,12 +1002,12 @@ bool geFont::canNeglectNextWord(const char* str, int cx, int nChar, int iCurInde
 //        {
 //            return false;
 //        }
-        if(ch<0 || ch>=m_nChars)
+        if(ch<0 || ch>=totalChar)
         {
             continue;
         }
         
-        if(raster_pos_x+(float)m_pszCharD[ch]+kerning>cx)
+        if(raster_pos_x+(float)charDistanceArray[ch]+kerning>cx)
         {
             if(actual_char==32 || actual_char=='\n' || actual_char=='\t')
             {
@@ -1017,7 +1017,7 @@ bool geFont::canNeglectNextWord(const char* str, int cx, int nChar, int iCurInde
             break; //found eol
         }
         
-        raster_pos_x+=((float)m_pszCharD[ch]+kerning);
+        raster_pos_x+=((float)charDistanceArray[ch]+kerning);
     }
     
     if(x==nChar)
@@ -1045,7 +1045,7 @@ void geFontManager::InitializeFonts()
 geFontManager::geFontManager()
 {
 #if defined (USE_ProgrammablePipeLine_test)
-	rendererPtr=NULL;
+	renderer=NULL;
 #endif
 }
 
@@ -1082,11 +1082,11 @@ void geFontManager::reset(bool reload)
 #if defined (USE_ProgrammablePipeLine_test)
 void geFontManager::setRenderer(gxRenderer* renderer)
 {
-	rendererPtr=renderer;
+	this->renderer=renderer;
 	for(int x=0;x<m_cvFontList.size();x++)
     {
         geFont* font=m_cvFontList[x];
-		font->setRenderer(rendererPtr);
+		font->setRenderer(this->renderer);
     }
 }
 #endif
@@ -1094,7 +1094,7 @@ void geFontManager::setRenderer(gxRenderer* renderer)
 geFont* geFontManager::loadFont(const char* filename)
 {
 #if defined (USE_ProgrammablePipeLine_test)
-    geFont* newFont=new geFont(&m_cFontShader, rendererPtr);
+    geFont* newFont=new geFont(&m_cFontShader, renderer);
 #else
     geFont* newFont=new geFont();
 #endif

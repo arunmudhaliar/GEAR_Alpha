@@ -25,21 +25,21 @@ public:
 	gxMaterial();
 	~gxMaterial();
 
-	bool isTwoSided()	{	return m_bTwoSided;	}
+	bool isTwoSided()                   {	return twoSided;	}
 
 	const vector4f& getAmbientClr()		{	return ambientColor;	}
 	const vector4f& getDiffuseClr()		{	return diffuseColor;	}
 	const vector4f& getSpecularClr()	{	return specularColor;	}
 
-	void setAmbientClr(vector4f clr)		{	ambientColor=clr;		}
-	void setDiffuseClr(vector4f clr)		{	diffuseColor=clr;		}
-	void setSpecularClr(vector4f clr)		{	specularColor=clr;	}
+	void setAmbientClr(vector4f clr)	{	ambientColor=clr;		}
+	void setDiffuseClr(vector4f clr)	{	diffuseColor=clr;		}
+	void setSpecularClr(vector4f clr)	{	specularColor=clr;	}
 
-	float getShininess()				{	return m_fShininess;	}
-	void setShininess(float value)		{	m_fShininess=value;	}
+	float getShininess()				{	return shininess;	}
+	void setShininess(float value)		{	shininess=value;	}
 
-	void setMaterialName(const char* name)	{	GX_STRCPY(m_szMaterialName, name);	}
-	const char* getMaterialName()			{	return m_szMaterialName;		}
+	void setMaterialName(const char* name)	{	GX_STRCPY(materialName, name);	}
+	const char* getMaterialName()			{	return materialName;            }
 
 	bool appendDependency(int crc);
 
@@ -48,35 +48,35 @@ public:
 
 	static gxMaterial* createNewMaterial();
 
-	void setMainShaderName(const char* name)	{	m_cMainShaderName.assign(name);		}
-	const char* getMainshaderName()				{	return m_cMainShaderName.c_str();	}
+	void setMainShaderName(const char* name)	{	mainShaderName.assign(name);	}
+	const char* getMainshaderName()				{	return mainShaderName.c_str();	}
 
 	void setSurfaceShader(gxSurfaceShader* surfaceShader);
-	gxSurfaceShader* getSurfaceShader()						{	return m_pSurfaceShaderPtr;			}
+	gxSurfaceShader* getSurfaceShader()						{	return surfaceShader;	}
 
 	void appendSubMap(gxSubMap* map);
 	gxSubMap* getSubMap(int index);
-	std::vector<gxSubMap*>* getSubMapList()	{	return &m_vSubMap;	}
-	std::vector<stMaterialPass*>* getShaderPassList()	{	return &m_vMaterialPass;	}
+	std::vector<gxSubMap*>* getSubMapList()             {	return &subMapList;         }
+	std::vector<stMaterialPass*>* getShaderPassList()	{	return &materialPassList;	}
 
 	void appendTextureNamesFromFBX(const char* filename);
-	std::vector<std::string>* getListOfTextureNamesFromFBX()	{  return &m_vTextureNameFromFBXFile;	}
+	std::vector<std::string>* getListOfTextureNamesFromFBX()	{  return &textureNameFromFBXList;	}
 
 private:
 	vector4f ambientColor;
 	vector4f diffuseColor;
 	vector4f specularColor;
-	float m_fAlpha;
-	float m_fShininess;
-	bool m_bTwoSided;
-	char m_szMaterialName[256];
-	std::vector<int> m_vDependencyCRCList;
-	std::string m_cMainShaderName;
-	gxSurfaceShader* m_pSurfaceShaderPtr;	//must not delete this pointer
-	std::vector<gxSubMap*> m_vSubMap;
-	std::vector<stMaterialPass*> m_vMaterialPass;
+	float alpha;
+	float shininess;
+	bool twoSided;
+	char materialName[256];
+	std::vector<int> dependencyCRCList;
+	std::string mainShaderName;
+	gxSurfaceShader* surfaceShader;	//must not delete this pointer
+	std::vector<gxSubMap*> subMapList;
+	std::vector<stMaterialPass*> materialPassList;
 
 	//texture names read from FBX
-	std::vector<std::string> m_vTextureNameFromFBXFile;
+	std::vector<std::string> textureNameFromFBXList;
 	//
 };

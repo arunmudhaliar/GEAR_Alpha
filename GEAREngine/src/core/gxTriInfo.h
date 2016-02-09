@@ -8,84 +8,84 @@ class gxTriInfo
 public:
 	gxTriInfo()
 	{
-		m_nVertices=0;
-		m_nTriangles=0;
-		m_pTriList=NULL;
-		m_pMaterialPtr=NULL;
-		m_iMaterialCRC = 0;
-		m_uVBO_trilstID=0;
+		vertexCount=0;
+		triangleCount=0;
+		triangleList=NULL;
+		material=NULL;
+		materialCRC = 0;
+		triangleListVBOID=0;
 	}
 
 	~gxTriInfo()
 	{
 		deleteVBOTriList();
-		GX_DELETE_ARY(m_pTriList);
+		GX_DELETE_ARY(triangleList);
 	}
 
-	int getVerticesCount()	{	return m_nVertices;		}
-	int getTriangleCount()	{   return m_nTriangles;	}
+	int getVerticesCount()	{	return vertexCount;		}
+	int getTriangleCount()	{   return triangleCount;	}
 
-	int* getTriList()	{	return m_pTriList;	}
+	int* getTriList()	{	return triangleList;	}
 
 	int* allocateMemory(int nVertices)
 	{
-		m_nVertices=nVertices;
-		m_pTriList = new int[m_nVertices*3];
-		return m_pTriList;
+		vertexCount = nVertices;
+		triangleList = new int[vertexCount*3];
+		return triangleList;
 	}
 
-	gxMaterial* getMaterial()				{	return m_pMaterialPtr;		}
-	void setMaterial(gxMaterial* material)	{	m_pMaterialPtr	=material;	}
+	gxMaterial* getMaterial()				{	return material;            }
+	void setMaterial(gxMaterial* material)	{	this->material = material;	}
 
 	void write(gxFile& file)
 	{
-		file.Write(m_nVertices);
-		if(m_nVertices)
-			file.WriteBuffer((unsigned char*)m_pTriList, sizeof(int)*m_nVertices*3);
-		if(m_pMaterialPtr)
-			file.Write(m_pMaterialPtr->getAssetFileCRC());
+		file.Write(vertexCount);
+		if(vertexCount)
+			file.WriteBuffer((unsigned char*)triangleList, sizeof(int)*vertexCount*3);
+		if(material)
+			file.Write(material->getAssetFileCRC());
 		else
 			file.Write((int)0);
 	}
 
 	void read(gxFile& file)
 	{
-		file.Read(m_nVertices);
-		m_nTriangles=m_nVertices/3;
-		if(m_nVertices)
+		file.Read(vertexCount);
+		triangleCount=vertexCount/3;
+		if(vertexCount)
 		{
-			int* buffer = allocateMemory(m_nVertices);
-			file.ReadBuffer((unsigned char*)buffer, sizeof(int)*m_nVertices*3);
+			int* buffer = allocateMemory(vertexCount);
+			file.ReadBuffer((unsigned char*)buffer, sizeof(int)*vertexCount*3);
 		}
-		file.Read(m_iMaterialCRC);
+		file.Read(materialCRC);
 	}
 
-	int getMaterialCRCFromFileReadInfo()	{	return m_iMaterialCRC;	}
-	unsigned int getVBOTriListID()			{	return m_uVBO_trilstID;	}
+	int getMaterialCRCFromFileReadInfo()	{	return materialCRC;	}
+	unsigned int getVBOTriListID()			{	return triangleListVBOID;	}
 
 	void deleteVBOTriList()
 	{
-		if(m_uVBO_trilstID!=0)
+		if(triangleListVBOID!=0)
 		{
-			glDeleteBuffers(1, &m_uVBO_trilstID);
-			m_uVBO_trilstID=0;
+			glDeleteBuffers(1, &triangleListVBOID);
+			triangleListVBOID=0;
 		}
 	}
 
 	void buildVBOTriList()
 	{
-		glGenBuffers(1, &m_uVBO_trilstID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBO_trilstID);  
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_nVertices * sizeof(int), (char*)m_pTriList, GL_STATIC_DRAW);
+		glGenBuffers(1, &triangleListVBOID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triangleListVBOID);  
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexCount * sizeof(int), (char*)triangleList, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 private:
-	gxMaterial* m_pMaterialPtr;	//must not delete this pointer
+	gxMaterial* material;	//must not delete this pointer
 
-	int m_nVertices;
-	int m_nTriangles;
-	int* m_pTriList;
-	int m_iMaterialCRC;
-	unsigned int m_uVBO_trilstID;
+	int vertexCount;
+	int triangleCount;
+	int* triangleList;
+	int materialCRC;
+	unsigned int triangleListVBOID;
 };

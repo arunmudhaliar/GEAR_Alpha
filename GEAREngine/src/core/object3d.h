@@ -132,16 +132,16 @@ public:
 	virtual void transformationChangedf();
 
 	//basic properties
-	int getID()				{	return m_iObjectID;	}
+	int getID()				{	return objectID;	}
 	const char* getName()	{	return m_cszName;	}
 	void setName(const char* name)	{	GX_STRCPY(m_cszName, name);	}
 
 	//child: child-parent
-	int getChildCount()				{	return (int)m_cChilds.size();	}
-	object3d* getChild(int index)	{	return m_cChilds[index];	}
+	int getChildCount()				{	return (int)childList.size();	}
+	object3d* getChild(int index)	{	return childList[index];	}
 	object3d* find(const char* name);
-	void setParent(object3d* pParentPtr)	{	m_pParentPtr=pParentPtr;	}
-	object3d* getParent()					{	return m_pParentPtr;		}
+	void setParent(object3d* pParentPtr)	{	parent=pParentPtr;	}
+	object3d* getParent()					{	return parent;		}
 
 	//child: add-remove
 	object3d* appendChild(object3d* child);
@@ -151,9 +151,9 @@ public:
 	virtual void onAppendObject3dChild(object3d* child);
 	virtual void onRemoveObject3dChild(object3d* child);
 #ifdef USE_BXLIST
-	bxLinkedList<object3d*>* getChildList()	{	return &m_cChilds;	}
+	bxLinkedList<object3d*>* getChildList()	{	return &childList;	}
 #else
-	std::vector<object3d*>* getChildList()	{	return &m_cChilds;	}
+	std::vector<object3d*>* getChildList()	{	return &childList;	}
 #endif
 	//
 
@@ -161,23 +161,23 @@ public:
 	void	resetAllBaseFlags(bool recursive=false);
 	void	setBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive=false);
 	void	reSetBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive=false);
-	bool	isBaseFlag(EOBJEC3DTFLAGS eFlags)		{	return (m_eBaseFlags&eFlags)?true:false;	};
-	unsigned int getBaseFlag()							{	return m_eBaseFlags;				}
+	bool	isBaseFlag(EOBJEC3DTFLAGS eFlags)		{	return (baseFlag&eFlags)?true:false;	};
+	unsigned int getBaseFlag()							{	return baseFlag;				}
 
 	//bounds
-	gxAABBf& getAABB()	{	return m_cAABB;	}
-	gxOOBBf& getOOBB()	{	return m_cOOBB;	}
+	gxAABBf& getAABB()	{	return aabb;	}
+	gxOOBBf& getOOBB()	{	return oobb;	}
 	virtual void calculateAABB();
 
 	//animation
 	gxAnimation* createAnimationController();
 	void resetAnimationControllerAndAssignItToObject(object3d* obj);	//only used for FBX import: assigns the animation controller to new object and clears its pointer
 	void setAnimationController(gxAnimation* controller);
-	gxAnimation* getAnimationController()				{	return m_pAnimationController;	}
+	gxAnimation* getAnimationController()				{	return animationController;	}
 	gxAnimationSet* applyAnimationSetRecursive(int index);
 	gxAnimationSet* applyAnimationSetRecursive(gxAnimationSet* animset);
 	void setAnimationTrack(gxAnimationTrack* track);
-	gxAnimationTrack* getAnimationTrack()	{	return m_pAnimationTrack;	}
+	gxAnimationTrack* getAnimationTrack()	{	return animationTrack;	}
 	void updateAnimationFrameToObject3d(int frame);
 
 	//serialize
@@ -187,29 +187,29 @@ public:
 	void readAnimationController(gxFile& file);
 
 	//user defined data
-	void setEditorUserData(void* userData)	{	m_pEditorUserDataPtr=userData;	}
-	void* getEditorUserData()				{	return m_pEditorUserDataPtr;	}
+	void setEditorUserData(void* userData)	{	editorUserData=userData;	}
+	void* getEditorUserData()				{	return editorUserData;	}
 
 	//observers
-	void setObject3dObserver(MObject3dObserver* observer)			{	m_pObject3dObserver = observer;	}
+	void setObject3dObserver(MObject3dObserver* observer)			{	object3DObserver = observer;        }
 	void setObject3dObserverRecursive(MObject3dObserver* observer);
-	void setEngineObserver(MEngineObserver* observer)				{	m_pEngineObserver = observer;	}
-	void setRootObserverOfTree(MRootObserver* rootObserver)			{	m_pRootObserver=rootObserver;	}
-	MRootObserver* getRootObserverOfThisTree()						{	return m_pRootObserver;			}
+	void setEngineObserver(MEngineObserver* observer)				{	engineObserver = observer;       }
+	void setRootObserverOfTree(MRootObserver* rootObserver)			{	this->rootObserver=rootObserver;	}
+	MRootObserver* getRootObserverOfThisTree()						{	return rootObserver;                }
 
 	//physics
 #if USE_BULLET
-	void setRigidBody(btRigidBody* rb)			{	m_pPhysics_RigidBodyPtr = rb;	}
-	btRigidBody* getRigidBody()					{	return m_pPhysics_RigidBodyPtr;	}
+	void setRigidBody(btRigidBody* rb)			{	rigidBody = rb;	}
+	btRigidBody* getRigidBody()					{	return rigidBody;	}
 #endif
 
 	//flags
-	void setVisited(bool flag)	{	m_bVisited=flag;	}
-	bool isVisited()			{	return m_bVisited;	}
+	void setVisited(bool flag)	{	is_Visited=flag;	}
+	bool isVisited()			{	return is_Visited;	}
 
 	//layer
 	void setLayer(int layer, bool bRecursive);
-	int getLayer()				{	return m_iLayer;	}
+	int getLayer()				{	return layerID;	}
 
 	//mono scripts
 	void attachMonoScrip(monoScript* script);
@@ -220,29 +220,29 @@ protected:
 	void clearAnimTrackOnAllNodes();
 
 	char m_cszName[256];
-	int m_iObjectID;
-	object3d* m_pParentPtr;
-	unsigned int m_eBaseFlags;
+	int objectID;
+	object3d* parent;
+	unsigned int baseFlag;
 #ifdef USE_BXLIST
-	bxLinkedList<object3d*> m_cChilds;
+	bxLinkedList<object3d*> childList;
 #else
-	std::vector<object3d*> m_cChilds;
+	std::vector<object3d*> childList;
 #endif
-	gxAABBf m_cAABB;
-	gxOOBBf m_cOOBB;
-	gxAnimation* m_pAnimationController;
-	gxAnimationTrack* m_pAnimationTrack;	//must not delete this pointer
-	void* m_pEditorUserDataPtr;				//must not delete this pointer
-	MObject3dObserver* m_pObject3dObserver;	//must not delete this pointer
-	MRootObserver* m_pRootObserver;			//must not delete this pointer
-	MEngineObserver* m_pEngineObserver;		//must not delete this pointer
+	gxAABBf aabb;
+	gxOOBBf oobb;
+	gxAnimation* animationController;
+	gxAnimationTrack* animationTrack;	//must not delete this pointer
+	void* editorUserData;				//must not delete this pointer
+	MObject3dObserver* object3DObserver;	//must not delete this pointer
+	MRootObserver* rootObserver;			//must not delete this pointer
+	MEngineObserver* engineObserver;		//must not delete this pointer
 #if USE_BULLET
-	btRigidBody* m_pPhysics_RigidBodyPtr;	//must not delete this pointer
+	btRigidBody* rigidBody;	//must not delete this pointer
 #endif
-	bool m_bVisited;
-	int m_iLayer;
+	bool is_Visited;
+	int layerID;
 
-	std::vector<monoScriptObjectInstance*> m_cAttachedScriptInstances;
+	std::vector<monoScriptObjectInstance*> attachedScriptInstanceList;
 };
 
 ////////////////////OBJECT3D C# BRIDGE////////////////////

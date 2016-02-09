@@ -22,26 +22,26 @@ const char* Layer::getLayerName()
 
 std::vector<object3d*>* Layer::getLayerList()
 {
-	return &m_vList;
+	return &layerObjects;
 }
 
 bool Layer::append(object3d* obj)
 {
-	m_vList.push_back(obj);
+	layerObjects.push_back(obj);
 	return true;
 }
 
 bool Layer::remove(object3d* obj)
 {
-	if(m_vList.size()==0)
+	if(layerObjects.size()==0)
 		return false;
-	m_vList.erase(std::remove(m_vList.begin(), m_vList.end(), obj), m_vList.end());
+	layerObjects.erase(std::remove(layerObjects.begin(), layerObjects.end(), obj), layerObjects.end());
 	return true;
 }
 
 void Layer::clear()
 {
-	m_vList.clear();
+	layerObjects.clear();
 }
 
 ////////////////////////////////////////////////////////
@@ -50,12 +50,12 @@ void Layer::clear()
 
 LayerManager::LayerManager()
 {
-	//memset(m_pszLayers, 0, sizeof(Layer)*32);
+	//memset(layerList, 0, sizeof(Layer)*32);
 	for(int x=0;x<MAX_LAYER;x++)
 	{
 		char buffer[32];
 		sprintf(buffer, "Layer %d", x);
-		m_pszLayers[x] = new Layer(buffer);
+		layerList[x] = new Layer(buffer);
 	}
 }
 
@@ -63,7 +63,7 @@ LayerManager::~LayerManager()
 {
 	for(int x=0;x<MAX_LAYER;x++)
 	{
-		GX_DELETE(m_pszLayers[x]);
+		GX_DELETE(layerList[x]);
 	}
 }
 
@@ -71,7 +71,7 @@ void LayerManager::clearLayers()
 {
 	for(int x=0;x<MAX_LAYER;x++)
 	{
-		m_pszLayers[x]->clear();
+		layerList[x]->clear();
 	}
 }
 
@@ -82,7 +82,7 @@ bool LayerManager::appendOnLayer(object3d* obj, int layer)
 	if(obj==NULL)
 		return false;
 
-	return m_pszLayers[layer]->append(obj);
+	return layerList[layer]->append(obj);
 }
 
 bool LayerManager::removeFromLayer(object3d* obj, int layer)
@@ -92,7 +92,7 @@ bool LayerManager::removeFromLayer(object3d* obj, int layer)
 	if(obj==NULL)
 		return false;
 
-	return m_pszLayers[layer]->remove(obj);
+	return layerList[layer]->remove(obj);
 }
 
 int LayerManager::getTotalLayerObject()
@@ -100,7 +100,7 @@ int LayerManager::getTotalLayerObject()
 	int nCount=0;
 	for(int x=0;x<MAX_LAYER;x++)
 	{
-		nCount+=m_pszLayers[x]->getLayerList()->size();
+		nCount+=layerList[x]->getLayerList()->size();
 	}
 
 	return nCount;

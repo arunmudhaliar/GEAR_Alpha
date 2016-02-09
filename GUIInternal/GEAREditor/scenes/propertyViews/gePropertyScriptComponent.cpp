@@ -79,7 +79,7 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
 	//{
 	//	stWindowColumnRow* firstrow = m_pWindowColumn->addRow("Script");
 	//	geStaticTextBox* scripteditbox = new geStaticTextBox("");
-	//	scripteditbox->create(m_pRenderer, this, monoScript->getScriptPtr()->getMonoScript().c_str(), 0, 0, -7, geFontManager::g_pFontArial10_80Ptr);
+	//	scripteditbox->create(m_pRenderer, this, monoScript->getScriptPtr()->getScriptFileName().c_str(), 0, 0, -7, geFontManager::g_pFontArial10_80Ptr);
 	//	m_pWindowColumn->addControl(firstrow, scripteditbox, 16.0f);
 	//	lastControl=scripteditbox;
 	//}

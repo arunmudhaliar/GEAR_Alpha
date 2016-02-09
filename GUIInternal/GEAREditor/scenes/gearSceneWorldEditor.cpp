@@ -443,7 +443,7 @@ void gearSceneWorldEditor::onDraw()
 
 void gearSceneWorldEditor::drawShadowMapPass()
 {
-	m_pMainWorldPtr->renderShadow(m_pMainWorldPtr->getRenderer(), object3d::eObject3dBase_RenderFlag_NormalRenderPass);
+	m_pMainWorldPtr->renderShadow(object3d::eObject3dBase_RenderFlag_NormalRenderPass);
 }
 
 void gearSceneWorldEditor::drawWorld()
@@ -773,9 +773,9 @@ void gearSceneWorldEditor::drawStats()
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
-		sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->m_nTrisRendered);
+		sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->noOfTrianglesRendered);
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
-		sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->m_nDrawCalls);
+		sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->noOfDrawCalls);
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "nSelectedObjectTriangles : %d", m_nSelectedObjectTriangles);
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);

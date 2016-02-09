@@ -2,13 +2,13 @@
 
 gxRenderer::gxRenderer()
 {
-	m_pProjectionMatrixPtr=NULL;
-	m_pViewMatrixPtr=NULL;
-	m_pViewProjectionMatrixPtr=NULL;
-	m_pGEARTexture1x1Ptr=NULL;
-	m_cViewPortRect.set(0.0f, 0.0f, 1.0f, 1.0f);
-	m_nTrisRendered=0;
-	m_nDrawCalls=0;
+	projectionMatrix=NULL;
+	viewMatrix=NULL;
+	viewProjectionMatrix=NULL;
+	texturePacket1x1=NULL;
+	viewPortRectangle.set(0.0f, 0.0f, 1.0f, 1.0f);
+	noOfTrianglesRendered=0;
+	noOfDrawCalls=0;
 	setRenderPassType(RENDER_NORMAL);
 }
 
@@ -25,14 +25,14 @@ void gxRenderer::setViewPort(float x, float y, float cx, float cy)
 
 	gxRectf viewportRect(x, y, cx, cy);
 	vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
-	m_cOrthogonalProjectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y+viewportRect.m_size.y, centerAlignedPos.y, -100.0f, 1000.0f);
-	m_cViewPortRect.set(x, y, cx, cy);
+	orthogonalProjectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y+viewportRect.m_size.y, centerAlignedPos.y, -100.0f, 1000.0f);
+	viewPortRectangle.set(x, y, cx, cy);
 	CHECK_GL_ERROR(glViewport((int)x, (int)y, (int)cx, (int)cy));
 }
 
 void gxRenderer::setProjectionMatrixToGL(matrix4x4f* matrix)
 {
-	m_pProjectionMatrixPtr=matrix;
+	projectionMatrix=matrix;
 #if defined (USE_ProgrammablePipeLine)
 #else
     glMatrixMode(GL_PROJECTION);
@@ -43,7 +43,7 @@ void gxRenderer::setProjectionMatrixToGL(matrix4x4f* matrix)
 
 void gxRenderer::setViewMatrixToGL(matrix4x4f* matrix)
 {
-	m_pViewMatrixPtr=matrix;
+	viewMatrix=matrix;
 #if defined (USE_ProgrammablePipeLine)
 #else
     glMatrixMode(GL_MODELVIEW);
@@ -53,5 +53,5 @@ void gxRenderer::setViewMatrixToGL(matrix4x4f* matrix)
 
 void gxRenderer::setViewProjectionMatrix(matrix4x4f* matrix)
 {
-	m_pViewProjectionMatrixPtr=matrix;
+	viewProjectionMatrix=matrix;
 }

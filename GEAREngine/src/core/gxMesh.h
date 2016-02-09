@@ -10,40 +10,38 @@ class gxUV
 public:
 	gxUV()
 	{
-		m_pMaterialPtr=NULL;
-		m_pszfGLTexCoordList=NULL;
-		m_iMatIDFromFile=-1;
-        m_cVBO_texID=0;
+		material=NULL;
+		textureCoordArray=NULL;
+        vboID=0;
 	}
 
 	~gxUV()
 	{
-		if(m_cVBO_texID)
+		if(vboID)
 			deleteVBOTexCoord();
-		m_pMaterialPtr=NULL;
-		GX_DELETE_ARY(m_pszfGLTexCoordList);
+		material=NULL;
+		GX_DELETE_ARY(textureCoordArray);
 	}
 
 	void buildVBOTexCoord(int nTris)
 	{
-		if(!m_pszfGLTexCoordList) return;
+		if(!textureCoordArray) return;
         
-		glGenBuffers(1, &m_cVBO_texID);					// Get A Valid Name
-		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_texID);	// Bind The Buffer
-		glBufferData(GL_ARRAY_BUFFER, nTris*3*2*sizeof(float), m_pszfGLTexCoordList, GL_STATIC_DRAW);
+		glGenBuffers(1, &vboID);					// Get A Valid Name
+		glBindBuffer(GL_ARRAY_BUFFER, vboID);	// Bind The Buffer
+		glBufferData(GL_ARRAY_BUFFER, nTris*3*2*sizeof(float), textureCoordArray, GL_STATIC_DRAW);
 	}
 
 	void deleteVBOTexCoord()
 	{
-		if(m_cVBO_texID)
-			glDeleteBuffers(1, &m_cVBO_texID);
-		m_cVBO_texID=0;
+		if(vboID)
+			glDeleteBuffers(1, &vboID);
+		vboID=0;
 	}
 
-	int			m_iMatIDFromFile;
-	gxMaterial* m_pMaterialPtr;		//must not delete this pointer
-	float*		m_pszfGLTexCoordList;
-    unsigned int m_cVBO_texID;
+	gxMaterial*     material;		//must not delete this pointer
+	float*          textureCoordArray;
+    unsigned int    vboID;
 };
 
 
@@ -55,20 +53,20 @@ public:
 	gxMesh();
 	~gxMesh();
 
-	float* getVertexBuffer()	{	return m_pszVertexBuffer;	}
-	float* getColorBuffer()		{	return m_pszColorBuffer;	}
-	float* getNormalBuffer()	{	return m_pszNormalBuffer;	}
-	float* getTangentBuffer()	{	return m_pszTangentBuffer;	}
+	float* getVertexBuffer()	{	return vertexBuffer;	}
+	float* getColorBuffer()		{	return colorBuffer;	}
+	float* getNormalBuffer()	{	return normalBuffer;	}
+	float* getTangentBuffer()	{	return tangentBuffer;	}
 
 	//vbo
-    bool isVBO()    {   return m_bVBO;  }
+    bool isVBO()    {   return is_VBO;  }
     void buildVBO();
 	void deleteVBO();
     
-    unsigned int getVBOVertexID()   {   return m_cVBO_vertID;   }
-    unsigned int getVBOColorID()    {   return m_cVBO_clrID;    }
-    unsigned int getVBONormalID()   {   return m_cVBO_nrmlID;   }
-	unsigned int getVBOTangentID()  {   return m_cVBO_tangentID;    }
+    unsigned int getVBOVertexID()   {   return vboVertexID;   }
+    unsigned int getVBOColorID()    {   return vboColorID;    }
+    unsigned int getVBONormalID()   {   return vboNormalID;   }
+	unsigned int getVBOTangentID()  {   return vboTangentID;    }
 
 	virtual void update(float dt);
 	virtual void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
@@ -86,24 +84,24 @@ public:
 	{
 		if(nChannel==0) return NULL;
 
-		m_nUVChannels=nChannel;
-		m_pszUVChannels = new gxUV[nChannel];
+		uvChannelCount=nChannel;
+		uvChannel = new gxUV[nChannel];
 		for(int x=0;x<nChannel;x++)
 		{
-			m_pszUVChannels[x].m_pszfGLTexCoordList = new float[nTris*3*2];
+			uvChannel[x].textureCoordArray = new float[nTris*3*2];
 		}
 
-		return m_pszUVChannels;
+		return uvChannel;
 	}
 
-	gxTriInfo* allocateTriInfoArray(int nCount)		{	m_nTriInfoArray=nCount; m_pszTriInfoArray=new gxTriInfo[nCount]; return m_pszTriInfoArray; }
+	gxTriInfo* allocateTriInfoArray(int nCount)		{	triangleInfoArrayCount=nCount; triangleInfoArray=new gxTriInfo[nCount]; return triangleInfoArray; }
 	bool createTBN_Data();
 
-	int getNoOfTriInfo()							{	return m_nTriInfoArray;				}
-	gxTriInfo* getTriInfo(int index)				{	return &m_pszTriInfoArray[index];	}
+	int getNoOfTriInfo()							{	return triangleInfoArrayCount;				}
+	gxTriInfo* getTriInfo(int index)				{	return &triangleInfoArray[index];	}
 
 	int getVerticesCount();
-	int getTriangleCount()		{    return m_nTris_For_Internal_Use;	}
+	int getTriangleCount()		{    return noOfTrianglesForInternalUse;	}
 
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);
@@ -116,23 +114,23 @@ protected:
 	
 	void disableTextureOperations(int stage, gxHWShader* shader, const char* texCoordAttribName);
 
-	int m_nTriInfoArray;
-	gxTriInfo* m_pszTriInfoArray;
+	int triangleInfoArrayCount;
+	gxTriInfo* triangleInfoArray;
 
-	float* m_pszVertexBuffer;
-	float* m_pszColorBuffer;
-	float* m_pszNormalBuffer;
-	float* m_pszTangentBuffer;
+	float* vertexBuffer;
+	float* colorBuffer;
+	float* normalBuffer;
+	float* tangentBuffer;
 
 	//for VBO
-	bool  m_bVBO;
-	unsigned int m_cVBO_vertID;
-	unsigned int m_cVBO_clrID;
-	unsigned int m_cVBO_nrmlID;
-	unsigned int m_cVBO_tangentID;
+	bool  is_VBO;
+	unsigned int vboVertexID;
+	unsigned int vboColorID;
+	unsigned int vboNormalID;
+	unsigned int vboTangentID;
 
 
-	int m_nUVChannels;
-	gxUV* m_pszUVChannels;
-	int m_nTris_For_Internal_Use;
+	int uvChannelCount;
+	gxUV* uvChannel;
+	int noOfTrianglesForInternalUse;
 };

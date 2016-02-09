@@ -24,15 +24,15 @@ static long _getTime(void)
 
 #endif
 
-float	Timer::m_fFPS=0.0f;             //frames
-float	Timer::m_fDT=0.0f;              //in sec
-int		Timer::m_iDT=0;                 //in milli sec
-float	Timer::m_fElapsedTime=0.0f;     //in sec
-double	Timer::m_fPrevTime=0.0f;
-float   Timer::m_fAveragingTime=0.5f;   //in sec
-int     Timer::m_iFrameCount=0;
-double  Timer::m_fLastTime=0.0f;
-float  Timer::m_fTimeScale=0.0f;
+float	Timer::timerFPS=0.0f;             //frames
+float	Timer::timerDTInSec=0.0f;              //in sec
+int		Timer::timerDTInMilliSec=0;                 //in milli sec
+float	Timer::timerElapsedTimeInSec=0.0f;     //in sec
+double	Timer::timerPreviousTime=0.0f;
+float   Timer::timerAveragingTime=0.5f;   //in sec
+int     Timer::timerFrameCount=0;
+double  Timer::timerLastTime=0.0f;
+float  Timer::timerTimeScale=0.0f;
 
 void Timer::init()
 {
@@ -49,25 +49,25 @@ void Timer::update()
 #elif defined(ANDROID)
 	curTime=(double)_getTime()/1000.0;
 #endif
-	m_fDT=(float)(curTime-m_fPrevTime);
-	if(m_fDT<=0.0f)
+	timerDTInSec=(float)(curTime-timerPreviousTime);
+	if(timerDTInSec<=0.0f)
 	{
-		m_fDT=0.03f;
+		timerDTInSec=0.03f;
 	}
-	m_iDT=(int)(m_fDT*1000.0f);
-	m_fElapsedTime+=m_fDT;
+	timerDTInMilliSec=(int)(timerDTInSec*1000.0f);
+	timerElapsedTimeInSec+=timerDTInSec;
     
-    if(((float)(curTime-m_fLastTime))>=m_fAveragingTime)
+    if(((float)(curTime-timerLastTime))>=timerAveragingTime)
     {
-        m_fFPS=m_iFrameCount/((float)(curTime-m_fLastTime));
-        m_iFrameCount=0;
-        m_fLastTime=curTime;
+        timerFPS=timerFrameCount/((float)(curTime-timerLastTime));
+        timerFrameCount=0;
+        timerLastTime=curTime;
     }
     else
     {
-        m_iFrameCount++;
+        timerFrameCount++;
     }
-	m_fPrevTime=curTime;
+	timerPreviousTime=curTime;
 }
 
 void Timer::update(float targetFPS)
@@ -80,12 +80,12 @@ void Timer::update(float targetFPS)
 #elif defined(ANDROID)
 	curTime=(double)_getTime()/1000.0;
 #endif
-	m_fDT=(float)(curTime-m_fPrevTime);
-	if(m_fDT<=0.0f)
+	timerDTInSec=(float)(curTime-timerPreviousTime);
+	if(timerDTInSec<=0.0f)
 	{
-		m_fDT=0.03f;
+		timerDTInSec=0.03f;
 	}
-	while(m_fDT<(1.0f/targetFPS))
+	while(timerDTInSec<(1.0f/targetFPS))
 	{
 	#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE) || defined(__APPLE__)
 		curTime=CFAbsoluteTimeGetCurrent();
@@ -94,29 +94,29 @@ void Timer::update(float targetFPS)
 	#elif defined(ANDROID)
 		curTime=(double)_getTime()/1000.0;
 	#endif
-		m_fDT=(float)(curTime-m_fPrevTime);
+		timerDTInSec=(float)(curTime-timerPreviousTime);
 	}
-	m_iDT=(int)(m_fDT*1000.0f);
-	m_fElapsedTime+=m_fDT;
-	m_fFPS=1.0f/m_fDT;
-	m_fPrevTime=curTime;
+	timerDTInMilliSec=(int)(timerDTInSec*1000.0f);
+	timerElapsedTimeInSec+=timerDTInSec;
+	timerFPS=1.0f/timerDTInSec;
+	timerPreviousTime=curTime;
 }
 
 void Timer::reset()
 {
-	m_fTimeScale=1.0f;
-	m_fFPS=0.0f;		
-	m_fDT=0.0f;		
-	m_iDT=0;			
-	m_fElapsedTime=0.0f;
+	timerTimeScale=1.0f;
+	timerFPS=0.0f;		
+	timerDTInSec=0.0f;		
+	timerDTInMilliSec=0;			
+	timerElapsedTimeInSec=0.0f;
 #if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE) || defined(__APPLE__)
-	m_fPrevTime=CFAbsoluteTimeGetCurrent();
+	timerPreviousTime=CFAbsoluteTimeGetCurrent();
 #elif defined(WIN32)
-	m_fPrevTime=(double)timeGetTime()/1000.0;
+	timerPreviousTime=(double)timeGetTime()/1000.0;
 #elif defined(ANDROID)
-	m_fPrevTime=(double)_getTime()/1000.0;
+	timerPreviousTime=(double)_getTime()/1000.0;
 #endif
-    m_fLastTime=m_fPrevTime;
+    timerLastTime=timerPreviousTime;
 }
 
 double Timer::getCurrentTimeInSec()

@@ -5,129 +5,129 @@
 gxMesh::gxMesh(int ID):
 	object3d(ID)
 {
-	m_nTriInfoArray=0;
-	m_pszTriInfoArray=NULL;
+	triangleInfoArrayCount=0;
+	triangleInfoArray=NULL;
 
-	m_pszVertexBuffer=NULL;
-	m_pszColorBuffer=NULL;
-	m_pszNormalBuffer=NULL;
-	m_pszTangentBuffer=NULL;
-	m_nUVChannels=0;
-	m_pszUVChannels=NULL;
-	m_nTris_For_Internal_Use=0;
+	vertexBuffer=NULL;
+	colorBuffer=NULL;
+	normalBuffer=NULL;
+	tangentBuffer=NULL;
+	uvChannelCount=0;
+	uvChannel=NULL;
+	noOfTrianglesForInternalUse=0;
 
-	m_bVBO=0;
-    m_cVBO_vertID=0;
-	m_cVBO_clrID=0;
-	m_cVBO_nrmlID=0;
-	m_cVBO_tangentID=0;
+	is_VBO=0;
+    vboVertexID=0;
+	vboColorID=0;
+	vboNormalID=0;
+	vboTangentID=0;
 	setBaseFlag(eObject3dBaseFlag_Static);
 }
 
 gxMesh::gxMesh():
 	object3d(OBJECT3D_MESH)
 {
-	m_nTriInfoArray=0;
-	m_pszTriInfoArray=NULL;
+	triangleInfoArrayCount=0;
+	triangleInfoArray=NULL;
 
-	m_pszVertexBuffer=NULL;
-	m_pszColorBuffer=NULL;
-	m_pszNormalBuffer=NULL;
-	m_pszTangentBuffer=NULL;
-	m_nUVChannels=0;
-	m_pszUVChannels=NULL;
-	m_nTris_For_Internal_Use=0;
+	vertexBuffer=NULL;
+	colorBuffer=NULL;
+	normalBuffer=NULL;
+	tangentBuffer=NULL;
+	uvChannelCount=0;
+	uvChannel=NULL;
+	noOfTrianglesForInternalUse=0;
 
-	m_bVBO=0;
-    m_cVBO_vertID=0;
-	m_cVBO_clrID=0;
-	m_cVBO_nrmlID=0;
-	m_cVBO_tangentID=0;
+	is_VBO=0;
+    vboVertexID=0;
+	vboColorID=0;
+	vboNormalID=0;
+	vboTangentID=0;
 	setBaseFlag(eObject3dBaseFlag_Static);
 }
 
 gxMesh::~gxMesh()
 {
-	if(m_bVBO)
+	if(is_VBO)
 		deleteVBO();
 
-	m_nTriInfoArray=0;
-	GX_DELETE_ARY(m_pszTriInfoArray);
-	GX_DELETE_ARY(m_pszVertexBuffer);
-	GX_DELETE_ARY(m_pszColorBuffer);
-	GX_DELETE_ARY(m_pszNormalBuffer);
-	GX_DELETE_ARY(m_pszTangentBuffer);
+	triangleInfoArrayCount=0;
+	GX_DELETE_ARY(triangleInfoArray);
+	GX_DELETE_ARY(vertexBuffer);
+	GX_DELETE_ARY(colorBuffer);
+	GX_DELETE_ARY(normalBuffer);
+	GX_DELETE_ARY(tangentBuffer);
 
-	GX_DELETE_ARY(m_pszUVChannels);
+	GX_DELETE_ARY(uvChannel);
 }
 
 void gxMesh::buildVBO()
 {
-	for (int x=0; x<m_nTriInfoArray; x++)
+	for (int x=0; x<triangleInfoArrayCount; x++)
 	{
-		gxTriInfo* subTriLst=&m_pszTriInfoArray[x];
+		gxTriInfo* subTriLst=&triangleInfoArray[x];
 		subTriLst->buildVBOTriList();
 	}
 
 	// Generate And Bind The Vertex Buffer
-	glGenBuffers(1, &m_cVBO_vertID);					// Get A Valid Name
-	glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID);		// Bind The Buffer
-	glBufferData(GL_ARRAY_BUFFER, m_nTris_For_Internal_Use*3*3*sizeof(float), m_pszVertexBuffer, GL_STATIC_DRAW);
+	glGenBuffers(1, &vboVertexID);					// Get A Valid Name
+	glBindBuffer(GL_ARRAY_BUFFER, vboVertexID);		// Bind The Buffer
+	glBufferData(GL_ARRAY_BUFFER, noOfTrianglesForInternalUse*3*3*sizeof(float), vertexBuffer, GL_STATIC_DRAW);
 
 	// Generate And Bind The Color Coordinate Buffer
-	if(m_pszColorBuffer)
+	if(colorBuffer)
 	{
-		glGenBuffers(1, &m_cVBO_clrID);					// Get A Valid Name
-		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_clrID);		// Bind The Buffer
-		glBufferData(GL_ARRAY_BUFFER, m_nTris_For_Internal_Use*3*3*sizeof(float), m_pszColorBuffer, GL_STATIC_DRAW);
+		glGenBuffers(1, &vboColorID);					// Get A Valid Name
+		glBindBuffer(GL_ARRAY_BUFFER, vboColorID);		// Bind The Buffer
+		glBufferData(GL_ARRAY_BUFFER, noOfTrianglesForInternalUse*3*3*sizeof(float), colorBuffer, GL_STATIC_DRAW);
 	}
 
 	// Generate And Bind The Normal Coordinate Buffer
-	if(m_pszNormalBuffer)
+	if(normalBuffer)
 	{
-		glGenBuffers(1, &m_cVBO_nrmlID);					// Get A Valid Name
-		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_nrmlID);		// Bind The Buffer
-		glBufferData(GL_ARRAY_BUFFER, m_nTris_For_Internal_Use*3*3*sizeof(float), m_pszNormalBuffer, GL_STATIC_DRAW);
+		glGenBuffers(1, &vboNormalID);					// Get A Valid Name
+		glBindBuffer(GL_ARRAY_BUFFER, vboNormalID);		// Bind The Buffer
+		glBufferData(GL_ARRAY_BUFFER, noOfTrianglesForInternalUse*3*3*sizeof(float), normalBuffer, GL_STATIC_DRAW);
 	}
 
 	// Generate And Bind The Tangent Coordinate Buffer
-	if(m_pszTangentBuffer)
+	if(tangentBuffer)
 	{
-		glGenBuffers(1, &m_cVBO_tangentID);					// Get A Valid Name
-		glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_tangentID);		// Bind The Buffer
-		glBufferData(GL_ARRAY_BUFFER, m_nTris_For_Internal_Use*3*4*sizeof(float), m_pszTangentBuffer, GL_STATIC_DRAW);
+		glGenBuffers(1, &vboTangentID);					// Get A Valid Name
+		glBindBuffer(GL_ARRAY_BUFFER, vboTangentID);		// Bind The Buffer
+		glBufferData(GL_ARRAY_BUFFER, noOfTrianglesForInternalUse*3*4*sizeof(float), tangentBuffer, GL_STATIC_DRAW);
 	}
 
 	// Generate And Bind The Texture Coordinate Buffer
-    for(int x=0;x<m_nUVChannels;x++)
+    for(int x=0;x<uvChannelCount;x++)
     {
-        gxUV* uv=&m_pszUVChannels[x];
+        gxUV* uv=&uvChannel[x];
         if(!uv) continue;
 
-		uv->buildVBOTexCoord(m_nTris_For_Internal_Use);
+		uv->buildVBOTexCoord(noOfTrianglesForInternalUse);
     }
 
 	glBindBuffer(GL_ARRAY_BUFFER,0);
-    m_bVBO=true;
+    is_VBO=true;
 }
 
 void gxMesh::deleteVBO()
 {
-	if(m_cVBO_vertID)
-		glDeleteBuffers(1, &m_cVBO_vertID);
+	if(vboVertexID)
+		glDeleteBuffers(1, &vboVertexID);
  
-	if(m_cVBO_clrID)
-		glDeleteBuffers(1, &m_cVBO_clrID);
+	if(vboColorID)
+		glDeleteBuffers(1, &vboColorID);
 
-	if(m_cVBO_nrmlID)
-		glDeleteBuffers(1, &m_cVBO_nrmlID);
+	if(vboNormalID)
+		glDeleteBuffers(1, &vboNormalID);
 
-	if(m_cVBO_tangentID)
-		glDeleteBuffers(1, &m_cVBO_tangentID);
+	if(vboTangentID)
+		glDeleteBuffers(1, &vboTangentID);
 
-  //  for(int x=0;x<m_nUVChannels;x++)
+  //  for(int x=0;x<uvChannelCount;x++)
   //  {
-  //      gxUV* uv=&m_pszUVChannels[x];
+  //      gxUV* uv=&uvChannel[x];
   //      if(!uv) continue;
 		//uv->deleteVBOTexCoord();
   //  }
@@ -166,29 +166,29 @@ void gxMesh::renderNormal(gxRenderer* renderer)
 	glMultMatrixf(getWorldMatrix()->getMatrix());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, m_pszVertexBuffer);
+	glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);
 
 	glEnableClientState(GL_NORMAL_ARRAY);
-	glNormalPointer(GL_FLOAT, 0, m_pszNormalBuffer);
+	glNormalPointer(GL_FLOAT, 0, normalBuffer);
 
-	for(int x=0;x<m_nTriInfoArray;x++)
+	for(int x=0;x<triangleInfoArrayCount;x++)
 	{
-		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+		gxTriInfo* triInfo=&triangleInfoArray[x];
 		if(!triInfo->getTriList()) continue;
 
 		if(triInfo->getMaterial())
 			glColor4fv(&triInfo->getMaterial()->getDiffuseClr().x);
 
 		int nTexUsed=0;
-		for(int m=0;m<m_nUVChannels;m++)
+		for(int m=0;m<uvChannelCount;m++)
 		{
-			gxUV* uv=&m_pszUVChannels[m];
+			gxUV* uv=&uvChannel[m];
 			if(triInfo->getMaterial() && applyStageTexture(renderer, nTexUsed, triInfo, uv, GL_TEXTURE_ENV_MODE, GL_MODULATE, 2))
 				nTexUsed++;
 		}
 		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
-		renderer->m_nTrisRendered+=triInfo->getTriangleCount();
-		renderer->m_nDrawCalls++;
+		renderer->noOfTrianglesRendered+=triInfo->getTriangleCount();
+		renderer->noOfDrawCalls++;
 
 		disableTextureOperations(nTexUsed, NULL, NULL);
 	}
@@ -219,9 +219,9 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
     const float* u_mvp_m4x4=cMVP.getMatrix();
 
-	for(int x=0;x<m_nTriInfoArray;x++)
+	for(int x=0;x<triangleInfoArrayCount;x++)
 	{
-		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+		gxTriInfo* triInfo=&triangleInfoArray[x];
 		if(!triInfo->getTriList()) continue;
 
 		gxMaterial* material=triInfo->getMaterial();
@@ -266,8 +266,8 @@ void gxMesh::renderWithLight(gxRenderer* renderer, object3d* light)
 
 
 		glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList());
-		renderer->m_nTrisRendered+=triInfo->getTriangleCount();
-		renderer->m_nDrawCalls++;
+		renderer->noOfTrianglesRendered+=triInfo->getTriangleCount();
+		renderer->noOfDrawCalls++;
 
 		glDisableVertexAttribArray(shader->getAttribLoc("vIN_Normal"));
 		glDisableVertexAttribArray(shader->getAttribLoc("vIN_Position"));
@@ -287,9 +287,9 @@ void gxMesh::renderForShadowMap(gxRenderer* renderer)
 	const float* u_mvp_m4x4 = getWorldMatrix()->getMatrix();
 	shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 
-	if(m_bVBO)
+	if(is_VBO)
 	{
-		CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID));
+		CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, vboVertexID));
 		CHECK_GL_ERROR(glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, NULL));
 	}
 	else
@@ -303,12 +303,12 @@ void gxMesh::renderForShadowMap(gxRenderer* renderer)
 	CHECK_GL_ERROR(glEnable(GL_CULL_FACE));
 	CHECK_GL_ERROR(glCullFace(GL_FRONT));
 
-	for(int x=0;x<m_nTriInfoArray;x++)
+	for(int x=0;x<triangleInfoArrayCount;x++)
 	{
-		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+		gxTriInfo* triInfo=&triangleInfoArray[x];
 		if(!triInfo->getTriList()) continue;
 
-		if(m_bVBO)
+		if(is_VBO)
 		{
 			CHECK_GL_ERROR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triInfo->getVBOTriListID()));
 			CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, NULL));
@@ -322,7 +322,7 @@ void gxMesh::renderForShadowMap(gxRenderer* renderer)
 
 	CHECK_GL_ERROR(glDisableVertexAttribArray(vIN_Position));
 
-	if (m_bVBO)
+	if (is_VBO)
 	{
 		CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
@@ -350,9 +350,9 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
     const float* u_mvp_m4x4=cMVP.getMatrix();
 
-	for(int x=0;x<m_nTriInfoArray;x++)
+	for(int x=0;x<triangleInfoArrayCount;x++)
 	{
-		gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+		gxTriInfo* triInfo=&triangleInfoArray[x];
 		if(!triInfo->getTriList()) continue;
 
 		gxMaterial* material=triInfo->getMaterial();
@@ -422,9 +422,9 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		int vIN_Normal=-1;
 		int Tangent=-1;
 
-		if(m_bVBO)
+		if(is_VBO)
 		{
-			CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_vertID));
+			CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, vboVertexID));
 			CHECK_GL_ERROR(glVertexAttribPointer(vIN_Position, 3, GL_FLOAT, GL_FALSE, 0, NULL));
 		}
 		else
@@ -436,9 +436,9 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		if(pass_struct->Light)
 		{
 			vIN_Normal=shader->getAttrib_vIN_Normal();
-			if(m_bVBO)
+			if(is_VBO)
 			{
-				CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_nrmlID));
+				CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, vboNormalID));
 				CHECK_GL_ERROR(glVertexAttribPointer(vIN_Normal, 3, GL_FLOAT, GL_FALSE, 0, NULL));
 			}
 			else
@@ -451,9 +451,9 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		if(pass_struct->Tangent)
 		{
 			Tangent=shader->getAttrib_Tangent();
-			if(m_bVBO)
+			if(is_VBO)
 			{
-				CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, m_cVBO_tangentID));
+				CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, vboTangentID));
 				CHECK_GL_ERROR(glVertexAttribPointer(Tangent, 4, GL_FLOAT, GL_FALSE, 0, NULL));
 			}
 			else
@@ -488,7 +488,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		int nTexUsed=0;
 		int cntr=0;
 		//std::vector<gxSubMap*>* maplist=material->getSubMapList();
-		//gxUV* base_uv=(m_nUVChannels)?&m_pszUVChannels[0]:NULL;
+		//gxUV* base_uv=(uvChannelCount)?&uvChannel[0]:NULL;
 		//stShaderProperty_Texture2D* base_tex_var=NULL;
 		//for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it, ++cntr)
 		//{
@@ -496,7 +496,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		//	stShaderProperty_Texture2D* shader_var=submap->getShaderTextureProperty();
 		//	if(!base_tex_var)
 		//		base_tex_var=shader_var;
-		//	gxUV* uv=&m_pszUVChannels[0];	//base uv
+		//	gxUV* uv=&uvChannel[0];	//base uv
 		//	if(applyStageTexture(renderer, nTexUsed, triInfo, base_uv, GL_TEXTURE_ENV_MODE, GL_REPLACE, 2, shader, base_tex_var->texture_uv_in_name.c_str()))
 		//	{
 		//		shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
@@ -516,7 +516,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			texenv1 = GL_TEXTURE_ENV_MODE;
 			texenv2 = GL_MODULATE;
 #endif
-			gxUV* base_uv = (cntr < m_nUVChannels) ? &m_pszUVChannels[cntr] : ((m_nUVChannels) ? &m_pszUVChannels[0] : NULL);
+			gxUV* base_uv = (cntr < uvChannelCount) ? &uvChannel[cntr] : ((uvChannelCount) ? &uvChannel[0] : NULL);
 			if (applyStageTexture(renderer, nTexUsed, triInfo, base_uv, submap, texenv1, texenv2, 2, shader, shader_var->texture_uv_in_name.c_str()))
 			{
 				shader->sendUniform1i(shader_var->texture_sampler2d_name.c_str(), nTexUsed);
@@ -541,7 +541,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 		}
 		//
 
-		if(m_bVBO)
+		if(is_VBO)
 		{
 			CHECK_GL_ERROR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triInfo->getVBOTriListID()));
 			CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, NULL));
@@ -552,8 +552,8 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES, triInfo->getVerticesCount(), GL_UNSIGNED_INT, triInfo->getTriList()));
 		}
 
-		renderer->m_nTrisRendered+=triInfo->getTriangleCount();
-		renderer->m_nDrawCalls++;
+		renderer->noOfTrianglesRendered+=triInfo->getTriangleCount();
+		renderer->noOfDrawCalls++;
 
 		cntr=0;
 
@@ -589,7 +589,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			CHECK_GL_ERROR(glDisableVertexAttribArray(Tangent));
 		}
 
-		if(m_bVBO)
+		if(is_VBO)
 		{
 			CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER,0));
 		}
@@ -603,26 +603,26 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 {
 	if(!triInfo->getMaterial()) return false;
 
-	gxSubMap* subMap=NULL;
-	subMap=triInfo->getMaterial()->getSubMap(stage);
+	gxSubMap* subMapList=NULL;
+	subMapList=triInfo->getMaterial()->getSubMap(stage);
 
-	if(!subMap)	return false;
-	if(!subMap->getTexture()) return false;
-	if(subMap->getTexture()->getTextureID()==0 || !uv) return false;
+	if(!subMapList)	return false;
+	if(!subMapList->getTexture()) return false;
+	if(subMapList->getTexture()->getTextureID()==0 || !uv) return false;
 
 	glActiveTexture(GL_TEXTURE0+stage);
 	glClientActiveTexture(GL_TEXTURE0+stage);
-	glTexCoordPointer(texCoordSz, GL_FLOAT, 0, uv->m_pszfGLTexCoordList);
+	glTexCoordPointer(texCoordSz, GL_FLOAT, 0, uv->textureCoordArray);
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, subMap->getTexture()->getTextureID() );
+	glBindTexture(GL_TEXTURE_2D, subMapList->getTexture()->getTextureID() );
 	glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glMatrixMode(GL_TEXTURE);
-	glLoadMatrixf(subMap->getTexture()->getTextureMatrix()->getMatrix());
+	glLoadMatrixf(subMapList->getTexture()->getTextureMatrix()->getMatrix());
 	glMatrixMode(GL_MODELVIEW);
 
-	if(subMap->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
+	if(subMapList->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -665,14 +665,14 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 
 	if(uv)
 	{
-		if(m_bVBO)
+		if(is_VBO)
 		{
-			CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, uv->m_cVBO_texID));
+			CHECK_GL_ERROR(glBindBuffer(GL_ARRAY_BUFFER, uv->vboID));
 			CHECK_GL_ERROR(glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, 0));
 		}
 		else
 		{
-			CHECK_GL_ERROR(glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, uv->m_pszfGLTexCoordList));
+			CHECK_GL_ERROR(glVertexAttribPointer(hwShader->getAttribLoc(texCoordAttribName), 2, GL_FLOAT, GL_FALSE, 0, uv->textureCoordArray));
 		}
 		CHECK_GL_ERROR(glEnableVertexAttribArray(hwShader->getAttribLoc(texCoordAttribName)));
 	}
@@ -712,31 +712,31 @@ void gxMesh::disableTextureOperations(int stage, gxHWShader* shader, const char*
 
 float* gxMesh::allocateVertexBuffer(int nTris)
 {
-	m_nTris_For_Internal_Use=nTris;
-	GX_DELETE_ARY(m_pszVertexBuffer);
-	m_pszVertexBuffer = new float[nTris*3*3];
-	return m_pszVertexBuffer;
+	noOfTrianglesForInternalUse=nTris;
+	GX_DELETE_ARY(vertexBuffer);
+	vertexBuffer = new float[nTris*3*3];
+	return vertexBuffer;
 }
 
 float* gxMesh::allocateColorBuffer(int nTris)
 {
-	GX_DELETE_ARY(m_pszColorBuffer);
-	m_pszColorBuffer = new float[nTris*3*3];
-	return m_pszColorBuffer;
+	GX_DELETE_ARY(colorBuffer);
+	colorBuffer = new float[nTris*3*3];
+	return colorBuffer;
 }
 
 float* gxMesh::allocateNormalBuffer(int nTris)
 {
-	GX_DELETE_ARY(m_pszNormalBuffer);
-	m_pszNormalBuffer = new float[nTris*3*3];
-	return m_pszNormalBuffer;
+	GX_DELETE_ARY(normalBuffer);
+	normalBuffer = new float[nTris*3*3];
+	return normalBuffer;
 }
 
 float* gxMesh::allocateTangentBuffer(int nTris)
 {
-	GX_DELETE_ARY(m_pszTangentBuffer);
-	m_pszTangentBuffer = new float[nTris*3*4];
-	return m_pszTangentBuffer;
+	GX_DELETE_ARY(tangentBuffer);
+	tangentBuffer = new float[nTris*3*4];
+	return tangentBuffer;
 }
 
 bool gxMesh::createTBN_Data()
@@ -746,19 +746,19 @@ bool gxMesh::createTBN_Data()
 
 	float* diffuse_uv_coordPtr=NULL;
 	float* tangent_coord=NULL;
-	gxUV* base_uv=(m_nUVChannels)?&m_pszUVChannels[0]:NULL;
+	gxUV* base_uv=(uvChannelCount)?&uvChannel[0]:NULL;
 
-	if(!base_uv || !m_pszNormalBuffer)
+	if(!base_uv || !normalBuffer)
 		return false;
 
-	diffuse_uv_coordPtr = base_uv->m_pszfGLTexCoordList;
+	diffuse_uv_coordPtr = base_uv->textureCoordArray;
 	if(!diffuse_uv_coordPtr)
 		return false;
 
 	//Allocate memory for the additional coords
-	GX_DELETE_ARY(m_pszTangentBuffer);
-	m_pszTangentBuffer = new float[m_nTris_For_Internal_Use*3*3];
-	tangent_coord = m_pszTangentBuffer;
+	GX_DELETE_ARY(tangentBuffer);
+	tangentBuffer = new float[noOfTrianglesForInternalUse*3*3];
+	tangent_coord = tangentBuffer;
 	
 	float* v=getVertexBuffer();
 	float* tc=diffuse_uv_coordPtr;
@@ -773,12 +773,12 @@ bool gxMesh::createTBN_Data()
 	vector2f dc3c1TB;
 
 	int aIterator=0;
-	//for(int x=0;x<m_nTriInfoArray;x++)
+	//for(int x=0;x<triangleInfoArrayCount;x++)
 	//{
-	//	gxTriInfo* triInfo=&m_pszTriInfoArray[x];
+	//	gxTriInfo* triInfo=&triangleInfoArray[x];
 	//	if(!triInfo->getTriList()) continue;
 
-		for(int y=0;y<m_nTris_For_Internal_Use;y++)
+		for(int y=0;y<noOfTrianglesForInternalUse;y++)
 		{
 			vector3f v1(v[aIterator*9+0], v[aIterator*9+1], v[aIterator*9+2]);
 			vector3f v2(v[aIterator*9+3], v[aIterator*9+4], v[aIterator*9+5]);
@@ -855,9 +855,9 @@ bool gxMesh::createTBN_Data()
 int gxMesh::getVerticesCount()
 {
 	int nVerts=0;
-	for(int x=0;x<m_nTriInfoArray;x++)
+	for(int x=0;x<triangleInfoArrayCount;x++)
 	{
-		nVerts+=m_pszTriInfoArray[x].getVerticesCount();
+		nVerts+=triangleInfoArray[x].getVerticesCount();
 	}
 
 	return nVerts;
@@ -865,69 +865,69 @@ int gxMesh::getVerticesCount()
 
 void gxMesh::writeMeshData(gxFile& file)
 {
-	file.Write(m_iObjectID);
-	file.Write(m_eBaseFlags);
+	file.Write(objectID);
+	file.Write(baseFlag);
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
-	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.WriteBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Write(assetFileCRC);
 	writeAnimationController(file);
 
-	file.Write(m_nTriInfoArray);
-	for(int x=0;x<m_nTriInfoArray;x++)
+	file.Write(triangleInfoArrayCount);
+	for(int x=0;x<triangleInfoArrayCount;x++)
 	{
-		m_pszTriInfoArray[x].write(file);
+		triangleInfoArray[x].write(file);
 	}
 
-	file.Write(m_nTris_For_Internal_Use);
-	if(m_pszVertexBuffer)
+	file.Write(noOfTrianglesForInternalUse);
+	if(vertexBuffer)
 	{
 		file.Write(true);
-		file.WriteBuffer((unsigned char*)m_pszVertexBuffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+		file.WriteBuffer((unsigned char*)vertexBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
 	}
 	else
 	{
 		file.Write(false);
 	}
 
-	if(m_pszColorBuffer)
+	if(colorBuffer)
 	{
 		file.Write(true);
-		file.WriteBuffer((unsigned char*)m_pszColorBuffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+		file.WriteBuffer((unsigned char*)colorBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
 	}
 	else
 	{
 		file.Write(false);
 	}
 
-	if(m_pszNormalBuffer)
+	if(normalBuffer)
 	{
 		file.Write(true);
-		file.WriteBuffer((unsigned char*)m_pszNormalBuffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+		file.WriteBuffer((unsigned char*)normalBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
 	}
 	else
 	{
 		file.Write(false);
 	}
 
-	if(m_pszTangentBuffer)
+	if(tangentBuffer)
 	{
 		file.Write(true);
-		file.WriteBuffer((unsigned char*)m_pszTangentBuffer, sizeof(float)*m_nTris_For_Internal_Use*3*4);
+		file.WriteBuffer((unsigned char*)tangentBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*4);
 	}
 	else
 	{
 		file.Write(false);
 	}
 
-	file.Write(m_nUVChannels);
-	for(int x=0;x<m_nUVChannels;x++)
+	file.Write(uvChannelCount);
+	for(int x=0;x<uvChannelCount;x++)
 	{
-		if(m_pszUVChannels[x].m_pMaterialPtr)
-			file.Write(m_pszUVChannels[x].m_pMaterialPtr->getAssetFileCRC());
+		if(uvChannel[x].material)
+			file.Write(uvChannel[x].material->getAssetFileCRC());
 		else
 			file.Write((int)0);
-		file.WriteBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
+		file.WriteBuffer((unsigned char*)uvChannel[x].textureCoordArray, sizeof(float)*noOfTrianglesForInternalUse*3*2);
 	}
 }
 
@@ -935,10 +935,10 @@ void gxMesh::write(gxFile& file)
 {
 	writeMeshData(file);
 
-	file.Write((int)m_cChilds.size());
+	file.Write((int)childList.size());
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -946,7 +946,7 @@ void gxMesh::write(gxFile& file)
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->write(file);
@@ -956,68 +956,68 @@ void gxMesh::write(gxFile& file)
 
 void gxMesh::read(gxFile& file)
 {
-	file.Read(m_eBaseFlags);
+	file.Read(baseFlag);
 	char* temp=file.ReadString();
 	GX_STRCPY(m_cszName, temp);
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
-	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.ReadBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Read(assetFileCRC);
 	readAnimationController(file);
 
-	file.Read(m_nTriInfoArray);
-	if(m_nTriInfoArray)
-		m_pszTriInfoArray = new gxTriInfo[m_nTriInfoArray];
+	file.Read(triangleInfoArrayCount);
+	if(triangleInfoArrayCount)
+		triangleInfoArray = new gxTriInfo[triangleInfoArrayCount];
 
-	for(int x=0;x<m_nTriInfoArray;x++)
+	for(int x=0;x<triangleInfoArrayCount;x++)
 	{
-		m_pszTriInfoArray[x].read(file);
+		triangleInfoArray[x].read(file);
 	}
 
-	file.Read(m_nTris_For_Internal_Use);
+	file.Read(noOfTrianglesForInternalUse);
 
 	bool bVertexBuffer=false;
 	file.Read(bVertexBuffer);
 	if(bVertexBuffer)
 	{
-		float* buffer=allocateVertexBuffer(m_nTris_For_Internal_Use);
-		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+		float* buffer=allocateVertexBuffer(noOfTrianglesForInternalUse);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
 	}
 
 	bool bColorBuffer=false;
 	file.Read(bColorBuffer);
 	if(bColorBuffer)
 	{
-		float* buffer=allocateColorBuffer(m_nTris_For_Internal_Use);
-		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+		float* buffer=allocateColorBuffer(noOfTrianglesForInternalUse);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
 	}
 
 	bool bNormalBuffer=false;
 	file.Read(bNormalBuffer);
 	if(bNormalBuffer)
 	{
-		float* buffer=allocateNormalBuffer(m_nTris_For_Internal_Use);
-		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*3);
+		float* buffer=allocateNormalBuffer(noOfTrianglesForInternalUse);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
 	}
 
 	bool bTangentBuffer=false;
 	file.Read(bTangentBuffer);
 	if(bTangentBuffer)
 	{
-		float* buffer=allocateTangentBuffer(m_nTris_For_Internal_Use);
-		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*m_nTris_For_Internal_Use*3*4);
+		float* buffer=allocateTangentBuffer(noOfTrianglesForInternalUse);
+		file.ReadBuffer((unsigned char*)buffer, sizeof(float)*noOfTrianglesForInternalUse*3*4);
 	}
 
 
-	file.Read(m_nUVChannels);
-	if(m_nUVChannels)
-		m_pszUVChannels = new gxUV[m_nUVChannels];
-	for(int x=0;x<m_nUVChannels;x++)
+	file.Read(uvChannelCount);
+	if(uvChannelCount)
+		uvChannel = new gxUV[uvChannelCount];
+	for(int x=0;x<uvChannelCount;x++)
 	{
 		int materialCRC=0;
 		file.Read(materialCRC);
-		m_pszUVChannels[x].m_pszfGLTexCoordList =new float[m_nTris_For_Internal_Use*3*2];
-		file.ReadBuffer((unsigned char*)m_pszUVChannels[x].m_pszfGLTexCoordList, sizeof(float)*m_nTris_For_Internal_Use*3*2);
+		uvChannel[x].textureCoordArray =new float[noOfTrianglesForInternalUse*3*2];
+		file.ReadBuffer((unsigned char*)uvChannel[x].textureCoordArray, sizeof(float)*noOfTrianglesForInternalUse*3*2);
 	}
 
 	if(getID()==OBJECT3D_MESH)

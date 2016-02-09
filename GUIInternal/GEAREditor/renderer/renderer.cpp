@@ -19,9 +19,9 @@ rendererBase::rendererBase(SDL_Window* window, ERENDERER technique)
     m_pWindow=window;
 	m_bSecondryRenderer=false;
 	g_eRenderingTechnique=technique;
-	//m_pProjectionMatrixPtr=NULL;
-	//m_pViewMatrixPtr=NULL;
-	//m_pViewProjectionMatrixPtr=NULL;
+	//projectionMatrix=NULL;
+	//viewMatrix=NULL;
+	//viewProjectionMatrix=NULL;
 	//m_cViewPortSz.set(1.0f, 1.0f);
 }
 	
@@ -202,7 +202,7 @@ bool rendererBase::killGL()
 
 void rendererBase::setViewPort(float cx, float cy)
 {
-    //m_cOrthogonalProjectionMatrix.setOrtho(0.0f, cx, cy, 0.0f, 0.0f, 10.0f);
+    //orthogonalProjectionMatrix.setOrtho(0.0f, cx, cy, 0.0f, 0.0f, 10.0f);
 	m_cViewPortSz.set(cx, cy);
 	//glViewport(0, 0, (int)cx, (int)cy);
  //   glMatrixMode(GL_PROJECTION);

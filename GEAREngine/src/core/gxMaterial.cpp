@@ -6,38 +6,38 @@ gxMaterial::gxMaterial():
 	diffuseColor.set(0.5f, 0.5f, 0.5f, 1.0f);
 	ambientColor.set(0.1f, 0.1f, 0.1f, 1.0f);
 	specularColor.set(0.2f, 0.2f, 0.2f, 1.0f);
-	m_pSurfaceShaderPtr=NULL;
-	m_fAlpha=1.0f;
-	m_fShininess=10.0f;
-	m_bTwoSided=false;
+	surfaceShader=NULL;
+	alpha=1.0f;
+	shininess=10.0f;
+	twoSided=false;
 }
 
 gxMaterial::~gxMaterial()
 {
-	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	for(std::vector<gxSubMap*>::iterator it = subMapList.begin(); it != subMapList.end(); ++it)
 	{
 		gxSubMap* map = *it;
 		GX_DELETE(map);
 	}
-	m_vSubMap.clear();
+	subMapList.clear();
 
 	//clear all the material passes
-	for(std::vector<stMaterialPass*>::iterator it_pass = m_vMaterialPass.begin(); it_pass != m_vMaterialPass.end(); ++it_pass)
+	for(std::vector<stMaterialPass*>::iterator it_pass = materialPassList.begin(); it_pass != materialPassList.end(); ++it_pass)
 	{
 		stMaterialPass* mpass=*it_pass;
 		GX_DELETE(mpass);
 	}
-	m_vMaterialPass.clear();
+	materialPassList.clear();
 	//
 
-	m_vTextureNameFromFBXFile.clear();
+	textureNameFromFBXList.clear();
 }
 
 bool gxMaterial::appendDependency(int crc)
 {
-	if(std::find(m_vDependencyCRCList.begin(), m_vDependencyCRCList.end(), crc)==m_vDependencyCRCList.end())
+	if(std::find(dependencyCRCList.begin(), dependencyCRCList.end(), crc)==dependencyCRCList.end())
 	{
-		m_vDependencyCRCList.push_back(crc);
+		dependencyCRCList.push_back(crc);
 		return true;
 	}
 
@@ -50,29 +50,29 @@ void gxMaterial::write(gxFile& file)
 	file.WriteBuffer((unsigned char*)&ambientColor, sizeof(ambientColor));
 	file.WriteBuffer((unsigned char*)&diffuseColor, sizeof(diffuseColor));
 	file.WriteBuffer((unsigned char*)&specularColor, sizeof(specularColor));
-	file.Write(m_fAlpha);
-	file.Write(m_fShininess);
-	file.Write(m_bTwoSided);
-	file.Write(m_szMaterialName);
-	file.Write((int)m_vSubMap.size());
-	for(std::vector<gxSubMap*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	file.Write(alpha);
+	file.Write(shininess);
+	file.Write(twoSided);
+	file.Write(materialName);
+	file.Write((int)subMapList.size());
+	for(std::vector<gxSubMap*>::iterator it = subMapList.begin(); it != subMapList.end(); ++it)
 	{
 		gxSubMap* submap = *it;
 		file.Write(submap->getTextureName());
 		file.Write(submap->getTextureCRC());
 	}
 
-	file.Write(m_cMainShaderName.c_str());
-	file.Write((int)m_vDependencyCRCList.size());
-	for(int x=0;x<m_vDependencyCRCList.size();x++)
+	file.Write(mainShaderName.c_str());
+	file.Write((int)dependencyCRCList.size());
+	for(int x=0;x<dependencyCRCList.size();x++)
 	{
-		file.Write(m_vDependencyCRCList[x]);
+		file.Write(dependencyCRCList[x]);
 	}
 
-	file.Write((int)m_vTextureNameFromFBXFile.size());
-	for(int x=0;x<m_vTextureNameFromFBXFile.size();x++)
+	file.Write((int)textureNameFromFBXList.size());
+	for(int x=0;x<textureNameFromFBXList.size();x++)
 	{
-		file.Write(m_vTextureNameFromFBXFile[x].c_str());
+		file.Write(textureNameFromFBXList[x].c_str());
 	}
 }
 
@@ -83,12 +83,12 @@ void gxMaterial::read(gxFile& file)
 	file.ReadBuffer((unsigned char*)&diffuseColor, sizeof(diffuseColor));
 	file.ReadBuffer((unsigned char*)&specularColor, sizeof(specularColor));
 
-	file.Read(m_fAlpha);
-	file.Read(m_fShininess);
-	file.Read(m_bTwoSided);	
+	file.Read(alpha);
+	file.Read(shininess);
+	file.Read(twoSided);	
 
 	char* temp=file.ReadString();
-	GX_STRCPY(m_szMaterialName, temp);
+	GX_STRCPY(materialName, temp);
 	GX_DELETE_ARY(temp);
 
 	int nsubmap=0;
@@ -102,7 +102,7 @@ void gxMaterial::read(gxFile& file)
 		gxSubMap* submap = new gxSubMap();
 		submap->setTextureName(temp);
 		submap->setTextureCRC(texcrc);
-		m_vSubMap.push_back(submap);
+		subMapList.push_back(submap);
 		GX_DELETE_ARY(temp);
 	}
 
@@ -116,7 +116,7 @@ void gxMaterial::read(gxFile& file)
 	{
 		int crc=0;
 		file.Read(crc);
-		m_vDependencyCRCList.push_back(crc);
+		dependencyCRCList.push_back(crc);
 	}
 
 	int nFBXTextures=0;
@@ -124,7 +124,7 @@ void gxMaterial::read(gxFile& file)
 	for(int x=0;x<nFBXTextures;x++)
 	{
 		char* temp=file.ReadString();
-		m_vTextureNameFromFBXFile.push_back(temp);
+		textureNameFromFBXList.push_back(temp);
 		GX_DELETE_ARY(temp);
 	}
 }
@@ -143,12 +143,12 @@ gxMaterial* gxMaterial::createNewMaterial()
 
 void gxMaterial::setSurfaceShader(gxSurfaceShader* surfaceShader)
 {
-	if(m_pSurfaceShaderPtr==surfaceShader || surfaceShader==NULL) return;
+	if(this->surfaceShader==surfaceShader || surfaceShader==NULL) return;
 
-	m_pSurfaceShaderPtr=surfaceShader;
+	this->surfaceShader=surfaceShader;
 
-	std::vector<stShaderProperty_Texture2D*>* propertylist=m_pSurfaceShaderPtr->getShaderPropertyList_Texture2D();
-	while(m_vSubMap.size()<propertylist->size())
+	std::vector<stShaderProperty_Texture2D*>* propertylist=this->surfaceShader->getShaderPropertyList_Texture2D();
+	while(subMapList.size()<propertylist->size())
 	{
 		gxSubMap* submap = new gxSubMap();
 		appendSubMap(submap);
@@ -156,10 +156,10 @@ void gxMaterial::setSurfaceShader(gxSurfaceShader* surfaceShader)
 
 #if REMOVE_ADDITIONAL_MAPS_FROM_LIST
 	//remove additional maps from list
-	while(m_vSubMap.size()>propertylist->size())
+	while(subMapList.size()>propertylist->size())
 	{
-		gxSubMap* submap=m_vSubMap[m_vSubMap.size()-1];
-		m_vSubMap.erase(std::remove(m_vSubMap.begin(), m_vSubMap.end(), submap), m_vSubMap.end());
+		gxSubMap* submap=subMapList[subMapList.size()-1];
+		subMapList.erase(std::remove(subMapList.begin(), subMapList.end(), submap), subMapList.end());
 		GX_DELETE(submap);
 	}
 	//
@@ -169,20 +169,20 @@ void gxMaterial::setSurfaceShader(gxSurfaceShader* surfaceShader)
 	for(std::vector<stShaderProperty_Texture2D*>::iterator it = propertylist->begin(); it != propertylist->end(); ++it, submap_cntr++)
 	{
 		stShaderProperty_Texture2D* tex2d = *it;
-		gxSubMap* submap = m_vSubMap[submap_cntr];
+		gxSubMap* submap = subMapList[submap_cntr];
 		submap->setShaderTextureProperty(tex2d);
 	}
 
 	//clear all the material passes
-	for(std::vector<stMaterialPass*>::iterator it_pass = m_vMaterialPass.begin(); it_pass != m_vMaterialPass.end(); ++it_pass)
+	for(std::vector<stMaterialPass*>::iterator it_pass = materialPassList.begin(); it_pass != materialPassList.end(); ++it_pass)
 	{
 		stMaterialPass* mpass=*it_pass;
 		GX_DELETE(mpass);
 	}
-	m_vMaterialPass.clear();
+	materialPassList.clear();
 	//
 
-	std::vector<stPass*>* passlist=m_pSurfaceShaderPtr->getShaderPassList();
+	std::vector<stPass*>* passlist=this->surfaceShader->getShaderPassList();
 	int cntr=0;
 	for(std::vector<stPass*>::iterator it_pass = passlist->begin(); it_pass != passlist->end(); ++it_pass, cntr++)
 	{
@@ -191,39 +191,39 @@ void gxMaterial::setSurfaceShader(gxSurfaceShader* surfaceShader)
 		mpass->pass=currentPass;
 		
 		//check if a tex coord is used in this pass or not
-		for(std::vector<gxSubMap*>::iterator submap_it = m_vSubMap.begin(); submap_it != m_vSubMap.end(); ++submap_it)
+		for(std::vector<gxSubMap*>::iterator submap_it = subMapList.begin(); submap_it != subMapList.end(); ++submap_it)
 		{
 			gxSubMap* map = *submap_it;
 			//check in vertex shader
-			if((int)currentPass->vertex_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+			if((int)currentPass->vertexGLSLSourceBuffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
 			{
 				mpass->vUsedSubMap.push_back(map);
 			}
 
 			//check in fragment shader
-			if((int)currentPass->fragment_buffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
+			if((int)currentPass->fragmentGLSLSourceBuffer.find(map->getShaderTextureProperty()->texture_uv_in_name)>=0)
 			{
 				mpass->vUsedSubMap.push_back(map);
 			}
 		}
 
-		m_vMaterialPass.push_back(mpass);
+		materialPassList.push_back(mpass);
 	}
 }
 
 void gxMaterial::appendSubMap(gxSubMap* map)
 {
-	m_vSubMap.push_back(map);
+	subMapList.push_back(map);
 }
 
 gxSubMap* gxMaterial::getSubMap(int index)
 {
-	if(index>=(int)m_vSubMap.size()) return NULL;
+	if(index>=(int)subMapList.size()) return NULL;
 
-	return m_vSubMap[index];
+	return subMapList[index];
 }
 
 void gxMaterial::appendTextureNamesFromFBX(const char* filename)
 {
-	m_vTextureNameFromFBXFile.push_back(filename);
+	textureNameFromFBXList.push_back(filename);
 }

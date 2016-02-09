@@ -25,5 +25,5 @@ private:
 	stVertexBuffer m_cVBSelectionArea;
 	float m_cVBClientAreaLine[10];
 	geFont* m_pFont;
-	float m_fYOffset;
+	float fontYOffset;
 };

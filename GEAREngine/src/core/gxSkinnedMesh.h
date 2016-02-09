@@ -23,22 +23,22 @@ public:
 	virtual void write(gxFile& file);
 	virtual void read(gxFile& file);
 
-	void clearPrivateIterator()	{	m_iPrivateIterator=0;	}
+	void clearPrivateIterator()             {	privateIterator=0;          }
 
-	void setRootNode(object3d* rootNode)	{	m_pRootNodePtr = rootNode;	}
+	void setRootNode(object3d* rootNode)	{	this->rootNode = rootNode;	}
 
 private:
-	int* m_pszBoneInfluenceCountBuffer;
-	int* m_pszBoneIndexBuffer;
-	float* m_pszWeightBuffer;
-	int m_nBoneInfluencePerVertex;
-	float* m_pszVertexCopyBuffer;
+	int* boneInfluenceCountBuffer;
+	int* boneIndexBuffer;
+	float* weightBuffer;
+	int boneInfluencePerVertex;
+	float* vertexCopyBuffer;
 
-	int m_iPrivateIterator;
-	int m_nBones;
-	int m_nBoneIndexBuffer;
-	object3d** m_pszBoneList;
-	matrix4x4f* m_pszInvBoneTMList;
-	matrix4x4f* m_pszBoneOffsetList;
-	object3d* m_pRootNodePtr;
+	int privateIterator;
+	int noOfBones;
+	int noOfBoneIndexBuffer;
+	object3d** boneList;
+	matrix4x4f* inverseBoneTransformationList;
+	matrix4x4f* boneOffsetList;
+	object3d* rootNode;
 };

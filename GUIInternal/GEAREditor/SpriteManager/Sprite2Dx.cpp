@@ -27,7 +27,7 @@ void Sprite2Dx::draw(gxHWShader* shader)
 	//arun:texissue glEnable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_cTexture.getTextureID());
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (isRenderFlag(RENDER_FORCE_NO_MODULATION)&&m_fAlpha==1.0f)?GL_REPLACE:GL_MODULATE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (isRenderFlag(RENDER_FORCE_NO_MODULATION) && alpha==1.0f) ? GL_REPLACE : GL_MODULATE);
 
 	if(m_cTexture.getTextureType()==geTexture::TEX_ALPHA && !isRenderFlag(RENDER_FORCE_NO_ALPHA))
 	{
@@ -71,7 +71,7 @@ void Sprite2Dx::draw(/*const matrix4x4f& parentTM, */geVector2f* pos)
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, m_cTexture.getTextureID());
 
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (isRenderFlag(RENDER_FORCE_NO_MODULATION)&&m_fAlpha==1.0f)?GL_REPLACE:GL_MODULATE);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (isRenderFlag(RENDER_FORCE_NO_MODULATION) && alpha == 1.0f) ? GL_REPLACE : GL_MODULATE);
 
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(2, GL_FLOAT, 0, m_cszTexCoord);
@@ -94,7 +94,7 @@ void Sprite2Dx::draw(/*const matrix4x4f& parentTM, */geVector2f* pos)
 
     if(!isRenderFlag(RENDER_FORCE_NO_ALPHA | RENDER_FORCE_NO_BLEND))
     {
-        glColor4f(m_fRGB[0], m_fRGB[1], m_fRGB[2], m_fAlpha);
+        glColor4f(m_fRGB[0], m_fRGB[1], m_fRGB[2], alpha);
     }
     
 	glPushMatrix();

@@ -3,15 +3,15 @@
 
 gxSubMap::gxSubMap()
 {
-	memset(m_szTextureName, 0, sizeof(m_szTextureName));
-	m_iTextureCRC=0;
-	m_pTexture=NULL;
-	m_pShaderPropertyVar=NULL;
+	memset(textureName, 0, sizeof(textureName));
+	textureCRC=0;
+	texture=NULL;
+	shaderPropertyVariable=NULL;
 }
 
 gxSubMap::~gxSubMap()
 {
-	GX_DELETE(m_pTexture);
+	GX_DELETE(texture);
 }
 
 gxTexture* gxSubMap::load(CTextureManager& textureManager, const char* filename)
@@ -25,9 +25,9 @@ gxTexture* gxSubMap::load(CTextureManager& textureManager, const char* filename)
 	gxFile metaInfoFile;
 	if(metaInfoFile.OpenFile(metaInfoFileName))
 	{
-		metaInfoFile.Read(m_iTextureCRC);
+		metaInfoFile.Read(textureCRC);
 		metaInfoFile.CloseFile();
-		return loadTextureFromMeta(textureManager, m_iTextureCRC);
+		return loadTextureFromMeta(textureManager, textureCRC);
 	}
 
 	return NULL;
@@ -42,21 +42,21 @@ gxTexture* gxSubMap::loadTextureFromMeta(CTextureManager& textureManager, int cr
 	if(texturePack)
 	{
 		//delete old texture instance
-		GX_DELETE(m_pTexture);
+		GX_DELETE(texture);
 
-		m_pTexture = new gxTexture();
-		m_pTexture->setTexture(texturePack);
-		m_pTexture->setAssetFileCRC(crc, metaDataFileName);
+		texture = new gxTexture();
+		texture->setTexture(texturePack);
+		texture->setAssetFileCRC(crc, metaDataFileName);
 		if(texturePack->bAlphaTex)
 		{
-			m_pTexture->setTextureType(gxTexture::TEX_ALPHA);
+			texture->setTextureType(gxTexture::TEX_ALPHA);
 		}
 		else
 		{
-			m_pTexture->setTextureType(gxTexture::TEX_NORMAL);
+			texture->setTextureType(gxTexture::TEX_NORMAL);
 		}
 	}
-	return m_pTexture;
+	return texture;
 }
 
 //============================================================================================================================================
@@ -507,7 +507,7 @@ bool gxSurfaceShader::parseEachProperty(std::string::const_iterator& start, std:
 													newtex2D->texture_sampler2d_name= "sampler2d";
 													newtex2D->texture_sampler2d_name+= _nameofproperty;
 													//
-													m_vTex2D_Properties.push_back(newtex2D);
+													texture2DPropertyList.push_back(newtex2D);
 													start=it;
 													return true;
 												}
@@ -531,7 +531,7 @@ bool gxSurfaceShader::parseEachProperty(std::string::const_iterator& start, std:
 											newcolor->name=_name;
 											newcolor->nameofProperty=_nameofproperty;
 											newcolor->color.set(atof(args.at(0).c_str()), atof(args.at(1).c_str()), atof(args.at(2).c_str()), atof(args.at(3).c_str()));
-											m_vColor_Properties.push_back(newcolor);
+											colorPropertyList.push_back(newcolor);
 
 											start=it;
 											return true;
@@ -558,7 +558,7 @@ bool gxSurfaceShader::parseEachProperty(std::string::const_iterator& start, std:
 													newrange->range_min=atof(args.at(0).c_str());
 													newrange->range_max=atof(args.at(1).c_str());
 													newrange->range_value=floatval;
-													m_vRange_Properties.push_back(newrange);
+													rangePropertyList.push_back(newrange);
 
 													start=it;
 													return true;
@@ -730,7 +730,7 @@ bool gxSurfaceShader::parseSubShader_vertex(std::string::const_iterator& start, 
 				if(depth<0)
 				{
 					shader_end = (it-1);
-					pass.vertex_buffer.assign(shader_start, shader_end);
+					pass.vertexGLSLSourceBuffer.assign(shader_start, shader_end);
 					start=++it;
 					return true;
 				}
@@ -771,7 +771,7 @@ bool gxSurfaceShader::parseSubShader_fragment(std::string::const_iterator& start
 				if(depth<0)
 				{
 					shader_end = (it-1);
-					pass.fragment_buffer.assign(shader_start, shader_end);
+					pass.fragmentGLSLSourceBuffer.assign(shader_start, shader_end);
 					start=++it;
 					return true;
 				}
@@ -851,33 +851,33 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 
 				//properties
 				//range
-				for(std::vector<stShaderProperty_Range*>::iterator prop_it = m_vRange_Properties.begin(); prop_it != m_vRange_Properties.end(); ++prop_it)
+				for(std::vector<stShaderProperty_Range*>::iterator prop_it = rangePropertyList.begin(); prop_it != rangePropertyList.end(); ++prop_it)
 				{
 					stShaderProperty_Range* range = *prop_it;
 					if((int)str.find(range->nameofProperty)>=0)
 					{
-						range->passPtr=&pass;
+						range->renderPass=&pass;
 					}
 				}
 
 				//color
-				for(std::vector<stShaderProperty_Color*>::iterator prop_it = m_vColor_Properties.begin(); prop_it != m_vColor_Properties.end(); ++prop_it)
+				for(std::vector<stShaderProperty_Color*>::iterator prop_it = colorPropertyList.begin(); prop_it != colorPropertyList.end(); ++prop_it)
 				{
 					stShaderProperty_Color* color = *prop_it;
 					if((int)str.find(color->nameofProperty)>=0)
 					{
-						color->passPtr=&pass;
+						color->renderPass=&pass;
 					}
 				}
 				//
 
 				//float
-				for(std::vector<stShaderProperty_Vector*>::iterator prop_it = m_vVector_Properties.begin(); prop_it != m_vVector_Properties.end(); ++prop_it)
+				for(std::vector<stShaderProperty_Vector*>::iterator prop_it = vectorPropertyList.begin(); prop_it != vectorPropertyList.end(); ++prop_it)
 				{
 					stShaderProperty_Vector* vector = *prop_it;
 					if((int)str.find(vector->nameofProperty)>=0)
 					{
-						vector->passPtr=&pass;
+						vector->renderPass=&pass;
 					}
 				}
 				//
@@ -893,7 +893,7 @@ bool gxSurfaceShader::parseSubShaderPass(std::string::const_iterator& start, std
 						it++;
 						while(parseKeyWord(it, end, key))
 						{
-							pass.vIncludeModule.push_back(key);
+							pass.glslIncludeModuleList.push_back(key);
 							if(findClosingCurlyBrace(it, end) && it!=end)
 								break;
 						}
@@ -979,7 +979,7 @@ bool gxSurfaceShader::parseSubShader(std::string::const_iterator& start, std::st
 								GX_DELETE(newPass);
 								return false;
 							}
-							m_cSubShader.m_vPass.push_back(newPass);
+							subShader.renderPassList.push_back(newPass);
 						}
 						else return false;
 					}
@@ -1094,49 +1094,49 @@ gxSurfaceShader::gxSurfaceShader()
 gxSurfaceShader::~gxSurfaceShader()
 {
 	//
-	for(std::vector<stShaderProperty_Texture2D*>::iterator it = m_vTex2D_Properties.begin(); it != m_vTex2D_Properties.end(); ++it)
+	for(std::vector<stShaderProperty_Texture2D*>::iterator it = texture2DPropertyList.begin(); it != texture2DPropertyList.end(); ++it)
 	{
 		stShaderProperty_Texture2D* obj = *it;
 		GX_DELETE(obj);
 	}
-	m_vTex2D_Properties.clear();
+	texture2DPropertyList.clear();
 
-	for(std::vector<stShaderProperty_Color*>::iterator it = m_vColor_Properties.begin(); it != m_vColor_Properties.end(); ++it)
+	for(std::vector<stShaderProperty_Color*>::iterator it = colorPropertyList.begin(); it != colorPropertyList.end(); ++it)
 	{
 		stShaderProperty_Color* obj = *it;
 		GX_DELETE(obj);
 	}
-	m_vColor_Properties.clear();
+	colorPropertyList.clear();
 
-	for(std::vector<stShaderProperty_Range*>::iterator it = m_vRange_Properties.begin(); it != m_vRange_Properties.end(); ++it)
+	for(std::vector<stShaderProperty_Range*>::iterator it = rangePropertyList.begin(); it != rangePropertyList.end(); ++it)
 	{
 		stShaderProperty_Range* obj = *it;
 		GX_DELETE(obj);
 	}
-	m_vRange_Properties.clear();
+	rangePropertyList.clear();
 
-	for(std::vector<stShaderProperty_Vector*>::iterator it = m_vVector_Properties.begin(); it != m_vVector_Properties.end(); ++it)
+	for(std::vector<stShaderProperty_Vector*>::iterator it = vectorPropertyList.begin(); it != vectorPropertyList.end(); ++it)
 	{
 		stShaderProperty_Vector* obj = *it;
 		GX_DELETE(obj);
 	}
-	m_vVector_Properties.clear();
+	vectorPropertyList.clear();
 	//
 
 
-	for(std::vector<stTextureMap*>::iterator it = m_vTextureMap.begin(); it != m_vTextureMap.end(); ++it)
+	for(std::vector<stTextureMap*>::iterator it = textureMapList.begin(); it != textureMapList.end(); ++it)
 	{
 		stTextureMap* obj = *it;
 		GX_DELETE(obj);
 	}
-	m_vTextureMap.clear();
+	textureMapList.clear();
 
-	m_vShaderProgram.clear();
+	shaderProgramList.clear();
 }
 
 bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 {
-	m_cFileName.assign(gxUtil::getFileNameFromPath(filename));
+	surfaceShaderFileName.assign(gxUtil::getFileNameFromPath(filename));
 	long fileSz=0;
 	FILE* fp=fopen(filename, "r");
 	if(fp==NULL) return false;
@@ -1166,7 +1166,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 		HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 
 		int cntr=0;
-		for(std::vector<stPass*>::iterator it_pass = m_cSubShader.m_vPass.begin(); it_pass != m_cSubShader.m_vPass.end(); ++it_pass, cntr++)
+		for(std::vector<stPass*>::iterator it_pass = subShader.renderPassList.begin(); it_pass != subShader.renderPassList.end(); ++it_pass, cntr++)
 		{
 			stPass* currentPass = *it_pass;
 
@@ -1175,7 +1175,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			gxHWShader* pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, NULL, 0);
 			if(pMainShader)
 			{
-				m_vShaderProgram.push_back(pMainShader);
+				shaderProgramList.push_back(pMainShader);
 				DEBUG_PRINT("%s\nShader already loaded\n Parse Success. Pass(%d)\n", constructed_glsl_filename, cntr);
 				continue;
 			}
@@ -1183,7 +1183,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			//construct the glsl shader
 			std::string cMainShaderSource = "";//"#version 120\n";
 			cMainShaderSource+=hwShaderManager->getShaderSnippet(0)->snippet;
-			for(std::vector<std::string>::iterator it = currentPass->vIncludeModule.begin(); it != currentPass->vIncludeModule.end(); ++it)
+			for(std::vector<std::string>::iterator it = currentPass->glslIncludeModuleList.begin(); it != currentPass->glslIncludeModuleList.end(); ++it)
 			{
 				std::string module = *it;
 				if(module.compare(0, strlen("PointLightStruct"), "PointLightStruct") == 0)
@@ -1203,20 +1203,20 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 
 			//properties
 			//range
-			for(std::vector<stShaderProperty_Range*>::iterator prop_it = m_vRange_Properties.begin(); prop_it != m_vRange_Properties.end(); ++prop_it)
+			for(std::vector<stShaderProperty_Range*>::iterator prop_it = rangePropertyList.begin(); prop_it != rangePropertyList.end(); ++prop_it)
 			{
 				stShaderProperty_Range* range = *prop_it;
-				if(currentPass==range->passPtr)
+				if(currentPass==range->renderPass)
 				{
 					cMainShaderSource += "uniform float "+range->nameofProperty+";\n";
 				}
 			}
 
 			//color
-			for(std::vector<stShaderProperty_Color*>::iterator prop_it = m_vColor_Properties.begin(); prop_it != m_vColor_Properties.end(); ++prop_it)
+			for(std::vector<stShaderProperty_Color*>::iterator prop_it = colorPropertyList.begin(); prop_it != colorPropertyList.end(); ++prop_it)
 			{
 				stShaderProperty_Color* color = *prop_it;
-				if(currentPass==color->passPtr)
+				if(currentPass==color->renderPass)
 				{
 					cMainShaderSource += "uniform vec4 "+color->nameofProperty+";\n";
 				}
@@ -1224,10 +1224,10 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			//
 
 			//float
-			for(std::vector<stShaderProperty_Vector*>::iterator prop_it = m_vVector_Properties.begin(); prop_it != m_vVector_Properties.end(); ++prop_it)
+			for(std::vector<stShaderProperty_Vector*>::iterator prop_it = vectorPropertyList.begin(); prop_it != vectorPropertyList.end(); ++prop_it)
 			{
 				stShaderProperty_Vector* vector = *prop_it;
-				if(currentPass==vector->passPtr)
+				if(currentPass==vector->renderPass)
 				{
 					cMainShaderSource += "uniform vec4 "+vector->nameofProperty+";\n";
 				}
@@ -1239,13 +1239,13 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			//	cMainShaderSource += hwShaderManager->getShaderSnippet(7)->snippet;
 			cMainShaderSource += "#ifdef GEAR_VERTEX_SHADER\n";
 			cMainShaderSource+=hwShaderManager->getShaderSnippet(1)->snippet;
-			cMainShaderSource+=currentPass->vertex_buffer+"\n";
+			cMainShaderSource+=currentPass->vertexGLSLSourceBuffer+"\n";
 			if (currentPass->shadow==1)
 				cMainShaderSource += hwShaderManager->getShaderSnippet(6)->snippet;
 			else
 				cMainShaderSource+=hwShaderManager->getShaderSnippet(2)->snippet;
 			cMainShaderSource += "#elif defined (GEAR_FRAGMENT_SHADER)\n";
-			cMainShaderSource+=currentPass->fragment_buffer+"\n";
+			cMainShaderSource+=currentPass->fragmentGLSLSourceBuffer+"\n";
 			if (currentPass->shadow == 1)
 				cMainShaderSource+=hwShaderManager->getShaderSnippet(7)->snippet;
 			else
@@ -1266,11 +1266,11 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 				DEBUG_PRINT("%s\nParse Success but GLSL compiler failed. Pass(%d)\n", constructed_glsl_filename, cntr);
 			else
 			{
-				currentPass->glslShaderPtr=pMainShader;
-				currentPass->glslShaderPtr->enableProgram();
+				currentPass->glslShader=pMainShader;
+				currentPass->glslShader->enableProgram();
 				applyDefaultValuesOfPropertiesToGLSLShader(currentPass);
-				currentPass->glslShaderPtr->disableProgram();
-				m_vShaderProgram.push_back(pMainShader);
+				currentPass->glslShader->disableProgram();
+				shaderProgramList.push_back(pMainShader);
 				DEBUG_PRINT("%s\nParse Success. Pass(%d)\n", constructed_glsl_filename, cntr);
 			}
 
@@ -1292,20 +1292,20 @@ void gxSurfaceShader::applyDefaultValuesOfPropertiesToGLSLShader(stPass* current
 {
 	//properties
 	//range
-	for(std::vector<stShaderProperty_Range*>::iterator prop_it = m_vRange_Properties.begin(); prop_it != m_vRange_Properties.end(); ++prop_it)
+	for(std::vector<stShaderProperty_Range*>::iterator prop_it = rangePropertyList.begin(); prop_it != rangePropertyList.end(); ++prop_it)
 	{
 		stShaderProperty_Range* range = *prop_it;
-		if(currentPass==range->passPtr)
+		if(currentPass==range->renderPass)
 		{
 			range->sendToGLSL();
 		}
 	}
 
 	//color
-	for(std::vector<stShaderProperty_Color*>::iterator prop_it = m_vColor_Properties.begin(); prop_it != m_vColor_Properties.end(); ++prop_it)
+	for(std::vector<stShaderProperty_Color*>::iterator prop_it = colorPropertyList.begin(); prop_it != colorPropertyList.end(); ++prop_it)
 	{
 		stShaderProperty_Color* color = *prop_it;
-		if(currentPass==color->passPtr)
+		if(currentPass==color->renderPass)
 		{
 			color->sendToGLSL();
 		}
@@ -1313,10 +1313,10 @@ void gxSurfaceShader::applyDefaultValuesOfPropertiesToGLSLShader(stPass* current
 	//
 
 	//float
-	for(std::vector<stShaderProperty_Vector*>::iterator prop_it = m_vVector_Properties.begin(); prop_it != m_vVector_Properties.end(); ++prop_it)
+	for(std::vector<stShaderProperty_Vector*>::iterator prop_it = vectorPropertyList.begin(); prop_it != vectorPropertyList.end(); ++prop_it)
 	{
 		stShaderProperty_Vector* vector = *prop_it;
-		if(currentPass==vector->passPtr)
+		if(currentPass==vector->renderPass)
 		{
 			vector->sendToGLSL();
 		}
@@ -1327,5 +1327,5 @@ void gxSurfaceShader::applyDefaultValuesOfPropertiesToGLSLShader(stPass* current
 
 void gxSurfaceShader::appendTextureMap(stTextureMap* texmap)
 {
-	m_vTextureMap.push_back(texmap);
+	textureMapList.push_back(texmap);
 }

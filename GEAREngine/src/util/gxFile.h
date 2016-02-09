@@ -68,6 +68,6 @@ public:
 private:
 	void	Write(const void* pAny, int iCount) const;
 
-	FILE*		m_pFP;
-	EFILEMODE	m_eFileMode;
+	FILE*		filePointer;
+	EFILEMODE	fileAccessMode;
 };

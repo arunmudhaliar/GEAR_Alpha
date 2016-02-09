@@ -41,77 +41,77 @@ class ExpandableArray
 public:
     ExpandableArray()
     {
-        m_pHead = NULL;
-        m_pTail = NULL;
-        m_pIteratorPtr = NULL;
+        headNode = NULL;
+        tailNode = NULL;
+        nodeIterator = NULL;
         
-        m_cCount=0;
-        m_cAllocationSize=0;
-        m_cDeltaAllocationSize=0;
+        count=0;
+        allocationSize=0;
+        deltaAllocationSize=0;
     }
     
 	ExpandableArray(int initialAllocationSize/*=0*/, int deltaAllocationSize=1)
 	{
-		m_cAllocationSize=0;
-		m_cDeltaAllocationSize=deltaAllocationSize;
+		allocationSize=0;
+		deltaAllocationSize=deltaAllocationSize;
 
-		m_pHead=m_pTail=m_pIteratorPtr=NULL;
-		m_cCount=0;
+		headNode=tailNode=nodeIterator=NULL;
+		count=0;
 
 		Allocate(initialAllocationSize);
 	}
 
 	~ExpandableArray()
 	{
-		GX_DELETE(m_pHead);
+		GX_DELETE(headNode);
 	}
 
     void Init(int initialAllocationSize=0, int deltaAllocationSize=1)
     {
-        m_cAllocationSize=0;
-		m_cDeltaAllocationSize=deltaAllocationSize;
+        allocationSize=0;
+		deltaAllocationSize=deltaAllocationSize;
         
-		m_pHead=m_pTail=m_pIteratorPtr=NULL;
-		m_cCount=0;
+		headNode=tailNode=nodeIterator=NULL;
+		count=0;
         
 		Allocate(initialAllocationSize); 
     }
     
 	void Append(T data)
 	{
-		if(!m_pIteratorPtr)
+		if(!nodeIterator)
 		{
-			Allocate(m_cDeltaAllocationSize);
+			Allocate(deltaAllocationSize);
 		}
 
-		m_pIteratorPtr->SetData(data);
-		m_pIteratorPtr=m_pIteratorPtr->GetNext();
-		m_cCount++;
+		nodeIterator->SetData(data);
+		nodeIterator=nodeIterator->GetNext();
+		count++;
 	}
 
 	//T GetAt(int index)
 	//{
-	//	if(index>=m_cCount) return NULL;
-	//	return m_pIteratorPtr->GetData();
+	//	if(index>=count) return NULL;
+	//	return nodeIterator->GetData();
 	//}
 
-	ExpandableArrayNode<T>* GetRoot()	const {	return m_pHead;		}
+	ExpandableArrayNode<T>* GetRoot()	const {	return headNode;		}
 
-	int GetCount()						const {	return m_cCount;	}
+	int GetCount()						const {	return count;	}
 	void Clear()
 	{
-		m_cCount=0;
-		m_pIteratorPtr=m_pHead;
+		count=0;
+		nodeIterator=headNode;
 	}
 
 
     ExpandableArrayNode<T>* getNode(int pos) const
 	{
-		if(pos<0 || pos>=m_cCount)		//out of bound check
+		if(pos<0 || pos>=count)		//out of bound check
 			return NULL;
 		
 		ExpandableArrayNode<T>* node=GetRoot();
-		for(int x=0;x<m_cCount;x++)
+		for(int x=0;x<count;x++)
 		{
 			if(x==pos)
 				break;					//position reached
@@ -134,7 +134,7 @@ public:
 		if(data==NULL) return NULL;
 		
 		ExpandableArrayNode<T>* node=this->GetRoot();
-		for(int x=0;x<m_cCount;x++)
+		for(int x=0;x<count;x++)
 		{
             pos=x;
 			if(data==node->GetData())
@@ -162,39 +162,39 @@ public:
        		T ret_data=node->GetData();
             node->SetDestroyChild(false);
             GX_DELETE(node);
-            m_cCount--;
-            m_cAllocationSize--;
+            count--;
+            allocationSize--;
             return  ret_data;
 		}
         else if(parentnode && !childnode)
         {
-            parentnode->SetNext(m_pIteratorPtr);
-            if(m_pIteratorPtr)m_pIteratorPtr->SetPrevious(parentnode);
-            if(m_pTail==node)   //if the last node is about to delete
+            parentnode->SetNext(nodeIterator);
+            if(nodeIterator)nodeIterator->SetPrevious(parentnode);
+            if(tailNode==node)   //if the last node is about to delete
             {
-                m_pTail=node->GetPrevious();
+                tailNode=node->GetPrevious();
             }
 
             T ret_data=node->GetData();
             node->SetDestroyChild(false);
             GX_DELETE(node);
-            m_cCount--;
-            m_cAllocationSize--;
+            count--;
+            allocationSize--;
             return  ret_data;
         }
         else if(!parentnode)
         {
-            m_pHead=node->GetNext();
-            if(m_pTail==node)   //if the last node is about to delete
+            headNode=node->GetNext();
+            if(tailNode==node)   //if the last node is about to delete
             {
-                m_pTail=node->GetPrevious();
+                tailNode=node->GetPrevious();
             }
-            if(m_pHead)m_pHead->SetPrevious(NULL);
+            if(headNode)headNode->SetPrevious(NULL);
        		T ret_data=node->GetData();
             node->SetDestroyChild(false);
             GX_DELETE(node);
-            m_cCount--;
-            m_cAllocationSize--;
+            count--;
+            allocationSize--;
             return  ret_data;
         }
         
@@ -217,38 +217,38 @@ public:
        		T ret_data=node->GetData();
             node->SetDestroyChild(false);
             GX_DELETE(node);
-            m_cCount--;
-            m_cAllocationSize--;
+            count--;
+            allocationSize--;
             return  ret_data;
 		}
         else if(parentnode && !childnode)
         {
-            parentnode->SetNext(m_pIteratorPtr);
-            if(m_pIteratorPtr)m_pIteratorPtr->SetPrevious(parentnode);
-            if(m_pTail==node)   //if the last node is about to delete
+            parentnode->SetNext(nodeIterator);
+            if(nodeIterator)nodeIterator->SetPrevious(parentnode);
+            if(tailNode==node)   //if the last node is about to delete
             {
-                m_pTail=node->GetPrevious();
+                tailNode=node->GetPrevious();
             }
             T ret_data=node->GetData();
             node->SetDestroyChild(false);
             GX_DELETE(node);
-            m_cCount--;
-            m_cAllocationSize--;
+            count--;
+            allocationSize--;
             return  ret_data;
         }
         else if(!parentnode)
         {
-            m_pHead=node->GetNext();
-            if(m_pTail==node)   //if the last node is about to delete
+            headNode=node->GetNext();
+            if(tailNode==node)   //if the last node is about to delete
             {
-                m_pTail=node->GetPrevious();
+                tailNode=node->GetPrevious();
             }
-            if(m_pHead)m_pHead->SetPrevious(NULL);
+            if(headNode)headNode->SetPrevious(NULL);
        		T ret_data=node->GetData();
             node->SetDestroyChild(false);
             GX_DELETE(node);
-            m_cCount--;
-            m_cAllocationSize--;
+            count--;
+            allocationSize--;
             return  ret_data;
         }
         
@@ -263,29 +263,29 @@ private:
 
 		while(sz--)
 		{
-			if(!m_pHead)
+			if(!headNode)
 			{
-				m_pHead = new ExpandableArrayNode<T>();
-				m_pTail=m_pIteratorPtr=m_pHead;
-				m_cAllocationSize++;
+				headNode = new ExpandableArrayNode<T>();
+				tailNode=nodeIterator=headNode;
+				allocationSize++;
 				continue;
 			}
 
-			m_pTail->SetNext(new ExpandableArrayNode<T>());
-            m_pTail->GetNext()->SetPrevious(m_pTail);
-			m_pTail=m_pTail->GetNext();
-			if(!m_pIteratorPtr)m_pIteratorPtr=m_pTail;
-			m_cAllocationSize++;
+			tailNode->SetNext(new ExpandableArrayNode<T>());
+            tailNode->GetNext()->SetPrevious(tailNode);
+			tailNode=tailNode->GetNext();
+			if(!nodeIterator)nodeIterator=tailNode;
+			allocationSize++;
 		}
 
 		return true;
 	}
 
-	ExpandableArrayNode<T>* m_pHead;
-	ExpandableArrayNode<T>* m_pTail;	//not valid after a remove() or removeAt(), be careful while using the pointer
-	ExpandableArrayNode<T>* m_pIteratorPtr;
+	ExpandableArrayNode<T>* headNode;
+	ExpandableArrayNode<T>* tailNode;	//not valid after a remove() or removeAt(), be careful while using the pointer
+	ExpandableArrayNode<T>* nodeIterator;
 
-	int m_cCount;
-	int m_cAllocationSize;
-	int m_cDeltaAllocationSize;
+	int count;
+	int allocationSize;
+	int deltaAllocationSize;
 };

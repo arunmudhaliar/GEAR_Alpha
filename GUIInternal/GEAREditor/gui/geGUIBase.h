@@ -118,8 +118,8 @@ public:
 
 	void CancelEngagedControls();
 
-	geGUIBase* getParent()	{	return m_pParentPtr;	}
-	//void setParent(geGUIBase* parent)	{	m_pParentPtr=parent;	}
+	geGUIBase* getParent()	{	return parent;	}
+	//void setParent(geGUIBase* parent)	{	this->parent=parent;	}
 	void appendChildControl(geGUIBase* child);
 	std::vector<geGUIBase*>* getChildControls()	{	return &m_vControls;	}
 	void hoverControl();
@@ -222,7 +222,7 @@ protected:
 	bool m_bSizable;
 	bool m_bMouseBoundCheckEnabled;
 
-	geGUIBase* m_pParentPtr;
+	geGUIBase* parent;
 	std::vector<geGUIBase*> m_vControls;
 	geGUIBase* m_pSelectedControlPtr;
 

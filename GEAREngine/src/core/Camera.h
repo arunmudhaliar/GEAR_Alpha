@@ -58,7 +58,7 @@ public:
 	virtual void read(gxFile& file);
 
 private:
-	gxRenderer* rendererPtr;	//must not delete this pointer
+	gxRenderer* renderer;	//must not delete this pointer
 	matrix4x4f	projectionMatrix;
 	matrix4x4f	inverseTransformationMatrix;
 	matrix4x4f	viewProjectionMatrix;

@@ -39,8 +39,8 @@ public:
 	void swapGLBuffer();
 
 	const geVector2f& getViewPortSz()	{	return m_cViewPortSz;	}
-	geMatrix4x4f* getProjectionMatrix()		{	return m_pProjectionMatrixPtr;	}
-	geMatrix4x4f* getOrthoProjectionMatrix()	{	return &m_cOrthogonalProjectionMatrix;	}
+	geMatrix4x4f* getProjectionMatrix()		{	return projectionMatrix;	}
+	geMatrix4x4f* getOrthoProjectionMatrix()	{	return &orthogonalProjectionMatrix;	}
 
 	bool makeCurrent();
 
@@ -61,10 +61,10 @@ private:
 #endif
 
 	geVector2f	m_cViewPortSz;
-	geMatrix4x4f* m_pProjectionMatrixPtr;			//must not delete this pointer
-	//geMatrix4x4f* m_pViewMatrixPtr;				//must not delete this pointer
-	//geMatrix4x4f* m_pViewProjectionMatrixPtr;     //must not delete this pointer
-    geMatrix4x4f  m_cOrthogonalProjectionMatrix;
+	geMatrix4x4f* projectionMatrix;			//must not delete this pointer
+	//geMatrix4x4f* viewMatrix;				//must not delete this pointer
+	//geMatrix4x4f* viewProjectionMatrix;     //must not delete this pointer
+    geMatrix4x4f  orthogonalProjectionMatrix;
 	//bool		m_bDirectionalLighting;
 	bool m_bSecondryRenderer;
     SDL_GLContext m_pContext;

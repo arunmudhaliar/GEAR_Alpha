@@ -66,10 +66,10 @@ public:
 	void initEngine(int nWorldToCreate);
 	void resetEngine();
 
-	gxWorld* getWorld(int index)		{	return m_cWorlds[index];	}
+	gxWorld* getWorld(int index)		{	return worldList[index];	}
 
-	HWShaderManager* getHWShaderManager()	{	return &m_cHWShaderManager;	}
+	HWShaderManager* getHWShaderManager()	{	return &hwShaderManager;	}
 private:
-	std::vector<gxWorld*> m_cWorlds;
-	HWShaderManager m_cHWShaderManager;
+	std::vector<gxWorld*> worldList;
+	HWShaderManager hwShaderManager;
 };

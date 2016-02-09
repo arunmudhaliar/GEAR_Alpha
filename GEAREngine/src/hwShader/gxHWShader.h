@@ -49,9 +49,9 @@ public:
 	void disableProgram();
 	bool validateProgram();
 	
-	GLuint getProgram()			{	return m_cProgram;		}
-	GLuint getVertexShader()	{	return m_cVertShader;	}
-	GLuint getFragmentShader()	{	return m_cFragShader;	}
+	GLuint getProgram()			{	return shaderProgram;		}
+	GLuint getVertexShader()	{	return vertexShaderID;	}
+	GLuint getFragmentShader()	{	return fragmentShaderID;	}
 	
 	void showShaderLog(const char* title);
 
@@ -77,7 +77,7 @@ public:
 	void sendAttrib4fv(const char* name, const float* input);
 	void sendAttrib1f(const char* name, float x);
     
-	const char* getShaderName()	{	return m_cShaderName.c_str(); }
+	const char* getShaderName()	{	return shaderName.c_str(); }
 
 	//predefined vars
 	void sendUniform_GEAR_MODELVIEW(const float* input);
@@ -99,27 +99,27 @@ private:
 	void clearUniformRefVarList();
 	void clearAttribRefVarList();
 
-    GLuint m_cProgram;
-	GLuint m_cVertShader;
-	GLuint m_cFragShader;
+    GLuint shaderProgram;
+	GLuint vertexShaderID;
+	GLuint fragmentShaderID;
 
-	std::vector<stUniformLocation*> m_vUniformRefVarList;
-	std::vector<stAttribLocation*> m_vAttribRefVarList;
-	std::string m_cShaderName;
+	std::vector<stUniformLocation*> uniformRefVariableList;
+	std::vector<stAttribLocation*> attribRefVariableList;
+	std::string shaderName;
 
 	//predefined vars
-	int m_cUnifrom_GEAR_MVP;
-	int m_cUnifrom_GEAR_MODELVIEW;
-	int m_cUnifrom_GEAR_MODEL_MATRIX;
-	int m_cUnifrom_GEAR_MODEL_INVERSE;
-	int m_cUnifrom_material_diffuse;
-	int m_cUnifrom_material_ambient;
-	int m_cUnifrom_material_specular;
-	int m_cUnifrom_material_shininess;
-	int m_cUnifrom_GEAR_Time;
-	int m_cUnifrom_GEAR_ScreenParams;
+	int unifrom_GEAR_MVP;
+	int unifrom_GEAR_MODELVIEW;
+	int unifrom_GEAR_MODEL_MATRIX;
+	int unifrom_GEAR_MODEL_INVERSE;
+	int unifrom_material_diffuse;
+	int unifrom_material_ambient;
+	int unifrom_material_specular;
+	int unifrom_material_shininess;
+	int unifrom_GEAR_Time;
+	int unifrom_GEAR_ScreenParams;
 
-	int m_cAttrib_vIN_Position;
-	int m_cAttrib_vIN_Normal;
-	int m_cAttrib_Tangent;
+	int attrib_vIN_Position;
+	int attrib_vIN_Normal;
+	int attrib_Tangent;
 };

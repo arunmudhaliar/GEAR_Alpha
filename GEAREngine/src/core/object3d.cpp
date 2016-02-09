@@ -58,74 +58,74 @@ extern DECLSPEC object3d* object3d_getParent(object3d* obj)
 object3d::object3d(int objID):
 	transform(),
 	GEARAsset(),
-	m_iObjectID(objID)
+	objectID(objID)
 {
 	setObject3dObserver(NULL);
 	setEditorUserData(NULL);
-	m_pParentPtr=NULL;
+	parent=NULL;
 	memset(m_cszName, 0, sizeof(m_cszName));
-	m_eBaseFlags=0;
+	baseFlag=0;
 	setBaseFlag(eObject3dBaseFlag_Visible);
-	m_pAnimationController=NULL;
-	m_pAnimationTrack=NULL;
+	animationController=NULL;
+	animationTrack=NULL;
 	setRootObserverOfTree(NULL);
 #if USE_BULLET
-	m_pPhysics_RigidBodyPtr=NULL;
+	rigidBody=NULL;
 #endif
-	m_pEngineObserver = NULL;
-	m_bVisited=false;
+	engineObserver = NULL;
+	is_Visited=false;
 
-	m_iLayer=-1;	//Currently this object is not belong to any layer
+	layerID=-1;	//Currently this object is not belong to any layer
 }
 
 object3d::~object3d()
 {
-	if(m_pObject3dObserver)
-		m_pObject3dObserver->onObject3dDestroy(this);
+	if(object3DObserver)
+		object3DObserver->onObject3dDestroy(this);
 
-	if(m_pRootObserver)
-		m_pRootObserver->callback_object3dDestroyedFromTree(this);
+	if(rootObserver)
+		rootObserver->callback_object3dDestroyedFromTree(this);
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
 		GX_DELETE(obj);
         node=node->getNext();
 	}
-	m_cChilds.clearAll();
+	childList.clearAll();
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		GX_DELETE(obj);
 	}
-	m_cChilds.clear();
+	childList.clear();
 #endif
 
-	for(std::vector<monoScriptObjectInstance*>::iterator it = m_cAttachedScriptInstances.begin(); it != m_cAttachedScriptInstances.end(); ++it)
+	for(std::vector<monoScriptObjectInstance*>::iterator it = attachedScriptInstanceList.begin(); it != attachedScriptInstanceList.end(); ++it)
 	{
 		monoScriptObjectInstance* scriptinstance = *it;
 		GX_DELETE(scriptinstance);
 	}
-	m_cAttachedScriptInstances.clear();
+	attachedScriptInstanceList.clear();
 
-	//if(m_pAnimationTrack)
-	//	m_pAnimationTrack->setObject3d(NULL);
+	//if(animationTrack)
+	//	animationTrack->setObject3d(NULL);
 	assetFileCRC=0;
-	m_pParentPtr=NULL;
-	m_pAnimationTrack=NULL;
-	GX_DELETE(m_pAnimationController);
+	parent=NULL;
+	animationTrack=NULL;
+	GX_DELETE(animationController);
 }
 
 void object3d::resetAllBaseFlags(bool recursive)
 {
-	m_eBaseFlags=0;
+	baseFlag=0;
 
 	if(recursive)
 	{
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+		for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 		{
 			object3d* obj = *it;
 			obj->resetAllBaseFlags(recursive);
@@ -135,11 +135,11 @@ void object3d::resetAllBaseFlags(bool recursive)
 
 void object3d::setBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive)
 {
-	m_eBaseFlags=m_eBaseFlags|eFlags;
+	baseFlag=baseFlag|eFlags;
 
 	if(recursive)
 	{
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+		for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 		{
 			object3d* obj = *it;
 			obj->setBaseFlag(eFlags, recursive);
@@ -149,11 +149,11 @@ void object3d::setBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive)
 
 void object3d::reSetBaseFlag(EOBJEC3DTFLAGS eFlags, bool recursive)
 {
-	m_eBaseFlags=m_eBaseFlags&~eFlags;
+	baseFlag=baseFlag&~eFlags;
 	
 	if(recursive)
 	{
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+		for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 		{
 			object3d* obj = *it;
 			obj->reSetBaseFlag(eFlags, recursive);
@@ -166,7 +166,7 @@ void object3d::setObject3dObserverRecursive(MObject3dObserver* observer)
 	setObject3dObserver(observer);
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -174,7 +174,7 @@ void object3d::setObject3dObserverRecursive(MObject3dObserver* observer)
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->setObject3dObserverRecursive(observer);
@@ -185,17 +185,17 @@ void object3d::setObject3dObserverRecursive(MObject3dObserver* observer)
 void object3d::update(float dt)
 {
 #if USE_BULLET
-	if(m_pPhysics_RigidBodyPtr)
+	if(rigidBody)
 	{
 		btTransform physics_tm;
-		physics_tm=m_pPhysics_RigidBodyPtr->getWorldTransform();
+		physics_tm=rigidBody->getWorldTransform();
 		object3d* parent=getParent();	//we need to get the root parent instead of immediate parent.
 
 		if(parent)
 		{
-			physics_tm.getOpenGLMatrix(m_cWorldMatrix.getOGLMatrix());
+			physics_tm.getOpenGLMatrix(worldTransformationMatrix.getOGLMatrix());
 			matrix4x4f* p = this;
-			*p = (parent->getWorldMatrix()->getInverse()) * m_cWorldMatrix;
+			*p = (parent->getWorldMatrix()->getInverse()) * worldTransformationMatrix;
 
 			transformationChangedf();
 		}
@@ -208,15 +208,15 @@ void object3d::update(float dt)
 #endif
 
 //#ifdef _WIN32	//arun:special case
-	if(m_pAnimationController)
+	if(animationController)
 	{
-		m_pAnimationController->update(dt);
-		updateAnimationFrameToObject3d((int)m_pAnimationController->getCurrentFrame());
+		animationController->update(dt);
+		updateAnimationFrameToObject3d((int)animationController->getCurrentFrame());
 	}
 //#endif
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -224,7 +224,7 @@ void object3d::update(float dt)
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->update(dt);
@@ -234,13 +234,13 @@ void object3d::update(float dt)
 
 void object3d::updateMono()
 {
-	for(std::vector<monoScriptObjectInstance*>::iterator it = m_cAttachedScriptInstances.begin(); it != m_cAttachedScriptInstances.end(); ++it)
+	for(std::vector<monoScriptObjectInstance*>::iterator it = attachedScriptInstanceList.begin(); it != attachedScriptInstanceList.end(); ++it)
 	{
 		monoScriptObjectInstance* scriptinstance = *it;
 		scriptinstance->update();
 	}
 
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->updateMono();
@@ -249,15 +249,15 @@ void object3d::updateMono()
 
 void object3d::updateAnimationFrameToObject3d(int frame)
 {
-	if(m_pAnimationTrack)
+	if(animationTrack)
 	{
-		matrix4x4f* trackInfo=m_pAnimationTrack->getTrack();
-		if(frame<m_pAnimationTrack->getTotalFrames())
+		matrix4x4f* trackInfo=animationTrack->getTrack();
+		if(frame<animationTrack->getTotalFrames())
 			*(matrix4x4f*)this = trackInfo[frame];
 	}
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -265,7 +265,7 @@ void object3d::updateAnimationFrameToObject3d(int frame)
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->updateAnimationFrameToObject3d(frame);
@@ -282,7 +282,7 @@ void object3d::render(gxRenderer* renderer, object3d* light, int renderFlag /*EO
 		return;
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -290,7 +290,7 @@ void object3d::render(gxRenderer* renderer, object3d* light, int renderFlag /*EO
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->render(renderer, light, renderFlag);
@@ -303,19 +303,19 @@ object3d* object3d::appendChild(object3d* child)
 	child->setParent(this);
 	child->setRootObserverOfTree(getRootObserverOfThisTree());
 
-	if(m_pObject3dObserver)
-		m_pObject3dObserver->onObject3dChildAppend(child);
-	if(m_pRootObserver)
-		m_pRootObserver->callback_object3dAppendToTree(child);
+	if(object3DObserver)
+		object3DObserver->onObject3dChildAppend(child);
+	if(rootObserver)
+		rootObserver->callback_object3dAppendToTree(child);
 	if(child->getLayer()==-1)
 		child->setLayer(ELAYER_DEFAULT, false);
 	else
 		child->setLayer(child->getLayer(), false);
 
 #ifdef USE_BXLIST
-	m_cChilds.insertTail(child);
+	childList.insertTail(child);
 #else
-	m_cChilds.push_back(child);
+	childList.push_back(child);
 
 #endif
 
@@ -328,22 +328,22 @@ object3d* object3d::appendChild(object3d* child)
 
 bool object3d::removeChild(object3d* child)
 {
-	int old_sz=(int)m_cChilds.size();
+	int old_sz=(int)childList.size();
 	if(old_sz==0) return false;
 
 #ifdef USE_BXLIST
-	m_cChilds.remove(child);
+	childList.remove(child);
 #else
-	m_cChilds.erase(std::remove(m_cChilds.begin(), m_cChilds.end(), child), m_cChilds.end());
+	childList.erase(std::remove(childList.begin(), childList.end(), child), childList.end());
 #endif
 
-	if((old_sz>m_cChilds.size()))
+	if((old_sz>childList.size()))
 	{
 		onRemoveObject3dChild(child);
-		if(m_pObject3dObserver)
-			m_pObject3dObserver->onObject3dChildRemove(child);
-		if(m_pRootObserver)
-			m_pRootObserver->callback_object3dRemovedFromTree(child);
+		if(object3DObserver)
+			object3DObserver->onObject3dChildRemove(child);
+		if(rootObserver)
+			rootObserver->callback_object3dRemovedFromTree(child);
 		child->setParent(NULL);
 		//child->setAnimationTrack(NULL);	nned to test fully
 		transformationChangedf();
@@ -352,7 +352,7 @@ bool object3d::removeChild(object3d* child)
 	else
 	{
 #ifdef USE_BXLIST
-		stLinkNode<object3d*>* node=m_cChilds.getHead();
+		stLinkNode<object3d*>* node=childList.getHead();
 		while(node)
 		{
 			object3d* obj=node->getData();
@@ -361,7 +361,7 @@ bool object3d::removeChild(object3d* child)
 			node=node->getNext();
 		}
 #else
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+		for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 		{
 			object3d* obj = *it;
 			if(obj->removeChild(child))
@@ -374,18 +374,18 @@ bool object3d::removeChild(object3d* child)
 
 void object3d::setLayer(int layer, bool bRecursive)
 {
-	if(layer==m_iLayer)
+	if(layer==layerID)
 		return;
 
-	int oldlayer=m_iLayer;
-	m_iLayer=layer;
+	int oldlayer=layerID;
+	layerID=layer;
 
-	if(m_pRootObserver)
-		m_pRootObserver->callback_object3dLayerChanged(this, oldlayer);
+	if(rootObserver)
+		rootObserver->callback_object3dLayerChanged(this, oldlayer);
 
 	if(bRecursive)
 	{
-		for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+		for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 		{
 			object3d* obj = *it;
 			obj->setLayer(layer, bRecursive);
@@ -405,18 +405,18 @@ void object3d::transformationChangedf()
 {
 	object3d* parent=getParent();
 #if USE_BULLET
-	if(!m_pPhysics_RigidBodyPtr)
+	if(!rigidBody)
 #endif
 	{
 		if(parent)
-			m_cWorldMatrix = *(parent->getWorldMatrix()) * *this;
+			worldTransformationMatrix = *(parent->getWorldMatrix()) * *this;
 		else
-			m_cWorldMatrix = *this;
+			worldTransformationMatrix = *this;
 	}
 
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
 	while(node)
 	{
 		object3d* obj=node->getData();
@@ -424,7 +424,7 @@ void object3d::transformationChangedf()
 		node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->transformationChangedf();
@@ -443,7 +443,7 @@ void object3d::calculateAABB()
 	
 	vector3f bound_vertices[8];
 
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 
@@ -507,15 +507,15 @@ void object3d::calculateAABB()
 			if(max_z<bound_vertices[x].z)		max_z	= bound_vertices[x].z;
 		}
 	}
-	m_cAABB.set(vector3f(min_x, min_y, min_z), vector3f(max_x, max_y, max_z));
+	aabb.set(vector3f(min_x, min_y, min_z), vector3f(max_x, max_y, max_z));
 }
 
 gxAnimation* object3d::createAnimationController()
 {
-	if(m_pAnimationController==NULL)
-		m_pAnimationController = new gxAnimation();
+	if(animationController==NULL)
+		animationController = new gxAnimation();
 
-	return m_pAnimationController;
+	return animationController;
 }
 
 void object3d::resetAnimationControllerAndAssignItToObject(object3d* obj)
@@ -526,20 +526,20 @@ void object3d::resetAnimationControllerAndAssignItToObject(object3d* obj)
 
 void object3d::setAnimationController(gxAnimation* controller)
 {
-	//if(m_pAnimationController)
+	//if(animationController)
 	//{
 	//	DEBUG_PRINT("WARNING resetting an existing Animation controller");
-	//	GX_DELETE(m_pAnimationController);
+	//	GX_DELETE(animationController);
 	//}
 
-	m_pAnimationController=controller;
+	animationController=controller;
 }
 
 void object3d::setAnimationTrack(gxAnimationTrack* track)
 {
-	m_pAnimationTrack=track;
-	//if(m_pAnimationTrack)
-	//	m_pAnimationTrack->setObject3d(this);
+	animationTrack=track;
+	//if(animationTrack)
+	//	animationTrack->setObject3d(this);
 }
 
 object3d* object3d::find(const char* name)
@@ -550,7 +550,7 @@ object3d* object3d::find(const char* name)
 	}
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -560,7 +560,7 @@ object3d* object3d::find(const char* name)
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		object3d* return_obj = obj->find(name);
@@ -577,7 +577,7 @@ void object3d::clearAnimTrackOnAllNodes()
 	setAnimationTrack(NULL);
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -585,7 +585,7 @@ void object3d::clearAnimTrackOnAllNodes()
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->clearAnimTrackOnAllNodes();
@@ -595,7 +595,7 @@ void object3d::clearAnimTrackOnAllNodes()
 
 gxAnimationSet* object3d::applyAnimationSetRecursive(gxAnimationSet* animset)
 {
-	if(m_pAnimationController==NULL)
+	if(animationController==NULL)
 		return NULL;
 
 	clearAnimTrackOnAllNodes();
@@ -619,34 +619,34 @@ gxAnimationSet* object3d::applyAnimationSetRecursive(gxAnimationSet* animset)
 
 gxAnimationSet* object3d::applyAnimationSetRecursive(int index)
 {
-	gxAnimationSet* animSet=m_pAnimationController->getAnimationSetList()->at(index);
+	gxAnimationSet* animSet=animationController->getAnimationSetList()->at(index);
 	return applyAnimationSetRecursive(animSet);
 }
 
 void object3d::write(gxFile& file)
 {
-	file.Write(m_iObjectID);
-	file.Write(m_eBaseFlags);
+	file.Write(objectID);
+	file.Write(baseFlag);
 	file.Write(m_cszName);
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
-	file.WriteBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.WriteBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Write(assetFileCRC);
 	writeAnimationController(file);
 
 	//
-	file.Write((int)m_cAttachedScriptInstances.size());
-	for(std::vector<monoScriptObjectInstance*>::iterator it = m_cAttachedScriptInstances.begin(); it != m_cAttachedScriptInstances.end(); ++it)
+	file.Write((int)attachedScriptInstanceList.size());
+	for(std::vector<monoScriptObjectInstance*>::iterator it = attachedScriptInstanceList.begin(); it != attachedScriptInstanceList.end(); ++it)
 	{
 		monoScriptObjectInstance* scriptinstance = *it;
-		file.Write(scriptinstance->getScriptPtr()->getMonoScript().c_str());
+		file.Write(scriptinstance->getScriptPtr()->getScriptFileName().c_str());
 		//scriptinstance->update();
 	}
 	//
 
-	file.Write((int)m_cChilds.size());
+	file.Write((int)childList.size());
 
 #ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=m_cChilds.getHead();
+	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
     {
 		object3d* obj=node->getData();
@@ -654,7 +654,7 @@ void object3d::write(gxFile& file)
         node=node->getNext();
 	}
 #else
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		obj->write(file);
@@ -664,12 +664,12 @@ void object3d::write(gxFile& file)
 
 void object3d::read(gxFile& file)
 {
-	file.Read(m_eBaseFlags);
+	file.Read(baseFlag);
 	char* temp=file.ReadString();
 	GX_STRCPY(m_cszName, temp);
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
-	file.ReadBuffer((unsigned char*)&m_cOOBB, sizeof(m_cOOBB));
+	file.ReadBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Read(assetFileCRC);
 	readAnimationController(file);
 
@@ -694,10 +694,10 @@ void object3d::read(gxFile& file)
 
 void object3d::writeAnimationController(gxFile& file)
 {
-	if(m_pAnimationController)
+	if(animationController)
 	{
 		file.Write(true);
-		m_pAnimationController->write(file);
+		animationController->write(file);
 	}
 	else
 	{
@@ -720,16 +720,16 @@ void object3d::attachMonoScrip(monoScript* script)
 {
 	monoScriptObjectInstance* newscript = new monoScriptObjectInstance(script, script->createNewObject(), this);
 
-	m_cAttachedScriptInstances.push_back(newscript);
+	attachedScriptInstanceList.push_back(newscript);
 }
 
 monoScriptObjectInstance* object3d::getMonoScriptInstance(int index)
 {
-	monoScriptObjectInstance* instance = m_cAttachedScriptInstances.at(index);
+	monoScriptObjectInstance* instance = attachedScriptInstanceList.at(index);
 	return instance;
 }
 
 int object3d::getMonoScriptInstanceCount()
 {
-	return (int)m_cAttachedScriptInstances.size();
+	return (int)attachedScriptInstanceList.size();
 }

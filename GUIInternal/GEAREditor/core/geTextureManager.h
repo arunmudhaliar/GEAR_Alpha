@@ -17,9 +17,9 @@ public:
 	void	Reset();	
     void    ReLoad();   //reload all textures from physical memory
     
-    unsigned int getTotalTextureMemory()    {   return m_iTotalTextureMemory;   }
+    unsigned int getTotalTextureMemory()    {   return totalTextureMemory;   }
     
 private:
-	std::vector<steTexturePacket*>	iTexturePacket;
-    unsigned int m_iTotalTextureMemory;
+	std::vector<steTexturePacket*>	texturePacketList;
+    unsigned int totalTextureMemory;
 };

@@ -253,10 +253,10 @@ public:
 
 	virtual void transformationChangedf()=0;
 
-	matrix4x4f* getWorldMatrix()	{	return &m_cWorldMatrix;	}
+	matrix4x4f* getWorldMatrix()	{	return &worldTransformationMatrix;	}
 
 	protected:
-		matrix4x4f m_cWorldMatrix;	//object-space to world transform
+		matrix4x4f worldTransformationMatrix;	//object-space to world transform
 
 	void matrixChanged()
 	{

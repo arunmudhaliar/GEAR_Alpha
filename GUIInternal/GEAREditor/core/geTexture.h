@@ -14,8 +14,8 @@ public:
 	
 	geTexture()
 	{
-		m_pTexTurePtr=NULL;
-		m_eTextureType=TEX_UNDEFINED;
+		texture=NULL;
+		textureType=TEX_UNDEFINED;
 	}
 	
 	~geTexture()
@@ -26,18 +26,18 @@ public:
 	//{
 	//}
 	
-	void setTexturePack(steTexturePacket* pTexTurePtr)		{	m_pTexTurePtr=pTexTurePtr;			}
-	steTexturePacket* getTexturePack()	const					{	return m_pTexTurePtr;				}
+	void setTexturePack(steTexturePacket* pTexTurePtr)		{	texture=pTexTurePtr;			}
+	steTexturePacket* getTexturePack()	const					{	return texture;				}
 
 	unsigned int getTextureID()	const
     {
-        return (m_pTexTurePtr)?m_pTexTurePtr->iTextureID:0;
+        return (texture)?texture->iTextureID:0;
     }
     
-	void setTextureType(ETEXTURE type)		{	m_eTextureType=type;	}
-	ETEXTURE getTextureType() const				{	return m_eTextureType;	}
+	void setTextureType(ETEXTURE type)		{	textureType=type;	}
+	ETEXTURE getTextureType() const				{	return textureType;	}
 	
 private:
-	steTexturePacket* m_pTexTurePtr;     //must not delete this pointer
-	ETEXTURE m_eTextureType;
+	steTexturePacket* texture;     //must not delete this pointer
+	ETEXTURE textureType;
 };

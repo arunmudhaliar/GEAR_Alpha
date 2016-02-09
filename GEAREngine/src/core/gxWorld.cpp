@@ -15,26 +15,26 @@
 gxWorld::gxWorld():
 	object3d(OBJECT3D_WORLD)
 {
-	m_iLayer = ELAYER_DEFAULT;	//CAUTION: Do not use setLayer() for gxWorld()
-	m_pObserverPtr = NULL;
-	m_pActiveCameraPtr = NULL;
+	layerID = ELAYER_DEFAULT;	//CAUTION: Do not use setLayer() for gxWorld()
+	worldObserver = NULL;
+	activeCamera = NULL;
 
 	setRootObserverOfTree(this);
 
-	m_pActiveCameraPtr=NULL;
+	activeCamera=NULL;
 	createDefaultCameraAndSetActive();
 
-	m_cDefaultMaterial.setMaterialName("Default");
-	m_cMaterialList.push_back(&m_cDefaultMaterial);
+	defaultMaterial.setMaterialName("Default");
+	materialList.push_back(&defaultMaterial);
 
-	m_cTextureManager.LoadDefaultTextures();
-	m_cRenderer.setGEARTexture1x1(m_cTextureManager.getGEARTexture1x1());
+	textureManager.LoadDefaultTextures();
+	renderer.setGEARTexture1x1(textureManager.getGEARTexture1x1());
 
 #ifdef USE_BULLET
 	m_cPhysicsEngine.initPhysics();
 #endif
 
-	m_pOctree=NULL;
+	octree=NULL;
 }
 
 gxWorld::~gxWorld()
@@ -42,14 +42,14 @@ gxWorld::~gxWorld()
 	resetWorld(true);
 
 	////remove and destroy the default camera
-	//if(m_pActiveCameraPtr);
+	//if(activeCamera);
 	//{
-	//	removeChild(m_pActiveCameraPtr);
-	//	GX_DELETE(m_pActiveCameraPtr);
-	//	m_vCameraList.clear();
+	//	removeChild(activeCamera);
+	//	GX_DELETE(activeCamera);
+	//	cameraList.clear();
 	//}
 
-	m_cMaterialList.clear();	//since our Default material may reside inside: check resetWorld()
+	materialList.clear();	//since our Default material may reside inside: check resetWorld()
 }
 
 void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
@@ -58,22 +58,22 @@ void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
 	m_cPhysicsEngine.clientResetScene();
 #endif
 
-	if(m_pOctree)
+	if(octree)
 	{
-		m_pOctree->reset();
-		GX_DELETE(m_pOctree);
+		octree->reset();
+		GX_DELETE(octree);
 	}
 
-	for(std::vector<gxMaterial*>::iterator it = m_cMaterialList.begin(); it != m_cMaterialList.end(); ++it)
+	for(std::vector<gxMaterial*>::iterator it = materialList.begin(); it != materialList.end(); ++it)
 	{
 		gxMaterial* material = *it;
-		if(material==&m_cDefaultMaterial)
+		if(material==&defaultMaterial)
 			continue;
 		GX_DELETE(material);
 	}
-	m_cMaterialList.clear();
+	materialList.clear();
 	//repush our Default Material;
-	m_cMaterialList.push_back(&m_cDefaultMaterial);	//must be removed on the world destructor
+	materialList.push_back(&defaultMaterial);	//must be removed on the world destructor
 	//
 
 	for(std::vector<gxAnimationSet*>::iterator it = animationSetList.begin(); it != animationSetList.end(); ++it)
@@ -83,20 +83,20 @@ void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
 	}
 	animationSetList.clear();
 
-	m_vLightList.clear();
-	m_cLayerManager.clearLayers();
-	m_vCameraList.clear();
+	lightList.clear();
+	layerManager.clearLayers();
+	cameraList.clear();
 
 	//destroy all child
-	for(std::vector<object3d*>::iterator it = m_cChilds.begin(); it != m_cChilds.end(); ++it)
+	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
 		GX_DELETE(obj);
 	}
-	m_cChilds.clear();
+	childList.clear();
 	//
 
-	m_pActiveCameraPtr=NULL;
+	activeCamera=NULL;
 	if(!bDontCreateDefaultCamera)
 		createDefaultCameraAndSetActive();
 }
@@ -105,9 +105,9 @@ void gxWorld::update(float dt)
 {
 #ifdef _WIN32	//arun:special case
 	//this can be removed from here since transformationchanged func will call camera update
-	if(m_pActiveCameraPtr)
+	if(activeCamera)
 	{
-		m_pActiveCameraPtr->updateCamera();
+		activeCamera->updateCamera();
 	}
 	//
 #endif
@@ -117,14 +117,14 @@ void gxWorld::update(float dt)
 #endif
 
 	//collide with octree
-	if(m_pOctree && m_pActiveCameraPtr)
+	if(octree && activeCamera)
 	{
-		m_pActiveCameraPtr->extractFrustumPlanes();
+		activeCamera->extractFrustumPlanes();
 		
-		m_pOctree->resetCollidedTransformObjList();
-		//m_pOctree->CheckOverlapWithOctree(m_pOctree->GetRoot(), GetCurrentCamera());
-		m_pOctree->checkFrustumOverlapWithOctree(m_pOctree->getRoot(), &m_pActiveCameraPtr->getFrustum(), m_pActiveCameraPtr->getLayerCullingMask());
-		//DEBUG_PRINT("octree item %d", m_pOctree->GetCollidedTransformObjList()->GetCount());
+		octree->resetCollidedTransformObjList();
+		//octree->CheckOverlapWithOctree(octree->GetRoot(), GetCurrentCamera());
+		octree->checkFrustumOverlapWithOctree(octree->getRoot(), &activeCamera->getFrustum(), activeCamera->getLayerCullingMask());
+		//DEBUG_PRINT("octree item %d", octree->GetCollidedTransformObjList()->GetCount());
 	}
 
 	object3d::update(dt);
@@ -191,25 +191,25 @@ void gxWorld::renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3
 
 void gxWorld::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
-	if(m_pActiveCameraPtr)
+	if(activeCamera)
 	{
-		m_pActiveCameraPtr->processCamera();
+		activeCamera->processCamera();
 	}
 
-	renderer->m_nTrisRendered=0;
-	renderer->m_nDrawCalls=0;
+	renderer->noOfTrianglesRendered=0;
+	renderer->noOfDrawCalls=0;
 
-	if(m_pObserverPtr)m_pObserverPtr->preWorldRender();
+	if(worldObserver)worldObserver->preWorldRender();
 
 
 	////////////////////////////////
 	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
 
-	if(m_pOctree)
+	if(octree)
 	{
 		//render octree
-		renderFromOctreeList(renderer,  m_pOctree->getCollidedObjList(), renderFlag|eObject3dBase_RenderFlag_DontRenderChilds);
-		renderFromOctreeList(renderer,  m_pOctree->getCollidedAlphaObjList(), renderFlag|eObject3dBase_RenderFlag_DontRenderChilds);
+		renderFromOctreeList(renderer,  octree->getCollidedObjList(), renderFlag|eObject3dBase_RenderFlag_DontRenderChilds);
+		renderFromOctreeList(renderer,  octree->getCollidedAlphaObjList(), renderFlag|eObject3dBase_RenderFlag_DontRenderChilds);
 	}
 	else
 	{
@@ -241,10 +241,10 @@ void gxWorld::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOB
 	}
 	////////////////////////////////
 
-	if(m_pObserverPtr)m_pObserverPtr->postWorldRender();
+	if(worldObserver)worldObserver->postWorldRender();
 }
 
-void gxWorld::renderShadow(gxRenderer* renderer, int renderFlag)
+void gxWorld::renderShadow(int renderFlag)
 {
 	std::vector<gxLight*>* lightList = getLightList();
 	if (lightList->size() == 0)
@@ -255,7 +255,7 @@ void gxWorld::renderShadow(gxRenderer* renderer, int renderFlag)
 
 	gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_SHADOWMAP_SHADER);
 	shader->enableProgram();
-	m_cRenderer.setRenderPassType(gxRenderer::RENDER_SHADOWMAP);
+	renderer.setRenderPassType(gxRenderer::RENDER_SHADOWMAP);
 
 	for (std::vector<gxLight*>::iterator it = lightList->begin(); it != lightList->end(); ++it)
 	{
@@ -269,14 +269,14 @@ void gxWorld::renderShadow(gxRenderer* renderer, int renderFlag)
 		CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
 		CHECK_GL_ERROR(glClear(GL_DEPTH_BUFFER_BIT));
 
-		//m_cRenderer.getShadowMap()->updateMatrix(light->getWorldMatrix(), m_cRenderer.getViewMatrix());
+		//renderer.getShadowMap()->updateMatrix(light->getWorldMatrix(), renderer.getViewMatrix());
 		shader->sendUniformTMfv("u_depth_mvp_m4x4", light->getShadowDepthMVP().getOGLMatrix(), false, 4);
-		object3d::render(renderer, NULL, renderFlag);
+		object3d::render(&renderer, NULL, renderFlag);
 		shadowMapFBO.UnBindFBO();
 	}
 
 	CHECK_GL_ERROR(glPopAttrib());
-	m_cRenderer.setRenderPassType(gxRenderer::RENDER_NORMAL);
+	renderer.setRenderPassType(gxRenderer::RENDER_NORMAL);
 	shader->disableProgram();
 	CHECK_GL_ERROR(glShadeModel(GL_SMOOTH));
 }
@@ -337,7 +337,7 @@ void gearSceneWorldEditor::drawShadowMapPass()
 	gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_SHADOWMAP_SHADER);
 	shader->enableProgram();
 	shader->sendUniformTMfv("u_depth_mvp_m4x4", depthMVP.getOGLMatrix(), false, 4);
-	m_pMainWorldPtr->renderShadow(m_pMainWorldPtr->getRenderer(), object3d::eObject3dBase_RenderFlag_NormalRenderPass);
+	m_pMainWorldPtr->renderShadow(object3d::eObject3dBase_RenderFlag_NormalRenderPass);
 	m_pMainWorldPtr->getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
 
 	shader->disableProgram();
@@ -346,14 +346,14 @@ void gearSceneWorldEditor::drawShadowMapPass()
 
 void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr, int renderFlag)
 {
-	if(m_pActiveCameraPtr)
+	if(activeCamera)
 	{
-		m_pActiveCameraPtr->processCamera();
+		activeCamera->processCamera();
 	}
 
 	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
 	getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-	obj->render(&m_cRenderer, NULL, renderFlag);
+	obj->render(&renderer, NULL, renderFlag);
 
 	CHECK_GL_ERROR(glEnable(GL_BLEND));
 	CHECK_GL_ERROR(glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR));		//really good result	(2x Multiplicative)
@@ -369,17 +369,17 @@ void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr, int renderFl
 
 		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
 		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-		obj->render(&m_cRenderer, light, renderFlag);
+		obj->render(&renderer, light, renderFlag);
 	}
 	CHECK_GL_ERROR(glDisable(GL_BLEND));
 }
 
 void gxWorld::resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane)
 {
-	m_cRenderer.setViewPort(x, y, cx, cy);
-	if(m_pActiveCameraPtr)
+	renderer.setViewPort(x, y, cx, cy);
+	if(activeCamera)
 	{	
-		m_pActiveCameraPtr->setUpCameraPerspective(cx, cy/*, 45.0f, nearplane, farplane*/);
+		activeCamera->setUpCameraPerspective(cx, cy/*, 45.0f, nearplane, farplane*/);
 	}
 }
 
@@ -395,7 +395,7 @@ void gxWorld::loadTextures(object3d* obj, const char* fbxFileName)
 		{
 			gxTriInfo* triInfo=mesh->getTriInfo(x);
 			if(triInfo->getMaterial())
-				triInfo->getMaterial()->loadTextureFromDirectory(m_cTextureManager, directorPathPtr);
+				triInfo->getMaterial()->loadTextureFromDirectory(textureManager, directorPathPtr);
 		}
 	}
 
@@ -410,13 +410,13 @@ void gxWorld::loadTextures(object3d* obj, const char* fbxFileName)
 
 void gxWorld::createOctree(int minTransformObj, int maxLevel)
 {
-	if(m_pOctree)
+	if(octree)
 	{
-		m_pOctree->reset();
-		GX_DELETE(m_pOctree);
+		octree->reset();
+		GX_DELETE(octree);
 	}
-	m_pOctree			= new COctree();
-	m_pOctree->createOctree(this, minTransformObj, maxLevel);
+	octree			= new COctree();
+	octree->createOctree(this, minTransformObj, maxLevel);
 }
 
 bool gxWorld::appendAnimationSetToWorld(gxAnimationSet* animset)
@@ -432,38 +432,38 @@ bool gxWorld::appendAnimationSetToWorld(gxAnimationSet* animset)
 
 void gxWorld::setMetaDataFolder(const char* metaFolder)
 {
-	GX_STRCPY(m_szMetaDataFolder, metaFolder);
-	m_cTextureManager.setMetaDataFolder(m_szMetaDataFolder);
+	GX_STRCPY(metaDataFolder, metaFolder);
+	textureManager.setMetaDataFolder(metaDataFolder);
 }
 
 const char* gxWorld::getMetaDataFolder()
 {
-	return m_szMetaDataFolder;
+	return metaDataFolder;
 }
 
 void gxWorld::setActiveCamera(Camera* camera)
 {
-	if(m_pActiveCameraPtr)
-		m_pActiveCameraPtr->setMainCamera(false);
-	m_pActiveCameraPtr = camera;
-	if(m_pActiveCameraPtr)
-		m_pActiveCameraPtr->setMainCamera(true);
+	if(activeCamera)
+		activeCamera->setMainCamera(false);
+	activeCamera = camera;
+	if(activeCamera)
+		activeCamera->setMainCamera(true);
 }
 
 Camera* gxWorld::createDefaultCameraAndSetActive()
 {
-	//m_pActiveCameraPtr=&m_cDefaultCamera;
-	if(m_pActiveCameraPtr)
+	//activeCamera=&defaultCamera;
+	if(activeCamera)
 	{
-		removeChild(m_pActiveCameraPtr);
-		GX_DELETE(m_pActiveCameraPtr);
+		removeChild(activeCamera);
+		GX_DELETE(activeCamera);
 	}
-	m_pActiveCameraPtr = new Camera();
-	m_pActiveCameraPtr->initCamera(&m_cRenderer);
-	m_pActiveCameraPtr->setMainCamera(true);
-	m_pActiveCameraPtr->setObject3dObserver(m_pObject3dObserver);
-	appendChild(m_pActiveCameraPtr);
-	return m_pActiveCameraPtr;
+	activeCamera = new Camera();
+	activeCamera->initCamera(&renderer);
+	activeCamera->setMainCamera(true);
+	activeCamera->setObject3dObserver(object3DObserver);
+	appendChild(activeCamera);
+	return activeCamera;
 }
 
 void gxWorld::callback_object3dRemovedFromTree(object3d* child)
@@ -475,7 +475,7 @@ void gxWorld::callback_object3dRemovedFromTree(object3d* child)
 	}
 	else if(child->getID()==OBJECT3D_CAMERA)
 	{
-		m_vCameraList.erase(std::remove(m_vCameraList.begin(), m_vCameraList.end(), child), m_vCameraList.end());
+		cameraList.erase(std::remove(cameraList.begin(), cameraList.end(), child), cameraList.end());
 	}
 }
 
@@ -486,7 +486,7 @@ void gxWorld::callback_object3dAppendToTree(object3d* child)
 		getLightList()->push_back((gxLight*)child);
 	else if(child->getID()==OBJECT3D_CAMERA)
 	{
-		m_vCameraList.push_back((Camera*)child);
+		cameraList.push_back((Camera*)child);
 	}
 	//
 }
@@ -500,19 +500,19 @@ void gxWorld::callback_object3dDestroyedFromTree(object3d* child)
 	}
 	else if(child->getID()==OBJECT3D_CAMERA)
 	{
-		if(m_pActiveCameraPtr==child)
-			m_pActiveCameraPtr=NULL;
-		m_vCameraList.erase(std::remove(m_vCameraList.begin(), m_vCameraList.end(), child), m_vCameraList.end());
+		if(activeCamera==child)
+			activeCamera=NULL;
+		cameraList.erase(std::remove(cameraList.begin(), cameraList.end(), child), cameraList.end());
 	}
 
-	m_cLayerManager.removeFromLayer(child, child->getLayer());
+	layerManager.removeFromLayer(child, child->getLayer());
 }
 
 void gxWorld::callback_object3dLayerChanged(object3d* child, int oldLayerID)
 {
 	if(oldLayerID>=0)
-		m_cLayerManager.removeFromLayer(child, oldLayerID);
-	m_cLayerManager.appendOnLayer(child, child->getLayer());
+		layerManager.removeFromLayer(child, oldLayerID);
+	layerManager.appendOnLayer(child, child->getLayer());
 }
 
 void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
@@ -794,14 +794,14 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
 		case OBJECT3D_CAMERA:
 			{
 				tempObj = new Camera();
-				((Camera*)tempObj)->initCamera(&m_cRenderer);
+				((Camera*)tempObj)->initCamera(&renderer);
 			}
 			break;
 		default:
 			tempObj = new object3d(objID);
 		}
 
-		tempObj->setObject3dObserver(m_pObject3dObserver);
+		tempObj->setObject3dObserver(object3DObserver);
 		tempObj->read(file);
 		obj->appendChild(tempObj);
 		read3dFile(file, tempObj);
@@ -843,7 +843,7 @@ object3d* gxWorld::loadFromCRCFile(int crc)
 	case OBJECT3D_CAMERA:
 		{
 			tempObj = new Camera();
-			((Camera*)tempObj)->initCamera(&m_cRenderer);
+			((Camera*)tempObj)->initCamera(&renderer);
 		}
 		break;
 	default:
@@ -852,7 +852,7 @@ object3d* gxWorld::loadFromCRCFile(int crc)
 
 	if(tempObj)
 	{
-		tempObj->setObject3dObserver(m_pObject3dObserver);
+		tempObj->setObject3dObserver(object3DObserver);
 		tempObj->read(file_meta);
 		appendChild(tempObj);
 		read3dFile(file_meta, tempObj);
@@ -865,8 +865,8 @@ object3d* gxWorld::loadFromCRCFile(int crc)
 	
 	transformationChangedf();
 
-	if(m_pEngineObserver)
-		m_pEngineObserver->onAppendToWorld(this, root_object_node);
+	if(engineObserver)
+		engineObserver->onAppendToWorld(this, root_object_node);
 
     //cache the transform
     matrix4x4f temp(*root_object_node);

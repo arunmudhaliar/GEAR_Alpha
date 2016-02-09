@@ -62,12 +62,12 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
       
 		crc = gxCrc32::Calc((unsigned char*)&filePath[strlen(projecthomedirectory)+strlen("/Assets")]);
 #if defined(_WIN32)
-		memset(m_cszNormalizedFilePath, 0, sizeof(m_cszNormalizedFilePath));
+		memset(normalizedFilePath, 0, sizeof(normalizedFilePath));
 		// normalize the file path because FBX can't handle relative paths.
-		GetFullPathNameA(filePath, 1024, m_cszNormalizedFilePath, 0);
-		if(*m_cszNormalizedFilePath)
+		GetFullPathNameA(filePath, 1024, normalizedFilePath, 0);
+		if(*normalizedFilePath)
 		{
-			filePath = m_cszNormalizedFilePath;
+			filePath = normalizedFilePath;
 		}
 #endif
       
@@ -128,7 +128,7 @@ object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManag
 
 		stBoneList boneList;
 		int boneindex=0;
-		m_iPrivateBoneIterator=0;
+		privateBoneIterator=0;
 		pushAllNodes(&boneList, fbxRoot, boneindex);
 		const unsigned int numChildren = fbxRoot->GetChildCount();
 		for(unsigned int i=0; i<numChildren; i++)
@@ -197,8 +197,8 @@ void fbxImporter::populateBonesToMeshNode(stBoneList* boneList, object3d* obj, o
 void fbxImporter::pushAllNodes(stBoneList* boneList, FbxNode *fbxNode, int& index)
 {
 	boneList->bonelst.push_back(fbxNode);
-	boneList->boneIndex.push_back(m_iPrivateBoneIterator);
-	m_iPrivateBoneIterator++;
+	boneList->boneIndex.push_back(privateBoneIterator);
+	privateBoneIterator++;
 	const unsigned int numChildren = fbxNode->GetChildCount();
 	for(unsigned int i=0; i<numChildren; i++)
 	{
@@ -727,7 +727,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxM
 	//fbxMesh.GetTextureUVIndex(
 	FbxStringList uvSetNames;
 	fbxMesh.GetUVSetNames(uvSetNames);
-	gxUV* uvChannels=newMesh->allocateUVChannels(uvSetNames.GetCount(), fbxMesh.GetPolygonCount());
+	gxUV* uvChannel=newMesh->allocateUVChannels(uvSetNames.GetCount(), fbxMesh.GetPolygonCount());
 	//char* uvsetname=uvSetNames.GetStringAt(0);
 	//fbxMesh.GetPolygonVertexUV(
 	//
@@ -980,8 +980,8 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxM
 				FbxVector2 uv;
 				bool pUnmapped;
 				fbxMesh.GetPolygonVertexUV(x, y, uvSetNames.GetStringAt(m), uv, pUnmapped);
-				uvChannels[m].m_pszfGLTexCoordList[vertexIndices[y]*2+0]=(float)uv.mData[0];
-				uvChannels[m].m_pszfGLTexCoordList[vertexIndices[y]*2+1]=/*1.0f-*/(float)uv.mData[1];
+				uvChannel[m].textureCoordArray[vertexIndices[y]*2+0]=(float)uv.mData[0];
+				uvChannel[m].textureCoordArray[vertexIndices[y]*2+1]=/*1.0f-*/(float)uv.mData[1];
 			}
 		}
 	}

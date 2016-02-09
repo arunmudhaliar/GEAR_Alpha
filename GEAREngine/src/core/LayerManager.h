@@ -24,7 +24,7 @@ public:
 
 private:
 	std::string m_cName;
-	std::vector<object3d*> m_vList;
+	std::vector<object3d*> layerObjects;
 };
 
 class DECLSPEC LayerManager
@@ -37,10 +37,9 @@ public:
 	bool appendOnLayer(object3d* obj, int layer);
 	bool removeFromLayer(object3d* obj, int layer);
 
-	Layer* getLayer(int layer)	{	return m_pszLayers[layer];	}
-
+	Layer* getLayer(int layer)	{	return layerList[layer];	}
 	int getTotalLayerObject();
 
 private:
-	Layer* m_pszLayers[MAX_LAYER];
+	Layer* layerList[MAX_LAYER];
 };

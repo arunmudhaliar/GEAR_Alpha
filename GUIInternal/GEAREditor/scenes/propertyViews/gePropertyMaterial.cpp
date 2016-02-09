@@ -24,12 +24,12 @@ gePropertyMaterial::gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent
 gePropertyMaterial::~gePropertyMaterial()
 {
 	//destroy submapview nodes
-	for(std::vector<stSubMapView*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	for(std::vector<stSubMapView*>::iterator it = subMapList.begin(); it != subMapList.end(); ++it)
 	{
 		stSubMapView* tvnode = *it;
 		GE_DELETE(tvnode);
 	}
-	m_vSubMap.clear();
+	subMapList.clear();
 
 	destroyShaderPropertiesControls();
 }
@@ -103,7 +103,7 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDropData* dropObject)
 void gePropertyMaterial::destroySubMapView()
 {
 	//destroy submapview nodes
-	for(std::vector<stSubMapView*>::iterator it = m_vSubMap.begin(); it != m_vSubMap.end(); ++it)
+	for(std::vector<stSubMapView*>::iterator it = subMapList.begin(); it != subMapList.end(); ++it)
 	{
 		stSubMapView* submapview = *it;
 		//std::vector<geGUIBase*>* childcntrol=getChildControls();
@@ -122,14 +122,14 @@ void gePropertyMaterial::destroySubMapView()
 
 		GE_DELETE(submapview);
 	}
-	m_vSubMap.clear();
+	subMapList.clear();
 }
 
 void gePropertyMaterial::loadSubMapView()
 {
 	if(!m_pCurrentMaterialPtr) return;
 
-	//m_vSubMap
+	//subMapList
 	int cntr=0;
 	std::vector<stMaterialPass*>* mpasslist=m_pCurrentMaterialPtr->getShaderPassList();
 	for(std::vector<stMaterialPass*>::iterator mpass_it = mpasslist->begin(); mpass_it != mpasslist->end(); ++mpass_it)
@@ -139,7 +139,7 @@ void gePropertyMaterial::loadSubMapView()
 		{
 			gxSubMap* map = *it;
 			bool bFound=false;
-			for(std::vector<stSubMapView*>::iterator sit = m_vSubMap.begin(); sit != m_vSubMap.end(); ++sit)
+			for(std::vector<stSubMapView*>::iterator sit = subMapList.begin(); sit != subMapList.end(); ++sit)
 			{
 				stSubMapView* submapview = *sit;
 				if(submapview->m_pSubMapPtr==map)
@@ -192,7 +192,7 @@ void gePropertyMaterial::loadSubMapView()
 			submapview->m_pSeperator = new geSeperator(m_pFontManagerPtr);
 			submapview->m_pSeperator->create(m_pRenderer, this, 10, submapview->thumbnail->getPos().y+submapview->thumbnail->getSize().y+5, submapview->thumbnail->getPos().x+submapview->thumbnail->getSize().x-10);
 
-			m_vSubMap.push_back(submapview);
+			subMapList.push_back(submapview);
 			cntr++;
 		}
 	}

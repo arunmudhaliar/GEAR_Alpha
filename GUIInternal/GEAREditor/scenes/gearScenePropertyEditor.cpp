@@ -366,7 +366,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		{
 			monoScriptObjectInstance* monoInstance = obj->getMonoScriptInstance(x);
 			stMonoScriptTVNode* monoScriptTVNode = new stMonoScriptTVNode();
-			monoScriptTVNode->m_pMonoScriptParentNode = new geTreeNode(m_pRenderer, rootNode, monoInstance->getScriptPtr()->getMonoScript().c_str(), &m_cszSprites[10], 0);
+			monoScriptTVNode->m_pMonoScriptParentNode = new geTreeNode(m_pRenderer, rootNode, monoInstance->getScriptPtr()->getScriptFileName().c_str(), &m_cszSprites[10], 0);
 			monoScriptTVNode->m_pSettingsMonoScript = new gePropertyScriptComponent(m_pRenderer, monoScriptTVNode->m_pMonoScriptParentNode, "", NULL, m_pFontManagerPtr);
 			monoScriptTVNode->m_pMonoScriptParentNode->closeNode();
 

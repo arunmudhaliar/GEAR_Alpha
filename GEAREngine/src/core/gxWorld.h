@@ -37,35 +37,35 @@ public:
 
 	void update(float dt);
 	void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
-	void renderShadow(gxRenderer* renderer, int renderFlag);
+	void renderShadow(int renderFlag);
 
 	void setActiveCamera(Camera* camera);
-	Camera* getActiveCamera()	{	return m_pActiveCameraPtr;	}
+	Camera* getActiveCamera()	{	return activeCamera;	}
 	Camera* createDefaultCameraAndSetActive();
 
 	void renderSingleObject(object3d* obj, object3d* lightPtr, int renderFlag);
 	void resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane);
 
-	gxMaterial* getDefaultMaterial()					{	return &m_cDefaultMaterial;		}
-	std::vector<gxMaterial*>* getMaterialList()			{	return &m_cMaterialList;		}
+	gxMaterial* getDefaultMaterial()					{	return &defaultMaterial;		}
+	std::vector<gxMaterial*>* getMaterialList()			{	return &materialList;		}
 	std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &animationSetList;	}
 
 	void createOctree(int minTransformObj, int maxLevel);
-	COctree* getOctree()	{	return m_pOctree;	}
+	COctree* getOctree()	{	return octree;	}
 
 	bool appendAnimationSetToWorld(gxAnimationSet* animset);
 
 	void setMetaDataFolder(const char* metaFolder);
 	const char* getMetaDataFolder();
 
-	CTextureManager* getTextureManager()	{	return &m_cTextureManager;	}
+	CTextureManager* getTextureManager()	{	return &textureManager;	}
 
-	gxRenderer* getRenderer()	{	return &m_cRenderer;	}
+	gxRenderer* getRenderer()	{	return &renderer;	}
 
-	void setWorldObserver(MWorldObserver* observer)	{	m_pObserverPtr = observer;	}
+	void setWorldObserver(MWorldObserver* observer)	{	worldObserver = observer;	}
 
-	std::vector<gxLight*>* getLightList()	{	return &m_vLightList;		}
-	gxLight* getLight(int index)			{	return m_vLightList[index];	}
+	std::vector<gxLight*>* getLightList()	{	return &lightList;		}
+	gxLight* getLight(int index)			{	return lightList[index];	}
 
 #ifdef USE_BULLET
 	physicsEngine* getPhysicsEngine()		{	return &m_cPhysicsEngine;	}
@@ -83,29 +83,29 @@ public:
 	void loadMaterialFromObject3d(object3d* obj3d);
 	void tryLoadTexturesFromObject3d(object3d* obj3d, const char* filepath);
 
-	LayerManager* getLayerManager()	{	return &m_cLayerManager;	}
+	LayerManager* getLayerManager()	{	return &layerManager;	}
 
 private:
 	void read3dFile(gxFile& file, object3d* obj);
 	void renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list, int renderFlag);
 
-	std::vector<gxMaterial*> m_cMaterialList;
+	std::vector<gxMaterial*> materialList;
 	std::vector<gxAnimationSet*> animationSetList;
-	std::vector<gxLight*> m_vLightList;
-	std::vector<Camera*> m_vCameraList;
+	std::vector<gxLight*> lightList;
+	std::vector<Camera*> cameraList;
 
-	gxRenderer m_cRenderer;
-	Camera* m_pActiveCameraPtr;	//must not delete this pointer
-	Camera m_cDefaultCamera;
-	gxCamera m_cDefaultCameraStruct;
+	gxRenderer renderer;
+	Camera* activeCamera;	//must not delete this pointer
+	Camera defaultCamera;
+	gxCamera defaultCameraStruct;
 
-	gxMaterial m_cDefaultMaterial;
-	CTextureManager m_cTextureManager;
-	char m_szMetaDataFolder[512];
-	MWorldObserver* m_pObserverPtr;	//must not delete this pointer
+	gxMaterial defaultMaterial;
+	CTextureManager textureManager;
+	char metaDataFolder[512];
+	MWorldObserver* worldObserver;	//must not delete this pointer
 #ifdef USE_BULLET
 	physicsEngine m_cPhysicsEngine;
 #endif
-	COctree* m_pOctree;
-	LayerManager m_cLayerManager;
+	COctree* octree;
+	LayerManager layerManager;
 };

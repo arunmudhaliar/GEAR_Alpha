@@ -16,20 +16,20 @@ public:
 	void	Reset();	
     void    ReLoad();   //reload all textures from physical memory
     
-    unsigned int getTotalTextureMemory()    {   return m_iTotalTextureMemory;   }
+    unsigned int getTotalTextureMemory()    {   return totalTextureMemory;   }
     
 	void setMetaDataFolder(const char* metaFolder)
 	{
-		GX_STRCPY(m_szMetaDataFolder, metaFolder);
+		GX_STRCPY(metaDataFolder, metaFolder);
 	}
 
 	void LoadDefaultTextures();
-	stTexturePacket* getGEARTexture1x1()	{	return m_pGEARTexture1x1;	}
+	stTexturePacket* getGEARTexture1x1()	{	return texturePacket1x1;	}
 
 private:
-	std::vector<stTexturePacket*>	iTexturePacket;
-    unsigned int m_iTotalTextureMemory;
+	std::vector<stTexturePacket*>	texturePacketList;
+    unsigned int totalTextureMemory;
 
-	char m_szMetaDataFolder[512];
-	stTexturePacket* m_pGEARTexture1x1;
+	char metaDataFolder[512];
+	stTexturePacket* texturePacket1x1;
 };

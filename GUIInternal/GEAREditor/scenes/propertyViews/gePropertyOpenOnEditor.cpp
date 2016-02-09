@@ -22,16 +22,16 @@ gePropertyOpenOnEditor::~gePropertyOpenOnEditor()
 
 void gePropertyOpenOnEditor::drawNode()
 {
-	drawRect(&m_cVBClientArea);
+	drawRect(&vertexBufferClientArea);
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
 	}
 
-	if(m_pSprite)
-		m_pSprite->draw();
+	if(sprite)
+		sprite->draw();
 }
 
 void gePropertyOpenOnEditor::onButtonClicked(geGUIBase* btn)

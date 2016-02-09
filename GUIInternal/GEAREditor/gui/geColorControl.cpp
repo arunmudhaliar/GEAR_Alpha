@@ -30,20 +30,20 @@ void geColorControl::create(rendererGL10* renderer, geGUIBase* parent, float x, 
 
 void geColorControl::setControlColor(float r, float g, float b, float a)
 {
-	m_cColor.set(r, g, b, a);
+	diffuseColor.set(r, g, b, a);
 	setClientAreaPrimaryActiveForeColor(r, g, b, a);
 	applyPrimaryColorToVBClientArea();
-	if(m_pGUIObserver)
-		m_pGUIObserver->onColorChange(this);
+	if(guiObserver)
+		guiObserver->onColorChange(this);
 }
 
 void geColorControl::draw()
 {
 	glPushMatrix();
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
-	drawRect(&m_cVBClientArea);
-	drawLine(m_cVBClientAreaLine, 0.13f, 0.13f, 0.13f, 1.0f, 3, false);
-	drawLine(&m_cVBClientAreaLine[4], 0.3f, 0.3f, 0.3f, 1.0f, 3, false);
+	drawRect(&vertexBufferClientArea);
+	drawLine(vertexBufferClientAreaArray, 0.13f, 0.13f, 0.13f, 1.0f, 3, false);
+	drawLine(&vertexBufferClientAreaArray[4], 0.3f, 0.3f, 0.3f, 1.0f, 3, false);
 	glPopMatrix();
 }
 	
@@ -60,7 +60,7 @@ void geColorControl::onSize(float cx, float cy, int flag)
 		cx,	cy,
 		0,		cy,
 	};
-	memcpy(m_cVBClientArea.m_cszVertexList, title_vertLst, sizeof(title_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
 
 	const float clientarea_linevertLst[10] =
 	{
@@ -70,12 +70,12 @@ void geColorControl::onSize(float cx, float cy, int flag)
 		cx,	cy-0.5f,
 		cx,	0,
 	};
-	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
+	memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 }
 
 bool geColorControl::onMouseLButtonDown(float x, float y, int nFlag)
 {
-    geColorDlg* view = new geColorDlg(this, m_pFontManagerPtr, m_pRenderer);
+    geColorDlg* view = new geColorDlg(this, fontManagerGUI, rendererGUI);
 
 #if DEPRECATED
     #ifndef GEAR2D

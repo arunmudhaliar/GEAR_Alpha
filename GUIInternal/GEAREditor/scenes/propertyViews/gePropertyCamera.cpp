@@ -5,7 +5,7 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 	geTreeNode(renderer, parent, name, sprite, fontManager, 10)
 {
 	//camera type
-	m_pCameraTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "CameraType", this, fontManager);
+	m_pCameraTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(rendererGUI, "CameraType", this, fontManager);
 	m_pCameraTypeToolBarDropMenuBtnPtr->setGUIObserver(this);
 	m_pCameraTypeToolBarDropMenuBtnPtr->setPos(10, 35);
 
@@ -13,23 +13,23 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 	m_pCameraTypeToolBarDropMenuBtnPtr->appendMenuItem("Orthographic", 0x00007001);
 
 	//camera culling
-	m_pCameraCullingToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "Camera Culling", this, fontManager);
+	m_pCameraCullingToolBarDropMenuBtnPtr=new geToolBarDropMenu(rendererGUI, "Camera Culling", this, fontManager);
 	m_pCameraCullingToolBarDropMenuBtnPtr->setGUIObserver(this);
 	m_pCameraCullingToolBarDropMenuBtnPtr->setPos(10, 65);
 
 	//attenuations
 	m_pHorizontalSlider_FOV = new geHorizontalSlider(fontManager);
-	m_pHorizontalSlider_FOV->create(m_pRenderer, this, "slider", 10, 65, 130);
+	m_pHorizontalSlider_FOV->create(rendererGUI, this, "slider", 10, 65, 130);
 	m_pHorizontalSlider_FOV->setSliderValue(1.0f);
 	m_pHorizontalSlider_FOV->setGUIObserver(this);
 
 	m_pHorizontalSlider_Near = new geHorizontalSlider(fontManager);
-	m_pHorizontalSlider_Near->create(m_pRenderer, this, "slider", 10, 85, 130);
+	m_pHorizontalSlider_Near->create(rendererGUI, this, "slider", 10, 85, 130);
 	m_pHorizontalSlider_Near->setSliderValue(1.0f);
 	m_pHorizontalSlider_Near->setGUIObserver(this);
 
 	m_pHorizontalSlider_Far = new geHorizontalSlider(fontManager);
-	m_pHorizontalSlider_Far->create(m_pRenderer, this, "slider", 10, 105, 130);
+	m_pHorizontalSlider_Far->create(rendererGUI, this, "slider", 10, 105, 130);
 	m_pHorizontalSlider_Far->setSliderValue(1.0f);
 	m_pHorizontalSlider_Far->setGUIObserver(this);
 
@@ -39,7 +39,7 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 
 	//window column
 	geWindowColumn* pWindowColumn = new geWindowColumn(fontManager);
-	pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.4f);
+	pWindowColumn->create(rendererGUI, this, 10, 300.0f, 10.0f, 0.4f);
 	stWindowColumnRow* row = pWindowColumn->addRow("Type");
 	pWindowColumn->addControl(row, m_pCameraTypeToolBarDropMenuBtnPtr, 30.0f);
 	row = pWindowColumn->addRow("FOV");
@@ -78,17 +78,17 @@ void gePropertyCamera::onDragDrop(int x, int y, MDropData* dropObject)
 
 void gePropertyCamera::drawNode()
 {
-	drawRect(&m_cVBClientArea);
+	drawRect(&vertexBufferClientArea);
 
-	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+	if(childControlList.size() && hasAtleastOneTreeNodeChild)
 	{
-		if(m_bNodeOpen)
-			drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+		if(is_OpenNode)
+			drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		else
-			drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 	}
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
@@ -96,8 +96,8 @@ void gePropertyCamera::drawNode()
 
 	//m_pWindowColumn->draw();
 
-	if(m_pSprite)
-		m_pSprite->draw();
+	if(sprite)
+		sprite->draw();
 }
 
 void gePropertyCamera::populatePropertyOfCamera(object3d* obj)

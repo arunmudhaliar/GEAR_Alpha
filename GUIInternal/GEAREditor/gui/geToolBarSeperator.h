@@ -11,8 +11,8 @@ public:
 
 		setSize(width, parent->getSize().y);
 
-		setColor(&m_cVBClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
-		m_bImageLoaded=false;
+		setColor(&vertexBufferClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
+		isImageLoaded=false;
 	}
 
 	virtual ~geToolBarSeperator()
@@ -23,8 +23,8 @@ public:
 	{
 		glPushMatrix();
 		glTranslatef(m_cPos.x, m_cPos.y, 0);
-		drawRect(&m_cVBClientArea);
-		drawLine(m_cVBClientAreaLine, 0.1, 0.1, 0.1, 1.0f, 2, false);
+		drawRect(&vertexBufferClientArea);
+		drawLine(vertexBufferClientAreaArray, 0.1, 0.1, 0.1, 1.0f, 2, false);
 		glPopMatrix();
 	}
 
@@ -39,19 +39,19 @@ protected:
 			-1,	cy,
 		};
 
-		memcpy(m_cVBClientArea.m_cszVertexList, title_vertLst, sizeof(title_vertLst));
+		memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
 
 		const float clientarea_linevertLst[4] =
 		{
 			cx-1,	0,
 			cx-1,	cy,
 		};
-		memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
+		memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 
 	}
 
 private:
-	float m_cVBClientAreaLine[4];
-	Sprite2Dx m_cSprite;
-	bool m_bImageLoaded;
+	float vertexBufferClientAreaArray[4];
+	Sprite2Dx sprite;
+	bool isImageLoaded;
 };

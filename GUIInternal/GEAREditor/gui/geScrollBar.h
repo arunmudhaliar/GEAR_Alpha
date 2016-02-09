@@ -25,14 +25,14 @@ public:
 	virtual void draw();
 
 	void setConetentHeight(int contentHeight);
-	float getScrollGrabberYPos()	{	return m_fScrollGrabberYPos;	}
+	float getScrollGrabberYPos()	{	return scrollGrabberYPosition;	}
 	void scrollMouseWheel(int zDelta, int x, int y, int flag);
-	float getActualRatio()			{	return m_fActualRatio;			}
-	float getContentHeight()		{	return m_fContentHeight;		}
-	float getScrollGrabberHeight()	{	return m_fScrollGrabberHeight;	}
-	bool isScrollBarVisible()		{	return (m_fHeightRatio<1.0f);	}
-	bool isScrollBarGrabbed()		{	return m_bGrabbed;				}
-	void setScrollGrabberYPos(float yPos)	{	m_fScrollGrabberYPos = yPos;	m_pObserverPtr->onScrollBarChange(this);}
+	float getActualRatio()			{	return actualRatio;			}
+	float getContentHeight()		{	return contentHeight;		}
+	float getScrollGrabberHeight()	{	return scrollGrabberHeight;	}
+	bool isScrollBarVisible()		{	return (heightRatio<1.0f);	}
+	bool isScrollBarGrabbed()		{	return is_Grabbed;				}
+	void setScrollGrabberYPos(float yPos)	{	scrollGrabberYPosition = yPos;	scrollBarObserver->onScrollBarChange(this);}
 
 protected:
 	virtual void onPosition(float x, float y, int flag);
@@ -48,14 +48,14 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 
 private:
-	stVertexBuffer m_cVBGrabberClientArea;
-	float m_fHeightRatio;
+	stVertexBuffer vertexBufferGrabberClientArea;
+	float heightRatio;
 
-	float m_fActualRatio;
-	float m_fScrollGrabberYPos	;
-	float m_fScrollGrabberHeight;
-	float m_fContentHeight;
-	bool m_bGrabbed;
-	geVector2i m_cMousePrevPos;
-	MScrollBarObserver* m_pObserverPtr;
+	float actualRatio;
+	float scrollGrabberYPosition;
+	float scrollGrabberHeight;
+	float contentHeight;
+	bool is_Grabbed;
+	geVector2i mousePrevPosition;
+	MScrollBarObserver* scrollBarObserver;
 };

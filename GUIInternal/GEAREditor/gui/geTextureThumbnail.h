@@ -15,7 +15,7 @@ public:
 	void create(rendererGL10* renderer, geGUIBase* parent, gxTexture* texture, float x, float y, float cx, float cy);
 	virtual void draw();
 	
-	gxTexture* getTexturePtr()	{	return m_pTexturePtr;	}
+	gxTexture* getTexturePtr()	{	return texture;	}
 
 protected:
 	virtual void onPosition(float x, float y, int flag);
@@ -25,11 +25,11 @@ protected:
 	virtual bool onMouseLButtonUp(float x, float y, int nFlag);
 	virtual bool onMouseMove(float x, float y, int flag);
 
-	gxTexture* m_pTexturePtr;
+	gxTexture* texture;
 
 private:
-	float m_cszTextureCoord[8];
-	float m_cVBClientAreaLine[10];
+	float textureCoordinateArray[8];
+	float vertexBufferClientAreaArray[10];
 };
 
 #endif

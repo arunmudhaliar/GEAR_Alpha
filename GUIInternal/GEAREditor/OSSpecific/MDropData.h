@@ -9,22 +9,22 @@ class MDropData// : public IDataObject
 {
 public:
 
-	MDropData(std::vector<geGUIBase*>* actualDataObjectList, geGUIBase* sourceObject)
+	MDropData(std::vector<geGUIBase*>* actualGUIObjectList, geGUIBase* sourceObject)
 	{
-		m_vpActualDataObjectPtrList=actualDataObjectList;
-		m_pSourceObjectPtr=sourceObject;
+		this->actualGUIObjectList = actualGUIObjectList;
+		sourceGUIObject = sourceObject;
 	}
 
 	~MDropData()
 	{
-		m_vpActualDataObjectPtrList->clear();
-		GE_DELETE(m_vpActualDataObjectPtrList);
+		actualGUIObjectList->clear();
+		GE_DELETE(actualGUIObjectList);
 	}
 
-	std::vector<geGUIBase*>* getActualDataList()	{	return m_vpActualDataObjectPtrList;	}
-	geGUIBase* getSourcePtr()						{	return m_pSourceObjectPtr;			}
+	std::vector<geGUIBase*>* getActualDataList()	{	return actualGUIObjectList;     }
+	geGUIBase* getSourcePtr()						{	return sourceGUIObject;			}
 
 private:
-	geGUIBase* m_pSourceObjectPtr;
-	std::vector<geGUIBase*>* m_vpActualDataObjectPtrList;
+	geGUIBase* sourceGUIObject;
+	std::vector<geGUIBase*>* actualGUIObjectList;
 };

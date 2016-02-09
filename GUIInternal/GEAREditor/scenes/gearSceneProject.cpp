@@ -37,7 +37,7 @@ gearSceneProject::~gearSceneProject()
 
 void gearSceneProject::onCreate()
 {
-	m_pAssetTreeView->create(m_pRenderer, this, "AssetsTV", this);
+	m_pAssetTreeView->create(rendererGUI, this, "AssetsTV", this);
 
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(362, 70, 16, 16);
@@ -52,7 +52,7 @@ void gearSceneProject::populateProjectView()
 	destroyTVUserData(m_pAssetTreeView->getRoot());
 	m_pAssetTreeView->clearAndDestroyAll();
 
-	find_directory(m_pRenderer, EditorGEARApp::getProjectHomeDirectory(), m_pAssetTreeView->getRoot(), m_cszSprites, m_pFontManagerPtr);
+	find_directory(rendererGUI, EditorGEARApp::getProjectHomeDirectory(), m_pAssetTreeView->getRoot(), m_cszSprites, fontManagerGUI);
 	m_pAssetTreeView->getRoot()->traverseSetWidth(m_cSize.x);
 	m_pAssetTreeView->refreshTreeView();
 }

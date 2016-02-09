@@ -20,7 +20,7 @@ geToolBarButton::geToolBarButton(rendererGL10* renderer, const char* name, geGUI
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
 	setClientAreaSecondryActiveForeColor(0.4, 0.4, 0.4, 1.0f);
 
-	m_bImageLoaded=false;
+	isImageLoaded=false;
 
 	//create(parent, name, 0, 0);
 }
@@ -31,22 +31,22 @@ geToolBarButton::~geToolBarButton()
 
 void geToolBarButton::loadImage(const char* filename, int clipx, int clipy)
 {
-	m_cSprite.loadTexture(&geGUIManager::g_cTextureManager, filename);
-	m_cSprite.setClip(clipx, clipy, 16, 16);
+	sprite.loadTexture(&geGUIManager::g_cTextureManager, filename);
+	sprite.setClip(clipx, clipy, 16, 16);
 	setSize(26, getSize().y);
-	m_bImageLoaded=true;
+	isImageLoaded=true;
 }
 
 void geToolBarButton::draw()
 {
 	glPushMatrix();
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
-	drawRect(&m_cVBClientArea);
-	drawLine(m_cVBClientAreaLine, 0.1, 0.1, 0.1, 1.0f, 2, false);
-	if(m_bImageLoaded)
+	drawRect(&vertexBufferClientArea);
+	drawLine(vertexBufferClientAreaArray, 0.1, 0.1, 0.1, 1.0f, 2, false);
+	if(isImageLoaded)
 	{
 		geVector2f offsetPos(5, 0);
-		m_cSprite.draw(&offsetPos);
+		sprite.draw(&offsetPos);
 	}
 	else
 	{
@@ -69,19 +69,19 @@ void geToolBarButton::onSize(float cx, float cy, int flag)
 		-1,	cy,
 	};
 
-	memcpy(m_cVBClientArea.m_cszVertexList, title_vertLst, sizeof(title_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
 
 	const float clientarea_linevertLst[4] =
 	{
 		cx-1,	0,
 		cx-1,	cy,
 	};
-	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
+	memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 }
 
 void geToolBarButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver)
 {
-	switch(m_eState)
+	switch(buttonState)
 	{
 	case BTN_STATE_NORMAL:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
@@ -91,24 +91,24 @@ void geToolBarButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPa
 		break;
 	case BTN_STATE_CANCEL:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
-		m_eState=BTN_STATE_NORMAL;
+		buttonState=BTN_STATE_NORMAL;
 		break;
 	}
 }
 
 void geToolBarButton::onButtonClicked()
 {
-	if(m_pGUIObserver)
-		m_pGUIObserver->onButtonClicked(this);
+	if(guiObserver)
+		guiObserver->onButtonClicked(this);
 }
 
 bool geToolBarButton::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	if(m_eState==BTN_STATE_NORMAL)
+	if(buttonState==BTN_STATE_NORMAL)
 	{
 		buttonPressed(false);
 	}
-	else if(m_eState==BTN_STATE_PRESSED)
+	else if(buttonState==BTN_STATE_PRESSED)
 	{
 		buttonNormal(false);
 	}
@@ -127,7 +127,7 @@ void geToolBarButton::onMouseEnterClientArea()
 	//char buffer[256];
 	//sprintf(buffer, "%s onMouseEnterClientArea\n",m_szName);
 	//OutputDebugString(buffer);
-	//setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.4f);
+	//setColor(&vertexBufferClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.4f);
 }
 
 void geToolBarButton::onMouseExitClientArea()
@@ -135,12 +135,12 @@ void geToolBarButton::onMouseExitClientArea()
 	//char buffer[256];
 	//sprintf(buffer, "%s onMouseExitClientArea\n",m_szName);
 	//OutputDebugString(buffer);
-	//setColor(&m_cVBClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
+	//setColor(&vertexBufferClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
 }
 
 void geToolBarButton::onCancelEngagedControls()
 {
-	//setColor(&m_cVBClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.3f);
+	//setColor(&vertexBufferClientArea, 0.3, 0.3, 0.3, 1.0f, EGRADIENT_VERTICAL_UP, 0.3f);
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -156,7 +156,7 @@ geToolBar::geToolBar(unsigned short uGUIID, const char* name, geFontManager* fon
 
 geToolBar::~geToolBar()
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* node = *it;
 		GE_DELETE(node);
@@ -187,16 +187,16 @@ void geToolBar::onSize(float cx, float cy, int flag)
 		cx,	cy,
 		0,	cy,
 	};
-	memcpy(m_cVBClientArea.m_cszVertexList, title_vertLst, sizeof(title_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
 }
 
 void geToolBar::draw()
 {
 	glPushMatrix();
 	glTranslatef(m_cPos.x, m_cPos.y+getParent()->getTopMarginOffsetHeight(), 0);
-	drawRect(&m_cVBClientArea);
+	drawRect(&vertexBufferClientArea);
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* obj = *it;
 		obj->draw();
@@ -208,7 +208,7 @@ void geToolBar::draw()
 geGUIBase* geToolBar::appendToolBarControl(geGUIBase* ctrl)
 {
 	int xOffset=2;
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* obj = *it;
 		if(ctrl==obj) continue;

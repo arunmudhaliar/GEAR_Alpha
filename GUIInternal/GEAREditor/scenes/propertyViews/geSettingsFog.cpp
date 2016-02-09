@@ -13,27 +13,27 @@ geSettingsFog::geSettingsFog(rendererGL10* renderer, geGUIBase* parent, const ch
 	m_pPushBtn_Fog->setGUIObserver(this);
 
 	//fog
-	m_cFogSubView.edit_fog_start = new geHorizontalSlider(m_pFontManagerPtr);
-	m_cFogSubView.edit_fog_start->create(m_pRenderer, this, "slider", 10, 65, 130);
+	m_cFogSubView.edit_fog_start = new geHorizontalSlider(fontManagerGUI);
+	m_cFogSubView.edit_fog_start->create(rendererGUI, this, "slider", 10, 65, 130);
 	m_cFogSubView.edit_fog_start->setSliderValue(0.0f);
 	m_cFogSubView.edit_fog_start->setGUIObserver(this);
 
-	m_cFogSubView.edit_fog_end = new geHorizontalSlider(m_pFontManagerPtr);
-	m_cFogSubView.edit_fog_end->create(m_pRenderer, this, "slider", 10, 65, 130);
+	m_cFogSubView.edit_fog_end = new geHorizontalSlider(fontManagerGUI);
+	m_cFogSubView.edit_fog_end->create(rendererGUI, this, "slider", 10, 65, 130);
 	m_cFogSubView.edit_fog_end->setSliderValue(1.0f);
 	m_cFogSubView.edit_fog_end->setGUIObserver(this);
 
-	m_cFogSubView.edit_fog_density = new geHorizontalSlider(m_pFontManagerPtr);
-	m_cFogSubView.edit_fog_density->create(m_pRenderer, this, "slider", 10, 65, 130);
+	m_cFogSubView.edit_fog_density = new geHorizontalSlider(fontManagerGUI);
+	m_cFogSubView.edit_fog_density->create(rendererGUI, this, "slider", 10, 65, 130);
 	m_cFogSubView.edit_fog_density->setSliderValue(1.0f);
 	m_cFogSubView.edit_fog_density->setGUIObserver(this);
 
 	m_cFogSubView.color_fog_color = new geColorControl(fontmanager);
-	m_cFogSubView.color_fog_color->create(m_pRenderer, this, 10, 10);
+	m_cFogSubView.color_fog_color->create(rendererGUI, this, 10, 10);
 	m_cFogSubView.color_fog_color->setControlColor(1.0, 1.0, 1.0, 1.0);
 	m_cFogSubView.color_fog_color->setGUIObserver(this);
 
-	m_cFogSubView.menu_fog_type=new geToolBarDropMenu(m_pRenderer, "FogType", this, fontmanager);
+	m_cFogSubView.menu_fog_type=new geToolBarDropMenu(rendererGUI, "FogType", this, fontmanager);
 	m_cFogSubView.menu_fog_type->setGUIObserver(this);
 	m_cFogSubView.menu_fog_type->setPos(10, 35);
 	m_cFogSubView.menu_fog_type->appendMenuItem("Linear", 0x00005100);
@@ -42,8 +42,8 @@ geSettingsFog::geSettingsFog(rendererGL10* renderer, geGUIBase* parent, const ch
 	m_cFogSubView.menu_fog_type->setMenuItem(0);
 
 	//window column
-	m_cFogSubView.pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
-	m_cFogSubView.pWindowColumn->create(m_pRenderer, this, 35, 300.0f, 10.0f, 0.35f);
+	m_cFogSubView.pWindowColumn = new geWindowColumn(fontManagerGUI);
+	m_cFogSubView.pWindowColumn->create(rendererGUI, this, 35, 300.0f, 10.0f, 0.35f);
 	stWindowColumnRow* row = m_cFogSubView.pWindowColumn->addRow("Fog start");
 	m_cFogSubView.pWindowColumn->addControl(row, m_cFogSubView.edit_fog_start, m_cFogSubView.edit_fog_start->getSize().y*3);
 	row = m_cFogSubView.pWindowColumn->addRow("Fog end");
@@ -69,24 +69,24 @@ geSettingsFog::~geSettingsFog()
 
 void geSettingsFog::drawNode()
 {
-	drawRect(&m_cVBClientArea);
+	drawRect(&vertexBufferClientArea);
 
-	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+	if(childControlList.size() && hasAtleastOneTreeNodeChild)
 	{
-		if(m_bNodeOpen)
-			drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+		if(is_OpenNode)
+			drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		else
-			drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 	}
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
 	}
 
-	if(m_pSprite)
-		m_pSprite->draw();
+	if(sprite)
+		sprite->draw();
 }
 
 void geSettingsFog::onColorChange(geGUIBase* colorControl)

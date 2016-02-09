@@ -75,7 +75,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
 
 void gearScenePropertyEditor::onCreate()
 {
-	m_pPropertiesTreeView->create(m_pRenderer, this, "propertyeditorTV", this);
+	m_pPropertiesTreeView->create(rendererGUI, this, "propertyeditorTV", this);
 
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(68, 488, 16, 16);
@@ -102,36 +102,36 @@ void gearScenePropertyEditor::onCreate()
 
 	geTreeNode* rootNode=m_pPropertiesTreeView->getRoot();
 
-	m_pObject3dParentNode = new geTreeNode(m_pRenderer, rootNode, "Object3d", &m_cszSprites[0], 0);
-	m_pObject3dPropertyNode = new gePropertyObject3d(m_pRenderer, m_pObject3dParentNode, "", NULL, m_pFontManagerPtr);
-	m_pTransformParentNode = new geTreeNode(m_pRenderer, rootNode, "Transform", &m_cszSprites[1], 0);
-	m_pTransformPropertyNode = new gePropertyTransform(m_pRenderer, m_pTransformParentNode, "", NULL, m_pFontManagerPtr);
-	m_pMaterialParent = new geTreeNode(m_pRenderer, rootNode, "Material", &m_cszSprites[2], 0);
-	m_pAnimationParentNode  = new geTreeNode(m_pRenderer, rootNode, "Animation", &m_cszSprites[3], 0);
-	m_pSaveMetaDataParentNode = new geTreeNode(m_pRenderer, rootNode, "Save MetaData", &m_cszSprites[4], 0);
-	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(m_pRenderer, m_pSaveMetaDataParentNode, "", NULL, m_pFontManagerPtr);
-	m_pLightParentNode = new geTreeNode(m_pRenderer, rootNode, "Light", &m_cszSprites[5], 0);
-	m_pLightPropertyNode = new gePropertyLight(m_pRenderer, m_pLightParentNode, "", NULL, m_pFontManagerPtr);
-	m_pAddComponentParentNode = new geTreeNode(m_pRenderer, rootNode, "Add Component", &m_cszSprites[8], 0);
-	m_pAddComponentProperty = new gePropertyAddComponent(m_pRenderer, m_pAddComponentParentNode, "", NULL, m_pFontManagerPtr);
+	m_pObject3dParentNode = new geTreeNode(rendererGUI, rootNode, "Object3d", &m_cszSprites[0], 0);
+	m_pObject3dPropertyNode = new gePropertyObject3d(rendererGUI, m_pObject3dParentNode, "", NULL, fontManagerGUI);
+	m_pTransformParentNode = new geTreeNode(rendererGUI, rootNode, "Transform", &m_cszSprites[1], 0);
+	m_pTransformPropertyNode = new gePropertyTransform(rendererGUI, m_pTransformParentNode, "", NULL, fontManagerGUI);
+	m_pMaterialParent = new geTreeNode(rendererGUI, rootNode, "Material", &m_cszSprites[2], 0);
+	m_pAnimationParentNode  = new geTreeNode(rendererGUI, rootNode, "Animation", &m_cszSprites[3], 0);
+	m_pSaveMetaDataParentNode = new geTreeNode(rendererGUI, rootNode, "Save MetaData", &m_cszSprites[4], 0);
+	m_pSaveMetaDataPropertyNode = new gePropertySaveMetaData(rendererGUI, m_pSaveMetaDataParentNode, "", NULL, fontManagerGUI);
+	m_pLightParentNode = new geTreeNode(rendererGUI, rootNode, "Light", &m_cszSprites[5], 0);
+	m_pLightPropertyNode = new gePropertyLight(rendererGUI, m_pLightParentNode, "", NULL, fontManagerGUI);
+	m_pAddComponentParentNode = new geTreeNode(rendererGUI, rootNode, "Add Component", &m_cszSprites[8], 0);
+	m_pAddComponentProperty = new gePropertyAddComponent(rendererGUI, m_pAddComponentParentNode, "", NULL, fontManagerGUI);
 
-	m_pCameraParentNode = new geTreeNode(m_pRenderer, rootNode, "Camera", &m_cszSprites[7], 0);
-	m_pCameraPropertyNode = new gePropertyCamera(m_pRenderer, m_pCameraParentNode, "", NULL, m_pFontManagerPtr);
+	m_pCameraParentNode = new geTreeNode(rendererGUI, rootNode, "Camera", &m_cszSprites[7], 0);
+	m_pCameraPropertyNode = new gePropertyCamera(rendererGUI, m_pCameraParentNode, "", NULL, fontManagerGUI);
 
-	m_pPostProcessorBlurShaderNode = new geTreeNode(m_pRenderer, rootNode, "Blur Processor", &m_cszSprites[5], 0);
-	m_pBlurProcessorPropertyNode = new gePropertyBlurProcessor(m_pRenderer, m_pPostProcessorBlurShaderNode, "", NULL, m_pFontManagerPtr);
+	m_pPostProcessorBlurShaderNode = new geTreeNode(rendererGUI, rootNode, "Blur Processor", &m_cszSprites[5], 0);
+	m_pBlurProcessorPropertyNode = new gePropertyBlurProcessor(rendererGUI, m_pPostProcessorBlurShaderNode, "", NULL, fontManagerGUI);
 
-	m_pOpenOnEditorParentNode = new geTreeNode(m_pRenderer, rootNode, "Script Editor", &m_cszSprites[5], 0);
-	m_pPropertyOpenOnEditor = new gePropertyOpenOnEditor(m_pRenderer, m_pOpenOnEditorParentNode, "", NULL, m_pFontManagerPtr);
+	m_pOpenOnEditorParentNode = new geTreeNode(rendererGUI, rootNode, "Script Editor", &m_cszSprites[5], 0);
+	m_pPropertyOpenOnEditor = new gePropertyOpenOnEditor(rendererGUI, m_pOpenOnEditorParentNode, "", NULL, fontManagerGUI);
 
-	m_pOctreeParentNode = new geTreeNode(m_pRenderer, rootNode, "Octree", &m_cszSprites[5], 0);
-	m_pPropertyOctree = new gePropertyOctree(m_pRenderer, m_pOctreeParentNode, "", NULL, m_pFontManagerPtr);
+	m_pOctreeParentNode = new geTreeNode(rendererGUI, rootNode, "Octree", &m_cszSprites[5], 0);
+	m_pPropertyOctree = new gePropertyOctree(rendererGUI, m_pOctreeParentNode, "", NULL, fontManagerGUI);
 
-	m_pLayersParentNode = new geTreeNode(m_pRenderer, rootNode, "Layers", &m_cszSprites[9], 0);
-	m_pPropertyLayers = new gePropertyLayers(m_pRenderer, m_pLayersParentNode, "", NULL, m_pFontManagerPtr);
+	m_pLayersParentNode = new geTreeNode(rendererGUI, rootNode, "Layers", &m_cszSprites[9], 0);
+	m_pPropertyLayers = new gePropertyLayers(rendererGUI, m_pLayersParentNode, "", NULL, fontManagerGUI);
 
-	m_pFogParentNode = new geTreeNode(m_pRenderer, rootNode, "Fog", &m_cszSprites[9], 0);
-	m_pSettingsFog = new geSettingsFog(m_pRenderer, m_pFogParentNode, "", NULL, monoWrapper::mono_engine_getWorld(0)->getRenderer()->getFog(), m_pFontManagerPtr);
+	m_pFogParentNode = new geTreeNode(rendererGUI, rootNode, "Fog", &m_cszSprites[9], 0);
+	m_pSettingsFog = new geSettingsFog(rendererGUI, m_pFogParentNode, "", NULL, monoWrapper::mono_engine_getWorld(0)->getRenderer()->getFog(), fontManagerGUI);
 
 	removeAllProperties();
 }
@@ -310,7 +310,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		{
 			//if(!mesh->getTriInfo(x)->getMaterial())
 			//	continue;
-			gePropertyMaterial* materialProperty = new gePropertyMaterial(m_pRenderer, m_pMaterialParent, "", NULL, mesh->getTriInfo(x), m_pFontManagerPtr);
+			gePropertyMaterial* materialProperty = new gePropertyMaterial(rendererGUI, m_pMaterialParent, "", NULL, mesh->getTriInfo(x), fontManagerGUI);
             UNUSED(materialProperty);
 		}
 
@@ -339,7 +339,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		{
 			gxAnimationSet* animationSet = *it;
 
-			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(m_pRenderer, m_pAnimationParentNode, obj, animationSet, &m_cszSprites[6], m_pFontManagerPtr);
+			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(rendererGUI, m_pAnimationParentNode, obj, animationSet, &m_cszSprites[6], fontManagerGUI);
 			pAnimationSetNode->setUserData(animationSet);
 		}
 		rootNode->appnendTVChild(m_pAnimationParentNode);
@@ -366,8 +366,8 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		{
 			monoScriptObjectInstance* monoInstance = obj->getMonoScriptInstance(x);
 			stMonoScriptTVNode* monoScriptTVNode = new stMonoScriptTVNode();
-			monoScriptTVNode->m_pMonoScriptParentNode = new geTreeNode(m_pRenderer, rootNode, monoInstance->getScriptPtr()->getScriptFileName().c_str(), &m_cszSprites[10], 0);
-			monoScriptTVNode->m_pSettingsMonoScript = new gePropertyScriptComponent(m_pRenderer, monoScriptTVNode->m_pMonoScriptParentNode, "", NULL, m_pFontManagerPtr);
+			monoScriptTVNode->m_pMonoScriptParentNode = new geTreeNode(rendererGUI, rootNode, monoInstance->getScriptPtr()->getScriptFileName().c_str(), &m_cszSprites[10], 0);
+			monoScriptTVNode->m_pSettingsMonoScript = new gePropertyScriptComponent(rendererGUI, monoScriptTVNode->m_pMonoScriptParentNode, "", NULL, fontManagerGUI);
 			monoScriptTVNode->m_pMonoScriptParentNode->closeNode();
 
 			monoScriptTVNode->m_pSettingsMonoScript->populatePropertyOfMonoScripts(obj, monoInstance);

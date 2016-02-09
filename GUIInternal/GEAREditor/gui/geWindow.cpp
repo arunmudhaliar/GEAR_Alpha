@@ -4,40 +4,40 @@
 geWindow::geWindow(const char* name, geFontManager* fontmanager):
 	geGUIBase(GEGUI_WINDOW, name, fontmanager)
 {
-	m_bCanMove=false;
-	m_pToolBar=NULL;
+	is_Movable=false;
+	toolBar=NULL;
 }
 
 geWindow::~geWindow()
 {
-	GE_DELETE(m_pToolBar);
+	GE_DELETE(toolBar);
 }
 
 void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy, bool bCreateToolBar)
 {
 	createBase(renderer, parent);
 
-	m_fTitleWidth=0;
+	titleWidth=0;
 	for(int index=0;index<(int)strlen(m_szName);index++)
 	{
-		m_fTitleWidth+=geFontManager::g_pFontArial10_84Ptr->getCharWidth(m_szName[index]);
+		titleWidth+=geFontManager::g_pFontArial10_84Ptr->getCharWidth(m_szName[index]);
 	}
 
-	m_bCanMove=false;
-	m_pIamOnLayout=NULL;
+	is_Movable=false;
+	iamOnLayout=NULL;
 	setPos(x, y);
 	setSize(cx, cy);
 	setTitleColor(0.12f, 0.12f, 0.12f, 1.0f);
 	setClientColor(0.2f, 0.2f, 0.2f, 1.0f);
 	setSizable(true);
-	m_pToolBar=NULL;
+	toolBar=NULL;
 	if(bCreateToolBar)
 	{
-		m_pToolBar = new geToolBar(m_pFontManagerPtr);
-		m_pToolBar->create(renderer, this, 0, -GE_TOOLBAR_HEIGHT/*GE_WND_TITLE_HEIGHT*/, cx, GE_TOOLBAR_HEIGHT);
+		toolBar = new geToolBar(fontManagerGUI);
+		toolBar->create(renderer, this, 0, -GE_TOOLBAR_HEIGHT/*GE_WND_TITLE_HEIGHT*/, cx, GE_TOOLBAR_HEIGHT);
 	}
 
-	m_cRoundedRectangle.create(m_fTitleWidth+30, GE_WND_TITLE_HEIGHT-3, 5);
+	roundedRectControl.create(titleWidth+30, GE_WND_TITLE_HEIGHT-3, 5);
 
 	onCreate();
 }
@@ -64,7 +64,7 @@ void geWindow::update(float dt)
 
 void geWindow::setTitleColor(float r, float g, float b, float a)
 {
-	setColor(&m_cVBTitle, r, g, b, a);
+	setColor(&vertexBufferTitle, r, g, b, a);
 }
 
 void geWindow::setClientColor(float r, float g, float b, float a)
@@ -80,33 +80,33 @@ void geWindow::drawTitleAndToolBar(float xoff, float yoff, bool bActiveWindow, b
 	glTranslatef(m_cPos.x+xoff, m_cPos.y+yoff, 0);
 	if(bFirstWindow)
 	{
-		drawRect(&m_cVBTitle);
+		drawRect(&vertexBufferTitle);
 	}
 
 	if(bActiveWindow)
 	{
-		m_cRoundedRectangle.draw(1, 3);
+		roundedRectControl.draw(1, 3);
 	}
 	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 15, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
-	//drawTriangle(&m_cVBLayoutToggleButtonLine[3*0], 0.05f, 0.05f, 0.05f, 1.0f, 3);
-	if(m_pToolBar && bActiveWindow)
+	//drawTriangle(&vertexBufferToggleButtonArray[3*0], 0.05f, 0.05f, 0.05f, 1.0f, 3);
+	if(toolBar && bActiveWindow)
 	{
 		glTranslatef(-xoff, -yoff, 0);
-		m_pToolBar->draw();
+		toolBar->draw();
 	}
 	glPopMatrix();
 }
 
 void geWindow::draw()
 {
-	glViewport(m_cPos.x+m_pIamOnLayout->getPos().x, (m_pRenderer->getViewPortSz().y)-(m_cPos.y+m_pIamOnLayout->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);	
+	glViewport(m_cPos.x+iamOnLayout->getPos().x, (rendererGUI->getViewPortSz().y)-(m_cPos.y+iamOnLayout->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/);	
 	glMatrixMode(GL_PROJECTION);
 	//glPushMatrix();
 		glLoadIdentity();
 		gluOrtho2D((int)0, (int)(m_cSize.x/*+2.0f*/), (int)(m_cSize.y-getTopMarginOffsetHeight()/*+2.0f*/), (int)0);
 		glMatrixMode(GL_MODELVIEW);
 
-		drawRect(&m_cVBClientArea);
+		drawRect(&vertexBufferClientArea);
 		onDraw();
 	//glPopMatrix();
 }
@@ -115,13 +115,13 @@ void geWindow::draw()
 
 void geWindow::clearVarsAfterWindowMoved()
 {
-	m_bCanMove = false;
+	is_Movable = false;
 }
 
 //bool geWindow::selectWindow(int x, int y)
 //{
 //	bool bSelected = isPointInsideWindow(x, y);
-//	m_bCanMove = isPointInsideWindowTitle(x, y);
+//	is_Movable = isPointInsideWindowTitle(x, y);
 //
 //	return bSelected;
 //}
@@ -148,7 +148,7 @@ void geWindow::onSize(float cx, float cy, int flag)
 		cx,	GE_WND_TITLE_HEIGHT,
 		0,	GE_WND_TITLE_HEIGHT,
 	};
-	memcpy(m_cVBTitle.m_cszVertexList, title_vertLst, sizeof(title_vertLst));
+	memcpy(vertexBufferTitle.vertexArray, title_vertLst, sizeof(title_vertLst));
 
 	float cy_val=cy-getTopMarginOffsetHeight();
 	if(cy_val<=0.0f)cy_val=0.0f;
@@ -159,7 +159,7 @@ void geWindow::onSize(float cx, float cy, int flag)
 		cx,	cy_val,
 		0,	cy_val,
 	};
-	memcpy(m_cVBClientArea.m_cszVertexList, clientarea_vertLst, sizeof(clientarea_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
 
 
 	const float clientarea_linevertLst[8] =
@@ -169,7 +169,7 @@ void geWindow::onSize(float cx, float cy, int flag)
 		1,		cy_val-1,
 		cx-1,	cy_val-1,
 	};
-	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
+	memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 
 	int h=GE_WND_TITLE_HEIGHT-4;
 	const float togglebutton_linevertLst[6*2] =
@@ -182,10 +182,10 @@ void geWindow::onSize(float cx, float cy, int flag)
 		5+8,	(GE_WND_TITLE_HEIGHT-4)-(h>>1),
 		5,		(GE_WND_TITLE_HEIGHT-4)-(h>>1),
 	};
-	memcpy(m_cVBLayoutToggleButtonLine, togglebutton_linevertLst, sizeof(togglebutton_linevertLst));
+	memcpy(vertexBufferToggleButtonArray, togglebutton_linevertLst, sizeof(togglebutton_linevertLst));
 
-	if(m_pToolBar)
-		m_pToolBar->setSize(cx, GE_TOOLBAR_HEIGHT);
+	if(toolBar)
+		toolBar->setSize(cx, GE_TOOLBAR_HEIGHT);
 
 	geGUIBase::onSize(cx, cy, flag);
 }
@@ -224,5 +224,5 @@ void geWindow::onMouseExitClientArea()
 
 geVector2f geWindow::getAbsolutePositionOnScreen()
 {
-	return geVector2f(m_cPos.x+m_pIamOnLayout->getPos().x, m_cPos.y+m_pIamOnLayout->getPos().y);
+	return geVector2f(m_cPos.x+iamOnLayout->getPos().x, m_cPos.y+iamOnLayout->getPos().y);
 }

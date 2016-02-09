@@ -24,15 +24,15 @@ void gearSceneSettings::onCreate()
 	m_cszSprites[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[1].setClip(173, 321, 16, 16);
 
-	m_pSettingsTreeView->create(m_pRenderer, this, "SettingsTV", this);
+	m_pSettingsTreeView->create(rendererGUI, this, "SettingsTV", this);
 
 	geTreeNode* rootNode=m_pSettingsTreeView->getRoot();
 
-	m_pSettingsGlobalParentNode = new geTreeNode(m_pRenderer, rootNode, "Global", &m_cszSprites[0], 0);
-	m_pSettingsGlobal = new geSettingsGlobal(m_pRenderer, m_pSettingsGlobalParentNode, "", NULL, m_pFontManagerPtr);
+	m_pSettingsGlobalParentNode = new geTreeNode(rendererGUI, rootNode, "Global", &m_cszSprites[0], 0);
+	m_pSettingsGlobal = new geSettingsGlobal(rendererGUI, m_pSettingsGlobalParentNode, "", NULL, fontManagerGUI);
 
-	m_pSettingsAndroidParentNode = new geTreeNode(m_pRenderer, rootNode, "Android", &m_cszSprites[1], 0);
-	m_pSettingsAndroid = new geSettingsAndroid(m_pRenderer, m_pSettingsAndroidParentNode, "", NULL, m_pFontManagerPtr);
+	m_pSettingsAndroidParentNode = new geTreeNode(rendererGUI, rootNode, "Android", &m_cszSprites[1], 0);
+	m_pSettingsAndroid = new geSettingsAndroid(rendererGUI, m_pSettingsAndroidParentNode, "", NULL, fontManagerGUI);
 }
 
 void gearSceneSettings::onDraw()

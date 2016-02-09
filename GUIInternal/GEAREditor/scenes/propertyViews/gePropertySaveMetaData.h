@@ -36,28 +36,28 @@ public:
 	//virtual void draw();
 	virtual void drawNode()
 	{
-		drawRect(&m_cVBClientArea);
+		drawRect(&vertexBufferClientArea);
 
 		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 		geFontManager::g_pFontArial10_80Ptr->drawString("Update meta file with the current change.", m_pButtonSave->getPos().x+m_pButtonSave->getSize().x+20, geFontManager::g_pFontArial10_80Ptr->getLineHeight()+10, m_cSize.x);
 
-		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+		if(childControlList.size() && hasAtleastOneTreeNodeChild)
 		{
-			if(m_bNodeOpen)
-				drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			if(is_OpenNode)
+				drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 			else
-				drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+				drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		}
 
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* tvnode = *it;
 			tvnode->draw();
 		}
 
-		if(m_pSprite)
-			m_pSprite->draw();
+		if(sprite)
+			sprite->draw();
 	}
 
 	virtual void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)

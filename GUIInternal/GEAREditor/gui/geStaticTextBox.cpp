@@ -4,14 +4,14 @@
 geStaticTextBox::geStaticTextBox(geFontManager* fontmanager):
 geGUIBase(GEGUI_STATICTEXTBOX, "Static Text Box", fontmanager)
 {
-	m_pFont=NULL;
+	fontGUI=NULL;
 	fontYOffset=0.0f;
 }
 
 geStaticTextBox::geStaticTextBox(const char* name, geFontManager* fontmanager):
 	geGUIBase(GEGUI_STATICTEXTBOX, name, fontmanager)
 {
-	m_pFont=NULL;
+	fontGUI=NULL;
 	fontYOffset=0.0f;
 }
 
@@ -23,25 +23,25 @@ void geStaticTextBox::create(rendererGL10* renderer, geGUIBase* parent, const ch
 {
 	createBase(renderer, parent);
 
-	m_pFont=pFont;
+	fontGUI=pFont;
 	fontYOffset=yoffset;
-	int width=m_pFont->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
-	setSize(width, m_pFont->getLineHeight());
+	int width=fontGUI->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
+	setSize(width, fontGUI->getLineHeight());
 	setPos(x, y);
 
 	STRCPY(m_szName, name);
 
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();
-	setColor(&m_cVBSelectionArea, 0.24f, 0.38f, 0.57f, 1.0f);
+	setColor(&vertexBufferSelectionArea, 0.24f, 0.38f, 0.57f, 1.0f);
 }
 
 void geStaticTextBox::draw()
 {
 	glPushMatrix();
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
-	//drawRect(&m_cVBClientArea);
-	m_pFont->drawString(m_szName, 0, m_pFont->getLineHeight()+fontYOffset, m_cSize.x);
+	//drawRect(&vertexBufferClientArea);
+	fontGUI->drawString(m_szName, 0, fontGUI->getLineHeight()+fontYOffset, m_cSize.x);
 	glPopMatrix();
 }
 	
@@ -58,7 +58,7 @@ void geStaticTextBox::onSize(float cx, float cy, int flag)
 		cx,	cy,
 		0,		cy,
 	};
-	memcpy(m_cVBClientArea.m_cszVertexList, title_vertLst, sizeof(title_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
 
 	const float clientarea_linevertLst[10] =
 	{
@@ -68,11 +68,11 @@ void geStaticTextBox::onSize(float cx, float cy, int flag)
 		cx,	cy-0.5f,
 		cx,	0,
 	};
-	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
+	memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 }
 
 void geStaticTextBox::onSetName()
 {
-	if(m_pGUIObserver)
-		m_pGUIObserver->onTextChange(this);
+	if(guiObserver)
+		guiObserver->onTextChange(this);
 }

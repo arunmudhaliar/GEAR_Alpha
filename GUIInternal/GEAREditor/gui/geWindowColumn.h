@@ -30,7 +30,7 @@ public:
 	stWindowColumnRow* addRow(const char* name);
 	void addControl(stWindowColumnRow* row, geGUIBase* cntrl, float override_height=0.0f);
 
-	std::vector<stWindowColumnRow*>* getRowList()	{ return &m_vRow; }
+	std::vector<stWindowColumnRow*>* getRowList()	{ return &windowColumnRowControlList; }
 
 	virtual void draw();
 protected:
@@ -38,9 +38,8 @@ protected:
 	virtual void onSize(float cx, float cy, int flag);
 
 private:
-	std::vector<stWindowColumnRow*> m_vRow;
-	float m_cszColumnRatio;
-	float m_fHeight;
-	float m_fMinimumColumnWidth;
-	float m_fMinimumSpaceBetweenControls;
+	std::vector<stWindowColumnRow*> windowColumnRowControlList;
+	float columnRatio;
+	float minimumColumnWidth;
+	float minimumSpaceBetweenControls;
 };

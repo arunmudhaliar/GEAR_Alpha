@@ -6,8 +6,8 @@ gePropertyScriptComponent::gePropertyScriptComponent(rendererGL10* renderer, geG
 	geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 {
 
-	m_pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
-	m_pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.4f);
+	m_pWindowColumn = new geWindowColumn(fontManagerGUI);
+	m_pWindowColumn->create(rendererGUI, this, 10, 300.0f, 10.0f, 0.4f);
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -23,26 +23,26 @@ gePropertyScriptComponent::~gePropertyScriptComponent()
 
 void gePropertyScriptComponent::drawNode()
 {
-	drawRect(&m_cVBClientArea);
+	drawRect(&vertexBufferClientArea);
 
 	//geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
-	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+	if(childControlList.size() && hasAtleastOneTreeNodeChild)
 	{
-		if(m_bNodeOpen)
-			drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+		if(is_OpenNode)
+			drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		else
-			drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 	}
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
 	}
 
-	if(m_pSprite)
-		m_pSprite->draw();
+	if(sprite)
+		sprite->draw();
 }
 
 void gePropertyScriptComponent::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
@@ -62,7 +62,7 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
 		for(std::vector<geGUIBase*>::iterator ctrl_it = row->getControlList()->begin(); ctrl_it != row->getControlList()->end(); ++ctrl_it)
 		{
 			geGUIBase* control = *ctrl_it;
-			m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), control), m_vControls.end());
+			childControlList.erase(std::remove(childControlList.begin(), childControlList.end(), control), childControlList.end());
 			GE_DELETE(control);
 		}
 		row->getControlList()->clear();
@@ -79,7 +79,7 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
 	//{
 	//	stWindowColumnRow* firstrow = m_pWindowColumn->addRow("Script");
 	//	geStaticTextBox* scripteditbox = new geStaticTextBox("");
-	//	scripteditbox->create(m_pRenderer, this, monoScript->getScriptPtr()->getScriptFileName().c_str(), 0, 0, -7, geFontManager::g_pFontArial10_80Ptr);
+	//	scripteditbox->create(rendererGUI, this, monoScript->getScriptPtr()->getScriptFileName().c_str(), 0, 0, -7, geFontManager::g_pFontArial10_80Ptr);
 	//	m_pWindowColumn->addControl(firstrow, scripteditbox, 16.0f);
 	//	lastControl=scripteditbox;
 	//}
@@ -88,8 +88,8 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
 	for(int x=0;x<monoScript->getScriptPtr()->getMonoVarCount();x++)
 	{
 		stWindowColumnRow* row = m_pWindowColumn->addRow(monoScript->getScriptPtr()->getMonoVarName(x));
-		geTextBox* variableeditbox = new geTextBox("", m_pFontManagerPtr);
-		variableeditbox->create(m_pRenderer, this, "", 0, 0, 30, 15);
+		geTextBox* variableeditbox = new geTextBox("", fontManagerGUI);
+		variableeditbox->create(rendererGUI, this, "", 0, 0, 30, 15);
 		m_pWindowColumn->addControl(row, variableeditbox, 16.0f);
 		lastControl=variableeditbox;
 	}

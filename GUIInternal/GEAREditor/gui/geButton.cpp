@@ -4,8 +4,8 @@
 geButtonBase::geButtonBase(unsigned short uGUIID, const char* name, geFontManager* fontManager):
 	geGUIBase(uGUIID, name, fontManager)
 {
-	m_eState = BTN_STATE_NORMAL;
-	m_bMouseHover=false;
+	buttonState = BTN_STATE_NORMAL;
+	isMouseHover=false;
 }
 
 geButtonBase::~geButtonBase()
@@ -14,38 +14,38 @@ geButtonBase::~geButtonBase()
 
 void geButtonBase::buttonPressed(bool dontPassEventToObserver)
 {
-	EBUTTON_STATE prevState=m_eState;
-	m_eState=BTN_STATE_PRESSED;
+	EBUTTON_STATE prevState=buttonState;
+	buttonState=BTN_STATE_PRESSED;
 	onButtonStateChanged(prevState, dontPassEventToObserver);
 }
 
 void geButtonBase::buttonNormal(bool dontPassEventToObserver)
 {
-	EBUTTON_STATE prevState=m_eState;
-	m_eState = BTN_STATE_NORMAL;
+	EBUTTON_STATE prevState=buttonState;
+	buttonState = BTN_STATE_NORMAL;
 	onButtonStateChanged(prevState, dontPassEventToObserver);
 }
 
 void geButtonBase::buttonCancel()
 {
-	EBUTTON_STATE prevState=m_eState;
-	m_eState = BTN_STATE_CANCEL;
+	EBUTTON_STATE prevState=buttonState;
+	buttonState = BTN_STATE_CANCEL;
 	onButtonStateChanged(prevState, true);
 }
 
 void geButtonBase::buttonHover()
 {
-	m_bMouseHover=true;
+	isMouseHover=true;
 }
 
 void geButtonBase::buttonUnHover()
 {
-	m_bMouseHover=false;
+	isMouseHover=false;
 }
 
 bool geButtonBase::isButtonPressed()
 {
-	return (m_eState == BTN_STATE_PRESSED);
+	return (buttonState == BTN_STATE_PRESSED);
 }
 
 void geButtonBase::onCancelEngagedControls()
@@ -92,7 +92,7 @@ void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* nam
 	setClientAreaPrimaryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 
-	m_bMouseHover=false;
+	isMouseHover=false;
 }
 
 void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y)
@@ -107,15 +107,15 @@ void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* nam
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 
 	setClientAreaSecondryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
-	m_bMouseHover=false;
+	isMouseHover=false;
 }
 
 void geButton::draw()
 {
 	glPushMatrix();
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
-	drawRect(&m_cVBClientArea);
-	drawLine(m_cVBClientAreaLine, 0.1, 0.1, 0.1, 1.0f);
+	drawRect(&vertexBufferClientArea);
+	drawLine(vertexBufferClientAreaArray, 0.1, 0.1, 0.1, 1.0f);
 	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 10, geFontManager::g_pFontArial10_84Ptr->getLineHeight()-2, m_cSize.x);
 	glPopMatrix();
 }
@@ -133,7 +133,7 @@ void geButton::onSize(float cx, float cy, int flag)
 		cx,	cy,
 		0,		cy,
 	};
-	memcpy(m_cVBClientArea.m_cszVertexList, title_vertLst, sizeof(title_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
 
 	const float clientarea_linevertLst[8] =
 	{
@@ -142,12 +142,12 @@ void geButton::onSize(float cx, float cy, int flag)
 		0,	cy-0.5f,
 		cx,	cy-0.5f,
 	};
-	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
+	memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 }
 
 bool geButton::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	if(m_eState==BTN_STATE_NORMAL)
+	if(buttonState==BTN_STATE_NORMAL)
 	{
 		buttonPressed(false);
 	}
@@ -157,7 +157,7 @@ bool geButton::onMouseLButtonDown(float x, float y, int nFlag)
 
 bool geButton::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	if(m_eState==BTN_STATE_PRESSED)
+	if(buttonState==BTN_STATE_PRESSED)
 	{
 		onButtonClicked();
 		buttonNormal(false);
@@ -174,7 +174,7 @@ bool geButton::onMouseMove(float x, float y, int flag)
 void geButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver)
 {
 	bool bClicked=false;
-	switch(m_eState)
+	switch(buttonState)
 	{
 	case BTN_STATE_NORMAL:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
@@ -186,17 +186,17 @@ void geButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEvent
 		break;
 	case BTN_STATE_CANCEL:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
-		m_eState=BTN_STATE_NORMAL;
+		buttonState=BTN_STATE_NORMAL;
 		break;
 	}
 
-	if(m_pGUIObserver && bClicked && !dontPassEventToObserver)
-		m_pGUIObserver->onButtonClicked(this);
+	if(guiObserver && bClicked && !dontPassEventToObserver)
+		guiObserver->onButtonClicked(this);
 }
 
 void geButton::onMouseEnterClientArea()
 {
-	if(m_eState==BTN_STATE_PRESSED)
+	if(buttonState==BTN_STATE_PRESSED)
 	{
 		buttonHover();
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.3f);
@@ -205,7 +205,7 @@ void geButton::onMouseEnterClientArea()
 
 void geButton::onMouseExitClientArea()
 {
-	if(m_eState>=BTN_STATE_PRESSED)
+	if(buttonState>=BTN_STATE_PRESSED)
 	{
 		buttonUnHover();
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);

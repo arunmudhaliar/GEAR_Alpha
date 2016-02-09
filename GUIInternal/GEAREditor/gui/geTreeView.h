@@ -26,9 +26,9 @@ public:
 	int getTVNodeChildCount();
 
 
-	void openNode()		{	m_bNodeOpen=true;	}
-	void closeNode()	{	m_bNodeOpen=false;	}
-	bool isOpenNode()	{	return m_bNodeOpen;	}
+	void openNode()		{	is_OpenNode=true;	}
+	void closeNode()	{	is_OpenNode=false;	}
+	bool isOpenNode()	{	return is_OpenNode;	}
 	void deFocus();
 
 	void selectNode();
@@ -39,11 +39,11 @@ public:
 
 	void getTotalHeightofAllNodes(int& height);
 
-	void setNodeColor(float r, float g, float b)			{	m_cNodeColor.x=r; m_cNodeColor.y=g; m_cNodeColor.z=b;	}
-	void setNodeSelectionColor(float r, float g, float b)	{	m_cNodeSelectionColor.x=r; m_cNodeSelectionColor.y=g; m_cNodeSelectionColor.z=b;	}
+	void setNodeColor(float r, float g, float b)			{	nodeDiffuseColor.x=r; nodeDiffuseColor.y=g; nodeDiffuseColor.z=b;	}
+	void setNodeSelectionColor(float r, float g, float b)	{	nodeSelectionColor.x=r; nodeSelectionColor.y=g; nodeSelectionColor.z=b;	}
 
-	float getXOffset()			{	return m_fXOffSet;	}
-	void setXOffset(float offX)	{	m_fXOffSet=offX;	}
+	float getXOffset()			{	return offSetX;	}
+	void setXOffset(float offX)	{	offSetX=offX;	}
 
 	void onAppendChild(geGUIBase* child);
 
@@ -60,28 +60,28 @@ public:
 	void setNodeSprite(Sprite2Dx* sprite);
 
 	//hack
-	void setParentTreeView(geGUIBase* parentTreeView)	{	m_pParentTreeView=parentTreeView;	}
-	geGUIBase* getParentTreeView()						{	return m_pParentTreeView;			}
+	void setParentTreeView(geGUIBase* parentTreeView)	{	this->parentTreeView=parentTreeView;	}
+	geGUIBase* getParentTreeView()						{	return parentTreeView;                  }
 	//
 
 	virtual void onNotify(int msg);
 
 protected:
-	Sprite2Dx* m_pSprite;
+	Sprite2Dx* sprite;
 
 	//std::vector<geTreeNode*> m_vChilds;
 
-	bool m_bNodeOpen;
-	float m_cVBLayoutToggleButtonLine[6*2];
+	bool is_OpenNode;
+	float vertexBufferToggleButtonArray[6*2];
 
-	bool m_bSelected;
-	float m_fXOffSet;
-	geVector3f m_cNodeColor;
-	geVector3f m_cNodeSelectionColor;
-	bool m_bHaveAtleastOneTreeNodeChild;
+	bool isNodeSelected;
+	float offSetX;
+	geVector3f nodeDiffuseColor;
+	geVector3f nodeSelectionColor;
+	bool hasAtleastOneTreeNodeChild;
 
 	//hack
-	geGUIBase* m_pParentTreeView;
+	geGUIBase* parentTreeView;
 };
 
 class MTreeViewObserver;
@@ -96,7 +96,7 @@ public:
 
 	virtual void draw();
 
-	geTreeNode* getRoot()	{	return m_pRootNode;	}
+	geTreeNode* getRoot()	{	return rootTreeNode;	}
 
 	virtual void onScrollBarChange(geScrollBar* scrollbar);
 
@@ -107,13 +107,13 @@ public:
 	geTreeNode* getSelectedNode();
 	void resetSelectedNodePtr();
 
-	std::vector<geTreeNode*>* getSelectedNodeList()		{	return &m_cSelectedNodes;	}
+	std::vector<geTreeNode*>* getSelectedNodeList()		{	return &selectedTreeNodeList;	}
 
-	geScrollBar* getScrollBar()		{	return m_pVerticalScrollBar;	}
+	geScrollBar* getScrollBar()		{	return verticalScrollBar;	}
 
 	geTreeNode* getTVNode(float x, float y);
 
-	float getVirtualYPos()	{	return m_fVirtualYPos;	}
+	float getVirtualYPos()	{	return virtualYPosition;	}
 
 	void selectNode(geTreeNode* nodetoselect);
 
@@ -137,17 +137,17 @@ protected:
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);
 
-	int m_iTotalHeightOfAllNodes;
+	int totalHeightOfAllNodes;
 
 private:
-	geTreeNode* m_pRootNode;
-	geScrollBar* m_pVerticalScrollBar;
-	float m_fVirtualYPos;
-	geTreeNode* m_pCurrentSelectedNodePtr;	//
-	MTreeViewObserver* m_pTVObserver;
-	geVector2f m_fOffsetCacheForMouseMove;
-	std::vector<geTreeNode*> m_cSelectedNodes;
-	bool m_bSelectionChanged;
+	geTreeNode* rootTreeNode;
+	geScrollBar* verticalScrollBar;
+	float virtualYPosition;
+	geTreeNode* currentSelectedTreeNode;
+	MTreeViewObserver* treeViewObserver;
+	geVector2f offsetCacheForMouseMove;
+	std::vector<geTreeNode*> selectedTreeNodeList;
+	bool isSelectionChanged;
 };
 
 class MTreeViewObserver

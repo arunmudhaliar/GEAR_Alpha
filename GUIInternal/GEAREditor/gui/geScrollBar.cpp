@@ -3,47 +3,47 @@
 geScrollBar::geScrollBar(geFontManager* fontmanager):
 	geGUIBase(GEGUI_SCROLLBAR, "scrollBar", fontmanager)
 {
-	m_fHeightRatio=1.0f;
-	m_fScrollGrabberYPos=0.0f;
-	m_fScrollGrabberHeight=0.0f;
-	m_fActualRatio=1.0f;
-	m_bGrabbed=false;
-	m_pObserverPtr=NULL;
-	m_fContentHeight=0.0f;
+	heightRatio=1.0f;
+	scrollGrabberYPosition=0.0f;
+	scrollGrabberHeight=0.0f;
+	actualRatio=1.0f;
+	is_Grabbed=false;
+	scrollBarObserver=NULL;
+	contentHeight=0.0f;
 }
 
 void geScrollBar::create(rendererGL10* renderer, geGUIBase* parent, MScrollBarObserver* observer)
 {
-	m_pRenderer=renderer;
+	rendererGUI=renderer;
 	//createBase(parent);
-	m_pObserverPtr=observer;
+	scrollBarObserver=observer;
 
 	setPos(parent->getSize().x-SCROLLBAR_SIZE, 0);
 
 	setClientAreaPrimaryActiveForeColor(0.1f, 0.1f, 0.1f, 1.0f);
 	applyPrimaryColorToVBClientArea();
 	setClientAreaSecondryActiveForeColor(0.12f, 0.12f, 0.12f, 1.0f);
-	setColor(&m_cVBGrabberClientArea, 0.3f, 0.3f, 0.3f, 1.0f, EGRADIENT_HORIZONTAL_LEFT, 0.4f);
+	setColor(&vertexBufferGrabberClientArea, 0.3f, 0.3f, 0.3f, 1.0f, EGRADIENT_HORIZONTAL_LEFT, 0.4f);
 
 	//setSize(parent->getSize());
 	setSizable(true);
-	m_fHeightRatio=1.0f;
-	m_fScrollGrabberYPos=0.0f;
-	m_fScrollGrabberHeight=0.0f;
-	m_fActualRatio=1.0f;
-	m_fContentHeight=0.0f;
-	m_bGrabbed=false;
+	heightRatio=1.0f;
+	scrollGrabberYPosition=0.0f;
+	scrollGrabberHeight=0.0f;
+	actualRatio=1.0f;
+	contentHeight=0.0f;
+	is_Grabbed=false;
 	setMouseBoundCheck(false);
 }
 
 void geScrollBar::resetScrollBar()
 {
-	m_fHeightRatio=1.0f;
-	m_fScrollGrabberYPos=0.0f;
-	m_fScrollGrabberHeight=0.0f;
-	m_fActualRatio=1.0f;
-	m_fContentHeight=0.0f;
-	m_bGrabbed=false;
+	heightRatio=1.0f;
+	scrollGrabberYPosition=0.0f;
+	scrollGrabberHeight=0.0f;
+	actualRatio=1.0f;
+	contentHeight=0.0f;
+	is_Grabbed=false;
 }
 
 geScrollBar::~geScrollBar()
@@ -52,13 +52,13 @@ geScrollBar::~geScrollBar()
 
 void geScrollBar::draw()
 {
-	if(m_fHeightRatio<1.0f)
+	if(heightRatio<1.0f)
 	{
 		glPushMatrix();
 		glTranslatef(m_cPos.x, m_cPos.y, 0);
-		drawRect(&m_cVBClientArea);
-		glTranslatef(0, m_fScrollGrabberYPos, 0);
-		drawRect(&m_cVBGrabberClientArea);
+		drawRect(&vertexBufferClientArea);
+		glTranslatef(0, scrollGrabberYPosition, 0);
+		drawRect(&vertexBufferGrabberClientArea);
 		glPopMatrix();
 	}
 }
@@ -76,63 +76,63 @@ void geScrollBar::onSize(float cx, float cy, int flag)
 		SCROLLBAR_SIZE,	cy,
 		0,	cy,
 	};
-	memcpy(m_cVBClientArea.m_cszVertexList, clientarea_vertLst, sizeof(clientarea_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
 
 	geGUIBase::onSize(cx, cy, flag);
 }
 
 void geScrollBar::onMouseEnterClientArea()
 {
-	if(m_fHeightRatio<1.0f)
+	if(heightRatio<1.0f)
 		applySecondryColorToVBClientArea();
 }
 
 void geScrollBar::onMouseExitClientArea()
 {
-	if(m_fHeightRatio<1.0f)
+	if(heightRatio<1.0f)
 		applyPrimaryColorToVBClientArea();
 }
 
 void geScrollBar::onCancelEngagedControls()
 {
 	applyPrimaryColorToVBClientArea();
-	//m_bGrabbed=false;
+	//is_Grabbed=false;
 
 	geGUIBase::onCancelEngagedControls();
 }
 
 void geScrollBar::setConetentHeight(int contentHeight)
 {
-	m_fHeightRatio=m_cSize.y/contentHeight;
-	m_fContentHeight=contentHeight;
+	this->contentHeight=contentHeight;
+    heightRatio=m_cSize.y/this->contentHeight;
 
-	if(m_fHeightRatio<1.0f)
+	if(heightRatio<1.0f)
 	{
-		m_fScrollGrabberHeight=m_cSize.y*m_fHeightRatio;
-		m_fActualRatio=m_fHeightRatio;
-		if(m_fScrollGrabberHeight<20.0f)
-			m_fScrollGrabberHeight=20.0f;
+		scrollGrabberHeight=m_cSize.y*heightRatio;
+		actualRatio=heightRatio;
+		if(scrollGrabberHeight<20.0f)
+			scrollGrabberHeight=20.0f;
 		const float clientarea_vertLst[8] =
 		{
 			SCROLLBAR_SIZE,	0,
 			0,	0,
-			SCROLLBAR_SIZE,	m_fScrollGrabberHeight,
-			0,	m_fScrollGrabberHeight,
+			SCROLLBAR_SIZE,	scrollGrabberHeight,
+			0,	scrollGrabberHeight,
 		};
-		memcpy(m_cVBGrabberClientArea.m_cszVertexList, clientarea_vertLst, sizeof(clientarea_vertLst));
+		memcpy(vertexBufferGrabberClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
 	}
 	else
-		m_fScrollGrabberYPos=0;	//need to check
+		scrollGrabberYPosition=0;	//need to check
 
-	m_pObserverPtr->onScrollBarChange(this);
+	scrollBarObserver->onScrollBarChange(this);
 }
 
 bool geScrollBar::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	m_cMousePrevPos.set(x, y);
+	mousePrevPosition.set(x, y);
 	if(isPointInsideClientArea(x, y))
 	{
-		m_bGrabbed=true;
+		is_Grabbed=true;
 		return true;
 	}
 
@@ -143,9 +143,9 @@ bool geScrollBar::onMouseLButtonUp(float x, float y, int nFlag)
 {
 	//if(isPointInsideWindow(x, y))
 	{
-		m_bGrabbed=false;
+		is_Grabbed=false;
 	}
-	m_cMousePrevPos.set(x, y);
+	mousePrevPosition.set(x, y);
 
 	return true;
 }
@@ -153,20 +153,20 @@ bool geScrollBar::onMouseLButtonUp(float x, float y, int nFlag)
 bool geScrollBar::onMouseMove(float x, float y, int flag)
 {
 	//
-	if(m_bGrabbed && (flag&0x0001))
+	if(is_Grabbed && (flag&0x0001))
 	{
-		geVector2i diff(geVector2i(x, y)-m_cMousePrevPos);
+		geVector2i diff(geVector2i(x, y)-mousePrevPosition);
 
-		m_fScrollGrabberYPos+=diff.y;
-		if(m_fScrollGrabberYPos<=0.0f)
-			m_fScrollGrabberYPos=0.0f;
+		scrollGrabberYPosition+=diff.y;
+		if(scrollGrabberYPosition<=0.0f)
+			scrollGrabberYPosition=0.0f;
 
-		if(m_fScrollGrabberYPos+m_fScrollGrabberHeight>m_cSize.y)
-			m_fScrollGrabberYPos=m_cSize.y-m_fScrollGrabberHeight;
+		if(scrollGrabberYPosition+scrollGrabberHeight>m_cSize.y)
+			scrollGrabberYPosition=m_cSize.y-scrollGrabberHeight;
 
-		m_pObserverPtr->onScrollBarChange(this);
+		scrollBarObserver->onScrollBarChange(this);
 	}
-	m_cMousePrevPos.set(x, y);
+	mousePrevPosition.set(x, y);
 
 	return true;
 }
@@ -175,12 +175,12 @@ void geScrollBar::scrollMouseWheel(int zDelta, int x, int y, int flag)
 {
 	float dir_mag=(zDelta>0)?-30.0f:30.0f;
 
-	m_fScrollGrabberYPos+=dir_mag;
-	if(m_fScrollGrabberYPos<=0.0f)
-		m_fScrollGrabberYPos=0.0f;
+	scrollGrabberYPosition+=dir_mag;
+	if(scrollGrabberYPosition<=0.0f)
+		scrollGrabberYPosition=0.0f;
 
-	if(m_fScrollGrabberYPos+m_fScrollGrabberHeight>m_cSize.y)
-		m_fScrollGrabberYPos=m_cSize.y-m_fScrollGrabberHeight;
+	if(scrollGrabberYPosition+scrollGrabberHeight>m_cSize.y)
+		scrollGrabberYPosition=m_cSize.y-scrollGrabberHeight;
 
-	m_pObserverPtr->onScrollBarChange(this);
+	scrollBarObserver->onScrollBarChange(this);
 }

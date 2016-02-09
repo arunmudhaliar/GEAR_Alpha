@@ -32,7 +32,7 @@ public:
 		//	gxMaterial* material = (gxMaterial*)getUserData();
 		//	if(material)
 		//	{
-		//		m_pTexturePtr=monoWrapper::mono_engine_loadTextureFromFile(monoWrapper::mono_engine_getWorld(0), material, absolutePath, 0);
+		//		texture=monoWrapper::mono_engine_loadTextureFromFile(monoWrapper::mono_engine_getWorld(0), material, absolutePath, 0);
 		//	}
 		//}
 	}

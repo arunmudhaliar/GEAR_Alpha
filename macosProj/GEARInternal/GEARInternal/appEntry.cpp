@@ -276,7 +276,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             case SDL_BUTTON_MIDDLE:
             {
                 //DEBUG_PRINT("Middle Mouse Down");
-                //geTestDlg* view = new geTestDlg(&geFontManager::g_cFontManager, editorApp.m_pRendererGL10);
+                //geTestDlg* view = new geTestDlg(&geFontManager::g_cFontManager, editorApp.rendererGL10);
                 //view->showView();
                 //showMenu();
                 //cpp_createMenu();

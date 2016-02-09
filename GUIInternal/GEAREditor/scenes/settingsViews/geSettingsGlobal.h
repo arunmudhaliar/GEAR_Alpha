@@ -22,8 +22,8 @@ public:
 		m_pPushBtnVsync->setCheck(true);
 
 		//window column
-		geWindowColumn* pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
-		pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.35f);
+		geWindowColumn* pWindowColumn = new geWindowColumn(fontManagerGUI);
+		pWindowColumn->create(rendererGUI, this, 10, 300.0f, 10.0f, 0.35f);
 		stWindowColumnRow* row = pWindowColumn->addRow("VSync");
 		pWindowColumn->addControl(row, m_pPushBtnVsync);
 
@@ -66,26 +66,26 @@ public:
 
 	virtual void drawNode()
 	{
-		drawRect(&m_cVBClientArea);
+		drawRect(&vertexBufferClientArea);
 
 		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
-		if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+		if(childControlList.size() && hasAtleastOneTreeNodeChild)
 		{
-			if(m_bNodeOpen)
-				drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			if(is_OpenNode)
+				drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 			else
-				drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+				drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		}
 
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* tvnode = *it;
 			tvnode->draw();
 		}
 
-		if(m_pSprite)
-			m_pSprite->draw();
+		if(sprite)
+			sprite->draw();
 	}
 
 private:

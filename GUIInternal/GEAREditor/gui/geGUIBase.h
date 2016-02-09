@@ -44,8 +44,8 @@
 
 struct stVertexBuffer
 {
-	float m_cszVertexList[8];		//4*2
-	float m_cszVertexColorList[16];	//rgba 4*4
+	float vertexArray[8];		//4*2
+	float vertexColorArray[16];	//rgba 4*4
 };
 
 class MGUIObserver;
@@ -67,7 +67,7 @@ public:
 	geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fontManager);
 	virtual ~geGUIBase();
 
-	int getGUIID()	{	return m_uGUIID;	}
+	int getGUIID()	{	return guiID;	}
 
 	void createBase(rendererGL10* renderer, geGUIBase* parent);
 	void setParent(geGUIBase* parent);
@@ -121,40 +121,40 @@ public:
 	geGUIBase* getParent()	{	return parent;	}
 	//void setParent(geGUIBase* parent)	{	this->parent=parent;	}
 	void appendChildControl(geGUIBase* child);
-	std::vector<geGUIBase*>* getChildControls()	{	return &m_vControls;	}
+	std::vector<geGUIBase*>* getChildControls()	{	return &childControlList;	}
 	void hoverControl();
 	void unHoverControl();
 
 	void mouseEnteredClientArea();
 	void mouseExitClientArea();
 
-	bool isSizable()			{	return m_bSizable;	}
-	void setSizable(bool flag)	{	m_bSizable=flag;	}
+	bool isSizable()			{	return is_Sizable;	}
+	void setSizable(bool flag)	{	is_Sizable=flag;	}
 	virtual geVector2f getAbsolutePositionOnScreen();
 	geVector2f getPositionOnScreen();
 
 	void focusLost();
 	void resizeComplete();
 
-	void setUserData(void* userdata)	{	m_pUserData=userdata;	}
-	void* getUserData()					{	return m_pUserData;		}
+	void setUserData(void* userdata)	{	this->userData=userdata;	}
+	void* getUserData()					{	return userData;		}
 
-	void setGUIObserver(MGUIObserver* observer)		{	m_pGUIObserver=observer;	}
-	MGUIObserver* getGUIObserver()					{	return m_pGUIObserver;		}
+	void setGUIObserver(MGUIObserver* observer)		{	guiObserver=observer;	}
+	MGUIObserver* getGUIObserver()					{	return guiObserver;		}
 
 	bool isNodeExistsInTree(geGUIBase* node);
 
 	//layout hack
-	void setActiveWindowPtrOnlyForLayout(geGUIBase* wnd)	{	m_pActiveWindowPtrOnlyForLayout = wnd;	}
-	geGUIBase* getActiveWindowPtrOnlyForLayout()			{	return m_pActiveWindowPtrOnlyForLayout;	}
+	void setActiveWindowPtrOnlyForLayout(geGUIBase* wnd)	{	activeWindowPtrOnlyForLayout = wnd;	}
+	geGUIBase* getActiveWindowPtrOnlyForLayout()			{	return activeWindowPtrOnlyForLayout;	}
 	//
-	stVertexBuffer* getVertexBuffer()	{	return &m_cVBClientArea;	}
+	stVertexBuffer* getVertexBuffer()	{	return &vertexBufferClientArea;	}
 	void setClientAreaPrimaryActiveForeColor(float r, float g, float b, float a=1.0f);
 	void setClientAreaSecondryActiveForeColor(float r, float g, float b, float a=1.0f);
 
 	void notifyParent(int msg);
 
-    geFontManager* getFontManager()     {   return m_pFontManagerPtr;   }
+    geFontManager* getFontManager()     {   return fontManagerGUI;   }
     
 protected:
 
@@ -204,41 +204,41 @@ protected:
 	void drawLine(float* line, float r, float g, float b, float a, int count=4, bool bLoop=true);
 	void drawTriangle(float* buffer, float r, float g, float b, float a, int count);
 
-	bool isMouseEntered()			{	return m_bMouseEntered;	}
-	void setMouseEntered(bool flag)	{	m_bMouseEntered=flag;	}
+	bool isMouseEntered()			{	return is_MouseEntered;	}
+	void setMouseEntered(bool flag)	{	is_MouseEntered=flag;	}
 
-	bool isMouseBoundCheckEnabled()		{	return m_bMouseBoundCheckEnabled;	}
-	void setMouseBoundCheck(bool flag)	{	m_bMouseBoundCheckEnabled=flag;		}
+	bool isMouseBoundCheckEnabled()		{	return is_MouseBoundCheckEnabled;	}
+	void setMouseBoundCheck(bool flag)	{	is_MouseBoundCheckEnabled=flag;		}
 
     void doDragDropSynchronous(MDropData* dropData);
     
-	unsigned short m_uGUIID;
+	unsigned short guiID;
 	char m_szName[256];
 
 	geVector2f m_cPos;
 	geVector2f m_cSize;
 
-	bool m_bMouseEntered;
-	bool m_bSizable;
-	bool m_bMouseBoundCheckEnabled;
+	bool is_MouseEntered;
+	bool is_Sizable;
+	bool is_MouseBoundCheckEnabled;
 
 	geGUIBase* parent;
-	std::vector<geGUIBase*> m_vControls;
-	geGUIBase* m_pSelectedControlPtr;
+	std::vector<geGUIBase*> childControlList;
+	geGUIBase* selectedControl;
 
-	void* m_pUserData;
-	MGUIObserver* m_pGUIObserver;
-	rendererGL10* m_pRenderer;
+	void* userData;
+	MGUIObserver* guiObserver;
+	rendererGL10* rendererGUI;
 
 	//hack for layout
-	geGUIBase* m_pActiveWindowPtrOnlyForLayout;	//valid only if object is a layout
+	geGUIBase* activeWindowPtrOnlyForLayout;	//valid only if object is a layout
 	//
 
-	float m_fszClientAreaPrimaryActiveForeColor[4];
-	float m_fszClientAreaSecondryActiveForeColor[4];
+	float clientAreaPrimaryActiveForeColor[4];
+	float clientAreaSecondryActiveForeColor[4];
 	
-	stVertexBuffer m_cVBClientArea;
-    geFontManager* m_pFontManagerPtr;
+	stVertexBuffer vertexBufferClientArea;
+    geFontManager* fontManagerGUI;
 };
 
 class MGUIObserver

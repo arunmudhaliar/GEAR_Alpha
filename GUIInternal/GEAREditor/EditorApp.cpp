@@ -41,17 +41,17 @@ Uint32 EditorApp::g_iAppSpecificEventType_MenuItemCmd=-1;
 EditorApp::EditorApp()
 {
 	EditorApp::g_pEditorAppInstance = this;
-	m_bInitialised=false;
-	m_pRendererGL10 = NULL;
-    m_pGUIManager = NULL;
+	is_Initialised=false;
+	rendererGL10Instance = NULL;
+    guiManager = NULL;
     g_iAppSpecificEventType_MenuItemCmd=-1;
 }
 
 EditorApp::~EditorApp()
 {
-	m_pGUIManager->reset();
-    GE_DELETE(m_pGUIManager);
-	GE_DELETE(m_pRendererGL10);
+	guiManager->reset();
+    GE_DELETE(guiManager);
+	GE_DELETE(rendererGL10Instance);
 }
 
 #if DEPRECATED
@@ -62,33 +62,33 @@ void EditorApp::init(HWND hWnd, HINSTANCE hInst)
 void EditorApp::init(SDL_Window* window)
 {
 #endif
-	m_bInitialised=true;
+	is_Initialised=true;
 #if DEPRECATED
-	m_pRendererGL10 = new rendererGL10(hWnd);
+	rendererGL10Instance = new rendererGL10(hWnd);
 #else
-    m_pRendererGL10 = new rendererGL10(window);
+    rendererGL10Instance = new rendererGL10(window);
 #endif
     
 #ifdef _WIN32
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version);
-	if(SDL_GetWindowWMInfo(m_pRendererGL10->getWindow(), &info))
+	if(SDL_GetWindowWMInfo(rendererGL10Instance->getWindow(), &info))
 	{
 		g_hWnd = info.info.win.window;
 	}
 #endif
 
-	//EditorApp::g_pMainRenderer=m_pRendererGL10;
+	//EditorApp::g_pMainRenderer=rendererGL10Instance;
 
-	m_pRendererGL10->setupRenderer();
-	m_pRendererGL10->loadDefaultRenderState();
+	rendererGL10Instance->setupRenderer();
+	rendererGL10Instance->loadDefaultRenderState();
 
 #ifdef _WIN32
-	m_pRendererGL10->swapGLBuffer();
+	rendererGL10Instance->swapGLBuffer();
 #endif
 
-    m_pGUIManager = new geGUIManager(&geFontManager::g_cFontManager);
-	m_pGUIManager->init(m_pRendererGL10);
+    guiManager = new geGUIManager(&geFontManager::g_cFontManager);
+	guiManager->init(rendererGL10Instance);
     geFontManager::InitializeFonts();
     
     //App specific events
@@ -97,109 +97,109 @@ void EditorApp::init(SDL_Window* window)
 
 void EditorApp::size(int cx, int cy)
 {
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
-	if(m_pRendererGL10)
+	if(rendererGL10Instance)
 	{
-		m_pRendererGL10->setViewPort(cx, cy);
-		m_pGUIManager->size(cx, cy);
+		rendererGL10Instance->setViewPort(cx, cy);
+		guiManager->size(cx, cy);
 	}
 }
 
 void EditorApp::update(float dt)
 {
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
-	m_pGUIManager->update(dt);
+	guiManager->update(dt);
 }
 
 void EditorApp::draw()
 {
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	m_pGUIManager->draw();
-	m_pRendererGL10->swapGLBuffer();
+	guiManager->draw();
+	rendererGL10Instance->swapGLBuffer();
 }
 
 void EditorApp::MouseLButtonDown(float x, float y, int nFlag)
 {
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
-	m_pGUIManager->MouseLButtonDown(x, y, nFlag);
+	guiManager->MouseLButtonDown(x, y, nFlag);
 }
 
 void EditorApp::MouseLButtonUp(float x, float y, int nFlag)
 {
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
-	m_pGUIManager->MouseLButtonUp(x, y, nFlag);
+	guiManager->MouseLButtonUp(x, y, nFlag);
 }
 
 void EditorApp::MouseRButtonDown(float x, float y, int nFlag)
 {
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
-	m_pGUIManager->MouseRButtonDown(x, y, nFlag);
+	guiManager->MouseRButtonDown(x, y, nFlag);
 }
 
 void EditorApp::MouseRButtonUp(float x, float y, int nFlag)
 {
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
-	m_pGUIManager->MouseRButtonUp(x, y, nFlag);
+	guiManager->MouseRButtonUp(x, y, nFlag);
 }
 
 void EditorApp::MouseMove(float x, float y, int flag)
 {	
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
-	m_pGUIManager->MouseMove(x, y, flag);
+	guiManager->MouseMove(x, y, flag);
 }
 
 void EditorApp::MouseWheel(int zDelta, int x, int y, int flag)
 {
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
-	m_pGUIManager->MouseWheel(zDelta, x, y, flag);
+	guiManager->MouseWheel(zDelta, x, y, flag);
 }
 
 //#if !defined(__APPLE__) //disable Drag-Drop
 void EditorApp::DragEnter(int x, int y)
 {
-	m_pGUIManager->DragEnter(x, y);
+	guiManager->DragEnter(x, y);
 }
 
 void EditorApp::DragDrop(int x, int y, MDropData* dropObject)
 {
-	m_pGUIManager->DragDrop(x, y, dropObject);
+	guiManager->DragDrop(x, y, dropObject);
 }
 
 void EditorApp::DragLeave()
 {
-	m_pGUIManager->DragLeave();
+	guiManager->DragLeave();
 }
 //#endif
 
 bool EditorApp::KeyDown(int charValue, int flag)
 {
-	if(!m_bInitialised) return false;
+	if(!is_Initialised) return false;
 
-	return m_pGUIManager->KeyDown(charValue, flag);
+	return guiManager->KeyDown(charValue, flag);
 }
 
 bool EditorApp::KeyUp(int charValue, int flag)
 {
-	if(!m_bInitialised) return false;
+	if(!is_Initialised) return false;
 
-	return m_pGUIManager->KeyUp(charValue, flag);
+	return guiManager->KeyUp(charValue, flag);
 }
 
 void EditorApp::DoCommand(int cmd)
 {
-	if(!m_bInitialised) return;
+	if(!is_Initialised) return;
 
-	m_pGUIManager->DoCommand(cmd);
+	guiManager->DoCommand(cmd);
 }
 
 #if _WIN32
@@ -310,7 +310,7 @@ void EditorGEARApp::init(SDL_Window* window)
     //import all assets to the metadata folder
     //importAssetToMetaData(hWnd, hInst);
     
-    geAssetImportDlg* assetImporterDlg = new geAssetImportDlg(&geFontManager::g_cFontManager, m_pRendererGL10);
+    geAssetImportDlg* assetImporterDlg = new geAssetImportDlg(&geFontManager::g_cFontManager, rendererGL10Instance);
     SDL_Thread *thread = SDL_CreateThread( assetImport_secondryThread, "testThread", (void *)assetImporterDlg);
     UNUSED(thread);
     assetImporterDlg->showView();
@@ -319,60 +319,60 @@ void EditorGEARApp::init(SDL_Window* window)
 //    AssetImporter assetImporter;
 //    assetImporter.importAssets(EditorGEARApp::getProjectHomeDirectory(), NULL);
 
-    gearSceneWorldEditor* worldEditorWnd = new gearSceneWorldEditor(m_pGUIManager->getLayoutManager()->getFontManager());
-    worldEditorWnd->create(m_pRendererGL10, NULL, 0, 0, 300, 200, true);
-    m_pGUIManager->appendWindow(worldEditorWnd);
-    geLayout* worldEditorLayout=m_pGUIManager->getLayoutManager()->getRootLayout()->createAsParent(worldEditorWnd);
+    gearSceneWorldEditor* worldEditorWnd = new gearSceneWorldEditor(guiManager->getLayoutManager()->getFontManager());
+    worldEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 300, 200, true);
+    guiManager->appendWindow(worldEditorWnd);
+    geLayout* worldEditorLayout=guiManager->getLayoutManager()->getRootLayout()->createAsParent(worldEditorWnd);
     setSceneWorldEditor(worldEditorWnd);
     
-	//gearSceneAnimationEditor* animEditorWnd = new gearSceneAnimationEditor(m_pGUIManager->getLayoutManager()->getFontManager());
-	//animEditorWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250);
-	//m_pGUIManager->appendWindow(animEditorWnd);
+	//gearSceneAnimationEditor* animEditorWnd = new gearSceneAnimationEditor(guiManager->getLayoutManager()->getFontManager());
+	//animEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250);
+	//guiManager->appendWindow(animEditorWnd);
 	//geLayout* animEditorLayout=worldEditorLayout->createBottom(animEditorWnd, 0.2f);
 
-    gearSceneProject* projectWindow = new gearSceneProject(m_pGUIManager->getLayoutManager()->getFontManager());
-    projectWindow->create(m_pRendererGL10, NULL, 0, 0, 300, 200, true);
-    m_pGUIManager->appendWindow(projectWindow);
+    gearSceneProject* projectWindow = new gearSceneProject(guiManager->getLayoutManager()->getFontManager());
+    projectWindow->create(rendererGL10Instance, NULL, 0, 0, 300, 200, true);
+    guiManager->appendWindow(projectWindow);
     geLayout* projectLayout=worldEditorLayout->createRight(projectWindow, 0.5f);
     setSceneProject(projectWindow);
     
-    gearScenePropertyEditor* propertyEditorWnd = new gearScenePropertyEditor(m_pGUIManager->getLayoutManager()->getFontManager());
-    propertyEditorWnd->create(m_pRendererGL10, NULL, 0, 300, 200, 250);
-    m_pGUIManager->appendWindow(propertyEditorWnd);
+    gearScenePropertyEditor* propertyEditorWnd = new gearScenePropertyEditor(guiManager->getLayoutManager()->getFontManager());
+    propertyEditorWnd->create(rendererGL10Instance, NULL, 0, 300, 200, 250);
+    guiManager->appendWindow(propertyEditorWnd);
     geLayout* propertyEditorLayout=projectLayout->createRight(propertyEditorWnd);
     setScenePropertyEditor(propertyEditorWnd);
     
-    gearSceneConsole* consoleWindow = new gearSceneConsole(m_pGUIManager->getLayoutManager()->getFontManager());
-    consoleWindow->create(m_pRendererGL10, NULL, 0, 0, 300, 200, true);
-    m_pGUIManager->appendWindow(consoleWindow);
+    gearSceneConsole* consoleWindow = new gearSceneConsole(guiManager->getLayoutManager()->getFontManager());
+    consoleWindow->create(rendererGL10Instance, NULL, 0, 0, 300, 200, true);
+    guiManager->appendWindow(consoleWindow);
     propertyEditorLayout->appendWindow(consoleWindow);
     setSceneConsole(consoleWindow);
     
-    gearSceneSettings* settingsWindow = new gearSceneSettings(m_pGUIManager->getLayoutManager()->getFontManager());
-    settingsWindow->create(m_pRendererGL10, NULL, 0, 0, 300, 500);
-    m_pGUIManager->appendWindow(settingsWindow);
+    gearSceneSettings* settingsWindow = new gearSceneSettings(guiManager->getLayoutManager()->getFontManager());
+    settingsWindow->create(rendererGL10Instance, NULL, 0, 0, 300, 500);
+    guiManager->appendWindow(settingsWindow);
     propertyEditorLayout->appendWindow(settingsWindow);
     
     propertyEditorLayout->setActiveWindow(0);
     
-    gearSceneHierarchy* hierarchyWnd = new gearSceneHierarchy(m_pGUIManager->getLayoutManager()->getFontManager());
-    hierarchyWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250, true);
-    m_pGUIManager->appendWindow(hierarchyWnd);
+    gearSceneHierarchy* hierarchyWnd = new gearSceneHierarchy(guiManager->getLayoutManager()->getFontManager());
+    hierarchyWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250, true);
+    guiManager->appendWindow(hierarchyWnd);
     geLayout* hierarchyLayout=projectLayout->createTop(hierarchyWnd, 0.45f);
     UNUSED(hierarchyLayout);
     setSceneHierarchy(hierarchyWnd);
     //hierarchyLayout->appendWindow(
     
-    gearSceneFileView* fileViewWnd = new gearSceneFileView(m_pGUIManager->getLayoutManager()->getFontManager());
-    fileViewWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250, true);
-    m_pGUIManager->appendWindow(fileViewWnd);
+    gearSceneFileView* fileViewWnd = new gearSceneFileView(guiManager->getLayoutManager()->getFontManager());
+    fileViewWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250, true);
+    guiManager->appendWindow(fileViewWnd);
     geLayout* fileViewLayout=projectLayout->createRight(fileViewWnd, 0.55f);
     UNUSED(fileViewLayout);
     setSceneFileView(fileViewWnd);
     
-    gearScenePreview* previewWnd = new gearScenePreview(m_pGUIManager->getLayoutManager()->getFontManager());
-    previewWnd->create(m_pRendererGL10, NULL, 0, 0, 400, 250);
-    m_pGUIManager->appendWindow(previewWnd);
+    gearScenePreview* previewWnd = new gearScenePreview(guiManager->getLayoutManager()->getFontManager());
+    previewWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250);
+    guiManager->appendWindow(previewWnd);
     geLayout* previewLayout=propertyEditorLayout->createBottom(previewWnd, 0.35f);
     UNUSED(previewLayout);
     setScenePreview(previewWnd);

@@ -32,21 +32,21 @@ public:
 	bool isPointInsideWindowTitle(int x, int y);
 	//bool selectWindow(int x, int y);
 
-	bool isMovable()	{	return m_bCanMove;	}
+	bool isMovable()	{	return is_Movable;	}
 	void clearVarsAfterWindowMoved();
 
-	virtual int getTopMarginOffsetHeight()	{	return GE_WND_TITLE_HEIGHT+((m_pToolBar)?m_pToolBar->getSize().y:0);	}
+	virtual int getTopMarginOffsetHeight()	{	return GE_WND_TITLE_HEIGHT+((toolBar)?toolBar->getSize().y:0);	}
 	virtual int getTitleOffsetHeight()		{	return GE_WND_TITLE_HEIGHT;	}
 
-	void setIamOnLayout(geLayout* layout)	{	m_pIamOnLayout=layout;	}
-	geLayout* getIamOnLayout()				{	return m_pIamOnLayout;	}
+	void setIamOnLayout(geLayout* layout)	{	iamOnLayout=layout;	}
+	geLayout* getIamOnLayout()				{	return iamOnLayout;	}
 
 	virtual geVector2f getAbsolutePositionOnScreen();
 
-	geToolBar* getToolBar()	{	return m_pToolBar;	}
+	geToolBar* getToolBar()	{	return toolBar;	}
 
 	void drawTitleAndToolBar(float xoff, float yoff, bool bActiveWindow, bool bFirstWindow);
-	float getTitleWidth()	{	return m_fTitleWidth;	}
+	float getTitleWidth()	{	return titleWidth;	}
 
 protected:
 	virtual void onCreate();
@@ -63,15 +63,15 @@ protected:
 	virtual void onMouseExitClientArea();
 private:
 
-	stVertexBuffer m_cVBTitle;
-	float m_cVBClientAreaLine[8];	//Check This in openGL side
+	stVertexBuffer vertexBufferTitle;
+	float vertexBufferClientAreaArray[8];	//Check This in openGL side
 
-	geLayout* m_pIamOnLayout;
-	geToolBar* m_pToolBar;
+	geLayout* iamOnLayout;
+	geToolBar* toolBar;
 
-	bool m_bCanMove;
-	float m_cVBLayoutToggleButtonLine[6*2];
+	bool is_Movable;
+	float vertexBufferToggleButtonArray[6*2];
 
-	float m_fTitleWidth;
-	RoundedRectControl m_cRoundedRectangle;
+	float titleWidth;
+	RoundedRectControl roundedRectControl;
 };

@@ -15,7 +15,7 @@ public:
 	void mouseMoveWithGrabbedWindow(int x, int y, geWindow* grabbedWindow);
 	void dropGrabbedWindow(int x, int y, geWindow* grabbedWindow);
 
-	geLayout* getRootLayout()	{	return m_pRootLayout;	}
+	geLayout* getRootLayout()	{	return rootLayout;	}
 
 	void expandOrContractLeftAndRightLayoutsOnMouseDrag(int x, int y);
 	void expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int y);
@@ -47,14 +47,14 @@ protected:
 	virtual void onCommand(int cmd);
 
 private:
-	geLayout* m_pSelectedLayout;
-	geLayout* m_pRootLayout;
-	geVector2f m_cPrevScale;
-	geVector2i m_cMousePreviousPos;
+	geLayout* selectedLayout;
+	geLayout* rootLayout;
+	geVector2f previousScale;
+	geVector2i mousePreviousPos;
 
-	std::vector<geLayout*> m_vLeftResizeList;
-	std::vector<geLayout*> m_vRightResizeList;
+	std::vector<geLayout*> leftResizeLayoutList;
+	std::vector<geLayout*> rightResizeLayoutList;
 
-	std::vector<geLayout*> m_vTopResizeList;
-	std::vector<geLayout*> m_vBottomResizeList;
+	std::vector<geLayout*> topResizeLayoutList;
+	std::vector<geLayout*> bottomResizeLayoutList;
 };

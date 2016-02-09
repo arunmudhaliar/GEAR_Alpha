@@ -4,7 +4,7 @@
 
 bool geTextureThumbnailExtended::onMouseLButtonDown(float x, float y, int nFlag)
 {
-    geTextureDlg* newTextureDlg	 = new geTextureDlg(this, m_pFontManagerPtr, m_pRenderer);
+    geTextureDlg* newTextureDlg	 = new geTextureDlg(this, fontManagerGUI, rendererGUI);
 #if DEPRECATED
 	newTextureDlg->showView(EditorGEARApp::getMainWindowHandle());
 #else
@@ -39,7 +39,7 @@ void geTextureThumbnailExtended::onDragDrop(int x, int y, MDropData* dropObject)
 			{
 				char absolutepath[FILENAME_MAX];
 				sprintf(absolutepath, "%s/Assets%s", EditorGEARApp::getProjectHomeDirectory(), relativePath);
-				m_pTexturePtr=map->load(*monoWrapper::mono_engine_getWorld(0)->getTextureManager(), absolutepath);
+				texture=map->load(*monoWrapper::mono_engine_getWorld(0)->getTextureManager(), absolutepath);
 			}
 		}
 	}

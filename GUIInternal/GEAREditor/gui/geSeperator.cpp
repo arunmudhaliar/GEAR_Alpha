@@ -23,16 +23,16 @@ void geSeperator::create(rendererGL10* renderer, geGUIBase* parent, float x, flo
 
 void geSeperator::setStyle(ESEPERATOR_STYPE style)
 {
-	m_eStyle=style;
+	seperatorStyle=style;
 }
 
 void geSeperator::draw()
 {
 	glPushMatrix();
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
-	drawLine(&m_cVBClientAreaLine[4], 0.25f, 0.25f, 0.25f, 1.0f, 2, false);
-	if(m_eStyle==STYLE_3D)
-		drawLine(m_cVBClientAreaLine, 0.17f, 0.17f, 0.17f, 1.0f, 2, false);
+	drawLine(&vertexBufferClientAreaArray[4], 0.25f, 0.25f, 0.25f, 1.0f, 2, false);
+	if(seperatorStyle==STYLE_3D)
+		drawLine(vertexBufferClientAreaArray, 0.17f, 0.17f, 0.17f, 1.0f, 2, false);
 	glPopMatrix();
 }
 
@@ -45,5 +45,5 @@ void geSeperator::onSize(float cx, float cy, int flag)
 		0,	1,
 		cx,	1
 	};
-	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
+	memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 }

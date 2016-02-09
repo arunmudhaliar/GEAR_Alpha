@@ -50,10 +50,10 @@ gearSceneFileView::~gearSceneFileView()
 
 void gearSceneFileView::onCreate()
 {
-	m_pFileTreeView->create(m_pRenderer, this, "AssetsFileTV", this);
+	m_pFileTreeView->create(rendererGUI, this, "AssetsFileTV", this);
 
-	m_pSerachStringTextBoxPtr=new geTextBox(m_pFontManagerPtr);
-	m_pSerachStringTextBoxPtr->create(m_pRenderer, getToolBar(), "", 0, 1, 100, 13);
+	m_pSerachStringTextBoxPtr=new geTextBox(fontManagerGUI);
+	m_pSerachStringTextBoxPtr->create(rendererGUI, getToolBar(), "", 0, 1, 100, 13);
 	m_pSerachStringTextBoxPtr->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pSerachStringTextBoxPtr);
 
@@ -369,7 +369,7 @@ void gearSceneFileView::populateFiles(const char* dirPath)
 	destroyTVUserData(m_pFileTreeView->getRoot());
 	m_pFileTreeView->clearAndDestroyAll();
 
-	gearSceneFileView::find_files(m_pRenderer, dirPath, m_pSerachStringTextBoxPtr->getName(), m_pFileTreeView->getRoot(), m_cszSprites);
+	gearSceneFileView::find_files(rendererGUI, dirPath, m_pSerachStringTextBoxPtr->getName(), m_pFileTreeView->getRoot(), m_cszSprites);
 	m_pFileTreeView->getRoot()->traverseSetWidth(m_cSize.x);
 	m_pFileTreeView->refreshTreeView();
 }

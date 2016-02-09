@@ -30,7 +30,7 @@ public:
 	void create(rendererGL10* renderer, geLayout* pParentLayout, float x, float y, float cx, float cy);
 
 	void appendWindow(geWindow* window);
-	geWindow* getActiveWindow()	{	return m_pActiveWindowPointer;	}
+	geWindow* getActiveWindow()	{	return activeWindow;	}
 	void setActiveWindow(int index);
 	void setActiveWindow(geWindow* wnd);
 
@@ -43,7 +43,7 @@ public:
 	geLayout* createAsParent(geWindow* window);
 
 	geLayout* dropWindowOnMe(geWindow* window);
-	geLayout* getParentLayout()	{	return m_pParentLayout;	}
+	geLayout* getParentLayout()	{	return parentLayout;	}
 
 	geLayout* getRightMostParentLayout();
 	geLayout* getLeftMostParentLayout();
@@ -55,7 +55,7 @@ public:
 	void getResizableOnTopSide(int x, int y, std::vector<geLayout*>* vList);
 	void getResizableOnBottomSide(int x, int y, std::vector<geLayout*>* vList);
 
-	void setParentLayout(geLayout* parent)	{	m_pParentLayout=parent;	}
+	void setParentLayout(geLayout* parent)	{	parentLayout=parent;	}
 
 	bool removeChildLayout(geLayout* childLayout);
 	void appendLeftChildLayout(geLayout* childLayout);
@@ -63,8 +63,8 @@ public:
 	void appendTopChildLayout(geLayout* childLayout);
 	void appendBottomChildLayout(geLayout* childLayout);
 
-	void setLayoutDirection(ELAYOUT_DIRECTION eDirection)	{	m_eLayoutDirection=eDirection;	}
-	ELAYOUT_DIRECTION getLayoutDirection()					{	return m_eLayoutDirection;		}
+	void setLayoutDirection(ELAYOUT_DIRECTION eDirection)	{	layoutDirection=eDirection;	}
+	ELAYOUT_DIRECTION getLayoutDirection()					{	return layoutDirection;		}
 
 	geLayout* selectLayout(int x, int y);
 
@@ -90,15 +90,15 @@ protected:
 	virtual void onCancelEngagedControls();
 
 private:
-	geWindow* m_pActiveWindowPointer;
-	geVector2f m_cMousePreviousPos;
+	geWindow* activeWindow;
+	geVector2f mousePreviousPos;
 
-	std::vector<geWindow*> m_vChildWindows;
-	std::vector<geLayout*> m_vChildTopLayouts;
-	std::vector<geLayout*> m_vChildBottomLayouts;
-	std::vector<geLayout*> m_vChildRightLayouts;
-	std::vector<geLayout*> m_vChildLeftLayouts;
-	geLayout* m_pParentLayout;
-	ELAYOUT_DIRECTION m_eLayoutDirection;
-	float m_cVBClientAreaLine[6];
+	std::vector<geWindow*> childWindowList;
+	std::vector<geLayout*> childTopLayoutList;
+	std::vector<geLayout*> childBottomLayoutList;
+	std::vector<geLayout*> childRightLayoutList;
+	std::vector<geLayout*> childLeftLayoutList;
+	geLayout* parentLayout;
+	ELAYOUT_DIRECTION layoutDirection;
+	float vertexBufferClientAreaArray[6];
 };

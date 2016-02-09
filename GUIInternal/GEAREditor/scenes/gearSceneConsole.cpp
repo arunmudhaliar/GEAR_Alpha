@@ -24,20 +24,20 @@ void gearSceneConsole::onCreate()
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(110, 258, 16, 16);
 
-	m_pConsoleTreeView->create(m_pRenderer, this, "AssetsFileTV", this);
+	m_pConsoleTreeView->create(rendererGUI, this, "AssetsFileTV", this);
 
 	//clear btn
-	m_pClearBtn=new geToolBarButton(m_pRenderer, "Clear", getToolBar(), m_pFontManagerPtr);
+	m_pClearBtn=new geToolBarButton(rendererGUI, "Clear", getToolBar(), fontManagerGUI);
 	m_pClearBtn->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pClearBtn);
 
 	//clear all btn
-	m_pClearAllBtn=new geToolBarButton(m_pRenderer, "Clear All", getToolBar(), m_pFontManagerPtr);
+	m_pClearAllBtn=new geToolBarButton(rendererGUI, "Clear All", getToolBar(), fontManagerGUI);
 	m_pClearAllBtn->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pClearAllBtn);
 
 	//don't log all btn
-	m_pDontLogBtn=new geToolBarButton(m_pRenderer, "Don't Log", getToolBar(), m_pFontManagerPtr);
+	m_pDontLogBtn=new geToolBarButton(rendererGUI, "Don't Log", getToolBar(), fontManagerGUI);
 	m_pDontLogBtn->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pDontLogBtn);
 
@@ -101,7 +101,7 @@ void gearSceneConsole::appendConsoleRunRootNode()
 		}
 	}
 
-	m_pCurrentBuildRootNodePtr = new geTreeNode(m_pRenderer, m_pConsoleTreeView->getRoot(), buffer, &m_cszSprites[0], m_pFontManagerPtr);
+	m_pCurrentBuildRootNodePtr = new geTreeNode(rendererGUI, m_pConsoleTreeView->getRoot(), buffer, &m_cszSprites[0], fontManagerGUI);
 	m_pCurrentBuildRootNodePtr->traverseSetWidth(m_cSize.x);
 	m_pConsoleTreeView->refreshTreeView();
 
@@ -137,12 +137,12 @@ void gearSceneConsole::appendConsoleMsg(const char* msg, int msgtype)
 
 	if(m_pCurrentBuildRootNodePtr)
 	{
-		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL, m_pFontManagerPtr);
+		newtvConsoleNode = new geTreeNode(rendererGUI, m_pCurrentBuildRootNodePtr, msg_buffer, NULL, fontManagerGUI);
 	}
 	else
 	{
 		appendConsoleRunRootNode();
-		newtvConsoleNode = new geTreeNode(m_pRenderer, m_pCurrentBuildRootNodePtr, msg_buffer, NULL, m_pFontManagerPtr);
+		newtvConsoleNode = new geTreeNode(rendererGUI, m_pCurrentBuildRootNodePtr, msg_buffer, NULL, fontManagerGUI);
 	}
 
 	char buffer[32];

@@ -31,21 +31,21 @@ void gePushButton::create(rendererGL10* renderer, geGUIBase* parent, const char*
 	STRCPY(m_szName, name);
 	setClientAreaPrimaryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
-	setColor(&m_cVBCheckMark, 0.7, 0.7, 0.7, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.5f/**/);
+	setColor(&vertexBufferCheckMark, 0.7, 0.7, 0.7, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.5f/**/);
 
-	m_bMouseHover=false;
-	m_bCheck=false;
+	isMouseHover=false;
+	is_Check=false;
 }
 
 void gePushButton::draw()
 {
 	glPushMatrix();
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
-	drawRect(&m_cVBClientArea);
-	drawLine(m_cVBClientAreaLine, 0.1, 0.1, 0.1, 1.0f);
-	if(m_bCheck)
+	drawRect(&vertexBufferClientArea);
+	drawLine(vertexBufferClientAreaArray, 0.1, 0.1, 0.1, 1.0f);
+	if(is_Check)
 	{
-		drawRect(&m_cVBCheckMark);
+		drawRect(&vertexBufferCheckMark);
 	}
 	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 17, geFontManager::g_pFontArial10_84Ptr->getLineHeight()-5, m_cSize.x);
 	glPopMatrix();
@@ -64,7 +64,7 @@ void gePushButton::onSize(float cx, float cy, int flag)
 		cx,	cy,
 		0,		cy,
 	};
-	memcpy(m_cVBClientArea.m_cszVertexList, title_vertLst, sizeof(title_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
 
 
 	const float checkMark_vertLst[8] =
@@ -74,7 +74,7 @@ void gePushButton::onSize(float cx, float cy, int flag)
 		cx-3,	cy-3,
 		3,		cy-3,
 	};
-	memcpy(m_cVBCheckMark.m_cszVertexList, checkMark_vertLst, sizeof(checkMark_vertLst));
+	memcpy(vertexBufferCheckMark.vertexArray, checkMark_vertLst, sizeof(checkMark_vertLst));
 	
 
 	const float clientarea_linevertLst[8] =
@@ -84,12 +84,12 @@ void gePushButton::onSize(float cx, float cy, int flag)
 		0,	cy-0.5f,
 		cx,	cy-0.5f,
 	};
-	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
+	memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 }
 
 bool gePushButton::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	if(m_eState==BTN_STATE_NORMAL)
+	if(buttonState==BTN_STATE_NORMAL)
 	{
 		buttonPressed(true);
 	}
@@ -99,7 +99,7 @@ bool gePushButton::onMouseLButtonDown(float x, float y, int nFlag)
 
 bool gePushButton::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	if(m_eState==BTN_STATE_PRESSED)
+	if(buttonState==BTN_STATE_PRESSED)
 	{
 		onButtonClicked();
 		buttonNormal(false);
@@ -115,7 +115,7 @@ bool gePushButton::onMouseMove(float x, float y, int flag)
 
 void gePushButton::refresh()
 {
-	switch(m_eState)
+	switch(buttonState)
 	{
 	case BTN_STATE_NORMAL:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
@@ -132,7 +132,7 @@ void gePushButton::refresh()
 void gePushButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver)
 {
 	bool bClicked=false;
-	switch(m_eState)
+	switch(buttonState)
 	{
 	case BTN_STATE_NORMAL:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
@@ -144,17 +144,17 @@ void gePushButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassE
 		break;
 	case BTN_STATE_CANCEL:
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
-		m_eState=BTN_STATE_NORMAL;
+		buttonState=BTN_STATE_NORMAL;
 		break;
 	}
 
-	if(m_pGUIObserver && bClicked && !dontPassEventToObserver)
-		m_pGUIObserver->onButtonClicked(this);
+	if(guiObserver && bClicked && !dontPassEventToObserver)
+		guiObserver->onButtonClicked(this);
 }
 
 void gePushButton::onMouseEnterClientArea()
 {
-	if(m_eState==BTN_STATE_PRESSED)
+	if(buttonState==BTN_STATE_PRESSED)
 	{
 		buttonHover();
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.3f);
@@ -163,7 +163,7 @@ void gePushButton::onMouseEnterClientArea()
 
 void gePushButton::onMouseExitClientArea()
 {
-	if(m_eState>=BTN_STATE_PRESSED)
+	if(buttonState>=BTN_STATE_PRESSED)
 	{
 		buttonUnHover();
 		applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
@@ -172,5 +172,5 @@ void gePushButton::onMouseExitClientArea()
 
 void gePushButton::onButtonClicked()
 {
-	m_bCheck=!m_bCheck;
+	is_Check=!is_Check;
 }

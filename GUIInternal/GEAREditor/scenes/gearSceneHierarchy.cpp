@@ -29,7 +29,7 @@ void gearSceneHierarchy::onCreate()
 	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setObject3dObserverRecursive(this);
 	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setEngineObserver(this);
 
-	m_pCreateToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "Create", getToolBar(), m_pFontManagerPtr);
+	m_pCreateToolBarDropMenuBtnPtr=new geToolBarDropMenu(rendererGUI, "Create", getToolBar(), fontManagerGUI);
 	m_pCreateToolBarDropMenuBtnPtr->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pCreateToolBarDropMenuBtnPtr);
 
@@ -42,11 +42,11 @@ void gearSceneHierarchy::onCreate()
 	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Camera", 0x00004004);
 
 	//clear btn
-	m_pClearBtn=new geToolBarButton(m_pRenderer, "Clear All", getToolBar(), m_pFontManagerPtr);
+	m_pClearBtn=new geToolBarButton(rendererGUI, "Clear All", getToolBar(), fontManagerGUI);
 	m_pClearBtn->setGUIObserver(this);
 	getToolBar()->appendToolBarControl(m_pClearBtn);
 
-	m_pGameObjectsTreeView->create(m_pRenderer, this, "gameObjectsTV", this);
+	m_pGameObjectsTreeView->create(rendererGUI, this, "gameObjectsTV", this);
 
 	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	m_cszSprites[0].setClip(88, 382, 16, 16);
@@ -267,7 +267,7 @@ void gearSceneHierarchy::createTVNode(geTreeNode* parentNode, object3d* obj, con
 		sprite=&m_cszSprites[0];
 	}
 
-	geTreeNode* newtvNode = new geTreeNode(m_pRenderer, parentNode, name, sprite, m_pFontManagerPtr);
+	geTreeNode* newtvNode = new geTreeNode(rendererGUI, parentNode, name, sprite, fontManagerGUI);
 	newtvNode->setUserData(obj);
 	newtvNode->closeNode();
 	obj->setEditorUserData(newtvNode);

@@ -95,7 +95,7 @@ void geTextureDlg::onCreate()
 	//main window
 	m_pWindow = new geTextureDlgMainWindow(m_pFontManager);
 	m_pWindow->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
-	geLayout* mainLayout = m_pLayoutManager->getRootLayout()->createAsParent(m_pWindow);
+	geLayout* mainLayout = layoutManager->getRootLayout()->createAsParent(m_pWindow);
 	//
 
 	//info window
@@ -154,7 +154,7 @@ gxTexture* geTextureDlg::loadTextureFromMeta(CTextureManager& textureManager, un
 		gxTexture* pTexture = new gxTexture();
 		pTexture->setTexture(texturePack);
 		pTexture->setAssetFileCRC(crc, metaDataFileName);
-		if(texturePack->bAlphaTex)
+		if(texturePack->isAlphaTexure)
 		{
 			pTexture->setTextureType(gxTexture::TEX_ALPHA);
 		}

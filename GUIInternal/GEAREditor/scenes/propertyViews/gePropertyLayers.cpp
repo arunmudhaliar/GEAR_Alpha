@@ -7,12 +7,12 @@ gePropertyLayers::gePropertyLayers(rendererGL10* renderer, geGUIBase* parent, co
 	LayerManager* layerManager = monoWrapper::mono_engine_getWorld(0)->getLayerManager();
 
 	//window column
-	geWindowColumn* pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
+	geWindowColumn* pWindowColumn = new geWindowColumn(fontManagerGUI);
 	stWindowColumnRow* row=NULL;
-	pWindowColumn->create(m_pRenderer, this, 10, 300.0f, 10.0f, 0.15f);
+	pWindowColumn->create(rendererGUI, this, 10, 300.0f, 10.0f, 0.15f);
 	for(int x=0;x<MAX_LAYER;x++)
 	{
-		m_pTextBoxLayers[x] = new geTextBox(layerManager->getLayer(x)->getLayerName(), m_pFontManagerPtr);
+		m_pTextBoxLayers[x] = new geTextBox(layerManager->getLayer(x)->getLayerName(), fontManagerGUI);
 		m_pTextBoxLayers[x]->create(renderer, this, layerManager->getLayer(x)->getLayerName(), 0, 0, 150, 16);
 		m_pTextBoxLayers[x]->setGUIObserver(this);
 
@@ -36,26 +36,26 @@ gePropertyLayers::~gePropertyLayers()
 
 void gePropertyLayers::drawNode()
 {
-	drawRect(&m_cVBClientArea);
+	drawRect(&vertexBufferClientArea);
 
 	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
-	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+	if(childControlList.size() && hasAtleastOneTreeNodeChild)
 	{
-		if(m_bNodeOpen)
-			drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+		if(is_OpenNode)
+			drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		else
-			drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 	}
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
 	}
 
-	if(m_pSprite)
-		m_pSprite->draw();
+	if(sprite)
+		sprite->draw();
 }
 
 void gePropertyLayers::onTextChange(geGUIBase* textbox)

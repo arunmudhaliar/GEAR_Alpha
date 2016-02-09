@@ -35,13 +35,13 @@ public:
 	const char* getTextureName()
 	{
 		if(texture)
-			return texture->iTextureName;
+			return texture->textureName;
 
 		return NULL;
 	}
 	unsigned int getTextureID()	const
     {
-        return (texture)?texture->iTextureID:0;
+        return (texture)?texture->textureID:0;
     }
     
 	void setTextureType(ETEXTURE type)		{	textureType=type;	}

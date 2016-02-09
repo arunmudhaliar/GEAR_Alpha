@@ -21,6 +21,7 @@ public:
 
 protected:
 	virtual void onSize(float cx, float cy, int flag);
-	float m_cVBClientAreaLine[8];
-	ESEPERATOR_STYPE m_eStyle;
+    
+	float vertexBufferClientAreaArray[8];
+	ESEPERATOR_STYPE seperatorStyle;
 };

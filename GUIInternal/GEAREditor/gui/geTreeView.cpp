@@ -5,8 +5,8 @@ geTreeNode::geTreeNode(geFontManager* fontmanager):
 	geGUIBase(GEGUI_TREEVIEW_NODE, "TreeView Node", fontmanager)
 {
 	//no implementation
-	m_pParentTreeView=NULL;
-	m_pSprite=NULL;
+	parentTreeView=NULL;
+	sprite=NULL;
 }
 
 geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager, float xoffset):
@@ -14,17 +14,17 @@ geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* na
 {
 	createBase(renderer, parent);
 
-	m_bHaveAtleastOneTreeNodeChild=false;
-	m_fXOffSet=xoffset;
+	hasAtleastOneTreeNodeChild=false;
+	offSetX=xoffset;
 	if(parent==NULL)
 	{
 		setPos(0, 0);
-		m_fXOffSet=0;
+		offSetX=0;
 	}
 	else
 	{
-		m_fXOffSet=(parent->getParent()==NULL)?0:m_fXOffSet;
-		setPos(m_fXOffSet, GE_TREEVIEWNODE_CY);
+		offSetX=(parent->getParent()==NULL)?0:offSetX;
+		setPos(offSetX, GE_TREEVIEWNODE_CY);
 	}
 	setSize(70, GE_TREEVIEWNODE_CY);
 
@@ -44,13 +44,13 @@ geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* na
 		5+8,	(float)((GE_TREEVIEWNODE_CY-4)-(h>>1)),
 		5,		(float)((GE_TREEVIEWNODE_CY-4)-(h>>1)),
 	};
-	memcpy(m_cVBLayoutToggleButtonLine, togglebutton_linevertLst, sizeof(togglebutton_linevertLst));
+	memcpy(vertexBufferToggleButtonArray, togglebutton_linevertLst, sizeof(togglebutton_linevertLst));
 
-	m_pParentTreeView=NULL;
-	m_pSprite=NULL;
+	parentTreeView=NULL;
+	this->sprite=NULL;
 	setNodeSprite(sprite);
 
-	m_bSelected=false;
+	isNodeSelected=false;
 
 	setMouseBoundCheck(false);
 
@@ -60,59 +60,59 @@ geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* na
 
 geTreeNode::~geTreeNode()
 {
-	if(m_pSelectedControlPtr==this)
-		m_pSelectedControlPtr=NULL;
-	GE_DELETE(m_pSprite);
+	if(selectedControl==this)
+		selectedControl=NULL;
+	GE_DELETE(sprite);
 	destroyAllTVChilds();
 }
 
 void geTreeNode::destroyAllTVChilds()
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		GE_DELETE(tvnode);
 	}
-	m_vControls.clear();
+	childControlList.clear();
 }
 
 void geTreeNode::setNodeSprite(Sprite2Dx* sprite)
 {
 	if(sprite)
 	{
-		GE_DELETE(m_pSprite);
-		m_pSprite = new Sprite2Dx();
-		m_pSprite->copy(*sprite);
-		m_pSprite->setPos(5+11, 3);
+		GE_DELETE(this->sprite);
+		this->sprite = new Sprite2Dx();
+		this->sprite->copy(*sprite);
+		this->sprite->setPos(5+11, 3);
 	}
 }
 
 void geTreeNode::drawNode()
 {
-	if(m_bSelected)
+	if(isNodeSelected)
 	{
-		drawRect(&m_cVBClientArea);
+		drawRect(&vertexBufferClientArea);
 	}
 
 	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
-	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+	if(childControlList.size() && hasAtleastOneTreeNodeChild)
 	{
-		if(m_bNodeOpen)
-			drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+		if(is_OpenNode)
+			drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		else
-			drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 	}
 
-	if(m_pSprite)
-		m_pSprite->draw();
+	if(sprite)
+		sprite->draw();
 }
 
 void geTreeNode::draw()
 {
-	if(m_bNodeOpen)
+	if(is_OpenNode)
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* tvnode = *it;
 			if(tvnode->getGUIID()!=GEGUI_TREEVIEW_NODE)
@@ -141,24 +141,24 @@ void geTreeNode::onSize(float cx, float cy, int flag)
 		cx,	cy-1,
 		0,	cy-1,
 	};
-	memcpy(m_cVBClientArea.m_cszVertexList, clientarea_vertLst, sizeof(clientarea_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
 }
 
 geTreeNode* geTreeNode::getSelectedNode(int x, int y, int& xoff, int& yoff, bool& bClickedOnToggleButton)
 {
 	if(y>yoff && y<yoff+m_cSize.y)
 	{
-		if(x>xoff+4+m_fXOffSet && x<xoff+(5+9)+m_fXOffSet)
+		if(x>xoff+4+offSetX && x<xoff+(5+9)+offSetX)
 			bClickedOnToggleButton=true;
 		return this;
 	}
 
 	yoff+=m_cSize.y;
 
-	if(m_bNodeOpen)
+	if(is_OpenNode)
 	{
-		xoff+=m_fXOffSet;
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		xoff+=offSetX;
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* tvnode = *it;
 			if(tvnode->getGUIID()!=GEGUI_TREEVIEW_NODE)
@@ -168,7 +168,7 @@ geTreeNode* geTreeNode::getSelectedNode(int x, int y, int& xoff, int& yoff, bool
 			if(selectedNode)
 				return selectedNode;
 		}
-		xoff-=m_fXOffSet;
+		xoff-=offSetX;
 	}
 
 	return NULL;
@@ -176,9 +176,9 @@ geTreeNode* geTreeNode::getSelectedNode(int x, int y, int& xoff, int& yoff, bool
 
 void geTreeNode::getTotalHeightofAllNodes(int& height)
 {
-	if(m_bNodeOpen)
+	if(is_OpenNode)
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* tvnode = *it;
 			if(tvnode->getGUIID()!=GEGUI_TREEVIEW_NODE)
@@ -191,20 +191,20 @@ void geTreeNode::getTotalHeightofAllNodes(int& height)
 
 void geTreeNode::selectNode()
 {
-	setColor(&m_cVBClientArea, m_cNodeSelectionColor.x, m_cNodeSelectionColor.y, m_cNodeSelectionColor.z, 1.0f);
-	m_bSelected=true;
+	setColor(&vertexBufferClientArea, nodeSelectionColor.x, nodeSelectionColor.y, nodeSelectionColor.z, 1.0f);
+	isNodeSelected=true;
 }
 
 void geTreeNode::unselectNode()
 {
-	setColor(&m_cVBClientArea, m_cNodeColor.x, m_cNodeColor.y, m_cNodeColor.z, 1.0f);
-	m_bSelected=false;
+	setColor(&vertexBufferClientArea, nodeDiffuseColor.x, nodeDiffuseColor.y, nodeDiffuseColor.z, 1.0f);
+	isNodeSelected=false;
 }
 
 void geTreeNode::traverseSetWidth(float cx)
 {
 	setSize(cx, m_cSize.y);
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		if(tvnode->getGUIID()!=GEGUI_TREEVIEW_NODE)
@@ -215,14 +215,14 @@ void geTreeNode::traverseSetWidth(float cx)
 
 void geTreeNode::deFocus()
 {
-	setColor(&m_cVBClientArea, 0.25f, 0.25f, 0.25f, 1.0f);
+	setColor(&vertexBufferClientArea, 0.25f, 0.25f, 0.25f, 1.0f);
 }
 
 
 void geTreeNode::onAppendChild(geGUIBase* child)
 {
-	if(!m_bHaveAtleastOneTreeNodeChild)
-		m_bHaveAtleastOneTreeNodeChild=(child->getGUIID()==GEGUI_TREEVIEW_NODE);
+	if(!hasAtleastOneTreeNodeChild)
+		hasAtleastOneTreeNodeChild=(child->getGUIID()==GEGUI_TREEVIEW_NODE);
 }
 
 void geTreeNode::appnendTVChild(geTreeNode* child)
@@ -235,17 +235,17 @@ void geTreeNode::appnendTVChild(geTreeNode* child)
 
 void geTreeNode::removeTVChild(geTreeNode* child)
 {
-	if(m_vControls.size()==0)
+	if(childControlList.size()==0)
 		return;
 
-	m_vControls.erase(std::remove(m_vControls.begin(), m_vControls.end(), child), m_vControls.end());
-	m_bHaveAtleastOneTreeNodeChild=false;
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	childControlList.erase(std::remove(childControlList.begin(), childControlList.end(), child), childControlList.end());
+	hasAtleastOneTreeNodeChild=false;
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		if(tvnode->getGUIID()==GEGUI_TREEVIEW_NODE)
 		{
-			m_bHaveAtleastOneTreeNodeChild=true;
+			hasAtleastOneTreeNodeChild=true;
 			break;
 		}
 	}
@@ -304,11 +304,11 @@ geTreeNode* geTreeNode::getBottomMostNode()
 {
 	if(isOpenNode())
 	{
-		if(m_vControls.size()==0)
+		if(childControlList.size()==0)
 			return this;
 
 		//geGUIBase* tvnode_bottomNode=NULL;
-		for(std::vector<geGUIBase*>::reverse_iterator rit = m_vControls.rbegin(); rit != m_vControls.rend(); ++rit)
+		for(std::vector<geGUIBase*>::reverse_iterator rit = childControlList.rbegin(); rit != childControlList.rend(); ++rit)
 		{
 			geGUIBase* tvnode = *rit;
 			if(tvnode->getGUIID()==GEGUI_TREEVIEW_NODE)
@@ -327,7 +327,7 @@ geTreeNode* geTreeNode::getBottomMostNode()
 geTreeNode* geTreeNode::getParentBottomNextNode(geTreeNode* childnodeToCheck)
 {
 	geGUIBase* tvnode_bottomNode=NULL;
-	for(std::vector<geGUIBase*>::reverse_iterator rit = m_vControls.rbegin(); rit != m_vControls.rend(); ++rit)
+	for(std::vector<geGUIBase*>::reverse_iterator rit = childControlList.rbegin(); rit != childControlList.rend(); ++rit)
 	{
 		geGUIBase* tvnode = *rit;
 		if(tvnode->getGUIID()==GEGUI_TREEVIEW_NODE)
@@ -355,10 +355,10 @@ geTreeNode* geTreeNode::getParentBottomNextNode(geTreeNode* childnodeToCheck)
 
 geTreeNode* geTreeNode::getBottomNode()
 {
-	if(isOpenNode() && m_vControls.size())
+	if(isOpenNode() && childControlList.size())
 	{
 		geTreeNode* tvnode_nextNode=NULL;
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* tvnode = *it;
 			if(tvnode->getGUIID()==GEGUI_TREEVIEW_NODE)
@@ -429,7 +429,7 @@ geTreeNode* geTreeNode::getBottomNode()
 int geTreeNode::getTVNodeChildCount()
 {
 	int cnt=0;
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		if(tvnode->getGUIID()==GEGUI_TREEVIEW_NODE)
@@ -443,7 +443,7 @@ int geTreeNode::getTVNodeChildCount()
 
 void geTreeNode::onNotify(int msg)
 {
-	if(!m_pParentTreeView)
+	if(!parentTreeView)
 	{
 		notifyParent(msg);
 	}
@@ -453,7 +453,7 @@ void geTreeNode::onNotify(int msg)
 		{
 		case 700:	//invalidate view msg
 			{
-				geTreeView* tree = (geTreeView*)m_pParentTreeView;
+				geTreeView* tree = (geTreeView*)parentTreeView;
 				tree->refreshTreeView();
 				tree->resetSelectedNodePtr();
 			}
@@ -466,78 +466,78 @@ void geTreeNode::onNotify(int msg)
 geTreeView::geTreeView(geFontManager* fontmanager):
 	geGUIBase(GEGUI_TREEVIEW, "TreeView", fontmanager)
 {
-	m_pRootNode=NULL;
-	m_fVirtualYPos=0.0f;
-	m_pTVObserver=NULL;
-	m_pCurrentSelectedNodePtr=NULL;
-	m_bSelectionChanged=false;
-    m_pVerticalScrollBar = new geScrollBar(fontmanager);
+	rootTreeNode=NULL;
+	virtualYPosition=0.0f;
+	treeViewObserver=NULL;
+	currentSelectedTreeNode=NULL;
+	isSelectionChanged=false;
+    verticalScrollBar = new geScrollBar(fontmanager);
 }
 
 geTreeView::geTreeView(const char* name, geFontManager* fontmanager):
 	geGUIBase(GEGUI_TREEVIEW, name, fontmanager)
 {
-	m_pRootNode=NULL;
-	m_fVirtualYPos=0.0f;
-	m_pTVObserver=NULL;
-	m_pCurrentSelectedNodePtr=NULL;
-	m_bSelectionChanged=false;
-    m_pVerticalScrollBar = new geScrollBar(fontmanager);
+	rootTreeNode=NULL;
+	virtualYPosition=0.0f;
+	treeViewObserver=NULL;
+	currentSelectedTreeNode=NULL;
+	isSelectionChanged=false;
+    verticalScrollBar = new geScrollBar(fontmanager);
 }
 
 geTreeView::~geTreeView()
 {
-	GE_DELETE(m_pRootNode);
-	m_cSelectedNodes.clear();
-    GE_DELETE(m_pVerticalScrollBar);
+	GE_DELETE(rootTreeNode);
+	selectedTreeNodeList.clear();
+    GE_DELETE(verticalScrollBar);
 }
 
 void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* name, MTreeViewObserver* pObserver)
 {
-	m_pTVObserver=pObserver;
+	treeViewObserver=pObserver;
 	createBase(renderer, parent);
 	setSizable(true);
 	setPos(0, 0);
 	setSize(parent->getSize().x, parent->getSize().y-parent->getTopMarginOffsetHeight());
 
-	m_pVerticalScrollBar->create(renderer, this, this);
+	verticalScrollBar->create(renderer, this, this);
 
-	m_fVirtualYPos=0.0f;
+	virtualYPosition=0.0f;
 
-	m_pRootNode = new geTreeNode(renderer, NULL, "root", NULL, m_pFontManagerPtr);
-	m_pRootNode->setParentTreeView(this);
-	m_pCurrentSelectedNodePtr=NULL;
+	rootTreeNode = new geTreeNode(renderer, NULL, "root", NULL, fontManagerGUI);
+	rootTreeNode->setParentTreeView(this);
+	currentSelectedTreeNode=NULL;
 }
 
 void geTreeView::draw()
 {
 	glPushMatrix();
-	glTranslatef(m_cPos.x/*-m_pRootNode->getXOffset()*/, (int)(m_cPos.y+m_fVirtualYPos), 0.0f);
-	m_pRootNode->draw();
+	glTranslatef(m_cPos.x/*-rootTreeNode->getXOffset()*/, (int)(m_cPos.y+virtualYPosition), 0.0f);
+	rootTreeNode->draw();
 	glPopMatrix();
 
-	m_pVerticalScrollBar->draw();
+	verticalScrollBar->draw();
 }
 
 //#if !defined(__APPLE__) //disable Drag-Drop
 void geTreeView::onDragDrop(int x, int y, MDropData* dropObject)
 {
-	int xoff=-m_pRootNode->getXOffset();
-	int yoff=(int)m_fVirtualYPos-GE_TREEVIEWNODE_CY;
+	int xoff=-rootTreeNode->getXOffset();
+	int yoff=(int)virtualYPosition-GE_TREEVIEWNODE_CY;
 	bool bClickedOnToggleButton=false;
-	geTreeNode* selectedNode = m_pRootNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
+	geTreeNode* selectedNode = rootTreeNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
 	if(selectedNode)
 	{
 		//std::vector<geGUIBase*>* list=selectedNode->getChildControls();
 		//for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 		//{
 		//	geGUIBase* obj = *it;
-		//	float xxx=x-(/*getPos().x+*/selectedNode->getPos().x+xoff)+m_pRootNode->getXOffset();
+		//	float xxx=x-(/*getPos().x+*/selectedNode->getPos().x+xoff)+rootTreeNode->getXOffset();
 		//	float yyy=y-(/*getPos().y+*/selectedNode->getPos().y/*+getTopMarginOffsetHeight()*/+yoff+GE_TREEVIEWNODE_CY);
 
 		//	obj->DragDrop(xxx, yyy, dropObject);
 		//}
-		selectedNode->DragDrop(x-xoff+m_pRootNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, dropObject);
+		selectedNode->DragDrop(x-xoff+rootTreeNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, dropObject);
 		return;
 	}
 
@@ -554,7 +554,7 @@ void geTreeView::onCommand(int cmd)
 	//for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
 	//{
 	//	geGUIBase* obj = *it;
-	//	float xxx=x-(/*getPos().x+*/selectedNode->getPos().x+xoff)+m_pRootNode->getXOffset();
+	//	float xxx=x-(/*getPos().x+*/selectedNode->getPos().x+xoff)+rootTreeNode->getXOffset();
 	//	float yyy=y-(/*getPos().y+*/selectedNode->getPos().y/*+getTopMarginOffsetHeight()*/+yoff+GE_TREEVIEWNODE_CY);
 
 	//	obj->DragDrop(xxx, yyy, dropObject);
@@ -563,13 +563,13 @@ void geTreeView::onCommand(int cmd)
 
 bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	if(m_pVerticalScrollBar->MouseLButtonDown(x, y, nFlag))
+	if(verticalScrollBar->MouseLButtonDown(x, y, nFlag))
 		return false;
 
-	int xoff=-m_pRootNode->getXOffset();
-	int yoff=(int)m_fVirtualYPos-GE_TREEVIEWNODE_CY;
+	int xoff=-rootTreeNode->getXOffset();
+	int yoff=(int)virtualYPosition-GE_TREEVIEWNODE_CY;
 	bool bClickedOnToggleButton=false;
-	geTreeNode* selectedNode = m_pRootNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
+	geTreeNode* selectedNode = rootTreeNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
 	if(selectedNode)
 	{
 		if(bClickedOnToggleButton)
@@ -585,11 +585,11 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 		}
 		else
 		{
-			m_fOffsetCacheForMouseMove.set(xoff+m_pRootNode->getXOffset(), yoff+GE_TREEVIEWNODE_CY);
-			selectedNode->MouseLButtonDown(x-xoff+m_pRootNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, nFlag);
+			offsetCacheForMouseMove.set(xoff+rootTreeNode->getXOffset(), yoff+GE_TREEVIEWNODE_CY);
+			selectedNode->MouseLButtonDown(x-xoff+rootTreeNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, nFlag);
 
 			bool bAlreadySelected=false;
-			for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+			for(std::vector<geTreeNode*>::iterator it = selectedTreeNodeList.begin(); it != selectedTreeNodeList.end(); ++it)
 			{
 				geTreeNode* node = *it;
 				if(node==selectedNode)
@@ -604,61 +604,61 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 				selectedNode->selectNode();
 				if(!bAlreadySelected)
 				{
-					if(m_cSelectedNodes.size()==0)
+					if(selectedTreeNodeList.size()==0)
 					{
-						if(m_pCurrentSelectedNodePtr)
-							m_pCurrentSelectedNodePtr->unselectNode();
+						if(currentSelectedTreeNode)
+							currentSelectedTreeNode->unselectNode();
 					}
-					m_cSelectedNodes.push_back(selectedNode);
+					selectedTreeNodeList.push_back(selectedNode);
 				}
 				else
 				{
-					m_cSelectedNodes.erase(std::remove(m_cSelectedNodes.begin(), m_cSelectedNodes.end(), selectedNode), m_cSelectedNodes.end());
+					selectedTreeNodeList.erase(std::remove(selectedTreeNodeList.begin(), selectedTreeNodeList.end(), selectedNode), selectedTreeNodeList.end());
 					selectedNode->unselectNode();
-					if(m_pCurrentSelectedNodePtr==selectedNode)
-						m_pCurrentSelectedNodePtr=NULL;
+					if(currentSelectedTreeNode==selectedNode)
+						currentSelectedTreeNode=NULL;
 				}
 			}
 			else
 			{
 				if(!bAlreadySelected)
 				{
-					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					for(std::vector<geTreeNode*>::iterator it = selectedTreeNodeList.begin(); it != selectedTreeNodeList.end(); ++it)
 					{
 						geTreeNode* node = *it;
 						node->unselectNode();
 					}
-					m_cSelectedNodes.clear();
+					selectedTreeNodeList.clear();
 
 					selectedNode->selectNode();
-					if(m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=selectedNode)
-						m_pCurrentSelectedNodePtr->unselectNode();
-					m_pCurrentSelectedNodePtr=selectedNode;
-					m_cSelectedNodes.push_back(selectedNode);
+					if(currentSelectedTreeNode && currentSelectedTreeNode!=selectedNode)
+						currentSelectedTreeNode->unselectNode();
+					currentSelectedTreeNode=selectedNode;
+					selectedTreeNodeList.push_back(selectedNode);
 				}
 				else
 				{
-					m_pCurrentSelectedNodePtr=selectedNode;
+					currentSelectedTreeNode=selectedNode;
 					selectedNode->selectNode();
-					//m_pTVObserver->onTVSelectionChange(selectedNode, this);	//moved to onMouseLButtonUp
-					m_bSelectionChanged=true;
+					//treeViewObserver->onTVSelectionChange(selectedNode, this);	//moved to onMouseLButtonUp
+					isSelectionChanged=true;
 				}
 			}
 
 			if(!bAlreadySelected)
 			{
-				if(!(nFlag&MK_CONTROL) && m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=selectedNode)
-					m_pCurrentSelectedNodePtr->unselectNode();
-				m_pCurrentSelectedNodePtr=selectedNode;
-				//m_pTVObserver->onTVSelectionChange(selectedNode, this);	//moved to onMouseLButtonUp
-				m_bSelectionChanged=true;
+				if(!(nFlag&MK_CONTROL) && currentSelectedTreeNode && currentSelectedTreeNode!=selectedNode)
+					currentSelectedTreeNode->unselectNode();
+				currentSelectedTreeNode=selectedNode;
+				//treeViewObserver->onTVSelectionChange(selectedNode, this);	//moved to onMouseLButtonUp
+				isSelectionChanged=true;
 			}
 		}
 
 		
-		m_iTotalHeightOfAllNodes=0;
-		m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
-		m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
+		totalHeightOfAllNodes=0;
+		rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
+		verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
 		return true;
 	}
 
@@ -667,22 +667,22 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 
 bool geTreeView::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	m_pVerticalScrollBar->MouseLButtonUp(x, y, nFlag);
+	verticalScrollBar->MouseLButtonUp(x, y, nFlag);
 
-	if(m_bSelectionChanged)
+	if(isSelectionChanged)
 	{
-		if(m_pCurrentSelectedNodePtr)
-			m_pTVObserver->onTVSelectionChange(m_pCurrentSelectedNodePtr, this);
-		m_bSelectionChanged=false;
+		if(currentSelectedTreeNode)
+			treeViewObserver->onTVSelectionChange(currentSelectedTreeNode, this);
+		isSelectionChanged=false;
 	}
 
-	int xoff=-m_pRootNode->getXOffset();
-	int yoff=(int)m_fVirtualYPos-GE_TREEVIEWNODE_CY;
+	int xoff=-rootTreeNode->getXOffset();
+	int yoff=(int)virtualYPosition-GE_TREEVIEWNODE_CY;
 	bool bClickedOnToggleButton=false;
-	geTreeNode* selectedNode = m_pRootNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
+	geTreeNode* selectedNode = rootTreeNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
 	if(selectedNode)
 	{
-		selectedNode->MouseLButtonUp(x-xoff+m_pRootNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, nFlag);
+		selectedNode->MouseLButtonUp(x-xoff+rootTreeNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, nFlag);
 	}
 
 	return true;//arun-check geGUIBase::onMouseLButtonUp(x, y, nFlag);
@@ -690,56 +690,56 @@ bool geTreeView::onMouseLButtonUp(float x, float y, int nFlag)
 
 bool geTreeView::onMouseMove(float x, float y, int flag)
 {
-	m_pVerticalScrollBar->MouseMove(x, y, flag);
+	verticalScrollBar->MouseMove(x, y, flag);
 
 	//arun-check: need to optimize
-	int xoff=-m_pRootNode->getXOffset();
-	int yoff=(int)m_fVirtualYPos-GE_TREEVIEWNODE_CY;
+	int xoff=-rootTreeNode->getXOffset();
+	int yoff=(int)virtualYPosition-GE_TREEVIEWNODE_CY;
 	bool bClickedOnToggleButton=false;
-	geTreeNode* selectedNode = m_pRootNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
+	geTreeNode* selectedNode = rootTreeNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
 	if(selectedNode)
 	{
-		selectedNode->MouseMove(x-xoff+m_pRootNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, flag);
+		selectedNode->MouseMove(x-xoff+rootTreeNode->getXOffset(), y-yoff+GE_TREEVIEWNODE_CY, flag);
 	}
 
 	//if(m_pSelectedNodePtr)
 	//{
-	//	//int xoff=-m_pRootNode->getXOffset();
-	//	//int yoff=(int)m_fVirtualYPos-GE_TREEVIEWNODE_CY;
-	//	m_pSelectedNodePtr->MouseMove(x-m_fOffsetCacheForMouseMove.x, y-m_fOffsetCacheForMouseMove.y, flag);
+	//	//int xoff=-rootTreeNode->getXOffset();
+	//	//int yoff=(int)virtualYPosition-GE_TREEVIEWNODE_CY;
+	//	m_pSelectedNodePtr->MouseMove(x-offsetCacheForMouseMove.x, y-offsetCacheForMouseMove.y, flag);
 	//}
 	return geGUIBase::onMouseMove(x, y, flag);
 }
 
 void geTreeView::onMouseWheel(int zDelta, int x, int y, int flag)
 {
-	m_pVerticalScrollBar->scrollMouseWheel(zDelta, x, y, flag);
+	verticalScrollBar->scrollMouseWheel(zDelta, x, y, flag);
 	geGUIBase::onMouseWheel(zDelta, x, y, flag);
 }
 
 geTreeNode* geTreeView::getTVNode(float x, float y)
 {
-	if(m_pVerticalScrollBar->isPointInsideClientArea(x, y))
+	if(verticalScrollBar->isPointInsideClientArea(x, y))
 		return NULL;
 
-	int xoff=-m_pRootNode->getXOffset();
-	int yoff=(int)m_fVirtualYPos-GE_TREEVIEWNODE_CY;
+	int xoff=-rootTreeNode->getXOffset();
+	int yoff=(int)virtualYPosition-GE_TREEVIEWNODE_CY;
 	bool bClickedOnToggleButton=false;
-	geTreeNode* selectedNode = m_pRootNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
+	geTreeNode* selectedNode = rootTreeNode->getSelectedNode(x, y, xoff, yoff, bClickedOnToggleButton);
 
 	return selectedNode;
 }
 
 void geTreeView::onSize(float cx, float cy, int flag)
 {
-	m_pVerticalScrollBar->setPos(cx-SCROLLBAR_SIZE, 0);
-	m_pVerticalScrollBar->setSize(SCROLLBAR_SIZE, cy);
+	verticalScrollBar->setPos(cx-SCROLLBAR_SIZE, 0);
+	verticalScrollBar->setSize(SCROLLBAR_SIZE, cy);
 
-	if(m_pRootNode)
+	if(rootTreeNode)
 	{
-		//m_iTotalHeightOfAllNodes=0;
-		//m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
-		m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
+		//totalHeightOfAllNodes=0;
+		//rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
+		verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
 	}
 
 	geGUIBase::onSize(cx, cy, flag);
@@ -747,16 +747,16 @@ void geTreeView::onSize(float cx, float cy, int flag)
 
 void geTreeView::onResizeComplete()
 {
-	m_pVerticalScrollBar->setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
-	m_pVerticalScrollBar->setSize(SCROLLBAR_SIZE, m_cSize.y);
-	if(m_pRootNode)
+	verticalScrollBar->setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
+	verticalScrollBar->setSize(SCROLLBAR_SIZE, m_cSize.y);
+	if(rootTreeNode)
 	{
-		if(m_pRootNode->getSize().x!=m_cSize.x)
-			m_pRootNode->traverseSetWidth(m_cSize.x);
+		if(rootTreeNode->getSize().x!=m_cSize.x)
+			rootTreeNode->traverseSetWidth(m_cSize.x);
 
-		m_iTotalHeightOfAllNodes=0;
-		m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
-		m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
+		totalHeightOfAllNodes=0;
+		rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
+		verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
 	}
 
 	geGUIBase::onResizeComplete();
@@ -764,20 +764,20 @@ void geTreeView::onResizeComplete()
 
 void geTreeView::onCancelEngagedControls()
 {
-	m_pVerticalScrollBar->CancelEngagedControls();
-	m_pRootNode->CancelEngagedControls();
-	m_bSelectionChanged=false;
+	verticalScrollBar->CancelEngagedControls();
+	rootTreeNode->CancelEngagedControls();
+	isSelectionChanged=false;
 	geGUIBase::onCancelEngagedControls();
 }
 
 void geTreeView::onScrollBarChange(geScrollBar* scrollbar)
 {
-	m_fVirtualYPos=-(scrollbar->getScrollGrabberYPos()/(scrollbar->getSize().y-scrollbar->getScrollGrabberHeight())) *(1.0f-scrollbar->getActualRatio())*scrollbar->getContentHeight();//+getParent()->getTopMarginOffsetHeight();
+	virtualYPosition=-(scrollbar->getScrollGrabberYPos()/(scrollbar->getSize().y-scrollbar->getScrollGrabberHeight())) *(1.0f-scrollbar->getActualRatio())*scrollbar->getContentHeight();//+getParent()->getTopMarginOffsetHeight();
 }
 
 void geTreeView::onFocusLost()
 {
-	for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+	for(std::vector<geTreeNode*>::iterator it = selectedTreeNodeList.begin(); it != selectedTreeNodeList.end(); ++it)
 	{
 		geTreeNode* node = *it;
 		node->deFocus();
@@ -788,39 +788,39 @@ void geTreeView::onFocusLost()
 
 void geTreeView::clearAndDestroyAll()
 {
-	m_bSelectionChanged=false;
-	m_pCurrentSelectedNodePtr=NULL;
-	m_cSelectedNodes.clear();
-	GE_DELETE(m_pRootNode);
-	m_fVirtualYPos=0.0f;
-	m_pVerticalScrollBar->setConetentHeight(0);
+	isSelectionChanged=false;
+	currentSelectedTreeNode=NULL;
+	selectedTreeNodeList.clear();
+	GE_DELETE(rootTreeNode);
+	virtualYPosition=0.0f;
+	verticalScrollBar->setConetentHeight(0);
 
-	m_pRootNode = new geTreeNode(m_pRenderer, NULL, "root", NULL, m_pFontManagerPtr);
-	m_pRootNode->setParentTreeView(this);
+	rootTreeNode = new geTreeNode(rendererGUI, NULL, "root", NULL, fontManagerGUI);
+	rootTreeNode->setParentTreeView(this);
 }
 
 void geTreeView::refreshTreeView(bool bDoNotResetScrollBarPosition)
 {
-	m_bSelectionChanged=false;
-	float old_ypos=m_pVerticalScrollBar->getScrollGrabberYPos();
-	m_pVerticalScrollBar->setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
-	m_pVerticalScrollBar->setSize(SCROLLBAR_SIZE, m_cSize.y);
-	m_pVerticalScrollBar->resetScrollBar();
+	isSelectionChanged=false;
+	float old_ypos=verticalScrollBar->getScrollGrabberYPos();
+	verticalScrollBar->setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
+	verticalScrollBar->setSize(SCROLLBAR_SIZE, m_cSize.y);
+	verticalScrollBar->resetScrollBar();
 
-	if(m_pRootNode)
+	if(rootTreeNode)
 	{
-		m_iTotalHeightOfAllNodes=0;
-		m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
+		totalHeightOfAllNodes=0;
+		rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
 		if(bDoNotResetScrollBarPosition)
-			m_pVerticalScrollBar->setScrollGrabberYPos(old_ypos);
-		m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
+			verticalScrollBar->setScrollGrabberYPos(old_ypos);
+		verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
 	}
 
 }
 
 void geTreeView::quick_refreshTreeViewForOnlyVerticalScrollBar(float deltaheight)
 {
-	m_pVerticalScrollBar->setConetentHeight(m_pVerticalScrollBar->getContentHeight()+deltaheight);
+	verticalScrollBar->setConetentHeight(verticalScrollBar->getContentHeight()+deltaheight);
 }
 
 bool geTreeView::onKeyDown(int charValue, int flag)
@@ -830,7 +830,7 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 	//39-right
 	//40-down
 
-	geTreeNode* pSelectedNodePtr = m_pCurrentSelectedNodePtr;
+	geTreeNode* pSelectedNodePtr = currentSelectedTreeNode;
 	if (charValue == SDL_SCANCODE_UP)//38
 	{
 		geTreeNode* topNode=NULL;
@@ -845,18 +845,18 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 			{
 				if(topNode!=pSelectedNodePtr)
 				{
-					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					for(std::vector<geTreeNode*>::iterator it = selectedTreeNodeList.begin(); it != selectedTreeNodeList.end(); ++it)
 					{
 						geTreeNode* node = *it;
 						node->unselectNode();
 					}
-					m_cSelectedNodes.clear();
+					selectedTreeNodeList.clear();
 
 					pSelectedNodePtr->unselectNode();
 					pSelectedNodePtr=topNode;
 					pSelectedNodePtr->selectNode();
-					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
-					m_pTVObserver->onTVSelectionChange(topNode, this);
+					currentSelectedTreeNode=pSelectedNodePtr;
+					treeViewObserver->onTVSelectionChange(topNode, this);
 					refreshTreeView(true);
 					return geGUIBase::onKeyDown(charValue, flag);
 				}
@@ -877,18 +877,18 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 			{
 				if(bottomNode!=pSelectedNodePtr)
 				{
-					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					for(std::vector<geTreeNode*>::iterator it = selectedTreeNodeList.begin(); it != selectedTreeNodeList.end(); ++it)
 					{
 						geTreeNode* node = *it;
 						node->unselectNode();
 					}
-					m_cSelectedNodes.clear();
+					selectedTreeNodeList.clear();
 
 					pSelectedNodePtr->unselectNode();
 					pSelectedNodePtr=bottomNode;
 					pSelectedNodePtr->selectNode();
-					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
-					m_pTVObserver->onTVSelectionChange(bottomNode, this);
+					currentSelectedTreeNode=pSelectedNodePtr;
+					treeViewObserver->onTVSelectionChange(bottomNode, this);
 					refreshTreeView(true);
 					return geGUIBase::onKeyDown(charValue, flag);
 				}
@@ -906,20 +906,20 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 				geTreeNode* parentNode = (geTreeNode*)pSelectedNodePtr->getParent();
 				if(parentNode && parentNode!=getRoot())
 				{
-					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					for(std::vector<geTreeNode*>::iterator it = selectedTreeNodeList.begin(); it != selectedTreeNodeList.end(); ++it)
 					{
 						geTreeNode* node = *it;
 						node->unselectNode();
 					}
-					m_cSelectedNodes.clear();
+					selectedTreeNodeList.clear();
 
 					pSelectedNodePtr->unselectNode();
 					pSelectedNodePtr=parentNode;
 					pSelectedNodePtr->selectNode();
 					pSelectedNodePtr->closeNode();
-					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
+					currentSelectedTreeNode=pSelectedNodePtr;
 					refreshTreeView(true);
-					m_pTVObserver->onTVSelectionChange(parentNode, this);
+					treeViewObserver->onTVSelectionChange(parentNode, this);
 				}
 			}
 		}
@@ -946,18 +946,18 @@ bool geTreeView::onKeyDown(int charValue, int flag)
 					}
 					//
 					
-					for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+					for(std::vector<geTreeNode*>::iterator it = selectedTreeNodeList.begin(); it != selectedTreeNodeList.end(); ++it)
 					{
 						geTreeNode* node = *it;
 						node->unselectNode();
 					}
-					m_cSelectedNodes.clear();
+					selectedTreeNodeList.clear();
 
 					pSelectedNodePtr->selectNode();
 					//pSelectedNodePtr->closeNode();
-					m_pCurrentSelectedNodePtr=pSelectedNodePtr;
+					currentSelectedTreeNode=pSelectedNodePtr;
 					refreshTreeView(true);
-					m_pTVObserver->onTVSelectionChange(pSelectedNodePtr, this);
+					treeViewObserver->onTVSelectionChange(pSelectedNodePtr, this);
 				}
 			}
 		}
@@ -973,22 +973,22 @@ bool geTreeView::onKeyUp(int charValue, int flag)
 
 geTreeNode* geTreeView::getSelectedNode()
 {
-	if(m_cSelectedNodes.size())
-		return m_cSelectedNodes.at(m_cSelectedNodes.size()-1);
+	if(selectedTreeNodeList.size())
+		return selectedTreeNodeList.at(selectedTreeNodeList.size()-1);
 	else
 		return NULL;
 }
 
 void geTreeView::resetSelectedNodePtr()
 {
-	m_pCurrentSelectedNodePtr=NULL;
-	m_cSelectedNodes.clear();
+	currentSelectedTreeNode=NULL;
+	selectedTreeNodeList.clear();
 }
 
 void geTreeView::selectNode(geTreeNode* nodetoselect)
 {
 	bool bAlreadySelected=false;
-	for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+	for(std::vector<geTreeNode*>::iterator it = selectedTreeNodeList.begin(); it != selectedTreeNodeList.end(); ++it)
 	{
 		geTreeNode* node = *it;
 		if(node==nodetoselect)
@@ -1000,22 +1000,22 @@ void geTreeView::selectNode(geTreeNode* nodetoselect)
 
 	if(!bAlreadySelected)
 	{
-		for(std::vector<geTreeNode*>::iterator it = m_cSelectedNodes.begin(); it != m_cSelectedNodes.end(); ++it)
+		for(std::vector<geTreeNode*>::iterator it = selectedTreeNodeList.begin(); it != selectedTreeNodeList.end(); ++it)
 		{
 			geTreeNode* node = *it;
 			node->unselectNode();
 		}
-		m_cSelectedNodes.clear();
+		selectedTreeNodeList.clear();
 
 		nodetoselect->selectNode();
-		if(m_pCurrentSelectedNodePtr && m_pCurrentSelectedNodePtr!=nodetoselect)
-			m_pCurrentSelectedNodePtr->unselectNode();
-		m_pCurrentSelectedNodePtr=nodetoselect;
-		m_cSelectedNodes.push_back(nodetoselect);
+		if(currentSelectedTreeNode && currentSelectedTreeNode!=nodetoselect)
+			currentSelectedTreeNode->unselectNode();
+		currentSelectedTreeNode=nodetoselect;
+		selectedTreeNodeList.push_back(nodetoselect);
 	}
 	else
 	{
-		m_pCurrentSelectedNodePtr=nodetoselect;
+		currentSelectedTreeNode=nodetoselect;
 		nodetoselect->selectNode();
 	}
 	
@@ -1030,8 +1030,8 @@ void geTreeView::selectNode(geTreeNode* nodetoselect)
 		pnode=(geTreeNode*)pnode->getParent();
 	}
 
-	m_pTVObserver->onTVSelectionChange(nodetoselect, this);
-	m_iTotalHeightOfAllNodes=0;
-	m_pRootNode->getTotalHeightofAllNodes(m_iTotalHeightOfAllNodes);
-	m_pVerticalScrollBar->setConetentHeight(m_iTotalHeightOfAllNodes);
+	treeViewObserver->onTVSelectionChange(nodetoselect, this);
+	totalHeightOfAllNodes=0;
+	rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
+	verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
 }

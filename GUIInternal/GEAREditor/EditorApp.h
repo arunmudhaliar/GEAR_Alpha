@@ -71,7 +71,7 @@ public:
 #endif
 	//static rendererGL10* getMainRenderer()	{	return g_pMainRenderer;	}
 
-	bool isInitialized()	{	return m_bInitialised;	}
+	bool isInitialized()	{	return is_Initialised;	}
 
 #if _WIN32
 	static bool showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir);
@@ -89,9 +89,9 @@ private:
 public:
 
 	static EditorApp* g_pEditorAppInstance;
-	geGUIManager* m_pGUIManager;
-	rendererGL10* m_pRendererGL10;
-	bool m_bInitialised;
+	geGUIManager* guiManager;
+	rendererGL10* rendererGL10Instance;
+	bool is_Initialised;
 
 	//static rendererGL10* g_pMainRenderer;
 	static std::string g_cAppDirectory;
@@ -144,7 +144,6 @@ public:
     static gePropertyOctree* getPropertyOctree();
 
     static char g_cszProjectHomeDirectory[FILENAME_MAX];
-
     static gearSceneFileView* g_pSceneFileViewPtr;
     static gearSceneHierarchy* g_pSceneHierarchyPtr;
     static gearScenePreview* g_pScenePreviewPtr;

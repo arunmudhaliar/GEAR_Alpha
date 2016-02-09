@@ -17,8 +17,8 @@ public:
 	void create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y);
 	virtual void draw();
 	
-	void setCheck(bool flag)	{	m_bCheck=flag;		}
-	bool isCheck()				{	return m_bCheck;	}
+	void setCheck(bool flag)	{	is_Check=flag;		}
+	bool isCheck()				{	return is_Check;	}
 	void refresh();
 
 protected:
@@ -36,7 +36,7 @@ protected:
 
 	virtual void onButtonClicked();
 
-	stVertexBuffer m_cVBCheckMark;
-	float m_cVBClientAreaLine[8];
-	bool m_bCheck;
+	stVertexBuffer vertexBufferCheckMark;
+	float vertexBufferClientAreaArray[8];
+	bool is_Check;
 };

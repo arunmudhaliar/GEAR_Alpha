@@ -15,7 +15,7 @@ struct stDropMenuItem
     void* sub_menu_handle;
 #endif
     char name[256];
-    int menuid;
+    int menuID;
     stDropMenuItem* parent;
     int type;
     bool hasCheck;

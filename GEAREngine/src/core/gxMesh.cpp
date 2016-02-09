@@ -646,7 +646,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	gxHWShader* hwShader=(gxHWShader*)shader;
     CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0+stage));
 	if(bUse1x1Texture)
-		CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, renderer->getGEARTexture1x1()->iTextureID));	
+		CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, renderer->getGEARTexture1x1()->textureID));	
 	else
 	{
 		CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, submap->getTexture()->getTextureID()));	

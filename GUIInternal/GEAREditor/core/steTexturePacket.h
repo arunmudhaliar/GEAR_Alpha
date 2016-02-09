@@ -7,10 +7,10 @@ struct steTexturePacket
 {
 	steTexturePacket()
 	{
-		iTextureID	= NULL;
-		iTextureName= NULL;
-		iOpTextureName = NULL;
-		bAlphaTex=false;
+		textureID	= NULL;
+		textureName= NULL;
+		alphaTextureName = NULL;
+		isAlphaTexure=false;
 		
 		m_cWidth=0;
 		m_cHeight=0;
@@ -19,10 +19,10 @@ struct steTexturePacket
     
     void releaseTextureData()
     {
-        if(iTextureID>0)
-			glDeleteTextures(1, &iTextureID);
-		iTextureID	= 0;
-        bAlphaTex=false;
+        if(textureID>0)
+			glDeleteTextures(1, &textureID);
+		textureID	= 0;
+        isAlphaTexure=false;
         m_cWidth=m_cHeight=m_cBpp=0;
     }
     
@@ -30,21 +30,21 @@ struct steTexturePacket
 	{
         releaseTextureData();
         
-        if(iTextureName)
+        if(textureName)
         {            
 #if defined (LOG_DEBUG_ENGINE)
-            DEBUG_PRINT("unloading texture : %s", iTextureName);
+            DEBUG_PRINT("unloading texture : %s", textureName);
 #endif
         }
         
-		GE_DELETE_ARY(iTextureName);
-		GE_DELETE_ARY(iOpTextureName);
+		GE_DELETE_ARY(textureName);
+		GE_DELETE_ARY(alphaTextureName);
 	}
     
-	unsigned int	iTextureID;
-	char*	iTextureName;
-	char*	iOpTextureName;
-	bool	bAlphaTex;
+	unsigned int	textureID;
+	char*	textureName;
+	char*	alphaTextureName;
+	bool	isAlphaTexure;
 	
 	unsigned int	m_cWidth;
 	unsigned int	m_cHeight;

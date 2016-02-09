@@ -20,7 +20,7 @@ public:
 	stDropMenuItem* appendMenuItem(const char* name, int menuID, stDropMenuItem* parent=NULL, bool bSeperator=false, bool bCheck=false);
 	void setMenuItem(int menuID);
 	void setMenuItem(const char* itemname);
-	int getMenuItemCount()	{	return (int)m_vMenuItems.size();	}
+	int getMenuItemCount()	{	return (int)dropMenuItemList.size();	}
 
 	void checkMenuItem(int menuID, bool bCheck);
 
@@ -43,11 +43,11 @@ protected:
 	virtual void onSetName();
 
 private:
-	float m_cVBClientAreaLine[4];
-	Sprite2Dx m_cSprite;
-	bool m_bImageLoaded;
-	float m_cVBLayoutToggleButtonLine[3*2];
+	float vertexBufferClientAreaArray[4];
+	Sprite2Dx sprite;
+	bool isImageLoaded;
+	float vertexBufferToggleButtonArray[3*2];
 
-	stDropMenuItem* m_pActiveItemPtr;
-	std::vector<stDropMenuItem*> m_vMenuItems;
+	stDropMenuItem* activeDropMenuItem;
+	std::vector<stDropMenuItem*> dropMenuItemList;
 };

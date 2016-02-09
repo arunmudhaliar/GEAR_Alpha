@@ -14,21 +14,21 @@ gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent
 	m_pPushBtn_Object3dVisible->create(renderer, this, "", 15, 10);
 	m_pPushBtn_Object3dVisible->setGUIObserver(this);
 
-	m_pTextBoxMeshName = new geTextBox("MeshName", m_pFontManagerPtr);
+	m_pTextBoxMeshName = new geTextBox("MeshName", fontManagerGUI);
 	m_pTextBoxMeshName->create(renderer, this, "MeshName", 35, 10, 200, 16);
 
 	m_pPushBtn_Object3dStatic = new gePushButton("", fontmanager);
 	m_pPushBtn_Object3dStatic->create(renderer, this, "", m_pTextBoxMeshName->getPos().x+m_pTextBoxMeshName->getSize().x+10, 10);
 	m_pPushBtn_Object3dStatic->setGUIObserver(this);
 
-	m_pTagDropDownMenu=new geToolBarDropMenu(m_pRenderer, "Tag", this, fontmanager);
+	m_pTagDropDownMenu=new geToolBarDropMenu(rendererGUI, "Tag", this, fontmanager);
 	m_pTagDropDownMenu->setGUIObserver(this);
 	m_pTagDropDownMenu->setPos(35, 35);
 	m_pTagDropDownMenu->appendMenuItem("Tag0", 0x00006000);
 	m_pTagDropDownMenu->appendMenuItem("Tag1", 0x00006001);
 	m_pTagDropDownMenu->setMenuItem(0x00006000);
 
-	m_pLayerDropDownMenu=new geToolBarDropMenu(m_pRenderer, "Layer", this, fontmanager);
+	m_pLayerDropDownMenu=new geToolBarDropMenu(rendererGUI, "Layer", this, fontmanager);
 	m_pLayerDropDownMenu->setGUIObserver(this);
 	m_pLayerDropDownMenu->setPos(150, 35);
 
@@ -45,29 +45,29 @@ gePropertyObject3d::~gePropertyObject3d()
 //virtual void draw();
 void gePropertyObject3d::drawNode()
 {
-	drawRect(&m_cVBClientArea);
+	drawRect(&vertexBufferClientArea);
 
 	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	geFontManager::g_pFontArial10_84Ptr->drawString("Static", m_pPushBtn_Object3dStatic->getPos().x+m_pPushBtn_Object3dStatic->getSize().x+5, geFontManager::g_pFontArial10_84Ptr->getLineHeight()+5, m_cSize.x);
 	geFontManager::g_pFontArial10_84Ptr->drawString("Tag", 10, geFontManager::g_pFontArial10_84Ptr->getLineHeight()+33, m_cSize.x);
 	geFontManager::g_pFontArial10_84Ptr->drawString("Layer", m_pLayerDropDownMenu->getPos().x-37, geFontManager::g_pFontArial10_84Ptr->getLineHeight()+33, m_cSize.x);
 
-	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+	if(childControlList.size() && hasAtleastOneTreeNodeChild)
 	{
-		if(m_bNodeOpen)
-			drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+		if(is_OpenNode)
+			drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		else
-			drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 	}
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
 	}
 
-	if(m_pSprite)
-		m_pSprite->draw();
+	if(sprite)
+		sprite->draw();
 }
 
 void gePropertyObject3d::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)

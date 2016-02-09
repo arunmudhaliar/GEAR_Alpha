@@ -70,9 +70,9 @@ protected:
     SDL_Window* m_pSecondryWindow;
     rendererGL10* m_pPrimaryRenderer;
 	rendererGL10* m_pSecondryRenderer;
-	geVector2f m_cPrevScale;
+	geVector2f previousScale;
 	char m_szName[256];
-	geLayoutManager* m_pLayoutManager;
+	geLayoutManager* layoutManager;
 
 	geVector2i m_cPos;
 	geVector2f m_cSize;

@@ -14,7 +14,7 @@
 void* cpp_createMenu(std::vector<stDropMenuItem*>& list)
 {
     MenuObjC* menuObj = [[MenuObjC alloc] init];
-    menuObj->m_pPopupMenu = [menuObj createMenu: list];
+    menuObj->popupMenuHandle = [menuObj createMenu: list];
     
     return ( void*)CFBridgingRetain(menuObj);
 }
@@ -31,8 +31,8 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
 {
     NSRect pp = [[[NSApplication sharedApplication] mainWindow] convertRectToScreen:NSMakeRect(pt.x, pt.y, 0, 0)];
     //NSPoint pt=NSMakePoint(0, 0);
-    //[NSMenu popUpContextMenu:m_pPopupMenu withEvent:nil forView:nil];
-    [m_pPopupMenu popUpMenuPositioningItem:nil atLocation:pp.origin inView:nil];
+    //[NSMenu popUpContextMenu:popupMenuHandle withEvent:nil forView:nil];
+    [popupMenuHandle popUpMenuPositioningItem:nil atLocation:pp.origin inView:nil];
 }
 
 - (NSMenu*) createMenu: (std::vector<stDropMenuItem*>&) list
@@ -87,14 +87,14 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
                 item->parent->sub_menu_handle = ( void*)CFBridgingRetain([[NSMenu alloc] initWithTitle:@""]);
 #endif
             }
-            hCurrentPopupMenu=( NSMenu*)CFBridgingRelease(item->parent->sub_menu_handle);
+            hCurrentPopupMenu = ( NSMenu*)CFBridgingRelease(item->parent->sub_menu_handle);
         }
         
-        item->menu_handle=(__bridge void*)hCurrentPopupMenu;
+        item->menu_handle = (__bridge void*)hCurrentPopupMenu;
         if(item->type==0)
         {
 #ifdef _WIN32
-            minfo.wID = item->menuid;
+            minfo.wID = item->menuID;
             minfo.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA;
             if(item->sub_menu_handle!=NULL)
             {
@@ -117,7 +117,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
             NSMenuItem *tItem = [hCurrentPopupMenu addItemWithTitle:menuitemname action:@selector(onMenuItemClick:) keyEquivalent:@""];
             //[tItem setKeyEquivalentModifierMask:NSCommandKeyMask];
             //[tItem setRepresentedObject:@"0"];
-            [tItem setTag:item->menuid];
+            [tItem setTag:item->menuID];
             [tItem setTarget:self];
             if(item->hasCheck)
             {

@@ -28,7 +28,7 @@
 
 AssetImporter::AssetImporter()
 {
-    m_pAssetImportDlg=NULL;
+    assetImportDlg=NULL;
 }
 
 AssetImporter::~AssetImporter()
@@ -37,7 +37,7 @@ AssetImporter::~AssetImporter()
 
 bool AssetImporter::importAssets(const char* assetsfolder, geAssetImportDlg* assetImportDlg)
 {
-    m_pAssetImportDlg=assetImportDlg;
+    this->assetImportDlg=assetImportDlg;
     
 	//if metaData folder doesn't exist create it
 	char temp_buffer[FILENAME_MAX];
@@ -51,13 +51,13 @@ bool AssetImporter::importAssets(const char* assetsfolder, geAssetImportDlg* ass
 		//created a new metaDirectory
 	}
 
-	m_nAssetsToProcess=0;
+	noOfAssetsToProcess=0;
 	traverseAndCountAssetDirectory(EditorGEARApp::getProjectHomeDirectory());
 
-	m_nAssetsToProcess=0;
+	noOfAssetsToProcess=0;
 	traverseAssetDirectory(EditorGEARApp::getProjectHomeDirectory());
 
-    m_pAssetImportDlg->setBuffer("Complete");
+    assetImportDlg->setBuffer("Complete");
 
 	return true;
 }
@@ -136,7 +136,7 @@ int AssetImporter::traverseAndCountAssetDirectory(const char *dirname)
 
 					if(bImage || bFBX)
 					{
-						m_nAssetsToProcess++;
+						noOfAssetsToProcess++;
 					}
 				}
                 break;
@@ -276,9 +276,9 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 							}
 
 #if DEPRECATED
-							SendDlgItemMessage(m_hWndProgress, m_iStatictextID, WM_SETTEXT, 0, (LPARAM)buffer);
+							SendDlgItemMessage(hWndProgress, staticTextID, WM_SETTEXT, 0, (LPARAM)buffer);
 #else
-                            m_pAssetImportDlg->setBuffer(buffer);
+                            assetImportDlg->setBuffer(buffer);
 #endif
 
 							if(bCreateMetaFile)
@@ -345,9 +345,9 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 							}
 						}
 
-						m_nAssetsToProcess++;
+						noOfAssetsToProcess++;
 #if DEPRECATED
-						SendDlgItemMessage(m_hWndProgress, m_iProgressBarID, PBM_SETPOS, m_nAssetsToProcess, 0);
+						SendDlgItemMessage(hWndProgress, progressBarID, PBM_SETPOS, noOfAssetsToProcess, 0);
 #endif
 					}
 				}

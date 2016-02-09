@@ -32,7 +32,7 @@ void Sprite::copy(Sprite& sprite)
 	steTexturePacket *tp = sprite.getTexture()->getTexturePack(); 
 	m_cTexture.setTexturePack(tp);
 	
-	if(tp->bAlphaTex)
+	if(tp->isAlphaTexure)
 		m_cTexture.setTextureType(geTexture::TEX_ALPHA);
 	else
 		m_cTexture.setTextureType(geTexture::TEX_NORMAL);
@@ -56,7 +56,7 @@ void Sprite::loadTexture(CGETextureManager* textureManager, const char *pszFileN
 	steTexturePacket *tp = textureManager->LoadTexture(pszFileName); 
 	m_cTexture.setTexturePack(tp);
 	
-	if(tp->bAlphaTex)
+	if(tp->isAlphaTexure)
 		m_cTexture.setTextureType(geTexture::TEX_ALPHA);
 	else
 		m_cTexture.setTextureType(geTexture::TEX_NORMAL);

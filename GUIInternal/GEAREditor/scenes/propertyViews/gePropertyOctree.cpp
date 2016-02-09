@@ -9,13 +9,13 @@ gePropertyOctree::gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, co
 	setSize(m_cSize.x, 80.0f);
 
 	//package name
-	m_pNoOfTransformObjectPerNode = new geHorizontalSlider(m_pFontManagerPtr);
-	m_pNoOfTransformObjectPerNode->create(m_pRenderer, this, "slider", 10, 65, 130);
+	m_pNoOfTransformObjectPerNode = new geHorizontalSlider(fontManagerGUI);
+	m_pNoOfTransformObjectPerNode->create(rendererGUI, this, "slider", 10, 65, 130);
 	m_pNoOfTransformObjectPerNode->setSliderValue(0.5f);
 	m_pNoOfTransformObjectPerNode->setGUIObserver(this);
 
-	m_pNoOfLevels = new geHorizontalSlider(m_pFontManagerPtr);
-	m_pNoOfLevels->create(m_pRenderer, this, "slider", 10, 65, 130);
+	m_pNoOfLevels = new geHorizontalSlider(fontManagerGUI);
+	m_pNoOfLevels->create(rendererGUI, this, "slider", 10, 65, 130);
 	m_pNoOfLevels->setSliderValue(0.2f);
 	m_pNoOfLevels->setGUIObserver(this);
 
@@ -25,8 +25,8 @@ gePropertyOctree::gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, co
 	m_pButtonApply->setGUIObserver(this);
 
 	//window column
-	geWindowColumn* pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
-	pWindowColumn->create(m_pRenderer, this, 20, 300.0f, 10.0f, 0.44f);
+	geWindowColumn* pWindowColumn = new geWindowColumn(fontManagerGUI);
+	pWindowColumn->create(rendererGUI, this, 20, 300.0f, 10.0f, 0.44f);
 	m_pRows[0] = pWindowColumn->addRow("No of objects per node: 6");
 	pWindowColumn->addControl(m_pRows[0], m_pNoOfTransformObjectPerNode, 15.0f);
 	m_pRows[1] = pWindowColumn->addRow("Octree max depth: 1");
@@ -55,17 +55,17 @@ void gePropertyOctree::onDragDrop(int x, int y, MDropData* dropObject)
 
 void gePropertyOctree::drawNode()
 {
-	drawRect(&m_cVBClientArea);
+	drawRect(&vertexBufferClientArea);
 
-	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+	if(childControlList.size() && hasAtleastOneTreeNodeChild)
 	{
-		if(m_bNodeOpen)
-			drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+		if(is_OpenNode)
+			drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		else
-			drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 	}
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
@@ -73,8 +73,8 @@ void gePropertyOctree::drawNode()
 
 	//m_pWindowColumn->draw();
 
-	if(m_pSprite)
-		m_pSprite->draw();
+	if(sprite)
+		sprite->draw();
 }
 
 //void gePropertyOctree::populatePropertyOfCamera(object3d* obj)

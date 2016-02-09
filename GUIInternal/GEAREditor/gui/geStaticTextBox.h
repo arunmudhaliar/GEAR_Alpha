@@ -22,8 +22,8 @@ protected:
 	virtual void onSetName();
 
 private:
-	stVertexBuffer m_cVBSelectionArea;
-	float m_cVBClientAreaLine[10];
-	geFont* m_pFont;
+	stVertexBuffer vertexBufferSelectionArea;
+	float vertexBufferClientAreaArray[10];
+	geFont* fontGUI;
 	float fontYOffset;
 };

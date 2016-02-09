@@ -34,22 +34,22 @@ void CTextureManager::LoadDefaultTextures()
 
     //texture loading utility
     glEnable(GL_TEXTURE_2D);
-	glGenTextures(1, &whiteTexPack->iTextureID);
-	glBindTexture(GL_TEXTURE_2D, whiteTexPack->iTextureID);
+	glGenTextures(1, &whiteTexPack->textureID);
+	glBindTexture(GL_TEXTURE_2D, whiteTexPack->textureID);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, tex1x1);
     glDisable(GL_TEXTURE_2D);
 
-	whiteTexPack->bAlphaTex=false;
-    if(whiteTexPack->iTextureID>0)
+	whiteTexPack->isAlphaTexure=false;
+    if(whiteTexPack->textureID>0)
     {
         totalTextureMemory+=(unsigned int)(whiteTexPack->m_cWidth*whiteTexPack->m_cHeight*whiteTexPack->m_cBpp);
     }
 
-	whiteTexPack->iTextureName = new char[strlen("gearWhiteTex1x1")+1];
-	strcpy(whiteTexPack->iTextureName, "gearWhiteTex1x1");
-	whiteTexPack->iTextureName[strlen("gearWhiteTex1x1")]	= '\0';
+	whiteTexPack->textureName = new char[strlen("gearWhiteTex1x1")+1];
+	strcpy(whiteTexPack->textureName, "gearWhiteTex1x1");
+	whiteTexPack->textureName[strlen("gearWhiteTex1x1")]	= '\0';
 
 	texturePacket1x1 = whiteTexPack;
 	texturePacketList.push_back(whiteTexPack);
@@ -62,9 +62,9 @@ stTexturePacket* CTextureManager::LoadTexture(const char* aFileName)
 		int i=0;
 		for(i=0;i<(int)texturePacketList.size();i++)
 		{
-			if(texturePacketList[i]->iTextureName && (strcmp(aFileName, texturePacketList[i]->iTextureName)==0))
+			if(texturePacketList[i]->textureName && (strcmp(aFileName, texturePacketList[i]->textureName)==0))
 			{
-				if(!texturePacketList[i]->iOpTextureName)
+				if(!texturePacketList[i]->alphaTextureName)
 					break;
 			}
 		}
@@ -85,7 +85,7 @@ stTexturePacket* CTextureManager::LoadTexture(const char* aFileName)
 	sprintf(metaDataFile, "%s/%s", metaDataFolder, aFileName);
 	texID=read_texture2D_from_metafile(metaDataFile, alpha_tex, aNewTexturePacket->m_cWidth, aNewTexturePacket->m_cHeight, aNewTexturePacket->m_cBpp);
 
-    aNewTexturePacket->bAlphaTex=alpha_tex;
+    aNewTexturePacket->isAlphaTexure=alpha_tex;
     glDisable(GL_TEXTURE_2D);
 
 	if(texID==0)
@@ -102,13 +102,13 @@ stTexturePacket* CTextureManager::LoadTexture(const char* aFileName)
 
 	if(aFileName)
 	{
-		aNewTexturePacket->iTextureName = new char[strlen(aFileName)+1];
-		strcpy(aNewTexturePacket->iTextureName, aFileName);
-		aNewTexturePacket->iTextureName[strlen(aFileName)]	= '\0';
+		aNewTexturePacket->textureName = new char[strlen(aFileName)+1];
+		strcpy(aNewTexturePacket->textureName, aFileName);
+		aNewTexturePacket->textureName[strlen(aFileName)]	= '\0';
 	}
 
-	aNewTexturePacket->bAlphaTex	= alpha_tex;
-	aNewTexturePacket->iTextureID	= texID;
+	aNewTexturePacket->isAlphaTexure	= alpha_tex;
+	aNewTexturePacket->textureID	= texID;
 
 	texturePacketList.push_back(aNewTexturePacket);
 	
@@ -129,10 +129,10 @@ void CTextureManager::ReLoad()
 //        
 //		//texture loading utility
 //		glEnable(GL_TEXTURE_2D);
-//		texID=objC_util::loadTexture2(packet->iTextureName, alpha_tex, packet->m_cWidth, packet->m_cHeight, packet->m_cBpp);
+//		texID=objC_util::loadTexture2(packet->textureName, alpha_tex, packet->m_cWidth, packet->m_cHeight, packet->m_cBpp);
 //        
-//		packet->bAlphaTex=alpha_tex;
-//        packet->iTextureID	= texID;
+//		packet->isAlphaTexure=alpha_tex;
+//        packet->textureID	= texID;
 //
 //        if(texID<=0)
 //        {            

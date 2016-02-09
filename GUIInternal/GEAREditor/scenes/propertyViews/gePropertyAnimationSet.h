@@ -49,18 +49,18 @@ public:
 	//virtual void draw();
 	virtual void drawNode()
 	{
-		drawRect(&m_cVBClientArea);
+		drawRect(&vertexBufferClientArea);
 
 		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* tvnode = *it;
 			tvnode->draw();
 		}
 
-		if(m_pSprite)
-			m_pSprite->draw();
+		if(sprite)
+			sprite->draw();
 	}
 
 	virtual void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)

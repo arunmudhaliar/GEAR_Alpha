@@ -3,30 +3,30 @@
 
 geGUIBase::geGUIBase()
 {
-	m_pRenderer=NULL;
-	m_pSelectedControlPtr=NULL;
+	rendererGUI=NULL;
+	selectedControl=NULL;
 	parent=NULL;
 	setMouseEntered(false);
 	setSizable(false);
 	setMouseBoundCheck(true);
-	m_pUserData=NULL;
-	m_pGUIObserver = NULL;
-	m_pActiveWindowPtrOnlyForLayout=NULL;
+	userData=NULL;
+	guiObserver = NULL;
+	activeWindowPtrOnlyForLayout=NULL;
 	setClientAreaPrimaryActiveForeColor(1.0f, 1.0f, 1.0f);
 	setClientAreaSecondryActiveForeColor(0.5f, 0.5f, 0.5f);
 }
 
 geGUIBase::geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fontManager):
-	m_uGUIID(uGUIID),
-    m_pFontManagerPtr(fontManager)
+	guiID(uGUIID),
+    fontManagerGUI(fontManager)
 {
-	m_pRenderer=NULL;
+	rendererGUI=NULL;
 	setSizable(false);
-	m_pSelectedControlPtr=NULL;
+	selectedControl=NULL;
 	parent=NULL;
 	setMouseEntered(false);
 	setMouseBoundCheck(true);
-	m_pUserData=NULL;
+	userData=NULL;
 
 	if(name!=NULL)
 	{
@@ -38,8 +38,8 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fon
 		}
 		STRCPY(m_szName, name);
 	}
-	m_pGUIObserver=NULL;
-	m_pActiveWindowPtrOnlyForLayout=NULL;
+	guiObserver=NULL;
+	activeWindowPtrOnlyForLayout=NULL;
 
 	setClientAreaPrimaryActiveForeColor(1.0f, 1.0f, 1.0f);
 	setClientAreaSecondryActiveForeColor(0.5f, 0.5f, 0.5f);
@@ -47,12 +47,12 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fon
 
 geGUIBase::~geGUIBase()
 {
-	//for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	//for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	//{
 	//	geGUIBase* node = *it;
 	//	GE_DELETE(node);
 	//}
-	m_vControls.clear();
+	childControlList.clear();
 }
 
 void geGUIBase::setName(const char* name)
@@ -70,9 +70,9 @@ void geGUIBase::setName(const char* name)
 
 void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent)
 {
-	m_pRenderer=renderer;
+	rendererGUI=renderer;
 	setSizable(false);
-	m_pSelectedControlPtr=NULL;
+	selectedControl=NULL;
 	setMouseEntered(false);
 	setMouseBoundCheck(true);
 	if(parent)
@@ -109,7 +109,7 @@ void geGUIBase::setSize(float cx, float cy)
 	}
 	m_cSize.set(cx, cy);
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* obj = *it;
 		if(obj->isSizable())
@@ -130,7 +130,7 @@ void geGUIBase::onResizeComplete()
 
 void geGUIBase::resizeComplete()
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* obj = *it;
 		if(obj->isSizable())
@@ -142,20 +142,20 @@ void geGUIBase::resizeComplete()
 
 void geGUIBase::applyPrimaryColorToVBClientArea(ESTYLE_GRADIENT eGradientStyle, float gradientScale)
 {
-	setColor(&m_cVBClientArea, m_fszClientAreaPrimaryActiveForeColor[0],
-								m_fszClientAreaPrimaryActiveForeColor[1],
-								m_fszClientAreaPrimaryActiveForeColor[2],
-								m_fszClientAreaPrimaryActiveForeColor[3],
+	setColor(&vertexBufferClientArea, clientAreaPrimaryActiveForeColor[0],
+								clientAreaPrimaryActiveForeColor[1],
+								clientAreaPrimaryActiveForeColor[2],
+								clientAreaPrimaryActiveForeColor[3],
 								eGradientStyle,
 								gradientScale);
 }
 
 void geGUIBase::applySecondryColorToVBClientArea(ESTYLE_GRADIENT eGradientStyle, float gradientScale)
 {
-	setColor(&m_cVBClientArea, m_fszClientAreaSecondryActiveForeColor[0],
-								m_fszClientAreaSecondryActiveForeColor[1],
-								m_fszClientAreaSecondryActiveForeColor[2],
-								m_fszClientAreaSecondryActiveForeColor[3],
+	setColor(&vertexBufferClientArea, clientAreaSecondryActiveForeColor[0],
+								clientAreaSecondryActiveForeColor[1],
+								clientAreaSecondryActiveForeColor[2],
+								clientAreaSecondryActiveForeColor[3],
 								eGradientStyle,
 								gradientScale);
 }
@@ -213,26 +213,26 @@ void geGUIBase::setColor(stVertexBuffer* vbuffer, float r, float g, float b, flo
 
 void geGUIBase::setClientAreaPrimaryActiveForeColor(float r, float g, float b, float a)
 {
-	m_fszClientAreaPrimaryActiveForeColor[0]=r;
-	m_fszClientAreaPrimaryActiveForeColor[1]=g;
-	m_fszClientAreaPrimaryActiveForeColor[2]=b;
-	m_fszClientAreaPrimaryActiveForeColor[3]=a;
+	clientAreaPrimaryActiveForeColor[0]=r;
+	clientAreaPrimaryActiveForeColor[1]=g;
+	clientAreaPrimaryActiveForeColor[2]=b;
+	clientAreaPrimaryActiveForeColor[3]=a;
 }
 
 void geGUIBase::setClientAreaSecondryActiveForeColor(float r, float g, float b, float a)
 {
-	m_fszClientAreaSecondryActiveForeColor[0]=r;
-	m_fszClientAreaSecondryActiveForeColor[1]=g;
-	m_fszClientAreaSecondryActiveForeColor[2]=b;
-	m_fszClientAreaSecondryActiveForeColor[3]=a;
+	clientAreaSecondryActiveForeColor[0]=r;
+	clientAreaSecondryActiveForeColor[1]=g;
+	clientAreaSecondryActiveForeColor[2]=b;
+	clientAreaSecondryActiveForeColor[3]=a;
 }
 
 void geGUIBase::setColor(stVertexBuffer* vbuffer, int index, float r, float g, float b, float a)
 {
-	vbuffer->m_cszVertexColorList[index*4+0] = r;
-	vbuffer->m_cszVertexColorList[index*4+1] = g;
-	vbuffer->m_cszVertexColorList[index*4+2] = b;
-	vbuffer->m_cszVertexColorList[index*4+3] = a;
+	vbuffer->vertexColorArray[index*4+0] = r;
+	vbuffer->vertexColorArray[index*4+1] = g;
+	vbuffer->vertexColorArray[index*4+2] = b;
+	vbuffer->vertexColorArray[index*4+3] = a;
 }
 
 void geGUIBase::drawLine(float* line, float r, float g, float b, float a, int count, bool bLoop)
@@ -256,9 +256,9 @@ void geGUIBase::drawTriangle(float* buffer, float r, float g, float b, float a, 
 void geGUIBase::drawRect(stVertexBuffer* vbuffer)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, vbuffer->m_cszVertexList);
+	glVertexPointer(2, GL_FLOAT, 0, vbuffer->vertexArray);
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_FLOAT, 0, vbuffer->m_cszVertexColorList);
+	glColorPointer(4, GL_FLOAT, 0, vbuffer->vertexColorArray);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -269,9 +269,9 @@ void geGUIBase::drawRect(stVertexBuffer* vbuffer)
 void geGUIBase::drawRect(stVertexBuffer* vbuffer, float* textureCoord, unsigned int texID)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, vbuffer->m_cszVertexList);
+	glVertexPointer(2, GL_FLOAT, 0, vbuffer->vertexArray);
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_FLOAT, 0, vbuffer->m_cszVertexColorList);
+	glColorPointer(4, GL_FLOAT, 0, vbuffer->vertexColorArray);
 
 	if(textureCoord)
 	{
@@ -316,7 +316,7 @@ void geGUIBase::onSize(float cx, float cy, int flag)
 void geGUIBase::appendChildControl(geGUIBase* child)
 {
 	onAppendChild(child);
-	m_vControls.push_back(child);
+	childControlList.push_back(child);
 }
 
 bool geGUIBase::MouseLButtonDown(float x, float y, int nFlag)
@@ -326,7 +326,7 @@ bool geGUIBase::MouseLButtonDown(float x, float y, int nFlag)
 	{
 		if(!commandUsed)
 		{
-			if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+			if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 			{
 				commandUsed=getActiveWindowPtrOnlyForLayout()->MouseLButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
 				if(commandUsed)
@@ -334,7 +334,7 @@ bool geGUIBase::MouseLButtonDown(float x, float y, int nFlag)
 			}
 			else
 			{
-				for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+				for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 				{
 					geGUIBase* obj = *it;
 					commandUsed=obj->MouseLButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
@@ -348,7 +348,7 @@ bool geGUIBase::MouseLButtonDown(float x, float y, int nFlag)
 		{
 			commandUsed=onMouseLButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
 			if(commandUsed)
-				m_pSelectedControlPtr=this;
+				selectedControl=this;
 		}
 	}
 
@@ -360,13 +360,13 @@ void geGUIBase::MouseLButtonUp(float x, float y, int nFlag)
 	bool bHandled=false;
 	if(isPointInsideWindow(x, y) || !isMouseBoundCheckEnabled())
 	{
-		if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+		if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 		{
 			getActiveWindowPtrOnlyForLayout()->MouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
 		}
 		else
 		{
-			for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+			for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 			{
 				geGUIBase* obj = *it;
 				obj->MouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
@@ -376,16 +376,16 @@ void geGUIBase::MouseLButtonUp(float x, float y, int nFlag)
 		if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight())  || !isMouseBoundCheckEnabled())
 		{
 			bHandled=onMouseLButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
-			//if(m_pSelectedControlPtr==this)
-			//	m_pSelectedControlPtr=NULL;
+			//if(selectedControl==this)
+			//	selectedControl=NULL;
 		}
 	}
 
-	if(m_pSelectedControlPtr)
+	if(selectedControl)
 	{
 		//if(!bHandled)
-			m_pSelectedControlPtr->CancelEngagedControls();
-		m_pSelectedControlPtr=NULL;
+			selectedControl->CancelEngagedControls();
+		selectedControl=NULL;
 	}
 }
 
@@ -401,13 +401,13 @@ void geGUIBase::MouseRButtonUp(float x, float y, int nFlag)
 
 bool geGUIBase::MouseMove(float x, float y, int flag)
 {
-	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+	if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
 		getActiveWindowPtrOnlyForLayout()->MouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
 	}
 	else
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* obj = *it;
 			obj->MouseMove(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
@@ -438,13 +438,13 @@ bool geGUIBase::MouseMove(float x, float y, int flag)
 
 void geGUIBase::MouseWheel(int zDelta, int x, int y, int flag)
 {
-	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+	if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
 		getActiveWindowPtrOnlyForLayout()->MouseWheel(zDelta, x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
 	}
 	else
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* obj = *it;
 			obj->MouseWheel(zDelta, x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), flag);
@@ -520,7 +520,7 @@ void geGUIBase::onMouseExitClientArea()
 
 void geGUIBase::CancelEngagedControls()
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* obj = *it;
 		obj->CancelEngagedControls();
@@ -555,7 +555,7 @@ geVector2f geGUIBase::getPositionOnScreen()
 
 void geGUIBase::focusLost()
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* obj = *it;
 		obj->focusLost();
@@ -577,13 +577,13 @@ void geGUIBase::DragEnter(int x, int y)
 {
 	if(isPointInsideWindow(x, y))
 	{
-		if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+		if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 		{
 			getActiveWindowPtrOnlyForLayout()->DragEnter(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight());
 		}
 		else
 		{
-			for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+			for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 			{
 				geGUIBase* obj = *it;
 				obj->DragEnter(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight());
@@ -597,13 +597,13 @@ void geGUIBase::DragDrop(int x, int y, MDropData* dropObject)
 {
 	if(isPointInsideWindow(x, y) /*|| !isMouseBoundCheckEnabled()*/)
 	{
-		if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+		if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 		{
 			getActiveWindowPtrOnlyForLayout()->DragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
 		}
 		else
 		{
-			for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+			for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 			{
 				geGUIBase* obj = *it;
 				obj->DragDrop(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), dropObject);
@@ -621,13 +621,13 @@ void geGUIBase::DragDrop(int x, int y, MDropData* dropObject)
 
 void geGUIBase::DragLeave()
 {
-	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+	if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
 		getActiveWindowPtrOnlyForLayout()->DragLeave();
 	}
 	else
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* obj = *it;
 			obj->DragLeave();
@@ -676,14 +676,14 @@ void geGUIBase::onAppendChild(geGUIBase* child)
 
 bool geGUIBase::KeyDown(int charValue, int flag)
 {
-	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+	if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
 		if(getActiveWindowPtrOnlyForLayout()->KeyDown(charValue, flag))
 			return true;
 	}
 	else
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* obj = *it;
 			if(obj->KeyDown(charValue, flag))
@@ -695,14 +695,14 @@ bool geGUIBase::KeyDown(int charValue, int flag)
 
 bool geGUIBase::KeyUp(int charValue, int flag)
 {
-	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+	if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
 	{
 		if(getActiveWindowPtrOnlyForLayout()->KeyUp(charValue, flag))
 			return true;
 	}
 	else
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* obj = *it;
 			if(obj->KeyUp(charValue, flag))
@@ -732,14 +732,14 @@ bool geGUIBase::isNodeExistsInTree(geGUIBase* node)
 	if(this==node)
 		return true;
 
-	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack: no need to implement this, but for consistency purpose i kept
+	if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack: no need to implement this, but for consistency purpose i kept
 	{
 		if(getActiveWindowPtrOnlyForLayout()->isNodeExistsInTree(node))
 			return true;
 	}
 	else
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* obj = *it;
 			if(obj->isNodeExistsInTree(node))
@@ -751,13 +751,13 @@ bool geGUIBase::isNodeExistsInTree(geGUIBase* node)
 
 void geGUIBase::DoCommand(int cmd)
 {
-	if(m_uGUIID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack: no need to implement this, but for consistency purpose i kept
+	if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack: no need to implement this, but for consistency purpose i kept
 	{
 		getActiveWindowPtrOnlyForLayout()->DoCommand(cmd);
 	}
 	else
 	{
-		for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+		for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 		{
 			geGUIBase* obj = *it;
 			obj->DoCommand(cmd);

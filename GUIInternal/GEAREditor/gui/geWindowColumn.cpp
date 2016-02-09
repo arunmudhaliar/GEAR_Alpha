@@ -52,57 +52,57 @@ void stWindowColumnRow::setName(const char* name)
 geWindowColumn::geWindowColumn(geFontManager* fontmanager):
 geGUIBase(GEGUI_WINDOW_COLUMN, "window column", fontmanager)
 {
-	m_cszColumnRatio=0.5f;
+	columnRatio=0.5f;
 }
 
 geWindowColumn::~geWindowColumn()
 {
-	for(std::vector<stWindowColumnRow*>::iterator it = m_vRow.begin(); it != m_vRow.end(); ++it)
+	for(std::vector<stWindowColumnRow*>::iterator it = windowColumnRowControlList.begin(); it != windowColumnRowControlList.end(); ++it)
 	{
 		stWindowColumnRow* obj = *it;
 		GE_DELETE(obj);
 	}
-	m_vRow.clear();
+	windowColumnRowControlList.clear();
 }
 
 void geWindowColumn::create(rendererGL10* renderer, geGUIBase* parent, int y, float minimum_coloumn_width, float minimum_space_between_controls, float ratio)
 {
 	createBase(renderer, parent);
-	//m_pRenderer=renderer;
-	m_fMinimumColumnWidth=minimum_coloumn_width;
-	m_fMinimumSpaceBetweenControls=minimum_space_between_controls;
+	//rendererGUI=renderer;
+	this->minimumColumnWidth = minimum_coloumn_width;
+	this->minimumSpaceBetweenControls = minimum_space_between_controls;
 
 	setPos(0, y);
 	setSize(parent->getSize().x, 1);
 	setSizable(true);
 	setMouseBoundCheck(false);
 
-	m_cszColumnRatio=ratio;
+	columnRatio=ratio;
 }
 
 stWindowColumnRow* geWindowColumn::addRow(const char* name)
 {
 	float ypos=m_cPos.y;
-	for(std::vector<stWindowColumnRow*>::iterator it = m_vRow.begin(); it != m_vRow.end(); ++it)
+	for(std::vector<stWindowColumnRow*>::iterator it = windowColumnRowControlList.begin(); it != windowColumnRowControlList.end(); ++it)
 	{
 		stWindowColumnRow* obj = *it;
 		ypos+=obj->getHeight();
 	}
 
 	stWindowColumnRow* newrow = new stWindowColumnRow(name, ypos);
-	m_vRow.push_back(newrow);
+	windowColumnRowControlList.push_back(newrow);
 
 	return newrow;
 }
 
 void geWindowColumn::addControl(stWindowColumnRow* row, geGUIBase* cntrl, float override_height)
 {
-	float start_xpos=m_cPos.x + m_cSize.x*m_cszColumnRatio;
+	float start_xpos=m_cPos.x + m_cSize.x*columnRatio;
 	std::vector<geGUIBase*>* controllist=row->getControlList();
 	for(std::vector<geGUIBase*>::iterator it = controllist->begin(); it != controllist->end(); ++it)
 	{
 		geGUIBase* obj = *it;
-		start_xpos+=(m_fMinimumSpaceBetweenControls + obj->getSize().x);
+		start_xpos+=(minimumSpaceBetweenControls + obj->getSize().x);
 	}
 
 	//float control_y=cntrl->getPos().y;
@@ -112,7 +112,7 @@ void geWindowColumn::addControl(stWindowColumnRow* row, geGUIBase* cntrl, float 
 
 void geWindowColumn::draw()
 {
-	for(std::vector<stWindowColumnRow*>::iterator it = m_vRow.begin(); it != m_vRow.end(); ++it)
+	for(std::vector<stWindowColumnRow*>::iterator it = windowColumnRowControlList.begin(); it != windowColumnRowControlList.end(); ++it)
 	{
 		stWindowColumnRow* row = *it;
 		
@@ -127,20 +127,20 @@ void geWindowColumn::onPosition(float x, float y, int flag)
 void geWindowColumn::onSize(float cx, float cy, int flag)
 {
 	float calc_cx=cx;
-	if(m_fMinimumColumnWidth>cx)
+	if(minimumColumnWidth>cx)
 	{
-		calc_cx=m_fMinimumColumnWidth;
+		calc_cx=minimumColumnWidth;
 	}
-	for(std::vector<stWindowColumnRow*>::iterator it = m_vRow.begin(); it != m_vRow.end(); ++it)
+	for(std::vector<stWindowColumnRow*>::iterator it = windowColumnRowControlList.begin(); it != windowColumnRowControlList.end(); ++it)
 	{
 		stWindowColumnRow* row = *it;
-		float start_xpos=m_cPos.x + calc_cx*m_cszColumnRatio;
+		float start_xpos=m_cPos.x + calc_cx*columnRatio;
 		std::vector<geGUIBase*>* controllist=row->getControlList();
 		for(std::vector<geGUIBase*>::iterator it = controllist->begin(); it != controllist->end(); ++it)
 		{
 			geGUIBase* cntrl = *it;
 			cntrl->setPos(start_xpos, row->getYPoistion());
-			start_xpos+=(m_fMinimumSpaceBetweenControls + cntrl->getSize().x);
+			start_xpos+=(minimumSpaceBetweenControls + cntrl->getSize().x);
 		}
 
 		//ypos+=row->getHeight();

@@ -9,7 +9,7 @@ geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, ren
     m_pPrimaryRenderer=mainRenderer;
 	strcpy(m_szName, name);
 	m_pSecondryRenderer=NULL;
-    m_pLayoutManager = new geLayoutManager(fontmanager);
+    layoutManager = new geLayoutManager(fontmanager);
     m_pFontManager = fontmanager;
     m_pSecondryWindow=NULL;
     m_iExtraWindowFlags = 0;
@@ -26,7 +26,7 @@ geSecondryView::~geSecondryView()
 	//restore gl context to the EditorApp
 	m_pPrimaryRenderer->makeCurrent();
 	//
-    GX_DELETE(m_pLayoutManager);
+    GX_DELETE(layoutManager);
 }
 
 #if DEPRECATED
@@ -43,12 +43,12 @@ void geSecondryView::createRenderer(SDL_Window* window)
     
 	m_pSecondryRenderer->setupRenderer(m_pPrimaryRenderer);
 
-	m_pLayoutManager->create(m_pSecondryRenderer, 0, 0, m_cSize.x, m_cSize.y);
-	//m_pRootLayout = new geLayout();
-	//m_pRootLayout->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y);
-	//m_pRootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
+	layoutManager->create(m_pSecondryRenderer, 0, 0, m_cSize.x, m_cSize.y);
+	//rootLayout = new geLayout();
+	//rootLayout->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y);
+	//rootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
 
-	m_cPrevScale.set(m_cSize.x, m_cSize.y);
+	previousScale.set(m_cSize.x, m_cSize.y);
 	onCreate();
 }
 
@@ -325,7 +325,7 @@ void geSecondryView::processEvent(SDL_Window * window, SDL_Event& e)
 
 void geSecondryView::drawView()
 {
-	m_pLayoutManager->draw();
+	layoutManager->draw();
 	onDraw();
 }
 
@@ -336,13 +336,13 @@ void geSecondryView::sizeView(float cx, float cy)
 	if(cy<=1.0f)
 		cy=1.0f;
 
-	m_pLayoutManager->setSize(cx, cy);
+	layoutManager->setSize(cx, cy);
 
     geVector2f tmp(cx, cy);
 	setSize(tmp);
 	onSize(cx, cy);
 
-	m_cPrevScale.set(cx, cy);
+	previousScale.set(cx, cy);
 }
 
 void geSecondryView::destroyView()
@@ -384,27 +384,27 @@ void geSecondryView::mouseWheel(int zDelta, int x, int y, int flag)
 
 bool geSecondryView::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	return m_pLayoutManager->MouseLButtonDown(x, y, nFlag);
+	return layoutManager->MouseLButtonDown(x, y, nFlag);
 }
 void geSecondryView::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	m_pLayoutManager->MouseLButtonUp(x, y, nFlag);
+	layoutManager->MouseLButtonUp(x, y, nFlag);
 }
 bool geSecondryView::onMouseRButtonDown(float x, float y, int nFlag)
 {
-	return m_pLayoutManager->MouseRButtonDown(x, y, nFlag);
+	return layoutManager->MouseRButtonDown(x, y, nFlag);
 }
 void geSecondryView::onMouseRButtonUp(float x, float y, int nFlag)
 {
-	m_pLayoutManager->MouseRButtonUp(x, y, nFlag);
+	layoutManager->MouseRButtonUp(x, y, nFlag);
 }
 bool geSecondryView::onMouseMove(float x, float y, int flag)
 {
-	return m_pLayoutManager->MouseMove(x, y, flag);
+	return layoutManager->MouseMove(x, y, flag);
 }
 void geSecondryView::onMouseWheel(int zDelta, int x, int y, int flag)
 {
-	m_pLayoutManager->MouseWheel(zDelta, x, y, flag);
+	layoutManager->MouseWheel(zDelta, x, y, flag);
 }
 
 void geSecondryView::onCreate()

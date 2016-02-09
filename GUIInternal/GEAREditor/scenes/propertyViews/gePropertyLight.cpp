@@ -12,7 +12,7 @@ gePropertyLight::gePropertyLight(rendererGL10* renderer, geGUIBase* parent, cons
 	m_pColorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pColorControl->setGUIObserver(this);
 
-	m_pLightTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(m_pRenderer, "LightType", this, fontmanager);
+	m_pLightTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(rendererGUI, "LightType", this, fontmanager);
 	m_pLightTypeToolBarDropMenuBtnPtr->setGUIObserver(this);
 	m_pLightTypeToolBarDropMenuBtnPtr->setPos(10, 35);
 
@@ -35,24 +35,24 @@ gePropertyLight::gePropertyLight(rendererGL10* renderer, geGUIBase* parent, cons
 
 
 	//attenuations
-	m_pHorizontalSlider_ConstantAttenuation = new geHorizontalSlider(m_pFontManagerPtr);
-	m_pHorizontalSlider_ConstantAttenuation->create(m_pRenderer, this, "slider", 10, 65, 130);
+	m_pHorizontalSlider_ConstantAttenuation = new geHorizontalSlider(fontManagerGUI);
+	m_pHorizontalSlider_ConstantAttenuation->create(rendererGUI, this, "slider", 10, 65, 130);
 	m_pHorizontalSlider_ConstantAttenuation->setSliderValue(1.0f);
 	m_pHorizontalSlider_ConstantAttenuation->setGUIObserver(this);
 
-	m_pHorizontalSlider_LinearAttenuation = new geHorizontalSlider(m_pFontManagerPtr);
-	m_pHorizontalSlider_LinearAttenuation->create(m_pRenderer, this, "slider", 10, 85, 130);
+	m_pHorizontalSlider_LinearAttenuation = new geHorizontalSlider(fontManagerGUI);
+	m_pHorizontalSlider_LinearAttenuation->create(rendererGUI, this, "slider", 10, 85, 130);
 	m_pHorizontalSlider_LinearAttenuation->setSliderValue(1.0f);
 	m_pHorizontalSlider_LinearAttenuation->setGUIObserver(this);
 
-	m_pHorizontalSlider_QuadraticAttenuation = new geHorizontalSlider(m_pFontManagerPtr);
-	m_pHorizontalSlider_QuadraticAttenuation->create(m_pRenderer, this, "slider", 10, 105, 130);
+	m_pHorizontalSlider_QuadraticAttenuation = new geHorizontalSlider(fontManagerGUI);
+	m_pHorizontalSlider_QuadraticAttenuation->create(rendererGUI, this, "slider", 10, 105, 130);
 	m_pHorizontalSlider_QuadraticAttenuation->setSliderValue(1.0f);
 	m_pHorizontalSlider_QuadraticAttenuation->setGUIObserver(this);
 
 	//window column
-	geWindowColumn* pWindowColumn = new geWindowColumn(m_pFontManagerPtr);
-	pWindowColumn->create(m_pRenderer, this, 40, 300.0f, 10.0f, 0.4f);
+	geWindowColumn* pWindowColumn = new geWindowColumn(fontManagerGUI);
+	pWindowColumn->create(rendererGUI, this, 40, 300.0f, 10.0f, 0.4f);
 	stWindowColumnRow* row = pWindowColumn->addRow("Type");
 	pWindowColumn->addControl(row, m_pLightTypeToolBarDropMenuBtnPtr, 30.0f);
 	row = pWindowColumn->addRow("Constant Attenuation");
@@ -85,21 +85,21 @@ void gePropertyLight::onDragDrop(int x, int y, MDropData* dropObject)
 
 void gePropertyLight::drawNode()
 {
-	drawRect(&m_cVBClientArea);
+	drawRect(&vertexBufferClientArea);
 
 	geFontManager::g_pFontArial10_84Ptr->drawString("Diffuse", m_pColorControl->getPos().x+30, 7+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	geFontManager::g_pFontArial10_84Ptr->drawString("Ambient", m_pColorControlAmbient->getPos().x+30, 7+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 	geFontManager::g_pFontArial10_84Ptr->drawString("Specular", m_pColorControlSpecular->getPos().x+30, 7+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
-	if(m_vControls.size() && m_bHaveAtleastOneTreeNodeChild)
+	if(childControlList.size() && hasAtleastOneTreeNodeChild)
 	{
-		if(m_bNodeOpen)
-			drawTriangle(&m_cVBLayoutToggleButtonLine[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+		if(is_OpenNode)
+			drawTriangle(&vertexBufferToggleButtonArray[3*2], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 		else
-			drawTriangle(&m_cVBLayoutToggleButtonLine[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
+			drawTriangle(&vertexBufferToggleButtonArray[0], 0.3f, 0.3f, 0.3f, 1.0f, 3);
 	}
 
-	for(std::vector<geGUIBase*>::iterator it = m_vControls.begin(); it != m_vControls.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		tvnode->draw();
@@ -107,8 +107,8 @@ void gePropertyLight::drawNode()
 
 	//m_pWindowColumn->draw();
 
-	if(m_pSprite)
-		m_pSprite->draw();
+	if(sprite)
+		sprite->draw();
 }
 
 void gePropertyLight::populatePropertyOfLight(object3d* obj)

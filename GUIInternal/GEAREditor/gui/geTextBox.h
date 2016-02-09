@@ -38,21 +38,21 @@ protected:
 	float getVirtualEndBound(int& index);
 
 private:
-	stVertexBuffer m_cVBSelectionArea;
-	float m_cVBClientAreaLine[10];
-	float m_cVBCursorLine[4];
-	bool m_bStartSelection;
-	bool m_bShowSelection;
-	bool m_bShowCursor;
-	float m_fPrevMouseXPos;
-	float m_fSelectionStartXPos;
-	float m_fCursorPosInPixels;
-	bool m_bControlSelected;
-	int m_iCursorPos;
-	int m_iStartCursorSelectionPos;
-	int m_iEndCursorSelectionPos;
+	stVertexBuffer vertexBufferSelectionArea;
+	float vertexBufferClientAreaArray[10];
+	float vertexBufferCursorLine[4];
+	bool isStartSelection;
+	bool isShowSelection;
+	bool isShowCursor;
+	float previousMouseXPosition;
+	float selectionStartXPosition;
+	float cursorPositionInPixel;
+	bool isControlSelected;
+	int cursorPosition;
+	int startCursorSelectionPosition;
+	int endCursorSelectionPosition;
 
-	int m_iStartStringCharToDisplay;
-	int m_nStringCharToDisplay;
-	char* m_pStartCharPtr;
+	int startStringCharToDisplay;
+	int noOfStringCharToDisplay;
+	char* startChar;
 };

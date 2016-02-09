@@ -13,7 +13,7 @@ public:
 	void create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float cx);
 
 	virtual void draw();
-	float getSliderValue()				{	return m_fSliderPos;	}
+	float getSliderValue()				{	return sliderValue;	}
 	void setSliderValue(float value, bool bCallObserver=true);
     
 	float getSliderValueWithInRange();
@@ -21,7 +21,7 @@ public:
 
 	void setRange(float min, float max);
     
-    bool isGrabbed() {return m_bGrabbed;}
+    bool isGrabbed() {return is_Grabbed;}
     
 protected:
 	virtual void onPosition(float x, float y, int flag);
@@ -34,12 +34,12 @@ protected:
 	virtual void onSliderChange(float sliderValue);
 
 private:
-	stVertexBuffer m_cVBGrabberArea;
-	float m_cVBClientAreaLine[10];
-	float m_fSliderPos;
-	bool m_bGrabbed;
-	float m_fMousePrevXPos	;
+	stVertexBuffer vertexBufferGrabberArea;
+	float vertexBufferClientAreaArray[10];
+	float sliderValue;
+	bool is_Grabbed;
+	float mousePrevXPos	;
 
-	float m_fMinRange;
-	float m_fMaxRange;
+	float minRange;
+	float maxRange;
 };

@@ -22,9 +22,9 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 		int i=0;
 		for(i=0;i<(int)texturePacketList.size();i++)
 		{
-			if(texturePacketList[i]->iTextureName && (strcmp(aFileName, texturePacketList[i]->iTextureName)==0))
+			if(texturePacketList[i]->textureName && (strcmp(aFileName, texturePacketList[i]->textureName)==0))
 			{
-				if(texturePacketList[i]->iOpTextureName && (strcmp(aOpFileName, texturePacketList[i]->iOpTextureName)==0))
+				if(texturePacketList[i]->alphaTextureName && (strcmp(aOpFileName, texturePacketList[i]->alphaTextureName)==0))
 					break;
 			}
 		}
@@ -37,9 +37,9 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 			int i=0;
 			for(i=0;i<(int)texturePacketList.size();i++)
 			{
-				if(texturePacketList[i]->iTextureName && (strcmp(aFileName, texturePacketList[i]->iTextureName)==0))
+				if(texturePacketList[i]->textureName && (strcmp(aFileName, texturePacketList[i]->textureName)==0))
 				{
-					if(!texturePacketList[i]->iOpTextureName)
+					if(!texturePacketList[i]->alphaTextureName)
 						break;
 				}
 			}
@@ -50,9 +50,9 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 			int i=0;
 			for(i=0;i<(int)texturePacketList.size();i++)
 			{
-				if(texturePacketList[i]->iOpTextureName && (strcmp(aOpFileName, texturePacketList[i]->iOpTextureName)==0))
+				if(texturePacketList[i]->alphaTextureName && (strcmp(aOpFileName, texturePacketList[i]->alphaTextureName)==0))
 				{
-					if(!texturePacketList[i]->iTextureName)
+					if(!texturePacketList[i]->textureName)
 						break;
 				}
 			}
@@ -67,7 +67,7 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 
     //texture loading utility
 	texID=read_png_file(aFileName, alpha_tex, aNewTexturePacket->m_cWidth, aNewTexturePacket->m_cHeight, aNewTexturePacket->m_cBpp);
-    aNewTexturePacket->bAlphaTex=alpha_tex;
+    aNewTexturePacket->isAlphaTexure=alpha_tex;
 
 	if(texID==0)
 	{
@@ -83,20 +83,20 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 
 	if(aFileName)
 	{
-		aNewTexturePacket->iTextureName = new char[strlen(aFileName)+1];
-		strcpy(aNewTexturePacket->iTextureName, aFileName);
-		aNewTexturePacket->iTextureName[strlen(aFileName)]	= '\0';
+		aNewTexturePacket->textureName = new char[strlen(aFileName)+1];
+		strcpy(aNewTexturePacket->textureName, aFileName);
+		aNewTexturePacket->textureName[strlen(aFileName)]	= '\0';
 	}
 
 	if(aOpFileName)
 	{
-		aNewTexturePacket->iOpTextureName = new char[strlen(aOpFileName)+1];
-		strcpy(aNewTexturePacket->iOpTextureName, aOpFileName);
-		aNewTexturePacket->iOpTextureName[strlen(aOpFileName)]	= '\0';
+		aNewTexturePacket->alphaTextureName = new char[strlen(aOpFileName)+1];
+		strcpy(aNewTexturePacket->alphaTextureName, aOpFileName);
+		aNewTexturePacket->alphaTextureName[strlen(aOpFileName)]	= '\0';
 	}
 
-	aNewTexturePacket->bAlphaTex	= alpha_tex;
-	aNewTexturePacket->iTextureID	= texID;
+	aNewTexturePacket->isAlphaTexure	= alpha_tex;
+	aNewTexturePacket->textureID	= texID;
 
 	texturePacketList.push_back(aNewTexturePacket);
 	

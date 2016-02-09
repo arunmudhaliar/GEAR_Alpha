@@ -22,11 +22,11 @@ void geHorizontalSlider::create(rendererGL10* renderer, geGUIBase* parent, const
 	STRCPY(m_szName, name);
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.4f);
-	setColor(&m_cVBGrabberArea, 0.6f, 0.6f, 0.6f, 1.0f, EGRADIENT_VERTICAL_UP, 0.5f);
+	setColor(&vertexBufferGrabberArea, 0.6f, 0.6f, 0.6f, 1.0f, EGRADIENT_VERTICAL_UP, 0.5f);
 
-	m_fSliderPos=0.0f;
-	m_bGrabbed=false;
-	m_fMousePrevXPos=0.0f;
+	sliderValue=0.0f;
+	is_Grabbed=false;
+	mousePrevXPos=0.0f;
 	setMouseBoundCheck(false);
 	setRange(0.0f, 1.0f);
 }
@@ -35,11 +35,11 @@ void geHorizontalSlider::draw()
 {
 	glPushMatrix();
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
-	drawRect(&m_cVBClientArea);	
-	drawLine(m_cVBClientAreaLine, 0.13f, 0.13f, 0.13f, 1.0f, 3, false);
-	drawLine(&m_cVBClientAreaLine[4], 0.3f, 0.3f, 0.3f, 1.0f, 3, false);
-	glTranslatef(m_fSliderPos*(m_cSize.x-SLIDER_GRABBER_SZ), 0, 0);
-	drawRect(&m_cVBGrabberArea);
+	drawRect(&vertexBufferClientArea);	
+	drawLine(vertexBufferClientAreaArray, 0.13f, 0.13f, 0.13f, 1.0f, 3, false);
+	drawLine(&vertexBufferClientAreaArray[4], 0.3f, 0.3f, 0.3f, 1.0f, 3, false);
+	glTranslatef(sliderValue*(m_cSize.x-SLIDER_GRABBER_SZ), 0, 0);
+	drawRect(&vertexBufferGrabberArea);
 
 	glPopMatrix();
 }
@@ -57,7 +57,7 @@ void geHorizontalSlider::onSize(float cx, float cy, int flag)
 		cx-SLIDER_GRABBER_SZ*0.5f,	cy,
 		SLIDER_GRABBER_SZ*0.5f,		cy,
 	};
-	memcpy(m_cVBClientArea.m_cszVertexList, title_vertLst, sizeof(title_vertLst));
+	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
 
 	const float grabber_vertLst[8] =
 	{
@@ -66,7 +66,7 @@ void geHorizontalSlider::onSize(float cx, float cy, int flag)
 		SLIDER_GRABBER_SZ,	7,
 		0,					7,
 	};
-	memcpy(m_cVBGrabberArea.m_cszVertexList, grabber_vertLst, sizeof(grabber_vertLst));
+	memcpy(vertexBufferGrabberArea.vertexArray, grabber_vertLst, sizeof(grabber_vertLst));
 
 	const float clientarea_linevertLst[10] =
 	{
@@ -76,17 +76,17 @@ void geHorizontalSlider::onSize(float cx, float cy, int flag)
 		cx-SLIDER_GRABBER_SZ*0.5f,	cy-0.5f,
 		cx-SLIDER_GRABBER_SZ*0.5f,	0,
 	};
-	memcpy(m_cVBClientAreaLine, clientarea_linevertLst, sizeof(clientarea_linevertLst));
+	memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
 }
 
 bool geHorizontalSlider::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	float actualPos=/*m_cPos.x+*/m_fSliderPos*(m_cSize.x-SLIDER_GRABBER_SZ);
+	float actualPos=/*m_cPos.x+*/sliderValue*(m_cSize.x-SLIDER_GRABBER_SZ);
 
 	if(x>actualPos && x<actualPos+SLIDER_GRABBER_SZ && y>-2 && y<7)
 	{
-		m_bGrabbed=true;
-		m_fMousePrevXPos=x;
+		is_Grabbed=true;
+		mousePrevXPos=x;
 		return true;
 	}
 	return false;
@@ -94,28 +94,28 @@ bool geHorizontalSlider::onMouseLButtonDown(float x, float y, int nFlag)
 
 bool geHorizontalSlider::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	m_bGrabbed=false;
-	m_fMousePrevXPos=x;
+	is_Grabbed=false;
+	mousePrevXPos=x;
 	return true;
 }
 
 bool geHorizontalSlider::onMouseMove(float x, float y, int flag)
 {
-	float diffX=x-m_fMousePrevXPos;
-	if(m_bGrabbed && (flag&MK_LBUTTON))
+	float diffX=x-mousePrevXPos;
+	if(is_Grabbed && (flag&MK_LBUTTON))
 	{
-		float actualPos=m_cPos.x+m_fSliderPos*(m_cSize.x-SLIDER_GRABBER_SZ);
+		float actualPos=m_cPos.x+sliderValue*(m_cSize.x-SLIDER_GRABBER_SZ);
 		actualPos+=diffX;
-		m_fSliderPos=(actualPos-m_cPos.x)/(m_cSize.x-SLIDER_GRABBER_SZ);
+		sliderValue=(actualPos-m_cPos.x)/(m_cSize.x-SLIDER_GRABBER_SZ);
 
-		if(m_fSliderPos<=0.0f)
-			m_fSliderPos=0.0f;
-		if(m_fSliderPos>=1.0f)
-			m_fSliderPos=1.0f;
+		if(sliderValue<=0.0f)
+			sliderValue=0.0f;
+		if(sliderValue>=1.0f)
+			sliderValue=1.0f;
 
-		setSliderValue(m_fSliderPos, true);
+		setSliderValue(sliderValue, true);
 	}
-	m_fMousePrevXPos=x;
+	mousePrevXPos=x;
 
 	return true;
 }
@@ -125,33 +125,33 @@ void geHorizontalSlider::setSliderValue(float value, bool bCallObserver)
 	if(value<0.0f || value>1.0f)
 		return;
 
-	m_fSliderPos=value;
-	setClientAreaPrimaryActiveForeColor(m_fSliderPos, m_fSliderPos, m_fSliderPos, 1.0f);
+	sliderValue=value;
+	setClientAreaPrimaryActiveForeColor(sliderValue, sliderValue, sliderValue, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.4f);
 	if(bCallObserver)
-		onSliderChange(m_fSliderPos);
+		onSliderChange(sliderValue);
 }
 
 void geHorizontalSlider::setRange(float min, float max)
 {
-	m_fMinRange=min;
-	m_fMaxRange=max;
+	minRange=min;
+	maxRange=max;
 }
 
 float geHorizontalSlider::getSliderValueWithInRange()
 {
-	float diff=m_fMaxRange-m_fMinRange;
-	return m_fMinRange+diff*m_fSliderPos;
+	float diff=maxRange-minRange;
+	return minRange+diff*sliderValue;
 }
 
 void geHorizontalSlider::setSliderValueWithInRange(float value)
 {
-	float diff=m_fMaxRange-m_fMinRange;
-	m_fSliderPos=(value-m_fMinRange)/diff;
+	float diff=maxRange-minRange;
+	sliderValue=(value-minRange)/diff;
 }
 
 void geHorizontalSlider::onSliderChange(float sliderValue)
 {
-	if(m_pGUIObserver)
-		m_pGUIObserver->onSliderChange(this);
+	if(guiObserver)
+		guiObserver->onSliderChange(this);
 }

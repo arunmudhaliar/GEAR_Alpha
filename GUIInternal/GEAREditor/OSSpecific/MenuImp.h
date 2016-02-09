@@ -11,7 +11,7 @@ class MenuWin32
 public:
 	HMENU createMenu(std::vector<stDropMenuItem*>& list);
 	void showMenu(float x, float y);
-	HMENU m_pPopupMenu;
+	HMENU popupMenuHandle;
 };
 
 #else
@@ -20,7 +20,7 @@ public:
 
 @interface MenuObjC : NSObject  //<NSMenuDelegate>
 {
-    NSMenu* m_pPopupMenu;
+    NSMenu* popupMenuHandle;
 }
 
 - (NSMenu*) createMenu: (std::vector<stDropMenuItem*>&) list;

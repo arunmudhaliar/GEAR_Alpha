@@ -5,39 +5,39 @@
 geLayoutManager::geLayoutManager(geFontManager* fontmanager):
 	geGUIBase(GEGUI_LAYOUT_MANAGER, "LayoutManager", fontmanager)
 {
-	m_pRootLayout=NULL;
-	m_pSelectedLayout=NULL;
+	rootLayout=NULL;
+	selectedLayout=NULL;
 }
 
 geLayoutManager:: ~geLayoutManager()
 {
-	m_vLeftResizeList.clear();
-	m_vRightResizeList.clear();
+	leftResizeLayoutList.clear();
+	rightResizeLayoutList.clear();
 
-	m_vTopResizeList.clear();
-	m_vBottomResizeList.clear();
+	topResizeLayoutList.clear();
+	bottomResizeLayoutList.clear();
 
-	GE_DELETE(m_pRootLayout);
+	GE_DELETE(rootLayout);
 }
 
 void geLayoutManager::create(rendererGL10* renderer, float x, float y, float cx, float cy)
 {
-	m_pRenderer=renderer;
-	m_cPrevScale.set(1.0f, 1.0f);
+	rendererGUI=renderer;
+	previousScale.set(1.0f, 1.0f);
 	setPos(x, y);
 	setSize(cx, cy);
 
-	m_pRootLayout = new geLayout("layout", m_pFontManagerPtr);
-	m_pRootLayout->create(renderer, NULL, x, y, cx, cy);
-	m_pRootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
+	rootLayout = new geLayout("layout", fontManagerGUI);
+	rootLayout->create(renderer, NULL, x, y, cx, cy);
+	rootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
 
 	cursorUtil::init();
 }
 
 void geLayoutManager::draw()
 {
-	if(m_pRootLayout)
-		m_pRootLayout->draw();
+	if(rootLayout)
+		rootLayout->draw();
 }
 
 void geLayoutManager::onPosition(float x, float y, int flag)
@@ -46,11 +46,11 @@ void geLayoutManager::onPosition(float x, float y, int flag)
 
 void geLayoutManager::onSize(float cx, float cy, int flag)
 {
-	if(m_pRootLayout)
+	if(rootLayout)
 	{
-		m_pRootLayout->resize(cx/m_cPrevScale.x, cy/m_cPrevScale.y);
+		rootLayout->resize(cx/previousScale.x, cy/previousScale.y);
 	}
-	m_cPrevScale.set(cx, cy);
+	previousScale.set(cx, cy);
 }
 
 void geLayoutManager::mouseMoveWithGrabbedWindow(int x, int y, geWindow* grabbedWindow)
@@ -59,9 +59,9 @@ void geLayoutManager::mouseMoveWithGrabbedWindow(int x, int y, geWindow* grabbed
 
 void geLayoutManager::dropGrabbedWindow(int x, int y, geWindow* grabbedWindow)
 {
-//	if(m_pRootLayout)
+//	if(rootLayout)
 //	{
-//		geLayout* layouttodrop=m_pRootLayout->dropWindowOnMe(grabbedWindow);
+//		geLayout* layouttodrop=rootLayout->dropWindowOnMe(grabbedWindow);
 //	}
 }
 
@@ -69,88 +69,88 @@ bool geLayoutManager::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	cursorUtil::changeCursor(0);
 	//geLayout* layoutToResize=NULL;
-	if(m_pRootLayout->checkResizableOnRightSide(x, y))
+	if(rootLayout->checkResizableOnRightSide(x, y))
 	{
-		m_pRootLayout->getResizableOnLeftSide(x, y, &m_vLeftResizeList);
-		m_pRootLayout->getResizableOnRightSide(x, y, &m_vRightResizeList);
+		rootLayout->getResizableOnLeftSide(x, y, &leftResizeLayoutList);
+		rootLayout->getResizableOnRightSide(x, y, &rightResizeLayoutList);
 		cursorUtil::changeCursor(2);
 	}
-	else if(m_pRootLayout->checkResizableOnLeftSide(x, y))
+	else if(rootLayout->checkResizableOnLeftSide(x, y))
 	{
-		m_pRootLayout->getResizableOnLeftSide(x, y, &m_vLeftResizeList);
-		m_pRootLayout->getResizableOnRightSide(x, y, &m_vRightResizeList);
+		rootLayout->getResizableOnLeftSide(x, y, &leftResizeLayoutList);
+		rootLayout->getResizableOnRightSide(x, y, &rightResizeLayoutList);
 		cursorUtil::changeCursor(2);
 	}
-	else if(m_pRootLayout->checkResizableOnTopSide(x, y))
+	else if(rootLayout->checkResizableOnTopSide(x, y))
 	{
-		m_pRootLayout->getResizableOnTopSide(x, y, &m_vTopResizeList);
-		m_pRootLayout->getResizableOnBottomSide(x, y, &m_vBottomResizeList);
+		rootLayout->getResizableOnTopSide(x, y, &topResizeLayoutList);
+		rootLayout->getResizableOnBottomSide(x, y, &bottomResizeLayoutList);
 		cursorUtil::changeCursor(1);
 	}
-	else if(m_pRootLayout->checkResizableOnBottomSide(x, y))
+	else if(rootLayout->checkResizableOnBottomSide(x, y))
 	{
-		m_pRootLayout->getResizableOnTopSide(x, y, &m_vTopResizeList);
-		m_pRootLayout->getResizableOnBottomSide(x, y, &m_vBottomResizeList);
+		rootLayout->getResizableOnTopSide(x, y, &topResizeLayoutList);
+		rootLayout->getResizableOnBottomSide(x, y, &bottomResizeLayoutList);
 		cursorUtil::changeCursor(1);
 	}
 	else
 	{
-		geLayout* selectedLayout = m_pRootLayout->selectLayout(x, y);
-		if(selectedLayout!=m_pSelectedLayout)
+		geLayout* selectedLayout = rootLayout->selectLayout(x, y);
+		if(this->selectedLayout!=selectedLayout)
 		{
-			if(m_pSelectedLayout)
-				m_pSelectedLayout->focusLost();
+			if(this->selectedLayout)
+				this->selectedLayout->focusLost();
 		}
-		m_pSelectedLayout=selectedLayout;
-		if(m_pSelectedLayout)
-			m_pSelectedLayout->MouseLButtonDown(x, y, nFlag);
+		this->selectedLayout=selectedLayout;
+		if(this->selectedLayout)
+			this->selectedLayout->MouseLButtonDown(x, y, nFlag);
 	}
 
-	m_cMousePreviousPos.set(x, y);
+	mousePreviousPos.set(x, y);
 
 	return false;
 }
 
 bool geLayoutManager::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	if(m_pSelectedLayout)
+	if(selectedLayout)
 	{
-		m_pSelectedLayout->MouseLButtonUp(x, y, nFlag);
-		if(!m_pSelectedLayout->isPointInsideWindow(x, y))
-			m_pSelectedLayout->CancelEngagedControls();
+		selectedLayout->MouseLButtonUp(x, y, nFlag);
+		if(!selectedLayout->isPointInsideWindow(x, y))
+			selectedLayout->CancelEngagedControls();
 	}
 
-	for(std::vector<geLayout*>::iterator it = m_vRightResizeList.begin(); it != m_vRightResizeList.end(); ++it)
-	{
-		geLayout* obj = *it;
-		obj->resizeComplete();
-	}
-
-	for(std::vector<geLayout*>::iterator it = m_vLeftResizeList.begin(); it != m_vLeftResizeList.end(); ++it)
+	for(std::vector<geLayout*>::iterator it = rightResizeLayoutList.begin(); it != rightResizeLayoutList.end(); ++it)
 	{
 		geLayout* obj = *it;
 		obj->resizeComplete();
 	}
 
-	for(std::vector<geLayout*>::iterator it = m_vTopResizeList.begin(); it != m_vTopResizeList.end(); ++it)
+	for(std::vector<geLayout*>::iterator it = leftResizeLayoutList.begin(); it != leftResizeLayoutList.end(); ++it)
 	{
 		geLayout* obj = *it;
 		obj->resizeComplete();
 	}
 
-	for(std::vector<geLayout*>::iterator it = m_vBottomResizeList.begin(); it != m_vBottomResizeList.end(); ++it)
+	for(std::vector<geLayout*>::iterator it = topResizeLayoutList.begin(); it != topResizeLayoutList.end(); ++it)
 	{
 		geLayout* obj = *it;
 		obj->resizeComplete();
 	}
 
-	m_vLeftResizeList.clear();
-	m_vRightResizeList.clear();
+	for(std::vector<geLayout*>::iterator it = bottomResizeLayoutList.begin(); it != bottomResizeLayoutList.end(); ++it)
+	{
+		geLayout* obj = *it;
+		obj->resizeComplete();
+	}
 
-	m_vTopResizeList.clear();
-	m_vBottomResizeList.clear();
+	leftResizeLayoutList.clear();
+	rightResizeLayoutList.clear();
 
-	m_cMousePreviousPos.set(x, y);
+	topResizeLayoutList.clear();
+	bottomResizeLayoutList.clear();
+
+	mousePreviousPos.set(x, y);
 
 	return true;
 }
@@ -172,22 +172,22 @@ bool geLayoutManager::onMouseMove(float x, float y, int flag)
 	{
 		cursorUtil::changeCursor(0);
 		geLayout* layoutToResize;
-		layoutToResize=m_pRootLayout->checkResizableOnRightSide(x, y);
+		layoutToResize=rootLayout->checkResizableOnRightSide(x, y);
 		if(layoutToResize)
 		{
 			cursorUtil::changeCursor(2);
 		}
-		layoutToResize=m_pRootLayout->checkResizableOnLeftSide(x, y);
+		layoutToResize=rootLayout->checkResizableOnLeftSide(x, y);
 		if(layoutToResize)
 		{
 			cursorUtil::changeCursor(2);
 		}
-		layoutToResize=m_pRootLayout->checkResizableOnTopSide(x, y);
+		layoutToResize=rootLayout->checkResizableOnTopSide(x, y);
 		if(layoutToResize)
 		{
 			cursorUtil::changeCursor(1);
 		}
-		layoutToResize=m_pRootLayout->checkResizableOnBottomSide(x, y);
+		layoutToResize=rootLayout->checkResizableOnBottomSide(x, y);
 		if(layoutToResize)
 		{
 			cursorUtil::changeCursor(1);
@@ -195,12 +195,12 @@ bool geLayoutManager::onMouseMove(float x, float y, int flag)
 	}
 	else
 	{
-		if(m_vRightResizeList.size() && m_vLeftResizeList.size())
+		if(rightResizeLayoutList.size() && leftResizeLayoutList.size())
 		{
 			bLayoutChangeLogicIssued=true;
 			expandOrContractLeftAndRightLayoutsOnMouseDrag(x, y);
 		}
-		else if(m_vTopResizeList.size() && m_vBottomResizeList.size())
+		else if(topResizeLayoutList.size() && bottomResizeLayoutList.size())
 		{
 			bLayoutChangeLogicIssued=true;
 			expandOrContractTopAndBottomLayoutsOnMouseDrag(x, y);
@@ -209,33 +209,33 @@ bool geLayoutManager::onMouseMove(float x, float y, int flag)
 
 	if(!bLayoutChangeLogicIssued)
 	{
-		if(m_pSelectedLayout)
-			m_pSelectedLayout->MouseMove(x, y, flag);
+		if(selectedLayout)
+			selectedLayout->MouseMove(x, y, flag);
 
-		//m_pRootLayout->traverseMouseMoveEvent(x, y, flag);
+		//rootLayout->traverseMouseMoveEvent(x, y, flag);
 	}
 
-	m_cMousePreviousPos.set(x, y);
+	mousePreviousPos.set(x, y);
 
 	return false;
 }
 
 void geLayoutManager::onMouseWheel(int zDelta, int x, int y, int flag)
 {
-	if(m_pSelectedLayout)
-		m_pSelectedLayout->MouseWheel(zDelta, x, y, flag);
+	if(selectedLayout)
+		selectedLayout->MouseWheel(zDelta, x, y, flag);
 }
 
 void geLayoutManager::expandOrContractLeftAndRightLayoutsOnMouseDrag(int x, int y)
 {
-	geVector2i diff(geVector2i(x, y)-m_cMousePreviousPos);
+	geVector2i diff(geVector2i(x, y)-mousePreviousPos);
 
 	bool bStop=false;
 	bool bRightListExpand=true;
 	bool bLeftListExpand=true;
 
 	//check any layout resist expansion
-	for(std::vector<geLayout*>::iterator it = m_vRightResizeList.begin(); it != m_vRightResizeList.end(); ++it)
+	for(std::vector<geLayout*>::iterator it = rightResizeLayoutList.begin(); it != rightResizeLayoutList.end(); ++it)
 	{
 		geLayout* obj = *it;
 		if(obj->getSize().x-diff.x<=20)
@@ -245,7 +245,7 @@ void geLayoutManager::expandOrContractLeftAndRightLayoutsOnMouseDrag(int x, int 
 		}
 	}
 
-	for(std::vector<geLayout*>::iterator it = m_vLeftResizeList.begin(); it != m_vLeftResizeList.end(); ++it)
+	for(std::vector<geLayout*>::iterator it = leftResizeLayoutList.begin(); it != leftResizeLayoutList.end(); ++it)
 	{
 		geLayout* obj = *it;
 		if(obj->getSize().x+diff.x<=20)
@@ -256,7 +256,7 @@ void geLayoutManager::expandOrContractLeftAndRightLayoutsOnMouseDrag(int x, int 
 	}
 
 	if(((!bRightListExpand && diff.x<0) || bRightListExpand) && ((!bLeftListExpand && diff.x>0) || bLeftListExpand))
-	for(std::vector<geLayout*>::iterator it = m_vRightResizeList.begin(); it != m_vRightResizeList.end(); ++it)
+	for(std::vector<geLayout*>::iterator it = rightResizeLayoutList.begin(); it != rightResizeLayoutList.end(); ++it)
 	{
 		geLayout* obj = *it;
 		geVector2f layout_pos(obj->getPos());
@@ -267,7 +267,7 @@ void geLayoutManager::expandOrContractLeftAndRightLayoutsOnMouseDrag(int x, int 
 
 	if(!bStop && ((!bRightListExpand && diff.x<0) || bRightListExpand) && ((!bLeftListExpand && diff.x>0) || bLeftListExpand))
 	{
-		for(std::vector<geLayout*>::iterator it = m_vLeftResizeList.begin(); it != m_vLeftResizeList.end(); ++it)
+		for(std::vector<geLayout*>::iterator it = leftResizeLayoutList.begin(); it != leftResizeLayoutList.end(); ++it)
 		{
 			geLayout* obj = *it;
 			geVector2f layout_sz(obj->getSize());
@@ -278,14 +278,14 @@ void geLayoutManager::expandOrContractLeftAndRightLayoutsOnMouseDrag(int x, int 
 
 void geLayoutManager::expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int y)
 {
-	geVector2i diff(geVector2i(x, y)-m_cMousePreviousPos);
+	geVector2i diff(geVector2i(x, y)-mousePreviousPos);
 
 	bool bStop=false;
 	bool bRightListExpand=true;
 	bool bLeftListExpand=true;
 
 	//check any layout resist expansion
-	for(std::vector<geLayout*>::iterator it = m_vBottomResizeList.begin(); it != m_vBottomResizeList.end(); ++it)
+	for(std::vector<geLayout*>::iterator it = bottomResizeLayoutList.begin(); it != bottomResizeLayoutList.end(); ++it)
 	{
 		geLayout* obj = *it;
 		if(obj->getSize().y-diff.y<=20)
@@ -295,7 +295,7 @@ void geLayoutManager::expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int 
 		}
 	}
 
-	for(std::vector<geLayout*>::iterator it = m_vTopResizeList.begin(); it != m_vTopResizeList.end(); ++it)
+	for(std::vector<geLayout*>::iterator it = topResizeLayoutList.begin(); it != topResizeLayoutList.end(); ++it)
 	{
 		geLayout* obj = *it;
 		if(obj->getSize().y+diff.y<=20)
@@ -306,7 +306,7 @@ void geLayoutManager::expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int 
 	}
 
 	if(((!bRightListExpand && diff.y<0) || bRightListExpand) && ((!bLeftListExpand && diff.y>0) || bLeftListExpand))
-	for(std::vector<geLayout*>::iterator it = m_vBottomResizeList.begin(); it != m_vBottomResizeList.end(); ++it)
+	for(std::vector<geLayout*>::iterator it = bottomResizeLayoutList.begin(); it != bottomResizeLayoutList.end(); ++it)
 	{
 		geLayout* obj = *it;
 		geVector2f layout_pos(obj->getPos());
@@ -317,7 +317,7 @@ void geLayoutManager::expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int 
 
 	if(!bStop && ((!bRightListExpand && diff.y<0) || bRightListExpand) && ((!bLeftListExpand && diff.y>0) || bLeftListExpand))
 	{
-		for(std::vector<geLayout*>::iterator it = m_vTopResizeList.begin(); it != m_vTopResizeList.end(); ++it)
+		for(std::vector<geLayout*>::iterator it = topResizeLayoutList.begin(); it != topResizeLayoutList.end(); ++it)
 		{
 			geLayout* obj = *it;
 			geVector2f layout_sz(obj->getSize());
@@ -329,14 +329,14 @@ void geLayoutManager::expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int 
 //#if !defined(__APPLE__) //disable Drag-Drop
 void geLayoutManager::onDragEnter(int x, int y)
 {
-	geLayout* selectedLayout = m_pRootLayout->selectLayout(x, y);
+	geLayout* selectedLayout = rootLayout->selectLayout(x, y);
 	if(selectedLayout)
 		selectedLayout->DragEnter(x, y);
 }
 
 void geLayoutManager::onDragDrop(int x, int y, MDropData* dropObject)
 {
-	geLayout* selectedLayout = m_pRootLayout->selectLayout(x, y);
+	geLayout* selectedLayout = rootLayout->selectLayout(x, y);
 	if(selectedLayout)
 		selectedLayout->DragDrop(x, y, dropObject);
 }
@@ -349,23 +349,23 @@ void geLayoutManager::onDragLeave()
 
 bool geLayoutManager::onKeyDown(int charValue, int flag)
 {
-	if(m_pSelectedLayout)
-		return m_pSelectedLayout->KeyDown(charValue, flag);
+	if(selectedLayout)
+		return selectedLayout->KeyDown(charValue, flag);
 
 	return false;
 }
 
 bool geLayoutManager::onKeyUp(int charValue, int flag)
 {
-	if(m_pSelectedLayout)
-		return m_pSelectedLayout->KeyUp(charValue, flag);
+	if(selectedLayout)
+		return selectedLayout->KeyUp(charValue, flag);
 
 	return false;
 }
 
 void geLayoutManager::onCommand(int cmd)
 {
-	if(m_pSelectedLayout)
-		return m_pSelectedLayout->DoCommand(cmd);
+	if(selectedLayout)
+		return selectedLayout->DoCommand(cmd);
 
 }

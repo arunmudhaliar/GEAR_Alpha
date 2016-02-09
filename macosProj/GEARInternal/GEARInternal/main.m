@@ -335,7 +335,7 @@ int main(int argc, const char * argv[]) {
 //            case SDL_BUTTON_MIDDLE:
 //            {
 //                //DEBUG_PRINT("Middle Mouse Down");
-//                //geTestDlg* view = new geTestDlg(&geFontManager::g_cFontManager, editorApp.m_pRendererGL10);
+//                //geTestDlg* view = new geTestDlg(&geFontManager::g_cFontManager, editorApp.rendererGL10);
 //                //view->showView();
 //                //showMenu();
 //                cpp_createMenu();

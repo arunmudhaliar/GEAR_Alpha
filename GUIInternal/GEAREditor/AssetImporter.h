@@ -34,11 +34,11 @@ private:
 	int import_fbx_to_metadata(const char* fbx_file_name, const char* crcFileName, struct stat srcStat);
 	bool import_using_freeImageLib(const char* filename, const char* crcFileName, struct stat srcStat);
 
-	int m_nAssetsToProcess;
+	int noOfAssetsToProcess;
 #if !defined(__APPLE__)
-	HWND m_hWndProgress;
-    int m_iProgressBarID;
-    int m_iStatictextID;
+	HWND hWndProgress;
+    int progressBarID;
+    int staticTextID;
 #endif
-    geAssetImportDlg* m_pAssetImportDlg;
+    geAssetImportDlg* assetImportDlg;
 };

@@ -14,8 +14,8 @@ public:
 
 	geButtonBase(geFontManager* fontManager)
 	{
-        m_pFontManagerPtr=fontManager;
-		m_eState=BTN_STATE_NORMAL;
+        fontManagerGUI=fontManager;
+		buttonState=BTN_STATE_NORMAL;
 	}
 	geButtonBase(unsigned short uGUIID, const char* name, geFontManager* fontManager);
 	virtual ~geButtonBase();
@@ -34,8 +34,8 @@ protected:
 
 	virtual void onButtonClicked();
 
-	EBUTTON_STATE m_eState;
-	bool m_bMouseHover;
+	EBUTTON_STATE buttonState;
+	bool isMouseHover;
 };
 
 class geButton : public geButtonBase
@@ -69,5 +69,5 @@ protected:
 	virtual void onMouseExitClientArea();
 
 //private:
-	float m_cVBClientAreaLine[8];
+	float vertexBufferClientAreaArray[8];
 };

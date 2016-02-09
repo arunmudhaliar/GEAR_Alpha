@@ -40,15 +40,15 @@ public:
 
 	void DoCommand(int cmd);
 
-	geLayoutManager* getLayoutManager()		{	return m_pLayoutManager;	}
+	geLayoutManager* getLayoutManager()		{	return layoutManager;	}
 
 private:
-	std::vector<geWindow*> m_vWindowObjects;
+	std::vector<geWindow*> windowObjectList;
 
-	geWindow* m_pSelectedWindow;
-	geVector2i m_cMousePreviousPos;
+	geWindow* selectedWindow;
+	geVector2i mousePreviousPos;
 
-	geLayoutManager* m_pLayoutManager;
+	geLayoutManager* layoutManager;
 public:
 	static CGETextureManager g_cTextureManager;
 };

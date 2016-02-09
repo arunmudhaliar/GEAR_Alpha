@@ -84,7 +84,7 @@ private:
 	geVector2f m_cThickGridOnXAxis[18];
 	geVector2f m_cGridOuterBox[4];
 
-	vector2f m_cMousePrevPos;
+	vector2f mousePrevPosition;
 	vector3f m_cMousePrevPosInWorld;
 	int m_iAxisSelected;
 

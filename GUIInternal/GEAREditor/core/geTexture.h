@@ -31,7 +31,7 @@ public:
 
 	unsigned int getTextureID()	const
     {
-        return (texture)?texture->iTextureID:0;
+        return (texture)?texture->textureID:0;
     }
     
 	void setTextureType(ETEXTURE type)		{	textureType=type;	}

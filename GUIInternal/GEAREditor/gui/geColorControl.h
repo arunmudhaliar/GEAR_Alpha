@@ -17,7 +17,7 @@ public:
 	virtual void draw();
 	
 	void setControlColor(float r, float g, float b, float a);
-	geVector4f getControlColor()	{	return m_cColor;	}
+	geVector4f getControlColor()	{	return diffuseColor;	}
 
 protected:
 	virtual void onPosition(float x, float y, int flag);
@@ -28,8 +28,8 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 
 private:
-	float m_cVBClientAreaLine[10];
-	geVector4f m_cColor;
+	float vertexBufferClientAreaArray[10];
+	geVector4f diffuseColor;
 };
 
 #endif

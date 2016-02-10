@@ -18,19 +18,19 @@ gxCamera::~gxCamera()
 
 void gxCamera::setFOV(float fov)
 {
-	this->fov=fov;
+	this->fov = fov;
 	perspectiveChanged();
 }
 
 void gxCamera::setNear(float n)
 {
-	near=n;
+	nearValue = n;
 	perspectiveChanged();
 }
 
 void gxCamera::setFar(float f)
 {
-	far=f;
+	farValue = f;
 	perspectiveChanged();
 }
 
@@ -43,12 +43,12 @@ void gxCamera::setType(EPROJECTION_TYPE type)
 void gxCamera::perspectiveChanged()
 {
 	if(getProjectionType()==gxCamera::PERSPECTIVE_PROJECTION)
-		dummyProjectionMatrix.setPerspective(fov, 1.0f, near, far);
+		dummyProjectionMatrix.setPerspective(fov, 1.0f, nearValue, farValue);
 	else
 	{
 		gxRectf viewportRect(0, 0, 200, 200);
 		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
-		dummyProjectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, near, far);
+		dummyProjectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, nearValue, farValue);
 	}
 
 	extractFrustumPlanes();

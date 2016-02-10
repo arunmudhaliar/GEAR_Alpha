@@ -1,18 +1,8 @@
 #include "appEntry.h"
 
-#ifdef _WIN32
-#include <direct.h>
-#define GetCurrentDir _getcwd
-#else
-#include <unistd.h>
-#define GetCurrentDir getcwd
-#endif
-
-#include "../../../GUIInternal/GEAREditor/OSSpecific/MenuCPPInterface.h"
-
 bool g_mControlKeyPressed = false;
 
-int macos_main()
+int appEntry()
 {
     char cCurrentPath[FILENAME_MAX];
     if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
@@ -22,19 +12,10 @@ int macos_main()
     }
 
     cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
-    printf ("The current working directory is %s\n", cCurrentPath);
+    printf ("Info: Current working directory - %s\n", cCurrentPath);
 
 
     EditorGEARApp editorApp;
-
-//#ifdef __APPLE__
-//    EditorGEARApp::setProjectHomeDirectory("/Users/amudaliar/TEMP_PROJ/GEARPROJETCS/animation");
-//#elif defined(_WIN32)
-//	//EditorGEARApp::setProjectHomeDirectory("C://MYPROJECTS//GEAR_PROJECTS//animation");
-//#else
-//	#error Home directory not set for this platform
-//#endif
-
     EditorGEARApp::setAppDirectory(cCurrentPath);
 
     // init SDL
@@ -81,7 +62,7 @@ int macos_main()
         return -1;
     }
 
-    //SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+    //SDL_EventState(SDL_DROPFILE, SDL_ENABLE); //NOT YET IMPLEMENTED
 
     //shared context
     //http://forums.libsdl.org/viewtopic.php?t=9036&sid=3374c819e18df779e17b4ce5a49fdd15
@@ -159,16 +140,18 @@ int macos_main()
         editorApp.draw();
 
         SDL_Delay(rand()%10);
+        
         //swapbuffer
-//        SDL_GL_SwapWindow( window );
+        //SDL_GL_SwapWindow( window );  //SwapBuffer will be called by renderer. So no need to call it here.
     }
 
     monoWrapper::destroyMono();
 
-    // clean up
-//    SDL_GL_DeleteContext(context);
+    //clean up
+    //SDL_GL_DeleteContext(context);  //DeleteContext will be called by renderer. So no need to call it here.
     SDL_DestroyWindow(window);
     SDL_Quit();
+    
     return 0;
 }
 
@@ -285,7 +268,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             case SDL_BUTTON_RIGHT:
             {
                 //DEBUG_PRINT("Right Mouse Down");
-                //editorApp.MouseRButtonDown(mouse_x, mouse_y, MK_RBUTTON);
+                editorApp.MouseRButtonDown(mouse_x, mouse_y, MK_RBUTTON);
             }
                 break;
             default:
@@ -314,7 +297,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             case SDL_BUTTON_RIGHT:
             {
                 //DEBUG_PRINT("Right Mouse Up");
-                //editorApp.MouseRButtonUp(mouse_x, mouse_y, MK_RBUTTON);
+                editorApp.MouseRButtonUp(mouse_x, mouse_y, MK_RBUTTON);
             }
                 break;
             default:
@@ -326,7 +309,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
         int mouse_x = 0, mouse_y = 0;
         SDL_GetMouseState( &mouse_x, &mouse_y );
 
-//        DEBUG_PRINT("m_x=%d, m_y%d", mouse_x, mouse_y);
+        //DEBUG_PRINT("m_x=%d, m_y%d", mouse_x, mouse_y);
         SDL_MouseMotionEvent* mouseMotionEvent = (SDL_MouseMotionEvent*)&e;
         switch (mouseMotionEvent->state) {
             case 1:
@@ -361,7 +344,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
         MDropData* dropData = (MDropData*)dropEvent->file;
         editorApp.DragDrop(mouse_x, mouse_y, dropData);
         GE_DELETE(dropData);
-        //SDL_FlushEvent(SDL_MOUSEMOTION);
+        //SDL_FlushEvent(SDL_MOUSEMOTION);  //FlushEvent is called inside geGUIBase.
     }
 #ifdef __APPLE__
     else if(e.type==EditorApp::g_iAppSpecificEventType_MenuItemCmd)

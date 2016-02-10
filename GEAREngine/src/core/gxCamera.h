@@ -21,9 +21,9 @@ public:
 	void setFar(float f);
 	void setType(EPROJECTION_TYPE type);
 
-	float getFOV()			{	return fov;	}
-	float getNear()			{	return near;	}
-	float getFar()			{	return far;	}
+	float getFOV()			{	return fov;         }
+	float getNear()			{	return nearValue;	}
+	float getFar()			{	return farValue;	}
 	EPROJECTION_TYPE getProjectionType()	{	return projectionType;	}
 	void		extractFrustumPlanes();
 	gxFrustumf* getFrustum()	{	return &frustum;	}
@@ -33,8 +33,8 @@ private:
 	void perspectiveChanged();
 
 	float fov;
-	float near;
-	float far;
+	float nearValue;
+	float farValue;
 	EPROJECTION_TYPE projectionType;
 
 	gxFrustumf	frustum;

@@ -41,9 +41,9 @@ public:
 	void setType(EPROJECTION_TYPE type);
 	void perspectiveChanged();
 
-	float getFOV()			{	return fov;	}
-	float getNear()			{	return near;	}
-	float getFar()			{	return far;	}
+	float getFOV()			{	return fov;         }
+	float getNear()			{	return nearValue;	}
+	float getFar()			{	return farValue;         }
 	EPROJECTION_TYPE getProjectionType()	{	return projectionType;	}
 
 	bool isLayerCullingMask(unsigned int flag);
@@ -67,8 +67,8 @@ private:
 	gxFrustumf	renderFrustum;	//used only for rendering purpose;
 
 	float fov;	//in angles
-	float near;
-	float far;
+	float nearValue;
+	float farValue;
 	EPROJECTION_TYPE projectionType;
 	unsigned int layerCullingMask;
 	bool isMainCam;

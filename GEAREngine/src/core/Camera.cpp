@@ -56,19 +56,19 @@ unsigned int Camera::getLayerCullingMask()
 
 void Camera::setFOV(float fov)
 {
-	this->fov=fov;
+	this->fov = fov;
 	perspectiveChanged();
 }
 
 void Camera::setNear(float n)
 {
-	near=n;
+	nearValue = n;
 	perspectiveChanged();
 }
 
 void Camera::setFar(float f)
 {
-	far=f;
+	farValue = f;
 	perspectiveChanged();
 }
 
@@ -98,12 +98,12 @@ void Camera::updateCamera()
 void Camera::perspectiveChanged()
 {
 	if(getProjectionType()==(int)gxCamera::PERSPECTIVE_PROJECTION)
-		projectionMatrix.setPerspective(fov, 1.0f, near, far);
+		projectionMatrix.setPerspective(fov, 1.0f, nearValue, farValue);
 	else
 	{
 		gxRectf viewportRect(renderer->getViewPortRect());
 		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
-		projectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, near, far);
+		projectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, nearValue, farValue);
 	}
 	renderer->setProjectionMatrixToGL(&projectionMatrix);
 	extractFrustumPlanes();
@@ -116,12 +116,12 @@ void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearV
 
 	float aspect=cx/cy;
 	if(getProjectionType()==(int)gxCamera::PERSPECTIVE_PROJECTION)
-		projectionMatrix.setPerspective(fov, aspect, near, far);
+		projectionMatrix.setPerspective(fov, aspect, nearValue, farValue);
 	else
 	{
 		gxRectf viewportRect(renderer->getViewPortRect());
 		vector2f centerAlignedPos(viewportRect.m_pos-viewportRect.m_size*0.5f);
-		projectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, near, far);
+		projectionMatrix.setOrtho(centerAlignedPos.x, centerAlignedPos.x+viewportRect.m_size.x, centerAlignedPos.y, centerAlignedPos.y+viewportRect.m_size.y, nearValue, farValue);
 	}
 	
 	renderer->setProjectionMatrixToGL(&projectionMatrix);
@@ -250,8 +250,8 @@ void Camera::write(gxFile& file)
 	file.Write(projectionType);
 	file.Write(isMainCam);
 	file.Write(fov);
-	file.Write(near);
-	file.Write(far);
+	file.Write(nearValue);
+	file.Write(farValue);
 	file.Write(layerCullingMask);
 	//
 
@@ -290,8 +290,8 @@ void Camera::read(gxFile& file)
 	projectionType=(EPROJECTION_TYPE)etype;
 	file.Read(isMainCam);
 	file.Read(fov);
-	file.Read(near);
-	file.Read(far);
+	file.Read(nearValue);
+	file.Read(farValue);
 	file.Read(layerCullingMask);
 	//
 

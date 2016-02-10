@@ -15,23 +15,11 @@
 class gePropertyLight : public geTreeNode, public MGUIObserver
 {
 public:
-	gxLight* m_pLightPtr;
-	geColorControl* m_pColorControl;
-	geColorControl* m_pColorControlAmbient;
-	geColorControl* m_pColorControlSpecular;
-	geToolBarDropMenu* m_pLightTypeToolBarDropMenuBtnPtr;
-	geHorizontalSlider* m_pHorizontalSlider_ConstantAttenuation;
-	geHorizontalSlider* m_pHorizontalSlider_LinearAttenuation;
-	geHorizontalSlider* m_pHorizontalSlider_QuadraticAttenuation;
-
 	gePropertyLight(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager);
 	virtual ~gePropertyLight();
 
-
 	void populatePropertyOfLight(object3d* obj);
-
 	virtual void drawNode();
-
 	virtual void onTextChange(geGUIBase* textbox);
 	virtual void onSliderChange(geGUIBase* slider);
 	virtual void onColorChange(geGUIBase* colorControl);
@@ -39,8 +27,16 @@ public:
 	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 //#endif
 	virtual void onButtonClicked(geGUIBase* btn);
-
 	virtual void onCommand(int cmd);
+    
+    gxLight* previewLight;
+    geColorControl* colorControl;
+    geColorControl* ambientColorControl;
+    geColorControl* specularColorControl;
+    geToolBarDropMenu* lightTypeToolBarDropMenuButton;
+    geHorizontalSlider* constantAttenuationHorizontalSlider;
+    geHorizontalSlider* linearAttenuationHorizontalSlider;
+    geHorizontalSlider* quadraticAttenuationHorizontalSlider;
 };
 
 #endif

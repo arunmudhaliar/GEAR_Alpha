@@ -24,12 +24,12 @@ public:
 	void populatePropertyOfObject(object3d* obj);
 
 private:
-	object3d* m_pObject3dPtr;
-	geTextBox* m_pTextBoxMeshName;
-	gePushButton* m_pPushBtn_Object3dVisible;
-	gePushButton* m_pPushBtn_Object3dStatic;
-	geToolBarDropMenu* m_pTagDropDownMenu;
-	geToolBarDropMenu* m_pLayerDropDownMenu;
+	object3d* object3dPtr;
+	geTextBox* meshNameTextBox;
+	gePushButton* object3dVisibleToggle;
+	gePushButton* object3dStaticToggle;
+	geToolBarDropMenu* tagDropDownMenu;
+	geToolBarDropMenu* layerDropDownMenu;
 };
 
 #endif

@@ -5,10 +5,10 @@
 gearScenePreview::gearScenePreview(geFontManager* fontmanager):
 geWindow("Preview", fontmanager)
 {
-	m_pSelectedObj=NULL;
-	m_pPreviewWorldPtr=NULL;
-	m_bStopFollowCam=false;
-	m_pLightPtr=NULL;
+	selectedObject=NULL;
+	previewWorld=NULL;
+	stopFollowCam=false;
+	previewLight=NULL;
 }
 
 gearScenePreview::~gearScenePreview()
@@ -22,17 +22,17 @@ void gearScenePreview::onCreate()
 
 void gearScenePreview::reinitPreviewWorld()
 {
-	if(m_pPreviewWorldPtr)
-		m_pPreviewWorldPtr->resetWorld();
-	m_pPreviewWorldPtr=monoWrapper::mono_engine_getWorld(1);
-	m_pPreviewWorldPtr->getActiveCamera()->setNear(1.0f);
-	object3d* light=engine_createLight(m_pPreviewWorldPtr, "Light", gxLight::LIGHT_DIRECTIONAL);
+	if(previewWorld)
+		previewWorld->resetWorld();
+	previewWorld=monoWrapper::mono_engine_getWorld(1);
+	previewWorld->getActiveCamera()->setNear(1.0f);
+	object3d* light=engine_createLight(previewWorld, "Light", gxLight::LIGHT_DIRECTIONAL);
 	((gxLight*)light)->setDiffuseColor(vector4f(0.75f, 0.75f, 0.75f, 1.0f));
 	((gxLight*)light)->setAmbientColor(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
 	((gxLight*)light)->setSpecularColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
 	((gxLight*)light)->setConstantAttenuation(0.5f);
 	light->updatePositionf(-1, -10, 1);
-	m_pLightPtr=light;
+	previewLight=light;
 }
 
 void gearScenePreview::draw()
@@ -45,9 +45,9 @@ void gearScenePreview::draw()
 	}
 #endif
 
-	if(!m_pSelectedObj) return;
+	if(!selectedObject) return;
 
-	monoWrapper::mono_engine_resize(m_pPreviewWorldPtr, m_cPos.x+getIamOnLayout()->getPos().x, (rendererGUI->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/, 1.0f, 10000.0f);
+	monoWrapper::mono_engine_resize(previewWorld, m_cPos.x+getIamOnLayout()->getPos().x, (rendererGUI->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y), m_cSize.x/*+2.0f*/, m_cSize.y-getTopMarginOffsetHeight()/**//*+2.0f*/, 1.0f, 10000.0f);
 
 	onDraw();
 
@@ -70,26 +70,26 @@ void gearScenePreview::draw()
 
 void gearScenePreview::onDraw()
 {
-	monoWrapper::mono_engine_update(m_pPreviewWorldPtr, Timer::getDtinSec());
-	followObject(Timer::getDtinSec(), m_pSelectedObj);
+	monoWrapper::mono_engine_update(previewWorld, Timer::getDtinSec());
+	followObject(Timer::getDtinSec(), selectedObject);
 
-	monoWrapper::mono_engine_renderSingleObject(m_pPreviewWorldPtr, m_pSelectedObj, NULL, object3d::eObject3dBase_RenderFlag_NormalRenderPass);
+	monoWrapper::mono_engine_renderSingleObject(previewWorld, selectedObject, NULL, object3d::eObject3dBase_RenderFlag_NormalRenderPass);
 }
 
 void gearScenePreview::selectedObject3D(object3d* obj)
 {
-	m_pSelectedObj=obj;
-	if(m_pSelectedObj)
-		m_pSelectedObj->identity();
-	m_bStopFollowCam=false;	
+	selectedObject=obj;
+	if(selectedObject)
+		selectedObject->identity();
+	stopFollowCam=false;	
 }
 
 void gearScenePreview::followObject(float dt, object3d* chasedObj)
 {
-	if(dt>0.1f || m_bStopFollowCam) return;
+	if(dt>0.1f || stopFollowCam) return;
 	if(chasedObj==NULL) return;
 
-	Camera* cam=m_pPreviewWorldPtr->getActiveCamera();
+	Camera* cam=previewWorld->getActiveCamera();
 	matrix4x4f* chasingObj=(matrix4x4f*)cam;
     //matrix4x4f* chasedObj=(matrix4x4f*)this;
 	vector3f	eyeOff;
@@ -107,7 +107,7 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	
     if(len<=0.01f)
 	{
-		m_bStopFollowCam=true;
+		stopFollowCam=true;
 		return;
 	}
 
@@ -131,64 +131,64 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	chasingObj->setZAxis(forward);
 	chasingObj->setPosition(updatedPos);
 	
-	m_pLightPtr->setPosition(updatedPos);
+	previewLight->setPosition(updatedPos);
 
 	cam->updateCamera();
 }
 
 bool gearScenePreview::onMouseLButtonDown(float x, float y, int nFlag)
 {
-	monoWrapper::mono_engine_mouseLButtonDown(m_pPreviewWorldPtr, x, y, nFlag);
-	m_cPrevMousePos.set(x, y);
+	monoWrapper::mono_engine_mouseLButtonDown(previewWorld, x, y, nFlag);
+	previousMousePosition.set(x, y);
 	return true;
 }
 
 bool gearScenePreview::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	monoWrapper::mono_engine_mouseLButtonUp(m_pPreviewWorldPtr, x, y, nFlag);
-	m_cPrevMousePos.set(x, y);
+	monoWrapper::mono_engine_mouseLButtonUp(previewWorld, x, y, nFlag);
+	previousMousePosition.set(x, y);
 	return true;
 }
 
 bool gearScenePreview::onMouseRButtonDown(float x, float y, int nFlag)
 {
-	monoWrapper::mono_engine_mouseRButtonDown(m_pPreviewWorldPtr, x, y, nFlag);
-	m_cPrevMousePos.set(x, y);
+	monoWrapper::mono_engine_mouseRButtonDown(previewWorld, x, y, nFlag);
+	previousMousePosition.set(x, y);
 	return true;
 }
 
 void gearScenePreview::onMouseRButtonUp(float x, float y, int nFlag)
 {
-	monoWrapper::mono_engine_mouseRButtonUp(m_pPreviewWorldPtr, x, y, nFlag);
-	m_cPrevMousePos.set(x, y);
+	monoWrapper::mono_engine_mouseRButtonUp(previewWorld, x, y, nFlag);
+	previousMousePosition.set(x, y);
 }
 
 bool gearScenePreview::onMouseMove(float x, float y, int flag)
 {
-	//monoWrapper::mono_engine_mouseMove(m_pPreviewWorldPtr, x, y, flag);
-	if(!m_pSelectedObj)
+	//monoWrapper::mono_engine_mouseMove(previewWorld, x, y, flag);
+	if(!selectedObject)
 		return true;
 
 	int xx=x;
 	int yy=y;
 	int xPos = xx;
 	int yPos = yy;
-	int Pos_dx	= abs(xPos-m_cPrevMousePos.x);
-	int Pos_dy	= abs(yPos-m_cPrevMousePos.y);
+	int Pos_dx	= abs(xPos-previousMousePosition.x);
+	int Pos_dy	= abs(yPos-previousMousePosition.y);
 
 	int aDirX=-1;
 	int aDirY=1;
-	if(m_cPrevMousePos.x>xPos)		aDirX=1;
-	if(m_cPrevMousePos.y>yPos)		aDirY=-1;
+	if(previousMousePosition.x>xPos)		aDirX=1;
+	if(previousMousePosition.y>yPos)		aDirY=-1;
 
 #ifdef _WIN32
 	/*if(flag&MK_MBUTTON)
 	{
-		float d=m_pSelectedObj->getPosition().length();
+		float d=selectedObject->getPosition().length();
 		if(flag&MK_SHIFT)
-			m_pSelectedObj->updateLocalPositionf((d/5000.0f)*Pos_dx*aDirX, (d/5000.0f)*Pos_dy*aDirY, 0);
+			selectedObject->updateLocalPositionf((d/5000.0f)*Pos_dx*aDirX, (d/5000.0f)*Pos_dy*aDirY, 0);
 		else
-			m_pSelectedObj->updateLocalPositionf((d/500.0f)*Pos_dx*aDirX, (d/500.0f)*Pos_dy*aDirY, 0);
+			selectedObject->updateLocalPositionf((d/500.0f)*Pos_dx*aDirX, (d/500.0f)*Pos_dy*aDirY, 0);
 	}
 	else*/
 #endif
@@ -196,19 +196,19 @@ bool gearScenePreview::onMouseMove(float x, float y, int flag)
 	{
 		vector3f aUP(0, 0, 1);
 		//aUP=camera->getYAxis();
-		vector3f aVect(m_pSelectedObj->getAABB().getCenter());
+		vector3f aVect(selectedObject->getAABB().getCenter());
 		//aVect=m_cPickObjectCenter;	//can modify this later to rotate around mesh center
-		Camera* cam=m_pPreviewWorldPtr->getActiveCamera();
+		Camera* cam=previewWorld->getActiveCamera();
 
-		m_pSelectedObj->rotateArb(0.5f*Pos_dx*-aDirX, &aUP.x, aVect);
+		selectedObject->rotateArb(0.5f*Pos_dx*-aDirX, &aUP.x, aVect);
 		vector3f left=cam->getXAxis();
-		m_pSelectedObj->rotateArb(0.5f*Pos_dy*aDirY, &left.x, aVect);
+		selectedObject->rotateArb(0.5f*Pos_dy*aDirY, &left.x, aVect);
 	}
-	m_cPrevMousePos.set(x, y);
+	previousMousePosition.set(x, y);
 	return true;
 }
 
 void gearScenePreview::onMouseWheel(int zDelta, int x, int y, int flag)
 {
-	monoWrapper::mono_engine_mouseWheel(m_pPreviewWorldPtr, zDelta, x, y, flag);
+	monoWrapper::mono_engine_mouseWheel(previewWorld, zDelta, x, y, flag);
 }

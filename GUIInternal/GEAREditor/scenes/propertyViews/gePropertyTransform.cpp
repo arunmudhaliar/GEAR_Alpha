@@ -4,7 +4,7 @@
 gePropertyTransform::gePropertyTransform(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontManager):
 	geTreeNode(renderer, parent, name, sprite, fontManager, 10)
 {
-	m_pObject3dPtr=NULL;
+	object3dPtr=NULL;
 	setSize(m_cSize.x, 85.0f);
 
 	//geButton* btn=new geButton();
@@ -13,54 +13,54 @@ gePropertyTransform::gePropertyTransform(rendererGL10* renderer, geGUIBase* pare
 	//gePushButton* pbtn = new gePushButton("");
 	//pbtn->create(this, "", 10, 10);
 
-	m_pszTextBoxTranslation[0] = new geTextBox("X", fontManager);
-	m_pszTextBoxTranslation[0]->create(renderer, this, "0.0", 30, 10, 60, 16);
-	m_pszTextBoxTranslation[0]->setGUIObserver(this);
-	m_pszTextBoxTranslation[1] = new geTextBox("Y", fontManager);
-	m_pszTextBoxTranslation[1]->create(renderer, this, "0.0", 105, 10, 60, 16);
-	m_pszTextBoxTranslation[1]->setGUIObserver(this);
-	m_pszTextBoxTranslation[2] = new geTextBox("Z", fontManager);
-	m_pszTextBoxTranslation[2]->create(renderer, this, "0.0", 180, 10, 60, 16);
-	m_pszTextBoxTranslation[2]->setGUIObserver(this);
+	translationTextBox[0] = new geTextBox("X", fontManager);
+	translationTextBox[0]->create(renderer, this, "0.0", 30, 10, 60, 16);
+	translationTextBox[0]->setGUIObserver(this);
+	translationTextBox[1] = new geTextBox("Y", fontManager);
+	translationTextBox[1]->create(renderer, this, "0.0", 105, 10, 60, 16);
+	translationTextBox[1]->setGUIObserver(this);
+	translationTextBox[2] = new geTextBox("Z", fontManager);
+	translationTextBox[2]->create(renderer, this, "0.0", 180, 10, 60, 16);
+	translationTextBox[2]->setGUIObserver(this);
 
-	m_pszTextBoxRotation[0] = new geTextBox("X", fontManager);
-	m_pszTextBoxRotation[0]->create(renderer, this, "0.0", 30, 30, 60, 16);
-	m_pszTextBoxRotation[0]->setGUIObserver(this);
-	m_pszTextBoxRotation[1] = new geTextBox("Y", fontManager);
-	m_pszTextBoxRotation[1]->create(renderer, this, "0.0", 105, 30, 60, 16);
-	m_pszTextBoxRotation[1]->setGUIObserver(this);
-	m_pszTextBoxRotation[2] = new geTextBox("Z", fontManager);
-	m_pszTextBoxRotation[2]->create(renderer, this, "0.0", 180, 30, 60, 16);
-	m_pszTextBoxRotation[2]->setGUIObserver(this);
+	rotationTextBox[0] = new geTextBox("X", fontManager);
+	rotationTextBox[0]->create(renderer, this, "0.0", 30, 30, 60, 16);
+	rotationTextBox[0]->setGUIObserver(this);
+	rotationTextBox[1] = new geTextBox("Y", fontManager);
+	rotationTextBox[1]->create(renderer, this, "0.0", 105, 30, 60, 16);
+	rotationTextBox[1]->setGUIObserver(this);
+	rotationTextBox[2] = new geTextBox("Z", fontManager);
+	rotationTextBox[2]->create(renderer, this, "0.0", 180, 30, 60, 16);
+	rotationTextBox[2]->setGUIObserver(this);
 
-	m_pszTextBoxScale[0] = new geTextBox("X", fontManager);
-	m_pszTextBoxScale[0]->create(renderer, this, "0.0", 30, 50, 60, 16);
-	m_pszTextBoxScale[0]->setGUIObserver(this);
-	m_pszTextBoxScale[1] = new geTextBox("Y", fontManager);
-	m_pszTextBoxScale[1]->create(renderer, this, "0.0", 105, 50, 60, 16);
-	m_pszTextBoxScale[1]->setGUIObserver(this);
-	m_pszTextBoxScale[2] = new geTextBox("Z", fontManager);
-	m_pszTextBoxScale[2]->create(renderer, this, "0.0", 180, 50, 60, 16);
-	m_pszTextBoxScale[2]->setGUIObserver(this);
+	scaleTextBox[0] = new geTextBox("X", fontManager);
+	scaleTextBox[0]->create(renderer, this, "0.0", 30, 50, 60, 16);
+	scaleTextBox[0]->setGUIObserver(this);
+	scaleTextBox[1] = new geTextBox("Y", fontManager);
+	scaleTextBox[1]->create(renderer, this, "0.0", 105, 50, 60, 16);
+	scaleTextBox[1]->setGUIObserver(this);
+	scaleTextBox[2] = new geTextBox("Z", fontManager);
+	scaleTextBox[2]->create(renderer, this, "0.0", 180, 50, 60, 16);
+	scaleTextBox[2]->setGUIObserver(this);
 
 
 	//window column
 	geWindowColumn* pWindowColumn = new geWindowColumn(fontManager);
 	pWindowColumn->create(rendererGUI, this, 10, 350.0f, 10.0f, 0.07f);
 	stWindowColumnRow* row = pWindowColumn->addRow("T");
-	pWindowColumn->addControl(row, m_pszTextBoxTranslation[0], 18.0f);
-	pWindowColumn->addControl(row, m_pszTextBoxTranslation[1], 18.0f);
-	pWindowColumn->addControl(row, m_pszTextBoxTranslation[2], 18.0f);
+	pWindowColumn->addControl(row, translationTextBox[0], 18.0f);
+	pWindowColumn->addControl(row, translationTextBox[1], 18.0f);
+	pWindowColumn->addControl(row, translationTextBox[2], 18.0f);
 
 	row = pWindowColumn->addRow("R");
-	pWindowColumn->addControl(row, m_pszTextBoxRotation[0], 18.0f);
-	pWindowColumn->addControl(row, m_pszTextBoxRotation[1], 18.0f);
-	pWindowColumn->addControl(row, m_pszTextBoxRotation[2], 18.0f);
+	pWindowColumn->addControl(row, rotationTextBox[0], 18.0f);
+	pWindowColumn->addControl(row, rotationTextBox[1], 18.0f);
+	pWindowColumn->addControl(row, rotationTextBox[2], 18.0f);
 
 	row = pWindowColumn->addRow("S");
-	pWindowColumn->addControl(row, m_pszTextBoxScale[0], 18.0f);
-	pWindowColumn->addControl(row, m_pszTextBoxScale[1], 18.0f);
-	pWindowColumn->addControl(row, m_pszTextBoxScale[2], 18.0f);
+	pWindowColumn->addControl(row, scaleTextBox[0], 18.0f);
+	pWindowColumn->addControl(row, scaleTextBox[1], 18.0f);
+	pWindowColumn->addControl(row, scaleTextBox[2], 18.0f);
 	//
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
@@ -104,7 +104,7 @@ void gePropertyTransform::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tr
 
 void gePropertyTransform::populatePropertyOfTransform(object3d* obj)
 {
-	m_pObject3dPtr=obj;
+	object3dPtr=obj;
 
 	updatePropertyView();
 }
@@ -114,51 +114,51 @@ void gePropertyTransform::onTextChange(geGUIBase* textbox)
 	geTextBox* currentTextBox=(geTextBox*)textbox;
 
 	float value=geUtil::getFloat(currentTextBox->getName());
-	//geTextBox* m_pszTextBoxTranslation[3];
-	//geTextBox* m_pszTextBoxRotation[3];
-	//geTextBox* m_pszTextBoxScale[3];
-	const float* mat=m_pObject3dPtr->getMatrix();
+	//geTextBox* translationTextBox[3];
+	//geTextBox* rotationTextBox[3];
+	//geTextBox* scaleTextBox[3];
+	const float* mat=object3dPtr->getMatrix();
 
-	if(textbox==m_pszTextBoxTranslation[0])
-		m_pObject3dPtr->setPosition(value, mat[13], mat[14]);
-	else if(textbox==m_pszTextBoxTranslation[1])
-		m_pObject3dPtr->setPosition(mat[12], value, mat[14]);
-	else if(textbox==m_pszTextBoxTranslation[2])
-		m_pObject3dPtr->setPosition(mat[12], mat[13], value);
+	if(textbox==translationTextBox[0])
+		object3dPtr->setPosition(value, mat[13], mat[14]);
+	else if(textbox==translationTextBox[1])
+		object3dPtr->setPosition(mat[12], value, mat[14]);
+	else if(textbox==translationTextBox[2])
+		object3dPtr->setPosition(mat[12], mat[13], value);
 
-	else if(textbox==m_pszTextBoxScale[0])
-		m_pObject3dPtr->setScale(value, mat[5], mat[10]);
-	else if(textbox==m_pszTextBoxScale[1])
-		m_pObject3dPtr->setScale(mat[0], value, mat[10]);
-	else if(textbox==m_pszTextBoxScale[2])
-		m_pObject3dPtr->setScale(mat[0], mat[5], value);
+	else if(textbox==scaleTextBox[0])
+		object3dPtr->setScale(value, mat[5], mat[10]);
+	else if(textbox==scaleTextBox[1])
+		object3dPtr->setScale(mat[0], value, mat[10]);
+	else if(textbox==scaleTextBox[2])
+		object3dPtr->setScale(mat[0], mat[5], value);
 
 }
 
 void gePropertyTransform::updatePropertyView()
 {
-	if(m_pObject3dPtr==NULL) return;
+	if(object3dPtr==NULL) return;
 
 	char buffer[32];
-	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[12]);
-	m_pszTextBoxTranslation[0]->setName(buffer);
-	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[13]);
-	m_pszTextBoxTranslation[1]->setName(buffer);
-	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[14]);
-	m_pszTextBoxTranslation[2]->setName(buffer);
+	sprintf(buffer, "%12.4f", object3dPtr->getMatrix()[12]);
+	translationTextBox[0]->setName(buffer);
+	sprintf(buffer, "%12.4f", object3dPtr->getMatrix()[13]);
+	translationTextBox[1]->setName(buffer);
+	sprintf(buffer, "%12.4f", object3dPtr->getMatrix()[14]);
+	translationTextBox[2]->setName(buffer);
 
-	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[0]);
-	m_pszTextBoxScale[0]->setName(buffer);
-	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[5]);
-	m_pszTextBoxScale[1]->setName(buffer);
-	sprintf(buffer, "%12.4f", m_pObject3dPtr->getMatrix()[10]);
-	m_pszTextBoxScale[2]->setName(buffer);
+	sprintf(buffer, "%12.4f", object3dPtr->getMatrix()[0]);
+	scaleTextBox[0]->setName(buffer);
+	sprintf(buffer, "%12.4f", object3dPtr->getMatrix()[5]);
+	scaleTextBox[1]->setName(buffer);
+	sprintf(buffer, "%12.4f", object3dPtr->getMatrix()[10]);
+	scaleTextBox[2]->setName(buffer);
 
 	float Yaw;
 	float Pitch;
 	float Roll;
 
-	matrix4x4f tm((matrix4x4f)*m_pObject3dPtr);
+	matrix4x4f tm((matrix4x4f)*object3dPtr);
 	tm.noScale();
 
 	Quaternion quat;
@@ -169,9 +169,9 @@ void gePropertyTransform::updatePropertyView()
 	//getRotation(Yaw, Pitch, Roll, obj->getMatrix());
 
 	sprintf(buffer, "%12.4f", Pitch);
-	m_pszTextBoxRotation[0]->setName(buffer);
+	rotationTextBox[0]->setName(buffer);
 	sprintf(buffer, "%12.4f", Yaw);
-	m_pszTextBoxRotation[1]->setName(buffer);
+	rotationTextBox[1]->setName(buffer);
 	sprintf(buffer, "%12.4f", Roll);
-	m_pszTextBoxRotation[2]->setName(buffer);
+	rotationTextBox[2]->setName(buffer);
 }

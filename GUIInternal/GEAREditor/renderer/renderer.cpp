@@ -16,13 +16,13 @@ rendererBase::rendererBase(HWND hWnd, ERENDERER technique):
 rendererBase::rendererBase(SDL_Window* window, ERENDERER technique)
 #endif
 {
-    m_pWindow=window;
-	m_bSecondryRenderer=false;
+    sdlWindow=window;
+	isSecondryRenderer=false;
 	g_eRenderingTechnique=technique;
 	//projectionMatrix=NULL;
 	//viewMatrix=NULL;
 	//viewProjectionMatrix=NULL;
-	//m_cViewPortSz.set(1.0f, 1.0f);
+	//viewPortSize.set(1.0f, 1.0f);
 }
 	
 rendererBase::~rendererBase()
@@ -33,7 +33,7 @@ rendererBase::~rendererBase()
 bool rendererBase::setupRenderer(rendererBase* mainRenderer)
 {
 #if DEPRECATED
-	m_bSecondryRenderer=(mainRenderer)?true:false;
+	isSecondryRenderer=(mainRenderer)?true:false;
 
 	static	PIXELFORMATDESCRIPTOR pfd=							// pfd Tells Windows How We Want Things To Be
 	{
@@ -110,14 +110,14 @@ bool rendererBase::setupRenderer(rendererBase* mainRenderer)
 	//glGetIntegerv​(GL_MAJOR_VERSION​, &major_version);
 	//glGetIntegerv​(GL_MINOR_VERSION​, &minor_version);
 #else
-    m_bSecondryRenderer=(mainRenderer)?true:false;
-    if(m_bSecondryRenderer)
+    isSecondryRenderer=(mainRenderer)?true:false;
+    if(isSecondryRenderer)
     {
-        m_pContext = mainRenderer->m_pContext;
+        sdlGLContext = mainRenderer->sdlGLContext;
     }
     else
     {
-        m_pContext = SDL_GL_CreateContext( m_pWindow );
+        sdlGLContext = SDL_GL_CreateContext( sdlWindow );
         printf("%s %s\n", glGetString(GL_RENDERER), glGetString(GL_VERSION));
 
 #ifdef _WIN32
@@ -131,7 +131,7 @@ bool rendererBase::setupRenderer(rendererBase* mainRenderer)
 		glGetIntegerv(GL_MINOR_VERSION, &g_iOGLMinorVersion);
 #endif
 
-        if( m_pContext == NULL )
+        if( sdlGLContext == NULL )
         {
             printf("ERROR SDL_GL_CreateContext\n");
             return false;
@@ -156,7 +156,7 @@ bool rendererBase::makeCurrent()
 	}
     return true;
 #else
-    int ret=SDL_GL_MakeCurrent(m_pWindow, m_pContext);
+    int ret=SDL_GL_MakeCurrent(sdlWindow, sdlGLContext);
     return ret==0;
 #endif
 }
@@ -172,7 +172,7 @@ bool rendererBase::killGL()
 #if DEPRECATED
 	bool flag=false;
 	
-	if(m_hRC && !m_bSecondryRenderer)													// Do We Have A Rendering Context?
+	if(m_hRC && !isSecondryRenderer)													// Do We Have A Rendering Context?
 	{
 		if (!wglMakeCurrent(NULL,NULL))						// Are We Able To Release The DC And RC Contexts?
 		{
@@ -190,10 +190,10 @@ bool rendererBase::killGL()
 	
 	return flag;
 #else
-    if(!m_bSecondryRenderer)
+    if(!isSecondryRenderer)
     {
         SDL_GL_MakeCurrent(NULL, NULL);
-        SDL_GL_DeleteContext(m_pContext);
+        SDL_GL_DeleteContext(sdlGLContext);
     }
     return true;
 #endif
@@ -203,7 +203,7 @@ bool rendererBase::killGL()
 void rendererBase::setViewPort(float cx, float cy)
 {
     //orthogonalProjectionMatrix.setOrtho(0.0f, cx, cy, 0.0f, 0.0f, 10.0f);
-	m_cViewPortSz.set(cx, cy);
+	viewPortSize.set(cx, cy);
 	//glViewport(0, 0, (int)cx, (int)cy);
  //   glMatrixMode(GL_PROJECTION);
 	//glLoadIdentity();
@@ -229,6 +229,6 @@ void rendererBase::swapGLBuffer()
 #if DEPRECATED
 	SwapBuffers(m_hDC);
 #else
-    SDL_GL_SwapWindow(m_pWindow);
+    SDL_GL_SwapWindow(sdlWindow);
 #endif
 }

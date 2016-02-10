@@ -30,7 +30,7 @@ public:
                         SDL_Window* window
 #endif
                         );
-	rendererGL10* getRenderer()	{	return m_pSecondryRenderer;	}
+	rendererGL10* getRenderer()	{	return secondryRenderer;	}
 
 	void showView(
 #if DEPRECATED
@@ -60,24 +60,9 @@ public:
 	static LRESULT CALLBACK SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 #endif
     
-    SDL_Window* getSecondryWindow() {   return m_pSecondryWindow;   }
-protected:
-    int m_iExtraWindowFlags;
-    SDL_Window* createSecondryWindow();
-    void processEvent(SDL_Window * window, SDL_Event& e);
-    static int secondryThread( void *ptr );
+    SDL_Window* getSecondryWindow() {   return sdlSecondryWindow;   }
     
-    SDL_Window* m_pSecondryWindow;
-    rendererGL10* m_pPrimaryRenderer;
-	rendererGL10* m_pSecondryRenderer;
-	geVector2f previousScale;
-	char m_szName[256];
-	geLayoutManager* layoutManager;
-
-	geVector2i m_cPos;
-	geVector2f m_cSize;
-    geFontManager* m_pFontManager;
-
+protected:
 	virtual void onCreate();
 	virtual void onSize(float cx, float cy);
 	virtual void onDraw();
@@ -89,4 +74,21 @@ protected:
 	virtual void onMouseRButtonUp(float x, float y, int nFlag);
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
+    
+    SDL_Window* createSecondryWindow();
+    void processEvent(SDL_Window * window, SDL_Event& e);
+    
+    static int secondryThread( void *ptr );
+    
+    int extraWindowFlags;
+    SDL_Window* sdlSecondryWindow;
+    rendererGL10* primaryRenderer;
+    rendererGL10* secondryRenderer;
+    geVector2f previousScale;
+    char m_szName[256];
+    geLayoutManager* layoutManager;
+    
+    geVector2i m_cPos;
+    geVector2f m_cSize;
+    geFontManager* fontManager;
 };

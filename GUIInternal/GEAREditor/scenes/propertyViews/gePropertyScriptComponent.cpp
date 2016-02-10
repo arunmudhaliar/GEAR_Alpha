@@ -6,8 +6,8 @@ gePropertyScriptComponent::gePropertyScriptComponent(rendererGL10* renderer, geG
 	geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 {
 
-	m_pWindowColumn = new geWindowColumn(fontManagerGUI);
-	m_pWindowColumn->create(rendererGUI, this, 10, 300.0f, 10.0f, 0.4f);
+	windowColumnControl = new geWindowColumn(fontManagerGUI);
+	windowColumnControl->create(rendererGUI, this, 10, 300.0f, 10.0f, 0.4f);
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -52,11 +52,11 @@ void gePropertyScriptComponent::onTVSelectionChange(geTreeNode* tvnode, geTreeVi
 
 void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, monoScriptObjectInstance* monoScript)
 {
-	m_pObject3dPtr=obj;
+	object3dPtr=obj;
 
 	/*
 	//destroy the controls in the column
-	for(std::vector<stWindowColumnRow*>::iterator it = m_pWindowColumn->getRowList()->begin(); it != m_pWindowColumn->getRowList()->end(); ++it)
+	for(std::vector<stWindowColumnRow*>::iterator it = windowColumnControl->getRowList()->begin(); it != windowColumnControl->getRowList()->end(); ++it)
 	{
 		stWindowColumnRow* row = *it;
 		for(std::vector<geGUIBase*>::iterator ctrl_it = row->getControlList()->begin(); ctrl_it != row->getControlList()->end(); ++ctrl_it)
@@ -68,29 +68,29 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
 		row->getControlList()->clear();
 		GE_DELETE(row);
 	}
-	m_pWindowColumn->getRowList()->clear();
+	windowColumnControl->getRowList()->clear();
 	//
 	*/
 
 
 	geGUIBase* lastControl=NULL;
 	////window column
-	////for(int x=0;x<m_pObject3dPtr->getMonoScriptInstanceCount();x++)
+	////for(int x=0;x<object3dPtr->getMonoScriptInstanceCount();x++)
 	//{
-	//	stWindowColumnRow* firstrow = m_pWindowColumn->addRow("Script");
+	//	stWindowColumnRow* firstrow = windowColumnControl->addRow("Script");
 	//	geStaticTextBox* scripteditbox = new geStaticTextBox("");
 	//	scripteditbox->create(rendererGUI, this, monoScript->getScriptPtr()->getScriptFileName().c_str(), 0, 0, -7, geFontManager::g_pFontArial10_80Ptr);
-	//	m_pWindowColumn->addControl(firstrow, scripteditbox, 16.0f);
+	//	windowColumnControl->addControl(firstrow, scripteditbox, 16.0f);
 	//	lastControl=scripteditbox;
 	//}
 
 	//mono vars
 	for(int x=0;x<monoScript->getScriptPtr()->getMonoVarCount();x++)
 	{
-		stWindowColumnRow* row = m_pWindowColumn->addRow(monoScript->getScriptPtr()->getMonoVarName(x));
+		stWindowColumnRow* row = windowColumnControl->addRow(monoScript->getScriptPtr()->getMonoVarName(x));
 		geTextBox* variableeditbox = new geTextBox("", fontManagerGUI);
 		variableeditbox->create(rendererGUI, this, "", 0, 0, 30, 15);
-		m_pWindowColumn->addControl(row, variableeditbox, 16.0f);
+		windowColumnControl->addControl(row, variableeditbox, 16.0f);
 		lastControl=variableeditbox;
 	}
 

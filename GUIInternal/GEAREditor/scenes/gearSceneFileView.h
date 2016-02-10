@@ -38,11 +38,11 @@ private:
 	void deleteAnmationFromObject3d(object3d* obj3d);
 	static int find_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
 
-	Sprite2Dx m_cszSprites[5];
-	geTreeView* m_pFileTreeView;
-	geTextBox* m_pSerachStringTextBoxPtr;
-	char m_szDirectoryPath[512];
+	Sprite2Dx spriteArray[5];
+	geTreeView* fileTreeView;
+	geTextBox* serachStringTextBox;
+	char directoryPath[512];
 
-	object3d* m_pPreviewObj_Cube;
-	gxMaterial m_cPreviewMaterial;
+	object3d* previewCubeObject;
+	gxMaterial previewMaterial;
 };

@@ -12,14 +12,14 @@ gePropertyLayers::gePropertyLayers(rendererGL10* renderer, geGUIBase* parent, co
 	pWindowColumn->create(rendererGUI, this, 10, 300.0f, 10.0f, 0.15f);
 	for(int x=0;x<MAX_LAYER;x++)
 	{
-		m_pTextBoxLayers[x] = new geTextBox(layerManager->getLayer(x)->getLayerName(), fontManagerGUI);
-		m_pTextBoxLayers[x]->create(renderer, this, layerManager->getLayer(x)->getLayerName(), 0, 0, 150, 16);
-		m_pTextBoxLayers[x]->setGUIObserver(this);
+		textBoxArray[x] = new geTextBox(layerManager->getLayer(x)->getLayerName(), fontManagerGUI);
+		textBoxArray[x]->create(renderer, this, layerManager->getLayer(x)->getLayerName(), 0, 0, 150, 16);
+		textBoxArray[x]->setGUIObserver(this);
 
 		char buffer[32];
 		sprintf(buffer, "%d", x);
 		row = pWindowColumn->addRow(buffer);
-		pWindowColumn->addControl(row, m_pTextBoxLayers[x], m_pTextBoxLayers[x]->getSize().y+2);
+		pWindowColumn->addControl(row, textBoxArray[x], textBoxArray[x]->getSize().y+2);
 	}
 
 	setSize(m_cSize.x, row->getYPoistion()+row->getHeight()+10);
@@ -64,7 +64,7 @@ void gePropertyLayers::onTextChange(geGUIBase* textbox)
 
 	for(int x=0;x<MAX_LAYER;x++)
 	{
-		if(m_pTextBoxLayers[x]==textbox)
+		if(textBoxArray[x]==textbox)
 		{
 			if(textbox->getName() && strlen(textbox->getName())>0)
 			{

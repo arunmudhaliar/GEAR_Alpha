@@ -71,53 +71,53 @@ protected:
 	void drawShadowMapPass();
 
 private:
-	int m_nSelectedObjectTriangles;
-	object3d* m_pSelectedObj;
+	int noOfSelectedObjectTriangles;
+	object3d* selectedObject;
 	gxWorld* m_pMainWorldPtr;	//0th world. Must not delete this pointer
 
-	geHorizontalSlider* m_pHorizontalSlider_LightAmbient;
-	geHorizontalSlider* m_pHorizontalSlider_TimeScale;
+	geHorizontalSlider* ambientLightHorizontalSlider;
+	geHorizontalSlider* timeScaleHorizontalSlider;
 
-	geVector2f m_cGridOnYAxis[180];
-	geVector2f m_cGridOnXAxis[180];
-	geVector2f m_cThickGridOnYAxis[18];
-	geVector2f m_cThickGridOnXAxis[18];
-	geVector2f m_cGridOuterBox[4];
+	geVector2f gridOnYAxisArray[180];
+	geVector2f gridOnXAxisArray[180];
+	geVector2f thickGridOnYAxisArray[18];
+	geVector2f thickGridOnXAxisArray[18];
+	geVector2f gridOuterBoxArray[4];
 
 	vector2f mousePrevPosition;
-	vector3f m_cMousePrevPosInWorld;
-	int m_iAxisSelected;
+	vector3f mousePreviousPositionInWorld;
+	int selectedAxisID;
 
-	bool m_bTransformThroughLocalAxis;
-	geToolBarButton* m_pLocalOrGlobalAxis;
-	geToolBarButton* m_pTBGridView;
-	geToolBarButton* m_pTBOnlyLightPass;
-	geToolBarButton* m_pTBShowOOBB;
-	geToolBarButton* m_pTBShowOctree;
+	bool isTransformThroughLocalAxis;
+	geToolBarButton* localOrGlobalAxisToolBarButton;
+	geToolBarButton* gridViewToolBarButton;
+	geToolBarButton* onlyLightPassToolBarButton;
+	geToolBarButton* showOOBBToolBarButton;
+	geToolBarButton* showOctreeToolBarButton;
 
-	geToolBarButton* m_pPlayButton;
-	geToolBarButton* m_pPauseButton;
-	bool m_bMonoGameInitialized;
+	geToolBarButton* playGameToolBarButton;
+	geToolBarButton* pauseGameToolBarButton;
+	bool isMonoGameInitialized;
 
-	geToolBarButton* m_pTranslateGizmo;
-	geToolBarButton* m_pRotateGizmo;
-	geToolBarButton* m_pScaleGizmo;
+	geToolBarButton* translateGizmoToolBarButton;
+	geToolBarButton* rotateGizmoToolBarButton;
+	geToolBarButton* scaleGizmoToolBarButton;
 
-	HWShaderManager* m_pHWShaderManager;
-	Sprite2Dx m_cLightBillBoardSprite;
+	HWShaderManager* hwShaderManager;
+	Sprite2Dx lightBillBoardSprite;
 
 #if defined USE_FBO
-	FBO m_cMultiPassFBO;
-	FBO m_cFOGFBO;
+	FBO multiPassFBO;
+	FBO fogFBO;
 #endif
-	bool m_bEnablePostProcessorBlur;
-	SoundEngine m_cSoundEngine;
-	int m_iLastGLError;
+	bool isEnablePostProcessorBlur;
+	SoundEngine soundEngine;
+	int lastGLErrorID;
 
-	bool m_bStopFollowCam;
-	vector3f m_cDebugPos;
+	bool stopFollowCam;
+	vector3f debugPosition;
 
-	BrightPassFilter m_cBrightPassFilter;
-	BlurFilter m_cBlurFilter;
-	ToneMappingFilter m_cToneMappingFilter;
+	BrightPassFilter brightPassFilter;
+	BlurFilter blurFilter;
+	ToneMappingFilter toneMappingFilter;
 };

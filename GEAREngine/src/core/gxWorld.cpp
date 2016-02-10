@@ -327,7 +327,7 @@ void gearSceneWorldEditor::drawShadowMapPass()
 
 	matrix4x4f depthMVP(depthProjectionMatrix * depthViewMatrix.getInverse());
 	//matrix4x4f depthBiasMVP(depthMVP * biasMatrix);
-	//const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * m_cLightBillBoardSprite)).getMatrix();
+	//const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * lightBillBoardSprite)).getMatrix();
 
 	CHECK_GL_ERROR(glViewport(0, 0, shadowMapFBO.getFBOWidth(), shadowMapFBO.getFBOHeight()));
 	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));

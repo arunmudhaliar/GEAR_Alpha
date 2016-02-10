@@ -11,6 +11,4 @@ public:
 	rendererGL10(SDL_Window* window);
 #endif
 	~rendererGL10();
-
-	//static rendererGL10* g_pRendererGL10;
 };

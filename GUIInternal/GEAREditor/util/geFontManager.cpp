@@ -1060,9 +1060,9 @@ void geFontManager::init()
     //if(technique==rendererBase::gl_programmable_pipeline)
     {
 #if defined(WIN32)
-        m_cFontShader.loadShader("res/shadersWin32/hwshader/fontshader.glsl");
+        fontHWShader.loadShader("res/shadersWin32/hwshader/fontshader.glsl");
 #else
-        m_cFontShader.loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/fontshader.glsl");
+        fontHWShader.loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/fontshader.glsl");
 #endif
     }
 #endif
@@ -1070,22 +1070,22 @@ void geFontManager::init()
 
 void geFontManager::reset(bool reload)
 {
-    for(int x=0;x<m_cvFontList.size();x++)
+    for(int x=0;x<fontList.size();x++)
     {
-        geFont* font=m_cvFontList[x];
+        geFont* font=fontList[x];
         if(reload)font->setDeleteGLTexture(!reload);
         GE_DELETE(font);
     }
-    m_cvFontList.clear();
+    fontList.clear();
 }
 
 #if defined (USE_ProgrammablePipeLine_test)
 void geFontManager::setRenderer(gxRenderer* renderer)
 {
 	this->renderer=renderer;
-	for(int x=0;x<m_cvFontList.size();x++)
+	for(int x=0;x<fontList.size();x++)
     {
-        geFont* font=m_cvFontList[x];
+        geFont* font=fontList[x];
 		font->setRenderer(this->renderer);
     }
 }
@@ -1094,7 +1094,7 @@ void geFontManager::setRenderer(gxRenderer* renderer)
 geFont* geFontManager::loadFont(const char* filename)
 {
 #if defined (USE_ProgrammablePipeLine_test)
-    geFont* newFont=new geFont(&m_cFontShader, renderer);
+    geFont* newFont=new geFont(&fontHWShader, renderer);
 #else
     geFont* newFont=new geFont();
 #endif
@@ -1107,7 +1107,7 @@ geFont* geFontManager::loadFont(const char* filename)
     newFont->load(file);
     file.CloseFile();
     
-    m_cvFontList.push_back(newFont);
+    fontList.push_back(newFont);
     
     return newFont;
 }

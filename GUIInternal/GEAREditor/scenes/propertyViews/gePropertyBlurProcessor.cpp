@@ -6,13 +6,13 @@ bool calculatePosOfMyChild2(geGUIBase* compareme, geGUIBase* parent, int& x, int
 void gePropertyBlurProcessor::onButtonClicked(geGUIBase* btn)
 {
 #if DEPRECATED
-	if(btn==m_pPushBtn_Object3dVisible)
+	if(btn==object3dVisibleToggle)
 	{
 		HMENU hPopupMenu = CreatePopupMenu();
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004003, "Directional Light");
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004002, "Point Light");
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-		//geTreeNode* selectedNode=m_pGameObjectsTreeView->getSelectedNode();
+		//geTreeNode* selectedNode=gameObjectTreeView->getSelectedNode();
 		int disableFlag = 0;//(selectedNode)?0:MF_DISABLED;
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING | disableFlag, 0x00004001, "Create Object on Selected Node");
 		InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, 0x00004000, "Create Object");

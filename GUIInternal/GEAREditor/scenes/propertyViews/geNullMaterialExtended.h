@@ -22,7 +22,7 @@ public:
 	virtual void onDragDrop(int x, int y, MDropData* dropObject)
 	{
 		getParent()->DragDrop(x-getPos().x, y-getPos().y, dropObject);
-		////geTreeNode* rootNode = m_pGameObjectsTreeView->getRoot();
+		////geTreeNode* rootNode = gameObjectTreeView->getRoot();
 		//geGUIBase* droppedDataObject = dropObject->getActualData();
 		//const char* absolutePath=((assetUserData*)((geTreeNode*)droppedDataObject)->getUserData())->getAssetAbsolutePath();
 

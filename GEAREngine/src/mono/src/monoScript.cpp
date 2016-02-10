@@ -9,6 +9,7 @@ monoScript::monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* k
 	monoDomain = pMonoDomain;
 	monoMethod_setHandle = NULL;
 	isValidScript=false;
+    
 	if(mono_class_is_subclass_of(monoObjectClass, monoscript_klass, false))
 	{
 		isValidScript=true;
@@ -17,6 +18,11 @@ monoScript::monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* k
 		for(int x=0;x<mono_class_num_fields(monoObjectClass);x++)
 		{
 			MonoClassField* classfiled = mono_class_get_fields(monoObjectClass, (void**)&x);
+            if(!classfiled)
+            {
+                continue;   //THIS SHOULD NEVER HAPPEN. THIS MEANS THE BINARY IS NOT COMPILED PROPER.
+            }
+            
 			monoVariableList.push_back(classfiled);
 		}
 	}

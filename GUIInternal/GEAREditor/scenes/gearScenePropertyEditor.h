@@ -47,8 +47,8 @@ public:
 
 	void updateTransformPropertyOfCurrentSelectedObject();
 
-	geTreeNode* getMaterialParentNode()		{	return m_pMaterialParent;		}
-	geTreeNode* getAnimationParentNode()	{	return m_pAnimationParentNode;	}
+	geTreeNode* getMaterialParentNode()		{	return materialParentTreeNode;		}
+	geTreeNode* getAnimationParentNode()	{	return animationParentTreeNode;	}
 
 protected:
 	virtual void onCreate();
@@ -57,46 +57,46 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 
 private:
-	geTreeView* m_pPropertiesTreeView;
-	Sprite2Dx m_cszSprites[15];
+	geTreeView* propertiesTreeView;
+	Sprite2Dx spriteArray[15];
 
-	geTreeNode* m_pObject3dParentNode;
-	geTreeNode* m_pTransformParentNode;
-	geTreeNode* m_pMaterialParent;
-	geTreeNode* m_pAnimationParentNode;
-	geTreeNode* m_pSaveMetaDataParentNode;
-	geTreeNode* m_pLightParentNode;
-	geTreeNode* m_pAddComponentParentNode;
-	geTreeNode* m_pCameraParentNode;
+	geTreeNode* object3dParentTreeNode;
+	geTreeNode* transformParentTreeNode;
+	geTreeNode* materialParentTreeNode;
+	geTreeNode* animationParentTreeNode;
+	geTreeNode* saveMetaDataParentTreeNode;
+	geTreeNode* lightParentTreeNode;
+	geTreeNode* addComponentParentTreeNode;
+	geTreeNode* cameraParentTreeNode;
 
-	gePropertyObject3d* m_pObject3dPropertyNode;
-	gePropertyTransform* m_pTransformPropertyNode;
-	gePropertyMaterial* m_pMaterialPropertyNode;
-	gePropertySaveMetaData* m_pSaveMetaDataPropertyNode;
-	gePropertyLight* m_pLightPropertyNode;
-	gePropertyAddComponent* m_pAddComponentProperty;
-	gePropertyCamera* m_pCameraPropertyNode;
+	gePropertyObject3d* object3dProperty;
+	gePropertyTransform* transformProperty;
+	gePropertyMaterial* materialProperty;
+	gePropertySaveMetaData* saveMetaDataProperty;
+	gePropertyLight* lightProperty;
+	gePropertyAddComponent* addComponentProperty;
+	gePropertyCamera* cameraProperty;
 
 	//open on editor
-	geTreeNode* m_pOpenOnEditorParentNode;
-	gePropertyOpenOnEditor* m_pPropertyOpenOnEditor;
+	geTreeNode* openOnEditorParentTreeNode;
+	gePropertyOpenOnEditor* openOnEditorProperty;
 
 	//post processors
-	geTreeNode* m_pPostProcessorBlurShaderNode;
-	gePropertyBlurProcessor* m_pBlurProcessorPropertyNode;
+	geTreeNode* postProcessorBlurShaderParentTreeNode;
+	gePropertyBlurProcessor* blurPostProcessorProperty;
 
 	//octree
-	geTreeNode* m_pOctreeParentNode;
-	gePropertyOctree* m_pPropertyOctree;
+	geTreeNode* octreeParentTreeNode;
+	gePropertyOctree* octreeProperty;
 
 	//layers
-	geTreeNode* m_pLayersParentNode;
-	gePropertyLayers* m_pPropertyLayers;
+	geTreeNode* layersParentTreeNode;
+	gePropertyLayers* layersProperty;
 
 	//Fog
-	geTreeNode* m_pFogParentNode;
-	geSettingsFog* m_pSettingsFog;
+	geTreeNode* fogParentTreeNode;
+	geSettingsFog* fogProperty;
 
 	//Scripts
-	std::vector<stMonoScriptTVNode*> m_vMonoScript;
+	std::vector<stMonoScriptTVNode*> monoScriptTreeViewNodeList;
 };

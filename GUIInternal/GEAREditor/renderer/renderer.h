@@ -38,7 +38,7 @@ public:
 
 	void swapGLBuffer();
 
-	const geVector2f& getViewPortSz()	{	return m_cViewPortSz;	}
+	const geVector2f& getViewPortSz()	{	return viewPortSize;	}
 	geMatrix4x4f* getProjectionMatrix()		{	return projectionMatrix;	}
 	geMatrix4x4f* getOrthoProjectionMatrix()	{	return &orthogonalProjectionMatrix;	}
 
@@ -49,7 +49,7 @@ public:
 	HWND getWindowHandle()		{	return m_hWnd;	}
 #endif
     
-    SDL_Window* getWindow()     {   return m_pWindow;   }
+    SDL_Window* getWindow()     {   return sdlWindow;   }
 private:
 	bool killGL();
 
@@ -60,15 +60,15 @@ private:
 	HWND			m_hWnd;							// Holds Our Window Handle.
 #endif
 
-	geVector2f	m_cViewPortSz;
+	geVector2f	viewPortSize;
 	geMatrix4x4f* projectionMatrix;			//must not delete this pointer
 	//geMatrix4x4f* viewMatrix;				//must not delete this pointer
 	//geMatrix4x4f* viewProjectionMatrix;     //must not delete this pointer
     geMatrix4x4f  orthogonalProjectionMatrix;
 	//bool		m_bDirectionalLighting;
-	bool m_bSecondryRenderer;
-    SDL_GLContext m_pContext;
-    SDL_Window* m_pWindow;
+	bool isSecondryRenderer;
+    SDL_GLContext sdlGLContext;
+    SDL_Window* sdlWindow;
     
 public:
 	static ERENDERER g_eRenderingTechnique;

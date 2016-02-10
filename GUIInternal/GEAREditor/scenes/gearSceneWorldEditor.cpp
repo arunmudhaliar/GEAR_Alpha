@@ -13,28 +13,28 @@
 gearSceneWorldEditor::gearSceneWorldEditor(geFontManager* fontmanager):
 geWindow("World Editor", fontmanager)
 {
-	m_pSelectedObj=NULL;
+	selectedObject=NULL;
 	m_pMainWorldPtr=NULL;
 
-	m_pHorizontalSlider_LightAmbient=NULL;
-	m_pHorizontalSlider_TimeScale=NULL;
-	m_pLocalOrGlobalAxis=NULL;
-	m_pTBGridView=NULL;
+	ambientLightHorizontalSlider=NULL;
+	timeScaleHorizontalSlider=NULL;
+	localOrGlobalAxisToolBarButton=NULL;
+	gridViewToolBarButton=NULL;
 
-	m_pPlayButton = NULL;
-	m_pPauseButton = NULL;
-	m_pTBOnlyLightPass = NULL;
-	m_pTBShowOOBB = NULL;
-	m_pTBShowOctree = NULL;
-	m_bMonoGameInitialized=false;
+	playGameToolBarButton = NULL;
+	pauseGameToolBarButton = NULL;
+	onlyLightPassToolBarButton = NULL;
+	showOOBBToolBarButton = NULL;
+	showOctreeToolBarButton = NULL;
+	isMonoGameInitialized=false;
 
-	m_pTranslateGizmo = NULL;
-	m_pRotateGizmo = NULL;
-	m_pScaleGizmo = NULL;
-	m_bEnablePostProcessorBlur=false;
-	m_iLastGLError=0;
-	m_bStopFollowCam=true;
-	m_nSelectedObjectTriangles=0;
+	translateGizmoToolBarButton = NULL;
+	rotateGizmoToolBarButton = NULL;
+	scaleGizmoToolBarButton = NULL;
+	isEnablePostProcessorBlur=false;
+	lastGLErrorID=0;
+	stopFollowCam=true;
+	noOfSelectedObjectTriangles=0;
 }
 
 gearSceneWorldEditor::~gearSceneWorldEditor()
@@ -61,85 +61,85 @@ void gearSceneWorldEditor::onCreate()
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(0), metaDataFolder);
 	monoWrapper::mono_engine_setMetaFolder(monoWrapper::mono_engine_getWorld(1), metaDataFolder);
 
-	m_pLocalOrGlobalAxis=new geToolBarButton(rendererGUI, "Local", getToolBar(), fontManagerGUI);
-	m_pLocalOrGlobalAxis->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pLocalOrGlobalAxis);
-	m_bTransformThroughLocalAxis=true;
+	localOrGlobalAxisToolBarButton=new geToolBarButton(rendererGUI, "Local", getToolBar(), fontManagerGUI);
+	localOrGlobalAxisToolBarButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(localOrGlobalAxisToolBarButton);
+	isTransformThroughLocalAxis=true;
 
-	m_pTranslateGizmo=new geToolBarButton(rendererGUI, "t", getToolBar(), fontManagerGUI);
-	m_pTranslateGizmo->loadImage("res//icons16x16.png", 7, 153);
-	m_pTranslateGizmo->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pTranslateGizmo);
-	m_pRotateGizmo=new geToolBarButton(rendererGUI, "r", getToolBar(), fontManagerGUI);
-	m_pRotateGizmo->loadImage("res//icons16x16.png", 27, 153);
-	m_pRotateGizmo->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pRotateGizmo);
-	m_pScaleGizmo=new geToolBarButton(rendererGUI, "s", getToolBar(), fontManagerGUI);
-	m_pScaleGizmo->loadImage("res//icons16x16.png", 49, 153);
-	m_pScaleGizmo->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pScaleGizmo);
+	translateGizmoToolBarButton=new geToolBarButton(rendererGUI, "t", getToolBar(), fontManagerGUI);
+	translateGizmoToolBarButton->loadImage("res//icons16x16.png", 7, 153);
+	translateGizmoToolBarButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(translateGizmoToolBarButton);
+	rotateGizmoToolBarButton=new geToolBarButton(rendererGUI, "r", getToolBar(), fontManagerGUI);
+	rotateGizmoToolBarButton->loadImage("res//icons16x16.png", 27, 153);
+	rotateGizmoToolBarButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(rotateGizmoToolBarButton);
+	scaleGizmoToolBarButton=new geToolBarButton(rendererGUI, "s", getToolBar(), fontManagerGUI);
+	scaleGizmoToolBarButton->loadImage("res//icons16x16.png", 49, 153);
+	scaleGizmoToolBarButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(scaleGizmoToolBarButton);
 
 	//enable translate gizmo
-	m_pTranslateGizmo->buttonPressed(false);
+	translateGizmoToolBarButton->buttonPressed(false);
 
-	m_pHorizontalSlider_LightAmbient = new geHorizontalSlider(fontManagerGUI);
-	m_pHorizontalSlider_LightAmbient->create(rendererGUI, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
-	m_pHorizontalSlider_LightAmbient->setGUIObserver(this);
-	m_pHorizontalSlider_LightAmbient->setSliderValue(0.4f);
-	getToolBar()->appendToolBarControl(m_pHorizontalSlider_LightAmbient);
+	ambientLightHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
+	ambientLightHorizontalSlider->create(rendererGUI, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
+	ambientLightHorizontalSlider->setGUIObserver(this);
+	ambientLightHorizontalSlider->setSliderValue(0.4f);
+	getToolBar()->appendToolBarControl(ambientLightHorizontalSlider);
 
 	geToolBarSeperator* seperator = new geToolBarSeperator(rendererGUI, getToolBar(), 20, fontManagerGUI);
 	getToolBar()->appendToolBarControl(seperator);
 	geToolBarSeperator* seperator2 = new geToolBarSeperator(rendererGUI, getToolBar(), 40, fontManagerGUI);
 	getToolBar()->appendToolBarControl(seperator2);
 
-	m_pTBGridView=new geToolBarButton(rendererGUI, "grid", getToolBar(), fontManagerGUI);
-	m_pTBGridView->loadImage("res//icons16x16.png", 112, 384);
-	//m_pTBGridView->setClientAreaSecondryActiveForeColor(0.5f, 0.3f, 0.2f, 1.0f);
-	//m_pTBGridView->applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
-	m_pTBGridView->buttonPressed(false);
-	getToolBar()->appendToolBarControl(m_pTBGridView);
+	gridViewToolBarButton=new geToolBarButton(rendererGUI, "grid", getToolBar(), fontManagerGUI);
+	gridViewToolBarButton->loadImage("res//icons16x16.png", 112, 384);
+	//gridViewToolBarButton->setClientAreaSecondryActiveForeColor(0.5f, 0.3f, 0.2f, 1.0f);
+	//gridViewToolBarButton->applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
+	gridViewToolBarButton->buttonPressed(false);
+	getToolBar()->appendToolBarControl(gridViewToolBarButton);
 
 	geToolBarSeperator* seperator3 = new geToolBarSeperator(rendererGUI, getToolBar(), 40, fontManagerGUI);
 	getToolBar()->appendToolBarControl(seperator3);
 
 	//play-pause-stop
-	m_pPlayButton=new geToolBarButton(rendererGUI, "play", getToolBar(), fontManagerGUI);
-	m_pPlayButton->loadImage("res//icons16x16.png", 26, 216);
-	m_pPlayButton->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pPlayButton);
-	m_pPauseButton=new geToolBarButton(rendererGUI, "pause", getToolBar(), fontManagerGUI);
-	m_pPauseButton->loadImage("res//icons16x16.png", 90, 216);
-	m_pPauseButton->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pPauseButton);
+	playGameToolBarButton=new geToolBarButton(rendererGUI, "play", getToolBar(), fontManagerGUI);
+	playGameToolBarButton->loadImage("res//icons16x16.png", 26, 216);
+	playGameToolBarButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(playGameToolBarButton);
+	pauseGameToolBarButton=new geToolBarButton(rendererGUI, "pause", getToolBar(), fontManagerGUI);
+	pauseGameToolBarButton->loadImage("res//icons16x16.png", 90, 216);
+	pauseGameToolBarButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(pauseGameToolBarButton);
 	//
 
 	geToolBarSeperator* seperator4 = new geToolBarSeperator(rendererGUI, getToolBar(), 40, fontManagerGUI);
 	getToolBar()->appendToolBarControl(seperator4);
 
-	m_pHorizontalSlider_TimeScale = new geHorizontalSlider(fontManagerGUI);
-	m_pHorizontalSlider_TimeScale->create(rendererGUI, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
-	m_pHorizontalSlider_TimeScale->setGUIObserver(this);
-	m_pHorizontalSlider_TimeScale->setSliderValue(1.0f);
-	getToolBar()->appendToolBarControl(m_pHorizontalSlider_TimeScale);
+	timeScaleHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
+	timeScaleHorizontalSlider->create(rendererGUI, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
+	timeScaleHorizontalSlider->setGUIObserver(this);
+	timeScaleHorizontalSlider->setSliderValue(1.0f);
+	getToolBar()->appendToolBarControl(timeScaleHorizontalSlider);
 
 	geToolBarSeperator* seperator5 = new geToolBarSeperator(rendererGUI, getToolBar(), 40, fontManagerGUI);
 	getToolBar()->appendToolBarControl(seperator5);
 
-	m_pTBOnlyLightPass=new geToolBarButton(rendererGUI, "onlylightpass", getToolBar(), fontManagerGUI);
-	m_pTBOnlyLightPass->loadImage("res//icons16x16.png", 153, 342);
-	m_pTBOnlyLightPass->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pTBOnlyLightPass);
+	onlyLightPassToolBarButton=new geToolBarButton(rendererGUI, "onlylightpass", getToolBar(), fontManagerGUI);
+	onlyLightPassToolBarButton->loadImage("res//icons16x16.png", 153, 342);
+	onlyLightPassToolBarButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(onlyLightPassToolBarButton);
 
-	m_pTBShowOOBB=new geToolBarButton(rendererGUI, "showoobb", getToolBar(), fontManagerGUI);
-	m_pTBShowOOBB->loadImage("res//icons16x16.png", 133, 258);
-	m_pTBShowOOBB->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pTBShowOOBB);
+	showOOBBToolBarButton=new geToolBarButton(rendererGUI, "showoobb", getToolBar(), fontManagerGUI);
+	showOOBBToolBarButton->loadImage("res//icons16x16.png", 133, 258);
+	showOOBBToolBarButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(showOOBBToolBarButton);
 
-	m_pTBShowOctree=new geToolBarButton(rendererGUI, "showoctree", getToolBar(), fontManagerGUI);
-	m_pTBShowOctree->loadImage("res//icons16x16.png", 70, 69);
-	m_pTBShowOctree->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pTBShowOctree);
+	showOctreeToolBarButton=new geToolBarButton(rendererGUI, "showoctree", getToolBar(), fontManagerGUI);
+	showOctreeToolBarButton->loadImage("res//icons16x16.png", 70, 69);
+	showOctreeToolBarButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(showOctreeToolBarButton);
 
 	//create grid
 	float startX=-500.0f;
@@ -149,78 +149,78 @@ void gearSceneWorldEditor::onCreate()
 	float oneSubGridSz=oneGridSz/10.0f;
 	float halfoneSubGridSz=0;//oneSubGridSz*0.5f;
 
-	m_cGridOuterBox[0].set(startX, startY);
-	m_cGridOuterBox[1].set(-startX, startY);
-	m_cGridOuterBox[2].set(-startX, -startY);
-	m_cGridOuterBox[3].set(startX, -startY);
+	gridOuterBoxArray[0].set(startX, startY);
+	gridOuterBoxArray[1].set(-startX, startY);
+	gridOuterBoxArray[2].set(-startX, -startY);
+	gridOuterBoxArray[3].set(startX, -startY);
 
 	for(int x=0,cntrY=0, cntrX=0;x<10;x++)
 	{
 		if(x<9)
 		{
-			m_cThickGridOnYAxis[x*2+0].x=startX+halfoneSubGridSz+(x+1)*oneGridSz;
-			m_cThickGridOnYAxis[x*2+0].y=startY;
+			thickGridOnYAxisArray[x*2+0].x=startX+halfoneSubGridSz+(x+1)*oneGridSz;
+			thickGridOnYAxisArray[x*2+0].y=startY;
 
-			m_cThickGridOnYAxis[x*2+1].x=startX+halfoneSubGridSz+(x+1)*oneGridSz;
-			m_cThickGridOnYAxis[x*2+1].y=-startY;
+			thickGridOnYAxisArray[x*2+1].x=startX+halfoneSubGridSz+(x+1)*oneGridSz;
+			thickGridOnYAxisArray[x*2+1].y=-startY;
 
-			m_cThickGridOnXAxis[x*2+0].x=startX;
-			m_cThickGridOnXAxis[x*2+0].y=startY+halfoneSubGridSz+(x+1)*oneGridSz;
+			thickGridOnXAxisArray[x*2+0].x=startX;
+			thickGridOnXAxisArray[x*2+0].y=startY+halfoneSubGridSz+(x+1)*oneGridSz;
 
-			m_cThickGridOnXAxis[x*2+1].x=-startX;
-			m_cThickGridOnXAxis[x*2+1].y=startY+halfoneSubGridSz+(x+1)*oneGridSz;
+			thickGridOnXAxisArray[x*2+1].x=-startX;
+			thickGridOnXAxisArray[x*2+1].y=startY+halfoneSubGridSz+(x+1)*oneGridSz;
 		}
 
 		for(int y=0;y<9;y++)
 		{
-			m_cGridOnYAxis[cntrY].x=startX+oneSubGridSz+x*oneGridSz+y*oneSubGridSz;
-			m_cGridOnYAxis[cntrY++].y=startY;
+			gridOnYAxisArray[cntrY].x=startX+oneSubGridSz+x*oneGridSz+y*oneSubGridSz;
+			gridOnYAxisArray[cntrY++].y=startY;
 
-			m_cGridOnYAxis[cntrY].x=startX+oneSubGridSz+x*oneGridSz+y*oneSubGridSz;
-			m_cGridOnYAxis[cntrY++].y=-startY;
+			gridOnYAxisArray[cntrY].x=startX+oneSubGridSz+x*oneGridSz+y*oneSubGridSz;
+			gridOnYAxisArray[cntrY++].y=-startY;
 
-			m_cGridOnXAxis[cntrX].x=startX;
-			m_cGridOnXAxis[cntrX++].y=startY+oneSubGridSz+x*oneGridSz+y*oneSubGridSz;
+			gridOnXAxisArray[cntrX].x=startX;
+			gridOnXAxisArray[cntrX++].y=startY+oneSubGridSz+x*oneGridSz+y*oneSubGridSz;
 
-			m_cGridOnXAxis[cntrX].x=-startX;
-			m_cGridOnXAxis[cntrX++].y=startY+oneSubGridSz+x*oneGridSz+y*oneSubGridSz;
+			gridOnXAxisArray[cntrX].x=-startX;
+			gridOnXAxisArray[cntrX++].y=startY+oneSubGridSz+x*oneGridSz+y*oneSubGridSz;
 		}
 	}
 	//
 
 	//hwshader manager
-	m_pHWShaderManager = engine_getHWShaderManager();
-	m_pHWShaderManager->Init();
+	hwShaderManager = engine_getHWShaderManager();
+	hwShaderManager->Init();
 
 #if defined USE_FBO
 	//fbo
-	m_cMultiPassFBO.ReInitFBO(512, 512);
-    m_cMultiPassFBO.CreateTextureBuffer();
-    m_cMultiPassFBO.AttachTextureBuffer(0);
-    m_cMultiPassFBO.CreateDepthBuffer();
-    m_cMultiPassFBO.AttachDepthBuffer();
-    m_cMultiPassFBO.UnBindFBO();
+	multiPassFBO.ReInitFBO(512, 512);
+    multiPassFBO.CreateTextureBuffer();
+    multiPassFBO.AttachTextureBuffer(0);
+    multiPassFBO.CreateDepthBuffer();
+    multiPassFBO.AttachDepthBuffer();
+    multiPassFBO.UnBindFBO();
 
-	m_cBrightPassFilter.init(&m_cMultiPassFBO);
-	m_cBlurFilter.init(&m_cBrightPassFilter.getOutPutFBO());
-	m_cToneMappingFilter.init(&m_cMultiPassFBO, &m_cBlurFilter.getOutPutFBO());
+	brightPassFilter.init(&multiPassFBO);
+	blurFilter.init(&brightPassFilter.getOutPutFBO());
+	toneMappingFilter.init(&multiPassFBO, &blurFilter.getOutPutFBO());
 
 #ifdef ENABLE_FOG
-	m_cFOGFBO.ReInitFBO(512, 512);
-    m_cFOGFBO.CreateTextureBuffer();
-    m_cFOGFBO.AttachTextureBuffer(0);
-    m_cFOGFBO.CreateDepthBuffer();
-    m_cFOGFBO.AttachDepthBuffer();
-    m_cFOGFBO.UnBindFBO();
+	fogFBO.ReInitFBO(512, 512);
+    fogFBO.CreateTextureBuffer();
+    fogFBO.AttachTextureBuffer(0);
+    fogFBO.CreateDepthBuffer();
+    fogFBO.AttachDepthBuffer();
+    fogFBO.UnBindFBO();
 #endif
 #endif
 
-	m_cLightBillBoardSprite.setOffset(0, 0);
-	m_cLightBillBoardSprite.loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	lightBillBoardSprite.setOffset(0, 0);
+	lightBillBoardSprite.loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 
-	//m_cSoundEngine.init();
-	//m_cSoundEngine.createListener();
-	//SoundSource* snd=m_cSoundEngine.load("res//sounds//ingame_level5_44_16_s.sx");
+	//soundEngine.init();
+	//soundEngine.createListener();
+	//SoundSource* snd=soundEngine.load("res//sounds//ingame_level5_44_16_s.sx");
 	//snd->play();
 }
 
@@ -274,7 +274,7 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
 		1,1,
     };
   
-	if(m_bEnablePostProcessorBlur)
+	if(isEnablePostProcessorBlur)
 	{
 		//glDisable(GL_CULL_FACE);
 		gxHWShader* shader=engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_BLUR_SHADER);
@@ -428,12 +428,12 @@ void gearSceneWorldEditor::drawFOGFBO(GLuint base_t, GLuint depth_t, float x, fl
 
 void gearSceneWorldEditor::onDraw()
 {
-	followObject(Timer::getDtinSec(), m_pSelectedObj);
+	followObject(Timer::getDtinSec(), selectedObject);
 
 	monoWrapper::mono_engine_update(m_pMainWorldPtr, Timer::getDtinSec()*Timer::getTimeScale());
-	if(m_pPlayButton->isButtonPressed() && !m_pPauseButton->isButtonPressed())
+	if(playGameToolBarButton->isButtonPressed() && !pauseGameToolBarButton->isButtonPressed())
 	{
-		if(m_bMonoGameInitialized)
+		if(isMonoGameInitialized)
 		{
 			m_pMainWorldPtr->updateMono();
 			monoWrapper::mono_game_run(Timer::getDtinSec()*Timer::getTimeScale());
@@ -448,7 +448,7 @@ void gearSceneWorldEditor::drawShadowMapPass()
 
 void gearSceneWorldEditor::drawWorld()
 {
-	m_cMultiPassFBO.BindFBO();
+	multiPassFBO.BindFBO();
 	//gxCamera* active_cam=m_pMainWorldPtr->getActiveCamera()->getCameraStructure();
 	monoWrapper::mono_engine_resize(m_pMainWorldPtr, 
 		m_cPos.x+getIamOnLayout()->getPos().x,
@@ -508,16 +508,16 @@ void gearSceneWorldEditor::drawWorld()
 	CHECK_GL_ERROR(drawGrid());
 	CHECK_GL_ERROR(drawSelectedObject());
 	CHECK_GL_ERROR(drawOctree());
-	m_cMultiPassFBO.UnBindFBO();
+	multiPassFBO.UnBindFBO();
 
 #ifdef ENABLE_FOG
 	//postprocess fog
 	glDisable(GL_DEPTH_TEST);
-	m_cFOGFBO.BindFBO();
-	CHECK_GL_ERROR(glViewport(0, 0, m_cFOGFBO.getFBOWidth(), m_cFOGFBO.getFBOHeight()));	
+	fogFBO.BindFBO();
+	CHECK_GL_ERROR(glViewport(0, 0, fogFBO.getFBOWidth(), fogFBO.getFBOHeight()));	
 	CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT/* | GL_DEPTH_BUFFER_BIT*/));
-	drawFOGFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), m_cMultiPassFBO.getFBODepthBuffer(), 0.0f, 0.0f, m_cFOGFBO.getFBOWidth(), m_cFOGFBO.getFBOHeight());
-	m_cFOGFBO.UnBindFBO();
+	drawFOGFBO(multiPassFBO.getFBOTextureBuffer(0), multiPassFBO.getFBODepthBuffer(), 0.0f, 0.0f, fogFBO.getFBOWidth(), fogFBO.getFBOHeight());
+	fogFBO.UnBindFBO();
 	//
 #endif
 }
@@ -525,7 +525,7 @@ void gearSceneWorldEditor::drawWorld()
 void gearSceneWorldEditor::drawGrid()
 {
 	//grid
-	if(m_pTBGridView->isButtonPressed())
+	if(gridViewToolBarButton->isButtonPressed())
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_DIFFUSE);
 		shader->enableProgram();
@@ -540,20 +540,20 @@ void gearSceneWorldEditor::drawGrid()
 
 		glEnableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
 
-		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cGridOnYAxis[0].x);
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &gridOnYAxisArray[0].x);
 		glDrawArrays(GL_LINES, 0, 90*2);
-		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cGridOnXAxis[0].x);
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &gridOnXAxisArray[0].x);
 		glDrawArrays(GL_LINES, 0, 90*2);
 
 		diffuseClr.set(0.1f, 0.1f, 0.1f, 1.0f);
 		shader->sendUniform4fv("u_diffuse_v4", &diffuseClr.x);
 
-		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cThickGridOnYAxis[0].x);
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &thickGridOnYAxisArray[0].x);
 		glDrawArrays(GL_LINES, 0, 9*2);
-		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cThickGridOnXAxis[0].x);
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &thickGridOnXAxisArray[0].x);
 		glDrawArrays(GL_LINES, 0, 9*2);
 
-		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &m_cGridOuterBox[0].x);
+		glVertexAttribPointer(shader->getAttribLoc("a_vertex_coord_v4"), 2, GL_FLOAT, GL_FALSE, 0, &gridOuterBoxArray[0].x);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);
 
 		glDisableVertexAttribArray(shader->getAttribLoc("a_vertex_coord_v4"));
@@ -639,29 +639,29 @@ void gearSceneWorldEditor::drawSelectedObject()
 			else
 				distance_frm_cam/=500.0f;
 
-			m_cLightBillBoardSprite.setClip(277, 383, 18, 18);
+			lightBillBoardSprite.setClip(277, 383, 18, 18);
             vector3f yaxis(m_pMainWorldPtr->getActiveCamera()->getYAxis());
             vector3f zaxis(m_pMainWorldPtr->getActiveCamera()->getZAxis());
             
-			m_cLightBillBoardSprite.setDirection(&yaxis, &zaxis);
-			m_cLightBillBoardSprite.scale(distance_frm_cam*0.5f);
-			const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * m_cLightBillBoardSprite)).getMatrix();
+			lightBillBoardSprite.setDirection(&yaxis, &zaxis);
+			lightBillBoardSprite.scale(distance_frm_cam*0.5f);
+			const float* u_mvp_m4x4= (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * (*light->getWorldMatrix() * lightBillBoardSprite)).getMatrix();
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 
 			glDisable(GL_CULL_FACE);
-			m_cLightBillBoardSprite.draw(shader);
+			lightBillBoardSprite.draw(shader);
 			glEnable(GL_CULL_FACE);
 		}
 		shader->disableProgram();
 	}
 	//
 
-	if(m_pSelectedObj && m_pMainWorldPtr->getActiveCamera())
+	if(selectedObject && m_pMainWorldPtr->getActiveCamera())
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_DIFFUSE_WITH_COLOR_PTR);
 		shader->enableProgram();
 
-		float distance_frm_cam=(m_pSelectedObj->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
+		float distance_frm_cam=(selectedObject->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
 		if(distance_frm_cam<12.0f)
 			distance_frm_cam=1.0f;
 		else
@@ -669,20 +669,20 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		const float* u_mvp_m4x4_local=NULL;
 		const float* u_mvp_m4x4_world=NULL;
-		matrix4x4f noscale_world_matrix(*m_pSelectedObj->getWorldMatrix());
+		matrix4x4f noscale_world_matrix(*selectedObject->getWorldMatrix());
 		noscale_world_matrix.noScale();
 		u_mvp_m4x4_local = (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * noscale_world_matrix).getMatrix();
 
 		matrix4x4f globalAxisTM;
-		globalAxisTM.setPosition(m_pSelectedObj->getWorldMatrix()->getPosition());
+		globalAxisTM.setPosition(selectedObject->getWorldMatrix()->getPosition());
 		u_mvp_m4x4_world = (*m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix() * globalAxisTM).getMatrix();
 
 		//glEnable(GL_COLOR_MATERIAL);
-		if(m_bTransformThroughLocalAxis)
+		if(isTransformThroughLocalAxis)
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 		else
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_world, false, 4);
-		geUtil::drawGizmo(distance_frm_cam, shader, m_iAxisSelected);
+		geUtil::drawGizmo(distance_frm_cam, shader, selectedAxisID);
 
 		shader->disableProgram();
 
@@ -691,27 +691,27 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 #if USE_BULLET
-		if(m_pSelectedObj->getRigidBody())
+		if(selectedObject->getRigidBody())
 			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.0f, 0.62f, 1.0f);
 		else
 #endif
 			shader->sendUniform4f("u_diffuse_v4", 0.25f, 0.4f, 0.62f, 1.0f);
-		if(m_pTBShowOOBB->isButtonPressed())
+		if(showOOBBToolBarButton->isButtonPressed())
 		{
-			m_pSelectedObj->getOOBB().draw(shader);
+			selectedObject->getOOBB().draw(shader);
 		}
 		else
 		{
 			shader->sendUniformTMfv("u_mvp_m4x4", m_pMainWorldPtr->getRenderer()->getViewProjectionMatrix()->getMatrix(), false, 4);
 			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.4f, 0.62f, 1.0f);
-			m_pSelectedObj->getAABB().draw(shader);
+			selectedObject->getAABB().draw(shader);
 		}
 
-		if(m_pSelectedObj->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && m_pSelectedObj->getID()==OBJECT3D_CAMERA)
+		if(selectedObject->isBaseFlag(object3d::eObject3dBaseFlag_Visible) && selectedObject->getID()==OBJECT3D_CAMERA)
 		{
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.6f, 0.6f, 1.0f);
-			((Camera*)m_pSelectedObj)->drawFrustum(shader);
+			((Camera*)selectedObject)->drawFrustum(shader);
 		}
 
 		//glDisable(GL_COLOR_MATERIAL);
@@ -721,7 +721,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 
 void gearSceneWorldEditor::drawOctree()
 {
-	if(m_pTBShowOctree->isButtonPressed() && m_pMainWorldPtr->getOctree())
+	if(showOctreeToolBarButton->isButtonPressed() && m_pMainWorldPtr->getOctree())
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_DIFFUSE);
 		shader->enableProgram();
@@ -771,13 +771,13 @@ void gearSceneWorldEditor::drawStats()
         geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "GLSL %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
-		sprintf(buffer, "TimeScale : %1.2f", m_pHorizontalSlider_TimeScale->getSliderValue());
+		sprintf(buffer, "TimeScale : %1.2f", timeScaleHorizontalSlider->getSliderValue());
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "nTris : %d", m_pMainWorldPtr->getRenderer()->noOfTrianglesRendered);
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		sprintf(buffer, "nDrawCalls : %d", m_pMainWorldPtr->getRenderer()->noOfDrawCalls);
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
-		sprintf(buffer, "nSelectedObjectTriangles : %d", m_nSelectedObjectTriangles);
+		sprintf(buffer, "nSelectedObjectTriangles : %d", noOfSelectedObjectTriangles);
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 
 		sprintf(buffer, "Total Material : %d", (int)monoWrapper::mono_engine_getWorld(0)->getMaterialList()->size());
@@ -786,8 +786,8 @@ void gearSceneWorldEditor::drawStats()
 		geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 		////int last_gl_err=glGetError();
 		////if(last_gl_err!=GL_NO_ERROR)
-		////	m_iLastGLError=last_gl_err;
-		//sprintf(buffer, "glGetError : 0x%x", m_iLastGLError);
+		////	lastGLErrorID=last_gl_err;
+		//sprintf(buffer, "glGetError : 0x%x", lastGLErrorID);
 		//geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 0, geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
 
 //        sprintf(buffer, "mousePrevPosition : %f, %f", mousePrevPosition.x, mousePrevPosition.y);
@@ -833,31 +833,31 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 
 	int thumbnailFBOSz = 200;
 	//bright pass
-	m_cBrightPassFilter.beginBlit();
-	m_cBrightPassFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
-	m_cBrightPassFilter.endBlit();
+	brightPassFilter.beginBlit();
+	brightPassFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
+	brightPassFilter.endBlit();
 	//
 	//blur pass
-	m_cBlurFilter.beginBlit();
-	m_cBlurFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
-	m_cBlurFilter.endBlit();
+	blurFilter.beginBlit();
+	blurFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
+	blurFilter.endBlit();
 	//
 
 	//tonemapping pass
-	m_cToneMappingFilter.beginBlit();
-	m_cToneMappingFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
-	m_cToneMappingFilter.endBlit();
+	toneMappingFilter.beginBlit();
+	toneMappingFilter.blit(monoWrapper::mono_engine_getWorld(0)->getRenderer());
+	toneMappingFilter.endBlit();
 	//
 
-	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0),
+	drawFBO(multiPassFBO.getFBOTextureBuffer(0),
 		0.0f,
 		0.0f + getTopMarginOffsetHeight(),
 		m_cSize.x,
 		m_cSize.y);
 
-	drawFBO(m_cMultiPassFBO.getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10), thumbnailFBOSz, thumbnailFBOSz);
-	drawFBO(m_cBrightPassFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 3, thumbnailFBOSz, thumbnailFBOSz);
-	drawFBO(m_cBlurFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 5, thumbnailFBOSz, thumbnailFBOSz);
+	drawFBO(multiPassFBO.getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10), thumbnailFBOSz, thumbnailFBOSz);
+	drawFBO(brightPassFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 3, thumbnailFBOSz, thumbnailFBOSz);
+	drawFBO(blurFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 5, thumbnailFBOSz, thumbnailFBOSz);
 
 	//shadow maps
 	int nLight = -1;
@@ -874,8 +874,8 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 	//
 
 #ifdef ENABLE_FOG
-		drawFBO(m_cFOGFBO.getFBOTextureBuffer(0), m_cSize.x-310, m_cSize.y-310, 300, 300);
-		drawFBO(m_cMultiPassFBO.getFBODepthBuffer(), -310, m_cSize.y-310, 300, 300);
+		drawFBO(fogFBO.getFBOTextureBuffer(0), m_cSize.x-310, m_cSize.y-310, 300, 300);
+		drawFBO(multiPassFBO.getFBODepthBuffer(), -310, m_cSize.y-310, 300, 300);
 #endif
 #endif
 
@@ -897,7 +897,7 @@ void gearSceneWorldEditor::postWorldRender()
 
 	//glDisable(GL_DEPTH_TEST);
 	//glPushMatrix();
-	//glTranslatef(m_cDebugPos.x, m_cDebugPos.y, m_cDebugPos.z);
+	//glTranslatef(debugPosition.x, debugPosition.y, debugPosition.z);
 	////glColor4f(1, 0 , 0, 1);
 	//glutWireSphere(0.1f, 3, 3);
 	//glPopMatrix();
@@ -911,25 +911,25 @@ void gearSceneWorldEditor::postWorldRender()
 
 void gearSceneWorldEditor::startFollowCam()
 {
-	if(m_pPlayButton->isButtonPressed())
+	if(playGameToolBarButton->isButtonPressed())
 	{
-		if(!m_pPauseButton->isButtonPressed())
+		if(!pauseGameToolBarButton->isButtonPressed())
 			return;
 	}
-	if(m_pSelectedObj==NULL) return;
-	if(m_pSelectedObj->getID()==OBJECT3D_CAMERA) return;
+	if(selectedObject==NULL) return;
+	if(selectedObject->getID()==OBJECT3D_CAMERA) return;
 
-	m_bStopFollowCam=false;
+	stopFollowCam=false;
 }
 
 void gearSceneWorldEditor::followObject(float dt, object3d* chasedObj)
 {
 	if(chasedObj && chasedObj->getID()==OBJECT3D_CAMERA)
 	{
-		m_bStopFollowCam=true;
+		stopFollowCam=true;
 		return;
 	}
-	if(dt>0.1f || m_bStopFollowCam) return;
+	if(dt>0.1f || stopFollowCam) return;
 	if(chasedObj==NULL) return;
 	gxWorld* world = monoWrapper::mono_engine_getWorld(0);
 	Camera* cam=world->getActiveCamera();
@@ -952,7 +952,7 @@ void gearSceneWorldEditor::followObject(float dt, object3d* chasedObj)
 	
     if(len<=0.01f)
 	{
-		m_bStopFollowCam=true;
+		stopFollowCam=true;
 		return;
 	}
 
@@ -984,24 +984,24 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 #if defined USE_FBO
 	if(cx>1.0f && cy>1.0f)
 	{
-		m_cMultiPassFBO.ReInitFBO(cx, cy);
-        m_cMultiPassFBO.CreateTextureBuffer();
-        m_cMultiPassFBO.AttachTextureBuffer(0);
-		m_cMultiPassFBO.CreateDepthBuffer();
-		m_cMultiPassFBO.AttachDepthBuffer();
-		m_cMultiPassFBO.UnBindFBO();
+		multiPassFBO.ReInitFBO(cx, cy);
+        multiPassFBO.CreateTextureBuffer();
+        multiPassFBO.AttachTextureBuffer(0);
+		multiPassFBO.CreateDepthBuffer();
+		multiPassFBO.AttachDepthBuffer();
+		multiPassFBO.UnBindFBO();
 
-		m_cBrightPassFilter.resize(cx, cy);
-		m_cBlurFilter.resize(cx, cy);
-		m_cToneMappingFilter.resize(cx, cy);
+		brightPassFilter.resize(cx, cy);
+		blurFilter.resize(cx, cy);
+		toneMappingFilter.resize(cx, cy);
 
 #ifdef ENABLE_FOG
-		m_cFOGFBO.ReInitFBO(cx, cy);
-        m_cFOGFBO.CreateTextureBuffer();
-        m_cFOGFBO.AttachTextureBuffer(0);
-		m_cFOGFBO.CreateDepthBuffer();
-		m_cFOGFBO.AttachDepthBuffer();
-		m_cFOGFBO.UnBindFBO();
+		fogFBO.ReInitFBO(cx, cy);
+        fogFBO.CreateTextureBuffer();
+        fogFBO.AttachTextureBuffer(0);
+		fogFBO.CreateDepthBuffer();
+		fogFBO.AttachDepthBuffer();
+		fogFBO.UnBindFBO();
 #endif
 
 #if USE_NVPROFILER
@@ -1018,7 +1018,7 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	if(!isPointInsideClientArea(x, y))
 	{
-		m_iAxisSelected=-1;
+		selectedAxisID=-1;
 		return true;
 	}
 	//monoWrapper::mono_engine_mouseLButtonDown(m_pMainWorldPtr, x, y, nFlag);
@@ -1029,9 +1029,9 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	vector3f maxV;
 	vector3f i1, i2, testSpehere;
 
-	bool bTranslateGizmo=m_pTranslateGizmo->isButtonPressed();
-	bool bRotateGizmo=m_pRotateGizmo->isButtonPressed();
-	bool bScaleGizmo=m_pScaleGizmo->isButtonPressed();
+	bool bTranslateGizmo=translateGizmoToolBarButton->isButtonPressed();
+	bool bRotateGizmo=rotateGizmoToolBarButton->isButtonPressed();
+	bool bScaleGizmo=scaleGizmoToolBarButton->isButtonPressed();
 
 	if(!bTranslateGizmo && !bRotateGizmo && !bScaleGizmo)
 		return true;
@@ -1051,9 +1051,9 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	GLfloat depth;
 
 	glEnable(GL_DEPTH_TEST);
-	m_cMultiPassFBO.BindFBO();
+	multiPassFBO.BindFBO();
 	CHECK_GL_ERROR(glReadPixels(x, viewPortRect.m_size.y - y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
-	m_cMultiPassFBO.UnBindFBO();
+	multiPassFBO.UnBindFBO();
 	z1=z2=0.0f;
 
 	GLint viewport[4]={(int)viewPortRect.m_pos.x, (int)viewPortRect.m_pos.y, (int)viewPortRect.m_size.x, (int)viewPortRect.m_size.y};
@@ -1066,24 +1066,24 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	maxV.set(x2, y2, z2);
 	rayminV.set(x3, y3, z3);
 
-	m_iAxisSelected=0;
-	if(m_pSelectedObj)
+	selectedAxisID=0;
+	if(selectedObject)
 	{
-		matrix4x4f noscale_world_matrix(*m_pSelectedObj->getWorldMatrix());
+		matrix4x4f noscale_world_matrix(*selectedObject->getWorldMatrix());
 		noscale_world_matrix.noScale();
-		float distance_frm_cam=(m_pSelectedObj->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
+		float distance_frm_cam=(selectedObject->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
 		if(distance_frm_cam<12.0f)
 			distance_frm_cam=1.0f;
 		else
 			distance_frm_cam/=12.0f;
 
 		//x-gizmo
-		vector3f gizmo_origin(m_pSelectedObj->getWorldMatrix()->getPosition());
+		vector3f gizmo_origin(selectedObject->getWorldMatrix()->getPosition());
 		vector3f xgizmo_max(distance_frm_cam, 0, 0);
 		vector3f ygizmo_max(0, distance_frm_cam, 0);
 		vector3f zgizmo_max(0, 0, distance_frm_cam);
 
-		if(m_bTransformThroughLocalAxis)
+		if(isTransformThroughLocalAxis)
 		{
 			xgizmo_max=noscale_world_matrix * xgizmo_max ;
 			ygizmo_max=noscale_world_matrix * ygizmo_max ;
@@ -1105,12 +1105,12 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 				if((i1-i2).length()<=distance_frm_cam*0.06f)
 				{
 					testSpehere=i2;
-					m_iAxisSelected=1;
+					selectedAxisID=1;
 					float pu;
-					vector3f plane_normal((m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1));
-					if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, plane_normal, m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
+					vector3f plane_normal((isTransformThroughLocalAxis)?selectedObject->getWorldMatrix()->getZAxis():vector3f(0, 0, 1));
+					if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, plane_normal, selectedObject->getWorldMatrix()->getPosition(), pu))
 					{
-						m_cMousePrevPosInWorld = minV+(maxV-minV)*pu;
+						mousePreviousPositionInWorld = minV+(maxV-minV)*pu;
 					}
 				}
 			}
@@ -1122,12 +1122,12 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 				if((i1-i2).length()<=distance_frm_cam*0.06f)
 				{
 					testSpehere=i2;
-					m_iAxisSelected=2;
+					selectedAxisID=2;
 					float pu;
-					vector3f plane_normal((m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1));
-					if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, plane_normal, m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
+					vector3f plane_normal((isTransformThroughLocalAxis)?selectedObject->getWorldMatrix()->getZAxis():vector3f(0, 0, 1));
+					if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, plane_normal, selectedObject->getWorldMatrix()->getPosition(), pu))
 					{
-						m_cMousePrevPosInWorld = minV+(maxV-minV)*pu;
+						mousePreviousPositionInWorld = minV+(maxV-minV)*pu;
 					}
 				}
 			}
@@ -1139,30 +1139,30 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 				if((i1-i2).length()<=distance_frm_cam*0.06f)
 				{
 					testSpehere=i2;
-					m_iAxisSelected=3;
+					selectedAxisID=3;
 					float pu;
-					vector3f plane_normal((m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getYAxis():vector3f(0, 1, 0));
-					if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, plane_normal, m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
+					vector3f plane_normal((isTransformThroughLocalAxis)?selectedObject->getWorldMatrix()->getYAxis():vector3f(0, 1, 0));
+					if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, plane_normal, selectedObject->getWorldMatrix()->getPosition(), pu))
 					{
-						m_cMousePrevPosInWorld = minV+(maxV-minV)*pu;
+						mousePreviousPositionInWorld = minV+(maxV-minV)*pu;
 					}
 				}
 			}
 		}
 	}
 
-	m_cDebugPos=minV;
-	if(m_iAxisSelected==0 && m_pMainWorldPtr->getOctree())
+	debugPosition=minV;
+	if(selectedAxisID==0 && m_pMainWorldPtr->getOctree())
 	{
-		//m_cMultiPassFBO.BindFBO();
+		//multiPassFBO.BindFBO();
 		//glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &depth);
-		//m_cMultiPassFBO.UnBindFBO();
+		//multiPassFBO.UnBindFBO();
 		vector3f rayOrig(rayminV);
 		vector3f rayDir(maxV-rayminV);
 		rayDir.normalize();
 		object3d* pickedObj = m_pMainWorldPtr->getOctree()->pickBruteForce(rayOrig, rayDir);
 
-		if(pickedObj!=m_pSelectedObj && pickedObj!=NULL)
+		if(pickedObj!=selectedObject && pickedObj!=NULL)
 		{
 			EditorGEARApp::getSceneHierarchy()->selectObject3dInTreeView(pickedObj);
 		}
@@ -1179,10 +1179,10 @@ bool gearSceneWorldEditor::onMouseLButtonUp(float x, float y, int nFlag)
 		return true;
 	}
 
-	if(m_iAxisSelected>0)
+	if(selectedAxisID>0)
 		EditorGEARApp::getSceneHierarchy()->recreateOctree();
 
-	m_iAxisSelected=-1;
+	selectedAxisID=-1;
 	monoWrapper::mono_engine_mouseLButtonUp(m_pMainWorldPtr, x, y, nFlag);
 	mousePrevPosition.set(x, y);
 	return true;
@@ -1192,7 +1192,7 @@ bool gearSceneWorldEditor::onMouseRButtonDown(float x, float y, int nFlag)
 {
 	if(!isPointInsideClientArea(x, y))
 	{
-		m_iAxisSelected=-1;
+		selectedAxisID=-1;
 		return true;
 	}
 	monoWrapper::mono_engine_mouseRButtonDown(m_pMainWorldPtr, x, y, nFlag);
@@ -1204,7 +1204,7 @@ void gearSceneWorldEditor::onMouseRButtonUp(float x, float y, int nFlag)
 {
 	if(!isPointInsideClientArea(x, y))
 	{
-		m_iAxisSelected=-1;
+		selectedAxisID=-1;
 		return;
 	}
 	monoWrapper::mono_engine_mouseRButtonUp(m_pMainWorldPtr, x, y, nFlag);
@@ -1236,8 +1236,8 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 		vector3f aUP(0, 0, 1);
 		//aUP=camera->getYAxis();
 		vector3f aVect(0, 0, 0);
-		if(m_pSelectedObj)
-			aVect=m_pSelectedObj->getWorldMatrix()->getPosition();	//can modify this later to rotate around mesh center
+		if(selectedObject)
+			aVect=selectedObject->getWorldMatrix()->getPosition();	//can modify this later to rotate around mesh center
 
 		float factor=1.0f;
 		if(flag&MK_SHIFT)
@@ -1248,13 +1248,13 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 	}
 	else if(flag&MK_LBUTTON)
 	{
-		bool bTranslateGizmo=m_pTranslateGizmo->isButtonPressed();
-		bool bRotateGizmo=m_pRotateGizmo->isButtonPressed();
-		bool bScaleGizmo=m_pScaleGizmo->isButtonPressed();
+		bool bTranslateGizmo=translateGizmoToolBarButton->isButtonPressed();
+		bool bRotateGizmo=rotateGizmoToolBarButton->isButtonPressed();
+		bool bScaleGizmo=scaleGizmoToolBarButton->isButtonPressed();
 
 		if((bTranslateGizmo || bRotateGizmo || bScaleGizmo))
 		{
-			if(m_pSelectedObj && m_iAxisSelected>0)
+			if(selectedObject && selectedAxisID>0)
 			{
 				vector3f minV;
 				vector3f maxV;
@@ -1284,48 +1284,48 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 
 				vector3f planeNormalArray[3]={
 
-					(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
-					(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
-					(m_bTransformThroughLocalAxis)?m_pSelectedObj->getWorldMatrix()->getYAxis():vector3f(0, 1, 0)
+					(isTransformThroughLocalAxis)?selectedObject->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
+					(isTransformThroughLocalAxis)?selectedObject->getWorldMatrix()->getZAxis():vector3f(0, 0, 1),
+					(isTransformThroughLocalAxis)?selectedObject->getWorldMatrix()->getYAxis():vector3f(0, 1, 0)
 				};
 
 				float pu;
-				if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, planeNormalArray[m_iAxisSelected-1], m_pSelectedObj->getWorldMatrix()->getPosition(), pu))
+				if(gxUtil::lineSegmentAndPlaneIntersection(minV, maxV, planeNormalArray[selectedAxisID-1], selectedObject->getWorldMatrix()->getPosition(), pu))
 				{
 					vector3f current_pos_in_world(minV+(maxV-minV)*pu);
-					vector3f diff_in_world(current_pos_in_world-m_cMousePrevPosInWorld);
+					vector3f diff_in_world(current_pos_in_world-mousePreviousPositionInWorld);
 					vector3f transformed;
-					transformed=(m_bTransformThroughLocalAxis)?(m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world):m_pSelectedObj->getWorldMatrix()->getPosition() + diff_in_world;
-					//transformed=m_pSelectedObj->getWorldMatrix()->getInverse() % diff_in_world;
+					transformed=(isTransformThroughLocalAxis)?(selectedObject->getWorldMatrix()->getInverse() % diff_in_world):selectedObject->getWorldMatrix()->getPosition() + diff_in_world;
+					//transformed=selectedObject->getWorldMatrix()->getInverse() % diff_in_world;
 
-					if(m_bTransformThroughLocalAxis)
+					if(isTransformThroughLocalAxis)
 					{
 						if(bTranslateGizmo)
 						{
-							if(m_iAxisSelected==1)
-								m_pSelectedObj->updateLocalPositionf(transformed.x, 0, 0);
-							else if(m_iAxisSelected==2)
-								m_pSelectedObj->updateLocalPositionf(0, transformed.y, 0);
-							else if(m_iAxisSelected==3)
-								m_pSelectedObj->updateLocalPositionf(0, 0, transformed.z);
+							if(selectedAxisID==1)
+								selectedObject->updateLocalPositionf(transformed.x, 0, 0);
+							else if(selectedAxisID==2)
+								selectedObject->updateLocalPositionf(0, transformed.y, 0);
+							else if(selectedAxisID==3)
+								selectedObject->updateLocalPositionf(0, 0, transformed.z);
 						}
 						else if(bRotateGizmo)
 						{
-							if(m_iAxisSelected==1)
-								m_pSelectedObj->rotateLocalXf(0.5f*dy);
-							else if(m_iAxisSelected==2)
-								m_pSelectedObj->rotateLocalYf(-0.5f*dy);
-							else if(m_iAxisSelected==3)
-								m_pSelectedObj->rotateLocalZf(0.5f*dx);
+							if(selectedAxisID==1)
+								selectedObject->rotateLocalXf(0.5f*dy);
+							else if(selectedAxisID==2)
+								selectedObject->rotateLocalYf(-0.5f*dy);
+							else if(selectedAxisID==3)
+								selectedObject->rotateLocalZf(0.5f*dx);
 						}
 						else if(bScaleGizmo)
 						{
-							if(m_iAxisSelected==1)
-								m_pSelectedObj->scaleX(transformed.x);
-							else if(m_iAxisSelected==2)
-								m_pSelectedObj->scaleY(transformed.y);
-							else if(m_iAxisSelected==3)
-								m_pSelectedObj->scaleZ(transformed.z);
+							if(selectedAxisID==1)
+								selectedObject->scaleX(transformed.x);
+							else if(selectedAxisID==2)
+								selectedObject->scaleY(transformed.y);
+							else if(selectedAxisID==3)
+								selectedObject->scaleZ(transformed.z);
 						}
 					}
 					else
@@ -1334,12 +1334,12 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 						right=right*diff_in_world.x;
 						if(bTranslateGizmo)
 						{
-							if(m_iAxisSelected==1)
-								m_pSelectedObj->updatePositionf(right.x, 0, 0);
-							else if(m_iAxisSelected==2)
-								m_pSelectedObj->updatePositionf(0, diff_in_world.y, 0);
-							else if(m_iAxisSelected==3)
-								m_pSelectedObj->updatePositionf(0, 0, diff_in_world.z);
+							if(selectedAxisID==1)
+								selectedObject->updatePositionf(right.x, 0, 0);
+							else if(selectedAxisID==2)
+								selectedObject->updatePositionf(0, diff_in_world.y, 0);
+							else if(selectedAxisID==3)
+								selectedObject->updatePositionf(0, 0, diff_in_world.z);
 						}
 					}
 
@@ -1349,7 +1349,7 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 						EditorGEARApp::getScenePropertyEditor()->updateTransformPropertyOfCurrentSelectedObject();
 					}
 
-					m_cMousePrevPosInWorld = current_pos_in_world;
+					mousePreviousPositionInWorld = current_pos_in_world;
 				}
 			}
 		}
@@ -1365,7 +1365,7 @@ void gearSceneWorldEditor::onMouseWheel(int zDelta, int x, int y, int flag)
 {
 	//if(!isPointInsideClientArea(x, y)) return;
 
-	m_bStopFollowCam=true;
+	stopFollowCam=true;
 	//monoWrapper::mono_engine_mouseWheel(m_pMainWorldPtr, zDelta, x, y, flag);
 	Camera* camera=m_pMainWorldPtr->getActiveCamera();
 	if(!camera)
@@ -1385,78 +1385,78 @@ void gearSceneWorldEditor::onMouseWheel(int zDelta, int x, int y, int flag)
 
 void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 {
-	if(m_pLocalOrGlobalAxis==btn)
+	if(localOrGlobalAxisToolBarButton==btn)
 	{
-		if(strcmp(m_pLocalOrGlobalAxis->getName(), "Local")==0)
+		if(strcmp(localOrGlobalAxisToolBarButton->getName(), "Local")==0)
 		{
-			m_pLocalOrGlobalAxis->setName("Global");
-			m_bTransformThroughLocalAxis=false;
+			localOrGlobalAxisToolBarButton->setName("Global");
+			isTransformThroughLocalAxis=false;
 		}
 		else
 		{
-			m_pLocalOrGlobalAxis->setName("Local");
-			m_bTransformThroughLocalAxis=true;
+			localOrGlobalAxisToolBarButton->setName("Local");
+			isTransformThroughLocalAxis=true;
 		}
-		m_pLocalOrGlobalAxis->buttonNormal(true);
+		localOrGlobalAxisToolBarButton->buttonNormal(true);
 	}
-	else if(m_pPlayButton==btn)
+	else if(playGameToolBarButton==btn)
 	{
-		if(m_pPlayButton->isButtonPressed())
+		if(playGameToolBarButton->isButtonPressed())
 		{
 			EditorGEARApp::getSceneConsole()->appendConsoleRunRootNode();
 			monoWrapper::mono_game_start();
-			m_bMonoGameInitialized=true;
+			isMonoGameInitialized=true;
 		}
 		else
 		{
-			m_pPauseButton->buttonNormal(true);
-			m_bMonoGameInitialized=false;
+			pauseGameToolBarButton->buttonNormal(true);
+			isMonoGameInitialized=false;
 		}
 	}
-	else if(m_pPauseButton==btn)
+	else if(pauseGameToolBarButton==btn)
 	{
-		if(m_pPauseButton->isButtonPressed() && !m_pPlayButton->isButtonPressed())
+		if(pauseGameToolBarButton->isButtonPressed() && !playGameToolBarButton->isButtonPressed())
 		{
 			//reset the button if not in play mode
-			m_pPauseButton->buttonNormal(true);
+			pauseGameToolBarButton->buttonNormal(true);
 		}
 	}
-	else if(m_pTranslateGizmo==btn)
+	else if(translateGizmoToolBarButton==btn)
 	{
-		if(m_pTranslateGizmo->isButtonPressed())
+		if(translateGizmoToolBarButton->isButtonPressed())
 		{
-			m_pRotateGizmo->buttonNormal(true);
-			m_pScaleGizmo->buttonNormal(true);
+			rotateGizmoToolBarButton->buttonNormal(true);
+			scaleGizmoToolBarButton->buttonNormal(true);
 		}
 	}
-	else if(m_pRotateGizmo==btn)
+	else if(rotateGizmoToolBarButton==btn)
 	{
-		if(m_pRotateGizmo->isButtonPressed())
+		if(rotateGizmoToolBarButton->isButtonPressed())
 		{
-			m_pTranslateGizmo->buttonNormal(true);
-			m_pScaleGizmo->buttonNormal(true);
+			translateGizmoToolBarButton->buttonNormal(true);
+			scaleGizmoToolBarButton->buttonNormal(true);
 		}
 	}
-	else if(m_pScaleGizmo==btn)
+	else if(scaleGizmoToolBarButton==btn)
 	{
-		if(m_pScaleGizmo->isButtonPressed())
+		if(scaleGizmoToolBarButton->isButtonPressed())
 		{
-			m_pRotateGizmo->buttonNormal(true);
-			m_pTranslateGizmo->buttonNormal(true);
+			rotateGizmoToolBarButton->buttonNormal(true);
+			translateGizmoToolBarButton->buttonNormal(true);
 		}
 	}
 }
 
 void gearSceneWorldEditor::onSliderChange(geGUIBase* slider)
 {
-	if(slider==m_pHorizontalSlider_LightAmbient)
+	if(slider==ambientLightHorizontalSlider)
 	{
-		float val=0.1f+m_pHorizontalSlider_LightAmbient->getSliderValue()*0.13f;
+		float val=0.1f+ambientLightHorizontalSlider->getSliderValue()*0.13f;
 		glClearColor(val, val, val, 1.0f);
 	}
-	else if(slider==m_pHorizontalSlider_TimeScale)
+	else if(slider==timeScaleHorizontalSlider)
 	{
-		Timer::setTimeScale(m_pHorizontalSlider_TimeScale->getSliderValue());
+		Timer::setTimeScale(timeScaleHorizontalSlider->getSliderValue());
 	}
 }
 
@@ -1502,7 +1502,7 @@ void gearSceneWorldEditor::onCommand(int cmd)
 	{
 	case ID_POSTPROCESSOR_BLURPROCESSOR:
 		{
-			m_bEnablePostProcessorBlur=!m_bEnablePostProcessorBlur;
+			isEnablePostProcessorBlur=!isEnablePostProcessorBlur;
 			//EditorGEARApp::getScenePropertyEditor()->populatePropertyOfBlurShader(engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_BLUR_SHADER));
 		}
 		break;
@@ -1512,16 +1512,16 @@ void gearSceneWorldEditor::onCommand(int cmd)
 
 void gearSceneWorldEditor::stopSimulation()
 {
-	m_pPlayButton->buttonNormal(true);
-	m_pPauseButton->buttonNormal(true);
-	m_bMonoGameInitialized=false;
+	playGameToolBarButton->buttonNormal(true);
+	pauseGameToolBarButton->buttonNormal(true);
+	isMonoGameInitialized=false;
 }
 
 void gearSceneWorldEditor::selectedObject3D(object3d* obj)
 {
-	m_pSelectedObj=obj;	
-	m_nSelectedObjectTriangles=0;
-	getTringleCountForThisTree(obj, m_nSelectedObjectTriangles);
+	selectedObject=obj;	
+	noOfSelectedObjectTriangles=0;
+	getTringleCountForThisTree(obj, noOfSelectedObjectTriangles);
 }
 
 void gearSceneWorldEditor::getTringleCountForThisTree(object3d* obj, int& count)

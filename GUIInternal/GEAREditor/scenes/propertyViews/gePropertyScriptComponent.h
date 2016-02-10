@@ -20,8 +20,8 @@ public:
 	void populatePropertyOfMonoScripts(object3d* obj, monoScriptObjectInstance* monoScript);
 
 private:
-	object3d* m_pObject3dPtr;
-	geWindowColumn* m_pWindowColumn;
+	object3d* object3dPtr;
+	geWindowColumn* windowColumnControl;
 };
 
 #endif

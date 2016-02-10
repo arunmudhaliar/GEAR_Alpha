@@ -113,12 +113,12 @@ public:
     void init();
     void reset(bool reload);
     geFont* loadFont(const char* filename);
-    geFont* getFont(int index)                {   return m_cvFontList[index]; }
+    geFont* getFont(int index)                {   return fontList[index]; }
 
 private:
-    std::vector<geFont*> m_cvFontList;
+    std::vector<geFont*> fontList;
 #if defined (USE_ProgrammablePipeLine_test)
-    gxHWShader m_cFontShader;
+    gxHWShader fontHWShader;
 	gxRenderer* renderer;
 public:
 	void setRenderer(gxRenderer* renderer);

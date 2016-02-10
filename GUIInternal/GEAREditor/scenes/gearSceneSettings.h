@@ -24,13 +24,13 @@ protected:
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 private:
-	Sprite2Dx m_cszSprites[10];
+	Sprite2Dx spriteArray[10];
 
-	geTreeView* m_pSettingsTreeView;
+	geTreeView* settingsTreeView;
 
-	geTreeNode* m_pSettingsAndroidParentNode;
-	geSettingsAndroid* m_pSettingsAndroid;
+	geTreeNode* settingsAndroidParentTreeNode;
+	geSettingsAndroid* androidSettings;
 
-	geTreeNode* m_pSettingsGlobalParentNode;
-	geSettingsGlobal* m_pSettingsGlobal;
+	geTreeNode* settingsGlobalParentTreeNode;
+	geSettingsGlobal* globalSettings;
 };

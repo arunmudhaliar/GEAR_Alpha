@@ -14,13 +14,13 @@
 class gePropertyOpenOnEditor : public geTreeNode, public MGUIObserver
 {
 public:
-	geButton* m_pButtonOpenOnEditor;
-
 	gePropertyOpenOnEditor(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager);
 	virtual ~gePropertyOpenOnEditor();
 
 	virtual void drawNode();
 	virtual void onButtonClicked(geGUIBase* btn);
+    
+    geButton* openOnEditorButton;
 };
 
 #endif

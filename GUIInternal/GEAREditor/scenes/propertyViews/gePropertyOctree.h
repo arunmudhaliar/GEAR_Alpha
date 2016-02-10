@@ -15,18 +15,10 @@
 class gePropertyOctree : public geTreeNode, public MGUIObserver
 {
 public:
-	geHorizontalSlider* m_pNoOfTransformObjectPerNode;
-	geHorizontalSlider* m_pNoOfLevels;
-	geButton* m_pButtonApply;
-	stWindowColumnRow* m_pRows[3];
-
 	gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontManager);
 	virtual ~gePropertyOctree();
 
 	void getOctreeVars(int& nTransformPerNodes, int& nLevels);
-
-	//void populatePropertyOfCamera(object3d* obj);
-
 	virtual void drawNode();
 
 	virtual void onSliderChange(geGUIBase* slider);
@@ -34,6 +26,11 @@ public:
 	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 //#endif
 	virtual void onButtonClicked(geGUIBase* btn);
+    
+    geHorizontalSlider* noOfTransformObjectPerNodeHorizontalSlider;
+    geHorizontalSlider* noOfLevelsHorizontalSlider;
+    geButton* applyButton;
+    stWindowColumnRow* windowColumnRowArray[3];
 };
 
 #endif

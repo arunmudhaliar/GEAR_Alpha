@@ -26,22 +26,22 @@ public:
 	{
 		stSubMapView(gxSubMap* submap)
 		{
-			m_pMapName=NULL;
-			m_pTiling=NULL;
-			m_pText_tileX=NULL;
-			m_pText_tileY=NULL;
+			mapNameTextBox=NULL;
+			tilingTextBox=NULL;
+			textureTileOffsetXTextBox=NULL;
+			textureTileOffsetYTextBox=NULL;
 			thumbnail=NULL;
-			m_pSeperator=NULL;
-			m_pSubMapPtr=submap;	//for checking purpose
+			seperatorControl=NULL;
+			this->subMap=submap;	//for checking purpose
 		}
 
-		geStaticTextBox* m_pMapName;
-		geStaticTextBox* m_pTiling;
-		geTextBox* m_pText_tileX;
-		geTextBox* m_pText_tileY;
+		geStaticTextBox* mapNameTextBox;
+		geStaticTextBox* tilingTextBox;
+		geTextBox* textureTileOffsetXTextBox;
+		geTextBox* textureTileOffsetYTextBox;
 		geTextureThumbnailExtended* thumbnail;
-		geSeperator* m_pSeperator;
-		gxSubMap* m_pSubMapPtr;	//for checking purpose
+		geSeperator* seperatorControl;
+		gxSubMap* subMap;	//for checking purpose
 	};
 	std::vector<stSubMapView*> subMapList;
 
@@ -64,12 +64,12 @@ public:
 private:
 	void destroyShaderPropertiesControls();
 
-	geColorControl* m_pColorControl;
-	geToolBarDropMenu* m_pSurfaceShaderToolBarDropMenuBtnPtr;
-	geHorizontalSlider* m_pHorizontalSliderShininess;
-	geSeperator* m_pCommonSeperator;
-	geSeperator* m_pBottomSeperator;	//only be visible if there is any property other than submaps
-	geWindowColumn* m_pWindowColumn_ShaderProperties;
+	geColorControl* colorControl;
+	geToolBarDropMenu* surfaceShaderToolBarDropMenuButton;
+	geHorizontalSlider* shininessHorizontalSlider;
+	geSeperator* commonSeperatorControl;
+	geSeperator* bottomSeperatorControl;	//only be visible if there is any property other than submaps
+	geWindowColumn* shaderPropertiesWindowColumnControl;
 };
 
 #endif

@@ -16,12 +16,12 @@ public:
 	{
 		setSize(m_cSize.x, 40.0f);
 
-		m_pButtonSave = new geButton("", fontmanager);
-		m_pButtonSave->create(renderer, this, "Save Meta", 15, 10);
-		m_pButtonSave->setGUIObserver(this);
-		m_pButtonSave->setClientAreaPrimaryActiveForeColor(0.6f, 0.43f, 0.25f, 1.0f);
-		m_pButtonSave->setClientAreaSecondryActiveForeColor(0.6f, 0.43f, 0.25f, 1.0f);
-		m_pButtonSave->applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
+		saveMetaDataButton = new geButton("", fontmanager);
+		saveMetaDataButton->create(renderer, this, "Save Meta", 15, 10);
+		saveMetaDataButton->setGUIObserver(this);
+		saveMetaDataButton->setClientAreaPrimaryActiveForeColor(0.6f, 0.43f, 0.25f, 1.0f);
+		saveMetaDataButton->setClientAreaSecondryActiveForeColor(0.6f, 0.43f, 0.25f, 1.0f);
+		saveMetaDataButton->applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 
 		setNodeColor(0.21f, 0.21f, 0.21f);
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -40,7 +40,7 @@ public:
 
 		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
-		geFontManager::g_pFontArial10_80Ptr->drawString("Update meta file with the current change.", m_pButtonSave->getPos().x+m_pButtonSave->getSize().x+20, geFontManager::g_pFontArial10_80Ptr->getLineHeight()+10, m_cSize.x);
+		geFontManager::g_pFontArial10_80Ptr->drawString("Update meta file with the current change.", saveMetaDataButton->getPos().x+saveMetaDataButton->getSize().x+20, geFontManager::g_pFontArial10_80Ptr->getLineHeight()+10, m_cSize.x);
 
 		if(childControlList.size() && hasAtleastOneTreeNodeChild)
 		{
@@ -67,16 +67,16 @@ public:
 
 	void populatePropertyOfObject(object3d* obj)
 	{
-		m_pObject3dPtr=obj;
+		object3dPtr=obj;
 	}
 
 	virtual void onButtonClicked(geGUIBase* btn);
 	void saveMaterialRecursiveToMeta(object3d* obj);
 
 private:
-	object3d* m_pObject3dPtr;
-	geTextBox* m_pTextBoxMeshName;
-	geButton* m_pButtonSave;
+	object3d* object3dPtr;
+	geTextBox* meshNameTextBox;
+	geButton* saveMetaDataButton;
 };
 
 #endif

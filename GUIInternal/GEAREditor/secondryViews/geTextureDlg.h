@@ -39,9 +39,9 @@ protected:
 	gxTexture* loadTextureFromFile(CTextureManager& textureManager, const char* filename);
 	int find_textures(rendererGL10* renderer, const char *dirname, geGUIBase* dlg, std::vector<geGUIBase*>& textureThumbList);
 
-	geTextureDlgMainWindow* m_pWindow;
-	geTextureDlgInfoWindow* m_pInfoWindow;
-	geTextureThumbnail* m_pObserverControlPtr;	//must not delete this pointer
+	geTextureDlgMainWindow* textureDlgMainWindow;
+	geTextureDlgInfoWindow* textureDlgInfoWindow;
+	geTextureThumbnail* observerControlPtr;	//must not delete this pointer
 
-	std::vector<geGUIBase*> m_vTextureThumbs;
+	std::vector<geGUIBase*> textureThumbnailList;
 };

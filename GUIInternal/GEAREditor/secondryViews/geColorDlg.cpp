@@ -4,71 +4,71 @@
 geColorDlg::geColorDlg(geColorControl* pObserverControlPtr, geFontManager* fontManager, rendererGL10* mainRenderer):
 	geSecondryView("Color Dialog", fontManager, mainRenderer)
 {
-	m_pObserverControlPtr=pObserverControlPtr;
+	observerControlPtr=pObserverControlPtr;
     geVector2f tmp(200.0f, 320.0f);
 	setSize(tmp);
 	m_pWindow=NULL;
-	m_fCircleRadius=1.0f;
+	colorDlgCircleRadius=1.0f;
 }
 
 geColorDlg::~geColorDlg()
 {
 	GE_DELETE(m_pWindow);
-	GE_DELETE(m_pHorizontalSlider_RGBA[0]);
-	GE_DELETE(m_pHorizontalSlider_RGBA[1]);
-	GE_DELETE(m_pHorizontalSlider_RGBA[2]);
-	GE_DELETE(m_pHorizontalSlider_RGBA[3]);
-	GE_DELETE(m_pColorControl);
+	GE_DELETE(rgbaHorizontalSliderArray[0]);
+	GE_DELETE(rgbaHorizontalSliderArray[1]);
+	GE_DELETE(rgbaHorizontalSliderArray[2]);
+	GE_DELETE(rgbaHorizontalSliderArray[3]);
+	GE_DELETE(colorControl);
 }
 
 void geColorDlg::onCreate()
 {
-	m_fCircleRadius=75.0f;
+	colorDlgCircleRadius=75.0f;
 
-	m_pWindow = new geWindow("Color Dialog", m_pFontManager);
-	m_pWindow->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
+	m_pWindow = new geWindow("Color Dialog", fontManager);
+	m_pWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
 	layoutManager->getRootLayout()->createAsParent(m_pWindow);
 	//rootLayout->createAsParent(EditorGEARApp::getSceneWorldEditor());
 
 	float rgba[4]={1.0f, 1.0f, 1.0f, 1.0f};
-	if(m_pObserverControlPtr)
+	if(observerControlPtr)
 	{
-		rgba[0]=m_pObserverControlPtr->getControlColor().x;
-		rgba[1]=m_pObserverControlPtr->getControlColor().y;
-		rgba[2]=m_pObserverControlPtr->getControlColor().z;
-		rgba[3]=m_pObserverControlPtr->getControlColor().w;
+		rgba[0]=observerControlPtr->getControlColor().x;
+		rgba[1]=observerControlPtr->getControlColor().y;
+		rgba[2]=observerControlPtr->getControlColor().z;
+		rgba[3]=observerControlPtr->getControlColor().w;
 	}
 
 	for(int x=0;x<3;x++)
 	{
-		m_pHorizontalSlider_RGBA[x] = new geHorizontalSlider(m_pFontManager);
-		m_pHorizontalSlider_RGBA[x]->create(m_pSecondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+x*15, 120.0f);
-		m_pHorizontalSlider_RGBA[x]->setSliderValue(rgba[x]);
-		m_pHorizontalSlider_RGBA[x]->setGUIObserver(this);
+		rgbaHorizontalSliderArray[x] = new geHorizontalSlider(fontManager);
+		rgbaHorizontalSliderArray[x]->create(secondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+x*15, 120.0f);
+		rgbaHorizontalSliderArray[x]->setSliderValue(rgba[x]);
+		rgbaHorizontalSliderArray[x]->setGUIObserver(this);
 	}
 	
-    m_selectedColor.x = rgba[0];
-    m_selectedColor.y = rgba[1];
-    m_selectedColor.z = rgba[2];
-    m_selectedColor.w = MAX(m_selectedColor.x, MAX(m_selectedColor.y, m_selectedColor.z));
+    selectedColor.x = rgba[0];
+    selectedColor.y = rgba[1];
+    selectedColor.z = rgba[2];
+    selectedColor.w = MAX(selectedColor.x, MAX(selectedColor.y, selectedColor.z));
     
-	m_pHorizontalSlider_RGBA[3] = new geHorizontalSlider(m_pFontManager);
-	m_pHorizontalSlider_RGBA[3]->create(m_pSecondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+3*15+10, 120.0f);
-	m_pHorizontalSlider_RGBA[3]->setSliderValue(m_selectedColor.w);
-	m_pHorizontalSlider_RGBA[3]->setGUIObserver(this);
+	rgbaHorizontalSliderArray[3] = new geHorizontalSlider(fontManager);
+	rgbaHorizontalSliderArray[3]->create(secondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+3*15+10, 120.0f);
+	rgbaHorizontalSliderArray[3]->setSliderValue(selectedColor.w);
+	rgbaHorizontalSliderArray[3]->setGUIObserver(this);
 
-	m_pColorControl = new geColorControl(m_pFontManager);
-	m_pColorControl->create(m_pSecondryRenderer, m_pWindow, m_cSize.x-50.0f, m_fCircleRadius*2.0f);
-	m_pColorControl->setControlColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+	colorControl = new geColorControl(fontManager);
+	colorControl->create(secondryRenderer, m_pWindow, m_cSize.x-50.0f, colorDlgCircleRadius*2.0f);
+	colorControl->setControlColor(rgba[0], rgba[1], rgba[2], rgba[3]);
 
 	//vertices
 	for(int xx=0;xx<COLOR_DLG_MAX_RESOLUTION-1;xx++)
 	{
-		float csx=m_fCircleRadius*cos(DEG2RAD((float)xx*10));
-		float snx=m_fCircleRadius*sin(DEG2RAD((float)xx*10));
-		m_pszColorCircleVertices[COLOR_DLG_MAX_RESOLUTION-(xx+1)].set(csx, snx);
+		float csx=colorDlgCircleRadius*cos(DEG2RAD((float)xx*10));
+		float snx=colorDlgCircleRadius*sin(DEG2RAD((float)xx*10));
+		colorCircleVertexArray[COLOR_DLG_MAX_RESOLUTION-(xx+1)].set(csx, snx);
 	}
-	m_pszColorCircleVertices[0].set(0, 0);
+	colorCircleVertexArray[0].set(0, 0);
 
 	//color
 	int d3=(COLOR_DLG_MAX_RESOLUTION-1)/3;
@@ -82,29 +82,29 @@ void geColorDlg::onCreate()
 		if(retval==0)
 		{
 			if(color<0.5f)
-				m_pszColorCircleColor[xx+1].set(1.0f-color*2.0f, 0.0f, 1.0f);
+				colorCircleColorArray[xx+1].set(1.0f-color*2.0f, 0.0f, 1.0f);
 			else
-				m_pszColorCircleColor[xx+1].set(0.0f, color*2.0f-1.0f, 1.0f);
+				colorCircleColorArray[xx+1].set(0.0f, color*2.0f-1.0f, 1.0f);
 		}
 		else if(retval==1)
 		{
 			if(color<0.5f)
-				m_pszColorCircleColor[xx+1].set(0.0f, 1.0f, 1.0f-color*2.0f);
+				colorCircleColorArray[xx+1].set(0.0f, 1.0f, 1.0f-color*2.0f);
 			else
-				m_pszColorCircleColor[xx+1].set(color*2.0f-1.0f, 1.0f, 0.0f);
+				colorCircleColorArray[xx+1].set(color*2.0f-1.0f, 1.0f, 0.0f);
 		}
 		else if(retval==2)
 		{
 			if(color<0.5f)
-				m_pszColorCircleColor[xx+1].set(1.0f, 1.0f-color*2.0f, 0.0f);
+				colorCircleColorArray[xx+1].set(1.0f, 1.0f-color*2.0f, 0.0f);
 			else
-				m_pszColorCircleColor[xx+1].set(1.0f, 0.0f, color*2.0f-1.0f);
+				colorCircleColorArray[xx+1].set(1.0f, 0.0f, color*2.0f-1.0f);
 		}
 		else if(retval==3)
-			m_pszColorCircleColor[xx+1].set(m_pszColorCircleColor[1].x, m_pszColorCircleColor[1].y, m_pszColorCircleColor[1].z);
+			colorCircleColorArray[xx+1].set(colorCircleColorArray[1].x, colorCircleColorArray[1].y, colorCircleColorArray[1].z);
 	}
 
-	m_pszColorCircleColor[0].set(1.0f, 1.0f, 1.0f);
+	colorCircleColorArray[0].set(1.0f, 1.0f, 1.0f);
 	//
 
 	//pointer
@@ -113,7 +113,7 @@ void geColorDlg::onCreate()
 	{
 		float csx=4.0f*cos(DEG2RAD((float)xx*multiplier));
 		float snx=4.0f*sin(DEG2RAD((float)xx*multiplier));
-		m_pszColorPointerVertices[xx].set(csx, snx);
+		colorPointerVertexArray[xx].set(csx, snx);
 	}
 	//
 }
@@ -128,19 +128,19 @@ void geColorDlg::onDraw()
 	geVector2f sz=m_pWindow->getSize();
 
 	glPushMatrix();
-	glTranslatef(sz.x*0.5f, m_fCircleRadius+15.0f, 0);
+	glTranslatef(sz.x*0.5f, colorDlgCircleRadius+15.0f, 0);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, &m_pszColorCircleVertices[0].x);
+	glVertexPointer(2, GL_FLOAT, 0, &colorCircleVertexArray[0].x);
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3, GL_FLOAT, 0, &m_pszColorCircleColor[0].x);
+	glColorPointer(3, GL_FLOAT, 0, &colorCircleColorArray[0].x);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, COLOR_DLG_MAX_RESOLUTION);
 	glDisableClientState(GL_COLOR_ARRAY);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_COLOR_MATERIAL);
-	float luminance=m_pHorizontalSlider_RGBA[3]->getSliderValue();
+	float luminance=rgbaHorizontalSliderArray[3]->getSliderValue();
 	glColor4f(0, 0, 0, 1.0f-luminance);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, COLOR_DLG_MAX_RESOLUTION);
 	glDisable(GL_COLOR_MATERIAL);
@@ -149,10 +149,10 @@ void geColorDlg::onDraw()
 	//pointer
     float pointer_clr = 1.0f-luminance;
 	glColor3f(pointer_clr, pointer_clr, pointer_clr);
-	glVertexPointer(2, GL_FLOAT, 0, &m_pszColorPointerVertices[0].x);
+	glVertexPointer(2, GL_FLOAT, 0, &colorPointerVertexArray[0].x);
 
 	glPushMatrix();
-	glTranslatef(m_cPointerPos.x, m_cPointerPos.y, 0.0f);
+	glTranslatef(colorDlgPointerPosition.x, colorDlgPointerPosition.y, 0.0f);
 	glDrawArrays(GL_LINE_LOOP, 0, 12);
 	glPopMatrix();
 
@@ -167,13 +167,13 @@ void geColorDlg::onDraw()
 	}
 
 	char buffer[32];
-	sprintf(buffer, "R : %d", (int)(m_pHorizontalSlider_RGBA[0]->getSliderValue()*255));
+	sprintf(buffer, "R : %d", (int)(rgbaHorizontalSliderArray[0]->getSliderValue()*255));
 	geFontManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geFontManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+0*15, m_cSize.x);
-	sprintf(buffer, "G : %d", (int)(m_pHorizontalSlider_RGBA[1]->getSliderValue()*255));
+	sprintf(buffer, "G : %d", (int)(rgbaHorizontalSliderArray[1]->getSliderValue()*255));
 	geFontManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geFontManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+1*15, m_cSize.x);
-	sprintf(buffer, "B : %d", (int)(m_pHorizontalSlider_RGBA[2]->getSliderValue()*255));
+	sprintf(buffer, "B : %d", (int)(rgbaHorizontalSliderArray[2]->getSliderValue()*255));
 	geFontManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geFontManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+2*15, m_cSize.x);
-	sprintf(buffer, "A : %d", (int)(m_pHorizontalSlider_RGBA[3]->getSliderValue()*255));
+	sprintf(buffer, "A : %d", (int)(rgbaHorizontalSliderArray[3]->getSliderValue()*255));
 	geFontManager::g_pFontArial10_80Ptr->drawString(buffer, 135, m_pWindow->getTopMarginOffsetHeight()+geFontManager::g_pFontArial10_80Ptr->getLineHeight()+(m_cSize.y-140)+3*15+10, m_cSize.x);
 }
 
@@ -186,10 +186,10 @@ bool geColorDlg::onMouseMove(float x, float y, int flag)
 	if(flag&MK_LBUTTON)
 	{
 		geVector2f sz=m_pWindow->getSize();
-		vector3f mousePos(x-sz.x*0.5f, y-(m_fCircleRadius+15.0f+m_pWindow->getTopMarginOffsetHeight()), 0.0f);
-		if(mousePos.length()<m_fCircleRadius)
+		vector3f mousePos(x-sz.x*0.5f, y-(colorDlgCircleRadius+15.0f+m_pWindow->getTopMarginOffsetHeight()), 0.0f);
+		if(mousePos.length()<colorDlgCircleRadius)
 		{
-			m_cPointerPos.set(mousePos.x, mousePos.y);
+			colorDlgPointerPosition.set(mousePos.x, mousePos.y);
 			mousePos.normalize();
 
 			matrix4x4f colorTM;
@@ -205,25 +205,25 @@ bool geColorDlg::onMouseMove(float x, float y, int flag)
 			//res.y=0.3359375+res.y;
 			//res.z=0.3359375+res.z;
 
-			m_pColorControl->setControlColor(res.x, res.y, res.z, 1.0f);
+			colorControl->setControlColor(res.x, res.y, res.z, 1.0f);
 
-			//m_pHorizontalSlider_RGBA[0]->setSliderValue((res.x+1.0f)*0.5f, false);
-			//m_pHorizontalSlider_RGBA[1]->setSliderValue((res.y+1.0f)*0.5f, false);
-			//m_pHorizontalSlider_RGBA[2]->setSliderValue((res.z+1.0f)*0.5f, false);
+			//rgbaHorizontalSliderArray[0]->setSliderValue((res.x+1.0f)*0.5f, false);
+			//rgbaHorizontalSliderArray[1]->setSliderValue((res.y+1.0f)*0.5f, false);
+			//rgbaHorizontalSliderArray[2]->setSliderValue((res.z+1.0f)*0.5f, false);
 
 
-			m_pHorizontalSlider_RGBA[0]->setSliderValue(res.x, false);
-			m_pHorizontalSlider_RGBA[1]->setSliderValue(res.y, false);
-			m_pHorizontalSlider_RGBA[2]->setSliderValue(res.z, false);
+			rgbaHorizontalSliderArray[0]->setSliderValue(res.x, false);
+			rgbaHorizontalSliderArray[1]->setSliderValue(res.y, false);
+			rgbaHorizontalSliderArray[2]->setSliderValue(res.z, false);
 
 			//float avg_rgb=(ABS(res.x)+ABS(res.y)+ABS(res.z))/3.0f;
 			//if(avg_rgb>=1.0f)
-			//	m_pHorizontalSlider_RGBA[3]->setSliderValue(1.0f, false);
+			//	rgbaHorizontalSliderArray[3]->setSliderValue(1.0f, false);
 			//else
-			//	m_pHorizontalSlider_RGBA[3]->setSliderValue(avg_rgb, false);
+			//	rgbaHorizontalSliderArray[3]->setSliderValue(avg_rgb, false);
 
-			if(m_pObserverControlPtr)
-				m_pObserverControlPtr->setControlColor(res.x, res.y, res.z, 1.0f);
+			if(observerControlPtr)
+				observerControlPtr->setControlColor(res.x, res.y, res.z, 1.0f);
 		}
 	}
 
@@ -232,18 +232,18 @@ bool geColorDlg::onMouseMove(float x, float y, int flag)
 
 void geColorDlg::onSliderChange(geGUIBase* slider)
 {
-    auto currentColor =  geVector4f(m_pHorizontalSlider_RGBA[0]->getSliderValue(), m_pHorizontalSlider_RGBA[1]->getSliderValue(), m_pHorizontalSlider_RGBA[2]->getSliderValue(), m_pHorizontalSlider_RGBA[3]->getSliderValue());
+    auto currentColor =  geVector4f(rgbaHorizontalSliderArray[0]->getSliderValue(), rgbaHorizontalSliderArray[1]->getSliderValue(), rgbaHorizontalSliderArray[2]->getSliderValue(), rgbaHorizontalSliderArray[3]->getSliderValue());
     
-    auto colorDiff = currentColor - m_selectedColor;
+    auto colorDiff = currentColor - selectedColor;
     
     //Luminance has changed
-    if(m_pHorizontalSlider_RGBA[3]->isGrabbed())
+    if(rgbaHorizontalSliderArray[3]->isGrabbed())
     {
-        currentColor.x = m_selectedColor.x * currentColor.w;
-        currentColor.y = m_selectedColor.y * currentColor.w;
-        currentColor.z = m_selectedColor.z * currentColor.w;
+        currentColor.x = selectedColor.x * currentColor.w;
+        currentColor.y = selectedColor.y * currentColor.w;
+        currentColor.z = selectedColor.z * currentColor.w;
         
-        m_selectedColor.w = currentColor.w;
+        selectedColor.w = currentColor.w;
     }
     else if(    colorDiff.x != 0.0f
             ||  colorDiff.y != 0.0f
@@ -251,19 +251,19 @@ void geColorDlg::onSliderChange(geGUIBase* slider)
     {
         currentColor.w = MAX(currentColor.x, MAX(currentColor.y, currentColor.z));
         
-        m_selectedColor.x = currentColor.x / MAX(currentColor.w, 0.001f);
-        m_selectedColor.y = currentColor.y / MAX(currentColor.w, 0.001f);
-        m_selectedColor.z = currentColor.z / MAX(currentColor.w, 0.001f);
+        selectedColor.x = currentColor.x / MAX(currentColor.w, 0.001f);
+        selectedColor.y = currentColor.y / MAX(currentColor.w, 0.001f);
+        selectedColor.z = currentColor.z / MAX(currentColor.w, 0.001f);
     }
 
-	m_pHorizontalSlider_RGBA[0]->setSliderValue(currentColor.x, false);
-	m_pHorizontalSlider_RGBA[1]->setSliderValue(currentColor.y, false);
-	m_pHorizontalSlider_RGBA[2]->setSliderValue(currentColor.z, false);
-	m_pHorizontalSlider_RGBA[3]->setSliderValue(currentColor.w, false);
+	rgbaHorizontalSliderArray[0]->setSliderValue(currentColor.x, false);
+	rgbaHorizontalSliderArray[1]->setSliderValue(currentColor.y, false);
+	rgbaHorizontalSliderArray[2]->setSliderValue(currentColor.z, false);
+	rgbaHorizontalSliderArray[3]->setSliderValue(currentColor.w, false);
 
-	m_pColorControl->setControlColor(currentColor.x, currentColor.y, currentColor.z, 1.0f);
-	if(m_pObserverControlPtr)
-		m_pObserverControlPtr->setControlColor(currentColor.x, currentColor.y, currentColor.z, 1.0f);
+	colorControl->setControlColor(currentColor.x, currentColor.y, currentColor.z, 1.0f);
+	if(observerControlPtr)
+		observerControlPtr->setControlColor(currentColor.x, currentColor.y, currentColor.z, 1.0f);
 
 	//rgb to xyz
 	matrix4x4f xyzTM;
@@ -276,6 +276,6 @@ void geColorDlg::onSliderChange(geGUIBase* slider)
 	xyzTM.setZAxis(zaxis);
 
 	vector3f res(xyzTM*vector3f(currentColor.x, currentColor.y, currentColor.z));
-	m_cPointerPos.set(m_fCircleRadius*res.x, m_fCircleRadius*res.y);
+	colorDlgPointerPosition.set(colorDlgCircleRadius*res.x, colorDlgCircleRadius*res.y);
 
 }

@@ -15,19 +15,9 @@ public:
 	{
 		setSize(m_cSize.x, 30.0f);
 
-		m_pPushBtn_Object3dVisible = new gePushButton("", fontmanager);
-		m_pPushBtn_Object3dVisible->create(renderer, this, "", 15, 10);
-		m_pPushBtn_Object3dVisible->setGUIObserver(this);
-
-		//m_pHorizontalSlider_BlurSize = new geHorizontalSlider();
-		//m_pHorizontalSlider_BlurSize->create(renderer, this, "slider", 30, 15, 120.0f);
-		//m_pHorizontalSlider_BlurSize->setSliderValue(1.0f);
-		//m_pHorizontalSlider_BlurSize->setGUIObserver(this);
-
-		//geToolBarDropMenu* pLightTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(rendererGUI, "LightType", this);
-		//pLightTypeToolBarDropMenuBtnPtr->setGUIObserver(this);
-		//pLightTypeToolBarDropMenuBtnPtr->setPos(200, 20);
-
+		object3dVisibleToggle = new gePushButton("", fontmanager);
+		object3dVisibleToggle->create(renderer, this, "", 15, 10);
+		object3dVisibleToggle->setGUIObserver(this);
 
 		setNodeColor(0.21f, 0.21f, 0.21f);
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -39,7 +29,6 @@ public:
 	{
 	}
 
-	//virtual void draw();
 	virtual void drawNode()
 	{
 		drawRect(&vertexBufferClientArea);
@@ -71,29 +60,19 @@ public:
 
 	void populatePropertyOfBlurShader(gxHWShader* blurShader)
 	{
-		m_pBlurShaderPtr=blurShader;
-		//m_pTextBoxMeshName->setName(obj->getName());
-
-		//m_pPushBtn_Object3dVisible->setCheck(obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible));
+		glslBlurShader=blurShader;
 	}
 
 
 	virtual void onSliderChange(geGUIBase* slider)
 	{
-		//if(m_pHorizontalSlider_BlurSize==slider)
-		{
-
-		}
 	}
 
 	virtual void onButtonClicked(geGUIBase* btn);
 
 private:
-	gxHWShader* m_pBlurShaderPtr;
-	//geTextBox* m_pTextBoxMeshName;
-	gePushButton* m_pPushBtn_Object3dVisible;
-	//geHorizontalSlider* m_pHorizontalSlider_BlurSize;
-
+	gxHWShader* glslBlurShader;
+	gePushButton* object3dVisibleToggle;
 };
 
 #endif

@@ -17,7 +17,7 @@ public:
 	virtual void onTextChange(geGUIBase* textbox);
 
 private:
-	geTextBox* m_pTextBoxLayers[32];	//32 layers are there
+	geTextBox* textBoxArray[32];	//32 layers are there
 };
 
 #endif

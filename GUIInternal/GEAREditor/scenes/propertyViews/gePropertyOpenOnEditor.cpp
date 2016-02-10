@@ -6,9 +6,9 @@ gePropertyOpenOnEditor::gePropertyOpenOnEditor(rendererGL10* renderer, geGUIBase
 {
 	setSize(m_cSize.x, 70.0f);
 
-	m_pButtonOpenOnEditor = new geButton("", fontmanager);
-	m_pButtonOpenOnEditor->create(renderer, this, "Open in editor", 15, 20);
-	m_pButtonOpenOnEditor->setGUIObserver(this);
+	openOnEditorButton = new geButton("", fontmanager);
+	openOnEditorButton->create(renderer, this, "Open in editor", 15, 20);
+	openOnEditorButton->setGUIObserver(this);
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -36,9 +36,9 @@ void gePropertyOpenOnEditor::drawNode()
 
 void gePropertyOpenOnEditor::onButtonClicked(geGUIBase* btn)
 {
-	if(btn==m_pButtonOpenOnEditor)
+	if(btn==openOnEditorButton)
 	{
-		if(m_pButtonOpenOnEditor->isButtonPressed())
+		if(openOnEditorButton->isButtonPressed())
 		{
 			char buffer[2048];
 			char responsebuffer[4096];
@@ -78,7 +78,7 @@ void gePropertyOpenOnEditor::onButtonClicked(geGUIBase* btn)
 					printf("\nSuccess\n");
 				}
 			}
-			//m_pButtonOpenOnEditor->buttonNormal();
+			//openOnEditorButton->buttonNormal();
 		}
 	}
 }

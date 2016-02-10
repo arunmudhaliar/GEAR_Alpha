@@ -113,12 +113,12 @@ public:
     void init();
     void reset(bool reload);
     gxFont* loadFont(const char* filename);
-    gxFont* getFont(int index)                {   return m_cvFontList[index]; }
+    gxFont* getFont(int index)                {   return fontList[index]; }
 
 private:
-    std::vector<gxFont*> m_cvFontList;
+    std::vector<gxFont*> fontList;
 #if defined (USE_ProgrammablePipeLine)
-    gxHWShader m_cFontShader;
+    gxHWShader fontHWShader;
 	gxRenderer* renderer;
     
 public:

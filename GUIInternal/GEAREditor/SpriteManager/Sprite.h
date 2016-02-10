@@ -43,17 +43,17 @@ public:
 	void setClip(float clipX, float clipY, float width, float height);
 	//void setClip(const bxRectf& rect)  {   setClip(rect.m_pos.x, rect.m_pos.y, rect.m_size.x, rect.m_size.y); }
 
-	float getClipX()	{	return m_cClipX;	}
-	float getClipY()	{	return m_cClipY;	}
+	float getClipX()	{	return spriteClipX;	}
+	float getClipY()	{	return spriteClipY;	}
 
-	float getClipWidth()		{	return m_cClipWidth;	}
-	float getClipHeight()	{	return m_cClipHeight;	}
+	float getClipWidth()		{	return spriteClipWidth;	}
+	float getClipHeight()	{	return spriteClipHeight;	}
 	
-	int getOrigWidth()	{	return (int)m_cOrigSize.x;	}
-	int getOrigHeight()    {	return (int)m_cOrigSize.y;	}
+	int getOrigWidth()	{	return (int)originalSize.x;	}
+	int getOrigHeight()    {	return (int)originalSize.y;	}
 	
-    //bxRectf getClip()       {   return bxRectf(m_cClipX, m_cClipY, m_cClipWidth, m_cClipHeight);  }
-	geVector2f getOffset()		{	return m_cOffset;	}
+    //bxRectf getClip()       {   return bxRectf(spriteClipX, spriteClipY, spriteClipWidth, spriteClipHeight);  }
+	geVector2f getOffset()		{	return spriteOffset;	}
 
 	void setOffset(float x, float y);	// (0, 0) origin, (-1, 1) left top
     
@@ -63,18 +63,18 @@ public:
     virtual void onSpritePreRender(){}
     virtual void onSpritePostRender(){}
     
-    geTexture* getTexture()  {   return &m_cTexture; }
+    geTexture* getTexture()  {   return &textureObject; }
     
-    void clearRenderFlag()          {   m_iRenderFlag=0;        }
-    void setRenderFlag(int flag)    {  m_iRenderFlag|=flag;     }
-    int getRenderFlag()             {   return m_iRenderFlag;   }
-    bool isRenderFlag(int flags)    {   return ((m_iRenderFlag&flags)>0)?true:false;    }
+    void clearRenderFlag()          {   spriteRenderFlag=0;        }
+    void setRenderFlag(int flag)    {  spriteRenderFlag|=flag;     }
+    int getRenderFlag()             {   return spriteRenderFlag;   }
+    bool isRenderFlag(int flags)    {   return ((spriteRenderFlag&flags)>0)?true:false;    }
 	
     void setAlpha(float alpha)        {   this->alpha=alpha;     }
     float getAlpha()                  {   return alpha;    }
     
-    void setRGB(float r, float g, float b)   {   m_fRGB[0]=r; m_fRGB[1]=g; m_fRGB[2]=b;    }
-	float* getRGB()		{	return m_fRGB;	}
+    void setRGB(float r, float g, float b)   {   spriteRGB[0]=r; spriteRGB[1]=g; spriteRGB[2]=b;    }
+	float* getRGB()		{	return spriteRGB;	}
     void setVFlip();
     void setHFlip();
     
@@ -84,29 +84,29 @@ public:
     virtual void transformationChangedf()
     {    }
 
-	void setBlendMode(EBLENDFLAG eFlag)		{	m_eBlendFlag=eFlag;	}
-	EBLENDFLAG getBlendMode()				{	return m_eBlendFlag;	}
+	void setBlendMode(EBLENDFLAG eFlag)		{	spriteBlendFlag=eFlag;	}
+	EBLENDFLAG getBlendMode()				{	return spriteBlendFlag;	}
 
 	void setPos(int x, int y)	{	setPosition(x, y, 0);	}
 
-	float* getVertexBuffer()	{	return m_cszVertLst;	}
-	float* getTexCoordBuffer()	{	return m_cszTexCoord;	}
+	float* getVertexBuffer()	{	return spriteVertexArray;	}
+	float* getTexCoordBuffer()	{	return spriteTextureCoordinateArray;	}
 
 	void copy(Sprite& sprite);
 
 protected:
-	geTexture m_cTexture;
-	geVector2f m_cOrigSize;
-	geVector2f m_cOffset;
-	float m_cszVertLst[8];
-	float m_cszTexCoord[8];
-    float m_cClipX;
-    float m_cClipY;
-	float m_cClipWidth;
-	float m_cClipHeight;
-    int m_iRenderFlag;
+	geTexture textureObject;
+	geVector2f originalSize;
+	geVector2f spriteOffset;
+	float spriteVertexArray[8];
+	float spriteTextureCoordinateArray[8];
+    float spriteClipX;
+    float spriteClipY;
+	float spriteClipWidth;
+	float spriteClipHeight;
+    int spriteRenderFlag;
     float alpha;
-    float m_fRGB[3];
+    float spriteRGB[3];
     float alphaThreshold;
-	EBLENDFLAG m_eBlendFlag;
+	EBLENDFLAG spriteBlendFlag;
 };

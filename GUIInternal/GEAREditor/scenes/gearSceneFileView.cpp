@@ -35,41 +35,41 @@ char g_cszPrefabName[256];
 gearSceneFileView::gearSceneFileView(geFontManager* fontManager):
 geWindow("File View", fontManager)
 {
-	m_pSerachStringTextBoxPtr=NULL;
-	m_pPreviewObj_Cube=NULL;
-	memset(m_szDirectoryPath, 0, sizeof(m_szDirectoryPath));
-    m_pFileTreeView = new geTreeView(fontManager);
+	serachStringTextBox=NULL;
+	previewCubeObject=NULL;
+	memset(directoryPath, 0, sizeof(directoryPath));
+    fileTreeView = new geTreeView(fontManager);
 }
 
 gearSceneFileView::~gearSceneFileView()
 {
-	GE_DELETE(m_pPreviewObj_Cube);
-	destroyTVUserData(m_pFileTreeView->getRoot());
-    GE_DELETE(m_pFileTreeView);
+	GE_DELETE(previewCubeObject);
+	destroyTVUserData(fileTreeView->getRoot());
+    GE_DELETE(fileTreeView);
 }
 
 void gearSceneFileView::onCreate()
 {
-	m_pFileTreeView->create(rendererGUI, this, "AssetsFileTV", this);
+	fileTreeView->create(rendererGUI, this, "AssetsFileTV", this);
 
-	m_pSerachStringTextBoxPtr=new geTextBox(fontManagerGUI);
-	m_pSerachStringTextBoxPtr->create(rendererGUI, getToolBar(), "", 0, 1, 100, 13);
-	m_pSerachStringTextBoxPtr->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pSerachStringTextBoxPtr);
+	serachStringTextBox=new geTextBox(fontManagerGUI);
+	serachStringTextBox->create(rendererGUI, getToolBar(), "", 0, 1, 100, 13);
+	serachStringTextBox->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(serachStringTextBox);
 
-	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[0].setClip(362, 70, 16, 16);
-	m_cszSprites[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[1].setClip(46, 26, 16, 16);
+	spriteArray[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[0].setClip(362, 70, 16, 16);
+	spriteArray[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[1].setClip(46, 26, 16, 16);
 
-	m_cszSprites[2].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[2].setClip(424, 68, 16, 16);
+	spriteArray[2].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[2].setClip(424, 68, 16, 16);
 
-	m_cszSprites[3].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[3].setClip(68, 110, 16, 16);
+	spriteArray[3].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[3].setClip(68, 110, 16, 16);
 
-	m_cszSprites[4].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[4].setClip(110, 238, 16, 16);
+	spriteArray[4].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[4].setClip(110, 238, 16, 16);
 
 	loadPreviewObjects();
 }
@@ -84,7 +84,7 @@ void gearSceneFileView::onDraw()
 	}
 #endif
 
-	m_pFileTreeView->draw();
+	fileTreeView->draw();
 }
 
 void gearSceneFileView::read3dFile(gxFile& file, object3d* obj)
@@ -165,7 +165,7 @@ void gearSceneFileView::loadPreviewObjects()
 		file_meta.CloseFile();
 	}
 	deleteAnmationFromObject3d(obj);
-	m_pPreviewObj_Cube=obj;
+	previewCubeObject=obj;
 	//
 
 	//Material
@@ -174,7 +174,7 @@ void gearSceneFileView::loadPreviewObjects()
 		stMetaHeader metaHeader;
 		file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
 
-		m_cPreviewMaterial.read(file_meta);
+		previewMaterial.read(file_meta);
 		file_meta.CloseFile();
 	}
 	//
@@ -269,10 +269,10 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				{
 					//match found, so assing and delete the new material object
 					matchingMaterial=material_in_list;
-					gxMesh* mesh=(gxMesh*)m_pPreviewObj_Cube->getChild(0);
+					gxMesh* mesh=(gxMesh*)previewCubeObject->getChild(0);
 					gxTriInfo* triinfo = mesh->getTriInfo(0);
 					triinfo->setMaterial(matchingMaterial);
-					obj=m_pPreviewObj_Cube;
+					obj=previewCubeObject;
 				}
 			}
 
@@ -303,11 +303,11 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 						submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
 					}
 
-					gxMesh* mesh=(gxMesh*)m_pPreviewObj_Cube->getChild(0);
+					gxMesh* mesh=(gxMesh*)previewCubeObject->getChild(0);
 					gxTriInfo* triinfo = mesh->getTriInfo(0);
 					triinfo->setMaterial(material);
 					world->getMaterialList()->push_back(triinfo->getMaterial());
-					obj=m_pPreviewObj_Cube;
+					obj=previewCubeObject;
 				}
 			}
 			else
@@ -334,12 +334,12 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 			//load surface shader
 			char mainshaderfilename[FILENAME_MAX];
-			sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", m_cPreviewMaterial.getMainshaderName());
-			m_cPreviewMaterial.setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
+			sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", previewMaterial.getMainshaderName());
+			previewMaterial.setSurfaceShader(hwShaderManager->LoadSurfaceShader(mainshaderfilename));
 
 			gxWorld* world=monoWrapper::mono_engine_getWorld(0);
 			//load sub maps
-			std::vector<gxSubMap*>* maplist=m_cPreviewMaterial.getSubMapList();
+			std::vector<gxSubMap*>* maplist=previewMaterial.getSubMapList();
 			for(std::vector<gxSubMap*>::iterator it = maplist->begin(); it != maplist->end(); ++it)
 			{
 				gxSubMap* submap = *it;
@@ -348,10 +348,10 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
 			}
 
-			gxMesh* mesh=(gxMesh*)m_pPreviewObj_Cube->getChild(0);
+			gxMesh* mesh=(gxMesh*)previewCubeObject->getChild(0);
 			gxTriInfo* triinfo = mesh->getTriInfo(0);
-			triinfo->setMaterial(&m_cPreviewMaterial);
-			obj=m_pPreviewObj_Cube;
+			triinfo->setMaterial(&previewMaterial);
+			obj=previewCubeObject;
 		}
 	}
 	EditorGEARApp::getScenePreview()->selectedObject3D(obj);
@@ -359,19 +359,19 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 
 void gearSceneFileView::populateFileView()
 {
-	populateFiles(m_szDirectoryPath);
+	populateFiles(directoryPath);
 }
 
 void gearSceneFileView::populateFiles(const char* dirPath)
 {
 	EditorGEARApp::getScenePreview()->selectedObject3D(NULL);
-	STRCPY(m_szDirectoryPath, dirPath);
-	destroyTVUserData(m_pFileTreeView->getRoot());
-	m_pFileTreeView->clearAndDestroyAll();
+	STRCPY(directoryPath, dirPath);
+	destroyTVUserData(fileTreeView->getRoot());
+	fileTreeView->clearAndDestroyAll();
 
-	gearSceneFileView::find_files(rendererGUI, dirPath, m_pSerachStringTextBoxPtr->getName(), m_pFileTreeView->getRoot(), m_cszSprites);
-	m_pFileTreeView->getRoot()->traverseSetWidth(m_cSize.x);
-	m_pFileTreeView->refreshTreeView();
+	gearSceneFileView::find_files(rendererGUI, dirPath, serachStringTextBox->getName(), fileTreeView->getRoot(), spriteArray);
+	fileTreeView->getRoot()->traverseSetWidth(m_cSize.x);
+	fileTreeView->refreshTreeView();
 }
 
 void gearSceneFileView::destroyTVUserData(geGUIBase* parent)
@@ -410,10 +410,10 @@ bool gearSceneFileView::onMouseMove(float x, float y, int flag)
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return geWindow::onMouseMove(x, y, flag);
 
-	std::vector<geTreeNode*>* selectedNodeList=m_pFileTreeView->getSelectedNodeList();
+	std::vector<geTreeNode*>* selectedNodeList=fileTreeView->getSelectedNodeList();
 	if((flag&MK_LBUTTON) && selectedNodeList->size())
 	{
-		if(/*m_pFileTreeView->getScrollBar()->isScrollBarVisible() && */m_pFileTreeView->getScrollBar()->isScrollBarGrabbed()/* && x>m_cSize.x-SCROLLBAR_SIZE*/)
+		if(/*fileTreeView->getScrollBar()->isScrollBarVisible() && */fileTreeView->getScrollBar()->isScrollBarGrabbed()/* && x>m_cSize.x-SCROLLBAR_SIZE*/)
 			return  true;
 		std::vector<geGUIBase*>* newlist = new std::vector<geGUIBase*>();
 
@@ -450,14 +450,14 @@ void gearSceneFileView::onMouseWheel(int zDelta, int x, int y, int flag)
 
 void gearSceneFileView::onTextChange(geGUIBase* textBox)
 {
-	if(textBox==m_pSerachStringTextBoxPtr)
-		populateFiles(m_szDirectoryPath);
+	if(textBox==serachStringTextBox)
+		populateFiles(directoryPath);
 }
 
 //#if !defined(__APPLE__) //disable Drag-Drop
 void gearSceneFileView::onDragDrop(int x, int y, MDropData* dropObject)
 {
-	//geTreeNode* rootNode = m_pFileTreeView->getRoot();
+	//geTreeNode* rootNode = fileTreeView->getRoot();
 
 	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
 	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
@@ -477,7 +477,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDropData* dropObject)
 			char prefabFileName[512];
 			sprintf(prefabFileName, "%s.prefab", g_cszPrefabName);
 			char absolutepath[512];
-			sprintf(absolutepath, "%s/%s", m_szDirectoryPath, prefabFileName);
+			sprintf(absolutepath, "%s/%s", directoryPath, prefabFileName);
 			unsigned int crc32 = AssetImporter::calcCRC32((unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(absolutepath));
 			gxFile prefabFile;
 			if(prefabFile.OpenFile(absolutepath, gxFile::FILE_w))
@@ -497,14 +497,14 @@ void gearSceneFileView::onDragDrop(int x, int y, MDropData* dropObject)
 						//create the meta-info file
 						gxFile metaInfoFile;
 						char metaInfoFileName[512];
-						sprintf(metaInfoFileName, "%s/%s.meta", m_szDirectoryPath, prefabFileName);
+						sprintf(metaInfoFileName, "%s/%s.meta", directoryPath, prefabFileName);
 						if(metaInfoFile.OpenFile(metaInfoFileName, gxFile::FILE_w))
 						{
 							metaInfoFile.Write(crc32);
 							metaInfoFile.CloseFile();
 
 							//repopulate the file view
-							populateFiles(m_szDirectoryPath);
+							populateFiles(directoryPath);
 						}
 					}
 				}

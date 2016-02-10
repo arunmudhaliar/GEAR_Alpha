@@ -26,35 +26,35 @@ gearSceneProject::gearSceneProject(geFontManager* fontmanager):
 geWindow("Project", fontmanager)
 {
 	//m_pFileViewScenePtr=NULL;
-    m_pAssetTreeView = new geTreeView(fontmanager);
+    assetTreeView = new geTreeView(fontmanager);
 }
 
 gearSceneProject::~gearSceneProject()
 {
-	destroyTVUserData(m_pAssetTreeView->getRoot());
-    GE_DELETE(m_pAssetTreeView)
+	destroyTVUserData(assetTreeView->getRoot());
+    GE_DELETE(assetTreeView)
 }
 
 void gearSceneProject::onCreate()
 {
-	m_pAssetTreeView->create(rendererGUI, this, "AssetsTV", this);
+	assetTreeView->create(rendererGUI, this, "AssetsTV", this);
 
-	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[0].setClip(362, 70, 16, 16);
-	m_cszSprites[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[1].setClip(46, 26, 16, 16);
+	spriteArray[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[0].setClip(362, 70, 16, 16);
+	spriteArray[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[1].setClip(46, 26, 16, 16);
 
 	populateProjectView();
 }
 
 void gearSceneProject::populateProjectView()
 {
-	destroyTVUserData(m_pAssetTreeView->getRoot());
-	m_pAssetTreeView->clearAndDestroyAll();
+	destroyTVUserData(assetTreeView->getRoot());
+	assetTreeView->clearAndDestroyAll();
 
-	find_directory(rendererGUI, EditorGEARApp::getProjectHomeDirectory(), m_pAssetTreeView->getRoot(), m_cszSprites, fontManagerGUI);
-	m_pAssetTreeView->getRoot()->traverseSetWidth(m_cSize.x);
-	m_pAssetTreeView->refreshTreeView();
+	find_directory(rendererGUI, EditorGEARApp::getProjectHomeDirectory(), assetTreeView->getRoot(), spriteArray, fontManagerGUI);
+	assetTreeView->getRoot()->traverseSetWidth(m_cSize.x);
+	assetTreeView->refreshTreeView();
 }
 
 void gearSceneProject::onDraw()
@@ -67,7 +67,7 @@ void gearSceneProject::onDraw()
 	}
 #endif
 
-	m_pAssetTreeView->draw();
+	assetTreeView->draw();
 }
 
 void gearSceneProject::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
@@ -102,7 +102,7 @@ bool gearSceneProject::onMouseLButtonUp(float x, float y, int nFlag)
 
 bool gearSceneProject::onMouseMove(float x, float y, int flag)
 {
-	//geTreeNode* selectedNode=m_pAssetTreeView->getSelectedNode();
+	//geTreeNode* selectedNode=assetTreeView->getSelectedNode();
 	//if((flag&MK_LBUTTON) && selectedNode)
 	//{
 	//	MDataObject* dataObject = new MDataObject(selectedNode);

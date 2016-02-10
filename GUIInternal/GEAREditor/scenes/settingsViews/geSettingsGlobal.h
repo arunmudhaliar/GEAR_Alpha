@@ -16,16 +16,16 @@ public:
 	{
 		setSize(m_cSize.x, 40.0f);
 
-		m_pPushBtnVsync = new gePushButton("", fontmanager);
-		m_pPushBtnVsync->create(renderer, this, "", 15, 10);
-		m_pPushBtnVsync->setGUIObserver(this);
-		m_pPushBtnVsync->setCheck(true);
+		vsyncToggle = new gePushButton("", fontmanager);
+		vsyncToggle->create(renderer, this, "", 15, 10);
+		vsyncToggle->setGUIObserver(this);
+		vsyncToggle->setCheck(true);
 
 		//window column
 		geWindowColumn* pWindowColumn = new geWindowColumn(fontManagerGUI);
 		pWindowColumn->create(rendererGUI, this, 10, 300.0f, 10.0f, 0.35f);
 		stWindowColumnRow* row = pWindowColumn->addRow("VSync");
-		pWindowColumn->addControl(row, m_pPushBtnVsync);
+		pWindowColumn->addControl(row, vsyncToggle);
 
 		setNodeColor(0.21f, 0.21f, 0.21f);
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -39,9 +39,9 @@ public:
 
 	virtual void onButtonClicked(geGUIBase* btn)
 	{
-		if(btn==m_pPushBtnVsync)
+		if(btn==vsyncToggle)
 		{
-			if(m_pPushBtnVsync->isCheck())
+			if(vsyncToggle->isCheck())
 				setVSync(1);
 			else
 				setVSync(0);
@@ -89,7 +89,7 @@ public:
 	}
 
 private:
-	gePushButton* m_pPushBtnVsync;
+	gePushButton* vsyncToggle;
 };
 
 #endif

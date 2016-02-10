@@ -15,15 +15,15 @@ public:
 	gePropertyAnimationSet(rendererGL10* renderer, geGUIBase* parent, object3d* ownerObj, gxAnimationSet* animSet, Sprite2Dx* sprite, geFontManager* fontmanager):
 	  geTreeNode(renderer, parent, animSet->getAnimationName(), sprite, fontmanager, 10)
 	{
-		m_pButtonSetAnimation=NULL;
-		m_pOwnerObj=ownerObj;
-		m_pAnimSetPtr=animSet;
+		setAnimationButton=NULL;
+		ownerObject3d=ownerObj;
+		animationSet=animSet;
 		setSize(m_cSize.x, m_cSize.y*1.2f);
 
-		m_pButtonSetAnimation = new geButton("", fontmanager);
-		m_pButtonSetAnimation->create(renderer, this, "Set", 0, 3);
-		m_pButtonSetAnimation->setSize(m_pButtonSetAnimation->getSize().x, m_pButtonSetAnimation->getSize().y);
-		m_pButtonSetAnimation->setGUIObserver(this);
+		setAnimationButton = new geButton("", fontmanager);
+		setAnimationButton->create(renderer, this, "Set", 0, 3);
+		setAnimationButton->setSize(setAnimationButton->getSize().x, setAnimationButton->getSize().y);
+		setAnimationButton->setGUIObserver(this);
 
 		setNodeColor(0.21f, 0.21f, 0.21f);
 		//setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -37,10 +37,10 @@ public:
 
 	virtual void onSize(float cx, float cy, int flag)
 	{
-		if(m_pButtonSetAnimation)
+		if(setAnimationButton)
 		{
-			if(cx>m_pButtonSetAnimation->getSize().x*5.0f)
-				m_pButtonSetAnimation->setPos(cx-(m_pButtonSetAnimation->getSize().x+30), 3);
+			if(cx>setAnimationButton->getSize().x*5.0f)
+				setAnimationButton->setPos(cx-(setAnimationButton->getSize().x+30), 3);
 		}
 
 		geTreeNode::onSize(cx, cy, flag);
@@ -70,10 +70,10 @@ public:
 
 	virtual void onButtonClicked(geGUIBase* btn)
 	{
-		if(btn==m_pButtonSetAnimation && m_pButtonSetAnimation->isButtonPressed())
+		if(btn==setAnimationButton && setAnimationButton->isButtonPressed())
 		{
-			gxAnimation* animationController = m_pOwnerObj->createAnimationController();
-			if(animationController->getActiveAnimationSet()==m_pAnimSetPtr)
+			gxAnimation* animationController = ownerObject3d->createAnimationController();
+			if(animationController->getActiveAnimationSet()==animationSet)
 			{
 				if(animationController->isPlaying())
 				{
@@ -81,20 +81,20 @@ public:
 				}
 				else
 				{
-					animationController->play(m_pAnimSetPtr);
+					animationController->play(animationSet);
 				}
 			}
 			else
 			{
-				m_pOwnerObj->applyAnimationSetRecursive(m_pAnimSetPtr);
-				animationController->play(m_pAnimSetPtr);
+				ownerObject3d->applyAnimationSetRecursive(animationSet);
+				animationController->play(animationSet);
 			}
 		}
 	}
 
-	object3d* m_pOwnerObj;
-	geButton* m_pButtonSetAnimation;
-	gxAnimationSet* m_pAnimSetPtr;
+	object3d* ownerObject3d;
+	geButton* setAnimationButton;
+	gxAnimationSet* animationSet;
 };
 
 #endif

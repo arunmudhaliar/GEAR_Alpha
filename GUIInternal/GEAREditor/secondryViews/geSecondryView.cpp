@@ -6,13 +6,13 @@
 
 geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, rendererGL10* mainRenderer)
 {
-    m_pPrimaryRenderer=mainRenderer;
+    primaryRenderer=mainRenderer;
 	strcpy(m_szName, name);
-	m_pSecondryRenderer=NULL;
+	secondryRenderer=NULL;
     layoutManager = new geLayoutManager(fontmanager);
-    m_pFontManager = fontmanager;
-    m_pSecondryWindow=NULL;
-    m_iExtraWindowFlags = 0;
+    this->fontManager = fontmanager;
+    sdlSecondryWindow=NULL;
+    extraWindowFlags = 0;
 
 #ifdef _WIN32
 	//In windows SDL window position (0, 0) starts from client space, so shifting y postion down 100px. 
@@ -22,9 +22,9 @@ geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, ren
 
 geSecondryView::~geSecondryView()
 {
-	GE_DELETE(m_pSecondryRenderer);
+	GE_DELETE(secondryRenderer);
 	//restore gl context to the EditorApp
-	m_pPrimaryRenderer->makeCurrent();
+	primaryRenderer->makeCurrent();
 	//
     GX_DELETE(layoutManager);
 }
@@ -36,16 +36,16 @@ void geSecondryView::createRenderer(SDL_Window* window)
 #endif
 {
 #if DEPRECATED
-	m_pSecondryRenderer = new rendererGL10(hwnd);
+	secondryRenderer = new rendererGL10(hwnd);
 #else
-    m_pSecondryRenderer = new rendererGL10(window);
+    secondryRenderer = new rendererGL10(window);
 #endif
     
-	m_pSecondryRenderer->setupRenderer(m_pPrimaryRenderer);
+	secondryRenderer->setupRenderer(primaryRenderer);
 
-	layoutManager->create(m_pSecondryRenderer, 0, 0, m_cSize.x, m_cSize.y);
+	layoutManager->create(secondryRenderer, 0, 0, m_cSize.x, m_cSize.y);
 	//rootLayout = new geLayout();
-	//rootLayout->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y);
+	//rootLayout->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y);
 	//rootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
 
 	previousScale.set(m_cSize.x, m_cSize.y);
@@ -112,23 +112,23 @@ void geSecondryView::showView(int extraWindowFlags)
     //SDL_DetachThread(thread);
     //int threadReturnValue;
     //SDL_WaitThread(thread, &threadReturnValue);
-    m_iExtraWindowFlags = extraWindowFlags;
+    extraWindowFlags = extraWindowFlags;
     secondryThread((void *)this);
 #endif
 }
 
 SDL_Window* geSecondryView::createSecondryWindow()
 {
-    m_pSecondryWindow = SDL_CreateWindow(
+    sdlSecondryWindow = SDL_CreateWindow(
                                          m_szName,             // window title
                                          m_cPos.x,     // x position, centered
                                          m_cPos.y,     // y position, centered
                                          (int)m_cSize.x,                        // width, in pixels
                                          (int)m_cSize.y,                        // height, in pixels
-                                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | m_iExtraWindowFlags        // flags
+                                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | extraWindowFlags        // flags
                                          );
     
-    return m_pSecondryWindow;
+    return sdlSecondryWindow;
 }
 
 int geSecondryView::secondryThread( void *ptr )
@@ -177,7 +177,7 @@ int geSecondryView::secondryThread( void *ptr )
         view->drawView();
         view->getRenderer()->swapGLBuffer();
 		EditorApp* editor = EditorApp::g_pEditorAppInstance;
-        view->m_pPrimaryRenderer->makeCurrent();
+        view->primaryRenderer->makeCurrent();
 		editor->draw();
         
         //It is very important in shared contexts to make sure the driver is done with all Objects before signaling other threads that they can use them!
@@ -348,7 +348,7 @@ void geSecondryView::sizeView(float cx, float cy)
 void geSecondryView::destroyView()
 {
 	onDestroy();
-    m_pPrimaryRenderer->makeCurrent();
+    primaryRenderer->makeCurrent();
 	delete this;
 }
 

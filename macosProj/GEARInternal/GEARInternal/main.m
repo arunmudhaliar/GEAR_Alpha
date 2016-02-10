@@ -38,7 +38,7 @@ int main(int argc, const char * argv[]) {
 //    }
 //    
 //    cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
-//    printf ("The current working directory is %s", cCurrentPath);
+//    printf ("The current working directory is %s\n", cCurrentPath);
 //    
 //    
 //    EditorGEARApp editorApp;

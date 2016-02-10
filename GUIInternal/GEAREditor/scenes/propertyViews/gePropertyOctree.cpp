@@ -9,30 +9,30 @@ gePropertyOctree::gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, co
 	setSize(m_cSize.x, 80.0f);
 
 	//package name
-	m_pNoOfTransformObjectPerNode = new geHorizontalSlider(fontManagerGUI);
-	m_pNoOfTransformObjectPerNode->create(rendererGUI, this, "slider", 10, 65, 130);
-	m_pNoOfTransformObjectPerNode->setSliderValue(0.5f);
-	m_pNoOfTransformObjectPerNode->setGUIObserver(this);
+	noOfTransformObjectPerNodeHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
+	noOfTransformObjectPerNodeHorizontalSlider->create(rendererGUI, this, "slider", 10, 65, 130);
+	noOfTransformObjectPerNodeHorizontalSlider->setSliderValue(0.5f);
+	noOfTransformObjectPerNodeHorizontalSlider->setGUIObserver(this);
 
-	m_pNoOfLevels = new geHorizontalSlider(fontManagerGUI);
-	m_pNoOfLevels->create(rendererGUI, this, "slider", 10, 65, 130);
-	m_pNoOfLevels->setSliderValue(0.2f);
-	m_pNoOfLevels->setGUIObserver(this);
+	noOfLevelsHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
+	noOfLevelsHorizontalSlider->create(rendererGUI, this, "slider", 10, 65, 130);
+	noOfLevelsHorizontalSlider->setSliderValue(0.2f);
+	noOfLevelsHorizontalSlider->setGUIObserver(this);
 
 
-	m_pButtonApply = new geButton("", fontManager);
-	m_pButtonApply->create(renderer, this, "Apply", 15, 10);
-	m_pButtonApply->setGUIObserver(this);
+	applyButton = new geButton("", fontManager);
+	applyButton->create(renderer, this, "Apply", 15, 10);
+	applyButton->setGUIObserver(this);
 
 	//window column
 	geWindowColumn* pWindowColumn = new geWindowColumn(fontManagerGUI);
 	pWindowColumn->create(rendererGUI, this, 20, 300.0f, 10.0f, 0.44f);
-	m_pRows[0] = pWindowColumn->addRow("No of objects per node: 6");
-	pWindowColumn->addControl(m_pRows[0], m_pNoOfTransformObjectPerNode, 15.0f);
-	m_pRows[1] = pWindowColumn->addRow("Octree max depth: 1");
-	pWindowColumn->addControl(m_pRows[1], m_pNoOfLevels, 15.0f);
-	m_pRows[2] = pWindowColumn->addRow("");
-	pWindowColumn->addControl(m_pRows[2], m_pButtonApply);
+	windowColumnRowArray[0] = pWindowColumn->addRow("No of objects per node: 6");
+	pWindowColumn->addControl(windowColumnRowArray[0], noOfTransformObjectPerNodeHorizontalSlider, 15.0f);
+	windowColumnRowArray[1] = pWindowColumn->addRow("Octree max depth: 1");
+	pWindowColumn->addControl(windowColumnRowArray[1], noOfLevelsHorizontalSlider, 15.0f);
+	windowColumnRowArray[2] = pWindowColumn->addRow("");
+	pWindowColumn->addControl(windowColumnRowArray[2], applyButton);
 	//
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
@@ -71,7 +71,7 @@ void gePropertyOctree::drawNode()
 		tvnode->draw();
 	}
 
-	//m_pWindowColumn->draw();
+	//windowColumnControl->draw();
 
 	if(sprite)
 		sprite->draw();
@@ -84,23 +84,23 @@ void gePropertyOctree::drawNode()
 void gePropertyOctree::onSliderChange(geGUIBase* slider)
 {
 	char buffer[256];
-	if(m_pNoOfTransformObjectPerNode==slider)
+	if(noOfTransformObjectPerNodeHorizontalSlider==slider)
 	{
-		int value=4+(int)(m_pNoOfTransformObjectPerNode->getSliderValue()*4);
+		int value=4+(int)(noOfTransformObjectPerNodeHorizontalSlider->getSliderValue()*4);
 		sprintf(buffer, "No of objects per node: %d", value);
-		m_pRows[0]->setName(buffer);
+		windowColumnRowArray[0]->setName(buffer);
 	}
-	else if(m_pNoOfLevels==slider)
+	else if(noOfLevelsHorizontalSlider==slider)
 	{
-		int value=(int)(m_pNoOfLevels->getSliderValue()*6);
+		int value=(int)(noOfLevelsHorizontalSlider->getSliderValue()*6);
 		sprintf(buffer, "Octree max depth: %d", value);
-		m_pRows[1]->setName(buffer);
+		windowColumnRowArray[1]->setName(buffer);
 	}
 }
 
 void gePropertyOctree::onButtonClicked(geGUIBase* btn)
 {
-	if(btn==m_pButtonApply && m_pButtonApply->isButtonPressed())
+	if(btn==applyButton && applyButton->isButtonPressed())
 	{
 		EditorGEARApp::getSceneHierarchy()->recreateOctree();
 	}
@@ -108,6 +108,6 @@ void gePropertyOctree::onButtonClicked(geGUIBase* btn)
 
 void gePropertyOctree::getOctreeVars(int& nTransformPerNodes, int& nLevels)
 {
-	nTransformPerNodes=4+(int)(m_pNoOfTransformObjectPerNode->getSliderValue()*4);
-	nLevels=(int)(m_pNoOfLevels->getSliderValue()*6);
+	nTransformPerNodes=4+(int)(noOfTransformObjectPerNodeHorizontalSlider->getSliderValue()*4);
+	nLevels=(int)(noOfLevelsHorizontalSlider->getSliderValue()*6);
 }

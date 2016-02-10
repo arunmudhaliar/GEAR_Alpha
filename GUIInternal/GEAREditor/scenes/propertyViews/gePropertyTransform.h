@@ -13,12 +13,6 @@
 class gePropertyTransform : public geTreeNode, public MGUIObserver
 {
 public:
-
-	geTextBox* m_pszTextBoxTranslation[3];
-	geTextBox* m_pszTextBoxRotation[3];
-	geTextBox* m_pszTextBoxScale[3];
-	object3d* m_pObject3dPtr;
-
 	gePropertyTransform(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontManager);
 	virtual ~gePropertyTransform();
 
@@ -104,6 +98,11 @@ public:
 			Roll = atan2(-m[6],m[5]);
 		}
 	}
+    
+    geTextBox* translationTextBox[3];
+    geTextBox* rotationTextBox[3];
+    geTextBox* scaleTextBox[3];
+    object3d* object3dPtr;
 };
 
 #endif

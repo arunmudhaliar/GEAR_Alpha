@@ -18,17 +18,17 @@ public:
 	{
 		setSize(m_cSize.x, 40.0f);
 
-		m_pAddComponentToolBarDropMenuBtnPtr=new geToolBarDropMenu(rendererGUI, "Components", this, fontmanager);
-		m_pAddComponentToolBarDropMenuBtnPtr->setGUIObserver(this);
-		m_pAddComponentToolBarDropMenuBtnPtr->setPos(15, 10);
+		addComponentToolBarDropMenuButton=new geToolBarDropMenu(rendererGUI, "Components", this, fontmanager);
+		addComponentToolBarDropMenuButton->setGUIObserver(this);
+		addComponentToolBarDropMenuButton->setPos(15, 10);
 
 		int base=0x00005200;
-		stDropMenuItem* mitem = m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("Physics", base++);
-		m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("RigidBody", base++, mitem);
-		m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("Box Collider", base++, mitem);
-		m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("Sphere Collider", base++, mitem);
-		m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("Capsule Collider", base++, mitem);
-		m_pAddComponentToolBarDropMenuBtnPtr->appendMenuItem("Mesh Collider", base++, mitem);
+		stDropMenuItem* mitem = addComponentToolBarDropMenuButton->appendMenuItem("Physics", base++);
+		addComponentToolBarDropMenuButton->appendMenuItem("RigidBody", base++, mitem);
+		addComponentToolBarDropMenuButton->appendMenuItem("Box Collider", base++, mitem);
+		addComponentToolBarDropMenuButton->appendMenuItem("Sphere Collider", base++, mitem);
+		addComponentToolBarDropMenuButton->appendMenuItem("Capsule Collider", base++, mitem);
+		addComponentToolBarDropMenuButton->appendMenuItem("Mesh Collider", base++, mitem);
 
 		setNodeColor(0.21f, 0.21f, 0.21f);
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -47,7 +47,7 @@ public:
 
 		geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 35, geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
-		geFontManager::g_pFontArial10_80Ptr->drawString("Add components to the object3d.", m_pAddComponentToolBarDropMenuBtnPtr->getPos().x+m_pAddComponentToolBarDropMenuBtnPtr->getSize().x+20, geFontManager::g_pFontArial10_80Ptr->getLineHeight()+10, m_cSize.x);
+		geFontManager::g_pFontArial10_80Ptr->drawString("Add components to the object3d.", addComponentToolBarDropMenuButton->getPos().x+addComponentToolBarDropMenuButton->getSize().x+20, geFontManager::g_pFontArial10_80Ptr->getLineHeight()+10, m_cSize.x);
 
 		if(childControlList.size() && hasAtleastOneTreeNodeChild)
 		{
@@ -74,15 +74,15 @@ public:
 
 	void populatePropertyOfObject(object3d* obj)
 	{
-		m_pObject3dPtr=obj;
+		object3dPtr=obj;
 	}
 
 	virtual void onButtonClicked(geGUIBase* btn);
 	virtual void onCommand(int cmd);
 
 private:
-	object3d* m_pObject3dPtr;
-	geToolBarDropMenu* m_pAddComponentToolBarDropMenuBtnPtr;
+	object3d* object3dPtr;
+	geToolBarDropMenu* addComponentToolBarDropMenuButton;
 };
 
 #endif

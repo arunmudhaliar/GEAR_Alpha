@@ -68,16 +68,16 @@ void geTextureDlgInfoWindow::onDraw()
 geTextureDlg::geTextureDlg(geTextureThumbnail* pObserverControlPtr, geFontManager* fontmanager, rendererGL10* mainRenderer):
 	geSecondryView("Texture Dialog", fontmanager, mainRenderer)
 {
-	m_pObserverControlPtr=pObserverControlPtr;
+	observerControlPtr=pObserverControlPtr;
     geVector2f tmp(1024.0f, 600.0f);
 	setSize(tmp);
-	m_pWindow=NULL;
-	m_pInfoWindow=NULL;
+	textureDlgMainWindow=NULL;
+	textureDlgInfoWindow=NULL;
 }
 
 geTextureDlg::~geTextureDlg()
 {
-	for(std::vector<geGUIBase*>::iterator it = m_vTextureThumbs.begin(); it != m_vTextureThumbs.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = textureThumbnailList.begin(); it != textureThumbnailList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		geTextureThumbnail* thumb=(geTextureThumbnail*)tvnode;
@@ -85,30 +85,30 @@ geTextureDlg::~geTextureDlg()
 		GE_DELETE(tex);
 		GE_DELETE(thumb);
 	}
-	m_vTextureThumbs.clear();
-	GE_DELETE(m_pWindow);
-	GE_DELETE(m_pInfoWindow);
+	textureThumbnailList.clear();
+	GE_DELETE(textureDlgMainWindow);
+	GE_DELETE(textureDlgInfoWindow);
 }
 
 void geTextureDlg::onCreate()
 {
 	//main window
-	m_pWindow = new geTextureDlgMainWindow(m_pFontManager);
-	m_pWindow->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
-	geLayout* mainLayout = layoutManager->getRootLayout()->createAsParent(m_pWindow);
+	textureDlgMainWindow = new geTextureDlgMainWindow(fontManager);
+	textureDlgMainWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
+	geLayout* mainLayout = layoutManager->getRootLayout()->createAsParent(textureDlgMainWindow);
 	//
 
 	//info window
-	m_pInfoWindow = new geTextureDlgInfoWindow(m_pFontManager);
-	m_pInfoWindow->create(m_pSecondryRenderer, NULL, 0, 0, m_cSize.x, 250, false);
-	mainLayout->createBottom(m_pInfoWindow, 0.2f);
+	textureDlgInfoWindow = new geTextureDlgInfoWindow(fontManager);
+	textureDlgInfoWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, 250, false);
+	mainLayout->createBottom(textureDlgInfoWindow, 0.2f);
 	//
 
-	find_textures(m_pSecondryRenderer, EditorGEARApp::getProjectHomeDirectory(), m_pWindow, m_vTextureThumbs);
+	find_textures(secondryRenderer, EditorGEARApp::getProjectHomeDirectory(), textureDlgMainWindow, textureThumbnailList);
 
 	int startX=10;
 	int startY=10;
-	for(std::vector<geGUIBase*>::iterator it = m_vTextureThumbs.begin(); it != m_vTextureThumbs.end(); ++it)
+	for(std::vector<geGUIBase*>::iterator it = textureThumbnailList.begin(); it != textureThumbnailList.end(); ++it)
 	{
 		geGUIBase* tvnode = *it;
 		if(startX+tvnode->getSize().x+5>m_cSize.x)
@@ -251,9 +251,9 @@ int geTextureDlg::find_textures(rendererGL10* renderer, const char *dirname, geG
 						
 						gxTexture* texture= loadTextureFromFile(*monoWrapper::mono_engine_getWorld(0)->getTextureManager(), buffer);
 
-						geTextureThumbnail* thumbnail = new geTextureThumbnail(m_pFontManager);
+						geTextureThumbnail* thumbnail = new geTextureThumbnail(fontManager);
 						thumbnail->create(renderer, dlg, texture, 260, 10, 70, 70);
-						m_vTextureThumbs.push_back(thumbnail);
+						textureThumbnailList.push_back(thumbnail);
 					}
 				}
                 break;

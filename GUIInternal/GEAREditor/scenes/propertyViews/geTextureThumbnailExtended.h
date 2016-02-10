@@ -22,7 +22,6 @@ public:
 	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 //#endif
 	virtual bool onMouseLButtonDown(float x, float y, int nFlag);
-
 };
 
 #endif

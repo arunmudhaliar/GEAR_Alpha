@@ -61,8 +61,8 @@ private:
 	void destroyTVUserData(geGUIBase* parent);
 	void createTVNode(geTreeNode* parentNode, object3d* obj, const char* filename);
 
-	geTreeView* m_pGameObjectsTreeView;
-	Sprite2Dx m_cszSprites[5];
-	geToolBarDropMenu* m_pCreateToolBarDropMenuBtnPtr;
-	geToolBarButton* m_pClearBtn;
+	geTreeView* gameObjectTreeView;
+	Sprite2Dx spriteArray[5];
+	geToolBarDropMenu* createToolBarDropMenuButton;
+	geToolBarButton* toolBarClearButton;
 };

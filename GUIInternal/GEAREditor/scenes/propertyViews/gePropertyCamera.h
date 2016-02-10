@@ -15,16 +15,6 @@
 class gePropertyCamera : public geTreeNode, public MGUIObserver
 {
 public:
-	Camera* m_pCameraPtr;
-
-	geToolBarDropMenu* m_pCameraTypeToolBarDropMenuBtnPtr;
-	geHorizontalSlider* m_pHorizontalSlider_FOV;
-	geHorizontalSlider* m_pHorizontalSlider_Near;
-	geHorizontalSlider* m_pHorizontalSlider_Far;
-	geToolBarDropMenu* m_pCameraCullingToolBarDropMenuBtnPtr;
-
-	geButton* m_pButtonApplyMainCamera;
-
 	gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontManager);
 	virtual ~gePropertyCamera();
 
@@ -40,8 +30,16 @@ public:
 	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 //#endif
 	virtual void onButtonClicked(geGUIBase* btn);
-
 	virtual void onCommand(int cmd);
+    
+    Camera* camera;
+    geToolBarDropMenu* cameraTypeToolBarDropMenuButton;
+    geHorizontalSlider* fovHorizontalSlider;
+    geHorizontalSlider* nearHorizontalSlider;
+    geHorizontalSlider* farHorizontalSlider;
+    geToolBarDropMenu* cameraCullingToolBarDropMenuButton;
+    
+    geButton* applyMainCameraButton;
 };
 
 #endif

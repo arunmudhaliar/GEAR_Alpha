@@ -29,11 +29,11 @@ protected:
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 private:
-	Sprite2Dx m_cszSprites[10];
-	unsigned long m_uCurrentRunElapsedTime;
-	geToolBarButton* m_pClearBtn;
-	geToolBarButton* m_pClearAllBtn;
-	geToolBarButton* m_pDontLogBtn;
-	geTreeView* m_pConsoleTreeView;
-	geTreeNode* m_pCurrentBuildRootNodePtr;
+	Sprite2Dx spriteArray[10];
+	unsigned long currentRunElapsedTime;
+	geToolBarButton* toolBarClearButton;
+	geToolBarButton* toolBarClearAllButton;
+	geToolBarButton* toolBarDontLogButton;
+	geTreeView* consoleTreeView;
+	geTreeNode* currentBuildRootTreeNode;
 };

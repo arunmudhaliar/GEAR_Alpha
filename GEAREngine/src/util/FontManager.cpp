@@ -1045,12 +1045,12 @@ void FontManager::init()
     //if(technique==rendererBase::gl_programmable_pipeline)
     {
 #if defined(WIN32)
-        if(m_cFontShader.loadShader("res/shadersWin32/hwshader/fontshader.glsl"))
+        if(fontHWShader.loadShader("res/shadersWin32/hwshader/fontshader.glsl"))
 		{
 			DEBUG_PRINT("res/shadersWin32/hwshader/fontshader.glsl loaded");
 		}
 #else
-        if(m_cFontShader.loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/fontshader.glsl"))
+        if(fontHWShader.loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/fontshader.glsl"))
 		{
 			DEBUG_PRINT("/storage/emulated/0/gear/shadersAndroid/hwshader/fontshader.glsl loaded");
 		}
@@ -1061,21 +1061,21 @@ void FontManager::init()
 
 void FontManager::reset(bool reload)
 {
-    for(int x=0;x<m_cvFontList.size();x++)
+    for(int x=0;x<fontList.size();x++)
     {
-        gxFont* font=m_cvFontList[x];
+        gxFont* font=fontList[x];
         if(reload)font->setDeleteGLTexture(!reload);
         GX_DELETE(font);
     }
-    m_cvFontList.clear();
+    fontList.clear();
 }
 
 void FontManager::setRenderer(gxRenderer* renderer)
 {
 	this->renderer=renderer;
-	for(int x=0;x<m_cvFontList.size();x++)
+	for(int x=0;x<fontList.size();x++)
     {
-        gxFont* font=m_cvFontList[x];
+        gxFont* font=fontList[x];
 		font->setRenderer(this->renderer);
     }
 }
@@ -1083,7 +1083,7 @@ void FontManager::setRenderer(gxRenderer* renderer)
 gxFont* FontManager::loadFont(const char* filename)
 {
 #if defined (USE_ProgrammablePipeLine)
-    gxFont* newFont=new gxFont(&m_cFontShader, renderer);
+    gxFont* newFont=new gxFont(&fontHWShader, renderer);
 #else
     gxFont* newFont=new gxFont();
 #endif
@@ -1096,7 +1096,7 @@ gxFont* FontManager::loadFont(const char* filename)
     newFont->load(file);
     file.CloseFile();
     
-    m_cvFontList.push_back(newFont);
+    fontList.push_back(newFont);
     
     return newFont;
 }

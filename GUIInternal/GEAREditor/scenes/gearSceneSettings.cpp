@@ -3,36 +3,36 @@
 gearSceneSettings::gearSceneSettings(geFontManager* fontmanager):
 geWindow("Settings View", fontmanager)
 {
-	m_pSettingsAndroidParentNode=NULL;
-	m_pSettingsAndroid=NULL;
+	settingsAndroidParentTreeNode=NULL;
+	androidSettings=NULL;
 
-	m_pSettingsGlobalParentNode=NULL;
-	m_pSettingsGlobal=NULL;
+	settingsGlobalParentTreeNode=NULL;
+	globalSettings=NULL;
     
-    m_pSettingsTreeView = new geTreeView(fontmanager);
+    settingsTreeView = new geTreeView(fontmanager);
 }
 
 gearSceneSettings::~gearSceneSettings()
 {
-    GE_DELETE(m_pSettingsTreeView);
+    GE_DELETE(settingsTreeView);
 }
 
 void gearSceneSettings::onCreate()
 {
-	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[0].setClip(6, 256, 16, 16);
-	m_cszSprites[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[1].setClip(173, 321, 16, 16);
+	spriteArray[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[0].setClip(6, 256, 16, 16);
+	spriteArray[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[1].setClip(173, 321, 16, 16);
 
-	m_pSettingsTreeView->create(rendererGUI, this, "SettingsTV", this);
+	settingsTreeView->create(rendererGUI, this, "SettingsTV", this);
 
-	geTreeNode* rootNode=m_pSettingsTreeView->getRoot();
+	geTreeNode* rootNode=settingsTreeView->getRoot();
 
-	m_pSettingsGlobalParentNode = new geTreeNode(rendererGUI, rootNode, "Global", &m_cszSprites[0], 0);
-	m_pSettingsGlobal = new geSettingsGlobal(rendererGUI, m_pSettingsGlobalParentNode, "", NULL, fontManagerGUI);
+	settingsGlobalParentTreeNode = new geTreeNode(rendererGUI, rootNode, "Global", &spriteArray[0], 0);
+	globalSettings = new geSettingsGlobal(rendererGUI, settingsGlobalParentTreeNode, "", NULL, fontManagerGUI);
 
-	m_pSettingsAndroidParentNode = new geTreeNode(rendererGUI, rootNode, "Android", &m_cszSprites[1], 0);
-	m_pSettingsAndroid = new geSettingsAndroid(rendererGUI, m_pSettingsAndroidParentNode, "", NULL, fontManagerGUI);
+	settingsAndroidParentTreeNode = new geTreeNode(rendererGUI, rootNode, "Android", &spriteArray[1], 0);
+	androidSettings = new geSettingsAndroid(rendererGUI, settingsAndroidParentTreeNode, "", NULL, fontManagerGUI);
 }
 
 void gearSceneSettings::onDraw()
@@ -45,7 +45,7 @@ void gearSceneSettings::onDraw()
 	}
 #endif
 
-	m_pSettingsTreeView->draw();
+	settingsTreeView->draw();
 }
 
 void gearSceneSettings::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)

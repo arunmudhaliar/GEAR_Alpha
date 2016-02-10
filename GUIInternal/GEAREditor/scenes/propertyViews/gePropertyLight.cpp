@@ -7,63 +7,63 @@ gePropertyLight::gePropertyLight(rendererGL10* renderer, geGUIBase* parent, cons
 	setSize(m_cSize.x, 130.0f);
 
 	//diffuse
-	m_pColorControl = new geColorControl(fontmanager);
-	m_pColorControl->create(renderer, this, 10, 10);
-	m_pColorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_pColorControl->setGUIObserver(this);
+	colorControl = new geColorControl(fontmanager);
+	colorControl->create(renderer, this, 10, 10);
+	colorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
+	colorControl->setGUIObserver(this);
 
-	m_pLightTypeToolBarDropMenuBtnPtr=new geToolBarDropMenu(rendererGUI, "LightType", this, fontmanager);
-	m_pLightTypeToolBarDropMenuBtnPtr->setGUIObserver(this);
-	m_pLightTypeToolBarDropMenuBtnPtr->setPos(10, 35);
+	lightTypeToolBarDropMenuButton=new geToolBarDropMenu(rendererGUI, "LightType", this, fontmanager);
+	lightTypeToolBarDropMenuButton->setGUIObserver(this);
+	lightTypeToolBarDropMenuButton->setPos(10, 35);
 
-	m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00005003);
-	m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Point Light", 0x00005002);
-	//m_pLightTypeToolBarDropMenuBtnPtr->appendMenuItem("Spot Light", 0x00005003);
+	lightTypeToolBarDropMenuButton->appendMenuItem("Directional Light", 0x00005003);
+	lightTypeToolBarDropMenuButton->appendMenuItem("Point Light", 0x00005002);
+	//lightTypeToolBarDropMenuButton->appendMenuItem("Spot Light", 0x00005003);
 
 	//ambient
-	m_pColorControlAmbient = new geColorControl(fontmanager);
-	m_pColorControlAmbient->create(renderer, this, 100, 10);
-	m_pColorControlAmbient->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_pColorControlAmbient->setGUIObserver(this);
+	ambientColorControl = new geColorControl(fontmanager);
+	ambientColorControl->create(renderer, this, 100, 10);
+	ambientColorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
+	ambientColorControl->setGUIObserver(this);
 
 
 	//specular
-	m_pColorControlSpecular = new geColorControl(fontmanager);
-	m_pColorControlSpecular->create(renderer, this, 190, 10);
-	m_pColorControlSpecular->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_pColorControlSpecular->setGUIObserver(this);
+	specularColorControl = new geColorControl(fontmanager);
+	specularColorControl->create(renderer, this, 190, 10);
+	specularColorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
+	specularColorControl->setGUIObserver(this);
 
 
 	//attenuations
-	m_pHorizontalSlider_ConstantAttenuation = new geHorizontalSlider(fontManagerGUI);
-	m_pHorizontalSlider_ConstantAttenuation->create(rendererGUI, this, "slider", 10, 65, 130);
-	m_pHorizontalSlider_ConstantAttenuation->setSliderValue(1.0f);
-	m_pHorizontalSlider_ConstantAttenuation->setGUIObserver(this);
+	constantAttenuationHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
+	constantAttenuationHorizontalSlider->create(rendererGUI, this, "slider", 10, 65, 130);
+	constantAttenuationHorizontalSlider->setSliderValue(1.0f);
+	constantAttenuationHorizontalSlider->setGUIObserver(this);
 
-	m_pHorizontalSlider_LinearAttenuation = new geHorizontalSlider(fontManagerGUI);
-	m_pHorizontalSlider_LinearAttenuation->create(rendererGUI, this, "slider", 10, 85, 130);
-	m_pHorizontalSlider_LinearAttenuation->setSliderValue(1.0f);
-	m_pHorizontalSlider_LinearAttenuation->setGUIObserver(this);
+	linearAttenuationHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
+	linearAttenuationHorizontalSlider->create(rendererGUI, this, "slider", 10, 85, 130);
+	linearAttenuationHorizontalSlider->setSliderValue(1.0f);
+	linearAttenuationHorizontalSlider->setGUIObserver(this);
 
-	m_pHorizontalSlider_QuadraticAttenuation = new geHorizontalSlider(fontManagerGUI);
-	m_pHorizontalSlider_QuadraticAttenuation->create(rendererGUI, this, "slider", 10, 105, 130);
-	m_pHorizontalSlider_QuadraticAttenuation->setSliderValue(1.0f);
-	m_pHorizontalSlider_QuadraticAttenuation->setGUIObserver(this);
+	quadraticAttenuationHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
+	quadraticAttenuationHorizontalSlider->create(rendererGUI, this, "slider", 10, 105, 130);
+	quadraticAttenuationHorizontalSlider->setSliderValue(1.0f);
+	quadraticAttenuationHorizontalSlider->setGUIObserver(this);
 
 	//window column
 	geWindowColumn* pWindowColumn = new geWindowColumn(fontManagerGUI);
 	pWindowColumn->create(rendererGUI, this, 40, 300.0f, 10.0f, 0.4f);
 	stWindowColumnRow* row = pWindowColumn->addRow("Type");
-	pWindowColumn->addControl(row, m_pLightTypeToolBarDropMenuBtnPtr, 30.0f);
+	pWindowColumn->addControl(row, lightTypeToolBarDropMenuButton, 30.0f);
 	row = pWindowColumn->addRow("Constant Attenuation");
-	pWindowColumn->addControl(row, m_pHorizontalSlider_ConstantAttenuation, 20.0f);
+	pWindowColumn->addControl(row, constantAttenuationHorizontalSlider, 20.0f);
 	row = pWindowColumn->addRow("Linear Attenuation");
-	pWindowColumn->addControl(row, m_pHorizontalSlider_LinearAttenuation, 20.0f);
+	pWindowColumn->addControl(row, linearAttenuationHorizontalSlider, 20.0f);
 	row = pWindowColumn->addRow("Quadratic Attenuation");
-	pWindowColumn->addControl(row, m_pHorizontalSlider_QuadraticAttenuation, 20.0f);
+	pWindowColumn->addControl(row, quadraticAttenuationHorizontalSlider, 20.0f);
 	//
 
-	m_pLightPtr=NULL;
+	previewLight=NULL;
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -87,9 +87,9 @@ void gePropertyLight::drawNode()
 {
 	drawRect(&vertexBufferClientArea);
 
-	geFontManager::g_pFontArial10_84Ptr->drawString("Diffuse", m_pColorControl->getPos().x+30, 7+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
-	geFontManager::g_pFontArial10_84Ptr->drawString("Ambient", m_pColorControlAmbient->getPos().x+30, 7+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
-	geFontManager::g_pFontArial10_84Ptr->drawString("Specular", m_pColorControlSpecular->getPos().x+30, 7+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString("Diffuse", colorControl->getPos().x+30, 7+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString("Ambient", ambientColorControl->getPos().x+30, 7+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString("Specular", specularColorControl->getPos().x+30, 7+geFontManager::g_pFontArial10_84Ptr->getLineHeight(), m_cSize.x);
 
 	if(childControlList.size() && hasAtleastOneTreeNodeChild)
 	{
@@ -105,7 +105,7 @@ void gePropertyLight::drawNode()
 		tvnode->draw();
 	}
 
-	//m_pWindowColumn->draw();
+	//windowColumnControl->draw();
 
 	if(sprite)
 		sprite->draw();
@@ -113,23 +113,23 @@ void gePropertyLight::drawNode()
 
 void gePropertyLight::populatePropertyOfLight(object3d* obj)
 {
-	m_pLightPtr = (gxLight*)obj;
-	vector4f diff(m_pLightPtr->getDiffuseColor());
-	vector4f ambient(m_pLightPtr->getAmbientColor());
-	vector4f specular(m_pLightPtr->getSpecularColor());
+	previewLight = (gxLight*)obj;
+	vector4f diff(previewLight->getDiffuseColor());
+	vector4f ambient(previewLight->getAmbientColor());
+	vector4f specular(previewLight->getSpecularColor());
 
-	m_pColorControl->setControlColor(diff.x, diff.y, diff.z, diff.w);
-	m_pColorControlAmbient->setControlColor(ambient.x, ambient.y, ambient.z, ambient.w);
-	m_pColorControlSpecular->setControlColor(specular.x, specular.y, specular.z, specular.w);
+	colorControl->setControlColor(diff.x, diff.y, diff.z, diff.w);
+	ambientColorControl->setControlColor(ambient.x, ambient.y, ambient.z, ambient.w);
+	specularColorControl->setControlColor(specular.x, specular.y, specular.z, specular.w);
 
-	m_pHorizontalSlider_ConstantAttenuation->setSliderValue(m_pLightPtr->getConstantAttenuation(), false);
-	m_pHorizontalSlider_LinearAttenuation->setSliderValue(m_pLightPtr->getLinearAttenuation()*100.0f, false);
-	m_pHorizontalSlider_QuadraticAttenuation->setSliderValue(m_pLightPtr->getQuadraticAttenuation()*1000.0f, false);
+	constantAttenuationHorizontalSlider->setSliderValue(previewLight->getConstantAttenuation(), false);
+	linearAttenuationHorizontalSlider->setSliderValue(previewLight->getLinearAttenuation()*100.0f, false);
+	quadraticAttenuationHorizontalSlider->setSliderValue(previewLight->getQuadraticAttenuation()*1000.0f, false);
 
-	if(m_pLightPtr->getLightType()==gxLight::LIGHT_DIRECTIONAL)
-		m_pLightTypeToolBarDropMenuBtnPtr->setMenuItem("Directional Light");
-	else if(m_pLightPtr->getLightType()==gxLight::LIGHT_POINT)
-		m_pLightTypeToolBarDropMenuBtnPtr->setMenuItem("Point Light");
+	if(previewLight->getLightType()==gxLight::LIGHT_DIRECTIONAL)
+		lightTypeToolBarDropMenuButton->setMenuItem("Directional Light");
+	else if(previewLight->getLightType()==gxLight::LIGHT_POINT)
+		lightTypeToolBarDropMenuButton->setMenuItem("Point Light");
 }
 
 void gePropertyLight::onTextChange(geGUIBase* textbox)
@@ -138,43 +138,43 @@ void gePropertyLight::onTextChange(geGUIBase* textbox)
 
 void gePropertyLight::onColorChange(geGUIBase* colorControl)
 {
-	vector4f diff(m_pLightPtr->getDiffuseColor());
-	vector4f ambient(m_pLightPtr->getAmbientColor());
-	vector4f specular(m_pLightPtr->getSpecularColor());
+	vector4f diff(previewLight->getDiffuseColor());
+	vector4f ambient(previewLight->getAmbientColor());
+	vector4f specular(previewLight->getSpecularColor());
 
-	if(colorControl==m_pColorControl)
+	if(colorControl==this->colorControl)
 	{
-		geVector4f newClr(m_pColorControl->getControlColor());
+		geVector4f newClr(this->colorControl->getControlColor());
         vector4f tmp(newClr.x, newClr.y, newClr.z, newClr.w);
-		m_pLightPtr->setDiffuseColor(tmp);
+		previewLight->setDiffuseColor(tmp);
 	}
-	else if(colorControl==m_pColorControlAmbient)
+	else if(colorControl==ambientColorControl)
 	{
-		geVector4f newClr(m_pColorControlAmbient->getControlColor());
+		geVector4f newClr(ambientColorControl->getControlColor());
         vector4f tmp(newClr.x, newClr.y, newClr.z, newClr.w);
-		m_pLightPtr->setAmbientColor(tmp);
+		previewLight->setAmbientColor(tmp);
 	}
-	else if(colorControl==m_pColorControlSpecular)
+	else if(colorControl==specularColorControl)
 	{
-		geVector4f newClr(m_pColorControlSpecular->getControlColor());
+		geVector4f newClr(specularColorControl->getControlColor());
         vector4f tmp(newClr.x, newClr.y, newClr.z, newClr.w);
-		m_pLightPtr->setSpecularColor(tmp);
+		previewLight->setSpecularColor(tmp);
 	}
 }
 
 void gePropertyLight::onSliderChange(geGUIBase* slider)
 {
-	if(m_pHorizontalSlider_ConstantAttenuation==slider)
+	if(constantAttenuationHorizontalSlider==slider)
 	{
-		m_pLightPtr->setConstantAttenuation(m_pHorizontalSlider_ConstantAttenuation->getSliderValue());
+		previewLight->setConstantAttenuation(constantAttenuationHorizontalSlider->getSliderValue());
 	}
-	else if(m_pHorizontalSlider_LinearAttenuation==slider)
+	else if(linearAttenuationHorizontalSlider==slider)
 	{
-		m_pLightPtr->setLinearAttenuation(m_pHorizontalSlider_LinearAttenuation->getSliderValue()*0.01f);
+		previewLight->setLinearAttenuation(linearAttenuationHorizontalSlider->getSliderValue()*0.01f);
 	}
-	else if(m_pHorizontalSlider_QuadraticAttenuation==slider)
+	else if(quadraticAttenuationHorizontalSlider==slider)
 	{
-		m_pLightPtr->setQuadraticAttenuation(m_pHorizontalSlider_QuadraticAttenuation->getSliderValue()*0.001f);
+		previewLight->setQuadraticAttenuation(quadraticAttenuationHorizontalSlider->getSliderValue()*0.001f);
 	}
 }
 
@@ -186,12 +186,12 @@ void gePropertyLight::onCommand(int cmd)
 {
 	if(cmd==0x00005003)
 	{
-		m_pLightPtr->setLightType(gxLight::LIGHT_DIRECTIONAL);
-		m_pLightTypeToolBarDropMenuBtnPtr->setMenuItem(cmd);
+		previewLight->setLightType(gxLight::LIGHT_DIRECTIONAL);
+		lightTypeToolBarDropMenuButton->setMenuItem(cmd);
 	}
 	else if(cmd==0x00005002)
 	{
-		m_pLightPtr->setLightType(gxLight::LIGHT_POINT);
-		m_pLightTypeToolBarDropMenuBtnPtr->setMenuItem(cmd);
+		previewLight->setLightType(gxLight::LIGHT_POINT);
+		lightTypeToolBarDropMenuButton->setMenuItem(cmd);
 	}
 }

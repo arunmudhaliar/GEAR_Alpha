@@ -3,9 +3,9 @@
 Sprite::Sprite()/*:
 transformf()*/
 {
-	m_cClipWidth=0;
-	m_cClipHeight=0;
-	m_cClipX=m_cClipY=0;
+	spriteClipWidth=0;
+	spriteClipHeight=0;
+	spriteClipX=spriteClipY=0;
     
     clearRenderFlag();
     setRenderFlag(RENDER_NORMAL);
@@ -30,18 +30,18 @@ Sprite::~Sprite()
 void Sprite::copy(Sprite& sprite)
 {
 	steTexturePacket *tp = sprite.getTexture()->getTexturePack(); 
-	m_cTexture.setTexturePack(tp);
+	textureObject.setTexturePack(tp);
 	
 	if(tp->isAlphaTexure)
-		m_cTexture.setTextureType(geTexture::TEX_ALPHA);
+		textureObject.setTextureType(geTexture::TEX_ALPHA);
 	else
-		m_cTexture.setTextureType(geTexture::TEX_NORMAL);
+		textureObject.setTextureType(geTexture::TEX_NORMAL);
 
-	m_cOrigSize.set(sprite.getOrigWidth(), sprite.getOrigHeight());
-	m_cOffset=sprite.getOffset();
+	originalSize.set(sprite.getOrigWidth(), sprite.getOrigHeight());
+	spriteOffset=sprite.getOffset();
 
-	memcpy(m_cszVertLst, sprite.getVertexBuffer(), sizeof(m_cszVertLst));
-	memcpy(m_cszTexCoord, sprite.getTexCoordBuffer(), sizeof(m_cszTexCoord));
+	memcpy(spriteVertexArray, sprite.getVertexBuffer(), sizeof(spriteVertexArray));
+	memcpy(spriteTextureCoordinateArray, sprite.getTexCoordBuffer(), sizeof(spriteTextureCoordinateArray));
 
 	setClip(sprite.getClipX(), sprite.getClipY(), sprite.getClipWidth(), sprite.getClipHeight());
 	setRenderFlag(sprite.getRenderFlag());
@@ -54,29 +54,29 @@ void Sprite::copy(Sprite& sprite)
 void Sprite::loadTexture(CGETextureManager* textureManager, const char *pszFileName)
 {
 	steTexturePacket *tp = textureManager->LoadTexture(pszFileName); 
-	m_cTexture.setTexturePack(tp);
+	textureObject.setTexturePack(tp);
 	
 	if(tp->isAlphaTexure)
-		m_cTexture.setTextureType(geTexture::TEX_ALPHA);
+		textureObject.setTextureType(geTexture::TEX_ALPHA);
 	else
-		m_cTexture.setTextureType(geTexture::TEX_NORMAL);
+		textureObject.setTextureType(geTexture::TEX_NORMAL);
 	
-	m_cOrigSize.x = (float)tp->m_cWidth;
-	m_cOrigSize.y = (float)tp->m_cHeight;
+	originalSize.x = (float)tp->m_cWidth;
+	originalSize.y = (float)tp->m_cHeight;
 	
-	setClip(0, 0, m_cOrigSize.x, m_cOrigSize.y);
+	setClip(0, 0, originalSize.x, originalSize.y);
 }
 
 void Sprite::setClip(float clipX, float clipY, float width, float height)
 {
-    m_cClipX=clipX;
-    m_cClipY=clipY;
+    spriteClipX=clipX;
+    spriteClipY=clipY;
     
-	m_cClipWidth=width;
-	m_cClipHeight=height;
+	spriteClipWidth=width;
+	spriteClipHeight=height;
 	
-	float offX=(m_cOffset.x+1.0f)*0.5f;
-	float offY=(-m_cOffset.y+1.0f)*0.5f;	
+	float offX=(spriteOffset.x+1.0f)*0.5f;
+	float offY=(-spriteOffset.y+1.0f)*0.5f;	
 	
 	const float vertLst[8] =
 	{
@@ -86,15 +86,15 @@ void Sprite::setClip(float clipX, float clipY, float width, float height)
 		(width * (-offX)),			(height * (1.0f-offY)),
 	};
 	
-	memcpy(m_cszVertLst, vertLst, sizeof(vertLst));
+	memcpy(spriteVertexArray, vertLst, sizeof(vertLst));
 	
-	if(m_cOrigSize.x<=0.0f)	m_cOrigSize.x = 1.0f;
-	if(m_cOrigSize.y<=0.0f)	m_cOrigSize.y = 1.0f;
+	if(originalSize.x<=0.0f)	originalSize.x = 1.0f;
+	if(originalSize.y<=0.0f)	originalSize.y = 1.0f;
 	
-	float min_x=(float)clipX/m_cOrigSize.x;
-	float min_y=(float)clipY/m_cOrigSize.y;
-	float max_x=(float)(clipX+width)/m_cOrigSize.x;
-	float max_y=(float)(clipY+height)/m_cOrigSize.y;
+	float min_x=(float)clipX/originalSize.x;
+	float min_y=(float)clipY/originalSize.y;
+	float max_x=(float)(clipX+width)/originalSize.x;
+	float max_y=(float)(clipY+height)/originalSize.y;
 	
 	geVector2f aGLmin(min_x, min_y);
 	geVector2f aGLmax(max_x, max_y);
@@ -107,35 +107,35 @@ void Sprite::setClip(float clipX, float clipY, float width, float height)
 		(aGLmin.x)	, (aGLmax.y),
 	};
 	
-	memcpy(m_cszTexCoord, tex, sizeof(tex));
+	memcpy(spriteTextureCoordinateArray, tex, sizeof(tex));
 }
 
 void Sprite::setVFlip()
 {
-    GE_SWAP_FLOAT(m_cszTexCoord[0], m_cszTexCoord[4]);
-    GE_SWAP_FLOAT(m_cszTexCoord[1], m_cszTexCoord[5]);
-    GE_SWAP_FLOAT(m_cszTexCoord[2], m_cszTexCoord[6]);
-    GE_SWAP_FLOAT(m_cszTexCoord[3], m_cszTexCoord[7]);
+    GE_SWAP_FLOAT(spriteTextureCoordinateArray[0], spriteTextureCoordinateArray[4]);
+    GE_SWAP_FLOAT(spriteTextureCoordinateArray[1], spriteTextureCoordinateArray[5]);
+    GE_SWAP_FLOAT(spriteTextureCoordinateArray[2], spriteTextureCoordinateArray[6]);
+    GE_SWAP_FLOAT(spriteTextureCoordinateArray[3], spriteTextureCoordinateArray[7]);
 }
 
 void Sprite::setHFlip()
 {
-    GE_SWAP_FLOAT(m_cszTexCoord[0], m_cszTexCoord[2]);
-    GE_SWAP_FLOAT(m_cszTexCoord[1], m_cszTexCoord[3]);
-    GE_SWAP_FLOAT(m_cszTexCoord[4], m_cszTexCoord[6]);
-    GE_SWAP_FLOAT(m_cszTexCoord[5], m_cszTexCoord[7]);
+    GE_SWAP_FLOAT(spriteTextureCoordinateArray[0], spriteTextureCoordinateArray[2]);
+    GE_SWAP_FLOAT(spriteTextureCoordinateArray[1], spriteTextureCoordinateArray[3]);
+    GE_SWAP_FLOAT(spriteTextureCoordinateArray[4], spriteTextureCoordinateArray[6]);
+    GE_SWAP_FLOAT(spriteTextureCoordinateArray[5], spriteTextureCoordinateArray[7]);
 }
 
 void Sprite::setOffset(float x, float y)
 {
-	m_cOffset.x=x;
-	m_cOffset.y=y;
+	spriteOffset.x=x;
+	spriteOffset.y=y;
 }
 
 void Sprite::debugDraw(geVector2f* pos)
 {
     glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, m_cszVertLst);
+	glVertexPointer(2, GL_FLOAT, 0, spriteVertexArray);
     
     glPushMatrix();
 	if(pos)

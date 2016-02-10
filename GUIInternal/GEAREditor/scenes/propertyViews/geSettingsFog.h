@@ -51,9 +51,9 @@ public:
 	virtual void onCommand(int cmd);
 	virtual void onSliderChange(geGUIBase* slider);
 
-	stFog* m_pFog_struct;	//must not delete this pointer
-	stFogView m_cFogSubView;
-	gePushButton* m_pPushBtn_Fog;
+	stFog* fogStructObject;	//must not delete this pointer
+	stFogView fogSubViewStructObject;
+	gePushButton* fogToggle;
 };
 
 #endif

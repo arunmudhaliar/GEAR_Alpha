@@ -16,7 +16,7 @@ public:
 
 	void draw();
 	void selectedObject3D(object3d* obj);
-	object3d* getSelectedObject3D()			{	return m_pSelectedObj;	}
+	object3d* getSelectedObject3D()			{	return selectedObject;	}
 	void reinitPreviewWorld();
 
 protected:
@@ -34,9 +34,9 @@ protected:
 private:
 	void followObject(float dt, object3d* chasedObj);
 
-	object3d* m_pSelectedObj;
-	gxWorld* m_pPreviewWorldPtr;	//1th world. Must not delete this pointer
-	object3d* m_pLightPtr;
-	bool m_bStopFollowCam;
-	vector2i m_cPrevMousePos;
+	object3d* selectedObject;
+	gxWorld* previewWorld;	//1th world. Must not delete this pointer
+	object3d* previewLight;
+	bool stopFollowCam;
+	vector2i previousMousePosition;
 };

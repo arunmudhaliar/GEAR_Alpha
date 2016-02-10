@@ -23,19 +23,15 @@ public:
 
 protected:
 	geWindow* m_pWindow;
-
-	geHorizontalSlider* m_pHorizontalSlider_RGBA[4];
-
-	float m_fCircleRadius;
-	geVector2f m_pszColorCircleVertices[COLOR_DLG_MAX_RESOLUTION];
-	geVector2f m_pszColorPointerVertices[12];
-	geVector3f m_pszColorCircleColor[COLOR_DLG_MAX_RESOLUTION];
-	geVector2f m_cPointerPos;
-	geVector2f m_cRGBPointerPos[3];
-	geColorControl* m_pColorControl;
-
-	geColorControl* m_pObserverControlPtr;	//must not delete this pointer
+	geHorizontalSlider* rgbaHorizontalSliderArray[4];
+	float colorDlgCircleRadius;
+	geVector2f colorCircleVertexArray[COLOR_DLG_MAX_RESOLUTION];
+	geVector2f colorPointerVertexArray[12];
+	geVector3f colorCircleColorArray[COLOR_DLG_MAX_RESOLUTION];
+	geVector2f colorDlgPointerPosition;
+	geColorControl* colorControl;
+	geColorControl* observerControlPtr;	//must not delete this pointer
     
 private:
-    geVector4f m_selectedColor;
+    geVector4f selectedColor;
 };

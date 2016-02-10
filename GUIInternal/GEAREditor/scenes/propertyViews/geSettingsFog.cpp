@@ -6,56 +6,56 @@ geSettingsFog::geSettingsFog(rendererGL10* renderer, geGUIBase* parent, const ch
 {
 	//setSize(m_cSize.x, 115.0f);
 
-	m_pFog_struct=fog_struct;
+	fogStructObject=fog_struct;
 
-	m_pPushBtn_Fog = new gePushButton("", fontmanager);
-	m_pPushBtn_Fog->create(renderer, this, "", 15, 10);
-	m_pPushBtn_Fog->setGUIObserver(this);
+	fogToggle = new gePushButton("", fontmanager);
+	fogToggle->create(renderer, this, "", 15, 10);
+	fogToggle->setGUIObserver(this);
 
 	//fog
-	m_cFogSubView.edit_fog_start = new geHorizontalSlider(fontManagerGUI);
-	m_cFogSubView.edit_fog_start->create(rendererGUI, this, "slider", 10, 65, 130);
-	m_cFogSubView.edit_fog_start->setSliderValue(0.0f);
-	m_cFogSubView.edit_fog_start->setGUIObserver(this);
+	fogSubViewStructObject.edit_fog_start = new geHorizontalSlider(fontManagerGUI);
+	fogSubViewStructObject.edit_fog_start->create(rendererGUI, this, "slider", 10, 65, 130);
+	fogSubViewStructObject.edit_fog_start->setSliderValue(0.0f);
+	fogSubViewStructObject.edit_fog_start->setGUIObserver(this);
 
-	m_cFogSubView.edit_fog_end = new geHorizontalSlider(fontManagerGUI);
-	m_cFogSubView.edit_fog_end->create(rendererGUI, this, "slider", 10, 65, 130);
-	m_cFogSubView.edit_fog_end->setSliderValue(1.0f);
-	m_cFogSubView.edit_fog_end->setGUIObserver(this);
+	fogSubViewStructObject.edit_fog_end = new geHorizontalSlider(fontManagerGUI);
+	fogSubViewStructObject.edit_fog_end->create(rendererGUI, this, "slider", 10, 65, 130);
+	fogSubViewStructObject.edit_fog_end->setSliderValue(1.0f);
+	fogSubViewStructObject.edit_fog_end->setGUIObserver(this);
 
-	m_cFogSubView.edit_fog_density = new geHorizontalSlider(fontManagerGUI);
-	m_cFogSubView.edit_fog_density->create(rendererGUI, this, "slider", 10, 65, 130);
-	m_cFogSubView.edit_fog_density->setSliderValue(1.0f);
-	m_cFogSubView.edit_fog_density->setGUIObserver(this);
+	fogSubViewStructObject.edit_fog_density = new geHorizontalSlider(fontManagerGUI);
+	fogSubViewStructObject.edit_fog_density->create(rendererGUI, this, "slider", 10, 65, 130);
+	fogSubViewStructObject.edit_fog_density->setSliderValue(1.0f);
+	fogSubViewStructObject.edit_fog_density->setGUIObserver(this);
 
-	m_cFogSubView.color_fog_color = new geColorControl(fontmanager);
-	m_cFogSubView.color_fog_color->create(rendererGUI, this, 10, 10);
-	m_cFogSubView.color_fog_color->setControlColor(1.0, 1.0, 1.0, 1.0);
-	m_cFogSubView.color_fog_color->setGUIObserver(this);
+	fogSubViewStructObject.color_fog_color = new geColorControl(fontmanager);
+	fogSubViewStructObject.color_fog_color->create(rendererGUI, this, 10, 10);
+	fogSubViewStructObject.color_fog_color->setControlColor(1.0, 1.0, 1.0, 1.0);
+	fogSubViewStructObject.color_fog_color->setGUIObserver(this);
 
-	m_cFogSubView.menu_fog_type=new geToolBarDropMenu(rendererGUI, "FogType", this, fontmanager);
-	m_cFogSubView.menu_fog_type->setGUIObserver(this);
-	m_cFogSubView.menu_fog_type->setPos(10, 35);
-	m_cFogSubView.menu_fog_type->appendMenuItem("Linear", 0x00005100);
-	m_cFogSubView.menu_fog_type->appendMenuItem("Exp", 0x00005101);
-	m_cFogSubView.menu_fog_type->appendMenuItem("Exp2", 0x00005102);
-	m_cFogSubView.menu_fog_type->setMenuItem(0);
+	fogSubViewStructObject.menu_fog_type=new geToolBarDropMenu(rendererGUI, "FogType", this, fontmanager);
+	fogSubViewStructObject.menu_fog_type->setGUIObserver(this);
+	fogSubViewStructObject.menu_fog_type->setPos(10, 35);
+	fogSubViewStructObject.menu_fog_type->appendMenuItem("Linear", 0x00005100);
+	fogSubViewStructObject.menu_fog_type->appendMenuItem("Exp", 0x00005101);
+	fogSubViewStructObject.menu_fog_type->appendMenuItem("Exp2", 0x00005102);
+	fogSubViewStructObject.menu_fog_type->setMenuItem(0);
 
 	//window column
-	m_cFogSubView.pWindowColumn = new geWindowColumn(fontManagerGUI);
-	m_cFogSubView.pWindowColumn->create(rendererGUI, this, 35, 300.0f, 10.0f, 0.35f);
-	stWindowColumnRow* row = m_cFogSubView.pWindowColumn->addRow("Fog start");
-	m_cFogSubView.pWindowColumn->addControl(row, m_cFogSubView.edit_fog_start, m_cFogSubView.edit_fog_start->getSize().y*3);
-	row = m_cFogSubView.pWindowColumn->addRow("Fog end");
-	m_cFogSubView.pWindowColumn->addControl(row, m_cFogSubView.edit_fog_end, m_cFogSubView.edit_fog_end->getSize().y*3);
-	row = m_cFogSubView.pWindowColumn->addRow("Fog density");
-	m_cFogSubView.pWindowColumn->addControl(row, m_cFogSubView.edit_fog_density, m_cFogSubView.edit_fog_density->getSize().y*3);
-	row = m_cFogSubView.pWindowColumn->addRow("Fog Color");
-	m_cFogSubView.pWindowColumn->addControl(row, m_cFogSubView.color_fog_color, m_cFogSubView.color_fog_color->getSize().y+4);
-	row = m_cFogSubView.pWindowColumn->addRow("Fog Type");
-	m_cFogSubView.pWindowColumn->addControl(row, m_cFogSubView.menu_fog_type);
+	fogSubViewStructObject.pWindowColumn = new geWindowColumn(fontManagerGUI);
+	fogSubViewStructObject.pWindowColumn->create(rendererGUI, this, 35, 300.0f, 10.0f, 0.35f);
+	stWindowColumnRow* row = fogSubViewStructObject.pWindowColumn->addRow("Fog start");
+	fogSubViewStructObject.pWindowColumn->addControl(row, fogSubViewStructObject.edit_fog_start, fogSubViewStructObject.edit_fog_start->getSize().y*3);
+	row = fogSubViewStructObject.pWindowColumn->addRow("Fog end");
+	fogSubViewStructObject.pWindowColumn->addControl(row, fogSubViewStructObject.edit_fog_end, fogSubViewStructObject.edit_fog_end->getSize().y*3);
+	row = fogSubViewStructObject.pWindowColumn->addRow("Fog density");
+	fogSubViewStructObject.pWindowColumn->addControl(row, fogSubViewStructObject.edit_fog_density, fogSubViewStructObject.edit_fog_density->getSize().y*3);
+	row = fogSubViewStructObject.pWindowColumn->addRow("Fog Color");
+	fogSubViewStructObject.pWindowColumn->addControl(row, fogSubViewStructObject.color_fog_color, fogSubViewStructObject.color_fog_color->getSize().y+4);
+	row = fogSubViewStructObject.pWindowColumn->addRow("Fog Type");
+	fogSubViewStructObject.pWindowColumn->addControl(row, fogSubViewStructObject.menu_fog_type);
 
-	setSize(m_cSize.x, row->getYPoistion()+m_cFogSubView.menu_fog_type->getSize().y + 5);
+	setSize(m_cSize.x, row->getYPoistion()+fogSubViewStructObject.menu_fog_type->getSize().y + 5);
 
 	setNodeColor(0.21f, 0.21f, 0.21f);
 	setNodeSelectionColor(0.21f, 0.21f, 0.21f);
@@ -91,41 +91,41 @@ void geSettingsFog::drawNode()
 
 void geSettingsFog::onColorChange(geGUIBase* colorControl)
 {
-	if(colorControl==m_cFogSubView.color_fog_color)
+	if(colorControl==fogSubViewStructObject.color_fog_color)
 	{
-		m_pFog_struct->setFogColor(vector4f(
-			m_cFogSubView.color_fog_color->getControlColor().x,
-			m_cFogSubView.color_fog_color->getControlColor().y,
-			m_cFogSubView.color_fog_color->getControlColor().z,
-			m_cFogSubView.color_fog_color->getControlColor().z
+		fogStructObject->setFogColor(vector4f(
+			fogSubViewStructObject.color_fog_color->getControlColor().x,
+			fogSubViewStructObject.color_fog_color->getControlColor().y,
+			fogSubViewStructObject.color_fog_color->getControlColor().z,
+			fogSubViewStructObject.color_fog_color->getControlColor().z
 			));
 	}
 }
 
 void geSettingsFog::onCommand(int cmd)
 {
-	if(m_cFogSubView.menu_fog_type && cmd>=0x00005100 && cmd<0x00005100+m_cFogSubView.menu_fog_type->getMenuItemCount())
+	if(fogSubViewStructObject.menu_fog_type && cmd>=0x00005100 && cmd<0x00005100+fogSubViewStructObject.menu_fog_type->getMenuItemCount())
 	{
-		m_pFog_struct->setFogType((stFog::EFOG_TYPE)(cmd-0x00005100));
-		m_cFogSubView.menu_fog_type->setMenuItem(cmd);
+		fogStructObject->setFogType((stFog::EFOG_TYPE)(cmd-0x00005100));
+		fogSubViewStructObject.menu_fog_type->setMenuItem(cmd);
 	}
 }
 
 void geSettingsFog::onSliderChange(geGUIBase* slider)
 {
-	if(m_cFogSubView.edit_fog_start==slider)
+	if(fogSubViewStructObject.edit_fog_start==slider)
 	{
-		m_pFog_struct->setFogStart(m_cFogSubView.edit_fog_start->getSliderValue());
+		fogStructObject->setFogStart(fogSubViewStructObject.edit_fog_start->getSliderValue());
 	}
-	else if(m_cFogSubView.edit_fog_end==slider)
+	else if(fogSubViewStructObject.edit_fog_end==slider)
 	{
-		m_pFog_struct->setFogEnd(m_cFogSubView.edit_fog_end->getSliderValue());
+		fogStructObject->setFogEnd(fogSubViewStructObject.edit_fog_end->getSliderValue());
 	}
-	else if(m_cFogSubView.edit_fog_density==slider)
+	else if(fogSubViewStructObject.edit_fog_density==slider)
 	{
-		m_pFog_struct->setFogDensity(m_cFogSubView.edit_fog_density->getSliderValue());
+		fogStructObject->setFogDensity(fogSubViewStructObject.edit_fog_density->getSliderValue());
 	}
 
-	if(abs(m_pFog_struct->fog_end)>0.00001f || abs(m_pFog_struct->fog_start)>0.00001f)
-		m_pFog_struct->calculateScale();
+	if(abs(fogStructObject->fog_end)>0.00001f || abs(fogStructObject->fog_start)>0.00001f)
+		fogStructObject->calculateScale();
 }

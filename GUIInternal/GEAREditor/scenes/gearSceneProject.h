@@ -15,7 +15,7 @@ public:
 
 	//void setFileViewScenePtr(gearSceneFileView* fileView)	{	m_pFileViewScenePtr=fileView;	
 	void populateProjectView();
-	geTreeNode* getSelectedNode()	{	return m_pAssetTreeView->getSelectedNode();	}
+	geTreeNode* getSelectedNode()	{	return assetTreeView->getSelectedNode();	}
 
 protected:
 	virtual void onCreate();
@@ -33,11 +33,9 @@ protected:
 //#endif
     
 private:
-
 	void destroyTVUserData(geGUIBase* parent);
 
-	geTreeView* m_pAssetTreeView;
-
-	Sprite2Dx m_cszSprites[5];
+	geTreeView* assetTreeView;
+	Sprite2Dx spriteArray[5];
 	//gearSceneFileView* m_pFileViewScenePtr;	//must not delete this pointer
 };

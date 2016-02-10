@@ -7,9 +7,9 @@
 gearSceneHierarchy::gearSceneHierarchy(geFontManager* fontManager):
 geWindow("Hierarchy", fontManager)
 {
-	m_pCreateToolBarDropMenuBtnPtr = NULL;
-	m_pClearBtn=NULL;
-    m_pGameObjectsTreeView = new geTreeView(fontManager);
+	createToolBarDropMenuButton = NULL;
+	toolBarClearButton=NULL;
+    gameObjectTreeView = new geTreeView(fontManager);
 }
 
 gearSceneHierarchy::~gearSceneHierarchy()
@@ -19,7 +19,7 @@ gearSceneHierarchy::~gearSceneHierarchy()
 	//gxWorld* world=engine_getWorld(0);
 	//world->setObject3dObserver(NULL);
 	engine_destroy();
-    GE_DELETE(m_pGameObjectsTreeView);
+    GE_DELETE(gameObjectTreeView);
 }
 
 void gearSceneHierarchy::onCreate()
@@ -29,39 +29,39 @@ void gearSceneHierarchy::onCreate()
 	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setObject3dObserverRecursive(this);
 	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setEngineObserver(this);
 
-	m_pCreateToolBarDropMenuBtnPtr=new geToolBarDropMenu(rendererGUI, "Create", getToolBar(), fontManagerGUI);
-	m_pCreateToolBarDropMenuBtnPtr->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pCreateToolBarDropMenuBtnPtr);
+	createToolBarDropMenuButton=new geToolBarDropMenu(rendererGUI, "Create", getToolBar(), fontManagerGUI);
+	createToolBarDropMenuButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(createToolBarDropMenuButton);
 
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Create Object", 0x00004000);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Create Object on Selected Node", 0x00004001);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("", 0, NULL, true);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Point Light", 0x00004002);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Directional Light", 0x00004003);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("", 0, NULL, true);
-	m_pCreateToolBarDropMenuBtnPtr->appendMenuItem("Camera", 0x00004004);
+	createToolBarDropMenuButton->appendMenuItem("Create Object", 0x00004000);
+	createToolBarDropMenuButton->appendMenuItem("Create Object on Selected Node", 0x00004001);
+	createToolBarDropMenuButton->appendMenuItem("", 0, NULL, true);
+	createToolBarDropMenuButton->appendMenuItem("Point Light", 0x00004002);
+	createToolBarDropMenuButton->appendMenuItem("Directional Light", 0x00004003);
+	createToolBarDropMenuButton->appendMenuItem("", 0, NULL, true);
+	createToolBarDropMenuButton->appendMenuItem("Camera", 0x00004004);
 
 	//clear btn
-	m_pClearBtn=new geToolBarButton(rendererGUI, "Clear All", getToolBar(), fontManagerGUI);
-	m_pClearBtn->setGUIObserver(this);
-	getToolBar()->appendToolBarControl(m_pClearBtn);
+	toolBarClearButton=new geToolBarButton(rendererGUI, "Clear All", getToolBar(), fontManagerGUI);
+	toolBarClearButton->setGUIObserver(this);
+	getToolBar()->appendToolBarControl(toolBarClearButton);
 
-	m_pGameObjectsTreeView->create(rendererGUI, this, "gameObjectsTV", this);
+	gameObjectTreeView->create(rendererGUI, this, "gameObjectsTV", this);
 
-	m_cszSprites[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[0].setClip(88, 382, 16, 16);
-	m_cszSprites[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
-	m_cszSprites[1].setClip(68, 488, 16, 16);
+	spriteArray[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[0].setClip(88, 382, 16, 16);
+	spriteArray[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+	spriteArray[1].setClip(68, 488, 16, 16);
 
-	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(m_pGameObjectsTreeView->getRoot());
+	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(gameObjectTreeView->getRoot());
 
 	//HACK: Since the default camera of world0 wont be added to the heirarchy when it initially created, we create it here.
 	object3d* defaultCamera=EditorGEARApp::getSceneWorldEditor()->getMainWorld()->getActiveCamera();
 	object3d* parent_obj=defaultCamera->getParent();
-	geTreeNode* rootNode = (geTreeNode*)parent_obj->getEditorUserData();//m_pGameObjectsTreeView->getRoot();
+	geTreeNode* rootNode = (geTreeNode*)parent_obj->getEditorUserData();//gameObjectTreeView->getRoot();
 	createTVNode(rootNode, defaultCamera, defaultCamera->getName());
 	rootNode->traverseSetWidth(m_cSize.x);
-	m_pGameObjectsTreeView->refreshTreeView();
+	gameObjectTreeView->refreshTreeView();
 	//
 }
 
@@ -75,7 +75,7 @@ void gearSceneHierarchy::onDraw()
 	}
 #endif
 
-	m_pGameObjectsTreeView->draw();
+	gameObjectTreeView->draw();
 
 	//m_cPushButton.draw();
 	//m_cButton.draw();
@@ -90,14 +90,14 @@ void gearSceneHierarchy::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tre
 
 void gearSceneHierarchy::selectObject3dInTreeView(object3d* objtoselect)
 {
-	selectObject3dInTreeView(m_pGameObjectsTreeView->getRoot(), objtoselect);
+	selectObject3dInTreeView(gameObjectTreeView->getRoot(), objtoselect);
 }
 
 bool gearSceneHierarchy::selectObject3dInTreeView(geTreeNode* node, object3d* objtoselect)
 {
 	if(node->getUserData()==objtoselect)
 	{
-		m_pGameObjectsTreeView->selectNode(node);
+		gameObjectTreeView->selectNode(node);
 		return true;
 	}
 
@@ -119,9 +119,9 @@ bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return;
 
-	std::vector<geTreeNode*>* selectedNodeList=m_pGameObjectsTreeView->getSelectedNodeList();
-	//geTreeNode* selectedNode=m_pGameObjectsTreeView->getSelectedNode();
-	geTreeNode* nodeAtMousePos=m_pGameObjectsTreeView->getTVNode(x, y);
+	std::vector<geTreeNode*>* selectedNodeList=gameObjectTreeView->getSelectedNodeList();
+	//geTreeNode* selectedNode=gameObjectTreeView->getSelectedNode();
+	geTreeNode* nodeAtMousePos=gameObjectTreeView->getTVNode(x, y);
 
 	bool bMouseClickedOnList=false;
 	for(std::vector<geTreeNode*>::iterator it = selectedNodeList->begin(); it != selectedNodeList->end(); ++it)
@@ -136,7 +136,7 @@ bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 
 	if((flag&MK_LBUTTON) && bMouseClickedOnList)
 	{
-		if(m_pGameObjectsTreeView->getScrollBar()->isScrollBarGrabbed())
+		if(gameObjectTreeView->getScrollBar()->isScrollBarGrabbed())
 			return true;
 
 		std::vector<geGUIBase*>* newlist = new std::vector<geGUIBase*>();
@@ -171,7 +171,7 @@ void gearSceneHierarchy::onDragEnter(int x, int y)
 
 void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 {
-	geTreeNode* selectedNode=m_pGameObjectsTreeView->getTVNode(x, y/*-getTopMarginOffsetHeight()*/);
+	geTreeNode* selectedNode=gameObjectTreeView->getTVNode(x, y/*-getTopMarginOffsetHeight()*/);
 
 	std::vector<geGUIBase*>* list = dropObject->getActualDataList();
 	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)
@@ -230,7 +230,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 			if(droppedDataObject->getParent() && droppedDataObject->getParent()==EditorGEARApp::getScenePropertyEditor()->getAnimationParentNode())
 			{
 				gxAnimationSet* animSet=(gxAnimationSet*)droppedDataObject->getUserData();
-				//geTreeNode* selectedNode=m_pGameObjectsTreeView->getTVNode(x, y);
+				//geTreeNode* selectedNode=gameObjectTreeView->getTVNode(x, y);
 				if(selectedNode)
 				{
 					object3d* selectedObj=(object3d*)selectedNode->getUserData();
@@ -259,12 +259,12 @@ void gearSceneHierarchy::createTVNode(geTreeNode* parentNode, object3d* obj, con
 	if(obj->getParent() && obj->getParent()->getParent()==NULL)
 	{
 		name=filename;
-		sprite=&m_cszSprites[1];
+		sprite=&spriteArray[1];
 	}
 	else
 	{
 		name=obj->getName();
-		sprite=&m_cszSprites[0];
+		sprite=&spriteArray[0];
 	}
 
 	geTreeNode* newtvNode = new geTreeNode(rendererGUI, parentNode, name, sprite, fontManagerGUI);
@@ -329,10 +329,10 @@ void gearSceneHierarchy::onConsoleLogFromMono(const char* msg, int msgtype)
 void gearSceneHierarchy::onObject3dChildAppend(object3d* child)
 {
 	object3d* parent_obj=child->getParent();
-	geTreeNode* rootNode = (geTreeNode*)parent_obj->getEditorUserData();//m_pGameObjectsTreeView->getRoot();
+	geTreeNode* rootNode = (geTreeNode*)parent_obj->getEditorUserData();//gameObjectTreeView->getRoot();
 	createTVNode(rootNode, child, child->getName());
 	rootNode->traverseSetWidth(m_cSize.x);
-	m_pGameObjectsTreeView->refreshTreeView();
+	gameObjectTreeView->refreshTreeView();
 	monoWrapper::mono_object3d_onObject3dChildAppend(parent_obj, child);
 
 	if(child->getID()==OBJECT3D_CAMERA)
@@ -352,8 +352,8 @@ void gearSceneHierarchy::onObject3dChildRemove(object3d* child)
 	dtv_parent->removeTVChild(dtv);
 	destroyTVUserData(dtv);
 	GE_DELETE(dtv);
-	m_pGameObjectsTreeView->resetSelectedNodePtr();
-	m_pGameObjectsTreeView->refreshTreeView();
+	gameObjectTreeView->resetSelectedNodePtr();
+	gameObjectTreeView->refreshTreeView();
 	monoWrapper::mono_object3d_onObject3dChildRemove(parent_obj, child);
 }
 
@@ -365,7 +365,7 @@ bool gearSceneHierarchy::onKeyDown(int charValue, int flag)
 {
 	if(charValue==46)	//DEL key
 	{
-		geTreeNode* selectedNode=m_pGameObjectsTreeView->getSelectedNode();
+		geTreeNode* selectedNode=gameObjectTreeView->getSelectedNode();
 		if(selectedNode)
 		{
 			object3d* obj=(object3d*)selectedNode->getUserData();
@@ -393,9 +393,9 @@ bool gearSceneHierarchy::onKeyUp(int charValue, int flag)
 void gearSceneHierarchy::clearHierarchy()
 {
 	EditorGEARApp::getSceneWorldEditor()->stopSimulation();
-	m_pGameObjectsTreeView->clearAndDestroyAll();
-	m_pGameObjectsTreeView->resetSelectedNodePtr();
-	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(m_pGameObjectsTreeView->getRoot());
+	gameObjectTreeView->clearAndDestroyAll();
+	gameObjectTreeView->resetSelectedNodePtr();
+	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(gameObjectTreeView->getRoot());
 	monoWrapper::mono_engine_getWorld(0)->resetWorld();
 	EditorGEARApp::getScenePreview()->reinitPreviewWorld();
 
@@ -407,9 +407,9 @@ void gearSceneHierarchy::clearHierarchy()
 
 void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 {
-	if(m_pClearBtn==btn)
+	if(toolBarClearButton==btn)
 	{
-		if(m_pClearBtn->isButtonPressed())
+		if(toolBarClearButton->isButtonPressed())
 		{
 			//if(MessageBox(EditorGEARApp::getMainWindowHandle(),"Are you sure to reset the world.","Warning",MB_YESNO|MB_ICONWARNING)==IDYES)
 			{
@@ -421,7 +421,7 @@ void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)
 
 				//EditorGEARApp::getScenePreview()->selectedObject3D(NULL);	//for safety
 			}
-			m_pClearBtn->buttonNormal(true);
+			toolBarClearButton->buttonNormal(true);
 		}
 	}
 }
@@ -432,7 +432,7 @@ void gearSceneHierarchy::onSliderChange(geGUIBase* slider)
 
 geGUIBase* gearSceneHierarchy::getSelectedTreeNode()
 {
-	geTreeNode* selectedNode=m_pGameObjectsTreeView->getSelectedNode();
+	geTreeNode* selectedNode=gameObjectTreeView->getSelectedNode();
 	return selectedNode;
 }
 
@@ -444,7 +444,7 @@ bool gearSceneHierarchy::saveCurrentScene(const char* sceneFilePath)
 		return false;
 	}
 
-	std::vector<geGUIBase*>* childNodeList = m_pGameObjectsTreeView->getRoot()->getChildControls();
+	std::vector<geGUIBase*>* childNodeList = gameObjectTreeView->getRoot()->getChildControls();
 	int nRootObjects=0;
 	for(std::vector<geGUIBase*>::iterator it = childNodeList->begin(); it != childNodeList->end(); ++it)
 	{
@@ -513,7 +513,7 @@ void gearSceneHierarchy::onCommand(int cmd)
 
 		case 0x00004001:
 		{
-			geTreeNode* selectedNode=m_pGameObjectsTreeView->getSelectedNode();
+			geTreeNode* selectedNode=gameObjectTreeView->getSelectedNode();
 			if(selectedNode)
 			{
 				object3d* obj=(object3d*)selectedNode->getUserData();

@@ -4,7 +4,7 @@
 void* cpp_createMenu(std::vector<stDropMenuItem*>& list)
 {
 	MenuWin32* menuObj = new MenuWin32();
-    menuObj->m_pPopupMenu = menuObj->createMenu(list);
+	menuObj->popupMenuHandle = menuObj->createMenu(list);
     
     return (void*)menuObj;
 }
@@ -47,7 +47,7 @@ HMENU MenuWin32::createMenu(std::vector<stDropMenuItem*>& list)
         item->menu_handle=hCurrentPopupMenu;
         if(item->type==0)
         {
-            minfo.wID = item->menuid;
+            minfo.wID = item->menuID;
             minfo.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA;
             if(item->sub_menu_handle!=NULL)
             {
@@ -86,5 +86,5 @@ void MenuWin32::showMenu(float x, float y)
 	pt.y=y;
 
 	ClientToScreen(EditorApp::getMainWindowHandle(), &pt);
-    TrackPopupMenu(m_pPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
+	TrackPopupMenu(popupMenuHandle, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorApp::getMainWindowHandle(), NULL);
 }

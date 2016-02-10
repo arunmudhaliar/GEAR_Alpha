@@ -14,7 +14,7 @@ gearSceneAnimationEditor::~gearSceneAnimationEditor()
 
 void gearSceneAnimationEditor::onCreate()
 {
-	m_pAnimationsTreeView->create(m_pRenderer, this, "propertyeditorTV", this);
+	m_pAnimationsTreeView->create(rendererGUI, this, "propertyeditorTV", this);
 	geTreeNode* rootNode=m_pAnimationsTreeView->getRoot();
 }
 

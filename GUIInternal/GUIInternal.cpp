@@ -1,13 +1,9 @@
-// GUIInternal.cpp : Defines the entry point for the application.
-//
-//#ifndef USEMONOENGINE
 #pragma comment(lib,"GEAREngine.lib")
-//#endif
+
+#include "GUIInternal.h"
+#include "../macosProj/GEARInternal/GEARInternal/appEntry.h"
 
 #include "stdafx.h"
-#include "GUIInternal.h"
-#include "GEAREditor\EditorApp.h"
-//#include "../GEAREngine/src/core/Timer.h"
 #include <WindowsX.h>
 #include <ShlObj.h>
 
@@ -15,6 +11,184 @@
 #define ENABLE_MEMORY_CHECK
 #include <crtdbg.h>
 #endif
+
+LRESULT CALLBACK projectSelector_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
+char* browseFolder(HWND hWndParent, const char* title, const char* root_dir=NULL);
+LPITEMIDLIST convertPathToLpItemIdList(const char *pszPath);
+
+int APIENTRY _tWinMain(HINSTANCE hInstance,
+	HINSTANCE hPrevInstance,
+	LPTSTR    lpCmdLine,
+	int       nCmdShow)
+{
+#if defined(_DEBUG) && defined(ENABLE_MEMORY_CHECK)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
+	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+
+	//SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
+	SymInitialize(GetCurrentProcess(), NULL, TRUE);
+#endif
+
+	int return_val = 0;
+	if (DialogBox(hInstance, MAKEINTRESOURCE(IDD_PROJ_DLG), NULL, reinterpret_cast<DLGPROC>(projectSelector_DlgProc)) != 0)
+	{
+		monoWrapper::initDebugConsole();
+		return_val = appEntry();
+		monoWrapper::destroyDebugConsole();
+	}
+
+#if defined(_DEBUG) && defined(ENABLE_MEMORY_CHECK)
+	SymCleanup(GetCurrentProcess());
+#endif
+
+	return return_val;
+}
+
+LRESULT CALLBACK projectSelector_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+	switch(Msg)
+	{
+	case WM_INITDIALOG:
+	{
+		//read the recent dialog
+		FILE* fp = fopen("recentProjects", "r");
+		if(fp)
+		{
+			char temp_buffer[1024];
+			while (fscanf(fp, "%s\n", temp_buffer) != EOF)
+			{
+				SendDlgItemMessage(hWndDlg, IDC_PROJ_DLG_RECENT_PROJECT_LIST, LB_ADDSTRING, NULL, (LPARAM)temp_buffer);
+			}
+			fclose(fp);
+		}
+
+		return TRUE;
+	}
+	break;
+
+	case WM_COMMAND:
+		switch(wParam)
+		{
+		case ID_PROJ_DLG_OPEN_NEW_PROJECT:
+		{
+			char* project_directory=browseFolder(hWndDlg, _T("Select an empty folder to create project."));
+			if(EditorGEARApp::createNewProject(project_directory)!=0)
+			{
+				MessageBox(hWndDlg, "Project creation failed", "Error.", MB_OK | MB_ICONERROR);
+				GE_DELETE_ARY(project_directory);
+				return true;
+			}
+			EditorGEARApp::setProjectHomeDirectory(project_directory);
+			GE_DELETE_ARY(project_directory);
+			EndDialog(hWndDlg, 1);
+			return true;
+		}
+		break;
+
+		case ID_PROJ_DLG_OPEN_RECENT_PROJECT:
+		{
+			// Get current selection index in listbox
+			int itemIndex = (int) SendDlgItemMessage(hWndDlg, IDC_PROJ_DLG_RECENT_PROJECT_LIST, LB_GETCURSEL, (WPARAM)0, (LPARAM) 0);
+			if (itemIndex == LB_ERR)
+			{
+				MessageBox(hWndDlg, "Select atleast one recent project", "GEAR.", MB_OK | MB_ICONINFORMATION);
+			}
+			else
+			{
+				// Get actual text in buffer
+				char temp_buffer[1024];
+				SendDlgItemMessage(hWndDlg, IDC_PROJ_DLG_RECENT_PROJECT_LIST, LB_GETTEXT, (WPARAM) itemIndex, (LPARAM) temp_buffer );
+				EditorGEARApp::setProjectHomeDirectory(temp_buffer);
+				EndDialog(hWndDlg, 2);
+			}
+			return true;
+		}
+		break;
+		}
+		break;
+
+	case WM_CLOSE:
+	{
+		return EndDialog(hWndDlg, 0);
+	}
+	break;
+	//NOTE: Commented this default block, since the SHBrowseForFolder [New project option] wont work
+	//default:
+	//	return DefWindowProc(hWndDlg, Msg, wParam, lParam);
+	//
+	}
+
+	return FALSE;
+}
+
+char* browseFolder(HWND hWndParent, const char* title, const char* root_dir)
+{
+	char* return_buffer=NULL;
+	BROWSEINFO bi = { 0 };
+	bi.hwndOwner=hWndParent;
+	bi.lpszTitle = title;
+	if(root_dir)
+	{
+		bi.pidlRoot = convertPathToLpItemIdList(root_dir);
+	}
+
+	bi.ulFlags=BIF_USENEWUI;// | BIF_RETURNONLYFSDIRS;
+
+	HRESULT r=OleInitialize(NULL);
+	LPITEMIDLIST pidl = SHBrowseForFolder ( &bi );
+	if ( pidl != 0 )
+	{
+		// get the name of the folder
+		TCHAR path[MAX_PATH];
+		if ( SHGetPathFromIDList ( pidl, path ) )
+		{
+			_tprintf ( _T("Selected Folder: %s\n"), path );
+			return_buffer = new char[strlen(path)+1];
+			strcpy(return_buffer, path);
+			return_buffer[strlen(path)]='\0';
+		}
+
+		// free memory used
+		IMalloc * imalloc = 0;
+		if ( SUCCEEDED( SHGetMalloc ( &imalloc )) )
+		{
+			imalloc->Free ( pidl );
+			imalloc->Release ( );
+		}
+	}
+
+	OleUninitialize();
+
+	if(return_buffer)
+	{
+		//win32 to unix style path
+		geUtil::convertPathToUnixFormat(return_buffer);
+	}
+
+	return return_buffer;
+}
+
+LPITEMIDLIST convertPathToLpItemIdList(const char *pszPath)
+{
+	LPITEMIDLIST  pidl = NULL;
+	LPSHELLFOLDER pDesktopFolder = NULL;
+	OLECHAR       olePath[MAX_PATH];
+	ULONG         chEaten;
+	HRESULT       hr;
+
+	if (SUCCEEDED(SHGetDesktopFolder(&pDesktopFolder)))
+	{
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pszPath, -1, 
+			olePath, MAX_PATH);
+		hr = pDesktopFolder->ParseDisplayName(NULL, NULL, 
+			olePath, &chEaten, &pidl, NULL);
+		pDesktopFolder->Release();
+		return pidl;
+	}
+	return NULL;
+}
+
+
 
 #if DEPRECATED
 #include "MDragGropInterface.h"
@@ -604,183 +778,3 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	return (INT_PTR)FALSE;
 }
 #endif
-
-
-
-char* browseFolder(HWND hWndParent, const char* title, const char* root_dir=NULL);
-LPITEMIDLIST convertPathToLpItemIdList(const char *pszPath);
-
-LRESULT CALLBACK projectSelector_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
-{
-	switch(Msg)
-	{
-	case WM_INITDIALOG:
-		{
-			//read the recent dialog
-			FILE* fp = fopen("recentProjects", "r");
-			if(fp)
-			{
-				char temp_buffer[1024];
-				while (fscanf(fp, "%s\n", temp_buffer) != EOF)
-				{
-					SendDlgItemMessage(hWndDlg, IDC_PROJ_DLG_RECENT_PROJECT_LIST, LB_ADDSTRING, NULL, (LPARAM)temp_buffer);
-				}
-				fclose(fp);
-			}
-
-			return TRUE;
-		}
-		break;
-
-	case WM_COMMAND:
-		switch(wParam)
-		{
-			case ID_PROJ_DLG_OPEN_NEW_PROJECT:
-			{
-				char* project_directory=browseFolder(hWndDlg, _T("Select an empty folder to create project."));
-				if(EditorGEARApp::createNewProject(project_directory)!=0)
-				{
-					MessageBox(hWndDlg, "Project creation failed", "Error.", MB_OK | MB_ICONERROR);
-					GE_DELETE_ARY(project_directory);
-					return true;
-				}
-				EditorGEARApp::setProjectHomeDirectory(project_directory);
-				GE_DELETE_ARY(project_directory);
-				EndDialog(hWndDlg, 1);
-				return true;
-			}
-			break;
-
-			case ID_PROJ_DLG_OPEN_RECENT_PROJECT:
-			{
-				// Get current selection index in listbox
-				int itemIndex = (int) SendDlgItemMessage(hWndDlg, IDC_PROJ_DLG_RECENT_PROJECT_LIST, LB_GETCURSEL, (WPARAM)0, (LPARAM) 0);
-				if (itemIndex == LB_ERR)
-				{
-					MessageBox(hWndDlg, "Select atleast one recent project", "GEAR.", MB_OK | MB_ICONINFORMATION);
-				}
-				else
-				{
-					// Get actual text in buffer
-					char temp_buffer[1024];
-					SendDlgItemMessage(hWndDlg, IDC_PROJ_DLG_RECENT_PROJECT_LIST, LB_GETTEXT, (WPARAM) itemIndex, (LPARAM) temp_buffer );
-					EditorGEARApp::setProjectHomeDirectory(temp_buffer);
-					EndDialog(hWndDlg, 2);
-				}
-				return true;
-			}
-			break;
-		}
-		break;
-
-	case WM_CLOSE:
-		{
-			return EndDialog(hWndDlg, 0);
-		}
-		break;
-	//commented this default block, since the SHBrowseForFolder [New project option] wont work
-	//default:
-	//	return DefWindowProc(hWndDlg, Msg, wParam, lParam);
-	//
-	}
-
-	return FALSE;
-}
-
-char* browseFolder(HWND hWndParent, const char* title, const char* root_dir)
-{
-	char* return_buffer=NULL;
-	BROWSEINFO bi = { 0 };
-	bi.hwndOwner=hWndParent;
-    bi.lpszTitle = title;
-	if(root_dir)
-	{
-		bi.pidlRoot = convertPathToLpItemIdList(root_dir);
-	}
-
-	bi.ulFlags=BIF_USENEWUI;// | BIF_RETURNONLYFSDIRS;
-
-	HRESULT r=OleInitialize(NULL);
-    LPITEMIDLIST pidl = SHBrowseForFolder ( &bi );
-    if ( pidl != 0 )
-    {
-        // get the name of the folder
-        TCHAR path[MAX_PATH];
-        if ( SHGetPathFromIDList ( pidl, path ) )
-        {
-            _tprintf ( _T("Selected Folder: %s\n"), path );
-			return_buffer = new char[strlen(path)+1];
-			strcpy(return_buffer, path);
-			return_buffer[strlen(path)]='\0';
-        }
-
-        // free memory used
-        IMalloc * imalloc = 0;
-        if ( SUCCEEDED( SHGetMalloc ( &imalloc )) )
-        {
-            imalloc->Free ( pidl );
-            imalloc->Release ( );
-        }
-    }
-
-	OleUninitialize();
-
-	if(return_buffer)
-	{
-		//win32 to unix style path
-		geUtil::convertPathToUnixFormat(return_buffer);
-	}
-
-	return return_buffer;
-}
-
-LPITEMIDLIST convertPathToLpItemIdList(const char *pszPath)
-{
-	LPITEMIDLIST  pidl = NULL;
-	LPSHELLFOLDER pDesktopFolder = NULL;
-	OLECHAR       olePath[MAX_PATH];
-	ULONG         chEaten;
-	HRESULT       hr;
-
-	if (SUCCEEDED(SHGetDesktopFolder(&pDesktopFolder)))
-	{
-		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pszPath, -1, 
-					olePath, MAX_PATH);
-		hr = pDesktopFolder->ParseDisplayName(NULL, NULL, 
-					olePath, &chEaten, &pidl, NULL);
-		pDesktopFolder->Release();
-		return pidl;
-	}
-	return NULL;
-}
-
-
-
-#include "../macosProj/GEARInternal/GEARInternal/appEntry.h"
-int APIENTRY _tWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
-{
-#if defined(_DEBUG) && defined(ENABLE_MEMORY_CHECK)
-	_CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
-	_CrtSetReportMode ( _CRT_ERROR, _CRTDBG_MODE_DEBUG);
-
-	//SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
-	SymInitialize(GetCurrentProcess(), NULL, TRUE);
-#endif
-
-	int return_val=0;
-	if(DialogBox(hInstance, MAKEINTRESOURCE(IDD_PROJ_DLG), NULL, reinterpret_cast<DLGPROC>(projectSelector_DlgProc))!=0)
-	{
-		monoWrapper::initDebugConsole();
-		return_val = macos_main();
-		monoWrapper::destroyDebugConsole();
-	}
-
-#if defined(_DEBUG) && defined(ENABLE_MEMORY_CHECK)
-	SymCleanup(GetCurrentProcess());
-#endif
-
-	return return_val;
-}

@@ -1,20 +1,11 @@
 ﻿#include "renderer.h"
 
-
 rendererBase::ERENDERER rendererBase::g_eRenderingTechnique=gl_fixed_pipeline;
 unsigned int rendererBase::g_nTrisRendered=0;
 int rendererBase::g_iOGLMajorVersion=0;
 int rendererBase::g_iOGLMinorVersion=0;
 
-#if DEPRECATED
-rendererBase::rendererBase(HWND hWnd, ERENDERER technique):
-	m_hWnd(hWnd),
-	m_iPixelFormat(0),
-	m_hDC(0),
-	m_hRC(0)
-#else
 rendererBase::rendererBase(SDL_Window* window, ERENDERER technique)
-#endif
 {
     sdlWindow=window;
 	isSecondryRenderer=false;
@@ -205,17 +196,17 @@ void rendererBase::setViewPort(float cx, float cy)
     //orthogonalProjectionMatrix.setOrtho(0.0f, cx, cy, 0.0f, 0.0f, 10.0f);
 	viewPortSize.set(cx, cy);
 	//glViewport(0, 0, (int)cx, (int)cy);
- //   glMatrixMode(GL_PROJECTION);
+    //glMatrixMode(GL_PROJECTION);
 	//glLoadIdentity();
 	//glOrtho(0.0f, (int)cx, (int)cy, 0.0f, 0.0f, 10.0f);
- //   glMatrixMode(GL_MODELVIEW);
+    //glMatrixMode(GL_MODELVIEW);
 }
 
 void rendererBase::loadDefaultRenderState()
 {
-	glClearColor(0.15f, 0.15f, 0.15f, 1.0f);				// Black Background
+	glClearColor(0.15f, 0.15f, 0.15f, 1.0f);			// Black Background
 	//glShadeModel(GL_FLAT);							// Enable Smooth Shading
-	//glClearDepth(1.0f);									// Depth Buffer Setup
+	//glClearDepth(1.0f);								// Depth Buffer Setup
 	
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);								// Enable culling

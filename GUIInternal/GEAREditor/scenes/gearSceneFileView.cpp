@@ -1,23 +1,17 @@
 #include "gearSceneFileView.h"
 
 #include <sys/types.h>
-
 #include <sys/stat.h>
-
 #include <assert.h>
-
 #include<dirent.h>
-
 #ifdef _WIN32
 #include <direct.h>
 #endif
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "../EditorApp.h"
-#if DEPRECATED
-#include "../win32/MDropSource.h"
-#endif
 #include "assetUserData.h"
 #include "../../../GEAREngine/src/core/gxMetaStructures.h"
 #include "../../../GEAREngine/src/core/gxAnimationSet.h"
@@ -406,7 +400,6 @@ bool gearSceneFileView::onMouseLButtonUp(float x, float y, int nFlag)
 
 bool gearSceneFileView::onMouseMove(float x, float y, int flag)
 {
-//#ifdef _WIN32
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return geWindow::onMouseMove(x, y, flag);
 
@@ -438,7 +431,6 @@ bool gearSceneFileView::onMouseMove(float x, float y, int flag)
 //		dropSource->Release();
 		return true;
 	}
-//#endif
     
 	return geWindow::onMouseMove(x, y, flag);
 }

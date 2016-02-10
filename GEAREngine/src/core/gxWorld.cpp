@@ -1,16 +1,10 @@
 #include "gxWorld.h"
-//#ifdef _WIN32
-//#include "../fbxImporter/fbxImporter.h"
-//#endif
 #include "../util/gxUtil.h"
 #include "../core/gxMetaStructures.h"
 #include "../hwShader/HWShaderManager.h"
 #include "../GEAREngine.h"
 #include "gxSkinnedMesh.h"
 #include "../util/gxCrc32.h"
-//#include "../util/Crc32.h"
-//#include "../GEAREngine.cpp"
-//class Crc32;
 
 gxWorld::gxWorld():
 	object3d(OBJECT3D_WORLD)

@@ -54,20 +54,10 @@ EditorApp::~EditorApp()
 	GE_DELETE(rendererGL10Instance);
 }
 
-#if DEPRECATED
-void EditorApp::init(HWND hWnd, HINSTANCE hInst)
-{
-	g_hWnd=hWnd;
-#else
 void EditorApp::init(SDL_Window* window)
 {
-#endif
 	is_Initialised=true;
-#if DEPRECATED
-	rendererGL10Instance = new rendererGL10(hWnd);
-#else
     rendererGL10Instance = new rendererGL10(window);
-#endif
     
 #ifdef _WIN32
 	SDL_SysWMinfo info;
@@ -77,8 +67,6 @@ void EditorApp::init(SDL_Window* window)
 		g_hWnd = info.info.win.window;
 	}
 #endif
-
-	//EditorApp::g_pMainRenderer=rendererGL10Instance;
 
 	rendererGL10Instance->setupRenderer();
 	rendererGL10Instance->loadDefaultRenderState();
@@ -243,39 +231,7 @@ bool EditorApp::showOpenCommonDlg(HWND hWnd, char* out_openfilename, int out_ope
 	openFileDialog.lpstrDefExt = defaultext;
 	return GetOpenFileName(&openFileDialog);
 }
-
-#if DEPRECATED
-LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
-{
-	switch(Msg)
-	{
-	case WM_INITDIALOG:
-		{
-			SendDlgItemMessage(hWndDlg, IDC_ASSET_PROGRESS_BAR, PBM_SETSTEP, 1, 0);
-			ShowWindow(hWndDlg, SW_SHOW);
-			AssetImporter assetImporter;
-			assetImporter.importAssets(EditorApp::getProjectHomeDirectory(), hWndDlg, IDC_ASSET_PROGRESS_BAR, IDC_ASSET_FILE_STATIC);
-			EndDialog(hWndDlg, 0);
-			return TRUE;
-		}
-		break;
-
-	case WM_COMMAND:
-		break;
-
-	case WM_CLOSE:
-		{
-			return EndDialog(hWndDlg, 0);
-		}
-		break;
-	}
-
-	return FALSE;
-}
 #endif
-#endif
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 EditorGEARApp::EditorGEARApp():
@@ -296,28 +252,17 @@ int assetImport_secondryThread( void *ptr )
     assetImporter.importAssets(EditorGEARApp::getProjectHomeDirectory(), assetImporterDlg);
     return 0;
 }
-    
-#if DEPRECATED
-void EditorGEARApp::init(HWND hWnd, HINSTANCE hInst)
-{
-    EditorApp::init(hWnd, hInst);
-#else
+
 void EditorGEARApp::init(SDL_Window* window)
 {
     EditorApp::init(window);
-#endif
-    
-    //import all assets to the metadata folder
-    //importAssetToMetaData(hWnd, hInst);
-    
+
+    //asset importer.
     geAssetImportDlg* assetImporterDlg = new geAssetImportDlg(&geFontManager::g_cFontManager, rendererGL10Instance);
     SDL_Thread *thread = SDL_CreateThread( assetImport_secondryThread, "testThread", (void *)assetImporterDlg);
     UNUSED(thread);
     assetImporterDlg->showView();
     //assetImporterDlg->destroyView();
-
-//    AssetImporter assetImporter;
-//    assetImporter.importAssets(EditorGEARApp::getProjectHomeDirectory(), NULL);
 
     gearSceneWorldEditor* worldEditorWnd = new gearSceneWorldEditor(guiManager->getLayoutManager()->getFontManager());
     worldEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 300, 200, true);
@@ -361,7 +306,6 @@ void EditorGEARApp::init(SDL_Window* window)
     geLayout* hierarchyLayout=projectLayout->createTop(hierarchyWnd, 0.45f);
     UNUSED(hierarchyLayout);
     setSceneHierarchy(hierarchyWnd);
-    //hierarchyLayout->appendWindow(
     
     gearSceneFileView* fileViewWnd = new gearSceneFileView(guiManager->getLayoutManager()->getFontManager());
     fileViewWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250, true);
@@ -417,18 +361,10 @@ int EditorGEARApp::createNewProject(const char* projectDirectory)
     return -1;
 }
 
-#if DEPRECATED
-bool EditorGEARApp::importAssetToMetaData(HWND hWnd, HINSTANCE hInst)
-{
-    HWND hWndprogress=CreateDialog(hInst, MAKEINTRESOURCE(IDD_ASSET_IMPORT_PROGRESS_DLG), hWnd, reinterpret_cast<DLGPROC>(Proj_AssetImportDlgProc));
-    return true;
-}
-#else
 bool EditorGEARApp::importAssetToMetaData()
 {
     return true;
 }
-#endif
 
 void EditorGEARApp::setProjectHomeDirectory(const char* projectDir)
 {

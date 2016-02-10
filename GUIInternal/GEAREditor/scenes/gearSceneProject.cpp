@@ -1,11 +1,8 @@
 #include "gearSceneProject.h"
 
 #include <sys/types.h>
-
 #include <sys/stat.h>
-
 #include <assert.h>
-
 #include<dirent.h>
 #ifdef _WIN32
     #include <direct.h>
@@ -14,10 +11,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "../EditorApp.h"
-
-#if DEPRECATED
-#include "../win32/MDropSource.h"
-#endif
 #include"assetUserData.h"
 
 static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager);
@@ -25,7 +18,6 @@ static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNod
 gearSceneProject::gearSceneProject(geFontManager* fontmanager):
 geWindow("Project", fontmanager)
 {
-	//m_pFileViewScenePtr=NULL;
     assetTreeView = new geTreeView(fontmanager);
 }
 

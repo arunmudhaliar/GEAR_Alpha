@@ -115,7 +115,6 @@ bool gearSceneHierarchy::selectObject3dInTreeView(geTreeNode* node, object3d* ob
 
 bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 {
-//#ifdef _WIN32
 	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
 	//	return;
 
@@ -159,7 +158,6 @@ bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 //		dropSource->Release();
 		return true;
 	}
-//#endif
     
 	return true;
 }

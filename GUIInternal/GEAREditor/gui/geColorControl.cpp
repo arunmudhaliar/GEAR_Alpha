@@ -76,16 +76,8 @@ void geColorControl::onSize(float cx, float cy, int flag)
 bool geColorControl::onMouseLButtonDown(float x, float y, int nFlag)
 {
     geColorDlg* view = new geColorDlg(this, fontManagerGUI, rendererGUI);
-
-#if DEPRECATED
-    #ifndef GEAR2D
-        view->showView(EditorGEARApp::getMainWindowHandle());
-    #else
-        view->showView(Editor2DApp::getMainWindowHandle());
-    #endif
-#else
     view->showView();
-#endif
+    
 	return true;
 }
 

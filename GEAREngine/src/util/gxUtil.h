@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cmath>
 #include "../core/vector3.h"
 
 class DECLSPEC gxUtil
@@ -43,7 +44,7 @@ public:
 		float n = planeNormal.dot(p3_p1);
 		float d = planeNormal.dot(p2_p1);
 
-		if(abs(d)<0.00000001f)
+        if(GX_ABS(d)<0.00000001f)
 			return false;		//line parallel to plane
 
 		u=n/d;

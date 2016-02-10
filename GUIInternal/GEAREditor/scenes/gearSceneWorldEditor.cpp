@@ -145,7 +145,7 @@ void gearSceneWorldEditor::onCreate()
 	float startX=-500.0f;
 	float startY=-500.0f;
 
-	float oneGridSz=abs(2*startX)/10.0f;
+	float oneGridSz=GX_ABS(2.0f*startX)/10.0f;
 	float oneSubGridSz=oneGridSz/10.0f;
 	float halfoneSubGridSz=0;//oneSubGridSz*0.5f;
 

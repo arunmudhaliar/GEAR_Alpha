@@ -14,24 +14,15 @@ public:
 	geSettingsAndroid(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager):
 	  geTreeNode(renderer, parent, name, sprite, fontmanager, 10)
 	{
-//#ifdef _WIN32
 		setSize(m_cSize.x, 100.0f);
-
-		//object3dVisibleToggle = new gePushButton("");
-		//object3dVisibleToggle->create(renderer, this, "", 15, 10);
-		//object3dVisibleToggle->setGUIObserver(this);
 
 		char* buffer;
 		//ant home
-		//memset(buffer, 0, sizeof(buffer));
 		buffer=getenv("ANT_HOME");
 		if(buffer==NULL)
 		{
-			//if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
-			//{
-				antRootPathTextBox = new geTextBox("ANT_HOME environment variable not set.", fontManagerGUI);
-				antRootPathTextBox->create(renderer, this, "ANT_HOME environment variable not set.", 0, 0, 300, 16);
-			//}
+            antRootPathTextBox = new geTextBox("ANT_HOME environment variable not set.", fontManagerGUI);
+            antRootPathTextBox->create(renderer, this, "ANT_HOME environment variable not set.", 0, 0, 300, 16);
 		}
 		else
 		{
@@ -40,21 +31,19 @@ public:
 		}
 
 		//android root
-		//memset(buffer, 0, sizeof(buffer));
 		buffer=getenv("ANDROID_ROOT");
 		if(buffer==NULL)
 		{
-			//if(GetLastError()==ERROR_ENVVAR_NOT_FOUND)
-			//{
-				androidSDKPathTextBox = new geTextBox("ANDROID_ROOT environment variable not set.", fontManagerGUI);
-				androidSDKPathTextBox->create(renderer, this, "ANDROID_ROOT environment variable not set.", 0, 0, 300, 16);
-			//}
+
+            androidSDKPathTextBox = new geTextBox("ANDROID_ROOT environment variable not set.", fontManagerGUI);
+            androidSDKPathTextBox->create(renderer, this, "ANDROID_ROOT environment variable not set.", 0, 0, 300, 16);
 		}
 		else
 		{
 			androidSDKPathTextBox = new geTextBox(buffer, fontManagerGUI);
 			androidSDKPathTextBox->create(renderer, this, buffer, 0, 0, 300, 16);
 		}
+        
 		//package name
 		androidBundleIdentifierTextBox = new geTextBox("com.example.app", fontManagerGUI);
 		androidBundleIdentifierTextBox->create(renderer, this, "com.example.app", 0, 0, 300, 16);
@@ -81,17 +70,10 @@ public:
 		row = pWindowColumn->addRow("Bundle version code");
 		pWindowColumn->addControl(row, appVersionCodeTextBox);
 
-		//row = pWindowColumn->addRow("Linear Attenuation");
-		//pWindowColumn->addControl(row, linearAttenuationHorizontalSlider, 20.0f);
-		//row = pWindowColumn->addRow("Quadratic Attenuation");
-		//pWindowColumn->addControl(row, quadraticAttenuationHorizontalSlider, 20.0f);
-		//
-
 		setNodeColor(0.21f, 0.21f, 0.21f);
 		setNodeSelectionColor(0.21f, 0.21f, 0.21f);
 		setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 		applyPrimaryColorToVBClientArea();
-//#endif
 	}
 
 	virtual ~geSettingsAndroid()

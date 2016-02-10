@@ -155,10 +155,6 @@ void gearScenePropertyEditor::onTVSelectionChange(geTreeNode* tvnode, geTreeView
 
 bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 {
-//#if DEPRECATED
-	//if(!isPointInsideWindow(x, y-getTopMarginOffsetHeight()))
-	//	return;
-
 	geTreeNode* selectedNode=propertiesTreeView->getSelectedNode();
 	if((flag&MK_LBUTTON) && selectedNode)
 	{
@@ -172,18 +168,8 @@ bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 
 			MDropData* dataObject = new MDropData(newlist, this);
 			doDragDropSynchronous(dataObject);
-
-			//MDataObject* dataObject = new MDataObject(newlist, this);
-			//MDropSource* dropSource = new MDropSource();
-
-			//DWORD lpd=0;
-			//HRESULT ok=DoDragDrop(dataObject, dropSource, DROPEFFECT_MOVE, &lpd);
-
-			//dataObject->Release();
-			//dropSource->Release();
 		}
 	}
-//#endif
 	return true;
 }
 

@@ -741,8 +741,8 @@ int monoWrapper::exec_cmd(char const *cmd, char *buf)
 		{
 			strcat(start, output);
 			size += (strlen(output)+1);
-			if(output == NULL)
-				break;
+			//if(output == NULL)
+			//	break;
 		}
 	}
 	strcpy(buf, start);
@@ -775,8 +775,8 @@ int monoWrapper::exec_cmd(char const *cmd)
 		while((s =fgets(output, FILENAME_MAX, fpo)) != NULL)
 		{
 			printf("%s", output);
-			if(output == NULL)
-				break;
+			//if(output == NULL)
+			//	break;
 		}
 	}
 

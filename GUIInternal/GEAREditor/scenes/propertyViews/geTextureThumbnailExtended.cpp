@@ -5,11 +5,7 @@
 bool geTextureThumbnailExtended::onMouseLButtonDown(float x, float y, int nFlag)
 {
     geTextureDlg* newTextureDlg	 = new geTextureDlg(this, fontManagerGUI, rendererGUI);
-#if DEPRECATED
-	newTextureDlg->showView(EditorGEARApp::getMainWindowHandle());
-#else
     newTextureDlg->showView();
-#endif
 	return true;
 }
 

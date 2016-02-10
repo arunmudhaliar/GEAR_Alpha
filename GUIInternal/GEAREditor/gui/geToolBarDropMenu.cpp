@@ -148,7 +148,6 @@ bool calculatePosOfMyChild(geGUIBase* compareme, geGUIBase* parent, int& x, int&
 
 void geToolBarDropMenu::onButtonClicked()
 {
-//#if 0
     void* menuobject = cpp_createMenu(dropMenuItemList);
     
     geGUIBase* baseGUI=this;
@@ -171,10 +170,6 @@ void geToolBarDropMenu::onButtonClicked()
         pt.x=x+treeView->getPositionOnScreen().x;
         pt.y=y-treeView->getPositionOnScreen().y+((geTreeView*)treeView)->getVirtualYPos();
 #ifndef GEAR2D
-//#ifdef _WIN32
-//        //ClientToScreen(EditorGEARApp::getMainWindowHandle(), &pt);
-//        //TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorGEARApp::getMainWindowHandle(), NULL);
-//#else
 		int ypos=0;
 #ifdef __APPLE__
 		ypos=rendererGUI->getViewPortSz().y-pt.y;
@@ -182,7 +177,6 @@ void geToolBarDropMenu::onButtonClicked()
 		ypos=pt.y;
 #endif
         cpp_showPopupMenu(menuobject, pt.x, ypos);
-//#endif
 #else
         ClientToScreen(Editor2DApp::getMainWindowHandle(), &pt);
         TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, Editor2DApp::getMainWindowHandle(), NULL);
@@ -195,10 +189,6 @@ void geToolBarDropMenu::onButtonClicked()
         pt.x=getPositionOnScreen().x;
         pt.y=-getPositionOnScreen().y;
 #ifndef GEAR2D
-//#ifdef _Win32
-//        ClientToScreen(EditorGEARApp::getMainWindowHandle(), &pt);
-//        TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, EditorGEARApp::getMainWindowHandle(), NULL);
-//#else
 	int ypos=0;
 #ifdef __APPLE__
 		ypos=rendererGUI->getViewPortSz().y-pt.y;
@@ -206,7 +196,6 @@ void geToolBarDropMenu::onButtonClicked()
 		ypos=pt.y;
 #endif
         cpp_showPopupMenu(menuobject, pt.x, ypos);
-//#endif
 #else
         ClientToScreen(Editor2DApp::getMainWindowHandle(), &pt);
         TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, Editor2DApp::getMainWindowHandle(), NULL);
@@ -326,7 +315,6 @@ void geToolBarDropMenu::onButtonClicked()
 		guiObserver->onButtonClicked(this);
 	buttonNormal(true);
 #endif
-//#endif
 }
 
 bool geToolBarDropMenu::onMouseLButtonDown(float x, float y, int nFlag)
@@ -403,7 +391,6 @@ void geToolBarDropMenu::onSetName()
 
 void geToolBarDropMenu::checkMenuItem(int _menuID, bool bCheck)
 {
-//#ifdef _WIN32
 	for(std::vector<stDropMenuItem*>::iterator it = dropMenuItemList.begin(); it != dropMenuItemList.end(); ++it)
 	{
 		stDropMenuItem* menuitem = *it;
@@ -416,7 +403,6 @@ void geToolBarDropMenu::checkMenuItem(int _menuID, bool bCheck)
 			break;
 		}
 	}
-//#endif
 }
 
 void geToolBarDropMenu::setMenuItem(int _menuID)

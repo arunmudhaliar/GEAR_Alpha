@@ -35,7 +35,7 @@
 
 
 #include "gxDebug.h"
-//#include <gl/GLU.h>
+#include <cmath>
 
 #if defined(_WIN32) || defined(__APPLE__)
 #define USE_OPENAL
@@ -57,5 +57,7 @@
 
 #define GX_SWAP_INT(x1, x2)     { int t=x1; x1=x2; x2=t;    }
 #define GX_SWAP_FLOAT(x1, x2)   { float t=x1; x1=x2; x2=t;    }
+
+#define GX_ABS(v) std::abs(v)
 
 #define UNUSED(x)   (void)x

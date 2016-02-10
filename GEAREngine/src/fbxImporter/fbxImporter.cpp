@@ -427,7 +427,7 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 					FbxDouble3 diffuse=pong->Diffuse.Get();
 					FbxDouble3 ambient=pong->Ambient.Get();
 					FbxDouble3 specular=pong->Specular.Get();
-					FbxDouble specular_factor=pong->SpecularFactor;
+					//FbxDouble specular_factor=pong->SpecularFactor;
 					material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
 					material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
 					material->setSpecularClr(vector4f((float)specular.mData[0], (float)specular.mData[1], (float)specular.mData[2], 1.0f));	//lambert doesn't have specular

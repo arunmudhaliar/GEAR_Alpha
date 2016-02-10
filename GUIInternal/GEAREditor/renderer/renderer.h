@@ -21,11 +21,7 @@ public:
 		gl_programmable_pipeline
 	};
 
-#if DEPRECATED
-	rendererBase(HWND hWnd, ERENDERER technique);
-#else
 	rendererBase(SDL_Window* window, ERENDERER technique);
-#endif
 	virtual ~rendererBase();
 
 	bool setupRenderer(rendererBase* mainRenderer=NULL);
@@ -34,39 +30,25 @@ public:
 	void setViewPort(float cx, float cy);
 	void loadDefaultRenderState();
 
-	ERENDERER getRenderingTechnique()	{	return g_eRenderingTechnique;	}
-
-	void swapGLBuffer();
-
-	const geVector2f& getViewPortSz()	{	return viewPortSize;	}
-	geMatrix4x4f* getProjectionMatrix()		{	return projectionMatrix;	}
+	ERENDERER getRenderingTechnique()           {	return g_eRenderingTechnique;       }
+	const geVector2f& getViewPortSz()           {	return viewPortSize;                }
+	geMatrix4x4f* getProjectionMatrix()         {	return projectionMatrix;            }
 	geMatrix4x4f* getOrthoProjectionMatrix()	{	return &orthogonalProjectionMatrix;	}
 
+    void swapGLBuffer();
 	bool makeCurrent();
-
-#if DEPRECATED
-	HGLRC getRenderingContext()	{	return m_hRC;	}
-	HWND getWindowHandle()		{	return m_hWnd;	}
-#endif
+    SDL_Window* getWindow()                     {   return sdlWindow;   }
     
-    SDL_Window* getWindow()     {   return sdlWindow;   }
 private:
 	bool killGL();
 
-#if DEPRECATED
-	unsigned int	m_iPixelFormat;					// Holds The Results After Searching For A Match.
-	HDC				m_hDC;							// Private GDI Device Context.
-	HGLRC			m_hRC;							// Permanent Rendering Context.
-	HWND			m_hWnd;							// Holds Our Window Handle.
-#endif
-
 	geVector2f	viewPortSize;
-	geMatrix4x4f* projectionMatrix;			//must not delete this pointer
-	//geMatrix4x4f* viewMatrix;				//must not delete this pointer
-	//geMatrix4x4f* viewProjectionMatrix;     //must not delete this pointer
+	geMatrix4x4f* projectionMatrix;             //must not delete this pointer
+	//geMatrix4x4f* viewMatrix;                 //must not delete this pointer
+	//geMatrix4x4f* viewProjectionMatrix;       //must not delete this pointer
     geMatrix4x4f  orthogonalProjectionMatrix;
-	//bool		m_bDirectionalLighting;
 	bool isSecondryRenderer;
+    
     SDL_GLContext sdlGLContext;
     SDL_Window* sdlWindow;
     

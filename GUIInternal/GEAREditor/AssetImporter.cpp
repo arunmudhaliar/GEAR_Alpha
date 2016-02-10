@@ -9,7 +9,6 @@
 
 #include <sys/types.h>
 #include <assert.h>
-
 #include<dirent.h>
 #ifdef _WIN32
     #include <direct.h>
@@ -17,14 +16,8 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
-#if DEPRECATED
-    #include <Windows.h>
-    #include <CommCtrl.h>
-#endif
 
-//#ifdef _WIN32
 #include "../../FreeImage/FreeImage.h"
-//#endif
 
 AssetImporter::AssetImporter()
 {
@@ -275,11 +268,7 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 								bCreateMetaFile=true;
 							}
 
-#if DEPRECATED
-							SendDlgItemMessage(hWndProgress, staticTextID, WM_SETTEXT, 0, (LPARAM)buffer);
-#else
                             assetImportDlg->setBuffer(buffer);
-#endif
 
 							if(bCreateMetaFile)
 							{
@@ -346,9 +335,6 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 						}
 
 						noOfAssetsToProcess++;
-#if DEPRECATED
-						SendDlgItemMessage(hWndProgress, progressBarID, PBM_SETPOS, noOfAssetsToProcess, 0);
-#endif
 					}
 				}
                 break;
@@ -420,11 +406,10 @@ void AssetImporter::writeMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile)
 
 int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char* crcFileName, struct stat srcStat)
 {
-//#ifdef _WIN32
 	std::vector<gxMaterial*> materialList;
 	std::vector<gxAnimationSet*> animationSetList;
-
 	fbxImporter importer;
+    
 	object3d* obj3d=importer.loadMyFBX(fbx_file_name, &materialList, &animationSetList, EditorGEARApp::getProjectHomeDirectory());
 
 	for(std::vector<gxMaterial*>::iterator it = materialList.begin(); it != materialList.end(); ++it)
@@ -433,16 +418,13 @@ int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char*
 		import_material_to_metadata(fbx_file_name, material);
 	}
 
-	//
 	saveObject3DToMetaData(crcFileName, obj3d, srcStat);
-	//
 
 	materialList.clear();
 	animationSetList.clear();
 
 	GX_DELETE(obj3d);
 
-//#endif
 	return 1;
 }
 
@@ -792,7 +774,6 @@ int AssetImporter::import_png_to_metadata(const char* png_file_name, const char*
 
 bool AssetImporter::import_using_freeImageLib(const char* filename, const char* crcFileName, struct stat srcStat)
 {
-//#ifdef _WIN32
 	//image format
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded
@@ -847,7 +828,7 @@ bool AssetImporter::import_using_freeImageLib(const char* filename, const char* 
 	{
 		//Free FreeImage's copy of the data
 		FreeImage_Unload(dib);
-		return 0;
+		return false;
 	}
 
 	stMetaHeader metaHeader;
@@ -901,8 +882,6 @@ bool AssetImporter::import_using_freeImageLib(const char* filename, const char* 
 	//Free FreeImage's copy of the data
 	FreeImage_Unload(dib);
 
-//#endif
-	//return success
 	return true;
 }
 

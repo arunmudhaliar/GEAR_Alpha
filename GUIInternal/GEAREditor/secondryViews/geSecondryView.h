@@ -23,22 +23,10 @@ public:
 	geSecondryView(const char* name, geFontManager* fontmanager, rendererGL10* mainRenderer);
 	virtual ~geSecondryView();
 
-	void createRenderer(
-#if DEPRECATED
-                        HWND hwnd
-#else
-                        SDL_Window* window
-#endif
-                        );
-	rendererGL10* getRenderer()	{	return secondryRenderer;	}
+	void createRenderer(SDL_Window* window);
+	rendererGL10* getRenderer()     {	return secondryRenderer;	}
 
-	void showView(
-#if DEPRECATED
-                  HWND parentHWND
-#else
-                  int extraWindowFlags=0
-#endif
-                  );
+	void showView(int extraWindowFlags=0);
 	void drawView();
 	void sizeView(float cx, float cy);
 	void destroyView();
@@ -46,20 +34,14 @@ public:
 	void setSize(geVector2f& sz);
 	void setPos(geVector2i& pos);
 
-		//mouse events
+    //mouse events
 	bool mouseLButtonDown(float x, float y, int nFlag);
 	void mouseLButtonUp(float x, float y, int nFlag);
-
 	bool mouseRButtonDown(float x, float y, int nFlag);
 	void mouseRButtonUp(float x, float y, int nFlag);
-
 	bool mouseMove(float x, float y, int flag);
 	void mouseWheel(int zDelta, int x, int y, int flag);
 
-#if DEPRECATED
-	static LRESULT CALLBACK SecondryView_DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
-#endif
-    
     SDL_Window* getSecondryWindow() {   return sdlSecondryWindow;   }
     
 protected:

@@ -126,6 +126,6 @@ void geSettingsFog::onSliderChange(geGUIBase* slider)
 		fogStructObject->setFogDensity(fogSubViewStructObject.edit_fog_density->getSliderValue());
 	}
 
-	if(abs(fogStructObject->fog_end)>0.00001f || abs(fogStructObject->fog_start)>0.00001f)
+	if(GX_ABS(fogStructObject->fog_end)>0.00001f || GX_ABS(fogStructObject->fog_start)>0.00001f)
 		fogStructObject->calculateScale();
 }

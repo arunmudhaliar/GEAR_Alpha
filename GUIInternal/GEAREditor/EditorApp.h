@@ -27,21 +27,13 @@
 #define MKDIR mkdir
 #endif
 
-#if DEPRECATED
-LRESULT CALLBACK Proj_AssetImportDlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-#endif
-
 class EditorApp
 {
 public:
 	EditorApp();
 	virtual ~EditorApp();
 
-#if DEPRECATED
-	virtual void init(HWND hWnd, HINSTANCE hInst);
-#else
     virtual void init(SDL_Window* window);
-#endif
     
 	void size(int cx, int cy);
 	void update(float dt);
@@ -69,7 +61,6 @@ public:
 #if _WIN32
     static HWND getMainWindowHandle();
 #endif
-	//static rendererGL10* getMainRenderer()	{	return g_pMainRenderer;	}
 
 	bool isInitialized()	{	return is_Initialised;	}
 
@@ -107,23 +98,12 @@ public:
     EditorGEARApp();
     ~EditorGEARApp();
     
-#if DEPRECATED
-    void init(HWND hWnd, HINSTANCE hInst);
-#else
     void init(SDL_Window* window);
-#endif
+    bool importAssetToMetaData();
     
     static int createNewProject(const char* projectDirectory);
-    
-#if DEPRECATED
-    bool importAssetToMetaData(HWND hWnd, HINSTANCE hInst);
-#else
-    bool importAssetToMetaData();
-#endif
-    
     static void setProjectHomeDirectory(const char* projectDir);
     static const char* getProjectHomeDirectory();
-    
     static void setSceneFileView(gearSceneFileView* ptr);
     static void setSceneHierarchy(gearSceneHierarchy* ptr);
     static void setScenePreview(gearScenePreview* ptr);

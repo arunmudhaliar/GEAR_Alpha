@@ -1,7 +1,4 @@
 #include "geSecondryView.h"
-#if DEPRECATED
-#include <Windows.h>
-#endif
 #include "../EditorApp.h"
 
 geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, rendererGL10* mainRenderer)
@@ -23,32 +20,21 @@ geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, ren
 geSecondryView::~geSecondryView()
 {
 	GE_DELETE(secondryRenderer);
+    
 	//restore gl context to the EditorApp
 	primaryRenderer->makeCurrent();
 	//
     GX_DELETE(layoutManager);
 }
 
-#if DEPRECATED
-void geSecondryView::createRenderer(HWND hwnd)
-#else
+
 void geSecondryView::createRenderer(SDL_Window* window)
-#endif
 {
-#if DEPRECATED
-	secondryRenderer = new rendererGL10(hwnd);
-#else
     secondryRenderer = new rendererGL10(window);
-#endif
-    
 	secondryRenderer->setupRenderer(primaryRenderer);
-
 	layoutManager->create(secondryRenderer, 0, 0, m_cSize.x, m_cSize.y);
-	//rootLayout = new geLayout();
-	//rootLayout->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y);
-	//rootLayout->setLayoutDirection(geLayout::LAYOUT_PARENT);
-
 	previousScale.set(m_cSize.x, m_cSize.y);
+    
 	onCreate();
 }
 
@@ -62,11 +48,7 @@ void geSecondryView::setPos(geVector2i& pos)
 	m_cPos=pos;
 }
 
-#if DEPRECATED
-void geSecondryView::showView(HWND parentHWND)
-#else
 void geSecondryView::showView(int extraWindowFlags)
-#endif
 {
 #if DEPRECATED
 	static TCHAR szAppName2[] = TEXT ("childWnd");

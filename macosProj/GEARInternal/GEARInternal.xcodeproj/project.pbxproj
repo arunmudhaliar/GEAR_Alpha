@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5521D2D01C6F52F000C3D085 /* gearSceneAnimationEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5521D2CE1C6F52F000C3D085 /* gearSceneAnimationEditor.cpp */; };
 		55291B3A1B37623600537BB5 /* cursorUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55291B391B37623600537BB5 /* cursorUtil.cpp */; };
 		55466F391B3C581300F4802B /* projectSelectorDialogue.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55466F381B3C581300F4802B /* projectSelectorDialogue.xib */; };
 		55466F3B1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h in Sources */ = {isa = PBXBuildFile; fileRef = 55466F3A1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h */; };
@@ -83,6 +84,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5521D2CE1C6F52F000C3D085 /* gearSceneAnimationEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneAnimationEditor.cpp; sourceTree = "<group>"; };
+		5521D2CF1C6F52F000C3D085 /* gearSceneAnimationEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneAnimationEditor.h; sourceTree = "<group>"; };
 		55291B311B37487700537BB5 /* cursorUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorUtil.h; sourceTree = "<group>"; };
 		55291B391B37623600537BB5 /* cursorUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorUtil.cpp; sourceTree = "<group>"; };
 		55466F381B3C581300F4802B /* projectSelectorDialogue.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = projectSelectorDialogue.xib; sourceTree = "<group>"; };
@@ -439,6 +442,8 @@
 			isa = PBXGroup;
 			children = (
 				5554F0541AD2717000FD80AF /* assetUserData.h */,
+				5521D2CE1C6F52F000C3D085 /* gearSceneAnimationEditor.cpp */,
+				5521D2CF1C6F52F000C3D085 /* gearSceneAnimationEditor.h */,
 				5554F0551AD2717000FD80AF /* gearSceneConsole.cpp */,
 				5554F0561AD2717000FD80AF /* gearSceneConsole.h */,
 				5554F0571AD2717000FD80AF /* gearSceneFileView.cpp */,
@@ -674,6 +679,7 @@
 				5554F0F51AD2717000FD80AF /* geTextureThumbnail.cpp in Sources */,
 				5554F0FD1AD2717000FD80AF /* renderer.cpp in Sources */,
 				5554F11B1AD2717000FD80AF /* geTextureDlg.cpp in Sources */,
+				5521D2D01C6F52F000C3D085 /* gearSceneAnimationEditor.cpp in Sources */,
 				5554F11D1AD2717000FD80AF /* Sprite2Dx.cpp in Sources */,
 				5554F10C1AD2717000FD80AF /* gePropertyLayers.cpp in Sources */,
 				5554F1181AD2717000FD80AF /* geColorDlg.cpp in Sources */,

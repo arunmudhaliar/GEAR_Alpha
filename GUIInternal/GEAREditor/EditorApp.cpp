@@ -10,6 +10,7 @@
 #include "scenes/gearSceneWorldEditor.h"
 #include "scenes/gearSceneFileView.h"
 #include "scenes/gearSceneSettings.h"
+#include "scenes/gearSceneAnimationEditor.h"
 #include "AssetImporter.h"
 
 #ifdef _WIN32
@@ -270,11 +271,12 @@ void EditorGEARApp::init(SDL_Window* window)
     geLayout* worldEditorLayout=guiManager->getLayoutManager()->getRootLayout()->createAsParent(worldEditorWnd);
     setSceneWorldEditor(worldEditorWnd);
     
-	//gearSceneAnimationEditor* animEditorWnd = new gearSceneAnimationEditor(guiManager->getLayoutManager()->getFontManager());
-	//animEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250);
-	//guiManager->appendWindow(animEditorWnd);
-	//geLayout* animEditorLayout=worldEditorLayout->createBottom(animEditorWnd, 0.2f);
-
+	gearSceneAnimationEditor* animEditorWnd = new gearSceneAnimationEditor(guiManager->getLayoutManager()->getFontManager());
+	animEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250);
+	guiManager->appendWindow(animEditorWnd);
+	geLayout* animEditorLayout=worldEditorLayout->createBottom(animEditorWnd, 0.2f);
+    UNUSED(animEditorLayout);
+    
     gearSceneProject* projectWindow = new gearSceneProject(guiManager->getLayoutManager()->getFontManager());
     projectWindow->create(rendererGL10Instance, NULL, 0, 0, 300, 200, true);
     guiManager->appendWindow(projectWindow);

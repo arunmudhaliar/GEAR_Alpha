@@ -294,7 +294,7 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
 		shader->sendUniform1i("u_diffuse_texture", 0);
 
 		matrix4x4f offset;
-		offset.setPosition(-(-x+cx)*0.5f, -(-y+cy+getTopMarginOffsetHeight())*0.5f, -1.0f);
+		offset.setPosition(x-cx*0.5f, y-(cy+getTopMarginOffsetHeight())*0.5f, -1.0f);
 		const float* u_mvp_m4x4 = (*m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix() * offset).getMatrix();
 		shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
     
@@ -325,7 +325,7 @@ void gearSceneWorldEditor::drawFBO(GLuint t, float x, float y, float cx, float c
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, t);
 		glPushMatrix();
-		glTranslatef(-(-x+cx)*0.5f, -(-y+cy+getTopMarginOffsetHeight())*0.5f, -1.0f);
+        glTranslatef(x-cx*0.5f, y-(cy+getTopMarginOffsetHeight())*0.5f, -1.0f);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 		glPopMatrix();
 
@@ -407,7 +407,7 @@ void gearSceneWorldEditor::drawFOGFBO(GLuint base_t, GLuint depth_t, float x, fl
 
 
 	matrix4x4f offset;
-	offset.setPosition(-(-x+cx)*0.5f, -(-y+cy+getTopMarginOffsetHeight())*0.5f, -1.0f);
+	offset.setPosition(x-cx*0.5f, y-(cy+getTopMarginOffsetHeight())*0.5f, -1.0f);
 	const float* u_mvp_m4x4 = (*m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix() * offset).getMatrix();
 	shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
     
@@ -449,12 +449,16 @@ void gearSceneWorldEditor::drawShadowMapPass()
 void gearSceneWorldEditor::drawWorld()
 {
 	multiPassFBO.BindFBO();
-	//gxCamera* active_cam=m_pMainWorldPtr->getActiveCamera()->getCameraStructure();
+    float viewport_x = 0;
+    float viewport_y = 0;
+    float viewport_cx = m_cSize.x;
+    float viewport_cy = m_cSize.y-getTopMarginOffsetHeight();
+
 	monoWrapper::mono_engine_resize(m_pMainWorldPtr, 
-		m_cPos.x+getIamOnLayout()->getPos().x,
-		(rendererGUI->getViewPortSz().y)-(m_cPos.y+getIamOnLayout()->getPos().y+m_cSize.y),
-		m_cSize.x,
-		m_cSize.y/*-getTopMarginOffsetHeight()*/,
+		viewport_x,
+		viewport_y,
+		viewport_cx,
+		viewport_cy,
 		10.0f, 100000.0f);
     CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -818,10 +822,18 @@ void gearSceneWorldEditor::drawStats()
 
 void gearSceneWorldEditor::drawFBO2FrameBuffer()
 {
-	glViewport(m_cPos.x + getIamOnLayout()->getPos().x,
-		(rendererGUI->getViewPortSz().y) - (m_cPos.y + getIamOnLayout()->getPos().y + m_cSize.y) - getTopMarginOffsetHeight(),
-		m_cSize.x,
-		m_cSize.y /*- getTopMarginOffsetHeight()*/);
+    float topOffsetMargin = getTopMarginOffsetHeight();
+    float diff_y = rendererGUI->getViewPortSz().y-m_cSize.y;
+    
+    float viewport_x = m_cPos.x+getIamOnLayout()->getPos().x;
+    float viewport_y = m_cPos.y-getIamOnLayout()->getPos().y+diff_y;
+    float viewport_cx = m_cSize.x;
+    float viewport_cy = m_cSize.y-topOffsetMargin;
+
+	glViewport(viewport_x,
+		viewport_y,
+		viewport_cx,
+		viewport_cy);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glLoadMatrixf(m_pMainWorldPtr->getRenderer()->getOrthoProjectionMatrix()->getMatrix());
@@ -851,25 +863,25 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 
 	drawFBO(multiPassFBO.getFBOTextureBuffer(0),
 		0.0f,
-		0.0f + getTopMarginOffsetHeight(),
+		0.0f,
 		m_cSize.x,
 		m_cSize.y);
 
-	drawFBO(multiPassFBO.getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10), thumbnailFBOSz, thumbnailFBOSz);
-	drawFBO(brightPassFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 3, thumbnailFBOSz, thumbnailFBOSz);
-	drawFBO(blurFilter.getOutPutFBO().getFBOTextureBuffer(0), m_cSize.x - (thumbnailFBOSz + 10), -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10) * 5, thumbnailFBOSz, thumbnailFBOSz);
+	drawFBO(multiPassFBO.getFBOTextureBuffer(0), (m_cSize.x - thumbnailFBOSz)*0.5f, (m_cSize.y - thumbnailFBOSz)*0.5f, thumbnailFBOSz, thumbnailFBOSz);
+	drawFBO(brightPassFilter.getOutPutFBO().getFBOTextureBuffer(0), (m_cSize.x - thumbnailFBOSz)*0.5f, (m_cSize.y - thumbnailFBOSz)*0.5f-thumbnailFBOSz*1, thumbnailFBOSz, thumbnailFBOSz);
+	drawFBO(blurFilter.getOutPutFBO().getFBOTextureBuffer(0), (m_cSize.x - thumbnailFBOSz)*0.5f, (m_cSize.y - thumbnailFBOSz)*0.5f-thumbnailFBOSz*2, thumbnailFBOSz, thumbnailFBOSz);
 
 	//shadow maps
 	int nLight = -1;
-	int offset = 10;
+	//int offset = 10;
 	for (std::vector<gxLight*>::iterator it = m_pMainWorldPtr->getLightList()->begin(); it != m_pMainWorldPtr->getLightList()->end(); ++it)
 	{
-		nLight++;
 		gxLight* light = *it;
 		if (!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 			continue;
 
-		drawFBO(light->getShadowMapFBO().getFBODepthBuffer(), offset + nLight * (thumbnailFBOSz + 10) + (nLight + 1) * (thumbnailFBOSz + 10) - m_cSize.x, -getTopMarginOffsetHeight() + m_cSize.y - (thumbnailFBOSz + 10), thumbnailFBOSz, thumbnailFBOSz);
+		drawFBO(light->getShadowMapFBO().getFBODepthBuffer(), -m_cSize.x*0.5f + thumbnailFBOSz*(1.5f + nLight), (m_cSize.y - thumbnailFBOSz)*0.5f, thumbnailFBOSz, thumbnailFBOSz);
+        nLight++;
 	}
 	//
 

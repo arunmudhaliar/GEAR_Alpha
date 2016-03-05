@@ -1,24 +1,8 @@
-#ifndef GEARSCENEANIMATIONEDITOR_H
-#define GEARSCENEANIMATIONEDITOR_H
+#pragma once
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
-//#include "../../../GEAREngine/src/core/gxMesh.h"
-//
-//#include "propertyViews/gePropertyObject3d.h"
-//#include "propertyViews/gePropertyTransform.h"
-//#include "propertyViews/gePropertyMaterial.h"
-//#include "propertyViews/gePropertyAnimationSet.h"
-//#include "propertyViews/gePropertySaveMetaData.h"
-//#include "propertyViews/gePropertyLight.h"
-//#include "propertyViews/gePropertyBlurProcessor.h"
-//#include "propertyViews/gePropertyAddComponent.h"
-//#include "propertyViews/gePropertyCamera.h"
-//#include "propertyViews/gePropertyOpenOnEditor.h"
-//#include "propertyViews/gePropertyOctree.h"
-//#include "propertyViews/gePropertyLayers.h"
-//#include "propertyViews/geSettingsFog.h"
-//#include "propertyViews/gePropertyScriptComponent.h"
+#include "gearSceneGraphEditor.h"
 
 class gearSceneAnimationEditor : public geWindow, public MTreeViewObserver
 {
@@ -29,12 +13,23 @@ public:
 
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
 
+    void populatePropertyOfObject3d(object3d* object);
+    
+    void setGraphControlView(geGraphControl* graphView) {   graphControlView=graphView; }
 protected:
 	virtual void onCreate();
+    virtual void onSize(float cx, float cy, int flag);
+
 	virtual void onDraw();
 
 private:
-	geTreeView* m_pAnimationsTreeView;
-};
+    object3d* selectedObject;
+	geTreeView* animationsTreeView;
 
-#endif
+    geGraphControl* graphControlView;
+    Sprite2Dx spriteArray[1];
+    
+    geTreeNode* positionNode[3];
+    geTreeNode* rotationNode[3];
+    geTreeNode* scaleNode[3];
+};

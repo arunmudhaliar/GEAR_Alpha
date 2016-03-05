@@ -25,6 +25,8 @@ public:
 	void MouseLButtonUp(float x, float y, int nFlag);
 	void MouseRButtonDown(float x, float y, int nFlag);
 	void MouseRButtonUp(float x, float y, int nFlag);
+    void MouseMButtonDown(float x, float y, int nFlag);
+    void MouseMButtonUp(float x, float y, int nFlag);
 
 	void MouseMove(float x, float y, int flag);
 	void MouseWheel(int zDelta, int x, int y, int flag);

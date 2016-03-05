@@ -34,6 +34,7 @@ gearScenePropertyEditor* EditorGEARApp::g_pScenePropertyEditorPtr=NULL;
 gearSceneWorldEditor* EditorGEARApp::g_pSceneWorldEditorPtr=NULL;
 gearSceneConsole* EditorGEARApp::g_pSceneConsolePtr=NULL;
 gePropertyOctree* EditorGEARApp::g_pPropertyOctreePtr=NULL;
+gearSceneAnimationEditor* EditorGEARApp::g_pSceneAnimationEditorPtr=NULL;
 std::string EditorApp::g_cAppDirectory="";
 Uint32 EditorApp::g_iAppSpecificEventType_MenuItemCmd=-1;
 
@@ -138,6 +139,22 @@ void EditorApp::MouseRButtonUp(float x, float y, int nFlag)
 
 	guiManager->MouseRButtonUp(x, y, nFlag);
 }
+
+void EditorApp::MouseMButtonDown(float x, float y, int nFlag)
+{
+    if(!is_Initialised) return;
+    
+    guiManager->MouseMButtonDown(x, y, nFlag);
+
+}
+
+void EditorApp::MouseMButtonUp(float x, float y, int nFlag)
+{
+    if(!is_Initialised) return;
+    
+    guiManager->MouseMButtonUp(x, y, nFlag);
+}
+
 
 void EditorApp::MouseMove(float x, float y, int flag)
 {	
@@ -275,8 +292,15 @@ void EditorGEARApp::init(SDL_Window* window)
 	animEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250);
 	guiManager->appendWindow(animEditorWnd);
 	geLayout* animEditorLayout=worldEditorLayout->createBottom(animEditorWnd, 0.2f);
-    UNUSED(animEditorLayout);
+    setAnimationEditor(animEditorWnd);
     
+    gearSceneGraphEditor* graphEditorWnd = new gearSceneGraphEditor(guiManager->getLayoutManager()->getFontManager());
+    graphEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250);
+    guiManager->appendWindow(graphEditorWnd);
+    geLayout* graphEditorLayout=animEditorLayout->createRight(graphEditorWnd, 0.75f);
+    UNUSED(graphEditorLayout);
+    animEditorWnd->setGraphControlView(graphEditorWnd->getGraphControl());
+
     gearSceneProject* projectWindow = new gearSceneProject(guiManager->getLayoutManager()->getFontManager());
     projectWindow->create(rendererGL10Instance, NULL, 0, 0, 300, 200, true);
     guiManager->appendWindow(projectWindow);
@@ -418,6 +442,11 @@ gePropertyOctree* EditorGEARApp::getPropertyOctree()
     return g_pPropertyOctreePtr;
 }
 
+gearSceneAnimationEditor* EditorGEARApp::getAnimationEditor()
+{
+    return g_pSceneAnimationEditorPtr;
+}
+
 void EditorGEARApp::setSceneFileView(gearSceneFileView* ptr)
 {
     g_pSceneFileViewPtr=ptr;
@@ -458,3 +487,7 @@ void EditorGEARApp::setPropertyOctree(gePropertyOctree* ptr)
     g_pPropertyOctreePtr=ptr;
 }
 
+void EditorGEARApp::setAnimationEditor(gearSceneAnimationEditor* ptr)
+{
+    g_pSceneAnimationEditorPtr = ptr;
+}

@@ -50,23 +50,25 @@ void geHorizontalSlider::onPosition(float x, float y, int flag)
 
 void geHorizontalSlider::onSize(float cx, float cy, int flag)
 {
-	const float title_vertLst[8] =
-	{
-		cx-SLIDER_GRABBER_SZ*0.5f,	0,
-		SLIDER_GRABBER_SZ*0.5f,		0,
-		cx-SLIDER_GRABBER_SZ*0.5f,	cy,
-		SLIDER_GRABBER_SZ*0.5f,		cy,
-	};
-	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
-
-	const float grabber_vertLst[8] =
-	{
-		SLIDER_GRABBER_SZ,	-2,
-		0,					-2,
-		SLIDER_GRABBER_SZ,	7,
-		0,					7,
-	};
-	memcpy(vertexBufferGrabberArea.vertexArray, grabber_vertLst, sizeof(grabber_vertLst));
+//	const float title_vertLst[8] =
+//	{
+//		cx-SLIDER_GRABBER_SZ*0.5f,	0,
+//		SLIDER_GRABBER_SZ*0.5f,		0,
+//		cx-SLIDER_GRABBER_SZ*0.5f,	cy,
+//		SLIDER_GRABBER_SZ*0.5f,		cy,
+//	};
+//	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
+    vertexBufferClientArea.updateRect(SLIDER_GRABBER_SZ*0.5f, 0, cx-SLIDER_GRABBER_SZ, cy);
+    
+//	const float grabber_vertLst[8] =
+//	{
+//		SLIDER_GRABBER_SZ,	-2,
+//		0,					-2,
+//		SLIDER_GRABBER_SZ,	7,
+//		0,					7,
+//	};
+//	memcpy(vertexBufferGrabberArea.vertexArray, grabber_vertLst, sizeof(grabber_vertLst));
+    vertexBufferGrabberArea.updateRect(0, -2, SLIDER_GRABBER_SZ, 9);
 
 	const float clientarea_linevertLst[10] =
 	{

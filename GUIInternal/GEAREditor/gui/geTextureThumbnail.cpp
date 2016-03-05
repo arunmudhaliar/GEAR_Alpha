@@ -48,15 +48,16 @@ void geTextureThumbnail::onPosition(float x, float y, int flag)
 
 void geTextureThumbnail::onSize(float cx, float cy, int flag)
 {
-	const float title_vertLst[8] =
-	{
-		cx,	0,
-		0,		0,
-		cx,	cy,
-		0,		cy,
-	};
-	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
-
+//	const float title_vertLst[8] =
+//	{
+//		cx,	0,
+//		0,		0,
+//		cx,	cy,
+//		0,		cy,
+//	};
+//	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
+    vertexBufferClientArea.updateRect(0, 0, cx, cy);
+    
 	const float uvLst[8] =
 	{
 		1,	0,

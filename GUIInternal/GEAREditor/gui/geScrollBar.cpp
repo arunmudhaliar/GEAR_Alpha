@@ -69,15 +69,16 @@ void geScrollBar::onPosition(float x, float y, int flag)
 
 void geScrollBar::onSize(float cx, float cy, int flag)
 {
-	const float clientarea_vertLst[8] =
-	{
-		SCROLLBAR_SIZE,	0,
-		0,	0,
-		SCROLLBAR_SIZE,	cy,
-		0,	cy,
-	};
-	memcpy(vertexBufferClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
-
+//	const float clientarea_vertLst[8] =
+//	{
+//		SCROLLBAR_SIZE,	0,
+//		0,	0,
+//		SCROLLBAR_SIZE,	cy,
+//		0,	cy,
+//	};
+//	memcpy(vertexBufferClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
+    vertexBufferClientArea.updateRect(0, 0, SCROLLBAR_SIZE, cy);
+    
 	geGUIBase::onSize(cx, cy, flag);
 }
 
@@ -112,14 +113,15 @@ void geScrollBar::setConetentHeight(int contentHeight)
 		actualRatio=heightRatio;
 		if(scrollGrabberHeight<20.0f)
 			scrollGrabberHeight=20.0f;
-		const float clientarea_vertLst[8] =
-		{
-			SCROLLBAR_SIZE,	0,
-			0,	0,
-			SCROLLBAR_SIZE,	scrollGrabberHeight,
-			0,	scrollGrabberHeight,
-		};
-		memcpy(vertexBufferGrabberClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
+//		const float clientarea_vertLst[8] =
+//		{
+//			SCROLLBAR_SIZE,	0,
+//			0,	0,
+//			SCROLLBAR_SIZE,	scrollGrabberHeight,
+//			0,	scrollGrabberHeight,
+//		};
+//		memcpy(vertexBufferGrabberClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
+        vertexBufferGrabberClientArea.updateRect(0, 0, SCROLLBAR_SIZE, scrollGrabberHeight);
 	}
 	else
 		scrollGrabberYPosition=0;	//need to check

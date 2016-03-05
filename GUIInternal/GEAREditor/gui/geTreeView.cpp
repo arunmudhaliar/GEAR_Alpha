@@ -26,7 +26,12 @@ geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* na
 		offSetX=(parent->getParent()==NULL)?0:offSetX;
 		setPos(offSetX, GE_TREEVIEWNODE_CY);
 	}
-	setSize(70, GE_TREEVIEWNODE_CY);
+
+    geGUIBase* parentTV = nullptr;
+    if(parent)
+        parentTV = ((geTreeNode*)parent)->getParentTreeView();
+    
+    setSize((parentTV)?parentTV->getSize().x : (parent)?parent->getSize().x : 70, GE_TREEVIEWNODE_CY);
 
 	setClientAreaPrimaryActiveForeColor(0.12f, 0.12f, 0.12f, 1.0f);
 	applyPrimaryColorToVBClientArea();
@@ -134,14 +139,15 @@ void geTreeNode::onPosition(float x, float y, int flag)
 
 void geTreeNode::onSize(float cx, float cy, int flag)
 {
-	const float clientarea_vertLst[8] =
-	{
-		cx,	2,
-		0,	2,
-		cx,	cy-1,
-		0,	cy-1,
-	};
-	memcpy(vertexBufferClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
+//	const float clientarea_vertLst[8] =
+//	{
+//		cx,	2,
+//		0,	2,
+//		cx,	cy-1,
+//		0,	cy-1,
+//	};
+//	memcpy(vertexBufferClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
+    vertexBufferClientArea.updateRect(0, 2, cx, cy-3);
 }
 
 geTreeNode* geTreeNode::getSelectedNode(int x, int y, int& xoff, int& yoff, bool& bClickedOnToggleButton)
@@ -511,6 +517,7 @@ void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* n
 
 void geTreeView::draw()
 {
+    //applyClipIfIamOnMainWindow();
 	glPushMatrix();
 	glTranslatef(m_cPos.x/*-rootTreeNode->getXOffset()*/, (int)(m_cPos.y+virtualYPosition), 0.0f);
 	rootTreeNode->draw();

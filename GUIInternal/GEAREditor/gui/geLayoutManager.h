@@ -32,6 +32,9 @@ protected:
 	virtual bool onMouseRButtonDown(float x, float y, int nFlag);
 	virtual void onMouseRButtonUp(float x, float y, int nFlag);
 
+    virtual bool onMouseMButtonDown(float x, float y, int nFlag);
+    virtual void onMouseMButtonUp(float x, float y, int nFlag);
+
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 

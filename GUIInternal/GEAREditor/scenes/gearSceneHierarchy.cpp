@@ -84,8 +84,8 @@ void gearSceneHierarchy::onDraw()
 void gearSceneHierarchy::onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview)
 {
 	EditorGEARApp::getSceneWorldEditor()->selectedObject3D((object3d*)tvnode->getUserData());
-
 	EditorGEARApp::getScenePropertyEditor()->populatePropertyOfObject((object3d*)tvnode->getUserData());
+    EditorGEARApp::getAnimationEditor()->populatePropertyOfObject3d((object3d*)tvnode->getUserData());
 }
 
 void gearSceneHierarchy::selectObject3dInTreeView(object3d* objtoselect)

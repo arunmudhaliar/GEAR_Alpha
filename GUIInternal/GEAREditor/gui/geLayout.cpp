@@ -229,16 +229,7 @@ void geLayout::onSize(float cx, float cy, int flag)
 	//	cx-1,	cy-1,
 	//	1,	cy-1,
 	//};
-
-	const float title_vertLst[8] =
-	{
-		cx,	0,
-		0,	0,
-		cx,	cy,
-		0,	cy,
-	};
-	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
-
+    vertexBufferClientArea.updateRect(0, 0, cx, cy);
 
 	const float clientarea_linevertLst[6] =
 	{

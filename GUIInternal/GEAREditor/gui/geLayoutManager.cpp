@@ -165,6 +165,25 @@ void geLayoutManager::onMouseRButtonUp(float x, float y, int nFlag)
 {
 }
 
+bool geLayoutManager::onMouseMButtonDown(float x, float y, int nFlag)
+{
+    if(selectedLayout)
+    {
+        return selectedLayout->MouseMButtonDown(x, y, nFlag);
+    }
+    
+    return false;
+}
+
+void geLayoutManager::onMouseMButtonUp(float x, float y, int nFlag)
+{
+    if(selectedLayout)
+    {
+        selectedLayout->MouseMButtonUp(x, y, nFlag);
+    }
+}
+
+
 bool geLayoutManager::onMouseMove(float x, float y, int flag)
 {
 	bool bLayoutChangeLogicIssued=false;

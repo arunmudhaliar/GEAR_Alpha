@@ -119,15 +119,15 @@ void geTextBox::onPosition(float x, float y, int flag)
 
 void geTextBox::onSize(float cx, float cy, int flag)
 {
-	const float title_vertLst[8] =
-	{
-		cx,	0,
-		0,		0,
-		cx,	cy,
-		0,		cy,
-	};
-	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
-
+//	const float title_vertLst[8] =
+//	{
+//		cx,	0,
+//		0,		0,
+//		cx,	cy,
+//		0,		cy,
+//	};
+//	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
+    vertexBufferClientArea.updateRect(0, 0, cx, cy);
 	const float clientarea_linevertLst[10] =
 	{
 		cx,	0,
@@ -252,15 +252,16 @@ bool geTextBox::onMouseLButtonUp(float x, float y, int nFlag)
 	{
 		float full_width=getVirtualEndBound(cursorPosition);
 		//float line_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, len, 0);
-		const float selection_vertLst[8] =
-		{
-			full_width,	0,
-			0,			0,
-			full_width,	m_cSize.y,
-			0,			m_cSize.y,
-		};
-		memcpy(vertexBufferSelectionArea.vertexArray, selection_vertLst, sizeof(selection_vertLst));
-
+//		const float selection_vertLst[8] =
+//		{
+//			full_width,	0,
+//			0,			0,
+//			full_width,	m_cSize.y,
+//			0,			m_cSize.y,
+//		};
+//		memcpy(vertexBufferSelectionArea.vertexArray, selection_vertLst, sizeof(selection_vertLst));
+        vertexBufferClientArea.updateRect(0, 0, full_width, m_cSize.y);
+        
 		setCursorPos(cursorPosition);
 		startCursorSelectionPosition=0;
 		endCursorSelectionPosition=cursorPosition;
@@ -362,14 +363,15 @@ bool geTextBox::onMouseMove(float x, float y, int flag)
 			setCursorPos((int)strlen(startChar));
 		}
 
-		const float selection_vertLst[8] =
-		{
-			rightX,		0,
-			leftX,		0,
-			rightX,		m_cSize.y,
-			leftX,		m_cSize.y,
-		};
-		memcpy(vertexBufferSelectionArea.vertexArray, selection_vertLst, sizeof(selection_vertLst));
+//		const float selection_vertLst[8] =
+//		{
+//			rightX,		0,
+//			leftX,		0,
+//			rightX,		m_cSize.y,
+//			leftX,		m_cSize.y,
+//		};
+//		memcpy(vertexBufferSelectionArea.vertexArray, selection_vertLst, sizeof(selection_vertLst));
+        vertexBufferSelectionArea.updateRect(leftX, 0, rightX-leftX, m_cSize.y);
 	}
 	previousMouseXPosition=x;
 

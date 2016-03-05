@@ -4,6 +4,7 @@
 #include "vector3.h"
 #include "vector2.h"
 #include "gxMath.h"
+#include "quaternion.h"
 
 class DECLSPEC matrix4x4f
 {
@@ -508,8 +509,26 @@ public:
 	vector3f getYAxis()		{	return vector3f(m[4], m[5], m[6]);		}
 	vector3f getZAxis()		{	return vector3f(m[8], m[9], m[10]);		}
 	vector3f getPosition()	{	return vector3f(m[12], m[13], m[14]);	}
-	//vector3f getScale()		{	return vector3f(m[0], m[5], m[10]);		}
+	vector3f getScale()
+    {
+        vector3f value;
+        getScale(value.x, value.y, value.z);
+        return value;
+    }
 	
+    vector3f getRotation()
+    {
+        vector3f value; //x=yaw, y=pitch, z=roll
+        matrix4x4f tm(*this);
+        tm.noScale();
+        
+        Quaternion quat;
+        quat=Quaternion::fromRotationMatrix(tm.getMatrix());
+        quat.getEuler(value.x, value.y, value.z);
+        
+        return value;
+    }
+    
 	void setXAxis(const vector3f& axis)
 	{
 		m[0]=axis.x; m[1]=axis.y; m[2]=axis.z;

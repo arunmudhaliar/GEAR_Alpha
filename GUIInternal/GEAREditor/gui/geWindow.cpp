@@ -25,21 +25,23 @@ void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float 
 
 	is_Movable=false;
 	iamOnLayout=NULL;
+    
+    toolBar=NULL;
+    if(bCreateToolBar)
+    {
+        toolBar = new geToolBar(fontManagerGUI);
+        toolBar->create(renderer, this, 0, -GE_TOOLBAR_HEIGHT/*GE_WND_TITLE_HEIGHT*/, cx, GE_TOOLBAR_HEIGHT);
+    }
+    
+    roundedRectControl.create(titleWidth+30, GE_WND_TITLE_HEIGHT-3, 5);
+    
+    onCreate();
+    
 	setPos(x, y);
 	setSize(cx, cy);
 	setTitleColor(0.12f, 0.12f, 0.12f, 1.0f);
 	setClientColor(0.2f, 0.2f, 0.2f, 1.0f);
 	setSizable(true);
-	toolBar=NULL;
-	if(bCreateToolBar)
-	{
-		toolBar = new geToolBar(fontManagerGUI);
-		toolBar->create(renderer, this, 0, -GE_TOOLBAR_HEIGHT/*GE_WND_TITLE_HEIGHT*/, cx, GE_TOOLBAR_HEIGHT);
-	}
-
-	roundedRectControl.create(titleWidth+30, GE_WND_TITLE_HEIGHT-3, 5);
-
-	onCreate();
 }
 
 void geWindow::show()
@@ -141,26 +143,14 @@ void geWindow::onPosition(float x, float y, int flag)
 
 void geWindow::onSize(float cx, float cy, int flag)
 {
-	const float title_vertLst[8] =
-	{
-		cx,	0,
-		0,	0,
-		cx,	GE_WND_TITLE_HEIGHT,
-		0,	GE_WND_TITLE_HEIGHT,
-	};
-	memcpy(vertexBufferTitle.vertexArray, title_vertLst, sizeof(title_vertLst));
-
+    vertexBufferTitle.updateRect(0, 0, cx, GE_WND_TITLE_HEIGHT);
+    
 	float cy_val=cy-getTopMarginOffsetHeight();
-	if(cy_val<=0.0f)cy_val=0.0f;
-	const float clientarea_vertLst[8] =
-	{
-		cx,	0,
-		0,	0,
-		cx,	cy_val,
-		0,	cy_val,
-	};
-	memcpy(vertexBufferClientArea.vertexArray, clientarea_vertLst, sizeof(clientarea_vertLst));
+	if(cy_val<=0.0f)
+        cy_val=0.0f;
 
+    vertexBufferClientArea.updateRect(0, 0, cx, cy_val);
+    
 
 	const float clientarea_linevertLst[8] =
 	{

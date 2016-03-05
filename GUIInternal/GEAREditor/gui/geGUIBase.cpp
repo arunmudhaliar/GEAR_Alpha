@@ -1,4 +1,5 @@
 #include "geGUIBase.h"
+#include "geWindow.h"
 #include "../win32/cursorUtil.h"
 
 geGUIBase::geGUIBase()
@@ -14,6 +15,7 @@ geGUIBase::geGUIBase()
 	activeWindowPtrOnlyForLayout=NULL;
 	setClientAreaPrimaryActiveForeColor(1.0f, 1.0f, 1.0f);
 	setClientAreaSecondryActiveForeColor(0.5f, 0.5f, 0.5f);
+    mainWindow=nullptr;
 }
 
 geGUIBase::geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fontManager):
@@ -27,7 +29,8 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fon
 	setMouseEntered(false);
 	setMouseBoundCheck(true);
 	userData=NULL;
-
+    mainWindow=nullptr;
+    
 	if(name!=NULL)
 	{
 		if(strlen(name)>sizeof(m_szName))
@@ -75,11 +78,7 @@ void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent)
 	selectedControl=NULL;
 	setMouseEntered(false);
 	setMouseBoundCheck(true);
-	if(parent)
-	{
-		this->parent=parent;
-		this->parent->appendChildControl(this);
-	}
+    setParent(parent);
 }
 
 void geGUIBase::setParent(geGUIBase* parent)
@@ -88,6 +87,7 @@ void geGUIBase::setParent(geGUIBase* parent)
 	{
 		this->parent=parent;
 		this->parent->appendChildControl(this);
+        this->mainWindow = dynamic_cast<geWindow*>(parent);
 	}
 }
 
@@ -229,10 +229,30 @@ void geGUIBase::setClientAreaSecondryActiveForeColor(float r, float g, float b, 
 
 void geGUIBase::setColor(stVertexBuffer* vbuffer, int index, float r, float g, float b, float a)
 {
-	vbuffer->vertexColorArray[index*4+0] = r;
-	vbuffer->vertexColorArray[index*4+1] = g;
-	vbuffer->vertexColorArray[index*4+2] = b;
-	vbuffer->vertexColorArray[index*4+3] = a;
+    vbuffer->setColor(index, r, g, b, a);
+}
+
+void geGUIBase::applyClipIfIamOnMainWindow()
+{
+    if(mainWindow)
+    {
+        geWindow* wnd = (geWindow*)mainWindow;
+        auto wndPos = mainWindow->getPos();
+        auto wndSz = mainWindow->getSize();
+        auto layoutPos = wnd->getIamOnLayout()->getPos();
+        float topMarginHeight = wnd->getTopMarginOffsetHeight();
+        
+        float left = wndPos.x+layoutPos.x;
+        float top = (rendererGUI->getViewPortSz().y)-(wndPos.y+layoutPos.y+m_cSize.y+topMarginHeight);
+        float right = m_cSize.x+m_cPos.x;
+        float bottom = m_cSize.y+m_cPos.y;
+        glViewport(left, top, right, bottom);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        //gluOrtho2D((int)0, (int)(right), (int)(bottom), (int)0);
+        glOrtho((int)0, (int)(right), (int)(bottom), (int)0, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+    }
 }
 
 void geGUIBase::drawLine(float* line, float r, float g, float b, float a, int count, bool bLoop)
@@ -255,44 +275,46 @@ void geGUIBase::drawTriangle(float* buffer, float r, float g, float b, float a, 
 
 void geGUIBase::drawRect(stVertexBuffer* vbuffer)
 {
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, vbuffer->vertexArray);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_FLOAT, 0, vbuffer->vertexColorArray);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-   	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
+    vbuffer->draw(nullptr, 0);
+//	glEnableClientState(GL_VERTEX_ARRAY);
+//	glVertexPointer(2, GL_FLOAT, 0, vbuffer->vertexArray);
+//	glEnableClientState(GL_COLOR_ARRAY);
+//	glColorPointer(4, GL_FLOAT, 0, vbuffer->vertexColorArray);
+//
+//    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//
+//   	glDisableClientState(GL_COLOR_ARRAY);
+//	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void geGUIBase::drawRect(stVertexBuffer* vbuffer, float* textureCoord, unsigned int texID)
 {
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, vbuffer->vertexArray);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_FLOAT, 0, vbuffer->vertexColorArray);
-
-	if(textureCoord)
-	{
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glEnable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texID);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glTexCoordPointer(2, GL_FLOAT, 0, textureCoord);
-	}
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	if(textureCoord)
-	{
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-	}
-
-   	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
+    vbuffer->draw(textureCoord, texID);
+//	glEnableClientState(GL_VERTEX_ARRAY);
+//	glVertexPointer(2, GL_FLOAT, 0, vbuffer->vertexArray);
+//	glEnableClientState(GL_COLOR_ARRAY);
+//	glColorPointer(4, GL_FLOAT, 0, vbuffer->vertexColorArray);
+//
+//	if(textureCoord)
+//	{
+//		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+//		glEnable(GL_TEXTURE_2D);
+//		glActiveTexture(GL_TEXTURE0);
+//		glBindTexture(GL_TEXTURE_2D, texID);
+//		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+//		glTexCoordPointer(2, GL_FLOAT, 0, textureCoord);
+//	}
+//    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//
+//	if(textureCoord)
+//	{
+//		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+//		glBindTexture(GL_TEXTURE_2D, 0);
+//		glDisable(GL_TEXTURE_2D);
+//	}
+//
+//   	glDisableClientState(GL_COLOR_ARRAY);
+//	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 bool geGUIBase::isPointInsideWindow(float x, float y)
@@ -399,6 +421,76 @@ void geGUIBase::MouseRButtonUp(float x, float y, int nFlag)
 
 }
 
+bool geGUIBase::MouseMButtonDown(float x, float y, int nFlag)
+{
+    bool commandUsed=false;
+    if(isPointInsideWindow(x, y) || !isMouseBoundCheckEnabled())
+    {
+        if(!commandUsed)
+        {
+            if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+            {
+                commandUsed=getActiveWindowPtrOnlyForLayout()->MouseMButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+                if(commandUsed)
+                    return commandUsed;
+            }
+            else
+            {
+                for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
+                {
+                    geGUIBase* obj = *it;
+                    commandUsed=obj->MouseMButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+                    if(commandUsed)
+                        return commandUsed;
+                }
+            }
+        }
+        
+        if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight()))
+        {
+            commandUsed=onMouseMButtonDown(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+            if(commandUsed)
+                selectedControl=this;
+        }
+    }
+    
+    return commandUsed;
+}
+
+void geGUIBase::MouseMButtonUp(float x, float y, int nFlag)
+{
+    bool bHandled=false;
+    if(isPointInsideWindow(x, y) || !isMouseBoundCheckEnabled())
+    {
+        if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
+        {
+            getActiveWindowPtrOnlyForLayout()->MouseMButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+        }
+        else
+        {
+            for(std::vector<geGUIBase*>::iterator it = childControlList.begin(); it != childControlList.end(); ++it)
+            {
+                geGUIBase* obj = *it;
+                obj->MouseMButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+            }
+        }
+        
+        if(isPointInsideClientArea(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight())  || !isMouseBoundCheckEnabled())
+        {
+            onMouseMButtonUp(x-getPos().x, y-getPos().y-getTopMarginOffsetHeight(), nFlag);
+            //if(selectedControl==this)
+            //	selectedControl=NULL;
+        }
+    }
+    
+//    if(selectedControl)
+//    {
+//        //if(!bHandled)
+//        selectedControl->CancelEngagedControls();
+//        selectedControl=NULL;
+//    }
+}
+
 bool geGUIBase::MouseMove(float x, float y, int flag)
 {
 	if(guiID==GEGUI_LAYOUT && getActiveWindowPtrOnlyForLayout())	//layout hack
@@ -469,6 +561,15 @@ bool geGUIBase::onMouseRButtonDown(float x, float y, int nFlag)
 }
 
 void geGUIBase::onMouseRButtonUp(float x, float y, int nFlag)
+{
+}
+
+bool geGUIBase::onMouseMButtonDown(float x, float y, int nFlag)
+{
+    return false;
+}
+
+void geGUIBase::onMouseMButtonUp(float x, float y, int nFlag)
 {
 }
 

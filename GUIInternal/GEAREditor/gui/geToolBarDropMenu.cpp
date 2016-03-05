@@ -68,16 +68,14 @@ void geToolBarDropMenu::onPosition(float x, float y, int flag)
 
 void geToolBarDropMenu::onSize(float cx, float cy, int flag)
 {
-	const float title_vertLst[8] =
-	{
-		cx-1,	0,
-		-1,	0,
-		cx-1,	cy,
-		-1,	cy,
-	};
-
-	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
-
+//	const float title_vertLst[8] =
+//	{
+//		cx-1,	0,
+//		-1,	0,
+//		cx-1,	cy,
+//		-1,	cy,
+//	};
+    vertexBufferClientArea.updateRect(-1, 0, cx, cy);
 	const float clientarea_linevertLst[4] =
 	{
 		cx-1,	0,

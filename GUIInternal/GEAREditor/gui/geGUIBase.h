@@ -41,9 +41,101 @@
 #define GEGUI_WINDOW_COLUMN		GEGUI_BASE+17
 #define GEGUI_STATICTEXTBOX		GEGUI_BASE+18
 #define GEGUI_SEPERATOR			GEGUI_BASE+19
+#define GEGUI_GRAPHCONTROL		GEGUI_BASE+20
 
 struct stVertexBuffer
 {
+    stVertexBuffer()
+    {
+        memset(vertexColorArray, 0, sizeof(vertexColorArray));
+        memset(vertexArray, 0, sizeof(vertexArray));
+    }
+    
+    void setRect(const gxRectf& rect, const vector4f& color)
+    {
+        updateRect(rect.m_pos.x, rect.m_pos.y, rect.m_size.x, rect.m_size.y);
+        
+        const float colorBuffer[16] =
+        {
+            color.x, color.y, color.z, color.w,
+            color.x, color.y, color.z, color.w,
+            color.x, color.y, color.z, color.w,
+            color.x, color.y, color.z, color.w
+        };
+        memcpy(vertexColorArray, colorBuffer, sizeof(colorBuffer));
+    }
+    
+    void setRect(const gxRectf& rect, const vector4f& upperColor, const vector4f& lowerColor)
+    {
+        updateRect(rect.m_pos.x, rect.m_pos.y, rect.m_size.x, rect.m_size.y);
+        
+        const float colorBuffer[16] =
+        {
+            upperColor.x, upperColor.y, upperColor.z, upperColor.w,
+            upperColor.x, upperColor.y, upperColor.z, upperColor.w,
+            lowerColor.x, lowerColor.y, lowerColor.z, lowerColor.w,
+            lowerColor.x, lowerColor.y, lowerColor.z, lowerColor.w
+        };
+        memcpy(vertexColorArray, colorBuffer, sizeof(colorBuffer));
+    }
+    
+    void setColor(int index, float r, float g, float b, float a)
+    {
+        vertexColorArray[index*4+0] = r;
+        vertexColorArray[index*4+1] = g;
+        vertexColorArray[index*4+2] = b;
+        vertexColorArray[index*4+3] = a;
+    }
+    
+    void updateRect(float x, float y, float cx, float cy)
+    {
+        rect.set(x, y, cx, cy);
+        const float vert[8] =
+        {
+            x+cx,	y,
+            x,      y,
+            x+cx,	y+cy,
+            x,      y+cy,
+        };
+        memcpy(vertexArray, vert, sizeof(vert));
+    }
+    
+    void draw(float* textureCoord, unsigned int texID)
+    {
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_FLOAT, 0, vertexArray);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glColorPointer(4, GL_FLOAT, 0, vertexColorArray);
+        
+        if(textureCoord)
+        {
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glEnable(GL_TEXTURE_2D);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texID);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+            glTexCoordPointer(2, GL_FLOAT, 0, textureCoord);
+        }
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        
+        if(textureCoord)
+        {
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDisable(GL_TEXTURE_2D);
+        }
+        
+        glDisableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
+    
+    void reset()
+    {
+        updateRect(0, 0, 0, 0);
+    }
+    const gxRectf& getRect()    {   return rect;    }
+private:
+    gxRectf rect;
 	float vertexArray[8];		//4*2
 	float vertexColorArray[16];	//rgba 4*4
 };
@@ -51,7 +143,6 @@ struct stVertexBuffer
 class MGUIObserver;
 class geGUIBase
 {
-private:
 public:
 	geGUIBase();
 
@@ -101,6 +192,9 @@ public:
 
 	bool MouseRButtonDown(float x, float y, int nFlag);
 	void MouseRButtonUp(float x, float y, int nFlag);
+
+    bool MouseMButtonDown(float x, float y, int nFlag);
+    void MouseMButtonUp(float x, float y, int nFlag);
 
 	bool MouseMove(float x, float y, int flag);
 	void MouseWheel(int zDelta, int x, int y, int flag);
@@ -156,8 +250,10 @@ public:
 
     geFontManager* getFontManager()     {   return fontManagerGUI;   }
     
+    bool isMouseBoundCheckEnabled()		{	return is_MouseBoundCheckEnabled;	}
+    void setMouseBoundCheck(bool flag)	{	is_MouseBoundCheckEnabled=flag;		}
+    
 protected:
-
 	virtual void onCreate();
 
 	virtual void onPosition(float x, float y, int flag);
@@ -168,6 +264,8 @@ protected:
 	virtual bool onMouseLButtonUp(float x, float y, int nFlag);
 	virtual bool onMouseRButtonDown(float x, float y, int nFlag);
 	virtual void onMouseRButtonUp(float x, float y, int nFlag);
+    virtual bool onMouseMButtonDown(float x, float y, int nFlag);
+    virtual void onMouseMButtonUp(float x, float y, int nFlag);
 
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
@@ -206,11 +304,9 @@ protected:
 
 	bool isMouseEntered()			{	return is_MouseEntered;	}
 	void setMouseEntered(bool flag)	{	is_MouseEntered=flag;	}
-
-	bool isMouseBoundCheckEnabled()		{	return is_MouseBoundCheckEnabled;	}
-	void setMouseBoundCheck(bool flag)	{	is_MouseBoundCheckEnabled=flag;		}
-
+    
     void doDragDropSynchronous(MDropData* dropData);
+    geGUIBase* getMainWindow()  {   return mainWindow;  }
     
 	unsigned short guiID;
 	char m_szName[256];
@@ -239,6 +335,10 @@ protected:
 	
 	stVertexBuffer vertexBufferClientArea;
     geFontManager* fontManagerGUI;
+    geGUIBase* mainWindow;
+    
+private:
+    void applyClipIfIamOnMainWindow();
 };
 
 class MGUIObserver

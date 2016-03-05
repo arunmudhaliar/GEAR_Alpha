@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5521D2D01C6F52F000C3D085 /* gearSceneAnimationEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5521D2CE1C6F52F000C3D085 /* gearSceneAnimationEditor.cpp */; };
+		5521D2DC1C70768C00C3D085 /* geGraphControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5521D2DA1C70768C00C3D085 /* geGraphControl.cpp */; };
 		55291B3A1B37623600537BB5 /* cursorUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55291B391B37623600537BB5 /* cursorUtil.cpp */; };
 		55466F391B3C581300F4802B /* projectSelectorDialogue.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55466F381B3C581300F4802B /* projectSelectorDialogue.xib */; };
 		55466F3B1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h in Sources */ = {isa = PBXBuildFile; fileRef = 55466F3A1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h */; };
@@ -81,11 +82,14 @@
 		55AB5CC61C048959005B8747 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55AB5CC51C048959005B8747 /* Images.xcassets */; };
 		55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */; };
 		55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */; };
+		55C4753D1C8B59E8000AA027 /* gearSceneGraphEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5521D2CE1C6F52F000C3D085 /* gearSceneAnimationEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneAnimationEditor.cpp; sourceTree = "<group>"; };
 		5521D2CF1C6F52F000C3D085 /* gearSceneAnimationEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneAnimationEditor.h; sourceTree = "<group>"; };
+		5521D2DA1C70768C00C3D085 /* geGraphControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geGraphControl.cpp; sourceTree = "<group>"; };
+		5521D2DB1C70768C00C3D085 /* geGraphControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geGraphControl.h; sourceTree = "<group>"; };
 		55291B311B37487700537BB5 /* cursorUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorUtil.h; sourceTree = "<group>"; };
 		55291B391B37623600537BB5 /* cursorUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorUtil.cpp; sourceTree = "<group>"; };
 		55466F381B3C581300F4802B /* projectSelectorDialogue.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = projectSelectorDialogue.xib; sourceTree = "<group>"; };
@@ -244,6 +248,8 @@
 		55BEFD371AD59EC40071A2D5 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		55BEFD3B1AD59F480071A2D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneGraphEditor.cpp; sourceTree = "<group>"; };
+		55C4753C1C8B59E8000AA027 /* gearSceneGraphEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneGraphEditor.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -365,6 +371,8 @@
 		5554F01C1AD2717000FD80AF /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				5521D2DA1C70768C00C3D085 /* geGraphControl.cpp */,
+				5521D2DB1C70768C00C3D085 /* geGraphControl.h */,
 				5554F01D1AD2717000FD80AF /* geButton.cpp */,
 				5554F01E1AD2717000FD80AF /* geButton.h */,
 				5554F01F1AD2717000FD80AF /* geColorControl.cpp */,
@@ -442,8 +450,10 @@
 			isa = PBXGroup;
 			children = (
 				5554F0541AD2717000FD80AF /* assetUserData.h */,
-				5521D2CE1C6F52F000C3D085 /* gearSceneAnimationEditor.cpp */,
+				55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */,
+				55C4753C1C8B59E8000AA027 /* gearSceneGraphEditor.h */,
 				5521D2CF1C6F52F000C3D085 /* gearSceneAnimationEditor.h */,
+				5521D2CE1C6F52F000C3D085 /* gearSceneAnimationEditor.cpp */,
 				5554F0551AD2717000FD80AF /* gearSceneConsole.cpp */,
 				5554F0561AD2717000FD80AF /* gearSceneConsole.h */,
 				5554F0571AD2717000FD80AF /* gearSceneFileView.cpp */,
@@ -667,11 +677,13 @@
 				5554F0F71AD2717000FD80AF /* geToolBarDropMenu.cpp in Sources */,
 				5554F1131AD2717000FD80AF /* gePropertyScriptComponent.cpp in Sources */,
 				5554F0EE1AD2717000FD80AF /* geLayout.cpp in Sources */,
+				5521D2DC1C70768C00C3D085 /* geGraphControl.cpp in Sources */,
 				5554F1091AD2717000FD80AF /* gePropertyAddComponent.cpp in Sources */,
 				5554F10F1AD2717000FD80AF /* gePropertyObject3d.cpp in Sources */,
 				5554F10D1AD2717000FD80AF /* gePropertyLight.cpp in Sources */,
 				5554F1071AD2717000FD80AF /* gearSceneWorldEditor.cpp in Sources */,
 				5554F1171AD2717000FD80AF /* geAssetImportDlg.cpp in Sources */,
+				55C4753D1C8B59E8000AA027 /* gearSceneGraphEditor.cpp in Sources */,
 				5554F0FC1AD2717000FD80AF /* ConfirmationDialog.cpp in Sources */,
 				5554F0E61AD2717000FD80AF /* AssetImporter.cpp in Sources */,
 				5554F0F61AD2717000FD80AF /* geToolBar.cpp in Sources */,

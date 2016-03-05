@@ -15,6 +15,7 @@
 #include "scenes/gearSceneConsole.h"
 #include "scenes/propertyViews/gePropertyOctree.h"
 #include "scenes/gearSceneAnimationEditor.h"
+#include "scenes/gearSceneGraphEditor.h"
 #include <string>
 
 #ifdef _WIN32
@@ -43,6 +44,8 @@ public:
 	void MouseLButtonUp(float x, float y, int nFlag);
 	void MouseRButtonDown(float x, float y, int nFlag);
 	void MouseRButtonUp(float x, float y, int nFlag);
+    void MouseMButtonDown(float x, float y, int nFlag);
+    void MouseMButtonUp(float x, float y, int nFlag);
 
 	void MouseMove(float x, float y, int flag);
 	void MouseWheel(int zDelta, int x, int y, int flag);
@@ -122,6 +125,9 @@ public:
     
     static void setPropertyOctree(gePropertyOctree* ptr);
     static gePropertyOctree* getPropertyOctree();
+    
+    static void setAnimationEditor(gearSceneAnimationEditor* ptr);
+    static gearSceneAnimationEditor* getAnimationEditor();
 
     static char g_cszProjectHomeDirectory[FILENAME_MAX];
     static gearSceneFileView* g_pSceneFileViewPtr;
@@ -133,4 +139,6 @@ public:
     static gearSceneConsole* g_pSceneConsolePtr;
     
     static gePropertyOctree* g_pPropertyOctreePtr;
+    
+    static gearSceneAnimationEditor* g_pSceneAnimationEditorPtr;
 };

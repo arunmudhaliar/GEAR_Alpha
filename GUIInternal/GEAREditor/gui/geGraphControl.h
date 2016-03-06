@@ -1,9 +1,10 @@
 #pragma once
 
 #include "geGUIBase.h"
+#include "geScrollBar.h"
 #include "../../../GEAREngine/src/core/gxAnimationTrack.h"
 
-class geGraphControl : public geGUIBase
+class geGraphControl : public geGUIBase, public MScrollBarObserver
 {
 public:
 	geGraphControl(geFontManager* fontmanager);
@@ -12,7 +13,7 @@ public:
 	void create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy, int lowerLimit, int upperLimit);
 	virtual void draw();
 	
-    void setTrack(gxAnimationTrack* track);
+    void setTrack(IAnimationTrack* track);
     
     void showPositionValues(int coordinate);
     void showRotationValues(int coordinate);
@@ -31,7 +32,11 @@ protected:
     virtual bool onMouseMove(float x, float y, int flag);
     virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
-    gxAnimationTrack* animationTrack;
+    virtual void onScrollBarChange(geScrollBar* scrollbar);
+    virtual void onResizeComplete();
+    virtual void onCancelEngagedControls();
+    
+    IAnimationTrack* animationTrack;
     
 private:
     void resetShowFlags();
@@ -39,8 +44,6 @@ private:
     float divisions;
     int lowerLimit;
     int upperLimit;
-    matrix4x4f graphMatrix;
-    matrix4x4f graphPositionMatrix;
     vector2f pivot;
     vector2f previousPivot;
     vector2f previousClickPivot;
@@ -65,4 +68,7 @@ private:
     bool dragEnabled;
     
     stVertexBuffer timeScaleVertexBuffer;
+    stVertexBuffer timeScaleShadeVertexBuffer;
+    
+    geScrollBar* horizontalScrollBar;
 };

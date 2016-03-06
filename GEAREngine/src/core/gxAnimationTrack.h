@@ -1,48 +1,19 @@
 #pragma once
 
-#include "basicIncludes.h"
-#include "matrix4x4f.h"
-#include "../util/gxFile.h"
+#include "IAnimationTrack.h"
 
-class object3d;
-class DECLSPEC gxAnimationTrack
+class DECLSPEC gxAnimationTrack : public IAnimationTrack
 {
 public:
 	gxAnimationTrack();
 	~gxAnimationTrack();
 
-	void setFPS(int fps)				{	animationFPS=fps;			}
-	void setTotalFrames(int nFrames)	{	numberOfFrames=nFrames;	}
-
-	int getFPS()			{	return animationFPS;		}
-	int getTotalFrames()	{	return numberOfFrames;	}
-
-	matrix4x4f* allocateTrack();
-
-	matrix4x4f* getTrack()	{	return animationTrack;	}
-
-	void setCurrentFrame(int currentFrame)
-	{
-		currentAnimationFrame=currentFrame;
-	}
-
-	int getCurrentFrame()	{	return currentAnimationFrame;	}
-
-	//void setObject3d(object3d* obj);
-
-	void setName(const char* name)	{	GX_STRCPY(m_szName, name);	}
-	const char* getName()			{	return m_szName;			}
+    matrix4x4f* allocateFrames();
 
 	void write(gxFile& file);
 	void read(gxFile& file);
-
-private:
-	int animationFPS;
-	int numberOfFrames;
-	int currentAnimationFrame;
-	matrix4x4f* animationTrack;
-	//object3d* m_pObjectPtr;	//must not delete this pointer
-	char m_szName[256];
+    
+    int getAnimationTrackType()     {   return 1;   }
+    bool getFrame(int frame, matrix4x4f& mat);
+    bool getFrameFromTime(float time, matrix4x4f& mat);
 };
-
-#include "object3d.h"

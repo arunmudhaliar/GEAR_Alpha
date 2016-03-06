@@ -147,6 +147,8 @@
 		5554EFCC1AD26E6500FD80AF /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFCB1AD26E6500FD80AF /* OpenAL.framework */; };
 		5554EFCE1AD26E6C00FD80AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */; };
 		5554EFD21AD26EA200FD80AF /* libmono-2.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */; };
+		5580DE741C8C442200B5D6D5 /* IAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */; };
+		5580DE751C8C442200B5D6D5 /* IAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */; };
 		558F92AA1B39E38B00FCA130 /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 558F92A91B39E38B00FCA130 /* libfbxsdk.a */; };
 		55AB5CB91C0481D3005B8747 /* BlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */; };
 		55AB5CBA1C0481D3005B8747 /* BlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB21C0481D3005B8747 /* BlurFilter.h */; };
@@ -303,6 +305,8 @@
 		5554EFCB1AD26E6500FD80AF /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libmono-2.0.1.dylib"; path = "../../../../../Desktop/monoForMac/lib/libmono-2.0.1.dylib"; sourceTree = "<group>"; };
+		5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAnimationTrack.cpp; sourceTree = "<group>"; };
+		5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnimationTrack.h; sourceTree = "<group>"; };
 		558F92A91B39E38B00FCA130 /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
 		55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurFilter.cpp; sourceTree = "<group>"; };
 		55AB5CB21C0481D3005B8747 /* BlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurFilter.h; sourceTree = "<group>"; };
@@ -412,6 +416,8 @@
 				5554EA931AD26CEC00FD80AF /* gxAnimation.h */,
 				5554EA941AD26CEC00FD80AF /* gxAnimationSet.cpp */,
 				5554EA951AD26CEC00FD80AF /* gxAnimationSet.h */,
+				5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */,
+				5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */,
 				5554EA961AD26CEC00FD80AF /* gxAnimationTrack.cpp */,
 				5554EA971AD26CEC00FD80AF /* gxAnimationTrack.h */,
 				5554EA981AD26CEC00FD80AF /* gxCamera.cpp */,
@@ -652,6 +658,7 @@
 				5554ED8E1AD26CED00FD80AF /* vector2.h in Headers */,
 				5554ED6D1AD26CED00FD80AF /* gxLight.h in Headers */,
 				5554EF9C1AD26CED00FD80AF /* glew.h in Headers */,
+				5580DE751C8C442200B5D6D5 /* IAnimationTrack.h in Headers */,
 				5554EFB11AD26CED00FD80AF /* pngLoader.h in Headers */,
 				5554ED8D1AD26CED00FD80AF /* transform.h in Headers */,
 				5554EFB51AD26CED00FD80AF /* crc32.h in Headers */,
@@ -768,6 +775,7 @@
 				5554ED6C1AD26CED00FD80AF /* gxLight.cpp in Sources */,
 				5554ED661AD26CED00FD80AF /* gxAnimationTrack.cpp in Sources */,
 				5554ED511AD26CED00FD80AF /* SoundEngine.cpp in Sources */,
+				5580DE741C8C442200B5D6D5 /* IAnimationTrack.cpp in Sources */,
 				5554ED991AD26CED00FD80AF /* png.c in Sources */,
 				5554ED601AD26CED00FD80AF /* GEARAsset.cpp in Sources */,
 				5554EFA51AD26CED00FD80AF /* gxCrc32.cpp in Sources */,

@@ -16,9 +16,9 @@ geToolBarButton::geToolBarButton(rendererGL10* renderer, const char* name, geGUI
 	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
 	setSize(width+20, parent->getSize().y);
 
-	setClientAreaPrimaryActiveForeColor(0.2f, 0.2f, 0.2f, 1.0f);
+	setClientAreaPrimaryActiveForeColor(0.3f, 0.3f, 0.3f, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
-	setClientAreaSecondryActiveForeColor(0.4, 0.4, 0.4, 1.0f);
+	setClientAreaSecondryActiveForeColor(0.32, 0.32, 0.32, 1.0f);
 
 	isImageLoaded=false;
 

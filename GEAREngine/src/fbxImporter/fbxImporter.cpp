@@ -308,7 +308,8 @@ bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node
 	int numStacks = fbxScene.GetSrcObjectCount<FbxAnimStack>();
 	gxAnimation* animationController=NULL;
 	gxAnimationTrack* animTrack=NULL;
-
+    matrix4x4f* componentTrack=nullptr;
+    
 	for(int x=0;x<numStacks;x++)
 	{
 		FbxAnimStack* pAnimStack = FbxCast<FbxAnimStack>(fbxScene.GetSrcObject<FbxAnimStack>(x));
@@ -351,13 +352,11 @@ bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node
 					animTrack->setName(fbxNode.GetName());
 					animTrack->setFPS((int)lFrameRate);
 					animTrack->setTotalFrames((int)nGlobalFrame);
-					animTrack->allocateTrack();
+					componentTrack = animTrack->allocateFrames();
 					parent_obj_node->setAnimationTrack(animTrack);
 					animSet->appendTrack(animTrack);
 				}
 
-
-				matrix4x4f* componentTrack=animTrack->getTrack();
 				FbxTime tt(0);
 				FbxLongLong ti=0;
 				double frame_time=0;

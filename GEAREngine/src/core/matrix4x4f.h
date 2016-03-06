@@ -291,7 +291,7 @@ public:
 		return res;
 	}
 	
-	void getScale(float& sx, float& sy, float& sz)
+	void getScale(float& sx, float& sy, float& sz) const
 	{
 		// Compute the scaling part.
 		sx = gxMath::SQRT( m[ 0 ] * m[ 0 ] + m[ 1 ] * m[ 1 ] + m[ 2 ] * m[ 2 ] );
@@ -505,18 +505,18 @@ public:
 		matrixChanged();
 	}
 	
-	vector3f getXAxis()		{	return vector3f(m[0], m[1], m[2]);		}
-	vector3f getYAxis()		{	return vector3f(m[4], m[5], m[6]);		}
-	vector3f getZAxis()		{	return vector3f(m[8], m[9], m[10]);		}
-	vector3f getPosition()	{	return vector3f(m[12], m[13], m[14]);	}
-	vector3f getScale()
+	vector3f getXAxis()	const	{	return vector3f(m[0], m[1], m[2]);		}
+	vector3f getYAxis()	const	{	return vector3f(m[4], m[5], m[6]);		}
+	vector3f getZAxis()	const	{	return vector3f(m[8], m[9], m[10]);		}
+	vector3f getPosition()	const {	return vector3f(m[12], m[13], m[14]);	}
+	vector3f getScale() const
     {
         vector3f value;
         getScale(value.x, value.y, value.z);
         return value;
     }
 	
-    vector3f getRotation()
+    vector3f getRotation() const
     {
         vector3f value; //x=yaw, y=pitch, z=roll
         matrix4x4f tm(*this);

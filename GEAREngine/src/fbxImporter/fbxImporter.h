@@ -7,6 +7,7 @@
 #include "../core/object3d.h"
 #include "../core/gxMesh.h"
 #include "../core/gxSkinnedMesh.h"
+#include "../core/gxAnimationTrack.h"
 
 class DECLSPEC fbxImporter
 {

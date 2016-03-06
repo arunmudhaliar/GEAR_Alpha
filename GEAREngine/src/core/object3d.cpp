@@ -251,9 +251,7 @@ void object3d::updateAnimationFrameToObject3d(int frame)
 {
 	if(animationTrack)
 	{
-		matrix4x4f* trackInfo=animationTrack->getTrack();
-		if(frame<animationTrack->getTotalFrames())
-			*(matrix4x4f*)this = trackInfo[frame];
+        animationTrack->getFrame(frame, *(matrix4x4f*)this);
 	}
 
 #ifdef USE_BXLIST
@@ -535,7 +533,7 @@ void object3d::setAnimationController(gxAnimation* controller)
 	animationController=controller;
 }
 
-void object3d::setAnimationTrack(gxAnimationTrack* track)
+void object3d::setAnimationTrack(IAnimationTrack* track)
 {
 	animationTrack=track;
 	//if(animationTrack)
@@ -599,10 +597,8 @@ gxAnimationSet* object3d::applyAnimationSetRecursive(gxAnimationSet* animset)
 		return NULL;
 
 	clearAnimTrackOnAllNodes();
-	std::vector<gxAnimationTrack*>* trackList=animset->getTrackList();
-	for(std::vector<gxAnimationTrack*>::iterator it = trackList->begin(); it != trackList->end(); ++it)
+    for(auto animationTrack : animset->getTrackList())
 	{
-		gxAnimationTrack* animationTrack = *it;
 		object3d* obj_found=find(animationTrack->getName());
 		if(obj_found)
 		{

@@ -1,4 +1,5 @@
 #include "gxAnimationSet.h"
+#include "gxAnimationTrack.h"
 
 gxAnimationSet::gxAnimationSet(const char* animationName)
 {
@@ -10,15 +11,14 @@ gxAnimationSet::gxAnimationSet(const char* animationName)
 
 gxAnimationSet::~gxAnimationSet()
 {
-	for(std::vector<gxAnimationTrack*>::iterator it = animationTracks.begin(); it != animationTracks.end(); ++it)
+    for(auto animationTrack : animationTracks)
 	{
-		gxAnimationTrack* animationTrack = *it;
 		GX_DELETE(animationTrack);
 	}
 	animationTracks.clear();
 }
 
-void gxAnimationSet::appendTrack(gxAnimationTrack* track)
+void gxAnimationSet::appendTrack(IAnimationTrack* track)
 {
 	animationFPS=track->getFPS();
 	if(track->getTotalFrames()>numberOfFrames)
@@ -30,9 +30,9 @@ void gxAnimationSet::write(gxFile& file)
 {
 	file.Write(m_szName);
 	file.Write((int)animationTracks.size());
-	for(std::vector<gxAnimationTrack*>::iterator it = animationTracks.begin(); it != animationTracks.end(); ++it)
+	for(auto animationTrack : animationTracks)
 	{
-		gxAnimationTrack* animationTrack = *it;
+        file.Write(animationTrack->getAnimationTrackType());
 		animationTrack->write(file);
 	}
 }
@@ -46,9 +46,23 @@ void gxAnimationSet::read(gxFile& file)
 	file.Read(nTrack);
 	for(int x=0;x<nTrack;x++)
 	{
-		gxAnimationTrack* animationTrack = new gxAnimationTrack();
-		animationTrack->read(file);
-		appendTrack(animationTrack);
+        int animationTrackType = 0;
+        file.Read(animationTrackType);
+        
+        switch (animationTrackType)
+        {
+            case 1:
+            {
+                gxAnimationTrack* animationTrack = new gxAnimationTrack();
+                animationTrack->read(file);
+                appendTrack(animationTrack);
+            }
+                break;
+                
+            default:
+                printf("\nERROR: Unkown animation track type %d\n", animationTrackType);
+                break;
+        }
 	}
 }
 

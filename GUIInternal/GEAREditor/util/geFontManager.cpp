@@ -235,7 +235,7 @@ float geFont::getCharWidth(char charValue)
 }
 
 #define CHAR_DELAY  0.05f
-int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCentered, bool bShadowed, float elapsetime)
+int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCentered, bool bShadowed, float elapsetime, float angle)
 {
     int retVal=1;
     int actual_len=(int)strlen(str);
@@ -388,12 +388,14 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     {   
         glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
         glTranslatef(x+1, y+1+fontYOffset, 0);
+        glRotatef(angle, 0, 0, 1);
         glDrawArrays(GL_TRIANGLES, 0, cntr*6);
         glTranslatef(-1, -1, 0);
     }
     else
     {
         glTranslatef(x, y+fontYOffset, 0);
+        glRotatef(angle, 0, 0, 1);
     }
     glColor4f(colorRGBA[0], colorRGBA[1], colorRGBA[2], colorRGBA[3]);
     glDrawArrays(GL_TRIANGLES, 0, cntr*6);

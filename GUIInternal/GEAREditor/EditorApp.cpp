@@ -289,13 +289,13 @@ void EditorGEARApp::init(SDL_Window* window)
     setSceneWorldEditor(worldEditorWnd);
     
 	gearSceneAnimationEditor* animEditorWnd = new gearSceneAnimationEditor(guiManager->getLayoutManager()->getFontManager());
-	animEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250);
+	animEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250, true);
 	guiManager->appendWindow(animEditorWnd);
 	geLayout* animEditorLayout=worldEditorLayout->createBottom(animEditorWnd, 0.2f);
     setAnimationEditor(animEditorWnd);
     
     gearSceneGraphEditor* graphEditorWnd = new gearSceneGraphEditor(guiManager->getLayoutManager()->getFontManager());
-    graphEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250);
+    graphEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 400, 250, true);
     guiManager->appendWindow(graphEditorWnd);
     geLayout* graphEditorLayout=animEditorLayout->createRight(graphEditorWnd, 0.75f);
     UNUSED(graphEditorLayout);

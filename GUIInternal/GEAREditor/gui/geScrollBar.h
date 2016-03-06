@@ -15,25 +15,38 @@ public:
 class geScrollBar : public geGUIBase
 {
 public:
+    
+    enum ESCROLLBARTYPE
+    {
+        VERTICAL,
+        HORIZONTAL
+    };
+    
 	geScrollBar(geFontManager* fontmanager);
 
-	void create(rendererGL10* renderer, geGUIBase* parent, MScrollBarObserver* observer);
+	void create(rendererGL10* renderer, geGUIBase* parent, MScrollBarObserver* observer, ESCROLLBARTYPE type=VERTICAL);
 	virtual ~geScrollBar();
 
 	void resetScrollBar();
 
 	virtual void draw();
 
-	void setConetentHeight(int contentHeight);
-	float getScrollGrabberYPos()	{	return scrollGrabberYPosition;	}
+	void setConetentSize(int contentSize);
+	float getScrollGrabberPos()     {	return scrollGrabberPosition;	}
 	void scrollMouseWheel(int zDelta, int x, int y, int flag);
 	float getActualRatio()			{	return actualRatio;			}
-	float getContentHeight()		{	return contentHeight;		}
-	float getScrollGrabberHeight()	{	return scrollGrabberHeight;	}
-	bool isScrollBarVisible()		{	return (heightRatio<1.0f);	}
+	float getContentSize()          {	return contentSize;         }
+	float getScrollGrabberSize()	{	return scrollGrabberSize;	}
+	bool isScrollBarVisible()		{	return (currentRatio<1.0f);	}
 	bool isScrollBarGrabbed()		{	return is_Grabbed;				}
-	void setScrollGrabberYPos(float yPos)	{	scrollGrabberYPosition = yPos;	scrollBarObserver->onScrollBarChange(this);}
-
+	void setScrollGrabberPos(float pos, bool sendEventToObserver=true)
+    {
+        scrollGrabberPosition = pos;
+        if(sendEventToObserver)
+            scrollBarObserver->onScrollBarChange(this);
+    }
+    ESCROLLBARTYPE getScrollBarType()   {   return scrollBarType;   }
+    
 protected:
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);
@@ -49,13 +62,14 @@ protected:
 
 private:
 	stVertexBuffer vertexBufferGrabberClientArea;
-	float heightRatio;
+	float currentRatio;
 
 	float actualRatio;
-	float scrollGrabberYPosition;
-	float scrollGrabberHeight;
-	float contentHeight;
+	float scrollGrabberPosition;
+	float scrollGrabberSize;
+	float contentSize;
 	bool is_Grabbed;
 	geVector2i mousePrevPosition;
 	MScrollBarObserver* scrollBarObserver;
+    ESCROLLBARTYPE scrollBarType;
 };

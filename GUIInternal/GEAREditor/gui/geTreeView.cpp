@@ -665,7 +665,7 @@ bool geTreeView::onMouseLButtonDown(float x, float y, int nFlag)
 		
 		totalHeightOfAllNodes=0;
 		rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
-		verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
+		verticalScrollBar->setConetentSize(totalHeightOfAllNodes);
 		return true;
 	}
 
@@ -746,7 +746,7 @@ void geTreeView::onSize(float cx, float cy, int flag)
 	{
 		//totalHeightOfAllNodes=0;
 		//rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
-		verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
+		verticalScrollBar->setConetentSize(totalHeightOfAllNodes);
 	}
 
 	geGUIBase::onSize(cx, cy, flag);
@@ -763,7 +763,7 @@ void geTreeView::onResizeComplete()
 
 		totalHeightOfAllNodes=0;
 		rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
-		verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
+		verticalScrollBar->setConetentSize(totalHeightOfAllNodes);
 	}
 
 	geGUIBase::onResizeComplete();
@@ -779,7 +779,7 @@ void geTreeView::onCancelEngagedControls()
 
 void geTreeView::onScrollBarChange(geScrollBar* scrollbar)
 {
-	virtualYPosition=-(scrollbar->getScrollGrabberYPos()/(scrollbar->getSize().y-scrollbar->getScrollGrabberHeight())) *(1.0f-scrollbar->getActualRatio())*scrollbar->getContentHeight();//+getParent()->getTopMarginOffsetHeight();
+	virtualYPosition=-(scrollbar->getScrollGrabberPos()/(scrollbar->getSize().y-scrollbar->getScrollGrabberSize())) *(1.0f-scrollbar->getActualRatio())*scrollbar->getContentSize();//+getParent()->getTopMarginOffsetHeight();
 }
 
 void geTreeView::onFocusLost()
@@ -800,7 +800,7 @@ void geTreeView::clearAndDestroyAll()
 	selectedTreeNodeList.clear();
 	GE_DELETE(rootTreeNode);
 	virtualYPosition=0.0f;
-	verticalScrollBar->setConetentHeight(0);
+	verticalScrollBar->setConetentSize(0);
 
 	rootTreeNode = new geTreeNode(rendererGUI, NULL, "root", NULL, fontManagerGUI);
 	rootTreeNode->setParentTreeView(this);
@@ -809,7 +809,7 @@ void geTreeView::clearAndDestroyAll()
 void geTreeView::refreshTreeView(bool bDoNotResetScrollBarPosition)
 {
 	isSelectionChanged=false;
-	float old_ypos=verticalScrollBar->getScrollGrabberYPos();
+	float old_ypos=verticalScrollBar->getScrollGrabberPos();
 	verticalScrollBar->setPos(m_cSize.x-SCROLLBAR_SIZE, 0);
 	verticalScrollBar->setSize(SCROLLBAR_SIZE, m_cSize.y);
 	verticalScrollBar->resetScrollBar();
@@ -819,15 +819,15 @@ void geTreeView::refreshTreeView(bool bDoNotResetScrollBarPosition)
 		totalHeightOfAllNodes=0;
 		rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
 		if(bDoNotResetScrollBarPosition)
-			verticalScrollBar->setScrollGrabberYPos(old_ypos);
-		verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
+			verticalScrollBar->setScrollGrabberPos(old_ypos);
+		verticalScrollBar->setConetentSize(totalHeightOfAllNodes);
 	}
 
 }
 
 void geTreeView::quick_refreshTreeViewForOnlyVerticalScrollBar(float deltaheight)
 {
-	verticalScrollBar->setConetentHeight(verticalScrollBar->getContentHeight()+deltaheight);
+	verticalScrollBar->setConetentSize(verticalScrollBar->getContentSize()+deltaheight);
 }
 
 bool geTreeView::onKeyDown(int charValue, int flag)
@@ -1040,5 +1040,5 @@ void geTreeView::selectNode(geTreeNode* nodetoselect)
 	treeViewObserver->onTVSelectionChange(nodetoselect, this);
 	totalHeightOfAllNodes=0;
 	rootTreeNode->getTotalHeightofAllNodes(totalHeightOfAllNodes);
-	verticalScrollBar->setConetentHeight(totalHeightOfAllNodes);
+	verticalScrollBar->setConetentSize(totalHeightOfAllNodes);
 }

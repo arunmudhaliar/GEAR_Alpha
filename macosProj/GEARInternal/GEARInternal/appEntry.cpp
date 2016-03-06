@@ -258,6 +258,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
                 break;
             case SDL_BUTTON_MIDDLE:
             {
+                editorApp.MouseMButtonDown(mouse_x, mouse_y, MK_MBUTTON);
                 //DEBUG_PRINT("Middle Mouse Down");
                 //geTestDlg* view = new geTestDlg(&geFontManager::g_cFontManager, editorApp.rendererGL10);
                 //view->showView();
@@ -292,6 +293,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
             case SDL_BUTTON_MIDDLE:
             {
                 //DEBUG_PRINT("Middle Mouse Up");
+                editorApp.MouseMButtonUp(mouse_x, mouse_y, MK_MBUTTON);
             }
                 break;
             case SDL_BUTTON_RIGHT:

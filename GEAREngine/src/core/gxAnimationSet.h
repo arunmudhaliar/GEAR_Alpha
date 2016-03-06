@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gxAnimationTrack.h"
+#include "IAnimationTrack.h"
 #include <vector>
 #include "../util/gxFile.h"
 
@@ -10,11 +10,11 @@ public:
 	gxAnimationSet(const char* animationName);
 	~gxAnimationSet();
 
-	void appendTrack(gxAnimationTrack* track);
+	void appendTrack(IAnimationTrack* track);
 	//void update(float dt);
 
 	const char* getAnimationName()                  {	return m_szName;            }
-	std::vector<gxAnimationTrack*>* getTrackList()	{	return &animationTracks;	}
+	std::vector<IAnimationTrack*>& getTrackList()	{	return animationTracks;	}
 
 	void write(gxFile& file);
 	void read(gxFile& file);
@@ -26,7 +26,7 @@ public:
 	int getFrameCount()	{	return numberOfFrames;	}
 
 private:
-	std::vector<gxAnimationTrack*> animationTracks;
+	std::vector<IAnimationTrack*> animationTracks;
 	int numberOfFrames;
 	int animationFPS;
 	char m_szName[256];

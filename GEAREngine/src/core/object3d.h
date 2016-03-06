@@ -176,8 +176,8 @@ public:
 	gxAnimation* getAnimationController()				{	return animationController;	}
 	gxAnimationSet* applyAnimationSetRecursive(int index);
 	gxAnimationSet* applyAnimationSetRecursive(gxAnimationSet* animset);
-	void setAnimationTrack(gxAnimationTrack* track);
-	gxAnimationTrack* getAnimationTrack()	{	return animationTrack;	}
+	void setAnimationTrack(IAnimationTrack* track);
+	IAnimationTrack* getAnimationTrack()	{	return animationTrack;	}
 	void updateAnimationFrameToObject3d(int frame);
 
 	//serialize
@@ -231,7 +231,7 @@ protected:
 	gxAABBf aabb;
 	gxOOBBf oobb;
 	gxAnimation* animationController;
-	gxAnimationTrack* animationTrack;	//must not delete this pointer
+	IAnimationTrack* animationTrack;	//must not delete this pointer
 	void* editorUserData;				//must not delete this pointer
 	MObject3dObserver* object3DObserver;	//must not delete this pointer
 	MRootObserver* rootObserver;			//must not delete this pointer

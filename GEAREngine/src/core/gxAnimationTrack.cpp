@@ -1,37 +1,45 @@
 #include "gxAnimationTrack.h"
 
-gxAnimationTrack::gxAnimationTrack()
+gxAnimationTrack::gxAnimationTrack():
+IAnimationTrack()
 {
 	animationFPS=0;
 	numberOfFrames=0;
 	currentAnimationFrame=0;
-	animationTrack=NULL;
-	//m_pObjectPtr=NULL;
 }
 
 gxAnimationTrack::~gxAnimationTrack()
 {
-	//if(m_pObjectPtr)
-	//	m_pObjectPtr->setAnimationTrack(NULL);
-	GX_DELETE_ARY(animationTrack);
+	//GX_DELETE_ARY(animationTrack);
 }
 
-matrix4x4f* gxAnimationTrack::allocateTrack()
+matrix4x4f* gxAnimationTrack::allocateFrames()
 {
 	if(numberOfFrames==0) return NULL;
 
-	if(animationTrack!=NULL)
-		return animationTrack;
+	if(animationFrames!=NULL)
+		return animationFrames;
 
-	animationTrack = new matrix4x4f[numberOfFrames];	//(matrix4x4f*)malloc(sizeof(*animationTrack)*numberOfFrames);
-	return animationTrack;
+	animationFrames = new matrix4x4f[numberOfFrames];	//(matrix4x4f*)malloc(sizeof(*animationTrack)*numberOfFrames);
+	return animationFrames;
 }
 
-//void gxAnimationTrack::setObject3d(object3d* obj)
-//{
-//	m_pObjectPtr=obj;
-//}
+bool gxAnimationTrack::getFrame(int frame, matrix4x4f& mat)
+{
+    if(frame>=numberOfFrames)
+        return false;
+    
+    mat=animationFrames[frame];
+    
+    return true;
+}
 
+bool gxAnimationTrack::getFrameFromTime(float time, matrix4x4f& mat)
+{
+    //Not implemented
+    assert(false);
+    return false;
+}
 
 void gxAnimationTrack::write(gxFile& file)
 {
@@ -40,7 +48,7 @@ void gxAnimationTrack::write(gxFile& file)
 	file.Write(numberOfFrames);
 	for(int x=0;x<numberOfFrames;x++)
 	{
-		file.WriteBuffer((unsigned char*)animationTrack[x].getMatrix(), sizeof(float)*16);
+		file.WriteBuffer((unsigned char*)animationFrames[x].getMatrix(), sizeof(float)*16);
 	}
 }
 
@@ -53,7 +61,7 @@ void gxAnimationTrack::read(gxFile& file)
 	file.Read(numberOfFrames);
 	if(numberOfFrames)
 	{
-		matrix4x4f* track=allocateTrack();
+		matrix4x4f* track=allocateFrames();
 		for(int x=0;x<numberOfFrames;x++)
 		{
 			file.ReadBuffer((unsigned char*)track[x].getMatrix(), sizeof(float)*16);

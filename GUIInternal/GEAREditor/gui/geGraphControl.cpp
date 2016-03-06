@@ -9,24 +9,29 @@ geGraphControl::geGraphControl(geFontManager* fontmanager):
     showValueIndex = 0;
     drawSelection=false;
     dragEnabled=false;
+    
+    horizontalScrollBar = new geScrollBar(fontmanager);
 }
 
 geGraphControl::~geGraphControl()
 {
+    GX_DELETE(horizontalScrollBar);
 }
 
 void geGraphControl::create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy, int lowerLimit, int upperLimit)
 {
 	createBase(renderer, parent);
 
+    horizontalScrollBar->create(renderer, this, this, geScrollBar::HORIZONTAL);
+
     setSizable(true);
 	setSize(cx, 3);
 	setPos(x, y);
 
+
     this->lowerLimit = lowerLimit;
     this->upperLimit = upperLimit;
-    this->divisions = lowerLimit+(upperLimit-lowerLimit)*0.2f;
-    graphMatrix.setScale(divisions, divisions, divisions);
+    this->divisions = (upperLimit-lowerLimit)*0.01f;
 	setMouseBoundCheck(true);
     
     normalKeyVertexBuffer.setRect(gxRectf(-2, -4, 4, 8), vector4f(0.14509f, 0.47843f, 0.227451f, 1.0f), vector4f(0.06275f, 0.25882f, 0.11373f, 1.0f));
@@ -38,7 +43,7 @@ void geGraphControl::create(rendererGL10* renderer, geGUIBase* parent, float x, 
     //time scale
     float graph_width = (upperLimit-lowerLimit)*divisions;
     timeScaleVertexBuffer.setRect(gxRectf(0, 0, graph_width, 14), vector4f(0.16f, 0.16f, 0.16f, 1.0f));
-    
+    timeScaleShadeVertexBuffer.setRect(gxRectf(0, 0, graph_width, 7), vector4f(0.13f, 0.13f, 0.13f, 1.0f), vector4f(0.13f, 0.13f, 0.13f, 0.0f));
     
     //red rect
     const float clientarea_linevertLst[8] =
@@ -49,10 +54,11 @@ void geGraphControl::create(rendererGL10* renderer, geGUIBase* parent, float x, 
         1,	cy-0.2f
     };
     memcpy(vertexBufferClientAreaArray, clientarea_linevertLst, sizeof(clientarea_linevertLst));
-
+    
+    horizontalScrollBar->setConetentSize(graph_width);
 }
 
-void geGraphControl::setTrack(gxAnimationTrack* track)
+void geGraphControl::setTrack(IAnimationTrack* track)
 {
     if(track==nullptr)
         return;
@@ -73,7 +79,7 @@ void geGraphControl::setTrack(gxAnimationTrack* track)
     minExtend[0] = minExtend[1] = minExtend[2] = minExtend[3] = minExtend[4] = minExtend[5] = minExtend[6] = minExtend[7] = minExtend[8] = 1e16f;
     maxExtend[0] = maxExtend[1] = maxExtend[2] = maxExtend[3] = maxExtend[4] = maxExtend[5] = maxExtend[6] = maxExtend[7] = maxExtend[8] = -1e16f;
     
-    auto matrixPtr = animationTrack->getTrack();
+    auto matrixPtr = animationTrack->getFrames();
     for(int x=0;x<animationTrack->getTotalFrames();x++)
     {
         auto mat = &matrixPtr[x];
@@ -155,9 +161,9 @@ void geGraphControl::draw()
     drawRect(&timeScaleVertexBuffer);
     
     float topMargin=getMainWindow()->getTopMarginOffsetHeight();
-
+    
     //time stamps
-    for(int x = 0; x<(int)(upperLimit-lowerLimit); x++)
+    for(int x = 0; x<((upperLimit-lowerLimit)-1); x++)
     {
         float plotX = x*lowerLimit*divisions;
         float line[4] = {plotX, 0, plotX, (m_cSize.y-topMargin)};
@@ -166,7 +172,7 @@ void geGraphControl::draw()
         {
             drawLine(line, 0.27f, 0.27f, 0.27f, 1, 2, false);
             
-            sprintf(timeLineLabel, "%4.2f", x/animationFPS);
+            sprintf(timeLineLabel, "%4.3f", x/animationFPS);
             geFontManager::g_pFontArial10_80Ptr->drawString(timeLineLabel, plotX+3, geFontManager::g_pFontArial10_80Ptr->getLineHeight()-6, m_cSize.x);
         }
         else
@@ -190,24 +196,38 @@ void geGraphControl::draw()
             {
                 drawLine(line, 0.27f, 0.27f, 0.27f, 1, 2, false);
                 
-                sprintf(timeLineLabel, "%4.2f", x/animationFPS);
+                sprintf(timeLineLabel, "%4.3f", x/animationFPS);
                 geFontManager::g_pFontArial10_80Ptr->drawString(timeLineLabel, plotX+3, geFontManager::g_pFontArial10_80Ptr->getLineHeight()-6, m_cSize.x);
             }
         }
     }
+    
+    //draw the last frame in white color
+    int last_index = ((upperLimit-lowerLimit)-1);
+    float last_plotX = last_index*lowerLimit*divisions;
+    float last_line[4] = {last_plotX, 0, last_plotX, (m_cSize.y-topMargin)};
+    
+    drawLine(last_line, 0.6f, 0.6f, 0.6f, 1, 2, false);
+        
+    sprintf(timeLineLabel, "%4.3f", last_index/animationFPS);
+    geFontManager::g_pFontArial10_80Ptr->drawString(timeLineLabel, last_plotX-3, geFontManager::g_pFontArial10_80Ptr->getLineHeight()*3, m_cSize.x, false, false, 0, -90);
     //
     
     //middle line
     float line[4] = {-graphOffset.x, (m_cSize.y-topMargin)*0.5f, -graphOffset.x+m_cSize.x, (m_cSize.y-topMargin)*0.5f};
     drawLine(line, 0.22f, 0.22f, 0.22f, 1, 2, false);
 
+    //pivot line
     float pivotLine[4] = {pivot.x, 0, pivot.x, (m_cSize.y-topMargin)};
     drawLine(pivotLine, 0.5f, 0.0f, 0.0f, 1, 2, false);
+    
+    sprintf(timeLineLabel, "%4.3f s", (pivot.x/divisions)/animationFPS);
+    geFontManager::g_pFontArial10_80Ptr->drawString(timeLineLabel, pivot.x-3, (m_cSize.y-topMargin)*0.5f, m_cSize.x, false, false, 0, -90);
 
     
     if(animationTrack)
     {
-        auto matrixPtr = animationTrack->getTrack();
+        auto matrixPtr = animationTrack->getFrames();
         for(int x=0;x<animationTrack->getTotalFrames();x++)
         {
             auto mat = &matrixPtr[x];
@@ -260,8 +280,18 @@ void geGraphControl::draw()
         glDisable(GL_BLEND);
     }
     
-    char buffer[128];
-    sprintf(buffer, "divisions : %3.2f, pivot.x = %f", divisions, pivot.x);
+    //timescale shade
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    drawRect(&timeScaleShadeVertexBuffer);
+    glDisable(GL_BLEND);
+    
+    //translate back
+    glTranslatef(-graphOffset.x, -graphOffset.y, 0);
+    
+    
+    char buffer[256];
+    sprintf(buffer, "divisions : %3.2f, pivot.x = %f, graphOffset.x = %f", divisions, pivot.x, graphOffset.x);
     geFontManager::g_pFontArial10_84Ptr->drawString(buffer, 80.0f, (m_cSize.y-topMargin)-geFontManager::g_pFontArial10_84Ptr->getLineHeight()*2, m_cSize.x);
     if(animationTrack)
     {
@@ -281,17 +311,27 @@ void geGraphControl::draw()
     //drawLine(vertexBufferClientAreaArray, 0.17f, 0, 0, 1.0f, 4, true);
 
     glPopMatrix();
+    
+    horizontalScrollBar->draw();
 }
 
 void geGraphControl::onSize(float cx, float cy, int flag)
 {
+    horizontalScrollBar->setPos(0, cy-SCROLLBAR_SIZE);
+    horizontalScrollBar->setSize(cx, SCROLLBAR_SIZE);
+    float graph_width = (upperLimit-lowerLimit)*divisions;
+    horizontalScrollBar->setConetentSize(graph_width);
+    
     float topMargin=0.0f;
     if(getMainWindow())
         topMargin = getMainWindow()->getTopMarginOffsetHeight();
     
     //time scale
     if(timeScaleVertexBuffer.getRect().m_size.x<cx)
+    {
         timeScaleVertexBuffer.updateRect(0, 0, cx, 14);
+        timeScaleShadeVertexBuffer.updateRect(0, 0, cx, 7); //half the height of timescale
+    }
     
     if(animationTrack)
     {
@@ -312,8 +352,35 @@ void geGraphControl::onSize(float cx, float cy, int flag)
     }
 }
 
+void geGraphControl::onResizeComplete()
+{
+    horizontalScrollBar->setPos(0, m_cSize.y-SCROLLBAR_SIZE);
+    horizontalScrollBar->setSize(m_cSize.x, SCROLLBAR_SIZE);
+    
+    float graph_width = (upperLimit-lowerLimit)*divisions;
+    horizontalScrollBar->setConetentSize(graph_width);
+    
+    geGUIBase::onResizeComplete();
+}
+
+void geGraphControl::onCancelEngagedControls()
+{
+    horizontalScrollBar->CancelEngagedControls();
+    geGUIBase::onCancelEngagedControls();
+}
+
+void geGraphControl::onScrollBarChange(geScrollBar* scrollbar)
+{
+    float scrollBar_ratio = scrollbar->getScrollGrabberPos()/(scrollbar->getSize().x-scrollbar->getScrollGrabberSize());
+    float displacement = scrollBar_ratio * (1.0f - scrollbar->getActualRatio()) * scrollbar->getContentSize();
+    graphOffset.x = -displacement;
+}
+
 bool geGraphControl::onMouseLButtonDown(float x, float y, int nFlag)
 {
+    if(horizontalScrollBar->MouseLButtonDown(x, y, nFlag))
+        return false;
+
     mousePrevPos=mousePos;
     mousePos.set(x, y);
     
@@ -329,6 +396,8 @@ bool geGraphControl::onMouseLButtonDown(float x, float y, int nFlag)
 
 bool geGraphControl::onMouseLButtonUp(float x, float y, int nFlag)
 {
+    horizontalScrollBar->MouseLButtonUp(x, y, nFlag);
+
     mousePrevPos=mousePos;
     mousePos.set(x, y);
 
@@ -374,13 +443,15 @@ void geGraphControl::onMouseMButtonUp(float x, float y, int nFlag)
 
 bool geGraphControl::onMouseMove(float x, float y, int flag)
 {
+    horizontalScrollBar->MouseMove(x, y, flag);
+
     mousePrevPos=mousePos;
     mousePos.set(x, y);
 
     if(y<=timeScaleVertexBuffer.getRect().m_size.y && (flag&MK_LBUTTON))
     {
         previousPivot = pivot;
-        pivot = vector2f(x, y);
+        pivot = vector2f(x-graphOffset.x, y);
     }
     
     if(y>timeScaleVertexBuffer.getRect().m_size.y)
@@ -397,6 +468,9 @@ bool geGraphControl::onMouseMove(float x, float y, int flag)
                 graphOffset.x=0;
             else if (graphOffset.x<-(upperLimit-lowerLimit)*divisions+m_cSize.x)
                 graphOffset.x=-(upperLimit-lowerLimit)*divisions+m_cSize.x;
+            
+            //TODO: a minor bug while grab and scroll. FIX IT
+            horizontalScrollBar->setScrollGrabberPos(-(graphOffset.x)/divisions, false);
         }
     }
     
@@ -405,6 +479,8 @@ bool geGraphControl::onMouseMove(float x, float y, int flag)
 
 void geGraphControl::onMouseWheel(int zDelta, int x, int y, int flag)
 {
+    //horizontalScrollBar->scrollMouseWheel(zDelta, x, y, flag);
+
     mousePrevPos=mousePos;
     mousePos.set(x, y);
 
@@ -438,8 +514,9 @@ void geGraphControl::onMouseWheel(int zDelta, int x, int y, int flag)
 
     float graph_width = (upperLimit-lowerLimit)*divisions;
     timeScaleVertexBuffer.updateRect(0, 0, graph_width, 14);
-
-    graphMatrix.setScale(divisions, divisions, divisions);
+    timeScaleShadeVertexBuffer.updateRect(0, 0, graph_width, 7);
+    
+    horizontalScrollBar->setConetentSize(graph_width);
 }
 
 void geGraphControl::showPositionValues(int coordinate)

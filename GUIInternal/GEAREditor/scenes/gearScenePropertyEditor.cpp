@@ -166,7 +166,7 @@ bool gearScenePropertyEditor::onMouseMove(float x, float y, int flag)
 			std::vector<geGUIBase*>* newlist = new std::vector<geGUIBase*>();
 			newlist->push_back(selectedNode);
 
-			MDropData* dataObject = new MDropData(newlist, this);
+			MDropData* dataObject = new MDropData(newlist, this, SDL_GetWindowID(getRenderer()->getWindow()));
 			doDragDropSynchronous(dataObject);
 		}
 	}

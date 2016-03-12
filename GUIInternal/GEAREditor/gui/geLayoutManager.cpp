@@ -183,15 +183,13 @@ bool geLayoutManager::onMouseLButtonUp(float x, float y, int nFlag)
     //check if any grabbing
     if(is_SelectedLayoutGrabbed)
     {
-        //TODO: do recalculate layout.
+        //do recalculate layout.
         int whichArea=-1;
         putGrabbedLayoutInToMe = rootLayout->doGrabOverlapAreaCheck(selectedLayout, x, y, whichArea);
         if(putGrabbedLayoutInToMe)
         {
             this->selectedLayout->doUnPlug(rootLayout);
             geLayout::reAdjustLayoutOnPlug(putGrabbedLayoutInToMe, selectedLayout, 0.5f, whichArea);
-            //this->selectedLayout->getParentLayout()->removeChildLayout(this->selectedLayout);
-            
             putGrabbedLayoutInToMe = nullptr;
         }
     }

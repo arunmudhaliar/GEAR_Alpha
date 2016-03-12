@@ -145,7 +145,7 @@ bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 			newlist->push_back(node);
 		}
 
-        MDropData* dataObject = new MDropData(newlist, this);
+        MDropData* dataObject = new MDropData(newlist, this, SDL_GetWindowID(getRenderer()->getWindow()));
         doDragDropSynchronous(dataObject);
         
 //		MDataObject* dataObject = new MDataObject(newlist, this);

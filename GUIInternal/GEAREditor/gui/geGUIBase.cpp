@@ -764,7 +764,6 @@ void geGUIBase::doDragDropSynchronous(MDropData *dropData)
     SDL_Event event;
     event.type = SDL_DROPFILE;
     event.drop.file = (char*)dropData;
-    
     SDL_PumpEvents();
     while (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))
     {
@@ -772,8 +771,9 @@ void geGUIBase::doDragDropSynchronous(MDropData *dropData)
         SDL_PumpEvents();
     }
     SDL_FlushEvent(SDL_MOUSEMOTION);
-    SDL_PushEvent(&event);
-
+    int result = SDL_PushEvent(&event);
+    UNUSED(result);
+    
 	cursorUtil::changeCursor(0);
 
 }

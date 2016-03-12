@@ -417,7 +417,7 @@ bool gearSceneFileView::onMouseMove(float x, float y, int flag)
 		}
 
         
-        MDropData* dataObject = new MDropData(newlist, this);
+        MDropData* dataObject = new MDropData(newlist, this, SDL_GetWindowID(getRenderer()->getWindow()));
         doDragDropSynchronous(dataObject);
         //GE_DELETE(dataObject);
         

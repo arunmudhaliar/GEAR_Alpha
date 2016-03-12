@@ -27,7 +27,6 @@ void geModalDialog::onSize(float cx, float cy)
 
 void geModalDialog::onDraw()
 {
-    m_pWindow->draw();
 }
 
 void geModalDialog::onDestroy()

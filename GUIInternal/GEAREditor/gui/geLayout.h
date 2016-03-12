@@ -30,6 +30,8 @@ public:
 	void create(rendererGL10* renderer, geLayout* pParentLayout, float x, float y, float cx, float cy);
 
 	void appendWindow(geWindow* window);
+    void removeWindow(geWindow* window);
+
 	geWindow* getActiveWindow()	{	return activeWindow;	}
 	void setActiveWindow(int index);
 	void setActiveWindow(geWindow* wnd);
@@ -77,6 +79,19 @@ public:
 
 	void traverseMouseMoveEvent(int x, int y, int flag);
 
+    void unPinLayout()  {   is_Pinned = false;  }
+    void pinLayout()    {   is_Pinned = true;   }
+    bool isPinned()     {   return is_Pinned;   }
+    geVector2f getUnPinRectSize()    {   return geVector2f(unPinSprite.getClipWidth(), unPinSprite.getClipHeight());   }
+    bool isOverlapWithPinRect(float x, float y);
+    bool doUnPin(float x, float y, geLayout* rootLayout, bool& deleteLayout);   //this is used for un-pinning
+    void doUnPlug(geLayout* rootLayout);    //used for grabbing
+    
+    bool canGrab(float x, float y);
+    geLayout* doGrabOverlapAreaCheck(geLayout* grabbed, float x, float y, int& whichArea);  //0-left, 1-right, 2-top, 3-bottom
+    
+    static void reAdjustLayoutOnPlug(geLayout* parent, geLayout* grabbed, float ratio, int whichArea);
+    
 protected:
 	virtual bool onMouseLButtonDown(float x, float y, int nFlag);
 	virtual bool onMouseLButtonUp(float x, float y, int nFlag);
@@ -90,6 +105,12 @@ protected:
 	virtual void onCancelEngagedControls();
 
 private:
+    void moveLayoutTo(std::vector<geLayout*>& fillingLayouts, float delta, ELAYOUT_DIRECTION direction);
+    void clearAllList();
+    std::vector<geLayout*>& getImmediateChildLayoutList()   {   return immediateChildLayoutList;    }
+    void checkToFitLayout(geLayout* layout, ELAYOUT_DIRECTION direction, std::vector<geLayout*>& fillingLayouts);
+    
+    
 	geWindow* activeWindow;
 	geVector2f mousePreviousPos;
 
@@ -98,7 +119,13 @@ private:
 	std::vector<geLayout*> childBottomLayoutList;
 	std::vector<geLayout*> childRightLayoutList;
 	std::vector<geLayout*> childLeftLayoutList;
+    std::vector<geLayout*> immediateChildLayoutList;
+
 	geLayout* parentLayout;
 	ELAYOUT_DIRECTION layoutDirection;
 	float vertexBufferClientAreaArray[6];
+    bool is_Pinned;
+    Sprite2Dx unPinSprite;
+    bool is_AreaGrabbed[4];
+    stVertexBuffer grabberAreaRects[4];
 };

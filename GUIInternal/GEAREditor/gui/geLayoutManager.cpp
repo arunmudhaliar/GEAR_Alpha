@@ -7,6 +7,8 @@ geLayoutManager::geLayoutManager(geFontManager* fontmanager):
 {
 	rootLayout=NULL;
 	selectedLayout=NULL;
+    is_SelectedLayoutGrabbed=false;
+    putGrabbedLayoutInToMe=nullptr;
 }
 
 geLayoutManager:: ~geLayoutManager()
@@ -67,31 +69,37 @@ void geLayoutManager::dropGrabbedWindow(int x, int y, geWindow* grabbedWindow)
 
 bool geLayoutManager::onMouseLButtonDown(float x, float y, int nFlag)
 {
+    is_SelectedLayoutGrabbed = false;
+    putGrabbedLayoutInToMe = nullptr;
+    
 	cursorUtil::changeCursor(0);
-	//geLayout* layoutToResize=NULL;
 	if(rootLayout->checkResizableOnRightSide(x, y))
 	{
 		rootLayout->getResizableOnLeftSide(x, y, &leftResizeLayoutList);
 		rootLayout->getResizableOnRightSide(x, y, &rightResizeLayoutList);
-		cursorUtil::changeCursor(2);
+        if(leftResizeLayoutList.size() && rightResizeLayoutList.size())
+            cursorUtil::changeCursor(2);
 	}
 	else if(rootLayout->checkResizableOnLeftSide(x, y))
 	{
 		rootLayout->getResizableOnLeftSide(x, y, &leftResizeLayoutList);
 		rootLayout->getResizableOnRightSide(x, y, &rightResizeLayoutList);
-		cursorUtil::changeCursor(2);
+        if(leftResizeLayoutList.size() && rightResizeLayoutList.size())
+            cursorUtil::changeCursor(2);
 	}
 	else if(rootLayout->checkResizableOnTopSide(x, y))
 	{
 		rootLayout->getResizableOnTopSide(x, y, &topResizeLayoutList);
 		rootLayout->getResizableOnBottomSide(x, y, &bottomResizeLayoutList);
-		cursorUtil::changeCursor(1);
+        if(topResizeLayoutList.size() && bottomResizeLayoutList.size())
+            cursorUtil::changeCursor(1);
 	}
 	else if(rootLayout->checkResizableOnBottomSide(x, y))
 	{
 		rootLayout->getResizableOnTopSide(x, y, &topResizeLayoutList);
 		rootLayout->getResizableOnBottomSide(x, y, &bottomResizeLayoutList);
-		cursorUtil::changeCursor(1);
+        if(topResizeLayoutList.size() && bottomResizeLayoutList.size())
+            cursorUtil::changeCursor(1);
 	}
 	else
 	{
@@ -103,7 +111,27 @@ bool geLayoutManager::onMouseLButtonDown(float x, float y, int nFlag)
 		}
 		this->selectedLayout=selectedLayout;
 		if(this->selectedLayout)
-			this->selectedLayout->MouseLButtonDown(x, y, nFlag);
+        {
+            bool unPinned = false;
+            //check if we can unpin the selected layout
+            bool handled = this->selectedLayout->MouseLButtonDown(x, y, nFlag);
+            if(!handled && this->selectedLayout->isPinned())
+            {
+                bool deleteLayout=false;
+                unPinned = this->selectedLayout->doUnPin(x, y, rootLayout, deleteLayout);
+                if(deleteLayout)
+                {
+                    //delete the selected layout.
+                    GE_DELETE(this->selectedLayout);
+                }
+            }
+            
+            if(!unPinned && this->selectedLayout)
+            {
+                //check the selected layout for grabbing
+                is_SelectedLayoutGrabbed = this->selectedLayout->canGrab(x, y);
+            }
+        }
 	}
 
 	mousePreviousPos.set(x, y);
@@ -152,6 +180,22 @@ bool geLayoutManager::onMouseLButtonUp(float x, float y, int nFlag)
 
 	mousePreviousPos.set(x, y);
 
+    //check if any grabbing
+    if(is_SelectedLayoutGrabbed)
+    {
+        //TODO: do recalculate layout.
+        int whichArea=-1;
+        putGrabbedLayoutInToMe = rootLayout->doGrabOverlapAreaCheck(selectedLayout, x, y, whichArea);
+        if(putGrabbedLayoutInToMe)
+        {
+            this->selectedLayout->doUnPlug(rootLayout);
+            geLayout::reAdjustLayoutOnPlug(putGrabbedLayoutInToMe, selectedLayout, 0.5f, whichArea);
+            //this->selectedLayout->getParentLayout()->removeChildLayout(this->selectedLayout);
+            
+            putGrabbedLayoutInToMe = nullptr;
+        }
+    }
+    
 	return true;
 }
 
@@ -182,7 +226,6 @@ void geLayoutManager::onMouseMButtonUp(float x, float y, int nFlag)
         selectedLayout->MouseMButtonUp(x, y, nFlag);
     }
 }
-
 
 bool geLayoutManager::onMouseMove(float x, float y, int flag)
 {
@@ -228,10 +271,21 @@ bool geLayoutManager::onMouseMove(float x, float y, int flag)
 
 	if(!bLayoutChangeLogicIssued)
 	{
-		if(selectedLayout)
-			selectedLayout->MouseMove(x, y, flag);
-
-		//rootLayout->traverseMouseMoveEvent(x, y, flag);
+        //check any grabbing
+        if(is_SelectedLayoutGrabbed)
+        {
+            if(selectedLayout && ((flag&0x0001)>0))
+            {
+                int whichArea=-1;
+                putGrabbedLayoutInToMe = rootLayout->doGrabOverlapAreaCheck(selectedLayout, x, y, whichArea);
+            }
+        }
+        else
+        {
+            if(selectedLayout)
+                selectedLayout->MouseMove(x, y, flag);
+            //rootLayout->traverseMouseMoveEvent(x, y, flag);
+        }
 	}
 
 	mousePreviousPos.set(x, y);

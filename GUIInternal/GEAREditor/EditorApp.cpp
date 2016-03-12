@@ -107,6 +107,7 @@ void EditorApp::draw()
 {
 	if(!is_Initialised) return;
 
+    rendererGL10Instance->makeCurrent();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	guiManager->draw();
 	rendererGL10Instance->swapGLBuffer();
@@ -277,8 +278,10 @@ void EditorGEARApp::init(SDL_Window* window)
 
     //asset importer.
     geAssetImportDlg* assetImporterDlg = new geAssetImportDlg(&geFontManager::g_cFontManager, rendererGL10Instance);
-    SDL_Thread *thread = SDL_CreateThread( assetImport_secondryThread, "testThread", (void *)assetImporterDlg);
-    UNUSED(thread);
+    //SDL_Thread *thread = SDL_CreateThread( assetImport_secondryThread, "testThread", (void *)assetImporterDlg);
+    //SDL_DetachThread(thread);
+    //UNUSED(thread);
+    assetImport_secondryThread(assetImporterDlg);
     assetImporterDlg->showView();
     //assetImporterDlg->destroyView();
 

@@ -215,6 +215,8 @@ public:
 	geGUIBase* getParent()	{	return parent;	}
 	//void setParent(geGUIBase* parent)	{	this->parent=parent;	}
 	void appendChildControl(geGUIBase* child);
+    void removeChildControl(geGUIBase* child);
+    
 	std::vector<geGUIBase*>* getChildControls()	{	return &childControlList;	}
 	void hoverControl();
 	void unHoverControl();
@@ -248,10 +250,12 @@ public:
 
 	void notifyParent(int msg);
 
-    geFontManager* getFontManager()     {   return fontManagerGUI;   }
+    geFontManager* getFontManager()             {   return fontManagerGUI;      }
+    rendererGL10* getRenderer()                 {   return rendererGUI;         }
+    void setRenderer(rendererGL10* renderer)    {   rendererGUI=renderer;       }
     
-    bool isMouseBoundCheckEnabled()		{	return is_MouseBoundCheckEnabled;	}
-    void setMouseBoundCheck(bool flag)	{	is_MouseBoundCheckEnabled=flag;		}
+    bool isMouseBoundCheckEnabled()             {	return is_MouseBoundCheckEnabled;	}
+    void setMouseBoundCheck(bool flag)          {	is_MouseBoundCheckEnabled=flag;		}
     
 protected:
 	virtual void onCreate();
@@ -281,6 +285,7 @@ protected:
 	virtual void onFocusLost();
 
 	virtual void onAppendChild(geGUIBase* child);
+    virtual void onRemoveChild(geGUIBase* child);
 
 //#if !defined(__APPLE__) //disable Drag-Drop
 	virtual void onDragEnter(int x, int y);

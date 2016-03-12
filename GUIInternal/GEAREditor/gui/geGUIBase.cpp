@@ -83,11 +83,12 @@ void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent)
 
 void geGUIBase::setParent(geGUIBase* parent)
 {
+    this->parent=parent;
+    this->mainWindow = dynamic_cast<geWindow*>(parent);
+
 	if(parent)
 	{
-		this->parent=parent;
 		this->parent->appendChildControl(this);
-        this->mainWindow = dynamic_cast<geWindow*>(parent);
 	}
 }
 
@@ -340,6 +341,13 @@ void geGUIBase::appendChildControl(geGUIBase* child)
 	onAppendChild(child);
 	childControlList.push_back(child);
 }
+
+void geGUIBase::removeChildControl(geGUIBase* child)
+{
+    onRemoveChild(child);
+    childControlList.erase(std::remove(childControlList.begin(), childControlList.end(), child));
+}
+
 
 bool geGUIBase::MouseLButtonDown(float x, float y, int nFlag)
 {
@@ -772,6 +780,10 @@ void geGUIBase::doDragDropSynchronous(MDropData *dropData)
 //#endif
 
 void geGUIBase::onAppendChild(geGUIBase* child)
+{
+}
+
+void geGUIBase::onRemoveChild(geGUIBase* child)
 {
 }
 

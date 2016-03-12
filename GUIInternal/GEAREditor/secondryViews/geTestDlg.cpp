@@ -18,7 +18,8 @@ void geTestDlg::onCreate()
 {
 	m_pWindow = new geWindow("Color Dialog", fontManager);
 	m_pWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
-	layoutManager->getRootLayout()->createAsParent(m_pWindow);
+	auto layout = layoutManager->getRootLayout()->createAsParent(m_pWindow);
+    layout->unPinLayout();
 	//rootLayout->createAsParent(EditorGEARApp::getSceneWorldEditor());
 }
 

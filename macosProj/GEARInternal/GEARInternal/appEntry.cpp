@@ -1,4 +1,5 @@
 #include "appEntry.h"
+#include "windowMessagePump.h"
 
 bool g_mControlKeyPressed = false;
 
@@ -112,7 +113,12 @@ int appEntry()
         GX_DELETE_ARY(relativepath);
     }
     //
-
+    
+    std::function<void(SDL_Window*, SDL_Event&, void* userdata)> func = processEvent;
+    windowMessagePump::getInstance().appendMessagePump(window, nullptr, func);
+    
+    
+    
     bool quit=false;
     //While application is running
     while( !quit )
@@ -128,16 +134,36 @@ int appEntry()
             }
             else
             {
+                if (e.type==SDL_DROPFILE)
+                {
+                    printf("ERROE");
+                }
                 //process other events
-                processEvent(window, e, editorApp);
+                std::function<void(SDL_Window*, SDL_Event&, void* userdata)>* pump = windowMessagePump::getInstance().getMessageLoopFunction(SDL_GetWindowFromID(e.window.windowID));
+                if(pump)
+                {
+                    std::function<void(SDL_Window*, SDL_Event&, void* userdata)>& func2 = *pump;
+                    func2(SDL_GetWindowFromID(e.window.windowID), e, (void*)&editorApp);
+                }
             }
         }
 
-
-        //update the editor
-        Timer::update();
-        editorApp.update(Timer::getDtinSec());
-        editorApp.draw();
+        //rendering loop
+        auto wndMsgLoops = windowMessagePump::getInstance().getWindowMessageLoops();
+        for (auto it : *wndMsgLoops)
+        {
+            if(it.second->secondryView==nullptr)
+            {
+                //update the editor
+                Timer::update();
+                editorApp.update(Timer::getDtinSec());
+                editorApp.draw();
+            }
+            else
+            {
+                it.second->secondryView->drawView();
+            }
+        }
 
         SDL_Delay(rand()%10);
         
@@ -155,8 +181,10 @@ int appEntry()
     return 0;
 }
 
-void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp)
+void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
 {
+    EditorApp& editorApp = (EditorApp&)*userdata;
+    
     if(e.type==SDL_WINDOWEVENT)
     {
         SDL_WindowEvent* windowEvent = (SDL_WindowEvent*)&e;

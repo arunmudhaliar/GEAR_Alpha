@@ -58,7 +58,7 @@ protected:
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
     
     SDL_Window* createSecondryWindow();
-    void processEvent(SDL_Window * window, SDL_Event& e);
+    void processEvent(SDL_Window * window, SDL_Event& e, void* userData);
     
     static int secondryThread( void *ptr );
     

@@ -95,13 +95,15 @@ void geTextureDlg::onCreate()
 	//main window
 	textureDlgMainWindow = new geTextureDlgMainWindow(fontManager);
 	textureDlgMainWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
-	geLayout* mainLayout = layoutManager->getRootLayout()->createAsParent(textureDlgMainWindow);
+	auto mainLayout = layoutManager->getRootLayout()->createAsParent(textureDlgMainWindow);
+    mainLayout->unPinLayout();
 	//
 
 	//info window
 	textureDlgInfoWindow = new geTextureDlgInfoWindow(fontManager);
 	textureDlgInfoWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, 250, false);
-	mainLayout->createBottom(textureDlgInfoWindow, 0.2f);
+	auto bottomLayout = mainLayout->createBottom(textureDlgInfoWindow, 0.2f);
+    bottomLayout->unPinLayout();
 	//
 
 	find_textures(secondryRenderer, EditorGEARApp::getProjectHomeDirectory(), textureDlgMainWindow, textureThumbnailList);

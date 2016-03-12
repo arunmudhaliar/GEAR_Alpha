@@ -51,10 +51,12 @@ protected:
 
 private:
 	geLayout* selectedLayout;
+    geLayout* putGrabbedLayoutInToMe;
+    bool is_SelectedLayoutGrabbed;
 	geLayout* rootLayout;
 	geVector2f previousScale;
 	geVector2i mousePreviousPos;
-
+    
 	std::vector<geLayout*> leftResizeLayoutList;
 	std::vector<geLayout*> rightResizeLayoutList;
 

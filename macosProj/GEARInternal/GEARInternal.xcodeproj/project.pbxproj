@@ -75,6 +75,7 @@
 		5554F11C1AD2717000FD80AF /* Sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0951AD2717000FD80AF /* Sprite.cpp */; };
 		5554F11D1AD2717000FD80AF /* Sprite2Dx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F0971AD2717000FD80AF /* Sprite2Dx.cpp */; };
 		5554F11E1AD2717000FD80AF /* geFontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554F09C1AD2717000FD80AF /* geFontManager.cpp */; };
+		556585E71C92096000EACC3E /* windowMessagePump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 556585E51C92096000EACC3E /* windowMessagePump.cpp */; };
 		556F65C91AD9C85700CDF3C8 /* appEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 556F65C71AD9C85700CDF3C8 /* appEntry.cpp */; };
 		5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5576F3041AD2DD5E008642F5 /* AppKit.framework */; };
 		5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5576F3061AD2F052008642F5 /* MenuImp.mm */; };
@@ -83,6 +84,7 @@
 		55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */; };
 		55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */; };
 		55C4753D1C8B59E8000AA027 /* gearSceneGraphEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */; };
+		55EDBEC01C8E03A0005D7786 /* geModalDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55EDBEBE1C8E03A0005D7786 /* geModalDialog.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -237,6 +239,8 @@
 		5554F0A11AD2717000FD80AF /* geVector4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geVector4.h; sourceTree = "<group>"; };
 		5554F0A21AD2717000FD80AF /* objC_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objC_util.h; sourceTree = "<group>"; };
 		5554F0A31AD2717000FD80AF /* pxMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pxMath.h; sourceTree = "<group>"; };
+		556585E51C92096000EACC3E /* windowMessagePump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = windowMessagePump.cpp; sourceTree = "<group>"; };
+		556585E61C92096000EACC3E /* windowMessagePump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = windowMessagePump.h; sourceTree = "<group>"; };
 		556F65C71AD9C85700CDF3C8 /* appEntry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = appEntry.cpp; sourceTree = "<group>"; };
 		556F65C81AD9C85700CDF3C8 /* appEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appEntry.h; sourceTree = "<group>"; };
 		5576F3041AD2DD5E008642F5 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -250,6 +254,8 @@
 		55BEFD3B1AD59F480071A2D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneGraphEditor.cpp; sourceTree = "<group>"; };
 		55C4753C1C8B59E8000AA027 /* gearSceneGraphEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneGraphEditor.h; sourceTree = "<group>"; };
+		55EDBEBE1C8E03A0005D7786 /* geModalDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geModalDialog.cpp; sourceTree = "<group>"; };
+		55EDBEBF1C8E03A0005D7786 /* geModalDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geModalDialog.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -315,6 +321,8 @@
 		5554EFDF1AD26F9A00FD80AF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				556585E51C92096000EACC3E /* windowMessagePump.cpp */,
+				556585E61C92096000EACC3E /* windowMessagePump.h */,
 				55466F381B3C581300F4802B /* projectSelectorDialogue.xib */,
 				55466F3A1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h */,
 				556F65C71AD9C85700CDF3C8 /* appEntry.cpp */,
@@ -527,6 +535,8 @@
 		5554F0891AD2717000FD80AF /* secondryViews */ = {
 			isa = PBXGroup;
 			children = (
+				55EDBEBE1C8E03A0005D7786 /* geModalDialog.cpp */,
+				55EDBEBF1C8E03A0005D7786 /* geModalDialog.h */,
 				5554F08A1AD2717000FD80AF /* geAssetImportDlg.cpp */,
 				5554F08B1AD2717000FD80AF /* geAssetImportDlg.h */,
 				5554F08C1AD2717000FD80AF /* geColorDlg.cpp */,
@@ -657,6 +667,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */,
+				556585E71C92096000EACC3E /* windowMessagePump.cpp in Sources */,
 				5554F0EB1AD2717000FD80AF /* geGUIBase.cpp in Sources */,
 				5554F1111AD2717000FD80AF /* gePropertyOpenOnEditor.cpp in Sources */,
 				55291B3A1B37623600537BB5 /* cursorUtil.cpp in Sources */,
@@ -681,6 +692,7 @@
 				5554F1091AD2717000FD80AF /* gePropertyAddComponent.cpp in Sources */,
 				5554F10F1AD2717000FD80AF /* gePropertyObject3d.cpp in Sources */,
 				5554F10D1AD2717000FD80AF /* gePropertyLight.cpp in Sources */,
+				55EDBEC01C8E03A0005D7786 /* geModalDialog.cpp in Sources */,
 				5554F1071AD2717000FD80AF /* gearSceneWorldEditor.cpp in Sources */,
 				5554F1171AD2717000FD80AF /* geAssetImportDlg.cpp in Sources */,
 				55C4753D1C8B59E8000AA027 /* gearSceneGraphEditor.cpp in Sources */,

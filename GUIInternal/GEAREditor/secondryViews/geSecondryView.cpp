@@ -1,5 +1,6 @@
 #include "geSecondryView.h"
 #include "../EditorApp.h"
+#include "./../../../macosProj/GEARInternal/GEARInternal/windowMessagePump.h"
 
 geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, rendererGL10* mainRenderer)
 {
@@ -20,10 +21,6 @@ geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, ren
 geSecondryView::~geSecondryView()
 {
 	GE_DELETE(secondryRenderer);
-    
-	//restore gl context to the EditorApp
-	primaryRenderer->makeCurrent();
-	//
     GX_DELETE(layoutManager);
 }
 
@@ -94,7 +91,8 @@ void geSecondryView::showView(int extraWindowFlags)
     //SDL_DetachThread(thread);
     //int threadReturnValue;
     //SDL_WaitThread(thread, &threadReturnValue);
-    extraWindowFlags = extraWindowFlags;
+    
+    this->extraWindowFlags = extraWindowFlags;
     secondryThread((void *)this);
 #endif
 }
@@ -102,11 +100,11 @@ void geSecondryView::showView(int extraWindowFlags)
 SDL_Window* geSecondryView::createSecondryWindow()
 {
     sdlSecondryWindow = SDL_CreateWindow(
-                                         m_szName,             // window title
-                                         m_cPos.x,     // x position, centered
-                                         m_cPos.y,     // y position, centered
-                                         (int)m_cSize.x,                        // width, in pixels
-                                         (int)m_cSize.y,                        // height, in pixels
+                                         m_szName,          // window title
+                                         m_cPos.x,          // x position, centered
+                                         m_cPos.y,          // y position, centered
+                                         (int)m_cSize.x,    // width, in pixels
+                                         (int)m_cSize.y,    // height, in pixels
                                          SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | extraWindowFlags        // flags
                                          );
     
@@ -117,7 +115,10 @@ int geSecondryView::secondryThread( void *ptr )
 {
     geSecondryView* view = (geSecondryView*)ptr;
     
-    view->createSecondryWindow();
+    SDL_Window* secondry_wnd = view->createSecondryWindow();
+    
+    std::function<void(SDL_Window*, SDL_Event&, void* userdata)> func = std::bind(&geSecondryView::processEvent, view, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+    windowMessagePump::getInstance().appendMessagePump(secondry_wnd, view, func);
     
     SDL_ShowWindow(view->getSecondryWindow());
     
@@ -125,68 +126,10 @@ int geSecondryView::secondryThread( void *ptr )
     view->getRenderer()->setViewPort(view->m_cSize.x, view->m_cSize.y);
     view->setSize(view->m_cSize);
     
-    bool quit=false;
-    //While application is running
-    while( !quit )
-    {
-        SDL_Event e;
-        //Handle events on queue
-        while( SDL_PollEvent( &e ) != 0 )
-        {
-            //User requests quit
-            if(e.type==SDL_WINDOWEVENT)
-            {
-                SDL_WindowEvent* windowEvent = (SDL_WindowEvent*)&e;
-                if( windowEvent->event == SDL_WINDOWEVENT_CLOSE )
-                {
-                    quit = true;
-                }
-                else
-                {
-                    view->processEvent(view->getSecondryWindow(), e);
-                }
-            }
-            else
-            {
-                //process other events
-                view->processEvent(view->getSecondryWindow(), e);
-            }
-        }
-        
-        
-        view->getRenderer()->makeCurrent();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        view->drawView();
-        view->getRenderer()->swapGLBuffer();
-		EditorApp* editor = EditorApp::g_pEditorAppInstance;
-        view->primaryRenderer->makeCurrent();
-		editor->draw();
-        
-        //It is very important in shared contexts to make sure the driver is done with all Objects before signaling other threads that they can use them!
-        //GLsync fenceId = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
-
-        SDL_Delay(rand()%10);
-    }
-    
-    SDL_DestroyWindow(view->getSecondryWindow());
-    
-    //It is very important in shared contexts to make sure the driver is done with all Objects before signaling other threads that they can use them!
-    GLsync fenceId = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
-    UNUSED(fenceId);
-//    GLenum result;
-//    while(true)
-//    {
-//        glClientWaitSync(fenceId, GL_SYNC_FLUSH_COMMANDS_BIT, GLuint64(5000000000)); //5 Second timeout
-//        if(result != GL_TIMEOUT_EXPIRED) break; //we ignore timeouts and wait until all OpenGL commands are processed!
-//    }
-    
-	//SDL_GL_MakeCurrent(NULL, NULL);
-    view->destroyView();
-    
     return 0;
 }
 
-void geSecondryView::processEvent(SDL_Window * window, SDL_Event& e)
+void geSecondryView::processEvent(SDL_Window * window, SDL_Event& e, void* userData)
 {
     if(e.type==SDL_WINDOWEVENT)
     {
@@ -202,12 +145,19 @@ void geSecondryView::processEvent(SDL_Window * window, SDL_Event& e)
                 int window_cx=1;
                 int window_cy=1;
                 SDL_GetWindowSize(window, &window_cx, &window_cy);
-                //editorApp.size(window_cx, window_cy);
                 getRenderer()->setViewPort(window_cx, window_cy);
                 sizeView(window_cx, window_cy);
             }
                 break;
-                
+            
+            case SDL_WINDOWEVENT_CLOSE:
+            {
+                windowMessagePump::getInstance().removeMessagePump(getSecondryWindow());
+                SDL_DestroyWindow(getSecondryWindow());
+                destroyView();
+                return;
+            }
+                break;
             default:
                 break;
         }
@@ -294,21 +244,22 @@ void geSecondryView::processEvent(SDL_Window * window, SDL_Event& e)
     }
     else if(e.type==SDL_MOUSEWHEEL)
     {
-        /*
         int mouse_x = 0, mouse_y = 0;
         SDL_GetMouseState( &mouse_x, &mouse_y );
         
-        int nFlags=0;
+        int nFlags = 0;//(g_mControlKeyPressed) ? MK_CONTROL : 0;
         SDL_MouseWheelEvent* mouseWheelEvent = (SDL_MouseWheelEvent*)&e;
-        //editorApp.MouseWheel(mouseWheelEvent->y, mouse_x, mouse_y, nFlags);
-         */
+        mouseWheel(mouseWheelEvent->y, mouse_x, mouse_y, nFlags);
     }
 }
 
 void geSecondryView::drawView()
 {
+    getRenderer()->makeCurrent();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	layoutManager->draw();
 	onDraw();
+    getRenderer()->swapGLBuffer();
 }
 
 void geSecondryView::sizeView(float cx, float cy)
@@ -330,7 +281,6 @@ void geSecondryView::sizeView(float cx, float cy)
 void geSecondryView::destroyView()
 {
 	onDestroy();
-    primaryRenderer->makeCurrent();
 	delete this;
 }
 

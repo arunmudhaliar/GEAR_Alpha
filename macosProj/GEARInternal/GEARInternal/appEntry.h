@@ -20,4 +20,4 @@
 #endif
 
 int appEntry();
-void processEvent(SDL_Window * window, SDL_Event& e, EditorApp& editorApp);
+void processEvent(SDL_Window * window, SDL_Event& e, void* userdata);

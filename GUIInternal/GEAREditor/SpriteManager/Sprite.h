@@ -92,7 +92,7 @@ public:
 	float* getVertexBuffer()	{	return spriteVertexArray;	}
 	float* getTexCoordBuffer()	{	return spriteTextureCoordinateArray;	}
 
-	void copy(Sprite& sprite);
+	void copySprite(Sprite& sprite);
 
 protected:
 	geTexture textureObject;

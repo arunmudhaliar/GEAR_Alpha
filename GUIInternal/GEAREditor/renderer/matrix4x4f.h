@@ -24,7 +24,7 @@ public:
 	
 	geMatrix4x4f(const geMatrix4x4f& matrix)
 	{
-		copy(matrix);
+		copyMatrix(matrix);
 	}
 	
 	virtual ~geMatrix4x4f()
@@ -34,10 +34,10 @@ public:
 
 	void operator=(const geMatrix4x4f& matrix)
 	{
-		copy(matrix);
+		copyMatrix(matrix);
 	}
 	
-	void copy(const geMatrix4x4f& matrix)
+	void copyMatrix(const geMatrix4x4f& matrix)
 	{
 		for(int x=0;x<16;x++)
 		{

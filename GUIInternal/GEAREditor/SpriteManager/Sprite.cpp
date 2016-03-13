@@ -19,7 +19,7 @@ transformf()*/
 
 Sprite::Sprite(Sprite& sprite)
 {
-	copy(sprite);
+	copySprite(sprite);
 }
 
 Sprite::~Sprite()
@@ -27,7 +27,7 @@ Sprite::~Sprite()
 	
 }
 
-void Sprite::copy(Sprite& sprite)
+void Sprite::copySprite(Sprite& sprite)
 {
 	steTexturePacket *tp = sprite.getTexture()->getTexturePack(); 
 	textureObject.setTexturePack(tp);

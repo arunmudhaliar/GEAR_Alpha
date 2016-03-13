@@ -87,7 +87,7 @@ void geTreeNode::setNodeSprite(Sprite2Dx* sprite)
 	{
 		GE_DELETE(this->sprite);
 		this->sprite = new Sprite2Dx();
-		this->sprite->copy(*sprite);
+		this->sprite->copySprite(*sprite);
 		this->sprite->setPos(5+11, 3);
 	}
 }

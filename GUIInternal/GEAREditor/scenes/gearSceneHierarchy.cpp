@@ -203,7 +203,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 				object3d* droppedObj=(object3d*)droppedDataObject->getUserData();
 				
 				matrix4x4f inselectedNodesSpace = selectedObj->getInverse() * *droppedObj->getWorldMatrix();
-				droppedObj->copy(inselectedNodesSpace);
+				droppedObj->copyMatrix(inselectedNodesSpace);
 
 				if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
 				{
@@ -217,7 +217,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 		
 				if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
 				{
-					droppedObj->copy(*droppedObj->getWorldMatrix());	//thinking world is at the center; if not we need to get it in to the world space
+					droppedObj->copyMatrix(*droppedObj->getWorldMatrix());	//thinking world is at the center; if not we need to get it in to the world space
 					//monoWrapper::mono_engine_appendObject3dToRoot(monoWrapper::mono_engine_getWorld(0), droppedObj);
 					monoWrapper::mono_engine_getWorld(0)->appendChild(droppedObj);
 				}

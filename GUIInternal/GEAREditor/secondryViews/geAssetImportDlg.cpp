@@ -21,7 +21,7 @@ void geAssetImportDlg::onCreate(float cx, float cy)
 {
 	m_pWindow = new geWindow("Asset Importer.", fontManager);
 	m_pWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
-	auto layout = layoutManager->getRootLayout()->createAsParent(m_pWindow);
+	auto layout = layoutManager->getRootLayout()->createLeft(m_pWindow, 1.0f);
     layout->unPinLayout();
 	//rootLayout->createAsParent(EditorGEARApp::getSceneWorldEditor());
 }

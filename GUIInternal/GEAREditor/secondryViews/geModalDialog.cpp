@@ -16,7 +16,7 @@ geModalDialog::~geModalDialog()
 void geModalDialog::onCreate(float cx, float cy)
 {
     m_pWindow->setRenderer(secondryRenderer);
-	auto layout = layoutManager->getRootLayout()->createAsParent(m_pWindow);
+	auto layout = layoutManager->getRootLayout()->createLeft(m_pWindow, 1.0f);
     layout->unPinLayout();
 }
 

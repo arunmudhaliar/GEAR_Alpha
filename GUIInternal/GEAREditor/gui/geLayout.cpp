@@ -589,17 +589,17 @@ void geLayout::reAdjustLayoutOnPlug(geLayout* parent, geLayout* grabbed, float r
     }
 }
 
-geLayout* geLayout::createAsParent(geWindow* window)
-{
-	geLayout* pLayout = new geLayout("layout", fontManagerGUI);
-	pLayout->create(rendererGUI, this, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y);
-	pLayout->setLayoutDirection(LAYOUT_PARENT);
-	this->setSize(this->getSize().x,  this->getSize().y);
-	appendLeftChildLayout(pLayout);
-	pLayout->appendWindow(window);
-
-	return pLayout;
-}
+//geLayout* geLayout::createAsParent(geWindow* window)
+//{
+//	geLayout* pLayout = new geLayout("layout", fontManagerGUI);
+//	pLayout->create(rendererGUI, this, this->getPos().x, this->getPos().y, this->getSize().x,  this->getSize().y);
+//	pLayout->setLayoutDirection(LAYOUT_PARENT);
+//	this->setSize(this->getSize().x,  this->getSize().y);
+//	appendLeftChildLayout(pLayout);
+//	pLayout->appendWindow(window);
+//
+//	return pLayout;
+//}
 
 bool geLayout::onMouseLButtonDown(float x, float y, int nFlag)
 {

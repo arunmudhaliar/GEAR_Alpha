@@ -863,69 +863,64 @@ int gxMesh::getVerticesCount()
 	return nVerts;
 }
 
-void gxMesh::writeMeshData(gxFile& file)
-{
-	file.Write(triangleInfoArrayCount);
-	for(int x=0;x<triangleInfoArrayCount;x++)
-	{
-		triangleInfoArray[x].write(file);
-	}
-
-	file.Write(noOfTrianglesForInternalUse);
-	if(vertexBuffer)
-	{
-		file.Write(true);
-		file.WriteBuffer((unsigned char*)vertexBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
-	}
-	else
-	{
-		file.Write(false);
-	}
-
-	if(colorBuffer)
-	{
-		file.Write(true);
-		file.WriteBuffer((unsigned char*)colorBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
-	}
-	else
-	{
-		file.Write(false);
-	}
-
-	if(normalBuffer)
-	{
-		file.Write(true);
-		file.WriteBuffer((unsigned char*)normalBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
-	}
-	else
-	{
-		file.Write(false);
-	}
-
-	if(tangentBuffer)
-	{
-		file.Write(true);
-		file.WriteBuffer((unsigned char*)tangentBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*4);
-	}
-	else
-	{
-		file.Write(false);
-	}
-
-	file.Write(uvChannelCount);
-	for(int x=0;x<uvChannelCount;x++)
-	{
-		if(uvChannel[x].material)
-			file.Write(uvChannel[x].material->getAssetFileCRC());
-		else
-			file.Write((int)0);
-		file.WriteBuffer((unsigned char*)uvChannel[x].textureCoordArray, sizeof(float)*noOfTrianglesForInternalUse*3*2);
-	}
-}
-
 void gxMesh::writeData(gxFile& file)
 {
-	writeMeshData(file);
+    file.Write(triangleInfoArrayCount);
+    for(int x=0;x<triangleInfoArrayCount;x++)
+    {
+        triangleInfoArray[x].write(file);
+    }
+    
+    file.Write(noOfTrianglesForInternalUse);
+    if(vertexBuffer)
+    {
+        file.Write(true);
+        file.WriteBuffer((unsigned char*)vertexBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
+    }
+    else
+    {
+        file.Write(false);
+    }
+    
+    if(colorBuffer)
+    {
+        file.Write(true);
+        file.WriteBuffer((unsigned char*)colorBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
+    }
+    else
+    {
+        file.Write(false);
+    }
+    
+    if(normalBuffer)
+    {
+        file.Write(true);
+        file.WriteBuffer((unsigned char*)normalBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*3);
+    }
+    else
+    {
+        file.Write(false);
+    }
+    
+    if(tangentBuffer)
+    {
+        file.Write(true);
+        file.WriteBuffer((unsigned char*)tangentBuffer, sizeof(float)*noOfTrianglesForInternalUse*3*4);
+    }
+    else
+    {
+        file.Write(false);
+    }
+    
+    file.Write(uvChannelCount);
+    for(int x=0;x<uvChannelCount;x++)
+    {
+        if(uvChannel[x].material)
+            file.Write(uvChannel[x].material->getAssetFileCRC());
+        else
+            file.Write((int)0);
+        file.WriteBuffer((unsigned char*)uvChannel[x].textureCoordArray, sizeof(float)*noOfTrianglesForInternalUse*3*2);
+    }
 }
 
 void gxMesh::readData(gxFile& file)

@@ -106,7 +106,6 @@ public:
 protected:
     virtual void writeData(gxFile& file);
     virtual void readData(gxFile& file);
-    void writeMeshData(gxFile& file);
 
 	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, gxSubMap* submap, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxHWShader* shader, const char* texCoordAttribName);	
 	void disableTextureOperations(int stage, gxHWShader* shader, const char* texCoordAttribName);

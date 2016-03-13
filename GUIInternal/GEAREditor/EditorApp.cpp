@@ -19,6 +19,8 @@
 #include <CommCtrl.h>
 #endif
 
+#include <sys/stat.h>
+
 char EditorGEARApp::g_cszProjectHomeDirectory[FILENAME_MAX];
 EditorApp* EditorApp::g_pEditorAppInstance = NULL;
 
@@ -209,15 +211,49 @@ void EditorApp::DoCommand(int cmd)
 	guiManager->DoCommand(cmd);
 }
 
+bool EditorApp::createDirectory(std::string path)
+{
+#ifdef _WIN32
+    if(MKDIR(path.c_str())==0)
+#else
+        if(MKDIR(path.c_str(), 0777)==0)
+#endif
+        {
+            return true;
+        }
+    
+    DEBUG_PRINT("Error creating directory %s", path.c_str());
+    return false;
+}
+
+bool EditorApp::isDirecoryExist(std::string path)
+{
+    struct stat sb;
+    if (stat(path.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode))
+    {
+        return true;
+    }
+    
+    return false;
+}
+
+bool EditorApp::isFileExist(std::string path)
+{
+    struct stat sb;
+    if (stat(path.c_str(), &sb) == 0 && S_ISREG(sb.st_mode))
+    {
+        return true;
+    }
+    
+    return false;
+}
+
 #if _WIN32
 HWND EditorApp::getMainWindowHandle()
 {
 	return g_hWnd;
 }
-#endif
 
-
-#ifdef _WIN32
 bool EditorApp::showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir)
 {
 	memset(out_savefilename, 0, out_savefilename_size);
@@ -288,7 +324,7 @@ void EditorGEARApp::init(SDL_Window* window)
     gearSceneWorldEditor* worldEditorWnd = new gearSceneWorldEditor(guiManager->getLayoutManager()->getFontManager());
     worldEditorWnd->create(rendererGL10Instance, NULL, 0, 0, 300, 200, true);
     guiManager->appendWindow(worldEditorWnd);
-    geLayout* worldEditorLayout=guiManager->getLayoutManager()->getRootLayout()->createAsParent(worldEditorWnd);
+    geLayout* worldEditorLayout=guiManager->getLayoutManager()->getRootLayout()->createLeft(worldEditorWnd, 1.0f);
     setSceneWorldEditor(worldEditorWnd);
     
 	gearSceneAnimationEditor* animEditorWnd = new gearSceneAnimationEditor(guiManager->getLayoutManager()->getFontManager());
@@ -355,37 +391,26 @@ int EditorGEARApp::createNewProject(const char* projectDirectory)
 {
     char temp_buffer[FILENAME_MAX];
     sprintf(temp_buffer, "%s/Assets", projectDirectory);
-#ifdef _WIN32
-    if(MKDIR(temp_buffer)==0)
-#else
-        if(MKDIR(temp_buffer, 0777)==0)
-#endif
+
+    if(EditorApp::createDirectory(temp_buffer))
+    {
+        sprintf(temp_buffer, "%s/ProjectSettings", projectDirectory);
+        if(EditorApp::createDirectory(temp_buffer))
         {
-            sprintf(temp_buffer, "%s/ProjectSettings", projectDirectory);
-#ifdef _WIN32
-            if(MKDIR(temp_buffer)==0)
-#else
-                if(MKDIR(temp_buffer, 0777)==0)
-#endif
+            sprintf(temp_buffer, "%s/MetaData", projectDirectory);
+            if(EditorApp::createDirectory(temp_buffer))
+            {
+                //add to recent projects file
+                FILE* fp= fopen("recentProjects", "a");
+                if(fp)
                 {
-                    sprintf(temp_buffer, "%s/MetaData", projectDirectory);
-#ifdef _WIN32
-                    if(MKDIR(temp_buffer)==0)
-#else
-                        if(MKDIR(temp_buffer, 0777)==0)
-#endif
-                        {
-                            //add to recent projects file
-                            FILE* fp= fopen("recentProjects", "a");
-                            if(fp)
-                            {
-                                fprintf(fp, "%s\n", projectDirectory);
-                                fclose(fp);
-                            }
-                            return 0;
-                        }
+                    fprintf(fp, "%s\n", projectDirectory);
+                    fclose(fp);
                 }
+                return 0;
+            }
         }
+    }
     
     return -1;
 }

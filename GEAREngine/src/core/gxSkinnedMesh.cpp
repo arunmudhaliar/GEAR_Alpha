@@ -185,7 +185,7 @@ float* gxSkinnedMesh::allocateAndCopyVertexCopyBuffer()
 
 void gxSkinnedMesh::writeData(gxFile& file)
 {
-	gxMesh::writeMeshData(file);
+	gxMesh::writeData(file);
 
 	//write skin data
 	if(boneInfluenceCountBuffer)
@@ -223,12 +223,12 @@ void gxSkinnedMesh::writeData(gxFile& file)
 
 	file.Write(noOfBones);
 	//
-
-	file.Write((int)childList.size());
 }
 
 void gxSkinnedMesh::readData(gxFile& file)
 {
+    gxMesh::readData(file);
+    
 	//read skin data
 	bool bBoneInfluenceCountBuffer=false;
 	file.Read(bBoneInfluenceCountBuffer);

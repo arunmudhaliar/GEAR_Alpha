@@ -61,20 +61,20 @@ public:
 
 	void DoCommand(int cmd);
 
-#if _WIN32
-    static HWND getMainWindowHandle();
-#endif
-
 	bool isInitialized()	{	return is_Initialised;	}
 
 #if _WIN32
+    static HWND getMainWindowHandle();
 	static bool showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir);
 	static bool showOpenCommonDlg(HWND hWnd, char* out_openfilename, int out_openfilename_size, const char* filter, const char* defaultext, const char* root_dir);
 #endif
     
 	static void setAppDirectory(const char* dir)	{	g_cAppDirectory = dir;	}
 	static std::string getAppDirectory()			{	return g_cAppDirectory;	}
-
+    static bool createDirectory(std::string path);
+    static bool isDirecoryExist(std::string path);
+    static bool isFileExist(std::string path);
+    
 private:
 #if _WIN32
     static HWND g_hWnd;	//main window

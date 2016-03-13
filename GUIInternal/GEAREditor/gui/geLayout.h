@@ -42,7 +42,7 @@ public:
 	geLayout* createRight(geWindow* window, float ratio=0.5f);
 	geLayout* createTop(geWindow* window, float ratio=0.5f);
 	geLayout* createBottom(geWindow* window, float ratio=0.5f);
-	geLayout* createAsParent(geWindow* window);
+	//geLayout* createAsParent(geWindow* window);
 
 	geLayout* dropWindowOnMe(geWindow* window);
 	geLayout* getParentLayout()	{	return parentLayout;	}

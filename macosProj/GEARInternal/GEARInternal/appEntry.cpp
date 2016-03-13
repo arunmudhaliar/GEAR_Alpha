@@ -454,6 +454,11 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
 
 								//update the currentscene file
 								root_dir = EditorGEARApp::getProjectHomeDirectory();
+                                //check if ProjectSettings dir exist or not
+                                if(!EditorApp::isDirecoryExist(root_dir+"/ProjectSettings"))
+                                {
+                                    EditorApp::createDirectory(root_dir+"/ProjectSettings");
+                                }
 								root_dir+="/ProjectSettings/currentscene";
 								gxFile currenSceneFile;
 								if(currenSceneFile.OpenFile(root_dir.c_str(), gxFile::FILE_w))

@@ -95,7 +95,7 @@ void geTextureDlg::onCreate(float cx, float cy)
 	//main window
 	textureDlgMainWindow = new geTextureDlgMainWindow(fontManager);
 	textureDlgMainWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);
-	auto mainLayout = layoutManager->getRootLayout()->createAsParent(textureDlgMainWindow);
+	auto mainLayout = layoutManager->getRootLayout()->createLeft(textureDlgMainWindow, 1.0f);
     mainLayout->unPinLayout();
 	//
 

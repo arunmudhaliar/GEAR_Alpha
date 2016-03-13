@@ -65,6 +65,12 @@ void gearSceneFileView::onCreate(float cx, float cy)
 	spriteArray[4].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	spriteArray[4].setClip(110, 238, 16, 16);
 
+    spriteArray[5].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+    spriteArray[5].setClip(384, 69, 16, 16);
+
+    spriteArray[6].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+    spriteArray[6].setClip(425, 259, 16, 16);
+
 	loadPreviewObjects();
 }
 
@@ -581,6 +587,10 @@ int gearSceneFileView::find_files(rendererGL10* renderer, const char *dirname, c
 							sprite=&spriteArray[3];
 						else if(util::GE_IS_EXTENSION(buffer, ".prefab") || util::GE_IS_EXTENSION(buffer, ".PREFAB"))
 							sprite=&spriteArray[4];
+                        else if(util::GE_IS_EXTENSION(buffer, ".cs") || util::GE_IS_EXTENSION(buffer, ".CS"))
+                            sprite=&spriteArray[5];
+                        else if(util::GE_IS_EXTENSION(buffer, ".gearscene") || util::GE_IS_EXTENSION(buffer, ".GEARSCENE"))
+                            sprite=&spriteArray[6];
 						else
 							sprite=&spriteArray[1];
 

@@ -45,7 +45,7 @@ public:
     SDL_Window* getSecondryWindow() {   return sdlSecondryWindow;   }
     
 protected:
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
 	virtual void onSize(float cx, float cy);
 	virtual void onDraw();
 	virtual void onDestroy();

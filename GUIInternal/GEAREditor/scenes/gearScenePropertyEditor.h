@@ -51,7 +51,7 @@ public:
 	geTreeNode* getAnimationParentNode()	{	return animationParentTreeNode;	}
 
 protected:
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
 	virtual void onDraw();
 
 	virtual bool onMouseMove(float x, float y, int flag);

@@ -15,7 +15,7 @@ public:
 	void onTVSelectionChange(geTreeNode* tvnode, geTreeView* treeview);
 
 protected:
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
 	virtual void onDraw();
 
 	virtual bool onMouseLButtonDown(float x, float y, int nFlag);

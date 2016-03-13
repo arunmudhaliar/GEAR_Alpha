@@ -89,16 +89,8 @@ void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)
 #endif
 }
 
-void gxLight::write(gxFile& file)
+void gxLight::writeData(gxFile& file)
 {
-	file.Write(objectID);
-	file.Write(baseFlag);
-	file.Write(m_cszName);
-	file.WriteBuffer((unsigned char*)m, sizeof(m));
-	file.WriteBuffer((unsigned char*)&oobb, sizeof(oobb));
-	file.Write(assetFileCRC);
-	writeAnimationController(file);
-
 	//write light data
 	file.Write(lightType);
 	file.WriteBuffer((unsigned char*)&ambientColor, sizeof(ambientColor));
@@ -108,36 +100,10 @@ void gxLight::write(gxFile& file)
 	file.Write(linearAttenuation);
 	file.Write(quadraticAttenuation);
 	//
-
-	file.Write((int)childList.size());
-#ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=childList.getHead();
-    while(node)
-    {
-		object3d* obj=node->getData();
-		obj->write(file);
-        node=node->getNext();
-	}
-#else
-	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
-	{
-		object3d* obj = *it;
-		obj->write(file);
-	}
-#endif
 }
 
-void gxLight::read(gxFile& file)
+void gxLight::readData(gxFile& file)
 {
-	file.Read(baseFlag);
-	char* temp=file.ReadString();
-	GX_STRCPY(m_cszName, temp);
-	GX_DELETE_ARY(temp);
-	file.ReadBuffer((unsigned char*)m, sizeof(m));
-	file.ReadBuffer((unsigned char*)&oobb, sizeof(oobb));
-	file.Read(assetFileCRC);
-	readAnimationController(file);
-
 	//read light data
 	int type=0;
 	file.Read(type);

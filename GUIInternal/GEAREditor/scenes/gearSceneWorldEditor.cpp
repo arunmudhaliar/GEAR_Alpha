@@ -44,7 +44,7 @@ gearSceneWorldEditor::~gearSceneWorldEditor()
 #endif
 }
 
-void gearSceneWorldEditor::onCreate()
+void gearSceneWorldEditor::onCreate(float cx, float cy)
 {
 #if USE_NVPROFILER
 	nvProfiler::InitNVPM(EditorGEARApp::getMainRenderer()->getRenderingContext());

@@ -9,7 +9,10 @@
 //#if !defined(__APPLE__) //disable Drag-Drop
     #include "../OSSpecific/MDropData.h"
 //#endif
+#include "../util/geFontManager.h"
 
+
+#pragma mark Defines for mouse events in MACOS
 #ifdef __APPLE__
     #define MK_LBUTTON  (1<<0)
     #define MK_RBUTTON  (1<<1)
@@ -19,7 +22,7 @@
     #define ERROR_ENVVAR_NOT_FOUND  0
 #endif
 
-#include "../util/geFontManager.h"
+#pragma mark Defines for GEGUI_* control IDs
 
 #define GEGUI_BASE				3000
 #define GEGUI_LAYOUT_MANAGER	GEGUI_BASE+1
@@ -43,96 +46,16 @@
 #define GEGUI_SEPERATOR			GEGUI_BASE+19
 #define GEGUI_GRAPHCONTROL		GEGUI_BASE+20
 
+#pragma mark stVertexBuffer
 struct stVertexBuffer
 {
-    stVertexBuffer()
-    {
-        memset(vertexColorArray, 0, sizeof(vertexColorArray));
-        memset(vertexArray, 0, sizeof(vertexArray));
-    }
-    
-    void setRect(const gxRectf& rect, const vector4f& color)
-    {
-        updateRect(rect.m_pos.x, rect.m_pos.y, rect.m_size.x, rect.m_size.y);
-        
-        const float colorBuffer[16] =
-        {
-            color.x, color.y, color.z, color.w,
-            color.x, color.y, color.z, color.w,
-            color.x, color.y, color.z, color.w,
-            color.x, color.y, color.z, color.w
-        };
-        memcpy(vertexColorArray, colorBuffer, sizeof(colorBuffer));
-    }
-    
-    void setRect(const gxRectf& rect, const vector4f& upperColor, const vector4f& lowerColor)
-    {
-        updateRect(rect.m_pos.x, rect.m_pos.y, rect.m_size.x, rect.m_size.y);
-        
-        const float colorBuffer[16] =
-        {
-            upperColor.x, upperColor.y, upperColor.z, upperColor.w,
-            upperColor.x, upperColor.y, upperColor.z, upperColor.w,
-            lowerColor.x, lowerColor.y, lowerColor.z, lowerColor.w,
-            lowerColor.x, lowerColor.y, lowerColor.z, lowerColor.w
-        };
-        memcpy(vertexColorArray, colorBuffer, sizeof(colorBuffer));
-    }
-    
-    void setColor(int index, float r, float g, float b, float a)
-    {
-        vertexColorArray[index*4+0] = r;
-        vertexColorArray[index*4+1] = g;
-        vertexColorArray[index*4+2] = b;
-        vertexColorArray[index*4+3] = a;
-    }
-    
-    void updateRect(float x, float y, float cx, float cy)
-    {
-        rect.set(x, y, cx, cy);
-        const float vert[8] =
-        {
-            x+cx,	y,
-            x,      y,
-            x+cx,	y+cy,
-            x,      y+cy,
-        };
-        memcpy(vertexArray, vert, sizeof(vert));
-    }
-    
-    void draw(float* textureCoord, unsigned int texID)
-    {
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(2, GL_FLOAT, 0, vertexArray);
-        glEnableClientState(GL_COLOR_ARRAY);
-        glColorPointer(4, GL_FLOAT, 0, vertexColorArray);
-        
-        if(textureCoord)
-        {
-            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            glEnable(GL_TEXTURE_2D);
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texID);
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-            glTexCoordPointer(2, GL_FLOAT, 0, textureCoord);
-        }
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        
-        if(textureCoord)
-        {
-            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glDisable(GL_TEXTURE_2D);
-        }
-        
-        glDisableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
-    
-    void reset()
-    {
-        updateRect(0, 0, 0, 0);
-    }
+    stVertexBuffer();
+    void setRect(const gxRectf& rect, const vector4f& color);
+    void setRect(const gxRectf& rect, const vector4f& upperColor, const vector4f& lowerColor);
+    void setColor(int index, float r, float g, float b, float a);
+    void updateRect(float x, float y, float cx, float cy);
+    void draw(float* textureCoord, unsigned int texID);
+    void reset();
     const gxRectf& getRect()    {   return rect;    }
 private:
     gxRectf rect;
@@ -140,6 +63,7 @@ private:
 	float vertexColorArray[16];	//rgba 4*4
 };
 
+#pragma mark geGUIBase
 class MGUIObserver;
 class geGUIBase
 {
@@ -258,7 +182,7 @@ public:
     void setMouseBoundCheck(bool flag)          {	is_MouseBoundCheckEnabled=flag;		}
     
 protected:
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
 
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);
@@ -346,6 +270,7 @@ private:
     void applyClipIfIamOnMainWindow();
 };
 
+#pragma mark MGUIObserver
 class MGUIObserver
 {
 public:

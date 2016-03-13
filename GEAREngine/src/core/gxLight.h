@@ -45,13 +45,14 @@ public:
 	void setLinearAttenuation(float value)		{	linearAttenuation=value;		}
 	void setQuadraticAttenuation(float value)	{	quadraticAttenuation=value;	}
 
-	virtual void write(gxFile& file);
-	virtual void read(gxFile& file);
-
 	//shadow mapping
 	matrix4x4f& getShadowDepthMVP()		{ return depthMVPMatrix; }
 	matrix4x4f& getShadowDepthBiasMVP()	{ return depthBiasMVPMatrix; }
 	FBO& getShadowMapFBO()				{ return shadowMapFBO; }
+
+protected:
+    virtual void writeData(gxFile& file);
+    virtual void readData(gxFile& file);
 
 private:
 	ELIGHT_TYPE lightType;

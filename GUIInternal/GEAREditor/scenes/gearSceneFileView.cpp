@@ -42,7 +42,7 @@ gearSceneFileView::~gearSceneFileView()
     GE_DELETE(fileTreeView);
 }
 
-void gearSceneFileView::onCreate()
+void gearSceneFileView::onCreate(float cx, float cy)
 {
 	fileTreeView->create(rendererGUI, this, "AssetsFileTV", this);
 

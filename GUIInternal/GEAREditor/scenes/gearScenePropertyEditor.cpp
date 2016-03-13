@@ -73,7 +73,7 @@ gearScenePropertyEditor::~gearScenePropertyEditor()
     GE_DELETE(propertiesTreeView);
 }
 
-void gearScenePropertyEditor::onCreate()
+void gearScenePropertyEditor::onCreate(float cx, float cy)
 {
 	propertiesTreeView->create(rendererGUI, this, "propertyeditorTV", this);
 

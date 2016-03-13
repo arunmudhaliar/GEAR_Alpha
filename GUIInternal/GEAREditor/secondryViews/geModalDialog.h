@@ -8,7 +8,7 @@ public:
 	geModalDialog(geWindow* pWindow, geVector2i pos);
 	virtual ~geModalDialog();
 
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
 	virtual void onSize(float cx, float cy);
 	virtual void onDraw();
 	virtual void onDestroy();

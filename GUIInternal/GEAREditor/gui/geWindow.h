@@ -49,7 +49,7 @@ public:
 	float getTitleWidth()	{	return titleWidth;	}
 
 protected:
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);
 	virtual void onDraw();

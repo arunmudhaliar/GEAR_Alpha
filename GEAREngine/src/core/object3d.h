@@ -147,9 +147,6 @@ public:
 	object3d* appendChild(object3d* child);
 	bool removeChild(object3d* child);
 
-	//child: child callbacks
-	virtual void onAppendObject3dChild(object3d* child);
-	virtual void onRemoveObject3dChild(object3d* child);
 #ifdef USE_BXLIST
 	bxLinkedList<object3d*>* getChildList()	{	return &childList;	}
 #else
@@ -169,22 +166,14 @@ public:
 	gxOOBBf& getOOBB()	{	return oobb;	}
 	virtual void calculateAABB();
 
-	//animation
-	gxAnimation* createAnimationController();
-	void resetAnimationControllerAndAssignItToObject(object3d* obj);	//only used for FBX import: assigns the animation controller to new object and clears its pointer
-	void setAnimationController(gxAnimation* controller);
-	gxAnimation* getAnimationController()				{	return animationController;	}
+    gxAnimation* getAnimationController();
 	gxAnimationSet* applyAnimationSetRecursive(int index);
 	gxAnimationSet* applyAnimationSetRecursive(gxAnimationSet* animset);
-	void setAnimationTrack(IAnimationTrack* track);
 	IAnimationTrack* getAnimationTrack()	{	return animationTrack;	}
-	void updateAnimationFrameToObject3d(int frame);
 
 	//serialize
-	virtual void write(gxFile& file);
-	virtual void read(gxFile& file);
-	void writeAnimationController(gxFile& file);
-	void readAnimationController(gxFile& file);
+	void write(gxFile& file);
+	void read(gxFile& file);
 
 	//user defined data
 	void setEditorUserData(void* userData)	{	editorUserData=userData;	}
@@ -217,7 +206,16 @@ public:
 	int getMonoScriptInstanceCount();
 
 protected:
-	void clearAnimTrackOnAllNodes();
+    
+    virtual void writeData(gxFile& file)    {   }
+    virtual void readData(gxFile& file)     {   }
+
+    //child: child callbacks
+    virtual void onAppendObject3dChild(object3d* child);
+    virtual void onRemoveObject3dChild(object3d* child);
+
+    void writeAnimationController(gxFile& file);
+    void readAnimationController(gxFile& file);
 
 	char m_cszName[256];
 	int objectID;
@@ -243,6 +241,11 @@ protected:
 	int layerID;
 
 	std::vector<monoScriptObjectInstance*> attachedScriptInstanceList;
+    
+private:
+    void updateAnimationFrameToObject3d(int frame);
+    void setAnimationTrack(IAnimationTrack* track);
+    void clearAnimTrackOnAllNodes();
 };
 
 ////////////////////OBJECT3D C# BRIDGE////////////////////

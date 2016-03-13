@@ -17,7 +17,7 @@ gearSceneAnimationEditor::~gearSceneAnimationEditor()
     GE_DELETE(animationsTreeView);
 }
 
-void gearSceneAnimationEditor::onCreate()
+void gearSceneAnimationEditor::onCreate(float cx, float cy)
 {
 	animationsTreeView->create(rendererGUI, this, "animationeditorTV", this);
     animationsTreeView->setMouseBoundCheck(true);

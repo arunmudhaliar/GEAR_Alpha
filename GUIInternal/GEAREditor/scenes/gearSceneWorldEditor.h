@@ -46,7 +46,7 @@ private:
 	void followObject(float dt, object3d* chasedObj);
 
 protected:
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
 	virtual void onDraw();
 	virtual void onSize(float cx, float cy, int flag);
 	virtual bool onMouseLButtonDown(float x, float y, int nFlag);

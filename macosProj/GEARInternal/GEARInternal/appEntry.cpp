@@ -134,16 +134,22 @@ int appEntry()
             }
             else
             {
+                Uint32 event_wndID=e.window.windowID;
+                
                 if (e.type==SDL_DROPFILE)
                 {
-                    printf("ERROE");
+                    SDL_DropEvent* dropEvent = (SDL_DropEvent*)&e;
+                    MDropData* dropData = (MDropData*)dropEvent->file;
+                    event_wndID=dropData->getSourceWindowID();
+                    UNUSED(dropData);
                 }
+                
                 //process other events
-                std::function<void(SDL_Window*, SDL_Event&, void* userdata)>* pump = windowMessagePump::getInstance().getMessageLoopFunction(SDL_GetWindowFromID(e.window.windowID));
+                std::function<void(SDL_Window*, SDL_Event&, void* userdata)>* pump = windowMessagePump::getInstance().getMessageLoopFunction(SDL_GetWindowFromID(event_wndID));
                 if(pump)
                 {
                     std::function<void(SDL_Window*, SDL_Event&, void* userdata)>& func2 = *pump;
-                    func2(SDL_GetWindowFromID(e.window.windowID), e, (void*)&editorApp);
+                    func2(SDL_GetWindowFromID(event_wndID), e, (void*)&editorApp);
                 }
             }
         }

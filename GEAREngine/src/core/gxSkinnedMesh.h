@@ -19,13 +19,13 @@ public:
 	void populateBoneList(object3d* bone, int index);
 
 	float* allocateAndCopyVertexCopyBuffer();
-
-	virtual void write(gxFile& file);
-	virtual void read(gxFile& file);
-
 	void clearPrivateIterator()             {	privateIterator=0;          }
 
 	void setRootNode(object3d* rootNode)	{	this->rootNode = rootNode;	}
+
+protected:
+    virtual void writeData(gxFile& file);
+    virtual void readData(gxFile& file);
 
 private:
 	int* boneInfluenceCountBuffer;

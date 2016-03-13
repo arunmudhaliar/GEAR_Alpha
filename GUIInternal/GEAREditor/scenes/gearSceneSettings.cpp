@@ -17,7 +17,7 @@ gearSceneSettings::~gearSceneSettings()
     GE_DELETE(settingsTreeView);
 }
 
-void gearSceneSettings::onCreate()
+void gearSceneSettings::onCreate(float cx, float cy)
 {
 	spriteArray[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	spriteArray[0].setClip(6, 256, 16, 16);

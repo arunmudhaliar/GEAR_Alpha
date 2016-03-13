@@ -12,7 +12,7 @@ public:
 	geColorDlg(geColorControl* pObserverControlPtr, geFontManager* fontManager, rendererGL10* mainRenderer);
 	virtual ~geColorDlg();
 
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
 	virtual void onSize(float cx, float cy);
 	virtual void onDraw();
 	virtual void onDestroy();

@@ -12,7 +12,7 @@ gearSceneGraphEditor::~gearSceneGraphEditor()
     GE_DELETE(graphControlView);
 }
 
-void gearSceneGraphEditor::onCreate()
+void gearSceneGraphEditor::onCreate(float cx, float cy)
 {
     graphControlView->create(rendererGUI, this, 0, 0, 10, 10, 1, 1000);
 }

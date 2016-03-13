@@ -236,16 +236,8 @@ void Camera::drawFrustum(gxHWShader* shader)
 #endif
 }
 
-void Camera::write(gxFile& file)
+void Camera::writeData(gxFile& file)
 {
-	file.Write(objectID);
-	file.Write(baseFlag);
-	file.Write(m_cszName);
-	file.WriteBuffer((unsigned char*)m, sizeof(m));
-	file.WriteBuffer((unsigned char*)&oobb, sizeof(oobb));
-	file.Write(assetFileCRC);
-	writeAnimationController(file);
-
 	//write camera data
 	file.Write(projectionType);
 	file.Write(isMainCam);
@@ -254,36 +246,10 @@ void Camera::write(gxFile& file)
 	file.Write(farValue);
 	file.Write(layerCullingMask);
 	//
-
-	file.Write((int)childList.size());
-#ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=childList.getHead();
-    while(node)
-    {
-		object3d* obj=node->getData();
-		obj->write(file);
-        node=node->getNext();
-	}
-#else
-	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
-	{
-		object3d* obj = *it;
-		obj->write(file);
-	}
-#endif
 }
 
-void Camera::read(gxFile& file)
+void Camera::readData(gxFile& file)
 {
-	file.Read(baseFlag);
-	char* temp=file.ReadString();
-	GX_STRCPY(m_cszName, temp);
-	GX_DELETE_ARY(temp);
-	file.ReadBuffer((unsigned char*)m, sizeof(m));
-	file.ReadBuffer((unsigned char*)&oobb, sizeof(oobb));
-	file.Read(assetFileCRC);
-	readAnimationController(file);
-
 	//read camera data
 	int etype=0;
 	file.Read(etype);

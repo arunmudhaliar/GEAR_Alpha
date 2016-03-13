@@ -13,7 +13,7 @@ geModalDialog::~geModalDialog()
 {
 }
 
-void geModalDialog::onCreate()
+void geModalDialog::onCreate(float cx, float cy)
 {
     m_pWindow->setRenderer(secondryRenderer);
 	auto layout = layoutManager->getRootLayout()->createAsParent(m_pWindow);

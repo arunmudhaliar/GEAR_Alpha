@@ -14,7 +14,7 @@ geTestDlg::~geTestDlg()
 	GE_DELETE(m_pWindow);
 }
 
-void geTestDlg::onCreate()
+void geTestDlg::onCreate(float cx, float cy)
 {
 	m_pWindow = new geWindow("Color Dialog", fontManager);
 	m_pWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);

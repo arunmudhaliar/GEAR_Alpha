@@ -27,7 +27,7 @@ gearSceneProject::~gearSceneProject()
     GE_DELETE(assetTreeView)
 }
 
-void gearSceneProject::onCreate()
+void gearSceneProject::onCreate(float cx, float cy)
 {
 	assetTreeView->create(rendererGUI, this, "AssetsTV", this);
 

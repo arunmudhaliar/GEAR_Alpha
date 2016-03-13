@@ -704,7 +704,7 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
         printf("%s", responsebuffer);
         printf("\n======================================================\n");
     }
-    else if(exec_cmd(("bash mcs "+command_buffer).c_str(), responsebuffer)==0)
+    else if(exec_cmd(("mcs "+command_buffer).c_str(), responsebuffer)==0)
     {
         printf("\n================MCS COMPILATION RESULT===============\n");
         printf("%s", responsebuffer);

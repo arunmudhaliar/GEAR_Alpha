@@ -19,7 +19,7 @@ gearSceneConsole::~gearSceneConsole()
     GE_DELETE(consoleTreeView);
 }
 
-void gearSceneConsole::onCreate()
+void gearSceneConsole::onCreate(float cx, float cy)
 {
 	spriteArray[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	spriteArray[0].setClip(110, 258, 16, 16);

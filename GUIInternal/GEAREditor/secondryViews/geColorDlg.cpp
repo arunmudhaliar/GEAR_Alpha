@@ -21,7 +21,7 @@ geColorDlg::~geColorDlg()
 	GE_DELETE(colorControl);
 }
 
-void geColorDlg::onCreate()
+void geColorDlg::onCreate(float cx, float cy)
 {
 	colorDlgCircleRadius=75.0f;
 

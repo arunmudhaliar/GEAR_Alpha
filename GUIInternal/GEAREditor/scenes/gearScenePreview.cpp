@@ -15,7 +15,7 @@ gearScenePreview::~gearScenePreview()
 {
 }
 
-void gearScenePreview::onCreate()
+void gearScenePreview::onCreate(float cx, float cy)
 {
 	reinitPreviewWorld();
 }

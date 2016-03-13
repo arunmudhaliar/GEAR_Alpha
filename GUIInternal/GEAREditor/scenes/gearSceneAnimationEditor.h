@@ -17,7 +17,7 @@ public:
     
     void setGraphControlView(geGraphControl* graphView) {   graphControlView=graphView; }
 protected:
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
     virtual void onSize(float cx, float cy, int flag);
 
 	virtual void onDraw();

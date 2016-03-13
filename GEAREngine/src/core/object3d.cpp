@@ -26,7 +26,7 @@ extern DECLSPEC object3d* object3d_getChild(object3d* obj, int index)
 
 extern DECLSPEC gxAnimation* object3d_createAnimationController(object3d* obj)
 {
-	return obj->createAnimationController();
+	return obj->getAnimationController();
 }
 
 extern DECLSPEC gxAnimation* object3d_getAnimationController(object3d* obj)
@@ -343,7 +343,7 @@ bool object3d::removeChild(object3d* child)
 		if(rootObserver)
 			rootObserver->callback_object3dRemovedFromTree(child);
 		child->setParent(NULL);
-		//child->setAnimationTrack(NULL);	nned to test fully
+		//child->setAnimationTrack(NULL);	need to test fully
 		transformationChangedf();
 		return true;
 	}
@@ -508,29 +508,12 @@ void object3d::calculateAABB()
 	aabb.set(vector3f(min_x, min_y, min_z), vector3f(max_x, max_y, max_z));
 }
 
-gxAnimation* object3d::createAnimationController()
+gxAnimation* object3d::getAnimationController()
 {
-	if(animationController==NULL)
-		animationController = new gxAnimation();
-
-	return animationController;
-}
-
-void object3d::resetAnimationControllerAndAssignItToObject(object3d* obj)
-{
-	obj->setAnimationController(getAnimationController());
-	setAnimationController(NULL);
-}
-
-void object3d::setAnimationController(gxAnimation* controller)
-{
-	//if(animationController)
-	//{
-	//	DEBUG_PRINT("WARNING resetting an existing Animation controller");
-	//	GX_DELETE(animationController);
-	//}
-
-	animationController=controller;
+    if(animationController==nullptr)
+        animationController = new gxAnimation();
+    
+    return animationController;
 }
 
 void object3d::setAnimationTrack(IAnimationTrack* track)
@@ -628,19 +611,19 @@ void object3d::write(gxFile& file)
 	file.WriteBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Write(assetFileCRC);
 	writeAnimationController(file);
-
+    
 	//
 	file.Write((int)attachedScriptInstanceList.size());
 	for(std::vector<monoScriptObjectInstance*>::iterator it = attachedScriptInstanceList.begin(); it != attachedScriptInstanceList.end(); ++it)
 	{
 		monoScriptObjectInstance* scriptinstance = *it;
 		file.Write(scriptinstance->getScriptPtr()->getScriptFileName().c_str());
-		//scriptinstance->update();
 	}
 	//
 
+    writeData(file);
+    
 	file.Write((int)childList.size());
-
 #ifdef USE_BXLIST
 	stLinkNode<object3d*>* node=childList.getHead();
     while(node)
@@ -682,10 +665,12 @@ void object3d::read(gxFile& file)
 		monoScript* script = monoWrapper::mono_getMonoScripDef(temp_scriptname);
 
 		attachMonoScrip(script);
-		if(script==NULL)
-			DEBUG_PRINT("script==NULL");
+		if(script==nullptr)
+			DEBUG_PRINT("script==nullptr");
 	}
 	//
+    
+    readData(file);
 }
 
 void object3d::writeAnimationController(gxFile& file)
@@ -707,7 +692,7 @@ void object3d::readAnimationController(gxFile& file)
 	file.Read(bAnimationController);
 	if(bAnimationController)
 	{
-		gxAnimation* animationController=createAnimationController();
+		gxAnimation* animationController=getAnimationController();
 		animationController->read(file);
 	}
 }

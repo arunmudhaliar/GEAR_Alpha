@@ -183,7 +183,7 @@ float* gxSkinnedMesh::allocateAndCopyVertexCopyBuffer()
 	return vertexCopyBuffer;
 }
 
-void gxSkinnedMesh::write(gxFile& file)
+void gxSkinnedMesh::writeData(gxFile& file)
 {
 	gxMesh::writeMeshData(file);
 
@@ -225,30 +225,11 @@ void gxSkinnedMesh::write(gxFile& file)
 	//
 
 	file.Write((int)childList.size());
-
-#ifdef USE_BXLIST
-	stLinkNode<object3d*>* node=childList.getHead();
-    while(node)
-    {
-		object3d* obj=node->getData();
-		obj->write(file);
-        node=node->getNext();
-	}
-#else
-	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
-	{
-		object3d* obj = *it;
-		obj->write(file);
-	}
-#endif
 }
 
-void gxSkinnedMesh::read(gxFile& file)
+void gxSkinnedMesh::readData(gxFile& file)
 {
-	gxMesh::read(file);
-
 	//read skin data
-
 	bool bBoneInfluenceCountBuffer=false;
 	file.Read(bBoneInfluenceCountBuffer);
 	if(bBoneInfluenceCountBuffer)

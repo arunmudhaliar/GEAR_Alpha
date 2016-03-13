@@ -32,7 +32,7 @@ void geSecondryView::createRenderer(SDL_Window* window)
 	layoutManager->create(secondryRenderer, 0, 0, m_cSize.x, m_cSize.y);
 	previousScale.set(m_cSize.x, m_cSize.y);
     
-	onCreate();
+    onCreate(m_cSize.x, m_cSize.y);
 }
 
 void geSecondryView::setSize(geVector2f& sz)
@@ -339,7 +339,7 @@ void geSecondryView::onMouseWheel(int zDelta, int x, int y, int flag)
 	layoutManager->MouseWheel(zDelta, x, y, flag);
 }
 
-void geSecondryView::onCreate()
+void geSecondryView::onCreate(float cx, float cy)
 {
 }
 

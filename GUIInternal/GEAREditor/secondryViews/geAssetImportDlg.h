@@ -9,7 +9,7 @@ public:
 	geAssetImportDlg(geFontManager* fontManager, rendererGL10* mainRenderer);
 	virtual ~geAssetImportDlg();
 
-	virtual void onCreate();
+	virtual void onCreate(float cx, float cy);
 	virtual void onSize(float cx, float cy);
 	virtual void onDraw();
 	virtual void onDestroy();

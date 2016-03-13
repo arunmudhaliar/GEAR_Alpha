@@ -90,7 +90,7 @@ geTextureDlg::~geTextureDlg()
 	GE_DELETE(textureDlgInfoWindow);
 }
 
-void geTextureDlg::onCreate()
+void geTextureDlg::onCreate(float cx, float cy)
 {
 	//main window
 	textureDlgMainWindow = new geTextureDlgMainWindow(fontManager);

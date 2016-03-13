@@ -17,7 +17,7 @@ geAssetImportDlg::~geAssetImportDlg()
 	GE_DELETE(m_pWindow);
 }
 
-void geAssetImportDlg::onCreate()
+void geAssetImportDlg::onCreate(float cx, float cy)
 {
 	m_pWindow = new geWindow("Asset Importer.", fontManager);
 	m_pWindow->create(secondryRenderer, NULL, 0, 0, m_cSize.x, m_cSize.y, false);

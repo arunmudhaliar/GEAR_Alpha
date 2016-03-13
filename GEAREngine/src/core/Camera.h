@@ -54,8 +54,9 @@ public:
 	void setMainCamera(bool flag)	{	isMainCam=flag;     }
 	bool isMainCamera()             {	return isMainCam;	}
 
-	virtual void write(gxFile& file);
-	virtual void read(gxFile& file);
+protected:
+    virtual void writeData(gxFile& file);
+    virtual void readData(gxFile& file);
 
 private:
 	gxRenderer* renderer;	//must not delete this pointer

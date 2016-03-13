@@ -2,6 +2,99 @@
 #include "geWindow.h"
 #include "../win32/cursorUtil.h"
 
+#pragma mark stVertexBuffer
+stVertexBuffer::stVertexBuffer()
+{
+    memset(vertexColorArray, 0, sizeof(vertexColorArray));
+    memset(vertexArray, 0, sizeof(vertexArray));
+}
+
+void stVertexBuffer::setRect(const gxRectf& rect, const vector4f& color)
+{
+    updateRect(rect.m_pos.x, rect.m_pos.y, rect.m_size.x, rect.m_size.y);
+    
+    const float colorBuffer[16] =
+    {
+        color.x, color.y, color.z, color.w,
+        color.x, color.y, color.z, color.w,
+        color.x, color.y, color.z, color.w,
+        color.x, color.y, color.z, color.w
+    };
+    memcpy(vertexColorArray, colorBuffer, sizeof(colorBuffer));
+}
+
+void stVertexBuffer::setRect(const gxRectf& rect, const vector4f& upperColor, const vector4f& lowerColor)
+{
+    updateRect(rect.m_pos.x, rect.m_pos.y, rect.m_size.x, rect.m_size.y);
+    
+    const float colorBuffer[16] =
+    {
+        upperColor.x, upperColor.y, upperColor.z, upperColor.w,
+        upperColor.x, upperColor.y, upperColor.z, upperColor.w,
+        lowerColor.x, lowerColor.y, lowerColor.z, lowerColor.w,
+        lowerColor.x, lowerColor.y, lowerColor.z, lowerColor.w
+    };
+    memcpy(vertexColorArray, colorBuffer, sizeof(colorBuffer));
+}
+
+void stVertexBuffer::setColor(int index, float r, float g, float b, float a)
+{
+    vertexColorArray[index*4+0] = r;
+    vertexColorArray[index*4+1] = g;
+    vertexColorArray[index*4+2] = b;
+    vertexColorArray[index*4+3] = a;
+}
+
+void stVertexBuffer::updateRect(float x, float y, float cx, float cy)
+{
+    rect.set(x, y, cx, cy);
+    const float vert[8] =
+    {
+        x+cx,	y,
+        x,      y,
+        x+cx,	y+cy,
+        x,      y+cy,
+    };
+    memcpy(vertexArray, vert, sizeof(vert));
+}
+
+void stVertexBuffer::draw(float* textureCoord, unsigned int texID)
+{
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(2, GL_FLOAT, 0, vertexArray);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_FLOAT, 0, vertexColorArray);
+    
+    if(textureCoord)
+    {
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glEnable(GL_TEXTURE_2D);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texID);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        glTexCoordPointer(2, GL_FLOAT, 0, textureCoord);
+    }
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    if(textureCoord)
+    {
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
+    }
+    
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void stVertexBuffer::reset()
+{
+    updateRect(0, 0, 0, 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+#pragma mark geGUIBase
+
 geGUIBase::geGUIBase()
 {
 	rendererGUI=NULL;
@@ -677,7 +770,7 @@ void geGUIBase::onFocusLost()
 {
 }
 
-void geGUIBase::onCreate()
+void geGUIBase::onCreate(float cx, float cy)
 {
 }
 

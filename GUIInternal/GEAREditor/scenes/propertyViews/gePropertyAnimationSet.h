@@ -72,7 +72,7 @@ public:
 	{
 		if(btn==setAnimationButton && setAnimationButton->isButtonPressed())
 		{
-			gxAnimation* animationController = ownerObject3d->createAnimationController();
+			gxAnimation* animationController = ownerObject3d->getAnimationController();
 			if(animationController->getActiveAnimationSet()==animationSet)
 			{
 				if(animationController->isPlaying())

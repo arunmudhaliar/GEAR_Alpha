@@ -22,7 +22,7 @@ gearSceneHierarchy::~gearSceneHierarchy()
     GE_DELETE(gameObjectTreeView);
 }
 
-void gearSceneHierarchy::onCreate()
+void gearSceneHierarchy::onCreate(float cx, float cy)
 {
 	engine_setEngineObserver(this);
 	engine_setObject3dObserver(this);
@@ -232,7 +232,7 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 				if(selectedNode)
 				{
 					object3d* selectedObj=(object3d*)selectedNode->getUserData();
-					gxAnimation* animationController = selectedObj->createAnimationController();	//wont create new if there is already an animatiion controller exists
+					gxAnimation* animationController = selectedObj->getAnimationController();	//wont create new if there is already an animatiion controller exists
 					animationController->appendAnimationSet(animSet);
 					selectedObj->applyAnimationSetRecursive((int)animationController->getAnimationSetList()->size()-1);
 					animationController->play((int)animationController->getAnimationSetList()->size()-1);

@@ -35,10 +35,11 @@ void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float 
     
     roundedRectControl.create(titleWidth+30, GE_WND_TITLE_HEIGHT-3, 5);
     
-    onCreate();
+    setPos(x, y);
+    setSize(cx, cy);
+
+    onCreate(cx, cy);
     
-	setPos(x, y);
-	setSize(cx, cy);
 	setTitleColor(0.12f, 0.12f, 0.12f, 1.0f);
 	setClientColor(0.2f, 0.2f, 0.2f, 1.0f);
 	setSizable(true);
@@ -133,7 +134,7 @@ bool geWindow::isPointInsideWindowTitle(int x, int y)
 	return (x>m_cPos.x && x<m_cPos.x+m_cSize.x && y>m_cPos.y && y<m_cPos.y+GE_WND_TITLE_HEIGHT);
 }
 
-void geWindow::onCreate()
+void geWindow::onCreate(float cx, float cy)
 {
 }
 

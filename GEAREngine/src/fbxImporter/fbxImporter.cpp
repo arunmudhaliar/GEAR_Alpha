@@ -333,7 +333,7 @@ bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node
 				lAnimCurve_rotationX || lAnimCurve_rotationY || lAnimCurve_rotationZ ||
 				lAnimCurve_scalingX || lAnimCurve_scalingY || lAnimCurve_scalingZ)
 			{
-				animationController=rootObject3d->createAnimationController();	//wont create new if there is already an animatiion controller exists
+				animationController=rootObject3d->getAnimationController();	//wont create new if there is already an animatiion controller exists
 				if(animTrack==NULL)
 				{
 					int nAnimSet=(int)animationController->getAnimationSetList()->size();
@@ -353,8 +353,8 @@ bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node
 					animTrack->setFPS((int)lFrameRate);
 					animTrack->setTotalFrames((int)nGlobalFrame);
 					componentTrack = animTrack->allocateFrames();
-					parent_obj_node->setAnimationTrack(animTrack);
 					animSet->appendTrack(animTrack);
+                    parent_obj_node->applyAnimationSetRecursive(animSet);
 				}
 
 				FbxTime tt(0);

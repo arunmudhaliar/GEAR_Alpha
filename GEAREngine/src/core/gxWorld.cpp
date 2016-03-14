@@ -867,7 +867,7 @@ object3d* gxWorld::loadFromCRCFile(int crc)
 	populateBonesToMeshNode(root_object_node, root_object_node);
     
     //restore the original transform
-    root_object_node->copy(temp);
+    root_object_node->copyMatrix(temp);
     
 	return root_object_node;
 }

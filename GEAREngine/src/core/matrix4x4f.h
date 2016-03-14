@@ -28,7 +28,7 @@ public:
 	
 	matrix4x4f(const matrix4x4f& matrix)
 	{
-		copy(matrix);
+		copyMatrix(matrix);
 	}
 	
 	matrix4x4f(float _m00, float _m01, float _m02, float _m03,
@@ -41,6 +41,8 @@ public:
 		m[4]=_m10; m[5]=_m11; m[6]=_m12; m[7]=_m13;
 		m[8]=_m20; m[9]=_m21; m[10]=_m22; m[11]=_m23;
 		m[12]=_m30; m[13]=_m31; m[14]=_m32; m[15]=_m33;
+        
+        matrixChanged();
 	}
 
 	virtual ~matrix4x4f()
@@ -57,10 +59,10 @@ public:
 
 	void operator=(const matrix4x4f& matrix)
 	{
-		copy(matrix);
+		copyMatrix(matrix);
 	}
 	
-	void copy(const matrix4x4f& matrix)
+	void copyMatrix(const matrix4x4f& matrix)
 	{
 		for( int x=0;x<16;x++)
 		{
@@ -322,6 +324,8 @@ public:
 		m[ 9 ] = (float)( m[ 9 ] / scaleZ );
 		m[ 10 ] = (float)( m[ 10 ] / scaleZ );
 
+        matrixChanged();
+        
 		return true;
 	}
 

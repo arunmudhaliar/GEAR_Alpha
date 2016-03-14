@@ -146,7 +146,7 @@ object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManag
 		populateBonesToMeshNode(&boneList, object3d_root_object, object3d_root_object);
 
 		//restore the original transform
-		object3d_root_object->copy(temp);
+		object3d_root_object->copyMatrix(temp);
 		return object3d_root_object;
 	}
 

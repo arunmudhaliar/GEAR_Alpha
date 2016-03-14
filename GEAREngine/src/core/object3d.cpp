@@ -119,6 +119,13 @@ object3d::~object3d()
 	GX_DELETE(animationController);
 }
 
+object3d* object3d::clone()
+{
+    //Not implemented
+    assert(false);
+    return nullptr;
+}
+
 void object3d::resetAllBaseFlags(bool recursive)
 {
 	baseFlag=0;

@@ -6,7 +6,8 @@
 class DECLSPEC transform : public matrix4x4f
 {
 public:
-	transform():matrix4x4f()
+	transform():
+        matrix4x4f()
 	{
 	}
 
@@ -14,6 +15,12 @@ public:
 	{
 	}
 
+    void copyTransform(transform& tm)
+    {
+        worldTransformationMatrix.copyMatrix(*tm.getWorldMatrix());
+        copyMatrix(tm); //Note: copymatrix will internally call transformationChangedf()
+    }
+    
 	void updatePositionf(vector3f v)
 	{
 		updatePositionf(v.x, v.y, v.z);
@@ -42,25 +49,6 @@ public:
 		transformationChangedf();
 	}
 	
-	void translateLocalXf(float aXdt)
-	{
-		m[12] += (aXdt* m[0]);
-		m[13] += (aXdt* m[1]);
-		m[14] += (aXdt* m[2]);
-	}
-	void translateLocalYf(float aYdt)
-	{
-		m[12] += (aYdt* m[4]);
-		m[13] += (aYdt* m[5]);
-		m[14] += (aYdt* m[6]);
-	}
-	void translateLocalZf(float aZdt)
-	{
-		m[12] += (aZdt* m[8]);
-		m[13] += (aZdt* m[9]);
-		m[14] += (aZdt* m[10]);
-	}
-
 	void scale(float scale)
     {
         matrix4x4f scaleTM;
@@ -100,6 +88,7 @@ public:
 		matrix4x4f* p=this;
 		*p = (scaleTM * (*this)); 
     }
+    
 	void rotateWorldXf(float aAngleInDeg)
 	{
 		matrix4x4f aRotMat;
@@ -220,49 +209,37 @@ public:
 		transformationChangedf();
 	}
 
-	//void setDirection(vector3f* aDir, vector3f* aUp=NULL)
-	//{
-	//	setDir(aDir, aUp);
-	//	//transformationChangedf();
-	//}
-	
-	//void setPosition(float x, float y, float z)
-	//{
-	//	m[12]=x;
-	//	m[13]=y;
-	//	m[14]=z;
-	//	transformationChangedf();
-	//}
-    
-	/*
-    void setPosition(const vector2f& pos)
-    {
-        m[12]=pos.x;
-        m[13]=pos.y;
-        transformationChangedf();
-    }
-	*/
-
-	//void setPosition(const vector3f& pos)
- //   {
- //       m[12]=pos.x;
- //       m[13]=pos.y;
- //       m[14]=pos.z;
- //       transformationChangedf();
- //   }
-
 	virtual void transformationChangedf()=0;
 
 	matrix4x4f* getWorldMatrix()	{	return &worldTransformationMatrix;	}
 
-	protected:
-		matrix4x4f worldTransformationMatrix;	//object-space to world transform
-
-	void matrixChanged()
-	{
-		transformationChangedf();
-	}
-
+protected:
+    void translateLocalXf(float aXdt)
+    {
+        m[12] += (aXdt* m[0]);
+        m[13] += (aXdt* m[1]);
+        m[14] += (aXdt* m[2]);
+    }
+    
+    void translateLocalYf(float aYdt)
+    {
+        m[12] += (aYdt* m[4]);
+        m[13] += (aYdt* m[5]);
+        m[14] += (aYdt* m[6]);
+    }
+    void translateLocalZf(float aZdt)
+    {
+        m[12] += (aZdt* m[8]);
+        m[13] += (aZdt* m[9]);
+        m[14] += (aZdt* m[10]);
+    }
+    
+    void matrixChanged()
+    {
+        transformationChangedf();
+    }
+    
+    matrix4x4f worldTransformationMatrix;	//object-space to world transform
 };
 
 extern "C" {

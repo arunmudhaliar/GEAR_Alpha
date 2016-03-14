@@ -123,6 +123,9 @@ public:
 	object3d(int objID);
 	virtual ~object3d();
 
+    //clone
+    object3d* clone();
+    
 	//message pump
 	virtual void update(float dt);
 	virtual void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);	//

@@ -35,8 +35,8 @@ public:
 	void selectObject3dInTreeView(object3d* objtoselect);
 
 	void clearHierarchy();
-	bool saveCurrentScene(const char* sceneFilePath);
-	bool loadScene(const char* sceneFilePath);
+	bool saveCurrentScene(const std::string& sceneFilePath);
+    bool loadScene(const std::string& sceneFilePath);
 
 protected:
 	virtual void onCreate(float cx, float cy);

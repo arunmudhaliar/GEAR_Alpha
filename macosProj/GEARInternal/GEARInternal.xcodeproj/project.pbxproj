@@ -657,7 +657,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp ../../FreeImage/macos/libfreeimage.a ${CONFIGURATION_BUILD_DIR}/libfreeimage.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a ${CONFIGURATION_BUILD_DIR}/libfbxsdk.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.dylib ${CONFIGURATION_BUILD_DIR}/libfbxsdk.dylib\ncp mono-prerequisite/out.exe ${CONFIGURATION_BUILD_DIR}/out.exe\ncp mono-prerequisite/MonoGEAR.dll ${CONFIGURATION_BUILD_DIR}/MonoGEAR.dll\ncp -r ../../GUIInternal/res/ ${CONFIGURATION_BUILD_DIR}/res/";
+			shellScript = "cp ../../FreeImage/macos/libfreeimage.a ${CONFIGURATION_BUILD_DIR}/libfreeimage.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a ${CONFIGURATION_BUILD_DIR}/libfbxsdk.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.dylib ${CONFIGURATION_BUILD_DIR}/libfbxsdk.dylib\ncp mono-prerequisite/MonoGEAR.dll ${CONFIGURATION_BUILD_DIR}/MonoGEAR.dll\ncp -r ../../GUIInternal/res/ ${CONFIGURATION_BUILD_DIR}/res/";
 		};
 /* End PBXShellScriptBuildPhase section */
 

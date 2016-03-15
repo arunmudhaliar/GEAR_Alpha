@@ -9,9 +9,10 @@
 class MenuWin32
 {
 public:
-	HMENU createMenu(std::vector<stDropMenuItem*>& list);
+	HMENU createMenu(std::vector<stDropMenuItem*>& list, unsigned int wndID);
 	void showMenu(float x, float y);
 	HMENU popupMenuHandle;
+    unsigned int sdlWndID;
 };
 
 #else
@@ -21,9 +22,10 @@ public:
 @interface MenuObjC : NSObject  //<NSMenuDelegate>
 {
     NSMenu* popupMenuHandle;
+    unsigned int sdlWndID;
 }
 
-- (NSMenu*) createMenu: (std::vector<stDropMenuItem*>&) list;
+- (NSMenu*) createMenu: (std::vector<stDropMenuItem*>&) list: (unsigned int) wndID;
 - (void) showMenu:(NSPoint)pt;
 - (IBAction) onMenuItemClick:(id)sender;
 @end

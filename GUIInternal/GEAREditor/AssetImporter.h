@@ -25,7 +25,7 @@ public:
 	static void writeMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile);
 
 	static int calcCRC32(unsigned char* data);
-	static const char* relativePathFromProjectHomeDirectory_AssetFolder(const char* path);
+	static const char* relativePathFromProjectHomeDirectory_AssetFolder(const std::string& path);
 private:
 	int traverseAndCountAssetDirectory(const char *dirname);
 	int traverseAssetDirectory(const char *dirname);

@@ -78,6 +78,8 @@ public:
 
 	object3d* loadAndAppendFBXForDevice(const char* filename);
 	object3d* loadFromCRCFile(int crc);
+    object3d* loadObjectsFromFile(gxFile& file, int crc);
+    
 	void populateBonesToMeshNode(object3d* obj, object3d* rootNode);
 	void loadAnmationFromObject3d(object3d* obj3d, int crc);
 	void loadMaterialFromObject3d(object3d* obj3d);

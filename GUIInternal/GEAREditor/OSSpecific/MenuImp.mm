@@ -11,10 +11,10 @@
 
 @implementation MenuObjC
 
-void* cpp_createMenu(std::vector<stDropMenuItem*>& list)
+void* cpp_createMenu(std::vector<stDropMenuItem*>& list, unsigned int wndID)
 {
     MenuObjC* menuObj = [[MenuObjC alloc] init];
-    menuObj->popupMenuHandle = [menuObj createMenu: list];
+    menuObj->popupMenuHandle = [menuObj createMenu:list :wndID];
     
     return ( void*)CFBridgingRetain(menuObj);
 }
@@ -35,7 +35,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
     [popupMenuHandle popUpMenuPositioningItem:nil atLocation:pp.origin inView:nil];
 }
 
-- (NSMenu*) createMenu: (std::vector<stDropMenuItem*>&) list
+- (NSMenu*) createMenu: (std::vector<stDropMenuItem*>&) list : (unsigned int) wndID
 {
 //    NSMenu* theMenu = [[NSMenu alloc] initWithTitle:@""];
 //    [theMenu setAutoenablesItems:NO];
@@ -51,6 +51,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
 ////    NSMenu *mainMenu = [[NSApplication sharedApplication] mainMenu];
 ////    mainMenu;
 
+    sdlWndID = wndID;
 #ifdef _WIN32
     for(int x=0;x<list.size();x++)
     {
@@ -151,6 +152,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
         event.user.code = (int)[sender tag];
 //        event.user.data1 = significant_data;
         event.user.data2 = 0;
+        event.user.windowID = sdlWndID;
         SDL_PushEvent(&event);
     }
     //NSLog(@"hello %ld", (long)[sender tag]);

@@ -129,8 +129,10 @@ public:
 	//message pump
 	virtual void update(float dt);
 	virtual void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);	//
-	virtual void updateMono();
-
+    void startMono();
+	void updateMono();
+    void stopMono();
+    
 	//transform-callback
 	virtual void transformationChangedf();
 

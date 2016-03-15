@@ -1,11 +1,11 @@
 #include "MenuImp.h"
 #include "../EditorApp.h"
 
-void* cpp_createMenu(std::vector<stDropMenuItem*>& list)
+void* cpp_createMenu(std::vector<stDropMenuItem*>& list, unsigned int wndID)
 {
 	MenuWin32* menuObj = new MenuWin32();
+    menuobj->sdlWndID = wndID;
 	menuObj->popupMenuHandle = menuObj->createMenu(list);
-    
     return (void*)menuObj;
 }
 

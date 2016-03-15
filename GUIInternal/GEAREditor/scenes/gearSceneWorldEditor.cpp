@@ -1415,14 +1415,18 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 	{
 		if(playGameToolBarButton->isButtonPressed())
 		{
+            EditorGEARApp::saveSceneToTempFolder();
 			EditorGEARApp::getSceneConsole()->appendConsoleRunRootNode();
 			monoWrapper::mono_game_start();
+            m_pMainWorldPtr->startMono();
 			isMonoGameInitialized=true;
 		}
 		else
 		{
 			pauseGameToolBarButton->buttonNormal(true);
+            m_pMainWorldPtr->stopMono();
 			isMonoGameInitialized=false;
+            EditorGEARApp::loadSceneFromTempFolder();
 		}
 	}
 	else if(pauseGameToolBarButton==btn)

@@ -18,6 +18,8 @@ public:
 
 	std::string getScriptFileName()	{	return scriptFileName;	}
 	MonoObject* createNewObject();
+    bool destroyObject(MonoObject* obj);
+    
 	MonoClass* getMonoClass()	{	return monoObjectClass;	}
 
 	bool isMonoScript()	{ 	return isValidScript;	}
@@ -44,13 +46,17 @@ private:
 class monoScriptObjectInstance
 {
 public:
-	monoScriptObjectInstance(monoScript* script, MonoObject* monoobj, void* obj);
+	monoScriptObjectInstance(monoScript* script, void* obj);
 	~monoScriptObjectInstance();
 
 	monoScript* getScriptPtr()	{	return monoScriptPtr;	}
+    
+    void start();
 	void update();
+    void stop();
     
 private:
+    void*       attachedObject;
 	monoScript* monoScriptPtr;
 	MonoObject* monoObjectInstance;
 	MonoMethod* monoMethod_initMonoScript;

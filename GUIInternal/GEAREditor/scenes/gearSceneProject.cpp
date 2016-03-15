@@ -12,6 +12,7 @@
 #include <string.h>
 #include "../EditorApp.h"
 #include"assetUserData.h"
+#include "../AssetImporter.h"
 
 static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager);
 
@@ -204,16 +205,21 @@ static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNod
                 break;
 
             case DT_DIR:
-                /* Scan sub-directory recursively */
-                if (strcmp (ent->d_name, ".") != 0  &&  strcmp (ent->d_name, "..") != 0)
-				{
-					geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, &spriteArray[0], fontmanager);
+                {
+                    /* Scan sub-directory recursively */
+                    const char* ptr = &buffer[strlen(EditorGEARApp::getProjectHomeDirectory())];
+                    bool isPartOfAssetsFolder = strncmp(ptr, "/Assets", 7)==0;
 
-					assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, buffer, NULL);
-					newtvNode->setUserData(userdata);
+                    if (strcmp (ent->d_name, ".") != 0  &&  strcmp (ent->d_name, "..") != 0 && isPartOfAssetsFolder)
+                    {
+                        geTreeNode* newtvNode = new geTreeNode(renderer, parentNode, ent->d_name, &spriteArray[0], fontmanager);
 
-					newtvNode->closeNode();
-                    find_directory (renderer, buffer, newtvNode, spriteArray, fontmanager);
+                        assetUserData* userdata = new assetUserData(assetUserData::ASSET_ONLY_PATH, buffer, NULL);
+                        newtvNode->setUserData(userdata);
+
+                        newtvNode->closeNode();
+                        find_directory (renderer, buffer, newtvNode, spriteArray, fontmanager);
+                    }
                 }
                 break;
 

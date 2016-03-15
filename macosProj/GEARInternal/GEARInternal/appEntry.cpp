@@ -143,7 +143,12 @@ int appEntry()
                     event_wndID=dropData->getSourceWindowID();
                     UNUSED(dropData);
                 }
-                
+#ifdef __APPLE__
+                else if(e.type==EditorApp::g_iAppSpecificEventType_MenuItemCmd)
+                {
+                    event_wndID = e.user.windowID;
+                }
+#endif
                 //process other events
                 std::function<void(SDL_Window*, SDL_Event&, void* userdata)>* pump = windowMessagePump::getInstance().getMessageLoopFunction(SDL_GetWindowFromID(event_wndID));
                 if(pump)

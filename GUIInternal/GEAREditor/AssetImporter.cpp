@@ -890,7 +890,8 @@ int AssetImporter::calcCRC32(unsigned char* data)
 	return gxCrc32::Calc(data);
 }
 
-const char* AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(const char* path)
+const char* AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(const std::string& path)
 {
-	return &path[strlen(EditorGEARApp::getProjectHomeDirectory())+strlen("/Assets")];
+    const char* ptr = path.c_str();
+	return &ptr[strlen(EditorGEARApp::getProjectHomeDirectory())+strlen("/Assets")];
 }

@@ -129,6 +129,13 @@ public:
     static void setAnimationEditor(gearSceneAnimationEditor* ptr);
     static gearSceneAnimationEditor* getAnimationEditor();
 
+    static bool saveSceneToTempFolder();
+    static bool loadSceneFromTempFolder();
+
+    static bool saveScene(const std::string& filename);
+    static bool loadScene(const std::string& filename);
+    static bool updateCurrentSceneFile(const std::string& filename);
+    
     static char g_cszProjectHomeDirectory[FILENAME_MAX];
     static gearSceneFileView* g_pSceneFileViewPtr;
     static gearSceneHierarchy* g_pSceneHierarchyPtr;

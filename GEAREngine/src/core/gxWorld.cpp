@@ -802,73 +802,83 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
 	}
 }
 
+object3d* gxWorld::loadObjectsFromFile(gxFile& file, int crc)
+{
+    object3d* obj = NULL;
+    object3d* root_object_node=NULL;
+
+    int objID=0;
+    file.Read(objID);
+    
+    object3d* tempObj=NULL;
+    
+    switch(objID)
+    {
+        case OBJECT3D_MESH:
+            tempObj = new gxMesh();
+            break;
+        case OBJECT3D_SKINNED_MESH:
+            tempObj = new gxSkinnedMesh();
+            break;
+        case OBJECT3D_LIGHT:
+            tempObj = new gxLight();
+            break;
+        case OBJECT3D_CAMERA:
+        {
+            tempObj = new Camera();
+            ((Camera*)tempObj)->initCamera(&renderer);
+        }
+            break;
+        default:
+            tempObj = new object3d(objID);
+    }
+    
+    if(tempObj)
+    {
+        tempObj->setObject3dObserver(object3DObserver);
+        tempObj->read(file);
+        appendChild(tempObj);
+        read3dFile(file, tempObj);
+        obj=tempObj;
+        loadMaterialFromObject3d(obj);
+        loadAnmationFromObject3d(obj, crc);
+        root_object_node=obj;
+    }
+
+    transformationChangedf();
+    
+    if(engineObserver)
+        engineObserver->onAppendToWorld(this, root_object_node);
+    
+    //cache the transform
+    matrix4x4f temp(*root_object_node);
+    populateBonesToMeshNode(root_object_node, root_object_node);
+    
+    //restore the original transform
+    root_object_node->copyMatrix(temp);
+
+    return root_object_node;
+}
+
 object3d* gxWorld::loadFromCRCFile(int crc)
 {
 	char crcFile[FILENAME_MAX];
 	sprintf(crcFile, "%s/%x", getMetaDataFolder(), crc);
 
-	object3d* obj = NULL;
-	object3d* root_object_node=NULL;
 	gxFile file_meta;
 	if(!file_meta.OpenFile(crcFile))
 	{
 		return NULL;
 	}
 
+    //read the meta header from the crc file
 	stMetaHeader metaHeader;
 	file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
-
-	int objID=0;
-	file_meta.Read(objID);
-
-	object3d* tempObj=NULL;
-
-	switch(objID)
-	{
-	case OBJECT3D_MESH:
-		tempObj = new gxMesh();
-		break;
-	case OBJECT3D_SKINNED_MESH:
-		tempObj = new gxSkinnedMesh();
-		break;
-	case OBJECT3D_LIGHT:
-		tempObj = new gxLight();
-		break;
-	case OBJECT3D_CAMERA:
-		{
-			tempObj = new Camera();
-			((Camera*)tempObj)->initCamera(&renderer);
-		}
-		break;
-	default:
-		tempObj = new object3d(objID);
-	}
-
-	if(tempObj)
-	{
-		tempObj->setObject3dObserver(object3DObserver);
-		tempObj->read(file_meta);
-		appendChild(tempObj);
-		read3dFile(file_meta, tempObj);
-		obj=tempObj;
-		loadMaterialFromObject3d(obj);
-		loadAnmationFromObject3d(obj, crc);
-		root_object_node=obj;
-	}
+    
+    //read the actual objects
+    object3d* root_object_node = loadObjectsFromFile(file_meta, crc);
 	file_meta.CloseFile();
 	
-	transformationChangedf();
-
-	if(engineObserver)
-		engineObserver->onAppendToWorld(this, root_object_node);
-
-    //cache the transform
-    matrix4x4f temp(*root_object_node);
-	populateBonesToMeshNode(root_object_node, root_object_node);
-    
-    //restore the original transform
-    root_object_node->copyMatrix(temp);
-    
 	return root_object_node;
 }
 

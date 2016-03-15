@@ -710,9 +710,18 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
         printf("%s", responsebuffer);
         printf("\n======================================================\n");
     }
+#if __APPLE__
+    else if(exec_cmd(("/usr/local/bin/mcs "+command_buffer).c_str(), responsebuffer)==0)
+    {
+        printf("\n================MCS COMPILATION RESULT===============\n");
+        printf("%s", responsebuffer);
+        printf("\n======================================================\n");
+    }
+#endif
     else
     {
         printf("\n\n\nERROR: ======BOTH GMCS & MCS FAILED TO COMPILE===============\n\n\n");
+        return false;
     }
 	return true;
 }

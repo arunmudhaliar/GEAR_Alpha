@@ -146,7 +146,7 @@ bool calculatePosOfMyChild(geGUIBase* compareme, geGUIBase* parent, int& x, int&
 
 void geToolBarDropMenu::onButtonClicked()
 {
-    void* menuobject = cpp_createMenu(dropMenuItemList);
+    void* menuobject = cpp_createMenu(dropMenuItemList, SDL_GetWindowID(getRenderer()->getWindow()));
     
     geGUIBase* baseGUI=this;
     geGUIBase* rootTVNode=this;

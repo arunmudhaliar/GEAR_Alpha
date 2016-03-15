@@ -76,7 +76,7 @@ void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light, i
 
 void engine_consoleLog(const char* msg, int msgtype)
 {
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__APPLE__)
 	if(g_EngineObserver)
 		g_EngineObserver->onConsoleLogFromMono(msg, msgtype);
 #elif defined(ANDROID)

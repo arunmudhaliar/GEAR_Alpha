@@ -239,19 +239,85 @@ void object3d::update(float dt)
 #endif
 }
 
+void object3d::attachMonoScrip(monoScript* script)
+{
+    monoScriptObjectInstance* newscript = new monoScriptObjectInstance(script, this);
+    
+    attachedScriptInstanceList.push_back(newscript);
+}
+
+monoScriptObjectInstance* object3d::getMonoScriptInstance(int index)
+{
+    monoScriptObjectInstance* instance = attachedScriptInstanceList.at(index);
+    return instance;
+}
+
+int object3d::getMonoScriptInstanceCount()
+{
+    return (int)attachedScriptInstanceList.size();
+}
+
+void object3d::startMono()
+{
+    for(auto scriptinstance : attachedScriptInstanceList)
+    {
+        scriptinstance->start();
+    }
+
+    //TODO: iterator is not safe since any object3d instance can be added/removed to the list at runtime.
+//    for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
+//    {
+//        object3d* obj = *it;
+//        obj->startMono();
+//    }
+    
+    //TODO: Try optimize this loop.
+    for (auto obj : childList)
+    {
+        obj->startMono();
+    }
+}
+
 void object3d::updateMono()
 {
-	for(std::vector<monoScriptObjectInstance*>::iterator it = attachedScriptInstanceList.begin(); it != attachedScriptInstanceList.end(); ++it)
-	{
-		monoScriptObjectInstance* scriptinstance = *it;
-		scriptinstance->update();
-	}
+    for(auto scriptinstance : attachedScriptInstanceList)
+    {
+        scriptinstance->update();
+    }
 
-	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
-	{
-		object3d* obj = *it;
-		obj->updateMono();
-	}
+    //TODO: iterator is not safe since any object3d instance can be added/removed to the list at runtime.
+//	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
+//	{
+//		object3d* obj = *it;
+//		obj->updateMono();
+//	}
+    
+    //TODO: Try optimize this loop.
+    for (auto obj : childList)
+    {
+        obj->updateMono();
+    }
+}
+
+void object3d::stopMono()
+{
+    for(auto scriptinstance : attachedScriptInstanceList)
+    {
+        scriptinstance->stop();
+    }
+    
+    //TODO: iterator is not safe since any object3d instance can be added/removed to the list at runtime.
+//    for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
+//    {
+//        object3d* obj = *it;
+//        obj->stopMono();
+//    }
+    
+    //TODO: Try optimize this loop.
+    for (auto obj : childList)
+    {
+        obj->stopMono();
+    }
 }
 
 void object3d::updateAnimationFrameToObject3d(int frame)
@@ -702,22 +768,4 @@ void object3d::readAnimationController(gxFile& file)
 		gxAnimation* animationController=getAnimationController();
 		animationController->read(file);
 	}
-}
-
-void object3d::attachMonoScrip(monoScript* script)
-{
-	monoScriptObjectInstance* newscript = new monoScriptObjectInstance(script, script->createNewObject(), this);
-
-	attachedScriptInstanceList.push_back(newscript);
-}
-
-monoScriptObjectInstance* object3d::getMonoScriptInstance(int index)
-{
-	monoScriptObjectInstance* instance = attachedScriptInstanceList.at(index);
-	return instance;
-}
-
-int object3d::getMonoScriptInstanceCount()
-{
-	return (int)attachedScriptInstanceList.size();
 }

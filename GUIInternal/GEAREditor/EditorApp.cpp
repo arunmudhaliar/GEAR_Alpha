@@ -415,6 +415,98 @@ int EditorGEARApp::createNewProject(const char* projectDirectory)
     return -1;
 }
 
+bool EditorGEARApp::saveSceneToTempFolder()
+{
+    std::string tmp_dir = EditorGEARApp::getProjectHomeDirectory();
+    tmp_dir+="/Temp";
+
+    if(!EditorApp::isDirecoryExist(tmp_dir))
+    {
+        DEBUG_PRINT("Creating Temp folder");
+        EditorApp::createDirectory(tmp_dir);
+    }
+    
+    if(!EditorGEARApp::getSceneHierarchy()->saveCurrentScene(tmp_dir+"/temp.gearscene"))
+    {
+        DEBUG_PRINT("Error saving temp file");
+        return false;
+    }
+    
+    return true;
+}
+
+bool EditorGEARApp::loadSceneFromTempFolder()
+{
+    std::string tmp_dir = EditorGEARApp::getProjectHomeDirectory();
+    tmp_dir+="/Temp/temp.gearscene";
+    
+    if(!EditorGEARApp::getSceneHierarchy()->loadScene(tmp_dir))
+    {
+        DEBUG_PRINT("Error loading temp.gearscene");
+        return false;
+    }
+    
+    return true;
+}
+
+bool EditorGEARApp::saveScene(const std::string& filename)
+{
+    if(EditorGEARApp::getSceneHierarchy()->saveCurrentScene(filename))
+    {
+        EditorGEARApp::getSceneProject()->populateProjectView();
+        EditorGEARApp::getSceneFileView()->populateFileView();
+        return true;
+    }
+    
+    return false;
+}
+
+bool EditorGEARApp::loadScene(const std::string &filename)
+{
+    if(EditorGEARApp::getSceneHierarchy()->loadScene(filename))
+    {
+        //EditorGEARApp::getSceneProject()->populateProjectView();
+        //EditorGEARApp::getSceneFileView()->populateFileView();
+        return true;
+    }
+    
+    return false;
+}
+
+bool EditorGEARApp::updateCurrentSceneFile(const std::string& filename)
+{
+    //update the currentscene file
+    std::string root_dir = EditorGEARApp::getProjectHomeDirectory();
+    
+    //check if ProjectSettings dir exist or not
+    if(!EditorApp::isDirecoryExist(root_dir+"/ProjectSettings"))
+    {
+        EditorApp::createDirectory(root_dir+"/ProjectSettings");
+        DEBUG_PRINT("Creating ProjectSettings directory");
+    }
+    
+    root_dir+="/ProjectSettings/currentscene";
+    gxFile currenSceneFile;
+    if(currenSceneFile.OpenFile(root_dir.c_str(), gxFile::FILE_w))
+    {
+        const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(filename);
+        char unix_path[FILENAME_MAX];
+        memset(unix_path, 0, FILENAME_MAX);
+        strcpy(unix_path, relativepath);
+        geUtil::convertPathToUnixFormat(unix_path);
+        currenSceneFile.Write(unix_path);
+        currenSceneFile.CloseFile();
+        
+        std::string wndTitle ="GEAR Alpha [";
+        wndTitle+=relativepath;
+        wndTitle+=+"]";
+        //SetWindowText(hWnd, wndTitle.c_str());
+        return true;
+    }
+    
+    return false;
+}
+
 bool EditorGEARApp::importAssetToMetaData()
 {
     return true;

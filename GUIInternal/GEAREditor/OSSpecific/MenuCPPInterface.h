@@ -21,5 +21,5 @@ struct stDropMenuItem
     bool hasCheck;
 };
 
-void* cpp_createMenu(std::vector<stDropMenuItem*>& list);
+void* cpp_createMenu(std::vector<stDropMenuItem*>& list, unsigned int wndID);
 void cpp_showPopupMenu(void* menuobj, int x, int y);

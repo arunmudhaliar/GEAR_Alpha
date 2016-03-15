@@ -61,32 +61,67 @@ MonoObject* monoScript::createNewObject()
 	return ungarbagecollected_mono_obj;
 }
 
+bool monoScript::destroyObject(MonoObject* obj)
+{
+    auto it = monoObjectList.find(obj);
+    if(it->first==obj)
+    {
+        mono_gchandle_free(it->second);
+        monoObjectList.erase(it);
+        return true;
+    }
+    
+    return false;
+}
+
 /////////////////////////////////////////////////////////////////////
 
-monoScriptObjectInstance::monoScriptObjectInstance(monoScript* script, MonoObject* monoobj, void* obj)
+monoScriptObjectInstance::monoScriptObjectInstance(monoScript* script, void* obj)
 {
 	monoScriptPtr = script;
-	monoObjectInstance = monoobj;
+    attachedObject = obj;
+	monoObjectInstance = nullptr;
 
 	if(monoScriptPtr->isMonoScript())
 	{
-		void* args[2]={this, &obj};
-		mono_runtime_invoke(monoScriptPtr->getSetHandleMethod(), monoObjectInstance, args, NULL);
-
 		monoMethod_update =  mono_class_get_method_from_name(monoScriptPtr->getMonoClass(), "update", 0);
 		monoMethod_initMonoScript =  mono_class_get_method_from_name(monoScriptPtr->getMonoClass(), "initMonoScript", 0);
-        
-        MonoObject* exception=nullptr;
-		mono_runtime_invoke(monoMethod_initMonoScript, monoObjectInstance, NULL, &exception);
-        if (exception) {
-            printf ("An exception was thrown in monoScriptObjectInstance::monoScriptObjectInstance() at mono_runtime_invoke.\n");
-        }
 	}
-	
 }
 
 monoScriptObjectInstance::~monoScriptObjectInstance()
 {
+}
+
+void monoScriptObjectInstance::start()
+{
+    if(monoScriptPtr->isMonoScript())
+    {
+        if(monoObjectInstance==nullptr)
+        {
+            monoObjectInstance = monoScriptPtr->createNewObject();
+            void* args[2]={this, &attachedObject};
+            mono_runtime_invoke(monoScriptPtr->getSetHandleMethod(), monoObjectInstance, args, NULL);
+        }
+        
+        MonoObject* exception=nullptr;
+        mono_runtime_invoke(monoMethod_initMonoScript, monoObjectInstance, NULL, &exception);
+        if (exception) {
+            printf ("An exception was thrown in monoScriptObjectInstance::monoScriptObjectInstance() at mono_runtime_invoke.\n");
+        }
+    }
+}
+
+void monoScriptObjectInstance::stop()
+{
+    if(monoScriptPtr->isMonoScript())
+    {
+        if(monoObjectInstance)
+        {
+            monoScriptPtr->destroyObject(monoObjectInstance);
+            monoObjectInstance = nullptr;
+        }
+    }
 }
 
 void monoScriptObjectInstance::update()

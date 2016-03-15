@@ -434,10 +434,10 @@ geGUIBase* gearSceneHierarchy::getSelectedTreeNode()
 	return selectedNode;
 }
 
-bool gearSceneHierarchy::saveCurrentScene(const char* sceneFilePath)
+bool gearSceneHierarchy::saveCurrentScene(const std::string& sceneFilePath)
 {
 	gxFile sceneFile;
-	if(!sceneFile.OpenFile(sceneFilePath, gxFile::FILE_w))
+	if(!sceneFile.OpenFile(sceneFilePath.c_str(), gxFile::FILE_w))
 	{
 		return false;
 	}
@@ -448,35 +448,55 @@ bool gearSceneHierarchy::saveCurrentScene(const char* sceneFilePath)
 	{
 		geTreeNode* node = (geTreeNode*)*it;
 		object3d* obj = (object3d*)node->getUserData();
-		if(obj->getAssetFileCRC()==0)
+		if(obj==monoWrapper::mono_engine_getWorld(0)->getActiveCamera())
 		{
-			DEBUG_PRINT("WARNING saveCurrentScene(%s) obj->getAssetFileCRC()==0", sceneFilePath);
+			DEBUG_PRINT("Active camera (main camera) wont be saved", sceneFilePath.c_str());
 			continue;
 		}
 		nRootObjects++;
 	}
+    
+    sceneFile.Write(nRootObjects);
+    for(std::vector<geGUIBase*>::iterator it = childNodeList->begin(); it != childNodeList->end(); ++it)
+    {
+        geTreeNode* node = (geTreeNode*)*it;
+        object3d* obj = (object3d*)node->getUserData();
+        
+        //dont save the active camera since it will be created when the world resets or reloads.
+        if(obj==monoWrapper::mono_engine_getWorld(0)->getActiveCamera())
+            continue;
+        sceneFile.Write(obj->getAssetFileCRC());
+        if(obj->getAssetFileCRC()==0)
+        {
+            DEBUG_PRINT("WARNING saveCurrentScene(%s) obj->getAssetFileCRC()==0", sceneFilePath.c_str());
+            //continue;
+            obj->write(sceneFile);
+        }
+        else
+        {
+            sceneFile.WriteBuffer((unsigned char*)obj->getOGLMatrix(), sizeof(float)*16);
+        }
+    }
 
-	sceneFile.Write(nRootObjects);
-	for(std::vector<geGUIBase*>::iterator it = childNodeList->begin(); it != childNodeList->end(); ++it)
-	{
-		geTreeNode* node = (geTreeNode*)*it;
-		object3d* obj = (object3d*)node->getUserData();
-		if(obj->getAssetFileCRC()==0)
-		{
-			continue;
-		}
-		sceneFile.Write(obj->getAssetFileCRC());
-	}
-
+    if(monoWrapper::mono_engine_getWorld(0)->getActiveCamera())
+    {
+        sceneFile.Write(true);
+        monoWrapper::mono_engine_getWorld(0)->getActiveCamera()->write(sceneFile);
+    }
+    else
+    {
+        sceneFile.Write(false);
+    }
+    
 	sceneFile.CloseFile();
 
 	return true;
 }
 
-bool gearSceneHierarchy::loadScene(const char* sceneFilePath)
+bool gearSceneHierarchy::loadScene(const std::string& sceneFilePath)
 {
 	gxFile sceneFile;
-	if(!sceneFile.OpenFile(sceneFilePath))
+	if(!sceneFile.OpenFile(sceneFilePath.c_str()))
 	{
 		return false;
 	}
@@ -491,8 +511,32 @@ bool gearSceneHierarchy::loadScene(const char* sceneFilePath)
 	{
 		sceneFile.Read(assetcrc);
 
-		engine_getWorld(0)->loadFromCRCFile(assetcrc);
+        if(assetcrc!=0)
+        {
+            auto obj = engine_getWorld(0)->loadFromCRCFile(assetcrc);
+            
+            matrix4x4f mat;
+            sceneFile.ReadBuffer((unsigned char*)mat.getOGLMatrix(), sizeof(float)*16);
+            obj->copyMatrix(mat);
+            obj->transformationChangedf();
+        }
+        else
+            engine_getWorld(0)->loadObjectsFromFile(sceneFile, 0);
 	}
+    
+    bool anyActiveCamSaved=false;
+    sceneFile.Read(anyActiveCamSaved);
+    if(anyActiveCamSaved)
+    {
+        auto activeCam = monoWrapper::mono_engine_getWorld(0)->getActiveCamera();
+        int objID = 0;
+        sceneFile.Read(objID);
+        if(objID==OBJECT3D_CAMERA)
+        {
+            activeCam->read(sceneFile);
+            activeCam->transformationChangedf();
+        }
+    }
 
 	sceneFile.CloseFile();
 

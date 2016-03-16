@@ -515,6 +515,16 @@ void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* n
 	currentSelectedTreeNode=NULL;
 }
 
+void geTreeView::setRenderer(rendererGL10* renderer, bool recursive)
+{
+    if(childControlList.size()!=0)
+    {
+        printf("ERROR : geTreeView childControlList.size() must be zero !!!\n");
+    }
+    
+    rootTreeNode->setRenderer(renderer, recursive);
+}
+
 void geTreeView::draw()
 {
     //applyClipIfIamOnMainWindow();

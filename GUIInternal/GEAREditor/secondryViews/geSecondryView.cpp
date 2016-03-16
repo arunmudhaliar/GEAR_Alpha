@@ -32,7 +32,7 @@ void geSecondryView::createRenderer(SDL_Window* window)
 	layoutManager->create(secondryRenderer, 0, 0, m_cSize.x, m_cSize.y);
 	previousScale.set(m_cSize.x, m_cSize.y);
     
-    onCreate(m_cSize.x, m_cSize.y);
+    onCreate(m_cSize.x, m_cSize.y);    
 }
 
 void geSecondryView::setSize(geVector2f& sz)
@@ -251,6 +251,12 @@ void geSecondryView::processEvent(SDL_Window * window, SDL_Event& e, void* userD
         SDL_MouseWheelEvent* mouseWheelEvent = (SDL_MouseWheelEvent*)&e;
         mouseWheel(mouseWheelEvent->y, mouse_x, mouse_y, nFlags);
     }
+#ifdef __APPLE__
+    else if(e.type==EditorApp::g_iAppSpecificEventType_MenuItemCmd)
+    {
+        doCommand(e.user.code);
+    }
+#endif
 }
 
 void geSecondryView::drawView()
@@ -314,6 +320,11 @@ void geSecondryView::mouseWheel(int zDelta, int x, int y, int flag)
 	onMouseWheel(zDelta, x, y, flag);
 }
 
+void geSecondryView::doCommand(int cmd)
+{
+    onDoCommand(cmd);
+}
+
 bool geSecondryView::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	return layoutManager->MouseLButtonDown(x, y, nFlag);
@@ -353,6 +364,11 @@ void geSecondryView::onDraw()
 
 void geSecondryView::onDestroy()
 {
+}
+
+void geSecondryView::onDoCommand(int cmd)
+{
+    layoutManager->DoCommand(cmd);
 }
 
 #if DEPRECATED

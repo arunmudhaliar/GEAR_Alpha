@@ -20,7 +20,6 @@
 class geSecondryView
 {
 public:
-	geSecondryView(const char* name, geFontManager* fontmanager, rendererGL10* mainRenderer);
 	virtual ~geSecondryView();
 
 	void createRenderer(SDL_Window* window);
@@ -42,9 +41,13 @@ public:
 	bool mouseMove(float x, float y, int flag);
 	void mouseWheel(int zDelta, int x, int y, int flag);
 
+    void doCommand(int cmd);
+
     SDL_Window* getSecondryWindow() {   return sdlSecondryWindow;   }
-    
+        
 protected:
+    geSecondryView(const char* name, geFontManager* fontmanager, rendererGL10* mainRenderer);
+    
 	virtual void onCreate(float cx, float cy);
 	virtual void onSize(float cx, float cy);
 	virtual void onDraw();
@@ -56,7 +59,9 @@ protected:
 	virtual void onMouseRButtonUp(float x, float y, int nFlag);
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
-    
+
+    virtual void onDoCommand(int cmd);
+
     SDL_Window* createSecondryWindow();
     void processEvent(SDL_Window * window, SDL_Event& e, void* userData);
     

@@ -176,7 +176,7 @@ public:
 
     geFontManager* getFontManager()             {   return fontManagerGUI;      }
     rendererGL10* getRenderer()                 {   return rendererGUI;         }
-    void setRenderer(rendererGL10* renderer)    {   rendererGUI=renderer;       }
+    virtual void setRenderer(rendererGL10* renderer, bool recursive=false);
     
     bool isMouseBoundCheckEnabled()             {	return is_MouseBoundCheckEnabled;	}
     void setMouseBoundCheck(bool flag)          {	is_MouseBoundCheckEnabled=flag;		}

@@ -174,6 +174,19 @@ void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent)
     setParent(parent);
 }
 
+void geGUIBase::setRenderer(rendererGL10* renderer, bool recursive)
+{
+    rendererGUI=renderer;
+    
+    if(recursive)
+    {
+        for (auto child : childControlList)
+        {
+            child->setRenderer(renderer, recursive);
+        }
+    }
+}
+
 void geGUIBase::setParent(geGUIBase* parent)
 {
     this->parent=parent;

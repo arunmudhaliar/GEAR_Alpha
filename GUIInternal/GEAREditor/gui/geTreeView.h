@@ -137,6 +137,8 @@ protected:
 	virtual bool onKeyDown(int charValue, int flag);
 	virtual bool onKeyUp(int charValue, int flag);
 
+    virtual void setRenderer(rendererGL10* renderer, bool recursive=false);
+
 	int totalHeightOfAllNodes;
 
 private:

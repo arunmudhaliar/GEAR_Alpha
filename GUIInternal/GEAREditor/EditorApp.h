@@ -131,6 +131,8 @@ public:
 
     static bool saveSceneToTempFolder();
     static bool loadSceneFromTempFolder();
+    static bool deleteFolder(const std::string& path);
+    static bool deleteTempFolder();
 
     static bool saveScene(const std::string& filename);
     static bool loadScene(const std::string& filename);

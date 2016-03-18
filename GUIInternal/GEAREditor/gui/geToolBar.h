@@ -16,6 +16,7 @@ public:
 	virtual void draw();
 	void loadImage(const char* filename, int clipx, int clipy);
 
+    
 protected:
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);

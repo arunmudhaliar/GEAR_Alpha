@@ -4,7 +4,7 @@
 #include "vector4.h"
 #include "fbo.h"
 
-#define GX_SHADOW_MAP_SIZE	1024
+#define GX_SHADOW_MAP_SIZE	256
 
 //http://antonholmquist.com/blog/opengl-es-2-0-shader-lighting-examples/
 //http://xissburg.com/faster-gaussian-blur-in-glsl/

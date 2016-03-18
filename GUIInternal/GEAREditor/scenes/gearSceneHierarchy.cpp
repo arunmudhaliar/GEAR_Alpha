@@ -59,7 +59,7 @@ void gearSceneHierarchy::onCreate(float cx, float cy)
 	object3d* defaultCamera=EditorGEARApp::getSceneWorldEditor()->getMainWorld()->getActiveCamera();
 	object3d* parent_obj=defaultCamera->getParent();
 	geTreeNode* rootNode = (geTreeNode*)parent_obj->getEditorUserData();//gameObjectTreeView->getRoot();
-	createTVNode(rootNode, defaultCamera, defaultCamera->getName());
+	createTVNode(rootNode, defaultCamera, defaultCamera->getName().c_str());
 	rootNode->traverseSetWidth(m_cSize.x);
 	gameObjectTreeView->refreshTreeView();
 	//
@@ -261,7 +261,7 @@ void gearSceneHierarchy::createTVNode(geTreeNode* parentNode, object3d* obj, con
 	}
 	else
 	{
-		name=obj->getName();
+		name=obj->getName().c_str();
 		sprite=&spriteArray[0];
 	}
 
@@ -328,7 +328,7 @@ void gearSceneHierarchy::onObject3dChildAppend(object3d* child)
 {
 	object3d* parent_obj=child->getParent();
 	geTreeNode* rootNode = (geTreeNode*)parent_obj->getEditorUserData();//gameObjectTreeView->getRoot();
-	createTVNode(rootNode, child, child->getName());
+	createTVNode(rootNode, child, child->getName().c_str());
 	rootNode->traverseSetWidth(m_cSize.x);
 	gameObjectTreeView->refreshTreeView();
 	monoWrapper::mono_object3d_onObject3dChildAppend(parent_obj, child);
@@ -390,15 +390,15 @@ bool gearSceneHierarchy::onKeyUp(int charValue, int flag)
 
 void gearSceneHierarchy::clearHierarchy()
 {
-	EditorGEARApp::getSceneWorldEditor()->stopSimulation();
+	EditorGEARApp::getSceneWorldEditor()->stopSimulation(true);
 	gameObjectTreeView->clearAndDestroyAll();
 	gameObjectTreeView->resetSelectedNodePtr();
 	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(gameObjectTreeView->getRoot());
 	monoWrapper::mono_engine_getWorld(0)->resetWorld();
 	EditorGEARApp::getScenePreview()->reinitPreviewWorld();
-
-	EditorGEARApp::getSceneWorldEditor()->selectedObject3D(NULL);
-	EditorGEARApp::getScenePropertyEditor()->populatePropertyOfObject(NULL);
+    EditorGEARApp::getAnimationEditor()->populatePropertyOfObject3d(nullptr);
+	EditorGEARApp::getSceneWorldEditor()->selectedObject3D(nullptr);
+	EditorGEARApp::getScenePropertyEditor()->populatePropertyOfObject(nullptr);
 //	geTreeNode* selectedProjectFile = EditorApp::getSceneProject()->getSelectedNode();
 	EditorGEARApp::getSceneFileView()->populateFileView();
 }

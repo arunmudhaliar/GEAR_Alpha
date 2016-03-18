@@ -303,7 +303,7 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 	if(m_pCurrentMaterialPtr)
 	{
 		geTextBox* text_material = new geTextBox("MaterialName", fontManagerGUI);
-		text_material->create(rendererGUI, this, m_pCurrentMaterialPtr->getMaterialName(), 50, 10, 130, 16);
+		text_material->create(rendererGUI, this, m_pCurrentMaterialPtr->getMaterialName().c_str(), 50, 10, 130, 16);
 		
 		colorControl = new geColorControl(fontManagerGUI);
 		colorControl->create(rendererGUI, this, 10, 10);

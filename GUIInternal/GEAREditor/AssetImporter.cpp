@@ -457,7 +457,7 @@ int AssetImporter::import_material_to_metadata(const char* fbx_file_name, gxMate
 	char buffer[FILENAME_MAX];
 	char temp_buffer[FILENAME_MAX];
 	GX_STRCPY(temp_buffer, gxUtil::getFolderPathFromFileName(fbx_file_name));
-	sprintf(buffer, "%s/%s.mat", temp_buffer, material->getMaterialName());
+	sprintf(buffer, "%s/%s.mat", temp_buffer, material->getMaterialName().c_str());
 	unsigned char* relative_path=(unsigned char*)AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(buffer);
 	unsigned int crc32=gxCrc32::Calc(relative_path);
 	gxFile materialFile;

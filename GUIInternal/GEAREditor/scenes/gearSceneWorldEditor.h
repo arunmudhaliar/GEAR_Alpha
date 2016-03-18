@@ -38,7 +38,8 @@ public:
 	void onSliderChange(geGUIBase* slider);
 
 	void startFollowCam();
-	void stopSimulation();
+	void stopSimulation(bool dontPassEventToObserver);
+    void stopSimulationAndReloadUpdatedScripts();
 
 private:
 	void drawCameraFrustum(Camera* camera, gxHWShader* shader);

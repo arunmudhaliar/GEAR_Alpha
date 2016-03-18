@@ -41,8 +41,8 @@ void FBO::ReInitFBO(int w, int h)
 	// Setup our FBO
 	if(fboID>0)
 	{
-		CHECK_GL_ERROR(glDeleteRenderbuffers(1, &depthBufferID));
-		CHECK_GL_ERROR(glDeleteRenderbuffers(1, &depthShadowBufferID));
+		CHECK_GL_ERROR(glDeleteTextures(1, &depthBufferID));
+		CHECK_GL_ERROR(glDeleteTextures(1, &depthShadowBufferID));
 
 		for(int x=0;x<(int)textures.size();x++)
 		{
@@ -55,7 +55,12 @@ void FBO::ReInitFBO(int w, int h)
 	}
 	else
 	{
+        CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 		CHECK_GL_ERROR(glGenFramebuffers(1, &fboID));
+        if(fboID==0)
+        {
+            DEBUG_PRINT("ERROR : glGenFramebuffers fboID=0");
+        }
 	}
 
 	BindFBO();
@@ -92,9 +97,11 @@ void FBO::UnBindFBO()
 
 void FBO::ResetFBO()
 {
+    CHECK_GL_ERROR(glDeleteTextures(1, &depthBufferID));
+    CHECK_GL_ERROR(glDeleteTextures(1, &depthShadowBufferID));
 	CHECK_GL_ERROR(glDeleteFramebuffers(1, &fboID));
-	CHECK_GL_ERROR(glDeleteRenderbuffers(1, &depthBufferID));
-	CHECK_GL_ERROR(glDeleteRenderbuffers(1, &depthShadowBufferID));
+//	CHECK_GL_ERROR(glDeleteRenderbuffers(1, &depthBufferID));
+//	CHECK_GL_ERROR(glDeleteRenderbuffers(1, &depthShadowBufferID));
 	for(int x=0;x<(int)textures.size();x++)
 	{
 		GLuint* t=textures.at(x);
@@ -114,7 +121,6 @@ GLuint& FBO::CreateDepthOnlyBuffer()
     CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, depthBufferID));
     CHECK_GL_ERROR(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height));
 #else
-    
     CHECK_GL_ERROR(glDrawBuffer(GL_NONE));
     CHECK_GL_ERROR(glReadBuffer(GL_NONE));
     CHECK_GL_ERROR(glGenTextures(1, &depthBufferID));
@@ -126,7 +132,13 @@ GLuint& FBO::CreateDepthOnlyBuffer()
     CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
     CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
     CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
 #endif
+    
+    if(depthBufferID==0)
+    {
+        DEBUG_PRINT("CreateDepthOnlyBuffer : depthBufferID==0 glGetError()=%d", glGetError());
+    }
     return depthBufferID;
 }
 
@@ -149,8 +161,12 @@ GLuint& FBO::CreateDepthBuffer()
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
     //CHECK_GL_ERROR(glDrawBuffer(GL_NONE));
     //CHECK_GL_ERROR(glReadBuffer(GL_NONE));
-    
+    CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
 #endif
+    if(depthBufferID==0)
+    {
+        DEBUG_PRINT("CreateDepthBuffer : depthBufferID==0");
+    }
 	return depthBufferID;
 }
 
@@ -173,6 +189,10 @@ GLuint& FBO::CreateTextureBuffer()
 #endif
     CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
     
+    if(*t==0)
+    {
+        DEBUG_PRINT("CreateTextureBuffer : *t==0");
+    }
 	return *t;
 }
 
@@ -194,6 +214,11 @@ GLuint& FBO::CreateDepthShadowTextureBuffer()
 #endif
     CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
     
+    if(depthShadowBufferID==0)
+    {
+        DEBUG_PRINT("CreateDepthShadowTextureBuffer : depthShadowBufferID==0");
+    }
+
 	return depthShadowBufferID;
 }
 

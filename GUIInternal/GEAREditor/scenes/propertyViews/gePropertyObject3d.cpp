@@ -78,7 +78,7 @@ void gePropertyObject3d::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tre
 void gePropertyObject3d::populatePropertyOfObject(object3d* obj)
 {
 	object3dPtr=obj;
-	meshNameTextBox->setName(obj->getName());
+	meshNameTextBox->setName(obj->getName().c_str());
 	object3dVisibleToggle->setCheck(obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible));
 	object3dStaticToggle->setCheck(obj->isBaseFlag(object3d::eObject3dBaseFlag_Static));
 

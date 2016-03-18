@@ -53,7 +53,7 @@ void gxMaterial::write(gxFile& file)
 	file.Write(alpha);
 	file.Write(shininess);
 	file.Write(twoSided);
-	file.Write(materialName);
+	file.Write(materialName.c_str());
 	file.Write((int)subMapList.size());
 	for(std::vector<gxSubMap*>::iterator it = subMapList.begin(); it != subMapList.end(); ++it)
 	{
@@ -88,7 +88,7 @@ void gxMaterial::read(gxFile& file)
 	file.Read(twoSided);	
 
 	char* temp=file.ReadString();
-	GX_STRCPY(materialName, temp);
+    materialName.assign(temp, strlen(temp));
 	GX_DELETE_ARY(temp);
 
 	int nsubmap=0;

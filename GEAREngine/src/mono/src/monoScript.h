@@ -16,7 +16,7 @@ public:
 	monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* klass, std::string klassname, std::string knamespace, MonoClass* monoscript_klass);
 	~monoScript();
 
-	std::string getScriptFileName()	{	return scriptFileName;	}
+	const std::string& getScriptFileName()	{	return scriptFileName;	}
 	MonoObject* createNewObject();
     bool destroyObject(MonoObject* obj);
     

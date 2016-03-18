@@ -23,7 +23,6 @@
 
 uint32_t        monoWrapper::g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE=0;
 MonoObject*		monoWrapper::g_pMonoGEAREntryPointClass_Instance_Variable = NULL;
-MonoDomain*		monoWrapper::g_pMonoDomain = NULL;
 MonoAssembly*	monoWrapper::g_pMonoAssembly = NULL;
 MonoImage*		monoWrapper::g_pImage = NULL;
 MonoClass*		monoWrapper::g_pMonoGEAREntryPointClass = NULL;
@@ -62,6 +61,8 @@ MonoMethod* monoWrapper::g_mono_object3d_onObject3dChildRemove = NULL;
 std::vector<std::string> monoWrapper::g_monoscriptlist;
 std::vector<monoScript*> monoWrapper::g_monoScriptClassDefs;
 
+bool monoWrapper::g_isSimulationRunning = false;
+
 void monoWrapper::loadMonoModules()
 {
 #ifndef USEMONOENGINE
@@ -70,17 +71,18 @@ void monoWrapper::loadMonoModules()
 
 #ifdef _WIN32
 	mono_set_dirs("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc"); 
-	//mono_set_dirs("../Mono-2.10.6/lib", "../Mono-2.10.6/etc");
-	//mono_set_dirs("C:/Mono-3.2.3/lib", "C:/Mono-3.2.3/etc");
 #elif defined(__APPLE__)
-    ///Users/amudaliar/Desktop/monoForMac/lib
     mono_set_dirs("/Users/amudaliar/Desktop/monoForMac/lib/", "/Users/amudaliar/Desktop/monoForMac/etc");
 #else
 	mono_set_dirs("/storage/emulated/0/gear/", "/storage/emulated/0/gear/");
 #endif
 
 	mono_config_parse(NULL);
-	g_pMonoDomain = mono_jit_init("system");
+    
+    GEAR3D::SignalHandler::SetupSignalHandlers();
+    
+	auto root_domain = mono_jit_init("system");
+    UNUSED(root_domain);
 }
 
 void onMonoAssemblyLoad(MonoAssembly *assembly, void* user_data)
@@ -103,16 +105,75 @@ void monoWrapper::destroyUserDefinedMonoClassDefs()
 	g_monoScriptClassDefs.clear();
 }
 
+void monoWrapper::unloadAddDomain()
+{
+    //make sure to be in the domain you want to unload.
+    MonoDomain* appDomain = mono_domain_get();
+    
+    //never unload the rootdomain
+    if (appDomain && appDomain != mono_get_root_domain())
+    {
+        // you can only unload a domain when it's not the active domain, so we're going to switch to the rootdomain,
+        // so we can kill the childdomain.
+        if (!mono_domain_set(mono_get_root_domain(), false))
+        {
+            printf("Exception setting domain\n");
+        }
+        //mono_thread_pop_appdomain_ref();
+        //mono_unity_thread_clear_domain_fields ();
+        mono_domain_unload(appDomain);
+    }
+    
+    //unloading a domain is also a nice point in time to have the GC run.
+    mono_gc_collect(mono_gc_max_generation());
+}
+
+bool monoWrapper::createAppDomain()
+{
+    //reload mono
+    MonoDomain* old_domain = mono_domain_get();
+
+    assert(mono_get_root_domain() == mono_domain_get());
+    MonoDomain* newDomain = mono_domain_create_appdomain("GEAR3D Child Domain", NULL);
+    assert(mono_get_root_domain() == mono_domain_get());
+
+    // Activate the domain!
+    if (newDomain)
+    {
+        //mono_thread_push_appdomain_ref(newDomain);
+        
+        if (!mono_domain_set (newDomain, false))
+        {
+            printf("Exception setting domain\n");
+            return false;
+        }
+    }
+    else
+    {
+        printf("Failed to create domain\n");
+        return false;
+    }
+    
+    assert(mono_domain_get () != mono_get_root_domain());
+    assert(mono_domain_get () != nullptr);
+    assert(mono_domain_get () != old_domain);
+    UNUSED(old_domain);
+    //
+    
+    return true;
+}
+
 void monoWrapper::reInitMono(const char* projecthomedirectory)
 {
 #ifndef USEMONOENGINE
 	return;
 #endif
-	//destroyMono();
 
-	destroyUserDefinedMonoClassDefs();
-    
+    destroyUserDefinedMonoClassDefs();
     g_monoscriptlist.clear();
+
+    unloadAddDomain();
+    createAppDomain();
 
 #ifndef ANDROID
     traverseForCSharpFiles(projecthomedirectory, &g_monoscriptlist);
@@ -135,13 +196,14 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 	const char* userexecutablefile="/storage/emulated/0/gear/out.exe";
 #endif
 
+    auto appDomain = mono_domain_get ();
 	//hooks
 	mono_install_assembly_load_hook(onMonoAssemblyLoad, NULL);
 
-	g_pMonoAssembly = mono_domain_assembly_open(g_pMonoDomain, monogeardllfile);
+	g_pMonoAssembly = mono_domain_assembly_open(appDomain, monogeardllfile);
 	g_pImage = mono_assembly_get_image(g_pMonoAssembly);
 
-	g_pUserMonoAssembly = mono_domain_assembly_open(g_pMonoDomain, userexecutablefile);
+	g_pUserMonoAssembly = mono_domain_assembly_open(appDomain, userexecutablefile);
 	g_pUserImage = mono_assembly_get_image(g_pUserMonoAssembly);
 	//MonoClass* g_pUserClass = mono_class_from_name (g_pUserImage, "helloworld", "helloworld");
 
@@ -230,7 +292,7 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 			sprintf(kclass_cs, "%s.cs", klassname);
 			if(strcmp(scriptname, kclass_cs)==0)
 			{
-				monoScript* newScript = new monoScript(scriptname, g_pMonoDomain, uklass, klassname, klassnamespace, g_pMonoScript);
+				monoScript* newScript = new monoScript(scriptname, appDomain, uklass, klassname, klassnamespace, g_pMonoScript);
 				g_monoScriptClassDefs.push_back(newScript);
 			}
 		}
@@ -238,7 +300,7 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 	//
 
 	///* allocate memory for the object */
-	g_pMonoGEAREntryPointClass_Instance_Variable = mono_object_new(g_pMonoDomain, g_pMonoGEAREntryPointClass);
+	g_pMonoGEAREntryPointClass_Instance_Variable = mono_object_new(appDomain, g_pMonoGEAREntryPointClass);
     g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE = mono_gchandle_new(g_pMonoGEAREntryPointClass_Instance_Variable, false);
     
 	bindEngineMethods();
@@ -325,19 +387,30 @@ void monoWrapper::destroyMono()
 {
 	destroyUserDefinedMonoClassDefs();
 #ifdef USEMONOENGINE
-	if(g_pMonoDomain)
+    unloadAddDomain();
+    auto root_domain = mono_get_root_domain();
+	if(root_domain)
 	{
-		mono_jit_cleanup(g_pMonoDomain);
-		g_pMonoDomain=NULL;
+		mono_jit_cleanup(root_domain);
 	}
 #endif
 }
 
 //MONO GAME WRAPPERS
+bool monoWrapper::mono_isSimulationRunning()
+{
+#ifdef USEMONOENGINE
+    return g_isSimulationRunning;
+#endif
+
+    return false;
+}
+
 void monoWrapper::mono_game_start()
 {
 #ifdef USEMONOENGINE
 	mono_runtime_invoke(g_mono_game_start, g_pMonoGEAREntryPointClass_Instance_Variable, NULL, NULL);
+    g_isSimulationRunning = true;
 #endif
 }
 
@@ -346,6 +419,13 @@ void monoWrapper::mono_game_run(float dt)
 #ifdef USEMONOENGINE
 	void* args[1]={&dt};
 	mono_runtime_invoke(g_mono_game_run, g_pMonoGEAREntryPointClass_Instance_Variable, args, NULL);
+#endif
+}
+
+void monoWrapper::mono_game_stop()
+{
+#ifdef USEMONOENGINE
+    g_isSimulationRunning = false;
 #endif
 }
 
@@ -535,7 +615,7 @@ void monoWrapper::mono_engine_mouseMove(gxWorld* world, int x, int y, int flag)
 void monoWrapper::mono_engine_setMetaFolder(gxWorld* world, const char* metaFolder)
 {
 #ifdef USEMONOENGINE
-	void* args[2]={&world, mono_string_new(g_pMonoDomain, metaFolder)};
+	void* args[2]={&world, mono_string_new(mono_domain_get(), metaFolder)};
 	mono_runtime_invoke(g_pMethod_engine_setMetaFolder, NULL, args, NULL);
 #else
 	engine_setMetaFolder(world, metaFolder);

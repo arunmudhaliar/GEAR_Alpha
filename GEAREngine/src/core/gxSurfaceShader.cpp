@@ -1155,7 +1155,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 	fclose(fp);
 
 	std::string str;
-	str.assign(vsource);
+	str.assign(vsource, fileSz);
 	std::string::const_iterator iter = str.begin();
     std::string::const_iterator end  = str.end();
 

@@ -2,6 +2,8 @@
 #include "windowMessagePump.h"
 
 bool g_mControlKeyPressed = false;
+bool g_mAppInitialised = false;
+bool g_mReInitMono = false;
 
 int appEntry()
 {
@@ -123,6 +125,20 @@ int appEntry()
     //While application is running
     while( !quit )
     {
+        if(g_mReInitMono)
+        {
+            if(monoWrapper::mono_isSimulationRunning())
+            {
+                EditorGEARApp::getSceneWorldEditor()->stopSimulationAndReloadUpdatedScripts();
+            }
+            else
+            {
+                monoWrapper::reInitMono(EditorGEARApp::getProjectHomeDirectory());
+                EditorGEARApp::loadSceneFromTempFolder();
+            }
+            g_mReInitMono = false;
+        }
+        
         SDL_Event e;
         //Handle events on queue
         while( SDL_PollEvent( &e ) != 0 )
@@ -184,6 +200,8 @@ int appEntry()
 
     monoWrapper::destroyMono();
 
+    EditorGEARApp::deleteTempFolder();
+    
     //clean up
     //SDL_GL_DeleteContext(context);  //DeleteContext will be called by renderer. So no need to call it here.
     SDL_DestroyWindow(window);
@@ -211,6 +229,46 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
                 int window_cy=1;
                 SDL_GetWindowSize(window, &window_cx, &window_cy);
                 editorApp.size(window_cx, window_cy);
+            }
+                break;
+            
+            case SDL_WINDOWEVENT_FOCUS_LOST:
+            {
+                printf("SDL_WINDOWEVENT_FOCUS_LOST\n");
+                if(g_mAppInitialised)
+                {
+                    if(!monoWrapper::mono_isSimulationRunning())
+                    {
+                        EditorGEARApp::saveSceneToTempFolder();
+                    }
+                }
+            }
+                break;
+            case SDL_WINDOWEVENT_FOCUS_GAINED:
+            {
+                printf("SDL_WINDOWEVENT_FOCUS_GAINED\n");
+
+                if(g_mAppInitialised)
+                {
+                    g_mReInitMono = true;
+                    printf("ReInit mono after one loop\n");
+                }
+                else
+                {
+                    g_mAppInitialised = true;
+                }
+            }
+                break;
+                
+            case SDL_WINDOWEVENT_SHOWN:
+            {
+                printf("SDL_WINDOWEVENT_SHOWN\n");
+            }
+                break;
+
+            case SDL_WINDOWEVENT_EXPOSED:
+            {
+                printf("SDL_WINDOWEVENT_EXPOSED\n");
             }
                 break;
 

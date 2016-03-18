@@ -404,7 +404,7 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 			for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
 			{
 				gxMaterial* material_in_list = *it;
-				if(strcmp(material_in_list->getMaterialName(), surfaceMaterial->GetName())==0)
+				if(strcmp(material_in_list->getMaterialName().c_str(), surfaceMaterial->GetName())==0)
 				{
 					triInfoArray[fbxMaterialIndex].setMaterial(material_in_list);
 					material_in_list->appendDependency(rootObject3d->getAssetFileCRC());
@@ -505,7 +505,7 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 			for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
 			{
 				gxMaterial* material_in_list = *it;
-				if(strcmp(material_in_list->getMaterialName(), materialnamebuffer)==0)
+				if(strcmp(material_in_list->getMaterialName().c_str(), materialnamebuffer)==0)
 				{
 					triInfoArray[fbxMaterialIndex].setMaterial(material_in_list);
 					material_in_list->appendDependency(rootObject3d->getAssetFileCRC());

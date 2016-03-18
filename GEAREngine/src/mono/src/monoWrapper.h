@@ -4,10 +4,12 @@
 #include <mono/metadata/metadata.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/tokentype.h>
+#include <mono/metadata/mono-gc.h>
 #include <mono/jit/jit.h>
 
 #include "../../GEAREngine.h"   //TODO: Need to check this path
 #include "monoScript.h"
+#include "signalHandler.h"
 
 class DECLSPEC monoWrapper
 {
@@ -16,6 +18,9 @@ public:
 	static void reInitMono(const char* projecthomedirectory=NULL);	//projecthomedirectory is valid only for WIN32
 	static void updateMono();
 	static void destroyMono();
+    
+    static bool createAppDomain();
+    static void unloadAddDomain();
 	
 	static void bindEngineMethods();
 #ifdef _WIN32
@@ -31,6 +36,8 @@ public:
 	//MONO GAME WRAPPERS
 	static void mono_game_start();
 	static void mono_game_run(float dt);
+    static void mono_game_stop();
+    
 	static bool mono_game_onkeydown(int charValue, int flag);
     static bool mono_game_onkeyup(int charValue, int flag);
 	//
@@ -67,10 +74,11 @@ public:
 
 	static monoScript* mono_getMonoScripDef(const char* scriptname);
 
+    static bool mono_isSimulationRunning();
+    
 private:
     static uint32_t         g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE;
 	static MonoObject*		g_pMonoGEAREntryPointClass_Instance_Variable;
-	static MonoDomain*		g_pMonoDomain;
 	static MonoAssembly*	g_pMonoAssembly;
 	static MonoImage*		g_pImage;
 	static MonoClass*		g_pMonoGEAREntryPointClass;
@@ -110,8 +118,8 @@ private:
 	static MonoMethod* g_mono_object3d_onObject3dChildRemove;
 	//
 
+    static bool g_isSimulationRunning;
 	//scripts
 	static std::vector<std::string> g_monoscriptlist;
-
 	static std::vector<monoScript*> g_monoScriptClassDefs;
 };

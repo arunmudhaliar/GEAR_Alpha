@@ -46,6 +46,9 @@ void geToolBarButton::draw()
 	if(isImageLoaded)
 	{
 		geVector2f offsetPos(5, 0);
+    
+        auto clr = &btnStateColor[buttonState];
+        sprite.setRGB(clr->x, clr->y, clr->z);
 		sprite.draw(&offsetPos);
 	}
 	else
@@ -95,6 +98,9 @@ void geToolBarButton::onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPa
 		buttonState=BTN_STATE_NORMAL;
 		break;
 	}
+    
+    if(guiObserver && !dontPassEventToObserver)
+        guiObserver->onButtonClicked(this);
 }
 
 void geToolBarButton::onButtonClicked()
@@ -119,7 +125,7 @@ bool geToolBarButton::onMouseLButtonDown(float x, float y, int nFlag)
 
 bool geToolBarButton::onMouseLButtonUp(float x, float y, int nFlag)
 {
-	onButtonClicked();
+	//onButtonClicked();
 	return true;
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "geGUIBase.h"
+#include "geVector3.h"
 
 class geButtonBase : public geGUIBase
 {
@@ -9,15 +10,12 @@ public:
 	{
 		BTN_STATE_NORMAL,
 		BTN_STATE_PRESSED,
-		BTN_STATE_CANCEL
+		BTN_STATE_CANCEL,
+        BTN_STATE_MAX
 	};
 
-	geButtonBase(geFontManager* fontManager)
-	{
-        fontManagerGUI=fontManager;
-		buttonState=BTN_STATE_NORMAL;
-	}
-	geButtonBase(unsigned short uGUIID, const char* name, geFontManager* fontManager);
+    geButtonBase(geFontManager* fontManager);
+    geButtonBase(unsigned short uGUIID, const char* name, geFontManager* fontManager);
 	virtual ~geButtonBase();
 
 	virtual void onCancelEngagedControls();
@@ -29,6 +27,8 @@ public:
 	void buttonUnHover();
 	bool isButtonPressed();
 
+    void setStateColor(geVector3f clr, geButtonBase::EBUTTON_STATE state);
+
 protected:
 	virtual void onButtonStateChanged(EBUTTON_STATE eFromState, bool dontPassEventToObserver)=0;
 
@@ -36,6 +36,10 @@ protected:
 
 	EBUTTON_STATE buttonState;
 	bool isMouseHover;
+    geVector3f btnStateColor[geButtonBase::BTN_STATE_MAX];
+    
+private:
+    void loadDefaultStateColor();
 };
 
 class geButton : public geButtonBase

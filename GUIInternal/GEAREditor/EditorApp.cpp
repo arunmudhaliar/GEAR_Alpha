@@ -449,6 +449,125 @@ bool EditorGEARApp::loadSceneFromTempFolder()
     return true;
 }
 
+#include <dirent.h>
+
+static int delete_directory_recursive(const char *dirname)
+{
+    DIR *dir;
+    char buffer[PATH_MAX + 2];
+    char *p = buffer;
+    const char *src;
+    char *end = &buffer[PATH_MAX];
+    int ok;
+    
+    /* Copy directory name to buffer */
+    src = dirname;
+    while (p < end  &&  *src != '\0') {
+        *p++ = *src++;
+    }
+    *p = '\0';
+    
+    /* Open directory stream */
+    dir = opendir (dirname);
+    if (dir != NULL) {
+        struct dirent *ent;
+        
+        /* Print all files and directories within the directory */
+        while ((ent = readdir (dir)) != NULL) {
+            char *q = p;
+            char c;
+            
+            /* Get final character of directory name */
+            if (buffer < q) {
+                c = q[-1];
+            } else {
+                c = ':';
+            }
+            
+            /* Append directory separator if not already there */
+            if (c != ':'  &&  c != '/'  &&  c != '\\') {
+                *q++ = '/';
+            }
+            
+            /* Append file name */
+            src = ent->d_name;
+            while (q < end  &&  *src != '\0') {
+                *q++ = *src++;
+            }
+            *q = '\0';
+            
+            /* Decide what to do with the directory entry */
+            switch (ent->d_type) {
+                case DT_REG:
+                {
+                    chmod(buffer, 777);
+                    int status = remove(buffer);
+                    if(status!=0)
+                    {
+                        printf("Errror deleting file %s\n", buffer);
+                        return status;
+                    }
+                }
+                    break;
+                    
+                case DT_DIR:
+                {
+                    /* Scan sub-directory recursively */
+                    if (strcmp (ent->d_name, ".") != 0  &&  strcmp (ent->d_name, "..") != 0)
+                    {
+                        int ret_val = delete_directory_recursive(buffer);
+                        if(ret_val!=0)
+                        {
+                            printf("Error deleting folder %s\n", buffer);
+                            return ret_val;
+                        }
+
+                        int status = rmdir(buffer);
+                        if(status!=0)
+                            return status;
+                    }
+                }
+                    break;
+                    
+                default:
+                    /* Do not device entries */
+                    /*NOP*/;
+            }
+            
+        }
+        
+        closedir (dir);
+        ok = 0;
+        
+    } else {
+        /* Could not open directory */
+        printf ("Cannot open directory %s\n", dirname);
+        ok = 1;
+    }
+    
+    return ok;
+}
+
+bool EditorGEARApp::deleteFolder(const std::string& path)
+{
+    int status = delete_directory_recursive(path.c_str());
+    if(status==0)
+    {
+        status = rmdir(path.c_str());
+        if(status!=0)
+            printf("Error deleting directory %s\n", path.c_str());
+    }
+    return status==0;
+}
+
+bool EditorGEARApp::deleteTempFolder()
+{
+    std::string tmp_dir = EditorGEARApp::getProjectHomeDirectory();
+    tmp_dir+="/Temp";
+
+    return deleteFolder(tmp_dir.c_str());
+}
+
 bool EditorGEARApp::saveScene(const std::string& filename)
 {
     if(EditorGEARApp::getSceneHierarchy()->saveCurrentScene(filename))

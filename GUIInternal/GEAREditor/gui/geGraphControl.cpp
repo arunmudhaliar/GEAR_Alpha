@@ -60,15 +60,20 @@ void geGraphControl::create(rendererGL10* renderer, geGUIBase* parent, float x, 
 
 void geGraphControl::setTrack(IAnimationTrack* track)
 {
-    if(track==nullptr)
+    if(track==nullptr || animationTrack==track)
+    {
+        animationTrack=track;
         return;
+    }
+    
+    animationTrack = track;
     
     //code to restrict the graph to total no of frames.
 //    this->upperLimit = track->getTotalFrames();
 //    this->divisions = lowerLimit+(upperLimit-lowerLimit)*0.2f;
 //    graphMatrix.setScale(divisions, divisions, divisions);
 
-    animationTrack=track;
+
     memset(verticalScale, 0, sizeof(verticalScale));
     memset(midPoint, 0, sizeof(midPoint));
     

@@ -73,6 +73,11 @@
         {
             NSURL*  theFile = [panel URL];
             std::string output_buffer([[theFile path] UTF8String]);
+            
+            if(monoWrapper::mono_isSimulationRunning())
+            {
+                EditorGEARApp::getSceneWorldEditor()->stopSimulation(false);
+            }
             if(!EditorGEARApp::saveScene(output_buffer))
             {
                 DEBUG_PRINT("Error saving scene : %s", output_buffer.c_str());

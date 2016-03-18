@@ -147,6 +147,8 @@
 		5554EFCC1AD26E6500FD80AF /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFCB1AD26E6500FD80AF /* OpenAL.framework */; };
 		5554EFCE1AD26E6C00FD80AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */; };
 		5554EFD21AD26EA200FD80AF /* libmono-2.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */; };
+		555571E71C9B4B5B00EEC0CB /* signalHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 555571E51C9B4B5B00EEC0CB /* signalHandler.cpp */; };
+		555571E81C9B4B5B00EEC0CB /* signalHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 555571E61C9B4B5B00EEC0CB /* signalHandler.h */; };
 		5580DE741C8C442200B5D6D5 /* IAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */; };
 		5580DE751C8C442200B5D6D5 /* IAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */; };
 		558F92AA1B39E38B00FCA130 /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 558F92A91B39E38B00FCA130 /* libfbxsdk.a */; };
@@ -305,6 +307,8 @@
 		5554EFCB1AD26E6500FD80AF /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libmono-2.0.1.dylib"; path = "../../../../../Desktop/monoForMac/lib/libmono-2.0.1.dylib"; sourceTree = "<group>"; };
+		555571E51C9B4B5B00EEC0CB /* signalHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = signalHandler.cpp; sourceTree = "<group>"; };
+		555571E61C9B4B5B00EEC0CB /* signalHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = signalHandler.h; sourceTree = "<group>"; };
 		5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAnimationTrack.cpp; sourceTree = "<group>"; };
 		5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnimationTrack.h; sourceTree = "<group>"; };
 		558F92A91B39E38B00FCA130 /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
@@ -531,6 +535,8 @@
 				5554EAE71AD26CEC00FD80AF /* monoScript.h */,
 				5554EAE81AD26CEC00FD80AF /* monoWrapper.cpp */,
 				5554EAE91AD26CEC00FD80AF /* monoWrapper.h */,
+				555571E51C9B4B5B00EEC0CB /* signalHandler.cpp */,
+				555571E61C9B4B5B00EEC0CB /* signalHandler.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -626,6 +632,7 @@
 				5554ED831AD26CED00FD80AF /* physicsEngine.h in Headers */,
 				5554ED8F1AD26CED00FD80AF /* vector3.h in Headers */,
 				5554EF9F1AD26CED00FD80AF /* stFog.h in Headers */,
+				555571E81C9B4B5B00EEC0CB /* signalHandler.h in Headers */,
 				5554ED561AD26CED00FD80AF /* SoundSource.h in Headers */,
 				5554ED721AD26CED00FD80AF /* gxMesh.h in Headers */,
 				5554ED981AD26CED00FD80AF /* HWShaderManager.h in Headers */,
@@ -767,6 +774,7 @@
 				5554ED591AD26CED00FD80AF /* Camera.cpp in Sources */,
 				55AB5CBF1C0481D3005B8747 /* ToneMappingFilter.cpp in Sources */,
 				5554EF9D1AD26CED00FD80AF /* gxRenderer.cpp in Sources */,
+				555571E71C9B4B5B00EEC0CB /* signalHandler.cpp in Sources */,
 				5554EFAA1AD26CED00FD80AF /* gxUtil.cpp in Sources */,
 				5554EFB81AD26CED00FD80AF /* infback.c in Sources */,
 				5554ED8C1AD26CED00FD80AF /* transform.cpp in Sources */,

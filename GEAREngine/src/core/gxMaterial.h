@@ -38,8 +38,8 @@ public:
 	float getShininess()				{	return shininess;	}
 	void setShininess(float value)		{	shininess=value;	}
 
-	void setMaterialName(const char* name)	{	GX_STRCPY(materialName, name);	}
-	const char* getMaterialName()			{	return materialName;            }
+    void setMaterialName(const std::string& name)	{	materialName = name;	}
+    const std::string& getMaterialName()            {	return materialName;    }
 
 	bool appendDependency(int crc);
 
@@ -69,7 +69,7 @@ private:
 	float alpha;
 	float shininess;
 	bool twoSided;
-	char materialName[256];
+    std::string materialName;
 	std::vector<int> dependencyCRCList;
 	std::string mainShaderName;
 	gxSurfaceShader* surfaceShader;	//must not delete this pointer

@@ -107,6 +107,7 @@ void gearSceneWorldEditor::onCreate(float cx, float cy)
 	playGameToolBarButton=new geToolBarButton(rendererGUI, "play", getToolBar(), fontManagerGUI);
 	playGameToolBarButton->loadImage("res//icons16x16.png", 26, 216);
 	playGameToolBarButton->setGUIObserver(this);
+    playGameToolBarButton->setStateColor(geVector3f(0.14902f, 0.31765f, 0.72157f), geButtonBase::BTN_STATE_PRESSED);
 	getToolBar()->appendToolBarControl(playGameToolBarButton);
 	pauseGameToolBarButton=new geToolBarButton(rendererGUI, "pause", getToolBar(), fontManagerGUI);
 	pauseGameToolBarButton->loadImage("res//icons16x16.png", 90, 216);
@@ -1425,6 +1426,7 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 		{
 			pauseGameToolBarButton->buttonNormal(true);
             m_pMainWorldPtr->stopMono();
+            monoWrapper::mono_game_stop();
 			isMonoGameInitialized=false;
             EditorGEARApp::loadSceneFromTempFolder();
 		}
@@ -1526,11 +1528,21 @@ void gearSceneWorldEditor::onCommand(int cmd)
 #endif
 }
 
-void gearSceneWorldEditor::stopSimulation()
+void gearSceneWorldEditor::stopSimulation(bool dontPassEventToObserver)
 {
-	playGameToolBarButton->buttonNormal(true);
-	pauseGameToolBarButton->buttonNormal(true);
+	playGameToolBarButton->buttonNormal(dontPassEventToObserver);
+	pauseGameToolBarButton->buttonNormal(dontPassEventToObserver);
 	isMonoGameInitialized=false;
+}
+
+void gearSceneWorldEditor::stopSimulationAndReloadUpdatedScripts()
+{
+    stopSimulation(true);
+    m_pMainWorldPtr->stopMono();
+    monoWrapper::mono_game_stop();
+    isMonoGameInitialized=false;
+    monoWrapper::reInitMono(EditorGEARApp::getProjectHomeDirectory());
+    EditorGEARApp::loadSceneFromTempFolder();
 }
 
 void gearSceneWorldEditor::selectedObject3D(object3d* obj)

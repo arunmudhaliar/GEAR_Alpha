@@ -1,15 +1,41 @@
 #include "geButton.h"
 #include "geGUIManager.h"
 
+geButtonBase::geButtonBase(geFontManager* fontManager)
+{
+    fontManagerGUI=fontManager;
+    buttonState=BTN_STATE_NORMAL;
+    loadDefaultStateColor();
+}
+
 geButtonBase::geButtonBase(unsigned short uGUIID, const char* name, geFontManager* fontManager):
 	geGUIBase(uGUIID, name, fontManager)
 {
 	buttonState = BTN_STATE_NORMAL;
 	isMouseHover=false;
+    
+    //default color
+    loadDefaultStateColor();
 }
 
 geButtonBase::~geButtonBase()
 {
+}
+
+void geButtonBase::loadDefaultStateColor()
+{
+    for (int x=0;x<BTN_STATE_MAX;x++)
+    {
+        btnStateColor[x].set(1.0f, 1.0f, 1.0f);
+    }
+}
+
+void geButtonBase::setStateColor(geVector3f clr, geButtonBase::EBUTTON_STATE state)
+{
+    if(state>=geButtonBase::BTN_STATE_MAX)
+        return;
+    
+    btnStateColor[state] = clr;
 }
 
 void geButtonBase::buttonPressed(bool dontPassEventToObserver)

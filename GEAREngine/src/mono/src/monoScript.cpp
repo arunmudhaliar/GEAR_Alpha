@@ -14,10 +14,11 @@ monoScript::monoScript(std::string script, MonoDomain* pMonoDomain, MonoClass* k
 	{
 		isValidScript=true;
 		monoMethod_setHandle =  mono_class_get_method_from_name(monoscript_klass, "setHandle", 2);
-
+        
 		for(int x=0;x<mono_class_num_fields(monoObjectClass);x++)
 		{
-			MonoClassField* classfiled = mono_class_get_fields(monoObjectClass, (void**)&x);
+            int iter[1]={x};
+			MonoClassField* classfiled = mono_class_get_fields(monoObjectClass, (void**)iter);
             if(!classfiled)
             {
                 continue;   //THIS SHOULD NEVER HAPPEN. THIS MEANS THE BINARY IS NOT COMPILED PROPER.

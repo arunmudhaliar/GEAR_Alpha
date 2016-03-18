@@ -92,7 +92,10 @@ void gearSceneAnimationEditor::populatePropertyOfObject3d(object3d* object)
     animationsTreeView->clearAndDestroyAll();
 
     if(selectedObject==nullptr || !selectedObject->getAnimationTrack())
+    {
+        graphControlView->setTrack(nullptr);
         return;
+    }
     
     auto track = selectedObject->getAnimationTrack();
     graphControlView->setTrack(track);

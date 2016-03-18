@@ -138,13 +138,13 @@ public:
 
 	//basic properties
 	int getID()				{	return objectID;	}
-	const char* getName()	{	return m_cszName;	}
-	void setName(const char* name)	{	GX_STRCPY(m_cszName, name);	}
+    const std::string& getName()	{	return name;	}
+    void setName(const std::string& name)	{	this->name=name;	}
 
 	//child: child-parent
 	int getChildCount()				{	return (int)childList.size();	}
 	object3d* getChild(int index)	{	return childList[index];	}
-	object3d* find(const char* name);
+    object3d* find(const std::string& name);
 	void setParent(object3d* pParentPtr)	{	parent=pParentPtr;	}
 	object3d* getParent()					{	return parent;		}
 
@@ -222,7 +222,7 @@ protected:
     void writeAnimationController(gxFile& file);
     void readAnimationController(gxFile& file);
 
-	char m_cszName[256];
+    std::string name;
 	int objectID;
 	object3d* parent;
 	unsigned int baseFlag;

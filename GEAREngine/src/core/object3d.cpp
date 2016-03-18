@@ -4,7 +4,7 @@
 extern "C" {
 extern DECLSPEC const char* object3d_getName(object3d* obj)
 {
-	return obj->getName();
+	return obj->getName().c_str();
 }
 
 extern DECLSPEC int object3d_getID(object3d* obj)
@@ -63,7 +63,6 @@ object3d::object3d(int objID):
 	setObject3dObserver(NULL);
 	setEditorUserData(NULL);
 	parent=NULL;
-	memset(m_cszName, 0, sizeof(m_cszName));
 	baseFlag=0;
 	setBaseFlag(eObject3dBaseFlag_Visible);
 	animationController=NULL;
@@ -596,9 +595,9 @@ void object3d::setAnimationTrack(IAnimationTrack* track)
 	//	animationTrack->setObject3d(this);
 }
 
-object3d* object3d::find(const char* name)
+object3d* object3d::find(const std::string& name)
 {
-	if(strcmp(m_cszName, name)==0)
+	if(this->name.compare(name)==0)
 	{
 		return this;
 	}
@@ -679,7 +678,7 @@ void object3d::write(gxFile& file)
 {
 	file.Write(objectID);
 	file.Write(baseFlag);
-	file.Write(m_cszName);
+	file.Write(name.c_str());
 	file.WriteBuffer((unsigned char*)m, sizeof(m));
 	file.WriteBuffer((unsigned char*)&oobb, sizeof(oobb));
 	file.Write(assetFileCRC);
@@ -718,7 +717,7 @@ void object3d::read(gxFile& file)
 {
 	file.Read(baseFlag);
 	char* temp=file.ReadString();
-	GX_STRCPY(m_cszName, temp);
+    name.assign(temp, strlen(temp));
 	GX_DELETE_ARY(temp);
 	file.ReadBuffer((unsigned char*)m, sizeof(m));
 	file.ReadBuffer((unsigned char*)&oobb, sizeof(oobb));

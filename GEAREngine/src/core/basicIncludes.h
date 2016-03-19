@@ -43,7 +43,7 @@
 #define USE_OPENSL
 #endif
 
-#include <string.h>
+#include <string>
 
 #define ROUNDOFF(x) (x < 0.0001f && x > -0.0001f) ? 0.0f : x
 #if _WIN32

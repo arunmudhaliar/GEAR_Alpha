@@ -113,7 +113,7 @@ void gePropertyTransform::onTextChange(geGUIBase* textbox)
 {
 	geTextBox* currentTextBox=(geTextBox*)textbox;
 
-	float value=geUtil::getFloat(currentTextBox->getName());
+	float value=geUtil::getFloat(currentTextBox->getName().c_str());
 	//geTextBox* translationTextBox[3];
 	//geTextBox* rotationTextBox[3];
 	//geTextBox* scaleTextBox[3];

@@ -5,6 +5,7 @@
 #include <vector>
 #include "../core/object3d.h"
 #include <iostream>	//included to support 'std::string' in android
+#include <string>
 
 class object3d;
 struct stUniformLocation
@@ -37,9 +38,9 @@ public:
 	gxHWShader();
 	virtual ~gxHWShader();
 
-	bool loadShader(const char* shaderFile);
-	bool loadShaderFromBuffer(const char* name, const char* shaderBuffer, int shaderBuffer_size);
-	bool compileShader(GLuint* shader, GLenum type, const char* source, int fileSz);
+	bool loadShader(const std::string& shaderFile);
+	bool loadShaderFromBuffer(const std::string& name, const std::string& shaderBuffer);
+	bool compileShader(GLuint* shader, GLenum type, const std::string& source);
 	bool linkProgram();
 	
 	void attachShader();
@@ -53,7 +54,7 @@ public:
 	GLuint getVertexShader()	{	return vertexShaderID;	}
 	GLuint getFragmentShader()	{	return fragmentShaderID;	}
 	
-	void showShaderLog(const char* title);
+	void showShaderLog(const std::string& title);
 
 	int getUniformLoc(const char* uvar);
 	virtual int getAttribLoc(const char* uvar);
@@ -77,7 +78,7 @@ public:
 	void sendAttrib4fv(const char* name, const float* input);
 	void sendAttrib1f(const char* name, float x);
     
-	const char* getShaderName()	{	return shaderName.c_str(); }
+	const std::string& getShaderName()	{	return shaderName; }
 
 	//predefined vars
 	void sendUniform_GEAR_MODELVIEW(const float* input);

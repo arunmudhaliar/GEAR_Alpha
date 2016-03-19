@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <string>
 #include "../core/basicIncludes.h"
 
 #ifdef ANDROID
@@ -25,7 +26,7 @@ public:
 	gxFile();
 	~gxFile();
 
-	int	OpenFile(const char* pszFileName, EFILEMODE eFileMode=FILE_r);
+    int	OpenFile(const std::string& filename, EFILEMODE eFileMode=FILE_r);
 	int OpenFileDescriptor(int fd, EFILEMODE eFileMode=FILE_r);
 	//int OpenFile(FILE* fp);
 	

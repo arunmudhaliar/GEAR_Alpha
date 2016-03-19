@@ -8,6 +8,7 @@
 #endif
 #include "../gui/geLayout.h"
 #include "../gui/geLayoutManager.h"
+#include <string>
 
 #ifdef _WIN32
 	#include <SDL.h>
@@ -46,7 +47,7 @@ public:
     SDL_Window* getSecondryWindow() {   return sdlSecondryWindow;   }
         
 protected:
-    geSecondryView(const char* name, geFontManager* fontmanager, rendererGL10* mainRenderer);
+    geSecondryView(const std::string& name, geFontManager* fontmanager, rendererGL10* mainRenderer);
     
 	virtual void onCreate(float cx, float cy);
 	virtual void onSize(float cx, float cy);
@@ -72,7 +73,7 @@ protected:
     rendererGL10* primaryRenderer;
     rendererGL10* secondryRenderer;
     geVector2f previousScale;
-    char m_szName[256];
+    std::string m_szName;
     geLayoutManager* layoutManager;
     
     geVector2i m_cPos;

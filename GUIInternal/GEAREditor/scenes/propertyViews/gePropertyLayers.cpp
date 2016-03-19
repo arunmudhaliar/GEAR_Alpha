@@ -66,9 +66,9 @@ void gePropertyLayers::onTextChange(geGUIBase* textbox)
 	{
 		if(textBoxArray[x]==textbox)
 		{
-			if(textbox->getName() && strlen(textbox->getName())>0)
+			if(textbox->getName().c_str() && textbox->getName().size()>0)
 			{
-				layerManager->getLayer(x)->setLayerName(textbox->getName());
+				layerManager->getLayer(x)->setLayerName(textbox->getName().c_str());
 			}
 			else
 			{

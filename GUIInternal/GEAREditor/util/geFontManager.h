@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include "geDefines.h"
 #include "../renderer/glincludes.h"
 #include "../../../GEAREngine/src/util/gxFile.h"
@@ -32,9 +33,9 @@ public:
     bool load(gxFile& file);
     void draw();
     
-    int drawString(const char* str, int x, int y, int width_limit, bool bCentered=false, bool bShadowed=false, float elapsetime=0.0f, float angle=0.0f);
+    int drawString(const std::string& buffer, int x, int y, int width_limit, bool bCentered=false, bool bShadowed=false, float elapsetime=0.0f, float angle=0.0f);
 
-    void drawOnBuffer(const char* str, int cx, int cy, unsigned int& nChar, short* vertexCoordBuffer, float* textureCoordBuffer, unsigned int& nLines, unsigned short* linebuffer, ALIGNMENT alignment) const;
+    void drawOnBuffer(const std::string&  buffer, int cx, int cy, unsigned int& nChar, short* vertexCoordBuffer, float* textureCoordBuffer, unsigned int& nLines, unsigned short* linebuffer, ALIGNMENT alignment) const;
     
     unsigned int getTexID() const {   return fontTextureID;    }
     
@@ -112,7 +113,7 @@ public:
     
     void init();
     void reset(bool reload);
-    geFont* loadFont(const char* filename);
+    geFont* loadFont(const std::string& filename);
     geFont* getFont(int index)                {   return fontList[index]; }
 
 private:

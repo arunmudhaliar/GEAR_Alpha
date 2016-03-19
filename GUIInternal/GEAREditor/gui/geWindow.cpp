@@ -18,7 +18,7 @@ void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float 
 	createBase(renderer, parent);
 
 	titleWidth=0;
-	for(int index=0;index<(int)strlen(m_szName);index++)
+	for(int index=0;index<(int)strlen(m_szName.c_str());index++)
 	{
 		titleWidth+=geFontManager::g_pFontArial10_84Ptr->getCharWidth(m_szName[index]);
 	}

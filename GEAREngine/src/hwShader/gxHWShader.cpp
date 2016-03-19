@@ -32,25 +32,27 @@ gxHWShader::~gxHWShader()
 	clearUniformRefVarList();
 }
 
-bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer, int shaderBuffer_size)
+bool gxHWShader::loadShaderFromBuffer(const std::string& name, const std::string& shaderBuffer)
 {
 	const char* define_vertex="#define GEAR_VERTEX_SHADER\n";
 	const char* define_fragment="#define GEAR_FRAGMENT_SHADER\n";
 
-	int vSz=shaderBuffer_size+(int)strlen(define_vertex);
+	int vSz=(int)shaderBuffer.length()+(int)strlen(define_vertex);
 	char* vsource=new char[vSz];
 	memset((void*)vsource, 0, vSz);
 	strcpy(vsource, define_vertex);
-	strncpy(&vsource[strlen(define_vertex)], shaderBuffer, shaderBuffer_size);
+	strncpy(&vsource[strlen(define_vertex)], shaderBuffer.c_str(), shaderBuffer.length());
 
-	int fSz=shaderBuffer_size+(int)strlen(define_fragment);
+	int fSz=(int)shaderBuffer.size()+(int)strlen(define_fragment);
 	char* fsource=new char[fSz];
 	memset((void*)fsource, 0, fSz);
 	strcpy(fsource, define_fragment);
-	strncpy(&fsource[strlen(define_fragment)], shaderBuffer, shaderBuffer_size);
+	strncpy(&fsource[strlen(define_fragment)], shaderBuffer.c_str(), shaderBuffer.length());
 
 	// Create and compile vertex shader
-	if (!compileShader(&vertexShaderID, GL_VERTEX_SHADER, vsource, vSz))
+    std::string vbuffer;
+    vbuffer.assign(vsource, vSz);
+	if (!compileShader(&vertexShaderID, GL_VERTEX_SHADER, vbuffer))
 	{
 		DEBUG_PRINT("Failed to compile vertex shader from buffer");
 		GX_DELETE_ARY(vsource);
@@ -59,7 +61,9 @@ bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer
 	}
 	
 	// Create and compile fragment shader
-	if (!compileShader(&fragmentShaderID, GL_FRAGMENT_SHADER, fsource, fSz))
+    std::string fbuffer;
+    fbuffer.assign(fsource, fSz);
+	if (!compileShader(&fragmentShaderID, GL_FRAGMENT_SHADER, fbuffer))
 	{
 		DEBUG_PRINT("Failed to compile fragment shader from buffer");
 		GX_DELETE_ARY(vsource);
@@ -94,16 +98,16 @@ bool gxHWShader::loadShaderFromBuffer(const char* name, const char* shaderBuffer
 	return true;
 }
 
-bool gxHWShader::loadShader(const char* shaderFile)
+bool gxHWShader::loadShader(const std::string& shaderFile)
 {
-	DEBUG_PRINT("Load shader %s", shaderFile);
+	DEBUG_PRINT("Load shader %s", shaderFile.c_str());
 
 	//read shader code
 	int fileSz=0;
-	FILE* fp=fopen(shaderFile, "r");
+	FILE* fp=fopen(shaderFile.c_str(), "r");
 	if(fp==NULL)
 	{
-		DEBUG_PRINT("Shader %s FILE open ERROR #1", shaderFile);
+		DEBUG_PRINT("Shader %s FILE open ERROR #1", shaderFile.c_str());
 		return false;
 	}
 
@@ -113,7 +117,7 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	
 	if(!fileSz)
 	{
-		DEBUG_PRINT("Shader %s FILE size ZERO ERROR", shaderFile);
+		DEBUG_PRINT("Shader %s FILE size ZERO ERROR", shaderFile.c_str());
 		return false;
 	}
 	
@@ -125,10 +129,10 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	const char* define_fragment="#define GEAR_FRAGMENT_SHADER\n";
 
 	//vertex shader source
-	fp=fopen(shaderFile, "r");
+	fp=fopen(shaderFile.c_str(), "r");
 	if(fp==NULL)
 	{
-		DEBUG_PRINT("Shader %s FILE open ERROR #2", shaderFile);
+		DEBUG_PRINT("Shader %s FILE open ERROR #2", shaderFile.c_str());
 		return false;
 	}
 	int vSz=fileSz+(int)strlen(define_vertex);
@@ -141,10 +145,10 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	//
 
 	//fragment shader source
-	fp=fopen(shaderFile, "r");
+	fp=fopen(shaderFile.c_str(), "r");
 	if(fp==NULL)
 	{
-		DEBUG_PRINT("Shader %s FILE open ERROR #3", shaderFile);
+		DEBUG_PRINT("Shader %s FILE open ERROR #3", shaderFile.c_str());
 		return false;
 	}
 	int fSz=fileSz+(int)strlen(define_fragment);
@@ -157,18 +161,22 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	//
 	
 	// Create and compile vertex shader
-	if (!compileShader(&vertexShaderID, GL_VERTEX_SHADER, vsource, vSz))
+    std::string vbuffer;
+    vbuffer.assign(vsource, vSz);
+	if (!compileShader(&vertexShaderID, GL_VERTEX_SHADER, vbuffer))
 	{
-		DEBUG_PRINT("Failed to compile vertex shader '%s'", shaderFile);
+		DEBUG_PRINT("Failed to compile vertex shader '%s'", shaderFile.c_str());
 		GX_DELETE_ARY(vsource);
 		GX_DELETE_ARY(fsource);
 		return false;
 	}
 	
 	// Create and compile fragment shader
-	if (!compileShader(&fragmentShaderID, GL_FRAGMENT_SHADER, fsource, fSz))
+    std::string fbuffer;
+    fbuffer.assign(fsource, fSz);
+	if (!compileShader(&fragmentShaderID, GL_FRAGMENT_SHADER, fbuffer))
 	{
-		DEBUG_PRINT("Failed to compile fragment shader '%s'", shaderFile);
+		DEBUG_PRINT("Failed to compile fragment shader '%s'", shaderFile.c_str());
 		GX_DELETE_ARY(vsource);
 		GX_DELETE_ARY(fsource);
 		return false;
@@ -185,7 +193,7 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	// Link program
 	if (!linkProgram())
 	{
-		DEBUG_PRINT("Failed to link program: %d (shader : %s)", shaderProgram, shaderFile);
+		DEBUG_PRINT("Failed to link program: %d (shader : %s)", shaderProgram, shaderFile.c_str());
 		destroyShader();
 		GX_DELETE_ARY(vsource);
 		GX_DELETE_ARY(fsource);
@@ -198,17 +206,19 @@ bool gxHWShader::loadShader(const char* shaderFile)
 	
 	shaderName.assign(shaderFile);
 
-	DEBUG_PRINT("Shader Loaded %s", shaderFile);
+	DEBUG_PRINT("Shader Loaded %s", shaderFile.c_str());
 
 	return true;
 }
 
-bool gxHWShader::compileShader(GLuint* shader, GLenum type, const char* source, int fileSz)
+bool gxHWShader::compileShader(GLuint* shader, GLenum type, const std::string& source)
 {
     GLint status;
-
+    const char* buffer = source.c_str();
+    int bufferSz = (int)source.length();
+    
     *shader = glCreateShader(type);
-    CHECK_GL_ERROR(glShaderSource(*shader, 1, &source, &fileSz));
+    CHECK_GL_ERROR(glShaderSource(*shader, 1, &buffer, &bufferSz));
     CHECK_GL_ERROR(glCompileShader(*shader));
 	
 #if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
@@ -334,7 +344,7 @@ bool gxHWShader::validateProgram()
 	return true;
 }
 
-void gxHWShader::showShaderLog(const char* title)
+void gxHWShader::showShaderLog(const std::string& title)
 {
 	GLint logLength;
 	CHECK_GL_ERROR(glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength));
@@ -342,7 +352,7 @@ void gxHWShader::showShaderLog(const char* title)
 	{
 		GLchar *log = (GLchar *)malloc(logLength);
 		CHECK_GL_ERROR(glGetProgramInfoLog(shaderProgram, logLength, &logLength, log));
-		DEBUG_PRINT("title :%s\n%s", title, log);
+		DEBUG_PRINT("title :%s\n%s", title.c_str(), log);
 		free(log);
 	}
 }

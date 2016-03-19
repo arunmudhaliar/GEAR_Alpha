@@ -235,8 +235,9 @@ float geFont::getCharWidth(char charValue)
 }
 
 #define CHAR_DELAY  0.05f
-int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCentered, bool bShadowed, float elapsetime, float angle)
+int geFont::drawString(const std::string& buffer, int x, int y, int width_limit, bool bCentered, bool bShadowed, float elapsetime, float angle)
 {
+    const char* str = buffer.c_str();
     int retVal=1;
     int actual_len=(int)strlen(str);
     int len=(elapsetime==0.0f)?actual_len:(int)(elapsetime/CHAR_DELAY);
@@ -413,8 +414,9 @@ int geFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     return retVal;
 }
 
-void geFont::drawOnBuffer(const char* str, int cx, int cy, unsigned int& nChar, short* vertexCoordBuffer, float* textureCoordBuffer, unsigned int& nLines, unsigned short* linebuffer, ALIGNMENT alignment) const
+void geFont::drawOnBuffer(const std::string& buffer, int cx, int cy, unsigned int& nChar, short* vertexCoordBuffer, float* textureCoordBuffer, unsigned int& nLines, unsigned short* linebuffer, ALIGNMENT alignment) const
 {
+    const char* str = buffer.c_str();
     switch (alignment)
     {
         case ALIGN_LEFT:
@@ -1093,7 +1095,7 @@ void geFontManager::setRenderer(gxRenderer* renderer)
 }
 #endif
 
-geFont* geFontManager::loadFont(const char* filename)
+geFont* geFontManager::loadFont(const std::string& filename)
 {
 #if defined (USE_ProgrammablePipeLine_test)
     geFont* newFont=new geFont(&fontHWShader, renderer);
@@ -1101,7 +1103,7 @@ geFont* geFontManager::loadFont(const char* filename)
     geFont* newFont=new geFont();
 #endif
     gxFile file;
-    file.OpenFile(filename, gxFile::FILE_r);
+    file.OpenFile(filename.c_str(), gxFile::FILE_r);
         
 #if defined (LOG_DEBUG_ENGINE)
     DEBUG_PRINT("font %s loading...", filename);

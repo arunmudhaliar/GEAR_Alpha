@@ -49,14 +49,14 @@ void geTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* na
 	createBase(renderer, parent);
 
 	//int width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+    setName(name);
 	setSize(cx, cy);
 	setPos(x, y);
 
-	STRCPY(m_szName, name);
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();
 	setColor(&vertexBufferSelectionArea, 0.24f, 0.38f, 0.57f, 1.0f);
-	startChar=m_szName;
+	startChar=const_cast<char*>(m_szName.c_str());  //TODO: CAREFULL
 }
 
 void geTextBox::draw()
@@ -424,7 +424,7 @@ bool geTextBox::onKeyDown(int charValue, int flag)
 	else
 	{
 		startChar[cursorPosition]=charValue;
-		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, (int)strlen(m_szName), 0);
+		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, (int)strlen(m_szName.c_str()), 0);
 		if(full_width>m_cSize.x)
 		{
 			int temp=0;

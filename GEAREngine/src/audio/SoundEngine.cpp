@@ -230,7 +230,7 @@ SoundSource* SoundEngine::load(const char* filename)
     for(int x=0;x<m_pszSamples.size();x++)
     {
         SoundSample* sample=m_pszSamples[x];
-		if(strcmp(sample->getName(), filename)==0)
+		if(sample->getName().compare(filename)==0)
         {            
 #if defined (LOG_DEBUG_ENGINE)
             DEBUG_PRINT("sound file - %s already loaded", filename);

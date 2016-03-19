@@ -114,7 +114,7 @@ void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* nam
 	setSize(cx, cy);
 	setPos(x, y);
 
-	STRCPY(m_szName, name);
+    m_szName.assign(name, strlen(name));
 	setClientAreaPrimaryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 
@@ -128,7 +128,7 @@ void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* nam
 	setSize(width+20, 20);
 	setPos(x, y);
 
-	STRCPY(m_szName, name);
+    m_szName.assign(name, strlen(name));
 	setClientAreaPrimaryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 
@@ -142,7 +142,7 @@ void geButton::draw()
 	glTranslatef(m_cPos.x, m_cPos.y, 0);
 	drawRect(&vertexBufferClientArea);
 	drawLine(vertexBufferClientAreaArray, 0.1, 0.1, 0.1, 1.0f);
-	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName, 10, geFontManager::g_pFontArial10_84Ptr->getLineHeight()-2, m_cSize.x);
+	geFontManager::g_pFontArial10_84Ptr->drawString(m_szName.c_str(), 10, geFontManager::g_pFontArial10_84Ptr->getLineHeight()-2, m_cSize.x);
 	glPopMatrix();
 }
 	

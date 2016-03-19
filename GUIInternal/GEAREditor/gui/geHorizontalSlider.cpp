@@ -16,10 +16,10 @@ void geHorizontalSlider::create(rendererGL10* renderer, geGUIBase* parent, const
 {
 	createBase(renderer, parent);
 
+    setName(name);
 	setSize(cx, 5);
 	setPos(x, y);
 
-	STRCPY(m_szName, name);
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.4f);
 	setColor(&vertexBufferGrabberArea, 0.6f, 0.6f, 0.6f, 1.0f, EGRADIENT_VERTICAL_UP, 0.5f);

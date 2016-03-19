@@ -26,10 +26,10 @@ void geStaticTextBox::create(rendererGL10* renderer, geGUIBase* parent, const ch
 	fontGUI=pFont;
 	fontYOffset=yoffset;
 	int width=fontGUI->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
+    
+    setName(name);
 	setSize(width, fontGUI->getLineHeight());
 	setPos(x, y);
-
-	STRCPY(m_szName, name);
 
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();

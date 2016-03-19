@@ -45,15 +45,15 @@ public:
 #endif
     
 	stHWShaderSnippet* getShaderSnippet(int index)          {	return hwShaderSnippetList[index];	}
-	gxHWShader* LoadShaderFromBuffer(const char* name, const char* buffer, int size);
-	gxHWShader* LoadShaderFromFile(const char* relativePath);
+    gxHWShader* LoadShaderFromBuffer(const std::string& name, const std::string& buffer);
+	gxHWShader* LoadShaderFromFile(const std::string& relativePath);
 
-	gxSurfaceShader* LoadSurfaceShader(const char* filename);
+	gxSurfaceShader* LoadSurfaceShader(const std::string& filename);
 	std::vector<gxSurfaceShader*>* getSurfaceShaderList()	{	return &surfaceShaderList;	}
 
 private:
 	void LoadDefaultShaders();
-	stHWShaderSnippet* LoadCodeSnippet(const char* filename);
+	stHWShaderSnippet* LoadCodeSnippet(const std::string& filename);
 	
 #if defined (USE_ProgrammablePipeLine)
 	std::vector<gxSurfaceShader*> surfaceShaderList;

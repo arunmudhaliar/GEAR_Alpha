@@ -4,6 +4,7 @@
 #include "../util/geDefines.h"
 #include "../util/geVector2.h"
 #include <vector>
+#include <string>
 #include "../util/geUtil.h"
 
 //#if !defined(__APPLE__) //disable Drag-Drop
@@ -107,7 +108,7 @@ public:
 	virtual int getTopMarginOffsetHeight()	{	return 0;	}
 	virtual int getTitleOffsetHeight()		{	return 0;	}
 
-	const char* getName()			{	return m_szName;		}
+    const std::string& getName()			{	return m_szName;		}
 	void setName(const char* name);
 
 	//mouse events
@@ -238,7 +239,7 @@ protected:
     geGUIBase* getMainWindow()  {   return mainWindow;  }
     
 	unsigned short guiID;
-	char m_szName[256];
+    std::string m_szName;
 
 	geVector2f m_cPos;
 	geVector2f m_cSize;

@@ -126,13 +126,7 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fon
     
 	if(name!=NULL)
 	{
-		if(strlen(name)>sizeof(m_szName))
-		{
-#ifndef GEAR2D
-			DEBUG_PRINT("ERROR geGUIBase::geGUIBase() strlen(name)>sizeof(m_szName)");
-#endif
-		}
-		STRCPY(m_szName, name);
+        m_szName.assign(name, strlen(name));
 	}
 	guiObserver=NULL;
 	activeWindowPtrOnlyForLayout=NULL;
@@ -153,14 +147,10 @@ geGUIBase::~geGUIBase()
 
 void geGUIBase::setName(const char* name)
 {
-	if(strlen(name)>sizeof(m_szName))
-	{
-#ifndef GEAR2D
-		DEBUG_PRINT("ERROR geGUIBase::setName() strlen(name)>sizeof(m_szName)");
-#endif
-	}
-
-	STRCPY(m_szName, name);
+    if(name!=NULL)
+    {
+        m_szName.assign(name, strlen(name));
+    }
 	onSetName();
 }
 

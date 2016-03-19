@@ -383,7 +383,7 @@ stDropMenuItem* geToolBarDropMenu::appendMenuItem(const char* name, int _menuID,
 
 void geToolBarDropMenu::onSetName()
 {
-	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(m_szName, (int)strlen(m_szName), 0);
+	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(m_szName.c_str(), (int)m_szName.length(), 0);
 	setSize(width+27, GE_TOOLBAR_HEIGHT);
 }
 

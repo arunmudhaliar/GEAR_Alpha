@@ -1,5 +1,5 @@
 #include "gxFile.h"
-#include <string.h>
+#include <string>
 #include <errno.h>
 
 gxFile::gxFile()
@@ -13,7 +13,7 @@ gxFile::~gxFile()
 	CloseFile();
 }
 
-int gxFile::OpenFile(const char* pszFileName, EFILEMODE eFileMode/* =FILE_r */)
+int gxFile::OpenFile(const std::string& filename, EFILEMODE eFileMode/* =FILE_r */)
 {
 	//int err=0;
 	fileAccessMode=eFileMode;
@@ -21,20 +21,20 @@ int gxFile::OpenFile(const char* pszFileName, EFILEMODE eFileMode/* =FILE_r */)
 	switch(fileAccessMode)
 	{
 #ifdef _WIN32
-		case FILE_r: fopen_s(&filePointer, pszFileName, "rb");	break;
-		case FILE_w: fopen_s(&filePointer, pszFileName, "wb");	break;
-		case FILE_a: fopen_s(&filePointer, pszFileName, "a");		break;
+		case FILE_r: fopen_s(&filePointer, filename.c_str(), "rb");	break;
+		case FILE_w: fopen_s(&filePointer, filename.c_str(), "wb");	break;
+		case FILE_a: fopen_s(&filePointer, filename.c_str(), "a");	break;
 #else
-		case FILE_r: filePointer = fopen(pszFileName, "rb");		break;
-		case FILE_w: filePointer = fopen(pszFileName, "wb");		break;
-		case FILE_a: filePointer = fopen(pszFileName, "a");		break;
+		case FILE_r: filePointer = fopen(filename.c_str(), "rb");	break;
+		case FILE_w: filePointer = fopen(filename.c_str(), "wb");	break;
+		case FILE_a: filePointer = fopen(filename.c_str(), "a");	break;
 #endif
 	}
 
 	if(filePointer==NULL)
     {        
 #if defined (LOG_DEBUG_ENGINE)
-        DEBUG_PRINT("Error opening file - %s, %s", pszFileName, strerror(errno));
+        DEBUG_PRINT("Error opening file - %s, %s", filename.c_str(), strerror(errno));
 #endif 
         
     }

@@ -33,6 +33,7 @@ protected:
 //#endif
     
 private:
+    static int traverse_project_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager);
 	void destroyTVUserData(geGUIBase* parent);
 
 	geTreeView* assetTreeView;

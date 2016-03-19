@@ -1400,7 +1400,7 @@ void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)
 {
 	if(localOrGlobalAxisToolBarButton==btn)
 	{
-		if(strcmp(localOrGlobalAxisToolBarButton->getName(), "Local")==0)
+		if(localOrGlobalAxisToolBarButton->getName().compare("Local")==0)
 		{
 			localOrGlobalAxisToolBarButton->setName("Global");
 			isTransformThroughLocalAxis=false;

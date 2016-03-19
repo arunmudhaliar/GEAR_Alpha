@@ -17,6 +17,7 @@
 #endif
 
 #include <stdio.h>
+#include <string>
 
 #include "../util/gxFile.h"
 #include "../core/gxDebug.h"
@@ -27,7 +28,7 @@ public:
     SoundSample(const char* filename);
     ~SoundSample();
     
-    const char* getName()   {   return m_cszName;   }
+    const std::string& getName()            {   return m_cszName;       }
     unsigned int getBufferID()              {   return m_iBufferId;     }
     int getFrequency()                      {   return m_iFrequency;    }
     int getBufferSize()						{	return m_iSize;			}
@@ -47,7 +48,7 @@ public:
 #endif
 
 private:
-    char m_cszName[256];
+    std::string m_cszName;
     unsigned int m_iBufferId;
     int m_iFrequency;
     int m_iFormat;

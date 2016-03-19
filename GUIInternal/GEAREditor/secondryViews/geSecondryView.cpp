@@ -2,10 +2,10 @@
 #include "../EditorApp.h"
 #include "./../../../macosProj/GEARInternal/GEARInternal/windowMessagePump.h"
 
-geSecondryView::geSecondryView(const char* name, geFontManager* fontmanager, rendererGL10* mainRenderer)
+geSecondryView::geSecondryView(const std::string& name, geFontManager* fontmanager, rendererGL10* mainRenderer)
 {
     primaryRenderer=mainRenderer;
-	strcpy(m_szName, name);
+    m_szName=name;
 	secondryRenderer=NULL;
     layoutManager = new geLayoutManager(fontmanager);
     this->fontManager = fontmanager;
@@ -57,7 +57,7 @@ void geSecondryView::showView(int extraWindowFlags)
 	HWND child = CreateWindowEx(
 						dwExStyle,
 						szAppName2,       
-                        TEXT(m_szName),
+                        TEXT(m_szName.c_str()),
                         dwStyle,
 						m_cPos.x,
                         m_cPos.y, 
@@ -100,7 +100,7 @@ void geSecondryView::showView(int extraWindowFlags)
 SDL_Window* geSecondryView::createSecondryWindow()
 {
     sdlSecondryWindow = SDL_CreateWindow(
-                                         m_szName,          // window title
+                                         m_szName.c_str(),          // window title
                                          m_cPos.x,          // x position, centered
                                          m_cPos.y,          // y position, centered
                                          (int)m_cSize.x,    // width, in pixels

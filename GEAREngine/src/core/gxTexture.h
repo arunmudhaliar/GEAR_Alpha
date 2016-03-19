@@ -19,7 +19,6 @@ public:
 	{
 		texture=NULL;
 		textureType=TEX_UNDEFINED;
-		textureFileCRC=0;
 	}
 	
 	~gxTexture()
@@ -53,5 +52,4 @@ private:
 	stTexturePacket* texture;     //must not delete this pointer
 	ETEXTURE textureType;
 	matrix4x4f textureMatrix;
-	int textureFileCRC;
 };

@@ -233,8 +233,9 @@ float gxFont::getCharWidth(char charValue)
 }
 
 #define CHAR_DELAY  0.05f
-int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCentered, bool bShadowed, float elapsetime)
+int gxFont::drawString(const std::string& buffer, int x, int y, int width_limit, bool bCentered, bool bShadowed, float elapsetime)
 {
+    const char* str = buffer.c_str();
     int retVal=1;
     int actual_len=(int)strlen(str);
     int len=(elapsetime==0.0f)?actual_len:(int)(elapsetime/CHAR_DELAY);
@@ -412,8 +413,9 @@ int gxFont::drawString(const char* str, int x, int y, int width_limit, bool bCen
     return retVal;
 }
 
-void gxFont::drawOnBuffer(const char* str, int cx, int cy, unsigned int& nChar, short* vertexCoordBuffer, float* textureCoordBuffer, unsigned int& nLines, unsigned short* linebuffer, ALIGNMENT alignment) const
+    void gxFont::drawOnBuffer(const std::string& buffer, int cx, int cy, unsigned int& nChar, short* vertexCoordBuffer, float* textureCoordBuffer, unsigned int& nLines, unsigned short* linebuffer, ALIGNMENT alignment) const
 {
+    const char* str = buffer.c_str();
     switch (alignment)
     {
         case ALIGN_LEFT:
@@ -1080,7 +1082,7 @@ void FontManager::setRenderer(gxRenderer* renderer)
     }
 }
 
-gxFont* FontManager::loadFont(const char* filename)
+gxFont* FontManager::loadFont(const std::string& filename)
 {
 #if defined (USE_ProgrammablePipeLine)
     gxFont* newFont=new gxFont(&fontHWShader, renderer);
@@ -1091,7 +1093,7 @@ gxFont* FontManager::loadFont(const char* filename)
     file.OpenFile(filename, gxFile::FILE_r);
         
 #if defined (LOG_DEBUG_ENGINE)
-    DEBUG_PRINT("font %s loading...", filename);
+    DEBUG_PRINT("font %s loading...", filename.c_str());
 #endif 
     newFont->load(file);
     file.CloseFile();

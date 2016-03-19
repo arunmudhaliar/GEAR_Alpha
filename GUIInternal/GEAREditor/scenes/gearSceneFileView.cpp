@@ -369,7 +369,7 @@ void gearSceneFileView::populateFiles(const char* dirPath)
 	destroyTVUserData(fileTreeView->getRoot());
 	fileTreeView->clearAndDestroyAll();
 
-	gearSceneFileView::find_files(rendererGUI, dirPath, serachStringTextBox->getName(), fileTreeView->getRoot(), spriteArray);
+	gearSceneFileView::open_project_directory_for_files(rendererGUI, dirPath, serachStringTextBox->getName().c_str(), fileTreeView->getRoot(), spriteArray);
 	fileTreeView->getRoot()->traverseSetWidth(m_cSize.x);
 	fileTreeView->refreshTreeView();
 }
@@ -512,7 +512,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDropData* dropObject)
 }
 //#endif
 
-int gearSceneFileView::find_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray)
+int gearSceneFileView::open_project_directory_for_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray)
 {
     DIR *dir;
     char buffer[PATH_MAX + 2];

@@ -825,11 +825,7 @@ void geLayout::checkToFitLayout(geLayout* layout, ELAYOUT_DIRECTION direction, s
 {
     geVector2f layoutPos(layout->getPos());
     geVector2f layoutSz(layout->getSize());
-    
-    const char* windowName = nullptr;
-    if(layout->getActiveWindow())
-        windowName = layout->getActiveWindow()->getName();
-    
+        
     //check if the layout is sharing any edge with me
     bool shareWithLeftEdge = false;
     bool shareWithRightEdge = false;

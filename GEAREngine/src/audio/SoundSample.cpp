@@ -16,7 +16,10 @@ SoundSample::SoundSample(const char* filename)
     m_iFrequency=0;
     m_iFormat=0;
     m_iSize=0;
-    strcpy(m_cszName, filename);
+    if(filename)
+    {
+        m_cszName.assign(filename, strlen(filename));
+    }
 
 #if defined(USE_OPENSL)
     m_pQueue = NULL;

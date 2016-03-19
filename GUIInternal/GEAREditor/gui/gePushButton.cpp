@@ -25,10 +25,10 @@ void gePushButton::create(rendererGL10* renderer, geGUIBase* parent, const char*
 {
 	createBase(renderer, parent);
 //	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+    setName(name);
 	setSize(14, 14);
 	setPos(x, y);
 
-	STRCPY(m_szName, name);
 	setClientAreaPrimaryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
 	setColor(&vertexBufferCheckMark, 0.7, 0.7, 0.7, 1.0f, EGRADIENT_VERTICAL_DOWN, 0.5f/**/);

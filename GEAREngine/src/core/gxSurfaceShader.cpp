@@ -1172,7 +1172,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 
 			char constructed_glsl_filename[FILENAME_MAX];
 			sprintf(constructed_glsl_filename, "%s.pass%d.glsl", filename, cntr);
-			gxHWShader* pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, NULL, 0);
+			gxHWShader* pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, "");
 			if(pMainShader)
 			{
 				shaderProgramList.push_back(pMainShader);
@@ -1261,7 +1261,7 @@ bool gxSurfaceShader::loadSurfaceShader(const char* filename)
 			}
 			//
 
-			pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, cMainShaderSource.c_str(), (int)cMainShaderSource.size());
+			pMainShader=hwShaderManager->LoadShaderFromBuffer(constructed_glsl_filename, cMainShaderSource);
 			if(!pMainShader)
 				DEBUG_PRINT("%s\nParse Success but GLSL compiler failed. Pass(%d)\n", constructed_glsl_filename, cntr);
 			else

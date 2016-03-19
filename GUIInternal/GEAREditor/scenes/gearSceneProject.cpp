@@ -14,8 +14,6 @@
 #include"assetUserData.h"
 #include "../AssetImporter.h"
 
-static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager);
-
 gearSceneProject::gearSceneProject(geFontManager* fontmanager):
 geWindow("Project", fontmanager)
 {
@@ -45,7 +43,7 @@ void gearSceneProject::populateProjectView()
 	destroyTVUserData(assetTreeView->getRoot());
 	assetTreeView->clearAndDestroyAll();
 
-	find_directory(rendererGUI, EditorGEARApp::getProjectHomeDirectory(), assetTreeView->getRoot(), spriteArray, fontManagerGUI);
+	traverse_project_directory(rendererGUI, EditorGEARApp::getProjectHomeDirectory(), assetTreeView->getRoot(), spriteArray, fontManagerGUI);
 	assetTreeView->getRoot()->traverseSetWidth(m_cSize.x);
 	assetTreeView->refreshTreeView();
 }
@@ -133,7 +131,7 @@ void gearSceneProject::onDragLeave()
 }
 //#endif
 
-static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager)
+int gearSceneProject::traverse_project_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager)
 {
     DIR *dir;
     char buffer[PATH_MAX + 2];
@@ -218,7 +216,7 @@ static int find_directory(rendererGL10* renderer, const char *dirname, geTreeNod
                         newtvNode->setUserData(userdata);
 
                         newtvNode->closeNode();
-                        find_directory (renderer, buffer, newtvNode, spriteArray, fontmanager);
+                        traverse_project_directory(renderer, buffer, newtvNode, spriteArray, fontmanager);
                     }
                 }
                 break;

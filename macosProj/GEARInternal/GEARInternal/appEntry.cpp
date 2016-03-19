@@ -1,5 +1,6 @@
 #include "appEntry.h"
 #include "windowMessagePump.h"
+#include <fstream>
 
 bool g_mControlKeyPressed = false;
 bool g_mAppInitialised = false;
@@ -83,7 +84,22 @@ int appEntry()
 
     //SDL_GL_MakeCurrent(window, context);
 
-    monoWrapper::loadMonoModules();
+    std::string gear_mono_install_path="";
+    std::ifstream file(".//monoinstallpath.txt");
+    if(file.is_open() && std::getline(file, gear_mono_install_path))
+    {
+        printf("GEAR MONO INSTALATION PATH %s\n", gear_mono_install_path.c_str());
+    }
+    file.close();
+    
+#ifdef _WIN32
+    monoWrapper::loadMonoModules("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc");
+#elif defined(__APPLE__)
+    monoWrapper::loadMonoModules(gear_mono_install_path+"/lib/", gear_mono_install_path+"/etc");
+#else
+    monoWrapper::loadMonoModules("/storage/emulated/0/gear/", "/storage/emulated/0/gear/");
+#endif
+    
     monoWrapper::reInitMono(EditorGEARApp::getProjectHomeDirectory());
     monoWrapper::mono_engine_test_function_for_mono();
     Timer::init();

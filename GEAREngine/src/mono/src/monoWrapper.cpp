@@ -63,20 +63,13 @@ std::vector<monoScript*> monoWrapper::g_monoScriptClassDefs;
 
 bool monoWrapper::g_isSimulationRunning = false;
 
-void monoWrapper::loadMonoModules()
+void monoWrapper::loadMonoModules(const std::string& assembly_dir, const std::string& config_dir)
 {
 #ifndef USEMONOENGINE
 	return;
 #endif
 
-#ifdef _WIN32
-	mono_set_dirs("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc"); 
-#elif defined(__APPLE__)
-    mono_set_dirs("/Users/amudaliar/Desktop/monoForMac/lib/", "/Users/amudaliar/Desktop/monoForMac/etc");
-#else
-	mono_set_dirs("/storage/emulated/0/gear/", "/storage/emulated/0/gear/");
-#endif
-
+    mono_set_dirs(assembly_dir.c_str(), config_dir.c_str());
 	mono_config_parse(NULL);
     
     GEAR3D::SignalHandler::SetupSignalHandlers();

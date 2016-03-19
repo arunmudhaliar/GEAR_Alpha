@@ -302,11 +302,11 @@
 		5554ED4E1AD26CED00FD80AF /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zlib.h; sourceTree = "<group>"; };
 		5554ED4F1AD26CED00FD80AF /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zutil.c; sourceTree = "<group>"; };
 		5554ED501AD26CED00FD80AF /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zutil.h; sourceTree = "<group>"; };
-		5554EFC71AD26E4F00FD80AF /* libmonosgen-2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libmonosgen-2.0.a"; path = "../../../../../Desktop/monoForMac/lib/libmonosgen-2.0.a"; sourceTree = "<group>"; };
+		5554EFC71AD26E4F00FD80AF /* libmonosgen-2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libmonosgen-2.0.a"; path = "../../monoForMACOS/lib/libmonosgen-2.0.a"; sourceTree = "<group>"; };
 		5554EFC91AD26E5D00FD80AF /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		5554EFCB1AD26E6500FD80AF /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libmono-2.0.1.dylib"; path = "../../../../../Desktop/monoForMac/lib/libmono-2.0.1.dylib"; sourceTree = "<group>"; };
+		5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libmono-2.0.1.dylib"; path = "../../monoForMACOS/lib/libmono-2.0.1.dylib"; sourceTree = "<group>"; };
 		555571E51C9B4B5B00EEC0CB /* signalHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = signalHandler.cpp; sourceTree = "<group>"; };
 		555571E61C9B4B5B00EEC0CB /* signalHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = signalHandler.h; sourceTree = "<group>"; };
 		5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAnimationTrack.cpp; sourceTree = "<group>"; };
@@ -935,14 +935,14 @@
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/Users/amudaliar/Desktop/monoForMac/lib,
+					"\"$(SRCROOT)/../../monoForMACOS/lib\"",
 					"$(inherited)",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/debug\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../monoForMACOS/include/mono-2.0\" \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};
 			name = Debug;
 		};
@@ -963,14 +963,14 @@
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/Users/amudaliar/Desktop/monoForMac/lib,
+					"\"$(SRCROOT)/../../monoForMACOS/lib\"",
 					"$(inherited)",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/debug\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../monoForMACOS/include/mono-2.0\" \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};
 			name = Release;
 		};

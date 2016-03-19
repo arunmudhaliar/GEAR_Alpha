@@ -14,7 +14,7 @@
 class DECLSPEC monoWrapper
 {
 public:
-	static void loadMonoModules();
+    static void loadMonoModules(const std::string& assembly_dir, const std::string& config_dir);
 	static void reInitMono(const char* projecthomedirectory=NULL);	//projecthomedirectory is valid only for WIN32
 	static void updateMono();
 	static void destroyMono();

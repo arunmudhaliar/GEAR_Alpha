@@ -274,6 +274,13 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 		file_meta.ReadBuffer(image_data, cx*cy*bpp);
 		file_meta.CloseFile();
 
+        int prevAlignmentValue=0;
+        glGetIntegerv(GL_UNPACK_ALIGNMENT, &prevAlignmentValue);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        if(prevAlignmentValue!=1)
+        {
+            DEBUG_PRINT("glPixelStorei : GL_UNPACK_ALIGNMENT previousValue was %d", prevAlignmentValue);
+        }
 		glTexImage2D(GL_TEXTURE_2D, 0, internalformat, cx, cy, 0, texType, GL_UNSIGNED_BYTE, image_data);
 
 		glGenerateMipmap(GL_TEXTURE_2D);  //Generate mipmaps now!!!

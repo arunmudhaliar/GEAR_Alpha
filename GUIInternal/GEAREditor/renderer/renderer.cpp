@@ -213,6 +213,8 @@ void rendererBase::loadDefaultRenderState()
 	
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do (GL_LEQUAL is must for shadow fonts)
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 }
 
 void rendererBase::swapGLBuffer()

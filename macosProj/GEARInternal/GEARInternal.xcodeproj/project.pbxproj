@@ -657,7 +657,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp ../../FreeImage/macos/libfreeimage.a ${CONFIGURATION_BUILD_DIR}/libfreeimage.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a ${CONFIGURATION_BUILD_DIR}/libfbxsdk.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.dylib ${CONFIGURATION_BUILD_DIR}/libfbxsdk.dylib\ncp mono-prerequisite/MonoGEAR.dll ${CONFIGURATION_BUILD_DIR}/MonoGEAR.dll\ncp -r ../../GUIInternal/res/ ${CONFIGURATION_BUILD_DIR}/res/";
+			shellScript = "cp ../../FreeImage/macos/libfreeimage.a ${CONFIGURATION_BUILD_DIR}/libfreeimage.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a ${CONFIGURATION_BUILD_DIR}/libfbxsdk.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.dylib ${CONFIGURATION_BUILD_DIR}/libfbxsdk.dylib\ncp mono-prerequisite/MonoGEAR.dll ${CONFIGURATION_BUILD_DIR}/MonoGEAR.dll\ncp -r ../../GUIInternal/res/ ${CONFIGURATION_BUILD_DIR}/res/\ncp ./mono-prerequisite/monoinstallpath.txt ${CONFIGURATION_BUILD_DIR}/monoinstallpath.txt";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -846,7 +846,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"/Users/amudaliar/Desktop/monoForMac/include/mono-2.0",
+					"\"$(SRCROOT)/../../monoForMACOS/include/mono-2.0\"",
 				);
 				INFOPLIST_FILE = GEARInternal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -858,7 +858,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../monoForMACOS/include/mono-2.0\" \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};
 			name = Debug;
 		};
@@ -880,7 +880,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"/Users/amudaliar/Desktop/monoForMac/include/mono-2.0",
+					"\"$(SRCROOT)/../../monoForMACOS/include/mono-2.0\"",
 				);
 				INFOPLIST_FILE = GEARInternal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -892,7 +892,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "/Users/amudaliar/Desktop/monoForMac/include/mono-2.0 \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../monoForMACOS/include/mono-2.0\" \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
 			};
 			name = Release;
 		};

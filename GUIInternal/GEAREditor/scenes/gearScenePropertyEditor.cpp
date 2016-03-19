@@ -274,6 +274,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	if(obj==NULL)
 	{
 		propertiesTreeView->refreshTreeView();
+        propertiesTreeView->resetSelectedNodePtr();
 		return;
 	}
 

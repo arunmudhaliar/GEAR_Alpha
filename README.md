@@ -30,3 +30,14 @@ https://github.com/lukaszdk/texture-atlas-generator/blob/master/AtlasGenerator.j
 
 //shadow mapping
 http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-16-shadow-mapping/
+
+Configuring the dev environment for MACOS
+-----------------------------------------
+1. Check out the dev branch from git
+2. Open Terminal and go to the root folder
+3. Run sh ./setup_mono_osx.sh
+4. On Success it must create monoForMACOS with bin, etc, include, lib & share folders
+6. Check if ./macosProj/GEARInternal/mono-prerequisite/monoinstallpath.txt file is created or not.
+5. Check the monoForMACOS path is exported to ./macosProj/GEARInternal/mono-prerequisite/monoinstallpath.txt
+6. Open the ./macosProj/GEARWorkSpace.xcworkspace in xcode
+7. Happy coding....

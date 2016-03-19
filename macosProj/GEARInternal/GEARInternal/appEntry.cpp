@@ -93,7 +93,7 @@ int appEntry()
     file.close();
     
 #ifdef _WIN32
-    monoWrapper::loadMonoModules("C:/Mono-2.10.6/lib", "C:/Mono-2.10.6/etc");
+    monoWrapper::loadMonoModules(gear_mono_install_path+"/lib", gear_mono_install_path+"/etc");
 #elif defined(__APPLE__)
     monoWrapper::loadMonoModules(gear_mono_install_path+"/lib/", gear_mono_install_path+"/etc");
 #else

@@ -19,7 +19,7 @@
 #include <CommCtrl.h>
 #endif
 
-#include <sys/stat.h>
+#include "../../GEAREngine/src/util/gxFileUtil.h"
 
 char EditorGEARApp::g_cszProjectHomeDirectory[FILENAME_MAX];
 EditorApp* EditorApp::g_pEditorAppInstance = NULL;
@@ -211,43 +211,6 @@ void EditorApp::DoCommand(int cmd)
 	guiManager->DoCommand(cmd);
 }
 
-bool EditorApp::createDirectory(std::string path)
-{
-#ifdef _WIN32
-    if(MKDIR(path.c_str())==0)
-#else
-        if(MKDIR(path.c_str(), 0777)==0)
-#endif
-        {
-            return true;
-        }
-    
-    DEBUG_PRINT("Error creating directory %s", path.c_str());
-    return false;
-}
-
-bool EditorApp::isDirecoryExist(std::string path)
-{
-    struct stat sb;
-    if (stat(path.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode))
-    {
-        return true;
-    }
-    
-    return false;
-}
-
-bool EditorApp::isFileExist(std::string path)
-{
-    struct stat sb;
-    if (stat(path.c_str(), &sb) == 0 && S_ISREG(sb.st_mode))
-    {
-        return true;
-    }
-    
-    return false;
-}
-
 #if _WIN32
 HWND EditorApp::getMainWindowHandle()
 {
@@ -392,13 +355,13 @@ int EditorGEARApp::createNewProject(const char* projectDirectory)
     char temp_buffer[FILENAME_MAX];
     sprintf(temp_buffer, "%s/Assets", projectDirectory);
 
-    if(EditorApp::createDirectory(temp_buffer))
+    if(gxFileUtil::getInstance().createDirectory(temp_buffer))
     {
         sprintf(temp_buffer, "%s/ProjectSettings", projectDirectory);
-        if(EditorApp::createDirectory(temp_buffer))
+        if(gxFileUtil::getInstance().createDirectory(temp_buffer))
         {
             sprintf(temp_buffer, "%s/MetaData", projectDirectory);
-            if(EditorApp::createDirectory(temp_buffer))
+            if(gxFileUtil::getInstance().createDirectory(temp_buffer))
             {
                 //add to recent projects file
                 FILE* fp= fopen("recentProjects", "a");
@@ -420,10 +383,10 @@ bool EditorGEARApp::saveSceneToTempFolder()
     std::string tmp_dir = EditorGEARApp::getProjectHomeDirectory();
     tmp_dir+="/Temp";
 
-    if(!EditorApp::isDirecoryExist(tmp_dir))
+    if(!gxFileUtil::getInstance().isDirecoryExist(tmp_dir))
     {
         DEBUG_PRINT("Creating Temp folder");
-        EditorApp::createDirectory(tmp_dir);
+        gxFileUtil::getInstance().createDirectory(tmp_dir);
     }
     
     if(!EditorGEARApp::getSceneHierarchy()->saveCurrentScene(tmp_dir+"/temp.gearscene"))
@@ -449,123 +412,12 @@ bool EditorGEARApp::loadSceneFromTempFolder()
     return true;
 }
 
-#include <dirent.h>
-
-static int delete_directory_recursive(const char *dirname)
-{
-    DIR *dir;
-    char buffer[PATH_MAX + 2];
-    char *p = buffer;
-    const char *src;
-    char *end = &buffer[PATH_MAX];
-    int ok;
-    
-    /* Copy directory name to buffer */
-    src = dirname;
-    while (p < end  &&  *src != '\0') {
-        *p++ = *src++;
-    }
-    *p = '\0';
-    
-    /* Open directory stream */
-    dir = opendir (dirname);
-    if (dir != NULL) {
-        struct dirent *ent;
-        
-        /* Print all files and directories within the directory */
-        while ((ent = readdir (dir)) != NULL) {
-            char *q = p;
-            char c;
-            
-            /* Get final character of directory name */
-            if (buffer < q) {
-                c = q[-1];
-            } else {
-                c = ':';
-            }
-            
-            /* Append directory separator if not already there */
-            if (c != ':'  &&  c != '/'  &&  c != '\\') {
-                *q++ = '/';
-            }
-            
-            /* Append file name */
-            src = ent->d_name;
-            while (q < end  &&  *src != '\0') {
-                *q++ = *src++;
-            }
-            *q = '\0';
-            
-            /* Decide what to do with the directory entry */
-            switch (ent->d_type) {
-                case DT_REG:
-                {
-                    chmod(buffer, 777);
-                    int status = remove(buffer);
-                    if(status!=0)
-                    {
-                        printf("Errror deleting file %s\n", buffer);
-                        return status;
-                    }
-                }
-                    break;
-                    
-                case DT_DIR:
-                {
-                    /* Scan sub-directory recursively */
-                    if (strcmp (ent->d_name, ".") != 0  &&  strcmp (ent->d_name, "..") != 0)
-                    {
-                        int ret_val = delete_directory_recursive(buffer);
-                        if(ret_val!=0)
-                        {
-                            printf("Error deleting folder %s\n", buffer);
-                            return ret_val;
-                        }
-
-                        int status = rmdir(buffer);
-                        if(status!=0)
-                            return status;
-                    }
-                }
-                    break;
-                    
-                default:
-                    /* Do not device entries */
-                    /*NOP*/;
-            }
-            
-        }
-        
-        closedir (dir);
-        ok = 0;
-        
-    } else {
-        /* Could not open directory */
-        printf ("Cannot open directory %s\n", dirname);
-        ok = 1;
-    }
-    
-    return ok;
-}
-
-bool EditorGEARApp::deleteFolder(const std::string& path)
-{
-    int status = delete_directory_recursive(path.c_str());
-    if(status==0)
-    {
-        status = rmdir(path.c_str());
-        if(status!=0)
-            printf("Error deleting directory %s\n", path.c_str());
-    }
-    return status==0;
-}
-
 bool EditorGEARApp::deleteTempFolder()
 {
     std::string tmp_dir = EditorGEARApp::getProjectHomeDirectory();
     tmp_dir+="/Temp";
 
-    return deleteFolder(tmp_dir.c_str());
+    return gxFileUtil::getInstance().deleteDirectory(tmp_dir.c_str());
 }
 
 bool EditorGEARApp::saveScene(const std::string& filename)
@@ -598,9 +450,9 @@ bool EditorGEARApp::updateCurrentSceneFile(const std::string& filename)
     std::string root_dir = EditorGEARApp::getProjectHomeDirectory();
     
     //check if ProjectSettings dir exist or not
-    if(!EditorApp::isDirecoryExist(root_dir+"/ProjectSettings"))
+    if(!gxFileUtil::getInstance().isDirecoryExist(root_dir+"/ProjectSettings"))
     {
-        EditorApp::createDirectory(root_dir+"/ProjectSettings");
+        gxFileUtil::getInstance().createDirectory(root_dir+"/ProjectSettings");
         DEBUG_PRINT("Creating ProjectSettings directory");
     }
     

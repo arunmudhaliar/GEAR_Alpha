@@ -149,6 +149,8 @@
 		5554EFD21AD26EA200FD80AF /* libmono-2.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */; };
 		555571E71C9B4B5B00EEC0CB /* signalHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 555571E51C9B4B5B00EEC0CB /* signalHandler.cpp */; };
 		555571E81C9B4B5B00EEC0CB /* signalHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 555571E61C9B4B5B00EEC0CB /* signalHandler.h */; };
+		555571F71C9DBD6700EEC0CB /* gxFileUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 555571F51C9DBD6700EEC0CB /* gxFileUtil.cpp */; };
+		555571F81C9DBD6700EEC0CB /* gxFileUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 555571F61C9DBD6700EEC0CB /* gxFileUtil.h */; };
 		5580DE741C8C442200B5D6D5 /* IAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */; };
 		5580DE751C8C442200B5D6D5 /* IAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */; };
 		558F92AA1B39E38B00FCA130 /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 558F92A91B39E38B00FCA130 /* libfbxsdk.a */; };
@@ -309,6 +311,8 @@
 		5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libmono-2.0.1.dylib"; path = "../../monoForMACOS/lib/libmono-2.0.1.dylib"; sourceTree = "<group>"; };
 		555571E51C9B4B5B00EEC0CB /* signalHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = signalHandler.cpp; sourceTree = "<group>"; };
 		555571E61C9B4B5B00EEC0CB /* signalHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = signalHandler.h; sourceTree = "<group>"; };
+		555571F51C9DBD6700EEC0CB /* gxFileUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxFileUtil.cpp; sourceTree = "<group>"; };
+		555571F61C9DBD6700EEC0CB /* gxFileUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxFileUtil.h; sourceTree = "<group>"; };
 		5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAnimationTrack.cpp; sourceTree = "<group>"; };
 		5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnimationTrack.h; sourceTree = "<group>"; };
 		558F92A91B39E38B00FCA130 /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
@@ -575,6 +579,8 @@
 				5554ED321AD26CED00FD80AF /* gxUtil.cpp */,
 				5554ED331AD26CED00FD80AF /* gxUtil.h */,
 				5554ED3A1AD26CED00FD80AF /* pngLoader.h */,
+				555571F51C9DBD6700EEC0CB /* gxFileUtil.cpp */,
+				555571F61C9DBD6700EEC0CB /* gxFileUtil.h */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -640,6 +646,7 @@
 				5554EFA01AD26CED00FD80AF /* Tga.h in Headers */,
 				5554ED6F1AD26CED00FD80AF /* gxMaterial.h in Headers */,
 				5554EFBA1AD26CED00FD80AF /* inffast.h in Headers */,
+				555571F81C9DBD6700EEC0CB /* gxFileUtil.h in Headers */,
 				5554ED791AD26CED00FD80AF /* gxTriInfo.h in Headers */,
 				5554EF9E1AD26CED00FD80AF /* gxRenderer.h in Headers */,
 				5554ED7D1AD26CED00FD80AF /* LayerManager.h in Headers */,
@@ -835,6 +842,7 @@
 				5554EDB01AD26CED00FD80AF /* monoScript.cpp in Sources */,
 				5554ED621AD26CED00FD80AF /* gxAnimation.cpp in Sources */,
 				5554ED881AD26CED00FD80AF /* TextureManager.cpp in Sources */,
+				555571F71C9DBD6700EEC0CB /* gxFileUtil.cpp in Sources */,
 				5554EFBC1AD26CED00FD80AF /* inflate.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

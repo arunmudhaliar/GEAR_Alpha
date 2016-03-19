@@ -22,12 +22,6 @@
 #include <SDL_syswm.h>	//for SDL_SysWMinfo
 #endif
 
-#ifdef _WIN32
-#define MKDIR _mkdir
-#else
-#define MKDIR mkdir
-#endif
-
 class EditorApp
 {
 public:
@@ -71,9 +65,6 @@ public:
     
 	static void setAppDirectory(const char* dir)	{	g_cAppDirectory = dir;	}
 	static std::string getAppDirectory()			{	return g_cAppDirectory;	}
-    static bool createDirectory(std::string path);
-    static bool isDirecoryExist(std::string path);
-    static bool isFileExist(std::string path);
     
 private:
 #if _WIN32
@@ -131,7 +122,6 @@ public:
 
     static bool saveSceneToTempFolder();
     static bool loadSceneFromTempFolder();
-    static bool deleteFolder(const std::string& path);
     static bool deleteTempFolder();
 
     static bool saveScene(const std::string& filename);

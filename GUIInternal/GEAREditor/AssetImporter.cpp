@@ -6,6 +6,7 @@
 #include "../../GEAREngine/src/util/gxCrc32.h"
 #include "../../GEAREngine/src/fbxImporter/fbxImporter.h"
 #include "../../GEAREngine/src/util/gxUtil.cpp"
+#include "../../GEAREngine/src/util/gxFileUtil.h"
 
 #include <sys/types.h>
 #include <assert.h>

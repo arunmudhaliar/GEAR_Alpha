@@ -93,9 +93,9 @@ int appEntry()
     file.close();
     
 #ifdef GEAR_WINDOWS
-    monoWrapper::loadMonoModules(gear_mono_install_path+"/lib", gear_mono_install_path+"/etc");
+    monoWrapper::loadMonoModules(gear_mono_install_path);
 #elif defined(GEAR_APPLE)
-    monoWrapper::loadMonoModules(gear_mono_install_path+"/lib/", gear_mono_install_path+"/etc");
+    monoWrapper::loadMonoModules(gear_mono_install_path);
 #elif defined(GEAR_ANDROID)
     monoWrapper::loadMonoModules("/storage/emulated/0/gear/", "/storage/emulated/0/gear/");
 #else

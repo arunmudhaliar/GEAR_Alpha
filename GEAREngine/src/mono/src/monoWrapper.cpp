@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 
+std::string     monoWrapper::g_cMonoInstallPath="";
 uint32_t        monoWrapper::g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE=0;
 MonoObject*		monoWrapper::g_pMonoGEAREntryPointClass_Instance_Variable = NULL;
 MonoAssembly*	monoWrapper::g_pMonoAssembly = NULL;
@@ -60,13 +61,14 @@ std::vector<monoScript*> monoWrapper::g_monoScriptClassDefs;
 
 bool monoWrapper::g_isSimulationRunning = false;
 
-void monoWrapper::loadMonoModules(const std::string& assembly_dir, const std::string& config_dir)
+void monoWrapper::loadMonoModules(const std::string& monoInstallPath)
 {
 #ifndef USEMONOENGINE
 	return;
 #endif
 
-    mono_set_dirs(assembly_dir.c_str(), config_dir.c_str());
+    g_cMonoInstallPath = monoInstallPath;
+    mono_set_dirs((g_cMonoInstallPath+"/lib").c_str(), (g_cMonoInstallPath+"/etc").c_str());
 	mono_config_parse(NULL);
     
     GEAR3D::SignalHandler::SetupSignalHandlers();
@@ -770,13 +772,13 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 #endif
 
 	char responsebuffer[4096];
-	if(exec_cmd(("gmcs "+command_buffer).c_str(), responsebuffer)==0)
+	if(exec_cmd((g_cMonoInstallPath+"/bin/gmcs "+command_buffer).c_str(), responsebuffer)==0)
     {
         printf("\n================GMCS COMPILATION RESULT===============\n");
         printf("%s", responsebuffer);
         printf("\n======================================================\n");
     }
-    else if(exec_cmd(("mcs "+command_buffer).c_str(), responsebuffer)==0)
+    else if(exec_cmd((g_cMonoInstallPath+"/bin/mcs "+command_buffer).c_str(), responsebuffer)==0)
     {
         printf("\n================MCS COMPILATION RESULT===============\n");
         printf("%s", responsebuffer);

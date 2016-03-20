@@ -14,7 +14,7 @@
 class DECLSPEC monoWrapper
 {
 public:
-    static void loadMonoModules(const std::string& assembly_dir, const std::string& config_dir);
+    static void loadMonoModules(const std::string& monoInstallPath);
 	static void reInitMono(const char* projecthomedirectory=NULL);	//projecthomedirectory is valid only for WIN32
 	static void updateMono();
 	static void destroyMono();
@@ -77,6 +77,7 @@ public:
     static bool mono_isSimulationRunning();
     
 private:
+    static std::string      g_cMonoInstallPath;
     static uint32_t         g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE;
 	static MonoObject*		g_pMonoGEAREntryPointClass_Instance_Variable;
 	static MonoAssembly*	g_pMonoAssembly;

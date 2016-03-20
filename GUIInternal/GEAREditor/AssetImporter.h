@@ -1,6 +1,5 @@
 #pragma once
 
-#include <sys/stat.h>
 #include "../../GEAREngine/src/core/gxMaterial.h"
 #include "../../GEAREngine/src/core/object3d.h"
 #include "../../GEAREngine/src/core/gxMetaStructures.h"
@@ -21,8 +20,6 @@ public:
 	static bool saveObject3DToMetaData(const char* crcFileName, object3d* obj3d, struct stat& fst);
 
 	static bool readMetaHeader(int crc, stMetaHeader& metaHeader, struct stat& fst);
-	static void readMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile, struct stat& fst);
-	static void writeMetaHeader(stMetaHeader& metaHeader, gxFile& metaFile);
 
 	static int calcCRC32(unsigned char* data);
 	static const char* relativePathFromProjectHomeDirectory_AssetFolder(const std::string& path);

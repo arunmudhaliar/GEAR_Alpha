@@ -83,6 +83,9 @@
 		55C4753D1C8B59E8000AA027 /* gearSceneGraphEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */; };
 		55E88DE21C9E953600B355BB /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88DE11C9E953600B355BB /* libfbxsdk.a */; };
 		55E88E921C9EC87700B355BB /* libGEAREngine.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88E8C1C9EC78800B355BB /* libGEAREngine.dylib */; };
+		55E88E931C9EEC6900B355BB /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C4DEEF371C9E98DF000E0DFE /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55E88E941C9EEC7600B355BB /* libGEAREngine.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88E8C1C9EC78800B355BB /* libGEAREngine.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		55E88E951C9EECF400B355BB /* libfbxsdk.a in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88DE11C9E953600B355BB /* libfbxsdk.a */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		55EDBEC01C8E03A0005D7786 /* geModalDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55EDBEBE1C8E03A0005D7786 /* geModalDialog.cpp */; };
 		C4DEEF401C9E9916000E0DFE /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4DEEF371C9E98DF000E0DFE /* SDL2.framework */; };
 /* End PBXBuildFile section */
@@ -144,8 +147,11 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstSubfolderSpec = 6;
 			files = (
+				55E88E951C9EECF400B355BB /* libfbxsdk.a in Embed Frameworks */,
+				55E88E941C9EEC7600B355BB /* libGEAREngine.dylib in Embed Frameworks */,
+				55E88E931C9EEC6900B355BB /* SDL2.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;

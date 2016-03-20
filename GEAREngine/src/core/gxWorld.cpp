@@ -530,7 +530,7 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 			if(file_meta.OpenFile(crcFile))
 			{
 				stMetaHeader metaHeader;
-				file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+                metaHeader.readMetaHeader(file_meta);
 
 				gxMaterial* material = new gxMaterial();
 				material->read(file_meta);
@@ -871,7 +871,7 @@ object3d* gxWorld::loadFromCRCFile(int crc)
 
     //read the meta header from the crc file
 	stMetaHeader metaHeader;
-	file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+    metaHeader.readMetaHeader(file_meta);
     
     //read the actual objects
     object3d* root_object_node = loadObjectsFromFile(file_meta, crc);

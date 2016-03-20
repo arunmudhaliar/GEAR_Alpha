@@ -167,7 +167,7 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 	gxFile file_meta;
 	if(file_meta.OpenFile(file_name))
 	{
-		file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+        metaHeader.readMetaHeader(file_meta);
 
 		//read the text header
 		file_meta.Read(cx);

@@ -147,14 +147,16 @@ void gearSceneFileView::loadPreviewObjects()
 	object3d* obj=NULL;
 	if(file_meta.OpenFile("res//preview//cube.preview"))
 	{
+        //read meta header
 		stMetaHeader metaHeader;
-		file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+        metaHeader.readMetaHeader(file_meta);
 
+        //read object ID
 		int objID=0;
 		file_meta.Read(objID);
 
 		object3d* tempObj=NULL;
-		if(objID!=OBJECT3D_MESH)
+		if(objID!=OBJECT3D_MESH)    //Note:- Expecting the preview cube starts with object3D as root
 		{
 			tempObj = new object3d(objID);
 			tempObj->read(file_meta);
@@ -171,9 +173,11 @@ void gearSceneFileView::loadPreviewObjects()
 	//Material
 	if(file_meta.OpenFile("res//preview//Material.mat.preview"))
 	{
+        //read meta header
 		stMetaHeader metaHeader;
-		file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
-
+        metaHeader.readMetaHeader(file_meta);
+        
+        //read the material
 		previewMaterial.read(file_meta);
 		file_meta.CloseFile();
 	}
@@ -212,9 +216,11 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				return;
 			}
 
+            //read meta header
 			stMetaHeader metaHeader;
-			file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+            metaHeader.readMetaHeader(file_meta);
 
+            //read the object ID
 			int objID=0;
 			file_meta.Read(objID);
 
@@ -281,9 +287,11 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				sprintf(crcFile, "%s/MetaData/%x", EditorGEARApp::getProjectHomeDirectory(), crc32);
 				if(file_meta.OpenFile(crcFile))
 				{
+                    //read the meta header
 					stMetaHeader metaHeader;
-					file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+                    metaHeader.readMetaHeader(file_meta);
 
+                    //read the material
 					gxMaterial* material = new gxMaterial();
 					material->read(file_meta);
 					file_meta.CloseFile();

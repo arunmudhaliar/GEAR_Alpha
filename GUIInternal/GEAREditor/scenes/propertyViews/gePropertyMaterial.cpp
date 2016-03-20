@@ -70,9 +70,11 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDropData* dropObject)
 			gxFile file_meta;
 			if(file_meta.OpenFile(crcFile))
 			{
+                //read the meta header
 				stMetaHeader metaHeader;
-				file_meta.ReadBuffer((unsigned char*)&metaHeader, sizeof(metaHeader));
+                metaHeader.readMetaHeader(file_meta);
 
+                //read the material
 				gxMaterial* material = new gxMaterial();
 				material->read(file_meta);
 				file_meta.CloseFile();

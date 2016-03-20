@@ -163,6 +163,8 @@
 		55AB5CC01C0481D3005B8747 /* ToneMappingFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */; };
 		55E88D831C9E5AC400B355BB /* GEARFirstInclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */; };
 		55E88DE01C9E950600B355BB /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88DDF1C9E950600B355BB /* libfbxsdk.a */; };
+		55E88E991C9F2BC000B355BB /* autoReleasePool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55E88E971C9F2BC000B355BB /* autoReleasePool.cpp */; };
+		55E88E9A1C9F2BC000B355BB /* autoReleasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = 55E88E981C9F2BC000B355BB /* autoReleasePool.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -326,6 +328,8 @@
 		55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToneMappingFilter.h; sourceTree = "<group>"; };
 		55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEARFirstInclude.h; sourceTree = "<group>"; };
 		55E88DDF1C9E950600B355BB /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release/libfbxsdk.a; sourceTree = "<group>"; };
+		55E88E971C9F2BC000B355BB /* autoReleasePool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = autoReleasePool.cpp; sourceTree = "<group>"; };
+		55E88E981C9F2BC000B355BB /* autoReleasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoReleasePool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -381,6 +385,7 @@
 				55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */,
 				5554EAC41AD26CEC00FD80AF /* GEAREngine.cpp */,
 				5554EAC51AD26CEC00FD80AF /* GEAREngine.h */,
+				55E88E961C9F2B8B00B355BB /* autoReleasePool */,
 				55AB5CB01C0481D3005B8747 /* postProcessor */,
 				5554EA7F1AD26CEC00FD80AF /* audio */,
 				5554EA861AD26CEC00FD80AF /* core */,
@@ -631,6 +636,15 @@
 			path = postProcessor;
 			sourceTree = "<group>";
 		};
+		55E88E961C9F2B8B00B355BB /* autoReleasePool */ = {
+			isa = PBXGroup;
+			children = (
+				55E88E971C9F2BC000B355BB /* autoReleasePool.cpp */,
+				55E88E981C9F2BC000B355BB /* autoReleasePool.h */,
+			);
+			path = autoReleasePool;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -693,6 +707,7 @@
 				5554ED5C1AD26CED00FD80AF /* COctree.h in Headers */,
 				5554ED631AD26CED00FD80AF /* gxAnimation.h in Headers */,
 				5554ED581AD26CED00FD80AF /* basicIncludes.h in Headers */,
+				55E88E9A1C9F2BC000B355BB /* autoReleasePool.h in Headers */,
 				5554ED871AD26CED00FD80AF /* stTexturePacket.h in Headers */,
 				5554ED9F1AD26CED00FD80AF /* pnginfo.h in Headers */,
 				5554ED961AD26CED00FD80AF /* gxHWShader.h in Headers */,
@@ -841,6 +856,7 @@
 				5554EDAA1AD26CED00FD80AF /* pngtrans.c in Sources */,
 				5554EDA61AD26CED00FD80AF /* pngrtran.c in Sources */,
 				5554EDA11AD26CED00FD80AF /* pngmem.c in Sources */,
+				55E88E991C9F2BC000B355BB /* autoReleasePool.cpp in Sources */,
 				5554EDA41AD26CED00FD80AF /* pngread.c in Sources */,
 				5554EFB21AD26CED00FD80AF /* adler32.c in Sources */,
 				5554EDB01AD26CED00FD80AF /* monoScript.cpp in Sources */,

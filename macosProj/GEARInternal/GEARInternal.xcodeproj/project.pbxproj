@@ -78,13 +78,13 @@
 		556F65C91AD9C85700CDF3C8 /* appEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 556F65C71AD9C85700CDF3C8 /* appEntry.cpp */; };
 		5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5576F3041AD2DD5E008642F5 /* AppKit.framework */; };
 		5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5576F3061AD2F052008642F5 /* MenuImp.mm */; };
-		558F92AC1B39E3F100FCA130 /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 558F92AB1B39E3F100FCA130 /* libfbxsdk.a */; };
 		55AB5CC61C048959005B8747 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55AB5CC51C048959005B8747 /* Images.xcassets */; };
 		55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */; };
 		55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */; };
 		55C4753D1C8B59E8000AA027 /* gearSceneGraphEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */; };
 		55E88DD81C9E850100B355BB /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88DD71C9E850100B355BB /* SDL2.framework */; };
 		55E88DD91C9E850100B355BB /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88DD71C9E850100B355BB /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55E88DE21C9E953600B355BB /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88DE11C9E953600B355BB /* libfbxsdk.a */; };
 		55EDBEC01C8E03A0005D7786 /* geModalDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55EDBEBE1C8E03A0005D7786 /* geModalDialog.cpp */; };
 /* End PBXBuildFile section */
 
@@ -261,7 +261,6 @@
 		5576F3061AD2F052008642F5 /* MenuImp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuImp.mm; sourceTree = "<group>"; };
 		5576F3081AD2F153008642F5 /* MenuImp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuImp.h; sourceTree = "<group>"; };
 		5576F3091AD30242008642F5 /* MenuCPPInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuCPPInterface.h; sourceTree = "<group>"; };
-		558F92AB1B39E3F100FCA130 /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
 		55AB5CC51C048959005B8747 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = GEARInternal/Images.xcassets; sourceTree = "<group>"; };
 		55BEFD371AD59EC40071A2D5 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
@@ -269,6 +268,7 @@
 		55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneGraphEditor.cpp; sourceTree = "<group>"; };
 		55C4753C1C8B59E8000AA027 /* gearSceneGraphEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneGraphEditor.h; sourceTree = "<group>"; };
 		55E88DD71C9E850100B355BB /* SDL2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = SDL2.framework; path = "/Users/amudaliar/Library/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug/SDL2.framework"; sourceTree = "<absolute>"; };
+		55E88DE11C9E953600B355BB /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release/libfbxsdk.a; sourceTree = "<group>"; };
 		55EDBEBE1C8E03A0005D7786 /* geModalDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geModalDialog.cpp; sourceTree = "<group>"; };
 		55EDBEBF1C8E03A0005D7786 /* geModalDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geModalDialog.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -279,7 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5548D31E1AD950830070A09C /* libGEAREngine.dylib in Frameworks */,
-				558F92AC1B39E3F100FCA130 /* libfbxsdk.a in Frameworks */,
+				55E88DE21C9E953600B355BB /* libfbxsdk.a in Frameworks */,
 				5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */,
 				5554F0081AD270A600FD80AF /* OpenGL.framework in Frameworks */,
 				5554F0061AD2709C00FD80AF /* GLUT.framework in Frameworks */,
@@ -305,7 +305,7 @@
 			children = (
 				55E88DD71C9E850100B355BB /* SDL2.framework */,
 				55AB5CC51C048959005B8747 /* Images.xcassets */,
-				558F92AB1B39E3F100FCA130 /* libfbxsdk.a */,
+				55E88DE11C9E953600B355BB /* libfbxsdk.a */,
 				5548D31D1AD950830070A09C /* libGEAREngine.dylib */,
 				5554F0011AD2707000FD80AF /* libfreeimage.a */,
 				5554F0051AD2709C00FD80AF /* GLUT.framework */,
@@ -673,7 +673,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp ../../FreeImage/macos/libfreeimage.a ${CONFIGURATION_BUILD_DIR}/libfreeimage.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a ${CONFIGURATION_BUILD_DIR}/libfbxsdk.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.dylib ${CONFIGURATION_BUILD_DIR}/libfbxsdk.dylib\ncp mono-prerequisite/MonoGEAR.dll ${CONFIGURATION_BUILD_DIR}/MonoGEAR.dll\ncp -r ../../GUIInternal/res/ ${CONFIGURATION_BUILD_DIR}/res/\ncp ./mono-prerequisite/monoinstallpath.txt ${CONFIGURATION_BUILD_DIR}/monoinstallpath.txt";
+			shellScript = "cp ../../FreeImage/macos/libfreeimage.a ${CONFIGURATION_BUILD_DIR}/libfreeimage.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release/libfbxsdk.a ${CONFIGURATION_BUILD_DIR}/libfbxsdk.a\ncp ../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release/libfbxsdk.dylib ${CONFIGURATION_BUILD_DIR}/libfbxsdk.dylib\ncp mono-prerequisite/MonoGEAR.dll ${CONFIGURATION_BUILD_DIR}/MonoGEAR.dll\ncp -r ../../GUIInternal/res/ ${CONFIGURATION_BUILD_DIR}/res/\ncp ./mono-prerequisite/monoinstallpath.txt ${CONFIGURATION_BUILD_DIR}/monoinstallpath.txt";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -870,7 +870,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug",
-					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
 					"\"$(SRCROOT)/../../FreeImage/macos\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -905,7 +905,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug",
-					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
+					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
 					"\"$(SRCROOT)/../../FreeImage/macos\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;

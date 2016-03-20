@@ -153,7 +153,6 @@
 		555571F81C9DBD6700EEC0CB /* gxFileUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 555571F61C9DBD6700EEC0CB /* gxFileUtil.h */; };
 		5580DE741C8C442200B5D6D5 /* IAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */; };
 		5580DE751C8C442200B5D6D5 /* IAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */; };
-		558F92AA1B39E38B00FCA130 /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 558F92A91B39E38B00FCA130 /* libfbxsdk.a */; };
 		55AB5CB91C0481D3005B8747 /* BlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */; };
 		55AB5CBA1C0481D3005B8747 /* BlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB21C0481D3005B8747 /* BlurFilter.h */; };
 		55AB5CBB1C0481D3005B8747 /* BrightPassFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB31C0481D3005B8747 /* BrightPassFilter.cpp */; };
@@ -163,6 +162,7 @@
 		55AB5CBF1C0481D3005B8747 /* ToneMappingFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB71C0481D3005B8747 /* ToneMappingFilter.cpp */; };
 		55AB5CC01C0481D3005B8747 /* ToneMappingFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */; };
 		55E88D831C9E5AC400B355BB /* GEARFirstInclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */; };
+		55E88DE01C9E950600B355BB /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88DDF1C9E950600B355BB /* libfbxsdk.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -316,7 +316,6 @@
 		555571F61C9DBD6700EEC0CB /* gxFileUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxFileUtil.h; sourceTree = "<group>"; };
 		5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAnimationTrack.cpp; sourceTree = "<group>"; };
 		5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnimationTrack.h; sourceTree = "<group>"; };
-		558F92A91B39E38B00FCA130 /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/release/libfbxsdk.a; sourceTree = "<group>"; };
 		55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurFilter.cpp; sourceTree = "<group>"; };
 		55AB5CB21C0481D3005B8747 /* BlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurFilter.h; sourceTree = "<group>"; };
 		55AB5CB31C0481D3005B8747 /* BrightPassFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BrightPassFilter.cpp; sourceTree = "<group>"; };
@@ -326,6 +325,7 @@
 		55AB5CB71C0481D3005B8747 /* ToneMappingFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ToneMappingFilter.cpp; sourceTree = "<group>"; };
 		55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToneMappingFilter.h; sourceTree = "<group>"; };
 		55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEARFirstInclude.h; sourceTree = "<group>"; };
+		55E88DDF1C9E950600B355BB /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release/libfbxsdk.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -337,7 +337,7 @@
 				5554EFCE1AD26E6C00FD80AF /* OpenGL.framework in Frameworks */,
 				5554EFCC1AD26E6500FD80AF /* OpenAL.framework in Frameworks */,
 				5554EFCA1AD26E5D00FD80AF /* CoreFoundation.framework in Frameworks */,
-				558F92AA1B39E38B00FCA130 /* libfbxsdk.a in Frameworks */,
+				55E88DE01C9E950600B355BB /* libfbxsdk.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,12 +347,12 @@
 		5554EA6A1AD26C7C00FD80AF = {
 			isa = PBXGroup;
 			children = (
-				558F92A91B39E38B00FCA130 /* libfbxsdk.a */,
+				55E88DDF1C9E950600B355BB /* libfbxsdk.a */,
 				5554EFD11AD26EA200FD80AF /* libmono-2.0.1.dylib */,
+				5554EFC71AD26E4F00FD80AF /* libmonosgen-2.0.a */,
 				5554EFCD1AD26E6C00FD80AF /* OpenGL.framework */,
 				5554EFCB1AD26E6500FD80AF /* OpenAL.framework */,
 				5554EFC91AD26E5D00FD80AF /* CoreFoundation.framework */,
-				5554EFC71AD26E4F00FD80AF /* libmonosgen-2.0.a */,
 				5554EA7A1AD26CEC00FD80AF /* GEAREngine */,
 				5554EA741AD26C7C00FD80AF /* Products */,
 			);
@@ -950,9 +950,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../monoForMACOS/lib\"",
 					"$(inherited)",
-					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/debug\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
-					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../monoForMACOS/include/mono-2.0\" \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";
@@ -980,9 +978,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../monoForMACOS/lib\"",
 					"$(inherited)",
-					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/debug\"",
 					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release\"",
-					"\"$(SRCROOT)/../../FBXSDK/macos/2015.1/lib/clang/release\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../monoForMACOS/include/mono-2.0\" \"$(SRCROOT)/../../FBXSDK/macos/2015.1/include\"";

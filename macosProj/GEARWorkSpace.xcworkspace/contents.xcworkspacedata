@@ -7,7 +7,4 @@
    <FileRef
       location = "group:GEAREngine/GEAREngine.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:GEARInternal/../../PreRequsite/macos/SDL-07b7c1005a23/Xcode/SDL/SDL.xcodeproj">
-   </FileRef>
 </Workspace>

@@ -51,3 +51,4 @@ monoForMACOS
 monoinstallpath.txt
 macosProj/GEAREngine/GEAREngine.xcodeproj/xcuserdata
 macosProj/GEARInternal/GEARInternal.xcodeproj/xcuserdata
+PreRequsite/macos/SDL-07b7c1005a23

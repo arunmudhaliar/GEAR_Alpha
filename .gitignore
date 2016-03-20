@@ -45,3 +45,9 @@ obj
 *.sdf
 /GUIInternal/recentProjects
 *.xcworkspace
+mono-2.10.9.tar.bz2
+mono-2.10.9
+monoForMACOS
+monoinstallpath.txt
+macosProj/GEAREngine/GEAREngine.xcodeproj/xcuserdata
+macosProj/GEARInternal/GEARInternal.xcodeproj/xcuserdata

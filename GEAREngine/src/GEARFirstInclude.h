@@ -22,7 +22,7 @@
         // iOS device
         #define GEAR_IOS_DEVICE    1
         #define GEAR_IOS    1
-    #elif TARGET_OS_MAC
+    #elif __MACH__
         // Other kinds of Mac OS
         #define GEAR_MACOS    1
         #define GEAR_EDITOR 1

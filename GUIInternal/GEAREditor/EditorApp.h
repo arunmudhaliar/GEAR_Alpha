@@ -127,6 +127,7 @@ public:
     static bool saveScene(const std::string& filename);
     static bool loadScene(const std::string& filename);
     static bool updateCurrentSceneFile(const std::string& filename);
+    static void setWindowTitleFromScenePath(const std::string& filename);
     
     static char g_cszProjectHomeDirectory[FILENAME_MAX];
     static gearSceneFileView* g_pSceneFileViewPtr;

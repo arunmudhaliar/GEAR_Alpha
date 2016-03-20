@@ -420,12 +420,26 @@ bool EditorGEARApp::deleteTempFolder()
     return gxFileUtil::getInstance().deleteDirectory(tmp_dir.c_str());
 }
 
+void EditorGEARApp::setWindowTitleFromScenePath(const std::string& filename)
+{
+    const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(filename);
+    char unix_path[FILENAME_MAX];
+    memset(unix_path, 0, FILENAME_MAX);
+    strcpy(unix_path, relativepath);
+    geUtil::convertPathToUnixFormat(unix_path);
+    std::string wndTitle ="GEAR Alpha [";
+    wndTitle+=relativepath;
+    wndTitle+=+"]";
+    SDL_SetWindowTitle(EditorGEARApp::g_pEditorAppInstance->rendererGL10Instance->getWindow(), wndTitle.c_str());
+}
+
 bool EditorGEARApp::saveScene(const std::string& filename)
 {
     if(EditorGEARApp::getSceneHierarchy()->saveCurrentScene(filename))
     {
         EditorGEARApp::getSceneProject()->populateProjectView();
         EditorGEARApp::getSceneFileView()->populateFileView();
+        setWindowTitleFromScenePath(filename);
         return true;
     }
     
@@ -438,7 +452,8 @@ bool EditorGEARApp::loadScene(const std::string &filename)
     {
         //EditorGEARApp::getSceneProject()->populateProjectView();
         //EditorGEARApp::getSceneFileView()->populateFileView();
-        return true;
+        setWindowTitleFromScenePath(filename);
+       return true;
     }
     
     return false;
@@ -468,10 +483,7 @@ bool EditorGEARApp::updateCurrentSceneFile(const std::string& filename)
         currenSceneFile.Write(unix_path);
         currenSceneFile.CloseFile();
         
-        std::string wndTitle ="GEAR Alpha [";
-        wndTitle+=relativepath;
-        wndTitle+=+"]";
-        //SetWindowText(hWnd, wndTitle.c_str());
+        setWindowTitleFromScenePath(filename);
         return true;
     }
     

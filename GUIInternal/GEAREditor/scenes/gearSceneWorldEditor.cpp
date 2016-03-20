@@ -83,7 +83,7 @@ void gearSceneWorldEditor::onCreate(float cx, float cy)
 	translateGizmoToolBarButton->buttonPressed(false);
 
 	ambientLightHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
-	ambientLightHorizontalSlider->create(rendererGUI, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
+	ambientLightHorizontalSlider->create(rendererGUI, getToolBar(), 0, GE_TOOLBAR_HEIGHT*0.35f, 70);
 	ambientLightHorizontalSlider->setGUIObserver(this);
 	ambientLightHorizontalSlider->setSliderValue(0.4f);
 	getToolBar()->appendToolBarControl(ambientLightHorizontalSlider);
@@ -119,7 +119,7 @@ void gearSceneWorldEditor::onCreate(float cx, float cy)
 	getToolBar()->appendToolBarControl(seperator4);
 
 	timeScaleHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
-	timeScaleHorizontalSlider->create(rendererGUI, getToolBar(), "slider", 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
+	timeScaleHorizontalSlider->create(rendererGUI, getToolBar(), 0, GE_TOOLBAR_HEIGHT*0.35f, 130);
 	timeScaleHorizontalSlider->setGUIObserver(this);
 	timeScaleHorizontalSlider->setSliderValue(1.0f);
 	getToolBar()->appendToolBarControl(timeScaleHorizontalSlider);

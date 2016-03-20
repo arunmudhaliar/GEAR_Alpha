@@ -20,14 +20,10 @@ geGraphControl::~geGraphControl()
 
 void geGraphControl::create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy, int lowerLimit, int upperLimit)
 {
-	createBase(renderer, parent);
-
     horizontalScrollBar->create(renderer, this, this, geScrollBar::HORIZONTAL);
 
+    createBase(renderer, parent, x, y, cx, cy);
     setSizable(true);
-	setSize(cx, 3);
-	setPos(x, y);
-
 
     this->lowerLimit = lowerLimit;
     this->upperLimit = upperLimit;

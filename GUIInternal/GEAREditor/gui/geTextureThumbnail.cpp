@@ -14,14 +14,10 @@ geTextureThumbnail::~geTextureThumbnail()
 
 void geTextureThumbnail::create(rendererGL10* renderer, geGUIBase* parent, gxTexture* texture, float x, float y, float cx, float cy)
 {
-	createBase(renderer, parent);
-
-	setSize(cx, cy);
-	setPos(x, y);
+	createBase(renderer, parent, x, y, cx, cy);
 
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();
-
 	this->texture=texture;
 }
 

@@ -21,15 +21,12 @@ geStaticTextBox::~geStaticTextBox()
 
 void geStaticTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float yoffset, geFont* pFont)
 {
-	createBase(renderer, parent);
+    fontGUI=pFont;
+    fontYOffset=yoffset;
 
-	fontGUI=pFont;
-	fontYOffset=yoffset;
-	int width=fontGUI->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
-    
+    int width=fontGUI->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
+	createBase(renderer, parent, x, y, width, fontGUI->getLineHeight());
     setName(name);
-	setSize(width, fontGUI->getLineHeight());
-	setPos(x, y);
 
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();

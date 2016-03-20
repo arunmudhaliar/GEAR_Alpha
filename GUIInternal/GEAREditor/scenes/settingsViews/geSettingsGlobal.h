@@ -17,7 +17,7 @@ public:
 		setSize(m_cSize.x, 40.0f);
 
 		vsyncToggle = new gePushButton("", fontmanager);
-		vsyncToggle->create(renderer, this, "", 15, 10);
+		vsyncToggle->create(renderer, this, 15, 10);
 		vsyncToggle->setGUIObserver(this);
 		vsyncToggle->setCheck(true);
 

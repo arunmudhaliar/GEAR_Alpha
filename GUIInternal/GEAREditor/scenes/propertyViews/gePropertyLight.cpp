@@ -36,17 +36,17 @@ gePropertyLight::gePropertyLight(rendererGL10* renderer, geGUIBase* parent, cons
 
 	//attenuations
 	constantAttenuationHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
-	constantAttenuationHorizontalSlider->create(rendererGUI, this, "slider", 10, 65, 130);
+	constantAttenuationHorizontalSlider->create(rendererGUI, this, 10, 65, 130);
 	constantAttenuationHorizontalSlider->setSliderValue(1.0f);
 	constantAttenuationHorizontalSlider->setGUIObserver(this);
 
 	linearAttenuationHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
-	linearAttenuationHorizontalSlider->create(rendererGUI, this, "slider", 10, 85, 130);
+	linearAttenuationHorizontalSlider->create(rendererGUI, this, 10, 85, 130);
 	linearAttenuationHorizontalSlider->setSliderValue(1.0f);
 	linearAttenuationHorizontalSlider->setGUIObserver(this);
 
 	quadraticAttenuationHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
-	quadraticAttenuationHorizontalSlider->create(rendererGUI, this, "slider", 10, 105, 130);
+	quadraticAttenuationHorizontalSlider->create(rendererGUI, this, 10, 105, 130);
 	quadraticAttenuationHorizontalSlider->setSliderValue(1.0f);
 	quadraticAttenuationHorizontalSlider->setGUIObserver(this);
 

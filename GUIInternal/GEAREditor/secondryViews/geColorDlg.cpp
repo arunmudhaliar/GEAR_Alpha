@@ -43,7 +43,7 @@ void geColorDlg::onCreate(float cx, float cy)
 	for(int x=0;x<3;x++)
 	{
 		rgbaHorizontalSliderArray[x] = new geHorizontalSlider(fontManager);
-		rgbaHorizontalSliderArray[x]->create(secondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+x*15, 120.0f);
+		rgbaHorizontalSliderArray[x]->create(secondryRenderer, m_pWindow, 10, (m_cSize.y-140)+x*15, 120.0f);
 		rgbaHorizontalSliderArray[x]->setSliderValue(rgba[x]);
 		rgbaHorizontalSliderArray[x]->setGUIObserver(this);
 	}
@@ -54,7 +54,7 @@ void geColorDlg::onCreate(float cx, float cy)
     selectedColor.w = MAX(selectedColor.x, MAX(selectedColor.y, selectedColor.z));
     
 	rgbaHorizontalSliderArray[3] = new geHorizontalSlider(fontManager);
-	rgbaHorizontalSliderArray[3]->create(secondryRenderer, m_pWindow, "slider", 10, (m_cSize.y-140)+3*15+10, 120.0f);
+	rgbaHorizontalSliderArray[3]->create(secondryRenderer, m_pWindow, 10, (m_cSize.y-140)+3*15+10, 120.0f);
 	rgbaHorizontalSliderArray[3]->setSliderValue(selectedColor.w);
 	rgbaHorizontalSliderArray[3]->setGUIObserver(this);
 

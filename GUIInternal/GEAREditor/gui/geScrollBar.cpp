@@ -16,7 +16,7 @@ void geScrollBar::create(rendererGL10* renderer, geGUIBase* parent, MScrollBarOb
 {
     scrollBarType = type;
 	rendererGUI=renderer;
-	//createBase(parent);
+	//createBase(parent);   //Note:- scrollbar now doesn't use their parent. Need to implement a generic system.
 	scrollBarObserver=observer;
 
     if(scrollBarType==VERTICAL)

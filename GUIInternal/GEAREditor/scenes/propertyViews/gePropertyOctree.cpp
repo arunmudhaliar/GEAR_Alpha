@@ -10,12 +10,12 @@ gePropertyOctree::gePropertyOctree(rendererGL10* renderer, geGUIBase* parent, co
 
 	//package name
 	noOfTransformObjectPerNodeHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
-	noOfTransformObjectPerNodeHorizontalSlider->create(rendererGUI, this, "slider", 10, 65, 130);
+	noOfTransformObjectPerNodeHorizontalSlider->create(rendererGUI, this, 10, 65, 130);
 	noOfTransformObjectPerNodeHorizontalSlider->setSliderValue(0.5f);
 	noOfTransformObjectPerNodeHorizontalSlider->setGUIObserver(this);
 
 	noOfLevelsHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
-	noOfLevelsHorizontalSlider->create(rendererGUI, this, "slider", 10, 65, 130);
+	noOfLevelsHorizontalSlider->create(rendererGUI, this, 10, 65, 130);
 	noOfLevelsHorizontalSlider->setSliderValue(0.2f);
 	noOfLevelsHorizontalSlider->setGUIObserver(this);
 

@@ -124,10 +124,8 @@ geGUIBase::geGUIBase(unsigned short uGUIID, const char* name, geFontManager* fon
 	userData=NULL;
     mainWindow=nullptr;
     
-	if(name!=NULL)
-	{
-        m_szName.assign(name, strlen(name));
-	}
+    setName(name);
+    
 	guiObserver=NULL;
 	activeWindowPtrOnlyForLayout=NULL;
 
@@ -154,7 +152,7 @@ void geGUIBase::setName(const char* name)
 	onSetName();
 }
 
-void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent)
+void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy)
 {
 	rendererGUI=renderer;
 	setSizable(false);
@@ -162,6 +160,9 @@ void geGUIBase::createBase(rendererGL10* renderer, geGUIBase* parent)
 	setMouseEntered(false);
 	setMouseBoundCheck(true);
     setParent(parent);
+    
+    setSize(cx, cy);
+    setPos(x, y);
 }
 
 void geGUIBase::setRenderer(rendererGL10* renderer, bool recursive)

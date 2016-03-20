@@ -218,7 +218,7 @@ void gePropertyMaterial::loadSubMapView()
 		{
 			stShaderProperty_Range* range = *it;
 			geHorizontalSlider* range_slider = new geHorizontalSlider(fontManagerGUI);
-			range_slider->create(rendererGUI, this, "slider", 10, 85, 130);
+			range_slider->create(rendererGUI, this, 10, 85, 130);
 			range_slider->setRange(range->range_min, range->range_max);
 			range_slider->setSliderValueWithInRange(range->range_value);
 			//range_slider->setSliderValue(1.0f);
@@ -327,7 +327,7 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 
 		//shininess
 		shininessHorizontalSlider = new geHorizontalSlider(fontManagerGUI);
-		shininessHorizontalSlider->create(rendererGUI, this, "slider", 140, 40, 100);
+		shininessHorizontalSlider->create(rendererGUI, this, 140, 40, 100);
 		shininessHorizontalSlider->setSliderValue(m_pCurrentMaterialPtr->getShininess()/MATERIAL_SHININESS_SCALE_FACTOR);
 		shininessHorizontalSlider->setGUIObserver(this);
 

@@ -15,10 +15,8 @@ geToolBarDropMenu::geToolBarDropMenu(geFontManager* fontManager):
 geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, geGUIBase* parent, geFontManager* fontManager):
 	geButtonBase(GEGUI_TOOLBAR_DROPMENU, name, fontManager)
 {
-	createBase(renderer, parent);
-
-	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
-	setSize(width+27, GE_TOOLBAR_HEIGHT);
+    int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
+	createBase(renderer, parent, m_cPos.x, m_cPos.y, width+27, GE_TOOLBAR_HEIGHT);
 
 	setClientAreaPrimaryActiveForeColor(0.2f, 0.2f, 0.2f, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
@@ -26,7 +24,6 @@ geToolBarDropMenu::geToolBarDropMenu(rendererGL10* renderer, const char* name, g
 
 	isImageLoaded=false;
 	activeDropMenuItem=NULL;
-	//create(parent, name, 0, 0);
 }
 
 geToolBarDropMenu::~geToolBarDropMenu()

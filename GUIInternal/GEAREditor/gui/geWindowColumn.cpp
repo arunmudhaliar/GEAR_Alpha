@@ -67,16 +67,12 @@ geWindowColumn::~geWindowColumn()
 
 void geWindowColumn::create(rendererGL10* renderer, geGUIBase* parent, int y, float minimum_coloumn_width, float minimum_space_between_controls, float ratio)
 {
-	createBase(renderer, parent);
-	//rendererGUI=renderer;
+	createBase(renderer, parent, 0, y, parent->getSize().x, 1);
+    setSizable(true);
+    setMouseBoundCheck(false);
+    
 	this->minimumColumnWidth = minimum_coloumn_width;
 	this->minimumSpaceBetweenControls = minimum_space_between_controls;
-
-	setPos(0, y);
-	setSize(parent->getSize().x, 1);
-	setSizable(true);
-	setMouseBoundCheck(false);
-
 	columnRatio=ratio;
 }
 

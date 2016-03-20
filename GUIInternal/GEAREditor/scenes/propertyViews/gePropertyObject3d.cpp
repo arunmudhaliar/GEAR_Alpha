@@ -11,14 +11,14 @@ gePropertyObject3d::gePropertyObject3d(rendererGL10* renderer, geGUIBase* parent
 	//btn->create(this, "button1", 40, 10);
 
 	object3dVisibleToggle = new gePushButton("", fontmanager);
-	object3dVisibleToggle->create(renderer, this, "", 15, 10);
+	object3dVisibleToggle->create(renderer, this, 15, 10);
 	object3dVisibleToggle->setGUIObserver(this);
 
 	meshNameTextBox = new geTextBox("MeshName", fontManagerGUI);
 	meshNameTextBox->create(renderer, this, "MeshName", 35, 10, 200, 16);
 
 	object3dStaticToggle = new gePushButton("", fontmanager);
-	object3dStaticToggle->create(renderer, this, "", meshNameTextBox->getPos().x+meshNameTextBox->getSize().x+10, 10);
+	object3dStaticToggle->create(renderer, this, meshNameTextBox->getPos().x+meshNameTextBox->getSize().x+10, 10);
 	object3dStaticToggle->setGUIObserver(this);
 
 	tagDropDownMenu=new geToolBarDropMenu(rendererGUI, "Tag", this, fontmanager);

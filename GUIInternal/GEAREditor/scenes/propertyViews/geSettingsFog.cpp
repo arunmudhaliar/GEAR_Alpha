@@ -9,22 +9,22 @@ geSettingsFog::geSettingsFog(rendererGL10* renderer, geGUIBase* parent, const ch
 	fogStructObject=fog_struct;
 
 	fogToggle = new gePushButton("", fontmanager);
-	fogToggle->create(renderer, this, "", 15, 10);
+	fogToggle->create(renderer, this, 15, 10);
 	fogToggle->setGUIObserver(this);
 
 	//fog
 	fogSubViewStructObject.edit_fog_start = new geHorizontalSlider(fontManagerGUI);
-	fogSubViewStructObject.edit_fog_start->create(rendererGUI, this, "slider", 10, 65, 130);
+	fogSubViewStructObject.edit_fog_start->create(rendererGUI, this, 10, 65, 130);
 	fogSubViewStructObject.edit_fog_start->setSliderValue(0.0f);
 	fogSubViewStructObject.edit_fog_start->setGUIObserver(this);
 
 	fogSubViewStructObject.edit_fog_end = new geHorizontalSlider(fontManagerGUI);
-	fogSubViewStructObject.edit_fog_end->create(rendererGUI, this, "slider", 10, 65, 130);
+	fogSubViewStructObject.edit_fog_end->create(rendererGUI, this, 10, 65, 130);
 	fogSubViewStructObject.edit_fog_end->setSliderValue(1.0f);
 	fogSubViewStructObject.edit_fog_end->setGUIObserver(this);
 
 	fogSubViewStructObject.edit_fog_density = new geHorizontalSlider(fontManagerGUI);
-	fogSubViewStructObject.edit_fog_density->create(rendererGUI, this, "slider", 10, 65, 130);
+	fogSubViewStructObject.edit_fog_density->create(rendererGUI, this, 10, 65, 130);
 	fogSubViewStructObject.edit_fog_density->setSliderValue(1.0f);
 	fogSubViewStructObject.edit_fog_density->setGUIObserver(this);
 

@@ -58,9 +58,12 @@ void geLayout::clearAllList()
 
 void geLayout::create(rendererGL10* renderer, geLayout* pParentLayout, float x, float y, float cx, float cy)
 {
+    //createBase(renderer, pParentLayout, x, y, cx, cy);
+    //Note:- Layout doesn't use the child controls. Need to implement a generic system
+    
 	rendererGUI=renderer;
 	parentLayout=pParentLayout;
-	activeWindow = NULL;
+	activeWindow = nullptr;
 	setPos(x, y);
 	setSize(cx, cy);
 

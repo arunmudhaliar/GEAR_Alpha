@@ -19,10 +19,7 @@ geColorControl::~geColorControl()
 
 void geColorControl::create(rendererGL10* renderer, geGUIBase* parent, float x, float y)
 {
-	createBase(renderer, parent);
-
-	setSize(16, 16);
-	setPos(x, y);
+	createBase(renderer, parent, x, y, 16, 16);
 
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();

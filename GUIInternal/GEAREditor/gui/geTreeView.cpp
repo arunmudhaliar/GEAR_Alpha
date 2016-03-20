@@ -12,7 +12,7 @@ geTreeNode::geTreeNode(geFontManager* fontmanager):
 geTreeNode::geTreeNode(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, geFontManager* fontmanager, float xoffset):
 	geGUIBase(GEGUI_TREEVIEW_NODE, name, fontmanager)
 {
-	createBase(renderer, parent);
+	createBase(renderer, parent, 0, 0, 1, 1);
 
 	hasAtleastOneTreeNodeChild=false;
 	offSetX=xoffset;
@@ -501,15 +501,12 @@ geTreeView::~geTreeView()
 void geTreeView::create(rendererGL10* renderer, geGUIBase* parent, const char* name, MTreeViewObserver* pObserver)
 {
 	treeViewObserver=pObserver;
-	createBase(renderer, parent);
-	setSizable(true);
-	setPos(0, 0);
-	setSize(parent->getSize().x, parent->getSize().y-parent->getTopMarginOffsetHeight());
-
+	createBase(renderer, parent, 0, 0, parent->getSize().x, parent->getSize().y-parent->getTopMarginOffsetHeight());
+    setSizable(true);
+    
 	verticalScrollBar->create(renderer, this, this);
 
 	virtualYPosition=0.0f;
-
 	rootTreeNode = new geTreeNode(renderer, NULL, "root", NULL, fontManagerGUI);
 	rootTreeNode->setParentTreeView(this);
 	currentSelectedTreeNode=NULL;

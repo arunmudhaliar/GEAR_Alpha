@@ -7,9 +7,7 @@ public:
 	geToolBarSeperator(rendererGL10* renderer, geGUIBase* parent, float width, geFontManager* fontmanager):
 		geGUIBase(GEGUI_TOOLBAR_SEPERATOR, "ToolBar Seperator", fontmanager)
 	{
-		createBase(renderer, parent);
-
-		setSize(width, parent->getSize().y);
+		createBase(renderer, parent, m_cPos.x, m_cPos.y, width, parent->getSize().y);
 
 		setColor(&vertexBufferClientArea, 0.2, 0.2, 0.2, 1.0f, EGRADIENT_VERTICAL_UP, 0.45f);
 		isImageLoaded=false;

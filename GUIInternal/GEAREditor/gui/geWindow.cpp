@@ -15,7 +15,7 @@ geWindow::~geWindow()
 
 void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy, bool bCreateToolBar)
 {
-	createBase(renderer, parent);
+	createBase(renderer, parent, x, y, cx, cy);
 
 	titleWidth=0;
 	for(int index=0;index<(int)strlen(m_szName.c_str());index++)
@@ -35,8 +35,8 @@ void geWindow::create(rendererGL10* renderer, geGUIBase* parent, float x, float 
     
     roundedRectControl.create(titleWidth+30, GE_WND_TITLE_HEIGHT-3, 5);
     
-    setPos(x, y);
-    setSize(cx, cy);
+//    setPos(x, y);
+//    setSize(cx, cy);
 
     onCreate(cx, cy);
     

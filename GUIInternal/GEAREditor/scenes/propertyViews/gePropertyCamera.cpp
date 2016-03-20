@@ -19,17 +19,17 @@ gePropertyCamera::gePropertyCamera(rendererGL10* renderer, geGUIBase* parent, co
 
 	//attenuations
 	fovHorizontalSlider = new geHorizontalSlider(fontManager);
-	fovHorizontalSlider->create(rendererGUI, this, "slider", 10, 65, 130);
+	fovHorizontalSlider->create(rendererGUI, this, 10, 65, 130);
 	fovHorizontalSlider->setSliderValue(1.0f);
 	fovHorizontalSlider->setGUIObserver(this);
 
 	nearHorizontalSlider = new geHorizontalSlider(fontManager);
-	nearHorizontalSlider->create(rendererGUI, this, "slider", 10, 85, 130);
+	nearHorizontalSlider->create(rendererGUI, this, 10, 85, 130);
 	nearHorizontalSlider->setSliderValue(1.0f);
 	nearHorizontalSlider->setGUIObserver(this);
 
 	farHorizontalSlider = new geHorizontalSlider(fontManager);
-	farHorizontalSlider->create(rendererGUI, this, "slider", 10, 105, 130);
+	farHorizontalSlider->create(rendererGUI, this, 10, 105, 130);
 	farHorizontalSlider->setSliderValue(1.0f);
 	farHorizontalSlider->setGUIObserver(this);
 

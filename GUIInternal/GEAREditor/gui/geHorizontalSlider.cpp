@@ -12,13 +12,10 @@ geHorizontalSlider::~geHorizontalSlider()
 {
 }
 
-void geHorizontalSlider::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float cx)
+void geHorizontalSlider::create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx)
 {
-	createBase(renderer, parent);
-
-    setName(name);
-	setSize(cx, 5);
-	setPos(x, y);
+	createBase(renderer, parent, x, y, cx, 5);
+    setMouseBoundCheck(false);
 
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_DOWN, 0.4f);
@@ -27,7 +24,6 @@ void geHorizontalSlider::create(rendererGL10* renderer, geGUIBase* parent, const
 	sliderValue=0.0f;
 	is_Grabbed=false;
 	mousePrevXPos=0.0f;
-	setMouseBoundCheck(false);
 	setRange(0.0f, 1.0f);
 }
 

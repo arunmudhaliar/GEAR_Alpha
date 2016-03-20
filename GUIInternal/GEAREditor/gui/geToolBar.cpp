@@ -11,18 +11,14 @@ geToolBarButton::geToolBarButton(geFontManager* fontManager):
 geToolBarButton::geToolBarButton(rendererGL10* renderer, const char* name, geGUIBase* parent, geFontManager* fontManager):
 	geButtonBase(GEGUI_TOOLBAR_BUTTON, name, fontManager)
 {
-	createBase(renderer, parent);
-
-	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
-	setSize(width+20, parent->getSize().y);
+    int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
+	createBase(renderer, parent, m_cPos.x, m_cPos.y, width+20, parent->getSize().y);
 
 	setClientAreaPrimaryActiveForeColor(0.3f, 0.3f, 0.3f, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
 	setClientAreaSecondryActiveForeColor(0.32, 0.32, 0.32, 1.0f);
 
 	isImageLoaded=false;
-
-	//create(parent, name, 0, 0);
 }
 
 geToolBarButton::~geToolBarButton()
@@ -172,13 +168,11 @@ geToolBar::~geToolBar()
 
 void geToolBar::create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy)
 {
-	createBase(renderer, parent);
-
-	setPos(x, y);
-	setSize(cx, cy);
+	createBase(renderer, parent, x, y, cx, cy);
+	setMouseBoundCheck(false);
+    
 	setClientAreaPrimaryActiveForeColor(0.2f, 0.2f, 0.2f, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.45f);
-	setMouseBoundCheck(false);
 }
 
 void geToolBar::onPosition(float x, float y, int flag)

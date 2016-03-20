@@ -46,12 +46,11 @@ geTextBox::~geTextBox()
 
 void geTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float cx, float cy)
 {
-	createBase(renderer, parent);
+	createBase(renderer, parent, x, y, cx, cy);
 
 	//int width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
     setName(name);
-	setSize(cx, cy);
-	setPos(x, y);
+
 
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();

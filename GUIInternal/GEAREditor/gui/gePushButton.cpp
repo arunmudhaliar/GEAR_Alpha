@@ -21,13 +21,12 @@ gePushButton::~gePushButton()
 {
 }
 
-void gePushButton::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y)
+void gePushButton::create(rendererGL10* renderer, geGUIBase* parent, float x, float y)
 {
-	createBase(renderer, parent);
-//	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
-    setName(name);
-	setSize(14, 14);
-	setPos(x, y);
+	createBase(renderer, parent, x, y, 14, 14);
+    
+//    int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
+//    setName(name);
 
 	setClientAreaPrimaryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);

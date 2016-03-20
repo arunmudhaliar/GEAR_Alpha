@@ -16,7 +16,7 @@ public:
 		setSize(m_cSize.x, 30.0f);
 
 		object3dVisibleToggle = new gePushButton("", fontmanager);
-		object3dVisibleToggle->create(renderer, this, "", 15, 10);
+		object3dVisibleToggle->create(renderer, this, 15, 10);
 		object3dVisibleToggle->setGUIObserver(this);
 
 		setNodeColor(0.21f, 0.21f, 0.21f);

@@ -85,7 +85,7 @@ public:
 
 	int getGUIID()	{	return guiID;	}
 
-	void createBase(rendererGL10* renderer, geGUIBase* parent);
+	void createBase(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx, float cy);
 	void setParent(geGUIBase* parent);
 
 	void setColor(stVertexBuffer* vbuffer, float r, float g, float b, float a, ESTYLE_GRADIENT eGradientStyle=EGRADIENT_NONE, float gradientScale=0.5f);

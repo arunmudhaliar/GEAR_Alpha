@@ -108,32 +108,20 @@ geButton::~geButton()
 
 void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float cx, float cy)
 {
-	createBase(renderer, parent);
+	createBase(renderer, parent, x, y, cx, cy);
 
-	//int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
-	setSize(cx, cy);
-	setPos(x, y);
-
-    m_szName.assign(name, strlen(name));
+    setName(name);
 	setClientAreaPrimaryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
 	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
+    setClientAreaSecondryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
 
 	isMouseHover=false;
 }
 
 void geButton::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y)
 {
-	createBase(renderer, parent);
-	int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
-	setSize(width+20, 20);
-	setPos(x, y);
-
-    m_szName.assign(name, strlen(name));
-	setClientAreaPrimaryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
-	applyPrimaryColorToVBClientArea(EGRADIENT_VERTICAL_UP, 0.3f);
-
-	setClientAreaSecondryActiveForeColor(0.3, 0.3, 0.3, 1.0f);
-	isMouseHover=false;
+    int width=geFontManager::g_pFontArial10_84Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
+    create(renderer, parent, name, x, y, width+20, 20);
 }
 
 void geButton::draw()

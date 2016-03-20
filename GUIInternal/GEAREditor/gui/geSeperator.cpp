@@ -11,14 +11,10 @@ geSeperator::~geSeperator()
 
 void geSeperator::create(rendererGL10* renderer, geGUIBase* parent, float x, float y, float cx)
 {
-	createBase(renderer, parent);
-
-	setSize(cx, 3);
-	setPos(x, y);
+	createBase(renderer, parent, x, y, cx, 3);
+    setMouseBoundCheck(false);
 
 	setStyle(STYLE_3D);
-
-	setMouseBoundCheck(false);
 }
 
 void geSeperator::setStyle(ESEPERATOR_STYPE style)

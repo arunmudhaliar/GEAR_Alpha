@@ -12,7 +12,6 @@
 		55291B3A1B37623600537BB5 /* cursorUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55291B391B37623600537BB5 /* cursorUtil.cpp */; };
 		55466F391B3C581300F4802B /* projectSelectorDialogue.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55466F381B3C581300F4802B /* projectSelectorDialogue.xib */; };
 		55466F3B1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h in Sources */ = {isa = PBXBuildFile; fileRef = 55466F3A1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h */; };
-		5548D31E1AD950830070A09C /* libGEAREngine.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5548D31D1AD950830070A09C /* libGEAREngine.dylib */; };
 		5554F0001AD2703000FD80AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5554EFFF1AD2703000FD80AF /* main.m */; };
 		5554F0021AD2707000FD80AF /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0011AD2707000FD80AF /* libfreeimage.a */; };
 		5554F0061AD2709C00FD80AF /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5554F0051AD2709C00FD80AF /* GLUT.framework */; };
@@ -83,11 +82,26 @@
 		55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */; };
 		55C4753D1C8B59E8000AA027 /* gearSceneGraphEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */; };
 		55E88DE21C9E953600B355BB /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88DE11C9E953600B355BB /* libfbxsdk.a */; };
+		55E88E921C9EC87700B355BB /* libGEAREngine.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88E8C1C9EC78800B355BB /* libGEAREngine.dylib */; };
 		55EDBEC01C8E03A0005D7786 /* geModalDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55EDBEBE1C8E03A0005D7786 /* geModalDialog.cpp */; };
 		C4DEEF401C9E9916000E0DFE /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4DEEF371C9E98DF000E0DFE /* SDL2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		55E88E8B1C9EC78800B355BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55E88E871C9EC78800B355BB /* GEAREngine.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5554EA731AD26C7C00FD80AF;
+			remoteInfo = GEAREngine;
+		};
+		55E88E901C9EC7A400B355BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55E88E871C9EC78800B355BB /* GEAREngine.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 5554EA721AD26C7C00FD80AF;
+			remoteInfo = GEAREngine;
+		};
 		C4DEEF361C9E98DF000E0DFE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C4DEEF2F1C9E98DF000E0DFE /* SDL.xcodeproj */;
@@ -147,7 +161,6 @@
 		55291B391B37623600537BB5 /* cursorUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorUtil.cpp; sourceTree = "<group>"; };
 		55466F381B3C581300F4802B /* projectSelectorDialogue.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = projectSelectorDialogue.xib; sourceTree = "<group>"; };
 		55466F3A1B3C5C8300F4802B /* projectSelectorDialogueWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = projectSelectorDialogueWindowController.h; sourceTree = "<group>"; };
-		5548D31D1AD950830070A09C /* libGEAREngine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGEAREngine.dylib; path = "../../../../../Library/Developer/Xcode/DerivedData/GEARWorkSpace-gvjuxaxjnihvzyagexqhevujmvoi/Build/Products/Debug/libGEAREngine.dylib"; sourceTree = "<group>"; };
 		5554EFDC1AD26F9A00FD80AF /* GEARInternal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GEARInternal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5554EFE01AD26F9A00FD80AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5554EFFF1AD2703000FD80AF /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -304,6 +317,7 @@
 		55C4753B1C8B59E8000AA027 /* gearSceneGraphEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gearSceneGraphEditor.cpp; sourceTree = "<group>"; };
 		55C4753C1C8B59E8000AA027 /* gearSceneGraphEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gearSceneGraphEditor.h; sourceTree = "<group>"; };
 		55E88DE11C9E953600B355BB /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release/libfbxsdk.a; sourceTree = "<group>"; };
+		55E88E871C9EC78800B355BB /* GEAREngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GEAREngine.xcodeproj; path = ../GEAREngine/GEAREngine.xcodeproj; sourceTree = "<group>"; };
 		55EDBEBE1C8E03A0005D7786 /* geModalDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geModalDialog.cpp; sourceTree = "<group>"; };
 		55EDBEBF1C8E03A0005D7786 /* geModalDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geModalDialog.h; sourceTree = "<group>"; };
 		C4DEEF2F1C9E98DF000E0DFE /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../../PreRequsite/macos/SDL-07b7c1005a23/Xcode/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
@@ -314,8 +328,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55E88E921C9EC87700B355BB /* libGEAREngine.dylib in Frameworks */,
 				C4DEEF401C9E9916000E0DFE /* SDL2.framework in Frameworks */,
-				5548D31E1AD950830070A09C /* libGEAREngine.dylib in Frameworks */,
 				55E88DE21C9E953600B355BB /* libfbxsdk.a in Frameworks */,
 				5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */,
 				5554F0081AD270A600FD80AF /* OpenGL.framework in Frameworks */,
@@ -339,10 +353,10 @@
 		5554EFD31AD26F9A00FD80AF = {
 			isa = PBXGroup;
 			children = (
+				55E88E871C9EC78800B355BB /* GEAREngine.xcodeproj */,
 				C4DEEF2F1C9E98DF000E0DFE /* SDL.xcodeproj */,
 				55AB5CC51C048959005B8747 /* Images.xcassets */,
 				55E88DE11C9E953600B355BB /* libfbxsdk.a */,
-				5548D31D1AD950830070A09C /* libGEAREngine.dylib */,
 				5554F0011AD2707000FD80AF /* libfreeimage.a */,
 				5554F0051AD2709C00FD80AF /* GLUT.framework */,
 				5554F0071AD270A600FD80AF /* OpenGL.framework */,
@@ -630,6 +644,14 @@
 			path = util;
 			sourceTree = "<group>";
 		};
+		55E88E881C9EC78800B355BB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				55E88E8C1C9EC78800B355BB /* libGEAREngine.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		C4DEEF301C9E98DF000E0DFE /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -657,6 +679,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				55E88E911C9EC7A400B355BB /* PBXTargetDependency */,
 				C4DEEF3F1C9E98E7000E0DFE /* PBXTargetDependency */,
 			);
 			name = GEARInternal;
@@ -691,6 +714,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 55E88E881C9EC78800B355BB /* Products */;
+					ProjectRef = 55E88E871C9EC78800B355BB /* GEAREngine.xcodeproj */;
+				},
+				{
 					ProductGroup = C4DEEF301C9E98DF000E0DFE /* Products */;
 					ProjectRef = C4DEEF2F1C9E98DF000E0DFE /* SDL.xcodeproj */;
 				},
@@ -703,6 +730,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		55E88E8C1C9EC78800B355BB /* libGEAREngine.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libGEAREngine.dylib;
+			remoteRef = 55E88E8B1C9EC78800B355BB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		C4DEEF371C9E98DF000E0DFE /* SDL2.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -841,6 +875,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		55E88E911C9EC7A400B355BB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GEAREngine;
+			targetProxy = 55E88E901C9EC7A400B355BB /* PBXContainerItemProxy */;
+		};
 		C4DEEF3F1C9E98E7000E0DFE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Framework;

@@ -1,6 +1,20 @@
 #include "gxLight.h"
 #include "../GEAREngine.h"
 
+gxLight* gxLight::create()
+{
+    auto newObject = new gxLight();
+    if(newObject)
+    {
+        newObject->autoRelease();
+        newObject->retain();
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
 gxLight::gxLight():
 object3d(OBJECT3D_LIGHT)
 {

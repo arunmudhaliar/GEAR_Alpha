@@ -26,6 +26,8 @@ public:
 	int getFrameCount()	{	return numberOfFrames;	}
 
 private:
+    gxAnimationSet(){}
+    
 	std::vector<IAnimationTrack*> animationTracks;
 	int numberOfFrames;
 	int animationFPS;

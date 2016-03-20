@@ -2,11 +2,14 @@
 #include <vector>
 #include "../core/gxDebug.h"
 
+#define REF_RELEASE(x)  {if(x){ x->release();   }}
+#define REF_RETAIN(x)   {if(x){ x->retain();    }}
+
 namespace GEAR{
     namespace Memory{
 
         #pragma mark Ref
-        class Ref
+        class DECLSPEC Ref
         {
         public:
             virtual ~Ref();
@@ -23,7 +26,7 @@ namespace GEAR{
         };
 
         #pragma mark AutoReleasePool
-        class AutoReleasePool
+        class DECLSPEC AutoReleasePool
         {
         public:
             static AutoReleasePool& getInstance();

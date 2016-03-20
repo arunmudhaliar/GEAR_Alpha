@@ -55,7 +55,22 @@ extern DECLSPEC object3d* object3d_getParent(object3d* obj)
 }
 }
 
+object3d* object3d::create()
+{
+    auto newObject = new object3d(OBJECT3D_OBJECT);
+    if(newObject)
+    {
+        newObject->autoRelease();
+        newObject->retain();
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
 object3d::object3d(int objID):
+    Ref(),
 	transform(),
 	GEARAsset(),
 	objectID(objID)

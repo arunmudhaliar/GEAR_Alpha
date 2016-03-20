@@ -1,5 +1,19 @@
 #include "Camera.h"
 
+Camera* Camera::create()
+{
+    auto newObject = new Camera();
+    if(newObject)
+    {
+        newObject->autoRelease();
+        newObject->retain();
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
 Camera::Camera():
 	object3d(OBJECT3D_CAMERA)
 {

@@ -53,6 +53,8 @@ public:
 	gxMesh();
 	~gxMesh();
 
+    static gxMesh* create();
+
 	float* getVertexBuffer()	{	return vertexBuffer;	}
 	float* getColorBuffer()		{	return colorBuffer;	}
 	float* getNormalBuffer()	{	return normalBuffer;	}

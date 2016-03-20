@@ -9,7 +9,8 @@ class DECLSPEC Camera : public object3d
 public:
 	Camera();
 	~Camera();
-
+    static Camera* create();
+    
 	enum EPROJECTION_TYPE
 	{
 		PERSPECTIVE_PROJECTION,

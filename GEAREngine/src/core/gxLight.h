@@ -16,6 +16,8 @@ public:
 	gxLight();
 	~gxLight();
 
+    static gxLight* create();
+    
 	enum ELIGHT_TYPE
 	{
 		LIGHT_POINT,

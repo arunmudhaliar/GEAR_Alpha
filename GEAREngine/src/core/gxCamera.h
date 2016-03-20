@@ -15,7 +15,8 @@ public:
 
 	gxCamera();
 	~gxCamera();
-
+    static gxCamera* create();
+    
 	void setFOV(float fov);
 	void setNear(float n);
 	void setFar(float f);

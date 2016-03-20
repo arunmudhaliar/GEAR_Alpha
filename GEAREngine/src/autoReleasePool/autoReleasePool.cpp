@@ -12,7 +12,7 @@ namespace GEAR{
 
         Ref::~Ref()
         {
-            assert(retainCount!=0);
+            assert(retainCount==0);
         }
 
         void Ref::autoRelease()

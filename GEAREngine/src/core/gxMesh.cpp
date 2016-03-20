@@ -2,6 +2,21 @@
 #include "../GEAREngine.h"
 #include "Timer.h"
 
+
+gxMesh* gxMesh::create()
+{
+    auto newObject = new gxMesh();
+    if(newObject)
+    {
+        newObject->autoRelease();
+        newObject->retain();
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
 gxMesh::gxMesh(int ID):
 	object3d(ID)
 {

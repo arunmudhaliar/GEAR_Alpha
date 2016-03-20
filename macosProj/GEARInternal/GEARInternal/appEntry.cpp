@@ -210,6 +210,9 @@ int appEntry()
             }
         }
 
+        //Clear released Ref objects from the auto-release pool for this loop
+        GEAR::Memory::AutoReleasePool::getInstance().clearPool();
+        
         SDL_Delay(rand()%10);
         
         //swapbuffer
@@ -224,6 +227,9 @@ int appEntry()
     //SDL_GL_DeleteContext(context);  //DeleteContext will be called by renderer. So no need to call it here.
     SDL_DestroyWindow(window);
     SDL_Quit();
+    
+    //Destroy all pending objects from the pool.
+    GEAR::Memory::AutoReleasePool::getInstance().destroyAllFromPool();
     
     return 0;
 }

@@ -6,6 +6,20 @@
 #include "gxSkinnedMesh.h"
 #include "../util/gxCrc32.h"
 
+gxWorld* gxWorld::create()
+{
+    auto newObject = new gxWorld();
+    if(newObject)
+    {
+        newObject->autoRelease();
+        newObject->retain();
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
 gxWorld::gxWorld():
 	object3d(OBJECT3D_WORLD)
 {

@@ -1,5 +1,19 @@
 #include "gxSkinnedMesh.h"
 
+gxSkinnedMesh* gxSkinnedMesh::create()
+{
+    auto newObject = new gxSkinnedMesh();
+    if(newObject)
+    {
+        newObject->autoRelease();
+        newObject->retain();
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
 gxSkinnedMesh::gxSkinnedMesh():
 gxMesh(OBJECT3D_SKINNED_MESH)
 {

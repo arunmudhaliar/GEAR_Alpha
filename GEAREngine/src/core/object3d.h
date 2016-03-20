@@ -22,6 +22,9 @@
 #include "quaternion.h"
 #include "GEARAsset.h"
 #include "../mono/src/monoScript.h"
+#include "../autoReleasePool/autoReleasePool.h"
+
+using namespace GEAR::Memory;
 
 //M* Observers
 class DECLSPEC MRootObserver
@@ -79,11 +82,12 @@ enum EDEFAULT_LAYERS
 class gxAnimation;
 class gxAnimationSet;
 
-class DECLSPEC object3d : public transform, public GEARAsset, public MRootObserver
+class DECLSPEC object3d : public transform, public GEARAsset, public MRootObserver, public Ref
 {
 private:
 	//restricting from calling the default constructor
-	object3d(){}
+    object3d():Ref()
+    {}
 public:
 
 	//These flags are used as attributes and properties of an object3d instance
@@ -123,6 +127,8 @@ public:
 	object3d(int objID);
 	virtual ~object3d();
 
+    static object3d* create();
+    
     //clone
     object3d* clone();
     

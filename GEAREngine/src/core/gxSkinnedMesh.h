@@ -8,6 +8,8 @@ public:
 	gxSkinnedMesh();
 	~gxSkinnedMesh();
 
+    static gxSkinnedMesh* create();
+
 	void update(float dt);
 	void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
 

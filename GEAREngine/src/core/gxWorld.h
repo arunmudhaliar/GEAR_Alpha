@@ -32,7 +32,8 @@ class DECLSPEC gxWorld : public object3d
 public:
 	gxWorld();
 	~gxWorld();
-
+    static gxWorld* create();
+    
 	void resetWorld(bool bDontCreateDefaultCamera=false);
 
 	void update(float dt);

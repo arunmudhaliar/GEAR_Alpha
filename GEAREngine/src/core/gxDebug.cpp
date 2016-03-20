@@ -1,6 +1,6 @@
 #include "gxDebug.h"
 
-#if defined(ANDROID)
+#if defined(GEAR_ANDROID)
 #include <android/log.h>
 #endif
 //#define  LOG_TAG    "gearApp-native"
@@ -16,9 +16,9 @@ void DEBUG_PRINT(const char* format, ...)
 	va_list v;
 	va_start(v,format);
 	vsprintf(buffer, format, v);
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	printf("%s\n", buffer);
-#elif defined(ANDROID)
+#elif defined(GEAR_ANDROID)
 	 __android_log_print(ANDROID_LOG_INFO,"gearApp-native", buffer);
 #else
 	printf("%s\n", buffer);

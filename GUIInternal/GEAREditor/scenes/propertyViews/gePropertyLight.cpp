@@ -76,7 +76,7 @@ gePropertyLight::~gePropertyLight()
 
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void gePropertyLight::onDragDrop(int x, int y, MDropData* dropObject)
 {
 

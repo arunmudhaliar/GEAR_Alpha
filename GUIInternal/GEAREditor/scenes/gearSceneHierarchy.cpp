@@ -162,7 +162,7 @@ bool gearSceneHierarchy::onMouseMove(float x, float y, int flag)
 	return true;
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void gearSceneHierarchy::onDragEnter(int x, int y)
 {
 }

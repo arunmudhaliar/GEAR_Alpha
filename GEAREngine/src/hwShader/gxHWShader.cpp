@@ -121,7 +121,7 @@ bool gxHWShader::loadShader(const std::string& shaderFile)
 		return false;
 	}
 	
-#ifdef ANDROID
+#ifdef GEAR_ANDROID
 	const char* define_vertex="#define GEAR_VERTEX_SHADER\n";
 #else
 	const char* define_vertex="#version 120\n#define GEAR_VERTEX_SHADER\n";
@@ -221,7 +221,7 @@ bool gxHWShader::compileShader(GLuint* shader, GLenum type, const std::string& s
     CHECK_GL_ERROR(glShaderSource(*shader, 1, &buffer, &bufferSz));
     CHECK_GL_ERROR(glCompileShader(*shader));
 	
-#if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
+#if defined(GEAR_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
 	GLint logLength;
     glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 1)
@@ -249,7 +249,7 @@ bool gxHWShader::linkProgram()
 	
     CHECK_GL_ERROR(glLinkProgram(shaderProgram));
 	
-#if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
+#if defined(GEAR_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
     GLint logLength;
     glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 1)
@@ -326,7 +326,7 @@ bool gxHWShader::validateProgram()
 	
 	CHECK_GL_ERROR(glValidateProgram(shaderProgram));
 
-#if defined(DEBUG) || defined(_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
+#if defined(GEAR_DEBUG)	//DEBUG for MAC & _DEBUG for Win32
 	glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
 	if (logLength > 1)
 	{

@@ -31,7 +31,7 @@ public:
 	void MouseMove(float x, float y, int flag);
 	void MouseWheel(int zDelta, int x, int y, int flag);
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 	void DragEnter(int x, int y);
 	void DragDrop(int x, int y, MDropData* dropObject);
 	void DragLeave();

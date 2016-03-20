@@ -22,7 +22,7 @@ public:
 	virtual void drawNode();
 
 	virtual void onSliderChange(geGUIBase* slider);
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 //#endif
 	virtual void onButtonClicked(geGUIBase* btn);

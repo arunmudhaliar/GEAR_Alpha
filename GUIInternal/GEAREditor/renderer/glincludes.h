@@ -1,11 +1,12 @@
 #pragma once
 
-//#define GL_DEBUG
+#include "../../../GEAREngine/src/GEARFirstInclude.h"
+
 
 #define DllImport   __declspec( dllimport )
 #define DllExport   __declspec( dllexport )
 
-#ifdef __APPLE__
+#ifdef GEAR_APPLE
     #include <OpenGL/gl.h>
     #include <OpenGL/glu.h>
     #include <OpenGL/glext.h>
@@ -15,7 +16,7 @@
 #ifndef GL_MINOR_VERSION
     #define GL_MINOR_VERSION                  0x821C
 #endif
-#elif defined(_WIN32)
+#elif defined(GEAR_WINDOWS)
     #include <Windows.h>
     #include "glew.h"
     #include <gl/GL.h>

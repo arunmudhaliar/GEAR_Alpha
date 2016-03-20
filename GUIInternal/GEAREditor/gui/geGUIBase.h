@@ -7,14 +7,14 @@
 #include <string>
 #include "../util/geUtil.h"
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
     #include "../OSSpecific/MDropData.h"
 //#endif
 #include "../util/geFontManager.h"
 
 
 #pragma mark Defines for mouse events in MACOS
-#ifdef __APPLE__
+#ifdef GEAR_APPLE
     #define MK_LBUTTON  (1<<0)
     #define MK_RBUTTON  (1<<1)
     #define MK_CONTROL  (1<<2)
@@ -124,7 +124,7 @@ public:
 	bool MouseMove(float x, float y, int flag);
 	void MouseWheel(int zDelta, int x, int y, int flag);
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 	void DragEnter(int x, int y);
 	void DragDrop(int x, int y, MDropData* dropObject);
 	void DragLeave();
@@ -212,7 +212,7 @@ protected:
 	virtual void onAppendChild(geGUIBase* child);
     virtual void onRemoveChild(geGUIBase* child);
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 	virtual void onDragEnter(int x, int y);
 	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 	virtual void onDragLeave();

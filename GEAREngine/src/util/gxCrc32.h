@@ -4,7 +4,7 @@
 #include <string.h>
 #include "../core/basicIncludes.h"
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 class DECLSPEC gxCrc32
 #else
 class gxCrc32

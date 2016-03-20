@@ -9,7 +9,7 @@ bool geTextureThumbnailExtended::onMouseLButtonDown(float x, float y, int nFlag)
 	return true;
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void geTextureThumbnailExtended::onDragDrop(int x, int y, MDropData* dropObject)
 {
 	std::vector<geGUIBase*>* list = dropObject->getActualDataList();

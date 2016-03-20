@@ -1046,7 +1046,7 @@ void FontManager::init()
 #if defined (USE_ProgrammablePipeLine)
     //if(technique==rendererBase::gl_programmable_pipeline)
     {
-#if defined(WIN32)
+#if defined(GEAR_WINDOWS)
         if(fontHWShader.loadShader("res/shadersWin32/hwshader/fontshader.glsl"))
 		{
 			DEBUG_PRINT("res/shadersWin32/hwshader/fontshader.glsl loaded");

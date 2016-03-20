@@ -1,10 +1,10 @@
 #pragma once
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include <Windows.h>
 #endif
 #include <string.h>
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include "../../resource.h"
 #endif
 #ifndef GEAR2D

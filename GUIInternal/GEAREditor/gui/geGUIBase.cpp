@@ -777,7 +777,7 @@ void geGUIBase::onCreate(float cx, float cy)
 {
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void geGUIBase::DragEnter(int x, int y)
 {
 	if(isPointInsideWindow(x, y))

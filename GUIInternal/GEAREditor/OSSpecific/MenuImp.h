@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 
 #include <stdio.h>
 #include <vector>

@@ -512,7 +512,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 			stShaderProperty_Texture2D* shader_var = submap->getShaderTextureProperty();
 			int texenv1 = 0;
 			int texenv2 = 0;
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 			texenv1 = GL_TEXTURE_ENV_MODE;
 			texenv2 = GL_MODULATE;
 #endif
@@ -534,7 +534,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
 
 			CHECK_GL_ERROR(glActiveTexture(GL_TEXTURE0 + nTexUsed));
 			CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, light_ob->getShadowMapFBO().getFBODepthBuffer()));
-#if defined(TEXENV_ISSUE) && defined(_WIN32)
+#if defined(TEXENV_ISSUE) && defined(GEAR_WINDOWS)
 			glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
 #endif
 			shader->sendUniform1i("sampler2d_ShadowMap", nTexUsed);
@@ -650,7 +650,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 	else
 	{
 		CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, submap->getTexture()->getTextureID()));	
-#if defined(TEXENV_ISSUE) && defined(_WIN32)
+#if defined(TEXENV_ISSUE) && defined(GEAR_WINDOWS)
 		glTexEnvf(GL_TEXTURE_ENV, aTexEnv1, (float)aTexEnv2);
 #endif
 		if(submap->getTexture()->getTextureType()==gxTexture::TEX_ALPHA)

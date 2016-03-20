@@ -2,12 +2,12 @@
 
 #include <string.h>
 
-#ifdef __APPLE__
+#ifdef GEAR_APPLE
     #include <OpenGL/gl.h>
     #include <OpenGL/glu.h>
     #include <OpenGL/glext.h>
     #include <GLUT/glut.h>
-#elif defined(_WIN32)
+#elif defined(GEAR_WINDOWS)
     #include <gl/gl.h>
     #include <gl/glu.h>
     //#include "glext.h>

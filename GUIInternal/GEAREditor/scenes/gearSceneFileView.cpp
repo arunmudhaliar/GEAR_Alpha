@@ -4,7 +4,7 @@
 #include <sys/stat.h>
 #include <assert.h>
 #include<dirent.h>
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include <direct.h>
 #endif
 #include <limits.h>
@@ -15,13 +15,13 @@
 #include "assetUserData.h"
 #include "../../../GEAREngine/src/core/gxMetaStructures.h"
 #include "../../../GEAREngine/src/core/gxAnimationSet.h"
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include <Windows.h>
 #include "../../resource.h"
 #endif
 #include "../../../GEAREngine/src/core/gxSkinnedMesh.h"
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 #endif
 char g_cszPrefabName[256];
@@ -452,7 +452,7 @@ void gearSceneFileView::onTextChange(geGUIBase* textBox)
 		populateFiles(directoryPath);
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void gearSceneFileView::onDragDrop(int x, int y, MDropData* dropObject)
 {
 	//geTreeNode* rootNode = fileTreeView->getRoot();
@@ -464,7 +464,7 @@ void gearSceneFileView::onDragDrop(int x, int y, MDropData* dropObject)
 
 		if(dropObject->getSourcePtr()==EditorGEARApp::getSceneHierarchy())
 		{
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 			if(DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INPUT_DLG), EditorGEARApp::getMainWindowHandle(), reinterpret_cast<DLGPROC>(Proj_InputDlgProc))==IDCANCEL)
 			{
 				continue;
@@ -631,7 +631,7 @@ int gearSceneFileView::open_project_directory_for_files(rendererGL10* renderer, 
     return ok;
 }
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(Msg)

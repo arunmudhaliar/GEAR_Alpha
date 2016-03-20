@@ -4,22 +4,19 @@
 #include <assert.h>
 
 #include<dirent.h>
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include <direct.h>
-#endif
-#include <limits.h>
-#include <stdio.h>
-#include <string.h>
-
-#ifdef _WIN32
 #include <CommCtrl.h>
 #include "../../util/gxUtil.h"
-
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
 #include <Windows.h>
 #endif
+
+#include <limits.h>
+#include <stdio.h>
+#include <string.h>
 
 uint32_t        monoWrapper::g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE=0;
 MonoObject*		monoWrapper::g_pMonoGEAREntryPointClass_Instance_Variable = NULL;
@@ -168,25 +165,27 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
     unloadAddDomain();
     createAppDomain();
 
-#ifndef ANDROID
+#ifndef GEAR_ANDROID
     traverseForCSharpFiles(projecthomedirectory, &g_monoscriptlist);
     compileCSharpScripts(&g_monoscriptlist);
 #endif
 
-#ifdef _WIN32
-#if _DEBUG
+#ifdef GEAR_WINDOWS
+#if GEAR_DEBUG
 	const char* monogeardllfile="./Debug/MonoGEAR.dll";
 	const char* userexecutablefile="./Debug/out.exe";
 #else
 	const char* monogeardllfile="./Release/MonoGEAR.dll";
 	const char* userexecutablefile="./Release/out.exe";
 #endif
-#elif defined(__APPLE__)
+#elif defined(GEAR_APPLE)
     const char* monogeardllfile="./MonoGEAR.dll";
     const char* userexecutablefile="./out.exe";
-#else
+#elif defined(GEAR_ANDROID)
 	const char* monogeardllfile="/storage/emulated/0/gear/MonoGEAR.dll";
 	const char* userexecutablefile="/storage/emulated/0/gear/out.exe";
+#else
+    #error Unknown Platform
 #endif
 
     auto appDomain = mono_domain_get ();
@@ -315,7 +314,7 @@ monoScript* monoWrapper::mono_getMonoScripDef(const char* scriptname)
 	return NULL;
 }
 
-#ifdef _WIN32
+#if defined(GEAR_WINDOWS) && defined(GEAR_EDITOR)
 void monoWrapper::initDebugConsole()
 {
 	AllocConsole();
@@ -456,7 +455,7 @@ int monoWrapper::mono_engine_test_function_for_mono()
 	MonoObject* returnValue=mono_runtime_invoke(g_monogear_engine_test_function_for_mono, NULL, NULL, NULL);
 	MonoType *underlyingType = *(MonoType **) mono_object_unbox(returnValue);
 
-#if !defined(__APPLE__)
+#if !defined(GEAR_APPLE)
 	//don't know this casting is right or wrong		- arun-check
 	return (int)underlyingType;
 #else
@@ -659,7 +658,7 @@ void monoWrapper::mono_object3d_onObject3dChildRemove(object3d* parent, object3d
 #endif
 }
 
-#if defined(_WIN32) || defined(__APPLE__)
+#if defined(GEAR_EDITOR)
 int monoWrapper::traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist)
 {
     DIR *dir;
@@ -756,14 +755,14 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 
 	//command_buffer += "-o "+EditorGEARApp::getProjectHomeDirectory()+"/MetaData/out.exe";
 
-#if _WIN32
-#if _DEBUG
+#if GEAR_WINDOWS
+#if GEAR_DEBUG
 	command_buffer += "-v -o Debug//out.exe -r:Debug//MonoGEAR.dll";
 #else
 	command_buffer += "-v -o Release//out.exe -r:Release//MonoGEAR.dll";
 #endif
-#elif __APPLE__
-#if _DEBUG
+#elif GEAR_APPLE
+#if GEAR_DEBUG
     command_buffer += "-v -o out.exe -r:MonoGEAR.dll";
 #else
     command_buffer += "-v -o out.exe -r:MonoGEAR.dll";
@@ -783,7 +782,7 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
         printf("%s", responsebuffer);
         printf("\n======================================================\n");
     }
-#if __APPLE__
+#if GEAR_APPLE
     else if(exec_cmd(("/usr/local/bin/mcs "+command_buffer).c_str(), responsebuffer)==0)
     {
         printf("\n================MCS COMPILATION RESULT===============\n");
@@ -806,7 +805,7 @@ int monoWrapper::exec_cmd(char const *cmd, char *buf)
 	FILE *fpo;
 	int size;
 	int ret;
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	if((fpo = _popen(cmd, "r") )== NULL)
 #else
     if((fpo = popen(cmd, "r") )== NULL)
@@ -828,7 +827,7 @@ int monoWrapper::exec_cmd(char const *cmd, char *buf)
 		}
 	}
 	strcpy(buf, start);
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	ret = _pclose(fpo);
 #else
     ret = pclose(fpo);
@@ -843,7 +842,7 @@ int monoWrapper::exec_cmd(char const *cmd)
 	FILE *fpo;
 	int size;
 	int ret;
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	if((fpo = _popen(cmd, "r") )== NULL)
 #else
     if((fpo = popen(cmd, "r") )== NULL)
@@ -862,7 +861,7 @@ int monoWrapper::exec_cmd(char const *cmd)
 		}
 	}
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     ret = _pclose(fpo);
 #else
     ret = pclose(fpo);

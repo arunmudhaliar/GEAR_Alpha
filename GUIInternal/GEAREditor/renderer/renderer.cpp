@@ -111,7 +111,7 @@ bool rendererBase::setupRenderer(rendererBase* mainRenderer)
         sdlGLContext = SDL_GL_CreateContext( sdlWindow );
         printf("%s %s\n", glGetString(GL_RENDERER), glGetString(GL_VERSION));
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 		glewInit();
 		if (!GLEW_VERSION_2_0)
 		{

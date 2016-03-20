@@ -11,7 +11,7 @@
 #include <sys/types.h>
 #include <assert.h>
 #include<dirent.h>
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     #include <direct.h>
 #endif
 #include <limits.h>
@@ -36,7 +36,7 @@ bool AssetImporter::importAssets(const char* assetsfolder, geAssetImportDlg* ass
 	//if metaData folder doesn't exist create it
 	char temp_buffer[FILENAME_MAX];
 	sprintf(temp_buffer, "%s/MetaData", EditorGEARApp::getProjectHomeDirectory());
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	if(MKDIR(temp_buffer)==0)
 #else
     if(MKDIR(temp_buffer, 0777)==0)
@@ -274,7 +274,7 @@ int AssetImporter::traverseAssetDirectory(const char *dirname)
 							if(bCreateMetaFile)
 							{
 								bool bWriteMetaInfo=false;
-#if __APPLE__   //some how freeimage fail to load png files
+#if GEAR_APPLE   //some how freeimage fail to load png files
                                 if(util::GE_IS_EXTENSION(buffer, ".png") || util::GE_IS_EXTENSION(buffer, ".PNG"))
                                 {
                                     if(bImage && import_png_to_metadata(buffer, crcFileName, fst))

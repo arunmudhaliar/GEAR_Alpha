@@ -12,7 +12,7 @@ geSecondryView::geSecondryView(const std::string& name, geFontManager* fontmanag
     sdlSecondryWindow=NULL;
     extraWindowFlags = 0;
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	//In windows SDL window position (0, 0) starts from client space, so shifting y postion down 100px. 
 	m_cPos.set(100, 100);
 #endif
@@ -251,7 +251,7 @@ void geSecondryView::processEvent(SDL_Window * window, SDL_Event& e, void* userD
         SDL_MouseWheelEvent* mouseWheelEvent = (SDL_MouseWheelEvent*)&e;
         mouseWheel(mouseWheelEvent->y, mouse_x, mouse_y, nFlags);
     }
-#ifdef __APPLE__
+#ifdef GEAR_APPLE
     else if(e.type==EditorApp::g_iAppSpecificEventType_MenuItemCmd)
     {
         doCommand(e.user.code);

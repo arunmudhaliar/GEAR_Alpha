@@ -162,6 +162,7 @@
 		55AB5CBE1C0481D3005B8747 /* PostProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB61C0481D3005B8747 /* PostProcessor.h */; };
 		55AB5CBF1C0481D3005B8747 /* ToneMappingFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB71C0481D3005B8747 /* ToneMappingFilter.cpp */; };
 		55AB5CC01C0481D3005B8747 /* ToneMappingFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */; };
+		55E88D831C9E5AC400B355BB /* GEARFirstInclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -324,6 +325,7 @@
 		55AB5CB61C0481D3005B8747 /* PostProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostProcessor.h; sourceTree = "<group>"; };
 		55AB5CB71C0481D3005B8747 /* ToneMappingFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ToneMappingFilter.cpp; sourceTree = "<group>"; };
 		55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToneMappingFilter.h; sourceTree = "<group>"; };
+		55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEARFirstInclude.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -376,12 +378,13 @@
 		5554EA7E1AD26CEC00FD80AF /* src */ = {
 			isa = PBXGroup;
 			children = (
+				55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */,
+				5554EAC41AD26CEC00FD80AF /* GEAREngine.cpp */,
+				5554EAC51AD26CEC00FD80AF /* GEAREngine.h */,
 				55AB5CB01C0481D3005B8747 /* postProcessor */,
 				5554EA7F1AD26CEC00FD80AF /* audio */,
 				5554EA861AD26CEC00FD80AF /* core */,
 				5554EAC11AD26CEC00FD80AF /* fbxImporter */,
-				5554EAC41AD26CEC00FD80AF /* GEAREngine.cpp */,
-				5554EAC51AD26CEC00FD80AF /* GEAREngine.h */,
 				5554EAC61AD26CEC00FD80AF /* hwShader */,
 				5554EACB1AD26CEC00FD80AF /* lpng151 */,
 				5554EAE21AD26CEC00FD80AF /* mono */,
@@ -637,6 +640,7 @@
 			files = (
 				5554ED831AD26CED00FD80AF /* physicsEngine.h in Headers */,
 				5554ED8F1AD26CED00FD80AF /* vector3.h in Headers */,
+				55E88D831C9E5AC400B355BB /* GEARFirstInclude.h in Headers */,
 				5554EF9F1AD26CED00FD80AF /* stFog.h in Headers */,
 				555571E81C9B4B5B00EEC0CB /* signalHandler.h in Headers */,
 				5554ED561AD26CED00FD80AF /* SoundSource.h in Headers */,
@@ -931,8 +935,9 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
 					USEMONOENGINE,
 					"USE_ProgrammablePipeLine=1",
@@ -961,6 +966,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					USEMONOENGINE,
 					"USE_ProgrammablePipeLine=1",

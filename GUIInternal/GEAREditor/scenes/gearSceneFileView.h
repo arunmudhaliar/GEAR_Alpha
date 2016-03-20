@@ -27,7 +27,7 @@ protected:
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
 	virtual void onTextChange(geGUIBase* btn);
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 //#endif
 

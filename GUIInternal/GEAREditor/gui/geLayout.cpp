@@ -368,7 +368,7 @@ geLayout* geLayout::getBottomMostParentLayout()
 
 geLayout* geLayout::createLeft(geWindow* window, float ratio)
 {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	OutputDebugString("createLeft\n");
 #endif
 
@@ -406,7 +406,7 @@ geLayout* geLayout::createLeft(geWindow* window, float ratio)
 
 geLayout* geLayout::createRight(geWindow* window, float ratio)
 {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	OutputDebugString("createRight\n");
 #endif
     
@@ -443,7 +443,7 @@ geLayout* geLayout::createRight(geWindow* window, float ratio)
 
 geLayout* geLayout::createTop(geWindow* window, float ratio)
 {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	OutputDebugString("createTop\n");
 #endif
     
@@ -481,7 +481,7 @@ geLayout* geLayout::createTop(geWindow* window, float ratio)
 
 geLayout* geLayout::createBottom(geWindow* window, float ratio)
 {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	OutputDebugString("createBottom\n");
 #endif
     

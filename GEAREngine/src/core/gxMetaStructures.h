@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(ANDROID) || defined(__APPLE__)
+#if defined(GEAR_ANDROID) || defined(GEAR_APPLE)
 	typedef long long __int64;
 #endif
 

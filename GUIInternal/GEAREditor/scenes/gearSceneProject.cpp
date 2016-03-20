@@ -4,7 +4,7 @@
 #include <sys/stat.h>
 #include <assert.h>
 #include<dirent.h>
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     #include <direct.h>
 #endif
 #include <limits.h>
@@ -115,7 +115,7 @@ void gearSceneProject::onMouseWheel(int zDelta, int x, int y, int flag)
 	geWindow::onMouseWheel(zDelta, x, y, flag);
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void gearSceneProject::onDragEnter(int x, int y)
 {
 

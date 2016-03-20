@@ -1,8 +1,9 @@
 #pragma once
+#include "../GEARFirstInclude.h"
 
 #include <stdio.h>										// Standard I/O header
 #include <string.h>
-#if __APPLE__
+#if GEAR_APPLE
     #include <malloc/malloc.h>
 #else
     #include <malloc.h>
@@ -42,7 +43,7 @@ TGAHeader tgaheader;									// TGA header
 TGA tga;												// TGA image data
 unsigned char uTGAcompare[12] = {0,0,2, 0,0,0,0,0,0,0,0,0};	// Uncompressed TGA Header
 unsigned char cTGAcompare[12] = {0,0,10,0,0,0,0,0,0,0,0,0};	// Compressed TGA Header
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 DECLSPEC bool LoadTGA(tgaTexture * texture, const char * filename);
 #else
 bool LoadTGA(tgaTexture * texture, const char * filename);

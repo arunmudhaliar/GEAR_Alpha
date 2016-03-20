@@ -2,7 +2,7 @@
 #include "../EditorApp.h"
 #include "../gui/geToolBarSeperator.h"
 #include "../../../GEAREngine/src/hwShader/gxHWShader.h"
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include "../../resource.h"
 #endif
 #if USE_NVPROFILER
@@ -1515,7 +1515,7 @@ bool gearSceneWorldEditor::onKeyUp(int charValue, int flag)
 
 void gearSceneWorldEditor::onCommand(int cmd)
 {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	switch(cmd)
 	{
 	case ID_POSTPROCESSOR_BLURPROCESSOR:

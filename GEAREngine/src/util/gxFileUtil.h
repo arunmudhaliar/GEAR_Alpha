@@ -3,7 +3,7 @@
 #include <string>
 #include "../core/basicIncludes.h"
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #define MKDIR _mkdir
 #else
 #define MKDIR mkdir

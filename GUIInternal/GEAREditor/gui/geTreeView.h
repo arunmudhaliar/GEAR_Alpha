@@ -124,7 +124,7 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
-//#if !defined(__APPLE__) //disable Drag-Drops
+//#if !defined(GEAR_APPLE) //disable Drag-Drops
 	virtual void onDragDrop(int x, int y, MDropData* dropObject);
 //#endif
     

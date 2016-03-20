@@ -169,9 +169,9 @@ void geToolBarDropMenu::onButtonClicked()
         pt.y=y-treeView->getPositionOnScreen().y+((geTreeView*)treeView)->getVirtualYPos();
 #ifndef GEAR2D
 		int ypos=0;
-#ifdef __APPLE__
+#ifdef GEAR_APPLE
 		ypos=rendererGUI->getViewPortSz().y-pt.y;
-#elif defined(_WIN32)
+#elif defined(GEAR_WINDOWS)
 		ypos=pt.y;
 #endif
         cpp_showPopupMenu(menuobject, pt.x, ypos);
@@ -188,9 +188,9 @@ void geToolBarDropMenu::onButtonClicked()
         pt.y=-getPositionOnScreen().y;
 #ifndef GEAR2D
 	int ypos=0;
-#ifdef __APPLE__
+#ifdef GEAR_APPLE
 		ypos=rendererGUI->getViewPortSz().y-pt.y;
-#elif defined(_WIN32)
+#elif defined(GEAR_WINDOWS)
 		ypos=pt.y;
 #endif
         cpp_showPopupMenu(menuobject, pt.x, ypos);
@@ -200,7 +200,7 @@ void geToolBarDropMenu::onButtonClicked()
 #endif
     }
     
-#ifdef _WIN32	//for MACOS we don't need to delete this object since it will be taken care by ARC.
+#ifdef GEAR_WINDOWS	//for MACOS we don't need to delete this object since it will be taken care by ARC.
 	GE_DELETE(menuobject);
 #endif
 
@@ -394,7 +394,7 @@ void geToolBarDropMenu::checkMenuItem(int _menuID, bool bCheck)
 		stDropMenuItem* menuitem = *it;
 		if(menuitem->menuID==_menuID)
 		{
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 			CheckMenuItem(menuitem->menu_handle, 0, MF_BYPOSITION | (bCheck)?MF_CHECKED:MF_UNCHECKED);
 #endif
 			menuitem->hasCheck=bCheck;

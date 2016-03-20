@@ -61,7 +61,7 @@ object3d* fbxImporter::loadMyFBX(const char *filePath, std::vector<gxMaterial*>*
 		//fbxImporter->SetFileFormat(fbxFileFormat);
       
 		crc = gxCrc32::Calc((unsigned char*)&filePath[strlen(projecthomedirectory)+strlen("/Assets")]);
-#if defined(_WIN32)
+#if defined(GEAR_WINDOWS)
 		memset(normalizedFilePath, 0, sizeof(normalizedFilePath));
 		// normalize the file path because FBX can't handle relative paths.
 		GetFullPathNameA(filePath, 1024, normalizedFilePath, 0);

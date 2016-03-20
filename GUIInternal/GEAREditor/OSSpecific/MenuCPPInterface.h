@@ -1,13 +1,13 @@
 #pragma once
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     #include <windows.h>
 #endif
 #include <vector>
 
 struct stDropMenuItem
 {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     HMENU menu_handle;
     HMENU sub_menu_handle;
 #else

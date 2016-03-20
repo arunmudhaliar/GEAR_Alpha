@@ -73,11 +73,11 @@ void HWShaderManager::LoadDefaultShaders()
 
 	std::string resource_dir_root_path;
 
-#if defined(WIN32)
+#if defined(GEAR_WINDOWS)
 	resource_dir_root_path="res/shadersWin32/";
-#elif defined(ANDROID)
+#elif defined(GEAR_ANDROID)
 	resource_dir_root_path="/storage/emulated/0/gear/shadersAndroid/";
-#elif defined(__APPLE__)
+#elif defined(GEAR_APPLE)
     resource_dir_root_path="res/shadersWin32/";
 #else
 	DEBUG_PRINT("ERROR : Shaders not implemented for this platform ");
@@ -171,15 +171,14 @@ gxHWShader* HWShaderManager::LoadShaderFromFile(const std::string& relativePath)
 {
 	std::string resource_dir_root_path;
 
-#if defined(WIN32)
+#if defined(GEAR_WINDOWS)
 	resource_dir_root_path = "res/shadersWin32/";
-#elif defined(ANDROID)
+#elif defined(GEAR_ANDROID)
 	resource_dir_root_path = "/storage/emulated/0/gear/shadersAndroid/";
-#elif defined(__APPLE__)
+#elif defined(GEAR_APPLE)
 	resource_dir_root_path = "res/shadersWin32/";
 #else
-	DEBUG_PRINT("ERROR : Shaders not implemented for this platform ");
-	return;
+    #error ERROR : Shaders not implemented for this platform ";
 #endif
 
 	//HW shaders
@@ -239,7 +238,7 @@ HWShaderManager::stHWShaderSnippet* HWShaderManager::LoadCodeSnippet(const std::
 	newSnippetCode->snippet[newSnippetCode->size]='\0';
 	//
 
-#if DEBUG
+#if GEAR_DEBUG
 	DEBUG_PRINT("SNIPPET:\n%s", newSnippetCode->snippet);
 	DEBUG_PRINT("%s loaded", filename.c_str());
 #endif

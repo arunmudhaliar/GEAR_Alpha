@@ -5,7 +5,7 @@
 #include <assert.h>
 #include "basicIncludes.h"
 
-#if defined(_WIN32) && defined(_DEBUG)
+#if defined(GEAR_WINDOWS) && defined(GEAR_DEBUG)
 	#include <DbgHelp.h>
 	#define LOG_GL_ERROR
 #endif

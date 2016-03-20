@@ -50,7 +50,7 @@ public:
 
 	void setVSync(int interval=1)
 	{
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 		const char *extensions = (const char*)glGetString( GL_EXTENSIONS );
 		if( strstr( extensions, "WGL_EXT_swap_control" ) == 0 )
 			return; // Error: WGL_EXT_swap_control extension not supported on your computer.\n");

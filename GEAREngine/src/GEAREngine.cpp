@@ -1,5 +1,5 @@
 #include "GEAREngine.h"
-#ifndef ANDROID
+#ifndef GEAR_ANDROID
 #include "fbxImporter/fbxImporter.h"
 #endif
 #include "core/object3d.h"
@@ -76,11 +76,9 @@ void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light, i
 
 void engine_consoleLog(const char* msg, int msgtype)
 {
-#if defined(_WIN32) || defined(__APPLE__)
+#if defined(GEAR_EDITOR)
 	if(g_EngineObserver)
 		g_EngineObserver->onConsoleLogFromMono(msg, msgtype);
-#elif defined(ANDROID)
-	DEBUG_PRINT(msg);
 #else
 	DEBUG_PRINT(msg);
 #endif
@@ -138,7 +136,7 @@ extern DECLSPEC void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 	if(g_cMousePrevPos.x>xPos)		aDirX=1;
 	if(g_cMousePrevPos.y>yPos)		aDirY=-1;
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	if(flag&MK_MBUTTON /*&& !(flag&MK_CONTROL)*/)
 	{
 		float d=camera->getPosition().length();

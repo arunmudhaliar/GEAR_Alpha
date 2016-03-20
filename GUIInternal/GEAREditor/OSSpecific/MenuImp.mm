@@ -52,7 +52,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
 ////    mainMenu;
 
     sdlWndID = wndID;
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     for(int x=0;x<list.size();x++)
     {
         stDropMenuItem* item=list[x];
@@ -61,7 +61,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
     }
 #endif
     
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     HMENU hPopupMenu = CreatePopupMenu();
 #else
     NSMenu* hPopupMenu = [[NSMenu alloc] initWithTitle:@""];
@@ -69,7 +69,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
     for(int x=(int)list.size()-1;x>=0;x--)
     {
         stDropMenuItem* item=list[x];
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
         MENUITEMINFO minfo;
         ZeroMemory(&minfo, sizeof(MENUITEMINFO));
         minfo.cbSize = sizeof(MENUITEMINFO);
@@ -82,7 +82,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
         {
             if(item->parent->sub_menu_handle==NULL)
             {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
                 item->parent->sub_menu_handle=CreatePopupMenu();
 #else
                 item->parent->sub_menu_handle = ( void*)CFBridgingRetain([[NSMenu alloc] initWithTitle:@""]);
@@ -94,7 +94,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
         item->menu_handle = (__bridge void*)hCurrentPopupMenu;
         if(item->type==0)
         {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
             minfo.wID = item->menuID;
             minfo.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA;
             if(item->sub_menu_handle!=NULL)
@@ -128,7 +128,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
         }
         else if(item->type==1)
         {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
             minfo.wID = 0;
             minfo.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA;
             minfo.fType = MFT_SEPARATOR;

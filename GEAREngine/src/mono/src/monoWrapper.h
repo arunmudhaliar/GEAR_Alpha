@@ -23,7 +23,7 @@ public:
     static void unloadAddDomain();
 	
 	static void bindEngineMethods();
-#ifdef _WIN32
+#if defined(GEAR_WINDOWS) && defined(GEAR_EDITOR)
 	static void initDebugConsole();
 	static void destroyDebugConsole();
 #endif
@@ -65,7 +65,7 @@ public:
 	static void mono_object3d_onObject3dChildAppend(object3d* parent, object3d* child);
 	static void mono_object3d_onObject3dChildRemove(object3d* parent, object3d* child);
 
-#if defined(_WIN32) || defined(__APPLE__)
+#if defined(GEAR_EDITOR)
 	static int traverseForCSharpFiles(const char *dirname, std::vector<std::string>* csharpfilelist);
 	static bool compileCSharpScripts(std::vector<std::string>* csharpfilelist);
 	static int exec_cmd(char const *cmd, char *buf);

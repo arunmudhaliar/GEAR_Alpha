@@ -536,7 +536,7 @@ void geTreeView::draw()
 	verticalScrollBar->draw();
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void geTreeView::onDragDrop(int x, int y, MDropData* dropObject)
 {
 	int xoff=-rootTreeNode->getXOffset();

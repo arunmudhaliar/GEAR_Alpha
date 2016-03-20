@@ -18,7 +18,7 @@
 #include "scenes/gearSceneGraphEditor.h"
 #include <string>
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include <SDL_syswm.h>	//for SDL_SysWMinfo
 #endif
 
@@ -44,7 +44,7 @@ public:
 	void MouseMove(float x, float y, int flag);
 	void MouseWheel(int zDelta, int x, int y, int flag);
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 	void DragEnter(int x, int y);
 	void DragDrop(int x, int y, MDropData* dropObject);
 	void DragLeave();
@@ -57,7 +57,7 @@ public:
 
 	bool isInitialized()	{	return is_Initialised;	}
 
-#if _WIN32
+#if GEAR_WINDOWS
     static HWND getMainWindowHandle();
 	static bool showSaveCommonDlg(HWND hWnd, char* out_savefilename, int out_savefilename_size, const char* filter, const char* defaultext, const char* root_dir);
 	static bool showOpenCommonDlg(HWND hWnd, char* out_openfilename, int out_openfilename_size, const char* filter, const char* defaultext, const char* root_dir);
@@ -67,7 +67,7 @@ public:
 	static std::string getAppDirectory()			{	return g_cAppDirectory;	}
     
 private:
-#if _WIN32
+#if GEAR_WINDOWS
     static HWND g_hWnd;	//main window
 #endif
 

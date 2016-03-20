@@ -39,7 +39,7 @@ int appEntry()
                                            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | SDL_WINDOW_RESIZABLE        // flags
                                            );
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	// Load our menu definitions
 	HMENU hMenu = LoadMenu(GetModuleHandle(0), MAKEINTRESOURCE(IDC_GUIINTERNAL));
 	// Attach the menu to the window
@@ -92,12 +92,14 @@ int appEntry()
     }
     file.close();
     
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     monoWrapper::loadMonoModules(gear_mono_install_path+"/lib", gear_mono_install_path+"/etc");
-#elif defined(__APPLE__)
+#elif defined(GEAR_APPLE)
     monoWrapper::loadMonoModules(gear_mono_install_path+"/lib/", gear_mono_install_path+"/etc");
-#else
+#elif defined(GEAR_ANDROID)
     monoWrapper::loadMonoModules("/storage/emulated/0/gear/", "/storage/emulated/0/gear/");
+#else
+    #error Unknown Platform
 #endif
     
     monoWrapper::reInitMono(EditorGEARApp::getProjectHomeDirectory());
@@ -175,7 +177,7 @@ int appEntry()
                     event_wndID=dropData->getSourceWindowID();
                     UNUSED(dropData);
                 }
-#ifdef __APPLE__
+#ifdef GEAR_APPLE
                 else if(e.type==EditorApp::g_iAppSpecificEventType_MenuItemCmd)
                 {
                     event_wndID = e.user.windowID;
@@ -461,14 +463,14 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
         GE_DELETE(dropData);
         //SDL_FlushEvent(SDL_MOUSEMOTION);  //FlushEvent is called inside geGUIBase.
     }
-#ifdef __APPLE__
+#ifdef GEAR_APPLE
     else if(e.type==EditorApp::g_iAppSpecificEventType_MenuItemCmd)
     {
         editorApp.DoCommand(e.user.code);
     }
 #endif
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	else if (e.type==SDL_SYSWMEVENT)
 	{
 		SDL_SysWMEvent* wmEvent = (SDL_SysWMEvent*)&e;

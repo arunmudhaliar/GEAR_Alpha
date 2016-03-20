@@ -1,6 +1,6 @@
 #pragma once
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 //#include <Ole2.h>
 #include "../gui/geGUIBase.h"
 

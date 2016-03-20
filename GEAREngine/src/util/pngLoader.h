@@ -11,7 +11,7 @@
 #include <stdarg.h>
 
 #include <assert.h>
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include <malloc.h>
 #include <conio.h>
 #else

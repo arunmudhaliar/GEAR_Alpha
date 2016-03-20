@@ -2,7 +2,7 @@
 #include "gxMetaStructures.h"
 #include "../util/gxFile.h"
 
-#if defined(WIN32)
+#if defined(GEAR_WINDOWS)
 #include "../util/pngLoader.h"
 #endif
 
@@ -204,7 +204,7 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 				internalformat=GL_RGBA;
 			}
 			break;
-#if !defined(__APPLE__)	//TODO: need to fix this for android
+#if !defined(GEAR_APPLE)	//TODO: need to fix this for android
 		case eTexture2D_RGB565:
 			{
 				bAlpha=false;
@@ -213,10 +213,10 @@ unsigned int read_texture2D_from_metafile(const char* file_name, bool& bAlpha, u
 				internalformat=GL_RGB;
 			}
 			break;
-#if !defined(ANDROID)	//TODO: need to fix this for android
+#if !defined(GEAR_ANDROID)	//TODO: need to fix this for android
 		case eTexture2D_RGBA5551:
 			{
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 				file_meta.CloseFile();
 				return 0;
 #else

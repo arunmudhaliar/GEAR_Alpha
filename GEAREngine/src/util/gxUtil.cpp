@@ -1,6 +1,6 @@
 #include "gxUtil.h"
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	#if EXPORT_DLL
 		char gxUtil::g_directoryPath[512];
 		char gxUtil::g_filePath[512];

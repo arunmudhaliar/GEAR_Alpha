@@ -16,7 +16,7 @@ gxFileUtil::gxFileUtil()
 
 bool gxFileUtil::createDirectory(std::string path) const
 {
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     if(MKDIR(path.c_str())==0)
 #else
         if(MKDIR(path.c_str(), 0777)==0)

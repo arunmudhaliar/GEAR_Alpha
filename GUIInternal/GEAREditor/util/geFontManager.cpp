@@ -1063,7 +1063,7 @@ void geFontManager::init()
 #if defined (USE_ProgrammablePipeLine_test)
     //if(technique==rendererBase::gl_programmable_pipeline)
     {
-#if defined(WIN32)
+#if defined(GEAR_WINDOWS)
         fontHWShader.loadShader("res/shadersWin32/hwshader/fontshader.glsl");
 #else
         fontHWShader.loadShader("/storage/emulated/0/gear/shadersAndroid/hwshader/fontshader.glsl");

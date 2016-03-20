@@ -1,8 +1,9 @@
 #pragma once
+#include "../../../GEAREngine/src/GEARFirstInclude.h"
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	#include <SDL.h>
-#elif defined(__APPLE__)
+#elif defined(GEAR_APPLE)
 	#include <SDL2/SDL.h>
 #else
 	#error SDL not included
@@ -11,7 +12,7 @@
 #include "../../../GUIInternal/GEAREditor/EditorApp.h"
 #include "../../../GUIInternal/GEAREditor/OSSpecific/MenuCPPInterface.h"
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include <direct.h>
 #define GetCurrentDir _getcwd
 #else

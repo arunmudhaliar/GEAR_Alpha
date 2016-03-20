@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../../../GEAREngine/src/GEARFirstInclude.h"
 
 #include <signal.h>
 
@@ -9,16 +9,16 @@ namespace GEAR3D {
 void SetupSignalHandler(int signal);
 void SetupSignalHandlers();
 
-#if _WIN32 || __APPLE__
-#if __APPLE__
+#if GEAR_WINDOWS || GEAR_APPLE
+#if GEAR_APPLE
 void PrintStackTraceOSX (void* context);
 void HandleSignal (int i, __siginfo* info, void* p);
 #endif
-#if _WIN32
+#if GEAR_WINDOWS
 int __cdecl HandleSignal( EXCEPTION_POINTERS* ep );
 #endif
 
-#if _WIN32
+#if GEAR_WINDOWS
 void __cdecl HandleAbort (int signal);
 #endif
 #endif

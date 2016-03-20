@@ -181,7 +181,7 @@ bool gearScenePreview::onMouseMove(float x, float y, int flag)
 	if(previousMousePosition.x>xPos)		aDirX=1;
 	if(previousMousePosition.y>yPos)		aDirY=-1;
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	/*if(flag&MK_MBUTTON)
 	{
 		float d=selectedObject->getPosition().length();

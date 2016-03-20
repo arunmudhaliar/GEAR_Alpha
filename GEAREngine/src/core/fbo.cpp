@@ -1,6 +1,6 @@
 #include "fbo.h"
 
-#if defined(WIN32) && 0
+#if defined(GEAR_WINDOWS) && 0
 #define glDeleteRenderbuffers glDeleteRenderbuffersEXT
 #define glGenFramebuffers glGenFramebuffersEXT
 #define GL_FRAMEBUFFER GL_FRAMEBUFFER_EXT
@@ -184,7 +184,7 @@ GLuint& FBO::CreateTextureBuffer()
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	CHECK_GL_ERROR(glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE));
 #endif
     CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
@@ -209,7 +209,7 @@ GLuint& FBO::CreateDepthShadowTextureBuffer()
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	CHECK_GL_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	CHECK_GL_ERROR(glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE));
 #endif
     CHECK_GL_ERROR(glBindTexture(GL_TEXTURE_2D, 0));
@@ -244,11 +244,11 @@ GLuint& FBO::AttachDepthBuffer()
 	// Attach the depth render buffer to the FBO as it's depth attachment
 	CHECK_GL_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBufferID));
 #else
-#ifdef WIN32
+#ifdef GEAR_WINDOWS
 	CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBufferID, 0));
-#elif defined(ANDROID)
+#elif defined(GEAR_ANDROID)
 	CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBufferID, 0));
-#elif defined(__APPLE__)
+#elif defined(GEAR_APPLE)
     CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBufferID, 0));
 #else
 	#error "Need to look in to this in fbo.cpp"

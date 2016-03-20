@@ -97,7 +97,7 @@ void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
 
 void gxWorld::update(float dt)
 {
-#ifdef _WIN32	//arun:special case
+#ifdef GEAR_WINDOWS	//arun:special case
 	//this can be removed from here since transformationchanged func will call camera update
 	if(activeCamera)
 	{
@@ -538,12 +538,10 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 				HWShaderManager* hwShaderManager = engine_getHWShaderManager();
 				//load surface shader
 				char mainshaderfilename[FILENAME_MAX];
-#ifdef _WIN32
+#ifdef GEAR_EDITOR
 				sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
-#elif defined(ANDROID)
+#elif defined(GEAR_ANDROID)
 				sprintf(mainshaderfilename, "//storage//emulated//0//gear//shadersAndroid//surfaceShader//%s.shader", material->getMainshaderName());
-#elif __APPLE__
-                sprintf(mainshaderfilename, ".//res//shadersWin32//surfaceShader//%s.shader", material->getMainshaderName());
 #else
                 #error not implemented
 #endif

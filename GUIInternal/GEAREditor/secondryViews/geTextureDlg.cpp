@@ -9,7 +9,7 @@
 
 
 #include<dirent.h>
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include <direct.h>
 #endif
 #include <limits.h>

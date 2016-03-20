@@ -1,5 +1,5 @@
 #include "EditorApp.h"
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include <direct.h>
 #endif
 
@@ -13,7 +13,7 @@
 #include "scenes/gearSceneAnimationEditor.h"
 #include "AssetImporter.h"
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 #include "../stdafx.h"
 #include "../resource.h"
 #include <CommCtrl.h>
@@ -24,7 +24,7 @@
 char EditorGEARApp::g_cszProjectHomeDirectory[FILENAME_MAX];
 EditorApp* EditorApp::g_pEditorAppInstance = NULL;
 
-#if _WIN32
+#if GEAR_WINDOWS
 HWND EditorApp::g_hWnd=NULL;
 #endif
 
@@ -63,7 +63,7 @@ void EditorApp::init(SDL_Window* window)
 	is_Initialised=true;
     rendererGL10Instance = new rendererGL10(window);
     
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version);
 	if(SDL_GetWindowWMInfo(rendererGL10Instance->getWindow(), &info))
@@ -75,7 +75,7 @@ void EditorApp::init(SDL_Window* window)
 	rendererGL10Instance->setupRenderer();
 	rendererGL10Instance->loadDefaultRenderState();
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	rendererGL10Instance->swapGLBuffer();
 #endif
 
@@ -173,7 +173,7 @@ void EditorApp::MouseWheel(int zDelta, int x, int y, int flag)
 	guiManager->MouseWheel(zDelta, x, y, flag);
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void EditorApp::DragEnter(int x, int y)
 {
 	guiManager->DragEnter(x, y);
@@ -211,7 +211,7 @@ void EditorApp::DoCommand(int cmd)
 	guiManager->DoCommand(cmd);
 }
 
-#if _WIN32
+#if GEAR_WINDOWS
 HWND EditorApp::getMainWindowHandle()
 {
 	return g_hWnd;

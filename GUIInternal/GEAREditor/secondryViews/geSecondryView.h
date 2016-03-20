@@ -2,7 +2,7 @@
 
 #include "../util/geDefines.h"
 #include "../renderer/rendererGL10.h"
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     #include <Windows.h>
     #include "../../resource.h"
 #endif
@@ -10,9 +10,9 @@
 #include "../gui/geLayoutManager.h"
 #include <string>
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 	#include <SDL.h>
-#elif defined(__APPLE__)
+#elif defined(GEAR_APPLE)
 	#include <SDL2/SDL.h>
 #else
 	#error SDL not included

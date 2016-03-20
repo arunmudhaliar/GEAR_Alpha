@@ -20,7 +20,7 @@ int gxFile::OpenFile(const std::string& filename, EFILEMODE eFileMode/* =FILE_r 
 	
 	switch(fileAccessMode)
 	{
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 		case FILE_r: fopen_s(&filePointer, filename.c_str(), "rb");	break;
 		case FILE_w: fopen_s(&filePointer, filename.c_str(), "wb");	break;
 		case FILE_a: fopen_s(&filePointer, filename.c_str(), "a");	break;
@@ -49,7 +49,7 @@ int gxFile::OpenFileDescriptor(int fd, EFILEMODE eFileMode)
 	
 	switch(fileAccessMode)
 	{
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
 		case FILE_r: filePointer = _fdopen(fd, "rb");		break;
 		case FILE_w: filePointer = _fdopen(fd, "wb");		break;
 		case FILE_a: filePointer = _fdopen(fd, "a");		break;
@@ -83,7 +83,7 @@ void gxFile::CloseFile()
 {
 	if(filePointer)
     {
-//#ifndef ANDROID
+//#ifndef GEAR_ANDROID
         if(fclose(filePointer))
         {
 #if defined (LOG_DEBUG_ENGINE)
@@ -158,7 +158,7 @@ void gxFile::Read(unsigned long& v) const
 	fread((void*)&v, sizeof(unsigned long), 1, filePointer);    
 }
 
-#if !defined(__APPLE__)
+#if !defined(GEAR_APPLE)
 void gxFile::Read(__int64& v) const
 {
 	fread((void*)&v, sizeof(__int64), 1, filePointer);
@@ -224,7 +224,7 @@ void gxFile::Write(double v) const
 	Write(&v, sizeof(double));
 }
 
-#if !defined(__APPLE__)
+#if !defined(GEAR_APPLE)
 void gxFile::Write(__int64 v) const
 {
 	Write(&v, sizeof(__int64));

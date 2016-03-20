@@ -18,7 +18,7 @@ public:
 	}
 
 	virtual void draw();
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 	virtual void onDragDrop(int x, int y, MDropData* dropObject)
 	{
 		getParent()->DragDrop(x-getPos().x, y-getPos().y, dropObject);

@@ -2,7 +2,7 @@
 
 //#if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
 //	#define USE_OPENAL	1
-//#elif defined(ANDROID)
+//#elif defined(GEAR_ANDROID)
 //	#define USE_OPENSL	1
 //#endif
 

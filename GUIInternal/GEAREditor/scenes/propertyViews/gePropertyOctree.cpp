@@ -46,7 +46,7 @@ gePropertyOctree::~gePropertyOctree()
 
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void gePropertyOctree::onDragDrop(int x, int y, MDropData* dropObject)
 {
 

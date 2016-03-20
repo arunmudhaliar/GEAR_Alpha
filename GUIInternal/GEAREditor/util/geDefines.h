@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#ifdef _WIN32
+#ifdef GEAR_WINDOWS
     #define STRCPY(dst, src)	strcpy_s(dst, sizeof(dst), src)
 #else
     #define STRCPY(dst, src)	strcpy(dst, src)

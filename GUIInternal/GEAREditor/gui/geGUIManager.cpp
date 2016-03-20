@@ -92,7 +92,7 @@ void geGUIManager::MouseMButtonUp(float x, float y, int nFlag)
     layoutManager->MouseMButtonUp(x, y, nFlag);
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void geGUIManager::DragEnter(int x, int y)
 {
 	layoutManager->DragEnter(x, y);

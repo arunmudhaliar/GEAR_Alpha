@@ -26,14 +26,14 @@ public:
 #if defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_IPHONE)
         NSString* nsStringObject = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         return [nsStringObject cStringUsingEncoding:NSASCIIStringEncoding];
-#elif defined(ANDROID)
+#elif defined(GEAR_ANDROID)
         return NULL;
 #else
         return NULL;
 #endif
     }
 
-#if defined(ANDROID)
+#if defined(GEAR_ANDROID)
 #ifndef GL_EXT_texture_compression_s3tc
 	#define GL_EXT_texture_compression_s3tc
 	#define GL_COMPRESSED_RGB_S3TC_DXT1_EXT   0x83F0
@@ -181,7 +181,7 @@ public:
             case 2:
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
                 break;
-#if !defined(WIN32)
+#if !defined(GEAR_WINDOWS)
             case 3:
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, buffer);
                 break;
@@ -253,7 +253,7 @@ public:
         //replace .png to .tzx
         char out_filename[256];
         strcpy_s(out_filename, sizeof(out_filename), filepath);
-#if !defined(WIN32)
+#if !defined(GEAR_WINDOWS)
         char* dot_p=strrchr(out_filename, '.');
         strcpy(dot_p, ".tx");
 #endif
@@ -340,7 +340,7 @@ public:
 #endif 	            
         }
 
-//#if !defined(ANDROID)
+//#if !defined(GEAR_ANDROID)
         fclose(fp);
 //#endif
         

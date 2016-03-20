@@ -397,7 +397,7 @@ void geLayoutManager::expandOrContractTopAndBottomLayoutsOnMouseDrag(int x, int 
 	}
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void geLayoutManager::onDragEnter(int x, int y)
 {
 	geLayout* selectedLayout = rootLayout->selectLayout(x, y);

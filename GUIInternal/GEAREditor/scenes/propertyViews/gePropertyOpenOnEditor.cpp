@@ -45,14 +45,14 @@ void gePropertyOpenOnEditor::onButtonClicked(geGUIBase* btn)
 			//GetCurrentDirectory(sizeof(buffer), buffer);
 			memset(buffer, 0, sizeof(buffer));
 			memset(responsebuffer, 0, sizeof(responsebuffer));
-#if _WIN32
-#ifdef _DEBUG
+#if GEAR_WINDOWS
+#ifdef GEAR_DEBUG
 			sprintf(buffer, "%s\\CSharpProjectMaker.exe gearProject %s %s\\Debug\\MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
 #else
 			sprintf(buffer, "%s\\CSharpProjectMaker.exe gearProject %s %s\\Release\\MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
 #endif
 #else
-#ifdef _DEBUG
+#ifdef GEAR_DEBUG
             sprintf(buffer, "mono %s/CSharpProjectMaker.exe gearProject %s %s/MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
 #else
             sprintf(buffer, "mono %s/CSharpProjectMaker.exe gearProject %s %s/MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
@@ -63,9 +63,9 @@ void gePropertyOpenOnEditor::onButtonClicked(geGUIBase* btn)
 			{
 				memset(buffer, 0, sizeof(buffer));
 				memset(responsebuffer, 0, sizeof(responsebuffer));
-#if _WIN32
+#if GEAR_WINDOWS
 				sprintf(buffer, "start %s/gearProject.sln", EditorGEARApp::getProjectHomeDirectory());
-#elif __APPLE__
+#elif GEAR_APPLE
                 //open -n /Applications/MonoDevelop.app
                 sprintf(buffer, "open -n /Applications/Unity/MonoDevelop.app %s/gearProject.sln", EditorGEARApp::getProjectHomeDirectory());
 #else

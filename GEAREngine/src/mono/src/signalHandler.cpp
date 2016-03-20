@@ -23,7 +23,7 @@ void SetupSignalHandler(int signal)
 
 void SetupSignalHandlers()
 {
-#if __APPLE__
+#if GEAR_APPLE
 #	if	WEBPLUG
     //Remove possible existing mach exception handlers which interfere with our exception handling (ie Firefox)
     mach_port_t current_task = mach_task_self();
@@ -40,19 +40,19 @@ void SetupSignalHandlers()
 #endif
     
     // Make sure abort() calls get passed to the crash handler
-#if _WIN32
+#if GEAR_WINDOWS
     _set_abort_behavior (0, _WRITE_ABORT_MSG);
     signal (SIGABRT, HandleAbort);
 #endif
     
-#if _WIN32 || __APPLE__ || ANDROID
+#if GEAR_WINDOWS || GEAR_APPLE || GEAR_ANDROID
     //this causes mono to forward the signal to us, if the signal is not mono related. (i.e. not a breakpoint, or a managed nullref exception, etc)
     mono_set_signal_chaining(1);
 #endif
 }
 
-#if _WIN32 || __APPLE__
-#if __APPLE__
+#if GEAR_WINDOWS || GEAR_APPLE
+#if GEAR_APPLE
 
 #include <dlfcn.h>
 #include <cxxabi.h>
@@ -99,17 +99,17 @@ void PrintStackTraceOSX (void* context)
 
 void HandleSignal (int i, __siginfo* info, void* p)
 #endif
-#if _WIN32
+#if GEAR_WINDOWS
 int __cdecl HandleSignal( EXCEPTION_POINTERS* ep )
 #endif
 {
     printf("Receiving unhandled NULL exception\n");
 
-#if __APPLE__
+#if GEAR_APPLE
     printf("Launching bug reporter\n");
     PrintStackTraceOSX(p);
     //LaunchBugReporter (kCrashbug);
-#elif _WIN32
+#elif GEAR_WINDOWS
 //    winutils::ProcessInternalCrash(ep, false);
 //    if( gUnityCrashHandler )
 //    {
@@ -124,7 +124,7 @@ int __cdecl HandleSignal( EXCEPTION_POINTERS* ep )
 
 #endif // UNITY_OSX || UNITY_WIN
 
-#if _WIN32
+#if GEAR_WINDOWS
 void __cdecl HandleAbort (int signal)
 {
     printf("Received abort signal from the operating system\n");

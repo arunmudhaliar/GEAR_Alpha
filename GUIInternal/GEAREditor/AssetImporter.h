@@ -35,7 +35,7 @@ private:
 	bool import_using_freeImageLib(const char* filename, const char* crcFileName, struct stat srcStat);
 
 	int noOfAssetsToProcess;
-#if !defined(__APPLE__)
+#if !defined(GEAR_APPLE)
 	HWND hWndProgress;
     int progressBarID;
     int staticTextID;

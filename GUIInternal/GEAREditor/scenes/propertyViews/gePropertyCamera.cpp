@@ -69,7 +69,7 @@ gePropertyCamera::~gePropertyCamera()
 
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void gePropertyCamera::onDragDrop(int x, int y, MDropData* dropObject)
 {
 

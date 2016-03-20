@@ -34,7 +34,7 @@ gePropertyMaterial::~gePropertyMaterial()
 	destroyShaderPropertiesControls();
 }
 
-//#if !defined(__APPLE__) //disable Drag-Drop
+//#if !defined(GEAR_APPLE) //disable Drag-Drop
 void gePropertyMaterial::onDragDrop(int x, int y, MDropData* dropObject)
 {
 	std::vector<geGUIBase*>* list = dropObject->getActualDataList();

@@ -227,10 +227,7 @@ int appEntry()
     //SDL_GL_DeleteContext(context);  //DeleteContext will be called by renderer. So no need to call it here.
     SDL_DestroyWindow(window);
     SDL_Quit();
-    
-    //Destroy all pending objects from the pool.
-    GEAR::Memory::AutoReleasePool::getInstance().destroyAllFromPool();
-    
+        
     return 0;
 }
 

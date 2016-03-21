@@ -13,12 +13,15 @@ namespace GEAR3D{
 
 void SetupSignalHandler(int signal)
 {
+#ifdef GEAR_WINDOWS
+#else
     struct sigaction action;
     memset(&action, 0, sizeof(action));
     action.sa_sigaction = HandleSignal;
     action.sa_flags = SA_SIGINFO;
     if(sigaction(signal, &action, NULL) < 0)
         printf("Error setting signal handler for signal %d\n",signal);
+#endif
 }
 
 void SetupSignalHandlers()
@@ -117,6 +120,7 @@ int __cdecl HandleSignal( EXCEPTION_POINTERS* ep )
 //        return gUnityCrashHandler->ProcessCrash( ep );
 //    }
 //    return EXCEPTION_EXECUTE_HANDLER;
+	return EXCEPTION_EXECUTE_HANDLER;
 #else
 #error "Unknown platform"
 #endif

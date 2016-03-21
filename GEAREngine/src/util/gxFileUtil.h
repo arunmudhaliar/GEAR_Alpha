@@ -4,9 +4,13 @@
 #include "../core/basicIncludes.h"
 
 #ifdef GEAR_WINDOWS
+#include <direct.h>
+#include <io.h>
 #define MKDIR _mkdir
+#define CHMOD _chmod
 #else
 #define MKDIR mkdir
+#define CHMOD chmod
 #endif
 
 class DECLSPEC gxFileUtil

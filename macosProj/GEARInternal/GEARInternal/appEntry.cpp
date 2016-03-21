@@ -236,7 +236,7 @@ int appEntry()
 
 void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
 {
-    EditorApp& editorApp = (EditorApp&)*userdata;
+	EditorApp& editorApp = *(EditorApp*)userdata;
     
     if(e.type==SDL_WINDOWEVENT)
     {
@@ -539,31 +539,19 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
 								EditorGEARApp::getSceneProject()->populateProjectView();
 								EditorGEARApp::getSceneFileView()->populateFileView();
 
-								//update the currentscene file
-								root_dir = EditorGEARApp::getProjectHomeDirectory();
-                                //check if ProjectSettings dir exist or not
-                                if(!EditorApp::isDirecoryExist(root_dir+"/ProjectSettings"))
-                                {
-                                    EditorApp::createDirectory(root_dir+"/ProjectSettings");
-                                }
-								root_dir+="/ProjectSettings/currentscene";
-								gxFile currenSceneFile;
-								if(currenSceneFile.OpenFile(root_dir.c_str(), gxFile::FILE_w))
+								if (monoWrapper::mono_isSimulationRunning())
 								{
-									const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(output_buffer);
-									char unix_path[MAX_PATH];
-									memset(unix_path, 0, MAX_PATH);
-									strcpy(unix_path, relativepath);
-									geUtil::convertPathToUnixFormat(unix_path);
-									currenSceneFile.Write(unix_path);
-									currenSceneFile.CloseFile();
-
-									std::string wndTitle ="GEAR Alpha [";
-									wndTitle+=relativepath;
-									wndTitle+=+"]";
-									SetWindowText(EditorGEARApp::getMainWindowHandle(), wndTitle.c_str());
+									EditorGEARApp::getSceneWorldEditor()->stopSimulation(false);
 								}
-								//
+								if (!EditorGEARApp::saveScene(output_buffer))
+								{
+									DEBUG_PRINT("Error saving scene : %s", output_buffer);
+								}
+								else
+								{
+									EditorGEARApp::updateCurrentSceneFile(output_buffer);
+								}
+
 							}
 						}
 					}
@@ -581,26 +569,14 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
 								EditorGEARApp::getSceneProject()->populateProjectView();
 								EditorGEARApp::getSceneFileView()->populateFileView();
 
-								//update the currentscene file
-								root_dir = EditorGEARApp::getProjectHomeDirectory();
-								root_dir+="/ProjectSettings/currentscene";
-								gxFile currenSceneFile;
-								if(currenSceneFile.OpenFile(root_dir.c_str(), gxFile::FILE_w))
+								if (!EditorGEARApp::loadScene(output_buffer))
 								{
-									const char* relativepath=AssetImporter::relativePathFromProjectHomeDirectory_AssetFolder(output_buffer);
-									char unix_path[MAX_PATH];
-									memset(unix_path, 0, MAX_PATH);
-									strcpy(unix_path, relativepath);
-									geUtil::convertPathToUnixFormat(unix_path);
-									currenSceneFile.Write(unix_path);
-									currenSceneFile.CloseFile();
-
-									std::string wndTitle ="GEAR Alpha [";
-									wndTitle+=relativepath;
-									wndTitle+=+"]";
-									SetWindowText(EditorGEARApp::getMainWindowHandle(), wndTitle.c_str());
+									DEBUG_PRINT("Error loading scene : %s", output_buffer);
 								}
-								//
+								else
+								{
+									EditorGEARApp::updateCurrentSceneFile(output_buffer);
+								}
 							}
 						}
 					}

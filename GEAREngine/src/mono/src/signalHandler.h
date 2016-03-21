@@ -1,5 +1,6 @@
 #pragma once
 #include "../../../GEAREngine/src/GEARFirstInclude.h"
+#include "../../core/gxDebug.h"
 
 #include <signal.h>
 

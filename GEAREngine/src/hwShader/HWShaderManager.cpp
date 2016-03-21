@@ -239,7 +239,7 @@ HWShaderManager::stHWShaderSnippet* HWShaderManager::LoadCodeSnippet(const std::
 	//
 
 #if GEAR_DEBUG
-	DEBUG_PRINT("SNIPPET:\n%s", newSnippetCode->snippet);
+	//DEBUG_PRINT("SNIPPET:\n%s", newSnippetCode->snippet);	//Note:- Heap will corrupt if the buffer size is greater than FILENAME_MAX
 	DEBUG_PRINT("%s loaded", filename.c_str());
 #endif
 

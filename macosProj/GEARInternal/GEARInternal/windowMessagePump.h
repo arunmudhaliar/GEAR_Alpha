@@ -11,6 +11,7 @@
 
 #include "../../../GUIInternal/GEAREditor/EditorApp.h"
 #include <map>
+#include <functional>
 
 struct stWindowMessageLoop
 {

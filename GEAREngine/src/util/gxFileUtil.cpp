@@ -1,7 +1,9 @@
 #include "gxFileUtil.h"
 #include "../core/gxDebug.h"
 #include <sys/stat.h>
+#ifndef GEAR_WINDOWS
 #include <sys/syslimits.h>
+#endif
 #include <dirent.h>
 
 const gxFileUtil& gxFileUtil::getInstance()
@@ -100,7 +102,7 @@ int gxFileUtil::delete_directory_recursive(const char *dirname) const
             switch (ent->d_type) {
                 case DT_REG:
                 {
-                    chmod(buffer, 777);
+					CHMOD(buffer, 777);
                     int status = remove(buffer);
                     if(status!=0)
                     {

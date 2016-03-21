@@ -1,7 +1,7 @@
 #pragma once
 
 #include "geGUIBase.h"
-#include "geVector3.h"
+#include "../util/geVector3.h"
 
 class geButtonBase : public geGUIBase
 {

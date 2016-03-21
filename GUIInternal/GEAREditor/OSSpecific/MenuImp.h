@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../../GEAREngine/src/GEARFirstInclude.h"
+
 #ifdef GEAR_WINDOWS
 
 #include <stdio.h>

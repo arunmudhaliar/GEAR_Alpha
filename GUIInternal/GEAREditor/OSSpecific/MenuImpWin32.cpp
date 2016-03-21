@@ -3,10 +3,10 @@
 
 void* cpp_createMenu(std::vector<stDropMenuItem*>& list, unsigned int wndID)
 {
-	MenuWin32* menuObj = new MenuWin32();
+	MenuWin32* menuobj = new MenuWin32();
     menuobj->sdlWndID = wndID;
-	menuObj->popupMenuHandle = menuObj->createMenu(list);
-    return (void*)menuObj;
+	menuobj->popupMenuHandle = menuobj->createMenu(list, wndID);
+	return (void*)menuobj;
 }
 
 void cpp_showPopupMenu(void* menuobj, int x, int y)
@@ -15,7 +15,7 @@ void cpp_showPopupMenu(void* menuobj, int x, int y)
     _menuObj->showMenu(x, y);
 }
 
-HMENU MenuWin32::createMenu(std::vector<stDropMenuItem*>& list)
+HMENU MenuWin32::createMenu(std::vector<stDropMenuItem*>& list, unsigned int wndID)
 {
 	for(int x=0;x<list.size();x++)
     {

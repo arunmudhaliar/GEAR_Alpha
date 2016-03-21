@@ -58,6 +58,9 @@
     <Filter Include="engine\postProcessor">
       <UniqueIdentifier>{956c33e2-103b-4208-80fd-19bd88fd0e76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\autoReleasePool">
+      <UniqueIdentifier>{4f455e80-4342-46ef-8ef9-d0c157976974}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\fbxImporter\fbxImporter.cpp">
@@ -698,6 +701,18 @@
     </ClCompile>
     <ClCompile Include="..\src\postProcessor\ToneMappingFilter.cpp">
       <Filter>engine\postProcessor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\IAnimationTrack.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\autoReleasePool\autoReleasePool.cpp">
+      <Filter>engine\autoReleasePool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mono\src\signalHandler.cpp">
+      <Filter>engine\mono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\util\gxFileUtil.cpp">
+      <Filter>engine\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1657,6 +1672,18 @@
     </ClInclude>
     <ClInclude Include="..\src\postProcessor\ToneMappingFilter.h">
       <Filter>engine\postProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\IAnimationTrack.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\autoReleasePool\autoReleasePool.h">
+      <Filter>engine\autoReleasePool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mono\src\signalHandler.h">
+      <Filter>engine\mono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\gxFileUtil.h">
+      <Filter>engine\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

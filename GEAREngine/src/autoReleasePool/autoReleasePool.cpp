@@ -1,5 +1,6 @@
 #include "autoReleasePool.h"
 #include <assert.h>
+#include <algorithm>
 
 namespace GEAR{
     namespace Memory{

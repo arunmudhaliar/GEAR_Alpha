@@ -144,7 +144,7 @@ namespace AndroidProjectMaker
             command_buffer = ant_home + "/bin/ant";
             argument_buffer = "debug -buildfile " + rootDirectory + "/TempAndroid/build.xml";
 #else
-            command_buffer = ant_home+"/bin/ant
+            command_buffer = ant_home + "/bin/ant";
             argument_buffer = "release -buildfile "+rootDirectory+"/TempAndroid//build.xml";
 #endif
             ExecuteCommandSync(command_buffer, argument_buffer, rootDirectory, os_platform);

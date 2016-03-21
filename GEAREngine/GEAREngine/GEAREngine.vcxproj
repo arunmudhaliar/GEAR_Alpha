@@ -84,6 +84,7 @@
     <ClCompile Include="..\src\audio\SoundEngine.cpp" />
     <ClCompile Include="..\src\audio\SoundSample.cpp" />
     <ClCompile Include="..\src\audio\SoundSource.cpp" />
+    <ClCompile Include="..\src\autoReleasePool\autoReleasePool.cpp" />
     <ClCompile Include="..\src\core\Camera.cpp" />
     <ClCompile Include="..\src\core\COctree.cpp" />
     <ClCompile Include="..\src\core\fbo.cpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="..\src\core\gxSkinnedMesh.cpp" />
     <ClCompile Include="..\src\core\gxSurfaceShader.cpp" />
     <ClCompile Include="..\src\core\gxWorld.cpp" />
+    <ClCompile Include="..\src\core\IAnimationTrack.cpp" />
     <ClCompile Include="..\src\core\LayerManager.cpp" />
     <ClCompile Include="..\src\core\object3d.cpp" />
     <ClCompile Include="..\src\core\physicsEngine.cpp" />
@@ -126,6 +128,7 @@
     <ClCompile Include="..\src\lpng151\pngwutil.c" />
     <ClCompile Include="..\src\mono\src\monoScript.cpp" />
     <ClCompile Include="..\src\mono\src\monoWrapper.cpp" />
+    <ClCompile Include="..\src\mono\src\signalHandler.cpp" />
     <ClCompile Include="..\src\physics\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp" />
     <ClCompile Include="..\src\physics\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp" />
     <ClCompile Include="..\src\physics\BulletCollision\BroadphaseCollision\btCollisionAlgorithm.cpp" />
@@ -280,6 +283,7 @@
     <ClCompile Include="..\src\util\FontManager.cpp" />
     <ClCompile Include="..\src\util\gxCrc32.cpp" />
     <ClCompile Include="..\src\util\gxFile.cpp" />
+    <ClCompile Include="..\src\util\gxFileUtil.cpp" />
     <ClCompile Include="..\src\util\gxUtil.cpp" />
     <ClCompile Include="..\src\util\nvProfiler.cpp" />
     <ClCompile Include="..\src\util\nvprofiler\tracedisplayogl.cpp" />
@@ -299,6 +303,7 @@
     <ClInclude Include="..\src\audio\SoundEngine.h" />
     <ClInclude Include="..\src\audio\SoundSample.h" />
     <ClInclude Include="..\src\audio\SoundSource.h" />
+    <ClInclude Include="..\src\autoReleasePool\autoReleasePool.h" />
     <ClInclude Include="..\src\core\aabb.h" />
     <ClInclude Include="..\src\core\basicIncludes.h" />
     <ClInclude Include="..\src\core\Camera.h" />
@@ -321,6 +326,7 @@
     <ClInclude Include="..\src\core\gxTexture.h" />
     <ClInclude Include="..\src\core\gxTriInfo.h" />
     <ClInclude Include="..\src\core\gxWorld.h" />
+    <ClInclude Include="..\src\core\IAnimationTrack.h" />
     <ClInclude Include="..\src\core\LayerManager.h" />
     <ClInclude Include="..\src\core\matrix4x4f.h" />
     <ClInclude Include="..\src\core\object3d.h" />
@@ -349,6 +355,7 @@
     <ClInclude Include="..\src\lpng151\pngstruct.h" />
     <ClInclude Include="..\src\mono\src\monoScript.h" />
     <ClInclude Include="..\src\mono\src\monoWrapper.h" />
+    <ClInclude Include="..\src\mono\src\signalHandler.h" />
     <ClInclude Include="..\src\physics\btBulletCollisionCommon.h" />
     <ClInclude Include="..\src\physics\btBulletDynamicsCommon.h" />
     <ClInclude Include="..\src\physics\Bullet-C-Api.h" />
@@ -600,6 +607,7 @@
     <ClInclude Include="..\src\util\gxCrc32.h" />
     <ClInclude Include="..\src\util\gxExpandableArray.h" />
     <ClInclude Include="..\src\util\gxFile.h" />
+    <ClInclude Include="..\src\util\gxFileUtil.h" />
     <ClInclude Include="..\src\util\gxUtil.h" />
     <ClInclude Include="..\src\util\nvProfiler.h" />
     <ClInclude Include="..\src\util\nvprofiler\trace.h" />

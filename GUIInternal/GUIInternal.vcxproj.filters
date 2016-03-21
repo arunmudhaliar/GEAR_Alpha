@@ -49,6 +49,9 @@
     <Filter Include="GEAREditor\OSSpecific">
       <UniqueIdentifier>{2161bf4a-3979-4ae1-9940-297398d2741b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\macosProj">
+      <UniqueIdentifier>{3ddb93d8-0f98-4fcf-9d17-b56d171115e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -309,9 +312,6 @@
     <ClInclude Include="GEAREditor\OSSpecific\MDropData.h">
       <Filter>GEAREditor\OSSpecific</Filter>
     </ClInclude>
-    <ClInclude Include="..\macosProj\GEARInternal\GEARInternal\appEntry.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="GEAREditor\OSSpecific\MenuCPPInterface.h">
       <Filter>GEAREditor\OSSpecific</Filter>
     </ClInclude>
@@ -320,6 +320,21 @@
     </ClInclude>
     <ClInclude Include="GEAREditor\scenes\gearSceneAnimationEditor.h">
       <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\gui\geGraphControl.h">
+      <Filter>GEAREditor\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\scenes\gearSceneGraphEditor.h">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\macosProj\GEARInternal\GEARInternal\windowmessagepump.h">
+      <Filter>Source Files\macosProj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\macosProj\GEARInternal\GEARInternal\appEntry.h">
+      <Filter>Source Files\macosProj</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\secondryViews\geModalDialog.h">
+      <Filter>GEAREditor\secondryViews</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -497,9 +512,6 @@
     <ClCompile Include="GEAREditor\OSSpecific\ConfirmationDialog.cpp">
       <Filter>GEAREditor\OSSpecific</Filter>
     </ClCompile>
-    <ClCompile Include="..\macosProj\GEARInternal\GEARInternal\appEntry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GEAREditor\OSSpecific\MenuImpWin32.cpp">
       <Filter>GEAREditor\OSSpecific</Filter>
     </ClCompile>
@@ -508,6 +520,21 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\scenes\gearSceneAnimationEditor.cpp">
       <Filter>GEAREditor\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\gui\geGraphControl.cpp">
+      <Filter>GEAREditor\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\scenes\gearSceneGraphEditor.cpp">
+      <Filter>GEAREditor\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\macosProj\GEARInternal\GEARInternal\windowMessagePump.cpp">
+      <Filter>Source Files\macosProj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\macosProj\GEARInternal\GEARInternal\appEntry.cpp">
+      <Filter>Source Files\macosProj</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\secondryViews\geModalDialog.cpp">
+      <Filter>GEAREditor\secondryViews</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

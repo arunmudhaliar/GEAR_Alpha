@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\macosProj\GEARInternal\GEARInternal\appEntry.h" />
+    <ClInclude Include="..\macosProj\GEARInternal\GEARInternal\windowmessagepump.h" />
     <ClInclude Include="GEAREditor\AssetImporter.h" />
     <ClInclude Include="GEAREditor\core\geTexture.h" />
     <ClInclude Include="GEAREditor\core\steTexturePacket.h" />
@@ -103,6 +104,7 @@
     <ClInclude Include="GEAREditor\EditorApp.h" />
     <ClInclude Include="GEAREditor\gui\geButton.h" />
     <ClInclude Include="GEAREditor\gui\geColorControl.h" />
+    <ClInclude Include="GEAREditor\gui\geGraphControl.h" />
     <ClInclude Include="GEAREditor\gui\geGUIBase.h" />
     <ClInclude Include="GEAREditor\gui\geGUIManager.h" />
     <ClInclude Include="GEAREditor\gui\geHorizontalSlider.h" />
@@ -135,6 +137,7 @@
     <ClInclude Include="GEAREditor\scenes\gearSceneAnimationEditor.h" />
     <ClInclude Include="GEAREditor\scenes\gearSceneConsole.h" />
     <ClInclude Include="GEAREditor\scenes\gearSceneFileView.h" />
+    <ClInclude Include="GEAREditor\scenes\gearSceneGraphEditor.h" />
     <ClInclude Include="GEAREditor\scenes\gearSceneHierarchy.h" />
     <ClInclude Include="GEAREditor\scenes\gearScenePreview.h" />
     <ClInclude Include="GEAREditor\scenes\gearSceneProject.h" />
@@ -162,6 +165,7 @@
     <ClInclude Include="GEAREditor\scenes\settingsViews\geSettingsGlobal.h" />
     <ClInclude Include="GEAREditor\secondryViews\geAssetImportDlg.h" />
     <ClInclude Include="GEAREditor\secondryViews\geColorDlg.h" />
+    <ClInclude Include="GEAREditor\secondryViews\geModalDialog.h" />
     <ClInclude Include="GEAREditor\secondryViews\geSecondryView.h" />
     <ClInclude Include="GEAREditor\secondryViews\geTextureDlg.h" />
     <ClInclude Include="GEAREditor\SpriteManager\Sprite.h" />
@@ -184,11 +188,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\macosProj\GEARInternal\GEARInternal\appEntry.cpp" />
+    <ClCompile Include="..\macosProj\GEARInternal\GEARInternal\windowMessagePump.cpp" />
     <ClCompile Include="GEAREditor\AssetImporter.cpp" />
     <ClCompile Include="GEAREditor\core\geTextureManager.cpp" />
     <ClCompile Include="GEAREditor\EditorApp.cpp" />
     <ClCompile Include="GEAREditor\gui\geButton.cpp" />
     <ClCompile Include="GEAREditor\gui\geColorControl.cpp" />
+    <ClCompile Include="GEAREditor\gui\geGraphControl.cpp" />
     <ClCompile Include="GEAREditor\gui\geGUIBase.cpp" />
     <ClCompile Include="GEAREditor\gui\geGUIManager.cpp" />
     <ClCompile Include="GEAREditor\gui\geHorizontalSlider.cpp" />
@@ -214,6 +220,7 @@
     <ClCompile Include="GEAREditor\scenes\gearSceneAnimationEditor.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneConsole.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneFileView.cpp" />
+    <ClCompile Include="GEAREditor\scenes\gearSceneGraphEditor.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneHierarchy.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearScenePreview.cpp" />
     <ClCompile Include="GEAREditor\scenes\gearSceneProject.cpp" />
@@ -237,6 +244,7 @@
     <ClCompile Include="GEAREditor\scenes\propertyViews\geTextureThumbnailExtended.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geAssetImportDlg.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geColorDlg.cpp" />
+    <ClCompile Include="GEAREditor\secondryViews\geModalDialog.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geSecondryView.cpp" />
     <ClCompile Include="GEAREditor\secondryViews\geTextureDlg.cpp" />
     <ClCompile Include="GEAREditor\SpriteManager\Sprite.cpp" />

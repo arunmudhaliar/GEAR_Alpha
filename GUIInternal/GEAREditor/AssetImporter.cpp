@@ -10,7 +10,7 @@
 
 #include <sys/types.h>
 #include <assert.h>
-#include<dirent.h>
+#include <dirent.h>
 #ifdef GEAR_WINDOWS
     #include <direct.h>
 #endif

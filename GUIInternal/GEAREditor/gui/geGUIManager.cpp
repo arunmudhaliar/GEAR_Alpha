@@ -4,6 +4,7 @@ CGETextureManager geGUIManager::g_cTextureManager;
 
 geGUIManager::geGUIManager(geFontManager* fontmanager)
 {
+	selectedWindow = nullptr;
     layoutManager = new geLayoutManager(fontmanager);
 }
 

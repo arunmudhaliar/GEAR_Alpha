@@ -321,11 +321,9 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	{
 		
 		gxAnimation* animationController=obj->getAnimationController();
-		std::vector<gxAnimationSet*>* animList=animationController->getAnimationSetList();
-		for(std::vector<gxAnimationSet*>::iterator it = animList->begin(); it != animList->end(); ++it)
+		const std::vector<gxAnimationSet*>* animList=animationController->getAnimationSetList();
+        for (auto animationSet : *animList)
 		{
-			gxAnimationSet* animationSet = *it;
-
 			gePropertyAnimationSet* pAnimationSetNode  = new gePropertyAnimationSet(rendererGUI, animationParentTreeNode, obj, animationSet, &spriteArray[6], fontManagerGUI);
 			pAnimationSetNode->setUserData(animationSet);
 		}

@@ -6,7 +6,7 @@ Camera* Camera::create()
     if(newObject)
     {
         newObject->autoRelease();
-        newObject->retain();
+        REF_RETAIN(newObject);
         
         return newObject;
     }

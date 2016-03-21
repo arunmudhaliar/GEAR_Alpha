@@ -1,6 +1,7 @@
 #include "autoReleasePool.h"
 #include <assert.h>
 #include <algorithm>
+#include <sstream>
 
 namespace GEAR{
     namespace Memory{
@@ -106,6 +107,22 @@ namespace GEAR{
             }
             
             clearPool();
+        }
+        
+        const std::string AutoReleasePool::toString()
+        {
+            std::string str;
+            std::stringstream stringStream;
+            stringStream << "[" << memoryPool.size() <<"] ";
+            
+            for (auto ref : memoryPool)
+            {
+                stringStream << "{" << ref->getRetainCount() <<"}";
+            }
+            
+            str = stringStream.str();
+            
+            return str;
         }
     }//namespace Memory
 }//namespace GEAR

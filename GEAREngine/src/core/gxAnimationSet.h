@@ -3,17 +3,21 @@
 #include "IAnimationTrack.h"
 #include <vector>
 #include "../util/gxFile.h"
+#include "../autoReleasePool/autoReleasePool.h"
 
-class DECLSPEC gxAnimationSet
+using namespace GEAR::Memory;
+
+class DECLSPEC gxAnimationSet : public Ref
 {
 public:
-	gxAnimationSet(const char* animationName);
+    gxAnimationSet(const std::string& animationName);
 	~gxAnimationSet();
-
+    static gxAnimationSet* create(const std::string& name);
+    
 	void appendTrack(IAnimationTrack* track);
 	//void update(float dt);
 
-	const char* getAnimationName()                  {	return m_szName;            }
+    const std::string& getAnimationName()           {	return animationName;   }
 	std::vector<IAnimationTrack*>& getTrackList()	{	return animationTracks;	}
 
 	void write(gxFile& file);
@@ -31,7 +35,7 @@ private:
 	std::vector<IAnimationTrack*> animationTracks;
 	int numberOfFrames;
 	int animationFPS;
-	char m_szName[256];
+    std::string animationName;
 	int crcOfMeshData;
 };
 

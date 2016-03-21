@@ -342,8 +342,9 @@ bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node
 						animSet=animationController->getAnimationSetList()->at(nAnimSet-1);
 					if(!animSet)
 					{
-						animSet = new gxAnimationSet(pAnimStack->GetName());
+                        animSet = gxAnimationSet::create(pAnimStack->GetName());
 						animationController->appendAnimationSet(animSet);
+                        REF_RELEASE(animSet);
 						//animationController->setActiveAnimationSet(0);
 						animationSetList->push_back(animSet);
 					}

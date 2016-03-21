@@ -13,11 +13,12 @@ class gePropertyAnimationSet : public geTreeNode, public MGUIObserver
 {
 public:
 	gePropertyAnimationSet(rendererGL10* renderer, geGUIBase* parent, object3d* ownerObj, gxAnimationSet* animSet, Sprite2Dx* sprite, geFontManager* fontmanager):
-	  geTreeNode(renderer, parent, animSet->getAnimationName(), sprite, fontmanager, 10)
+	  geTreeNode(renderer, parent, animSet->getAnimationName().c_str(), sprite, fontmanager, 10)
 	{
 		setAnimationButton=NULL;
 		ownerObject3d=ownerObj;
 		animationSet=animSet;
+        REF_RETAIN(animationSet);
 		setSize(m_cSize.x, m_cSize.y*1.2f);
 
 		setAnimationButton = new geButton("", fontmanager);
@@ -33,6 +34,7 @@ public:
 
 	virtual ~gePropertyAnimationSet()
 	{
+        REF_RELEASE(animationSet);
 	}
 
 	virtual void onSize(float cx, float cy, int flag)

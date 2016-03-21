@@ -12,11 +12,14 @@ public:
 	~gxAnimation();
 
 	void appendAnimationSet(gxAnimationSet* animationSet);
+    bool removeAnimationSet(gxAnimationSet* animationSet);
+    void removeAllAnimationSet();
+    
 	void update(float dt);
 
 	//gxAnimationSet* setActiveAnimationSet(int index);
 	gxAnimationSet* getActiveAnimationSet()             {	return activeAnimationSet;          }
-	std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &animationSets;              }
+	const std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &animationSets;              }
 	gxAnimationSet* getAnimationSet(int index)          {	return animationSets[index];        }
 	int getAnimSetCount()                               {	return (int)animationSets.size();	}
 

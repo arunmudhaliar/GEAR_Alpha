@@ -812,6 +812,8 @@ void gearSceneWorldEditor::drawStats()
 			}
 		}
 
+        geFontManager::g_pFontArial10_84Ptr->drawString("Ref objects : "+AutoReleasePool::getInstance().toString(), 0, 0+geFontManager::g_pFontArial10_84Ptr->getLineHeight()*cnt++, m_cSize.x);
+    
 #if USE_NVPROFILER
 		nvProfiler::SampleAndRenderStats();
 #endif

@@ -61,7 +61,7 @@ object3d* object3d::create()
     if(newObject)
     {
         newObject->autoRelease();
-        newObject->retain();
+        REF_RETAIN(newObject);
         
         return newObject;
     }

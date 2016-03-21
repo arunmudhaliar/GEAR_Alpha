@@ -13,12 +13,35 @@ gxAnimation::gxAnimation()
 
 gxAnimation::~gxAnimation()
 {
-	animationSets.clear();
+    removeAllAnimationSet();
 }
 
 void gxAnimation::appendAnimationSet(gxAnimationSet* animationSet)
 {
+    REF_RETAIN(animationSet);
 	animationSets.push_back(animationSet);
+}
+
+bool gxAnimation::removeAnimationSet(gxAnimationSet* animationSet)
+{
+    int oldSz = (int)animationSets.size();
+    animationSets.erase(std::remove(animationSets.begin(), animationSets.end(), animationSet), animationSets.end());
+    if(oldSz!=animationSets.size())
+    {
+        REF_RELEASE(animationSet);
+        return true;
+    }
+    
+    return false;
+}
+
+void gxAnimation::removeAllAnimationSet()
+{
+    for (auto animationSet : animationSets)
+    {
+        REF_RELEASE(animationSet);
+    }
+    animationSets.clear();
 }
 
 void gxAnimation::update(float dt)
@@ -48,9 +71,10 @@ void gxAnimation::read(gxFile& file)
 	file.Read(nAnimSet);
 	for(int x=0;x<nAnimSet;x++)
 	{
-		gxAnimationSet* animationSet = new gxAnimationSet("");
+        gxAnimationSet* animationSet = gxAnimationSet::create("");
 		animationSet->read(file);
 		appendAnimationSet(animationSet);
+        REF_RELEASE(animationSet);
 	}
 }
 

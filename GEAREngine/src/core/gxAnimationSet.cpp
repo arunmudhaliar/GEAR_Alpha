@@ -1,9 +1,24 @@
 #include "gxAnimationSet.h"
 #include "gxAnimationTrack.h"
 
-gxAnimationSet::gxAnimationSet(const char* animationName)
+gxAnimationSet* gxAnimationSet::create(const std::string& name)
 {
-	GX_STRCPY(m_szName, animationName);
+    auto newObject = new gxAnimationSet(name);
+    if(newObject)
+    {
+        newObject->autoRelease();
+        REF_RETAIN(newObject);
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
+gxAnimationSet::gxAnimationSet(const std::string& animationName):
+    Ref()
+{
+	this->animationName=animationName;
 	numberOfFrames=0;
 	animationFPS=0;
 	crcOfMeshData=0;
@@ -28,7 +43,7 @@ void gxAnimationSet::appendTrack(IAnimationTrack* track)
 
 void gxAnimationSet::write(gxFile& file)
 {
-	file.Write(m_szName);
+	file.Write(animationName.c_str());
 	file.Write((int)animationTracks.size());
 	for(auto animationTrack : animationTracks)
 	{
@@ -40,7 +55,7 @@ void gxAnimationSet::write(gxFile& file)
 void gxAnimationSet::read(gxFile& file)
 {
 	char* name=file.ReadString();
-	GX_STRCPY(m_szName, name);
+    animationName.assign(name, strlen(name));
 	GX_DELETE_ARY(name);
 	int nTrack=0;
 	file.Read(nTrack);
@@ -69,6 +84,6 @@ void gxAnimationSet::read(gxFile& file)
 extern "C" {
 extern DECLSPEC const char* gxAnimationSet_getAnimationName(gxAnimationSet* animSet)
 {
-	return animSet->getAnimationName();
+	return animSet->getAnimationName().c_str();
 }
 }

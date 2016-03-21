@@ -123,13 +123,7 @@ void gearSceneFileView::deleteAnmationFromObject3d(object3d* obj3d)
 	gxAnimation* animationController = obj3d->getAnimationController();
 	if(animationController)
 	{
-		std::vector<gxAnimationSet*>* animationSetList=animationController->getAnimationSetList();
-		for(std::vector<gxAnimationSet*>::iterator it = animationSetList->begin(); it != animationSetList->end(); ++it)
-		{
-			gxAnimationSet* animationSet = *it;
-			GE_DELETE(animationSet);
-		}
-		animationSetList->clear();
+        animationController->removeAllAnimationSet();
 	}
 
 	std::vector<object3d*>* childList=obj3d->getChildList();

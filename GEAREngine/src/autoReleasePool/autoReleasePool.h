@@ -17,7 +17,8 @@ namespace GEAR{
             void autoRelease();
             void release();
             void retain();
-
+            int getRetainCount()    {   return retainCount; }
+            
         protected:
             Ref();
             
@@ -38,6 +39,9 @@ namespace GEAR{
             
             friend void Ref::autoRelease();
             friend void Ref::release();
+            
+            int getRefCount()   {   return (int)memoryPool.size();   }
+            const std::string toString();
             
         private:
             bool addRefToPool(Ref* ref);

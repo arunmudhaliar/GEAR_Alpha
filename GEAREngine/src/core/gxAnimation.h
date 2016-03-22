@@ -11,7 +11,7 @@ public:
 	gxAnimation();
 	~gxAnimation();
 
-	void appendAnimationSet(gxAnimationSet* animationSet);
+	bool appendAnimationSet(gxAnimationSet* animationSet);
     bool removeAnimationSet(gxAnimationSet* animationSet);
     void removeAllAnimationSet();
     

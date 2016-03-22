@@ -13,6 +13,20 @@ gxAnimationTrack::~gxAnimationTrack()
 	//GX_DELETE_ARY(animationTrack);
 }
 
+gxAnimationTrack* gxAnimationTrack::create()
+{
+    auto newObject = new gxAnimationTrack();
+    if(newObject)
+    {
+        newObject->autoRelease();
+        REF_RETAIN(newObject);
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
 matrix4x4f* gxAnimationTrack::allocateFrames()
 {
 	if(numberOfFrames==0) return NULL;

@@ -28,17 +28,19 @@ gxAnimationSet::~gxAnimationSet()
 {
     for(auto animationTrack : animationTracks)
 	{
-		GX_DELETE(animationTrack);
+		REF_RELEASE(animationTrack);
 	}
 	animationTracks.clear();
 }
 
-void gxAnimationSet::appendTrack(IAnimationTrack* track)
+void gxAnimationSet::appendTrack(IAnimationTrack* animationTrack)
 {
-	animationFPS=track->getFPS();
-	if(track->getTotalFrames()>numberOfFrames)
-		numberOfFrames=track->getTotalFrames();
-	animationTracks.push_back(track);
+	animationFPS=animationTrack->getFPS();
+	if(animationTrack->getTotalFrames()>numberOfFrames)
+		numberOfFrames=animationTrack->getTotalFrames();
+    
+    REF_RETAIN(animationTrack);
+	animationTracks.push_back(animationTrack);
 }
 
 void gxAnimationSet::write(gxFile& file)
@@ -68,9 +70,10 @@ void gxAnimationSet::read(gxFile& file)
         {
             case 1:
             {
-                gxAnimationTrack* animationTrack = new gxAnimationTrack();
+                gxAnimationTrack* animationTrack = gxAnimationTrack::create();
                 animationTrack->read(file);
                 appendTrack(animationTrack);
+                REF_RELEASE(animationTrack);
             }
                 break;
                 

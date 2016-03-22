@@ -7,7 +7,8 @@ class DECLSPEC gxAnimationTrack : public IAnimationTrack
 public:
 	gxAnimationTrack();
 	~gxAnimationTrack();
-
+    static gxAnimationTrack* create();
+    
     matrix4x4f* allocateFrames();
 
 	void write(gxFile& file);

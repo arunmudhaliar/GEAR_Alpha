@@ -260,7 +260,7 @@ EditorGEARApp::EditorGEARApp():
     
 EditorGEARApp::~EditorGEARApp()
 {
-        
+    engine_destroy();
 }
 
 int assetImport_secondryThread( void *ptr )

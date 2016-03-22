@@ -49,7 +49,7 @@ public:
 
 	gxMaterial* getDefaultMaterial()					{	return &defaultMaterial;		}
 	std::vector<gxMaterial*>* getMaterialList()			{	return &materialList;		}
-	std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &animationSetList;	}
+	const std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &animationSetList;	}
 
 	void createOctree(int minTransformObj, int maxLevel);
 	COctree* getOctree()	{	return octree;	}

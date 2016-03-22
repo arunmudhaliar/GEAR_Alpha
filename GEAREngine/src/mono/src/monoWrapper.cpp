@@ -60,6 +60,7 @@ std::vector<std::string> monoWrapper::g_monoscriptlist;
 std::vector<monoScript*> monoWrapper::g_monoScriptClassDefs;
 
 bool monoWrapper::g_isSimulationRunning = false;
+object3d* monoWrapper::g_null_obj = nullptr;
 
 void monoWrapper::loadMonoModules(const std::string& monoInstallPath)
 {
@@ -67,6 +68,8 @@ void monoWrapper::loadMonoModules(const std::string& monoInstallPath)
 	return;
 #endif
 
+    g_null_obj = new object3d(999);
+    
     g_cMonoInstallPath = monoInstallPath;
     mono_set_dirs((g_cMonoInstallPath+"/lib").c_str(), (g_cMonoInstallPath+"/etc").c_str());
 	mono_config_parse(NULL);
@@ -379,6 +382,7 @@ void monoWrapper::updateMono()
 
 void monoWrapper::destroyMono()
 {
+    GX_DELETE(g_null_obj);
 	destroyUserDefinedMonoClassDefs();
 #ifdef USEMONOENGINE
     unloadAddDomain();
@@ -521,10 +525,9 @@ void monoWrapper::mono_engine_resize(gxWorld* world, float x, float y, float cx,
 void monoWrapper::mono_engine_render(gxWorld* world, object3d* light, int renderFlag)
 {
 #ifdef USEMONOENGINE
-	object3d null_obj(999);
 	object3d* lightPtr=light;
 	if(lightPtr==NULL)
-		lightPtr=&null_obj;
+		lightPtr=g_null_obj;
 	void* args[3]={&world, &lightPtr, &renderFlag};
 	mono_runtime_invoke(g_pMethod_engine_render, NULL, args, NULL);
 #else
@@ -535,10 +538,9 @@ void monoWrapper::mono_engine_render(gxWorld* world, object3d* light, int render
 void monoWrapper::mono_engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light, int renderFlag)
 {
 #ifdef USEMONOENGINE
-	object3d null_obj(999);
 	object3d* lightPtr=light;
 	if(lightPtr==NULL)
-		lightPtr=&null_obj;
+		lightPtr=g_null_obj;
 	void* args[4]={&world, &obj, &lightPtr, &renderFlag};
 	mono_runtime_invoke(g_pMethod_engine_renderSingleObject, NULL, args, NULL);
 #else

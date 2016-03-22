@@ -51,6 +51,7 @@ namespace GEAR{
         
         AutoReleasePool::~AutoReleasePool()
         {
+            clearPool();
             destroyAllFromPool();
         }
         
@@ -92,11 +93,12 @@ namespace GEAR{
         
         void AutoReleasePool::clearPool()
         {
-            for (auto ref : destroyPool)
+            while (destroyPool.size())
             {
-                GX_DELETE(ref);
+                auto ptr = destroyPool[0];
+                destroyPool.erase(std::remove(destroyPool.begin(), destroyPool.end(), ptr));
+                GX_DELETE(ptr);
             }
-            destroyPool.clear();
         }
 
         void AutoReleasePool::destroyAllFromPool()

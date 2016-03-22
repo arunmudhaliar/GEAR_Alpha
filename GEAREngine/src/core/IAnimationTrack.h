@@ -3,9 +3,12 @@
 #include "basicIncludes.h"
 #include "matrix4x4f.h"
 #include "../util/gxFile.h"
+#include "../autoReleasePool/autoReleasePool.h"
+
+using namespace GEAR::Memory;
 
 class object3d;
-class DECLSPEC IAnimationTrack
+class DECLSPEC IAnimationTrack : public Ref
 {
 public:
 	IAnimationTrack();

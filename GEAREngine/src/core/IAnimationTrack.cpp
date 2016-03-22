@@ -1,6 +1,7 @@
 #include "IAnimationTrack.h"
 
-IAnimationTrack::IAnimationTrack()
+IAnimationTrack::IAnimationTrack():
+    Ref()
 {
 	animationFPS=0;
 	numberOfFrames=0;

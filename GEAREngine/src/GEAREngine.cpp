@@ -42,10 +42,7 @@ extern DECLSPEC void engine_resize(gxWorld* world, float x, float y, float cx, f
 
 extern DECLSPEC void engine_destroy()
 {
-	g_cGEAREngine.resetEngine();
-    
-    //Destroy all pending objects from the pool.
-    GEAR::Memory::AutoReleasePool::getInstance().destroyAllFromPool();
+	g_cGEAREngine.resetEngine();    
 }
 
 extern DECLSPEC void engine_setMetaFolder(gxWorld* world, const char* metaFolder)

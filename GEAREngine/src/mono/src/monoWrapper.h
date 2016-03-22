@@ -123,4 +123,5 @@ private:
 	//scripts
 	static std::vector<std::string> g_monoscriptlist;
 	static std::vector<monoScript*> g_monoScriptClassDefs;
+    static object3d* g_null_obj;
 };

@@ -63,6 +63,7 @@ void geGraphControl::setTrack(IAnimationTrack* track)
     }
     
     animationTrack = track;
+    //REF_RETAIN(animationTrack);
     
     //code to restrict the graph to total no of frames.
 //    this->upperLimit = track->getTotalFrames();

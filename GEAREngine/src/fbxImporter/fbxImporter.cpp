@@ -349,12 +349,13 @@ bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node
 						animationSetList->push_back(animSet);
 					}
 
-					animTrack = new gxAnimationTrack();
+					animTrack = gxAnimationTrack::create();
 					animTrack->setName(fbxNode.GetName());
 					animTrack->setFPS((int)lFrameRate);
 					animTrack->setTotalFrames((int)nGlobalFrame);
 					componentTrack = animTrack->allocateFrames();
 					animSet->appendTrack(animTrack);
+                    REF_RELEASE(animTrack);
                     parent_obj_node->applyAnimationSetRecursive(animSet);
 				}
 

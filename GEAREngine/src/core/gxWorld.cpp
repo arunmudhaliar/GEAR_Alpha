@@ -685,22 +685,21 @@ void gxWorld::loadAnmationFromObject3d(object3d* obj3d, int crc)
 		std::vector<gxAnimationSet*> duplicateList;
 		std::vector<gxAnimationSet*> reinsertFromWorldList;
 		const std::vector<gxAnimationSet*>* animationSetList=animationController->getAnimationSetList();
-		//for(std::vector<gxAnimationSet*>::iterator it = animationSetList->begin(); it != animationSetList->end(); ++it)
         for(auto animationSet : *animationSetList)
 		{
-			//gxAnimationSet* animationSet = *it;
-
 			bool bFound=false;
 			//check if the animation already on world list
-			std::vector<gxAnimationSet*>* world_animationSetList=getAnimationSetList();
-			for(std::vector<gxAnimationSet*>::iterator it2 = world_animationSetList->begin(); it2 != world_animationSetList->end(); ++it2)
+			const std::vector<gxAnimationSet*>* world_animationSetList=getAnimationSetList();
+            for(auto worldanimationSet : *world_animationSetList)
 			{
-				gxAnimationSet* worldanimationSet = *it2;
 				if(worldanimationSet->getCRCOfMeshData()==crc && worldanimationSet->getAnimationName().compare(animationSet->getAnimationName())==0)
 				{
 					bFound=true;
 					duplicateList.push_back(animationSet);
-					reinsertFromWorldList.push_back(worldanimationSet);
+                    if(std::find(reinsertFromWorldList.begin(), reinsertFromWorldList.end(), worldanimationSet)==reinsertFromWorldList.end())
+                    {
+                        reinsertFromWorldList.push_back(worldanimationSet);
+                    }
 					break;
 				}
 			}
@@ -713,17 +712,15 @@ void gxWorld::loadAnmationFromObject3d(object3d* obj3d, int crc)
 		}
 
 		//destroy duplicates
-		for(std::vector<gxAnimationSet*>::iterator it = duplicateList.begin(); it != duplicateList.end(); ++it)
+        for(auto duplicate_animationSet : duplicateList)
 		{
-			gxAnimationSet* duplicate_animationSet = *it;
             animationController->removeAnimationSet(duplicate_animationSet);
 		}
 		duplicateList.clear();
 
 		//reinsert any animset from world to object's animlist
-		for(std::vector<gxAnimationSet*>::iterator it = reinsertFromWorldList.begin(); it != reinsertFromWorldList.end(); ++it)
+        for(auto reinsert_animationSet : reinsertFromWorldList)
 		{
-			gxAnimationSet* reinsert_animationSet = *it;
             animationController->appendAnimationSet(reinsert_animationSet);
 		}
 		reinsertFromWorldList.clear();

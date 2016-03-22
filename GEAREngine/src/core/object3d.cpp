@@ -125,8 +125,10 @@ object3d::~object3d()
 	}
 	attachedScriptInstanceList.clear();
 
+    REF_RELEASE(animationTrack);
 	//if(animationTrack)
 	//	animationTrack->setObject3d(NULL);
+    
 	assetFileCRC=0;
 	parent=NULL;
 	animationTrack=NULL;
@@ -605,7 +607,13 @@ gxAnimation* object3d::getAnimationController()
 
 void object3d::setAnimationTrack(IAnimationTrack* track)
 {
-	animationTrack=track;
+    if(track==animationTrack)
+        return;
+    
+    REF_RELEASE(animationTrack);
+    animationTrack=track;
+    REF_RETAIN(animationTrack);
+    
 	//if(animationTrack)
 	//	animationTrack->setObject3d(this);
 }

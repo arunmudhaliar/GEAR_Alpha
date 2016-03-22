@@ -35,7 +35,6 @@ namespace GEAR{
             ~AutoReleasePool();
             
             void clearPool();
-            void destroyAllFromPool();
             
             friend void Ref::autoRelease();
             friend void Ref::release();
@@ -44,6 +43,7 @@ namespace GEAR{
             const std::string toString();
             
         private:
+            void destroyAllFromPool();
             bool addRefToPool(Ref* ref);
             bool destroyRefFromPool(Ref* ref);
 

@@ -16,10 +16,16 @@ gxAnimation::~gxAnimation()
     removeAllAnimationSet();
 }
 
-void gxAnimation::appendAnimationSet(gxAnimationSet* animationSet)
+bool gxAnimation::appendAnimationSet(gxAnimationSet* animationSet)
 {
-    REF_RETAIN(animationSet);
-	animationSets.push_back(animationSet);
+    if(std::find(animationSets.begin(), animationSets.end(), animationSet)==animationSets.end())
+    {
+        REF_RETAIN(animationSet);
+        animationSets.push_back(animationSet);
+        return true;
+    }
+    
+    return false;
 }
 
 bool gxAnimation::removeAnimationSet(gxAnimationSet* animationSet)

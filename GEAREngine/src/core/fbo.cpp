@@ -49,7 +49,7 @@ void FBO::ReInitFBO(int w, int h)
 			GLuint* t=textures.at(x);
 			CHECK_GL_ERROR(glDeleteTextures(1, t));
 
-			delete t;
+			GX_DELETE(t);
 		}
 		textures.clear();
 	}
@@ -107,7 +107,7 @@ void FBO::ResetFBO()
 		GLuint* t=textures.at(x);
 		CHECK_GL_ERROR(glDeleteTextures(1, t));
 
-		delete t;
+		GX_DELETE(t);
 	}
 
 	textures.clear();

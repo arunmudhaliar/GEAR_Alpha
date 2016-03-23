@@ -23,7 +23,15 @@ public:
 	float* allocateAndCopyVertexCopyBuffer();
 	void clearPrivateIterator()             {	privateIterator=0;          }
 
-	void setRootNode(object3d* rootNode)	{	this->rootNode = rootNode;	}
+	void setRootNode(object3d* rootNode)
+    {
+        if(this->rootNode == rootNode)
+            return;
+        
+        REF_RELEASE(this->rootNode);
+        this->rootNode = rootNode;
+        REF_RETAIN(this->rootNode);
+    }
 
 protected:
     virtual void writeData(gxFile& file);

@@ -1,7 +1,22 @@
 #include "gxMaterial.h"
 
+gxMaterial* gxMaterial::create()
+{
+    auto newObject = new gxMaterial();
+    if(newObject)
+    {
+        newObject->autoRelease();
+        REF_RETAIN(newObject);
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
 gxMaterial::gxMaterial():
-	GEARAsset()
+	GEARAsset(),
+    Ref()
 {
 	diffuseColor.set(0.5f, 0.5f, 0.5f, 1.0f);
 	ambientColor.set(0.1f, 0.1f, 0.1f, 1.0f);
@@ -131,7 +146,7 @@ void gxMaterial::read(gxFile& file)
 
 gxMaterial* gxMaterial::createNewMaterial()
 {
-	gxMaterial* material = new gxMaterial();
+    gxMaterial* material = gxMaterial::create();
 	material->setMaterialName("New Material");
 
 	material->setDiffuseClr(vector4f(0.7f, 0.7f, 0.7f, 1.0f));

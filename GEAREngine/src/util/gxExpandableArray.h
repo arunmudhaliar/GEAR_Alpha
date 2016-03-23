@@ -114,7 +114,7 @@ public:
 		for(int x=0;x<count;x++)
 		{
 			if(x==pos)
-				break;					//position reached
+				break;				//position reached
 			else
 				node=node->GetNext();	
 		}

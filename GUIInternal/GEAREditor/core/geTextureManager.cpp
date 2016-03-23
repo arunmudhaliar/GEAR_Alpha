@@ -72,7 +72,7 @@ steTexturePacket* CGETextureManager::LoadTexture(const char* aFileName, const ch
 	if(texID==0)
 	{
 		printf("%s not found", aFileName);
-		delete aNewTexturePacket;
+		GX_DELETE(aNewTexturePacket);
 		return NULL;
 	}
 

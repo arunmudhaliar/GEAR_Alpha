@@ -127,6 +127,7 @@ public:
 	object3d(int objID);
 	virtual ~object3d();
 
+    static object3d* create(int objID);
     static object3d* create();
     
     //clone
@@ -159,9 +160,9 @@ public:
 	bool removeChild(object3d* child);
 
 #ifdef USE_BXLIST
-	bxLinkedList<object3d*>* getChildList()	{	return &childList;	}
+	bxLinkedList<object3d*>* getChildList()         {	return &childList;	}
 #else
-	std::vector<object3d*>* getChildList()	{	return &childList;	}
+	const std::vector<object3d*>* getChildList()	{	return &childList;	}
 #endif
 	//
 

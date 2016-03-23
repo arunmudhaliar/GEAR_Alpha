@@ -18,6 +18,7 @@ gearSceneHierarchy::~gearSceneHierarchy()
 	//engine_setObject3dObserver(NULL);
 	//gxWorld* world=engine_getWorld(0);
 	//world->setObject3dObserver(NULL);
+    engine_destroy();
     GE_DELETE(gameObjectTreeView);
 }
 
@@ -271,10 +272,9 @@ void gearSceneHierarchy::createTVNode(geTreeNode* parentNode, object3d* obj, con
 	newtvNode->closeNode();
 	obj->setEditorUserData(newtvNode);
 
-	std::vector<object3d*>* list=obj->getChildList();
-	for(std::vector<object3d*>::iterator it = list->begin(); it != list->end(); ++it)
+    const std::vector<object3d*>* childlist = obj->getChildList();
+    for (auto childobj : *childlist)
 	{
-		object3d* childobj = *it;
 		createTVNode(newtvNode, childobj, NULL);
 	}
 }

@@ -20,6 +20,7 @@ public:
 	{
 		deleteVBOTriList();
 		GX_DELETE_ARY(triangleList);
+        REF_RELEASE(this->material);
 	}
 
 	int getVerticesCount()	{	return vertexCount;		}
@@ -35,7 +36,14 @@ public:
 	}
 
 	gxMaterial* getMaterial()				{	return material;            }
-	void setMaterial(gxMaterial* material)	{	this->material = material;	}
+	void setMaterial(gxMaterial* material)
+    {
+        if(this->material==material)
+            return;
+        REF_RELEASE(this->material);
+        this->material = material;
+        REF_RETAIN(this->material);
+    }
 
 	void write(gxFile& file)
 	{

@@ -122,7 +122,7 @@ object3d* fbxImporter::importFBXScene(const char* filePath, FbxManager &fbxManag
 		//triangulateFBXRecursive(fbxConverter, *fbxRoot);
       
 		// recurse over the scene nodes and import them as needed...
-		object3d* object3d_root_object = new object3d(OBJECT3D_DUMMY);
+        object3d* object3d_root_object = object3d::create(OBJECT3D_DUMMY);
 		object3d_root_object->setAssetFileCRC(fileCRC, filePath);
 		object3d_root_object->setName(gxUtil::getFileNameFromPath(filePath));
 
@@ -185,10 +185,9 @@ void fbxImporter::populateBonesToMeshNode(stBoneList* boneList, object3d* obj, o
         node=node->getNext();
 	}
 #else
-	std::vector<object3d*>* childlist=obj->getChildList();
-	for(std::vector<object3d*>::iterator it = childlist->begin(); it != childlist->end(); ++it)
-	{
-		object3d* childobj = *it;
+	const std::vector<object3d*>* childlist=obj->getChildList();
+    for (auto childobj : *childlist)
+    {
 		populateBonesToMeshNode(boneList, childobj, rootNode);
 	}
 #endif
@@ -269,7 +268,7 @@ object3d* fbxImporter::tryImportFBXSkinnedMesh(FbxNode &fbxNode, const FbxMatrix
 			}
 		}
 
-		gxSkinnedMesh* newSkinnedMesh = new gxSkinnedMesh();
+        gxSkinnedMesh* newSkinnedMesh = gxSkinnedMesh::create();
 		importFBXMesh(newSkinnedMesh, fbxNode, geometryOffset, materialList, rootObject3d, boneInfluenceList, boneList);
 		newSkinnedMesh->setName(fbxNode.GetName());
 
@@ -280,7 +279,7 @@ object3d* fbxImporter::tryImportFBXSkinnedMesh(FbxNode &fbxNode, const FbxMatrix
 	else
 	{
 		//didnt find any skinned mesh, so create a dummy object
-		object3d* object3d_child = new object3d(OBJECT3D_DUMMY);
+        object3d* object3d_child = object3d::create(OBJECT3D_DUMMY);
 		object3d_child->setName(fbxNode.GetName());
 		return object3d_child;
 	}
@@ -418,7 +417,7 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 			if(material==NULL)
 			{
 				//create a new material and add to list and assign to the tri list
-				material = new gxMaterial();
+                material = gxMaterial::create();
 				material->setMaterialName(surfaceMaterial->GetName());
 
 				//
@@ -518,7 +517,7 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 
 			if(material==NULL)
 			{
-				material=new gxMaterial();
+                material=gxMaterial::create();
 				material->setMaterialName(materialnamebuffer);
 
 					
@@ -557,19 +556,21 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 		else
 		{
 			//we don't have any skin modifier in this node, so only import mesh
-			gxMesh* newMesh = new gxMesh();
+            gxMesh* newMesh = gxMesh::create();
 			importFBXMesh(newMesh, fbxNode, fbxGeometryOffset, materialList, rootObject3d, NULL, NULL);
 			newMesh->setName(fbxNode.GetName());
 			parent_obj_node->appendChild(newMesh);
+            REF_RELEASE(newMesh);
 			parent_obj_node=newMesh;
 		}
 	}
 	else
 	{
 		//there is no mesh modifier in this node so create this node as dummy
-		object3d* object3d_child = new object3d(OBJECT3D_DUMMY);
+        object3d* object3d_child = object3d::create(OBJECT3D_DUMMY);
 		object3d_child->setName(fbxNode.GetName());
 		parent_obj_node->appendChild(object3d_child);
+        REF_RELEASE(object3d_child);
 		parent_obj_node=object3d_child;
 	}
 
@@ -775,7 +776,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxM
 				if(material==NULL)
 				{
 					//create a new material and add to list and assign to the tri list
-					material = new gxMaterial();
+                    material = gxMaterial::create();
 					material->setMaterialName(surfaceMaterial->GetName());
 
 					//
@@ -884,7 +885,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxM
 
 				if(material==NULL)
 				{
-					material=new gxMaterial();
+                    material=gxMaterial::create();
 					material->setMaterialName(materialnamebuffer);
 
 					

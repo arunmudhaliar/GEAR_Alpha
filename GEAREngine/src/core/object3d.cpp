@@ -55,9 +55,9 @@ extern DECLSPEC object3d* object3d_getParent(object3d* obj)
 }
 }
 
-object3d* object3d::create()
+object3d* object3d::create(int objID)
 {
-    auto newObject = new object3d(OBJECT3D_OBJECT);
+    auto newObject = new object3d(objID);
     if(newObject)
     {
         newObject->autoRelease();
@@ -67,6 +67,11 @@ object3d* object3d::create()
     }
     
     return nullptr;
+}
+
+object3d* object3d::create()
+{
+    return create(OBJECT3D_OBJECT);
 }
 
 object3d::object3d(int objID):
@@ -113,7 +118,7 @@ object3d::~object3d()
 	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
-		GX_DELETE(obj);
+		REF_RELEASE(obj);
 	}
 	childList.clear();
 #endif
@@ -132,7 +137,7 @@ object3d::~object3d()
 	assetFileCRC=0;
 	parent=NULL;
 	animationTrack=NULL;
-	GX_DELETE(animationController);
+	REF_RELEASE(animationController);
 }
 
 object3d* object3d::clone()
@@ -399,11 +404,11 @@ object3d* object3d::appendChild(object3d* child)
 	else
 		child->setLayer(child->getLayer(), false);
 
+    REF_RETAIN(child);
 #ifdef USE_BXLIST
 	childList.insertTail(child);
 #else
 	childList.push_back(child);
-
 #endif
 
 	child->transformationChangedf();
@@ -433,6 +438,7 @@ bool object3d::removeChild(object3d* child)
 			rootObserver->callback_object3dRemovedFromTree(child);
 		child->setParent(NULL);
 		//child->setAnimationTrack(NULL);	need to test fully
+        REF_RELEASE(child);
 		transformationChangedf();
 		return true;
 	}
@@ -600,7 +606,7 @@ void object3d::calculateAABB()
 gxAnimation* object3d::getAnimationController()
 {
     if(animationController==nullptr)
-        animationController = new gxAnimation();
+        animationController = gxAnimation::create();
     
     return animationController;
 }

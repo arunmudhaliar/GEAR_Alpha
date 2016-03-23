@@ -19,9 +19,6 @@
 class gePropertyMaterial : public geTreeNode, public MGUIObserver
 {
 public:
-	gxMaterial* m_pCurrentMaterialPtr;
-	gxTriInfo* m_pTriInfoPtr;
-
 	struct stSubMapView
 	{
 		stSubMapView(gxSubMap* submap)
@@ -43,7 +40,6 @@ public:
 		geSeperator* seperatorControl;
 		gxSubMap* subMap;	//for checking purpose
 	};
-	std::vector<stSubMapView*> subMapList;
 
 	gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo, geFontManager* fontManager);
 	virtual ~gePropertyMaterial();
@@ -63,6 +59,10 @@ public:
 
 private:
 	void destroyShaderPropertiesControls();
+
+    gxMaterial* m_pCurrentMaterialPtr;
+    gxTriInfo* m_pTriInfoPtr;
+    std::vector<stSubMapView*> subMapList;
 
 	geColorControl* colorControl;
 	geToolBarDropMenu* surfaceShaderToolBarDropMenuButton;

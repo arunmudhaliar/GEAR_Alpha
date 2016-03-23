@@ -401,7 +401,7 @@ int AssetImporter::import_fbx_to_metadata(const char* fbx_file_name, const char*
 	materialList.clear();
 	animationSetList.clear();
 
-	GX_DELETE(obj3d);
+	REF_RELEASE(obj3d);
 
 	return 1;
 }

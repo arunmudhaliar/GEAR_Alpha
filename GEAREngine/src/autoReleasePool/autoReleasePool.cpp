@@ -96,8 +96,22 @@ namespace GEAR{
             while (destroyPool.size())
             {
                 auto ptr = destroyPool[0];
-                destroyPool.erase(std::remove(destroyPool.begin(), destroyPool.end(), ptr));
-                GX_DELETE(ptr);
+                if(ptr && ptr->getRetainCount()==0)
+                {
+                    destroyPool.erase(std::remove(destroyPool.begin(), destroyPool.end(), ptr));
+                    GX_DELETE(ptr);
+                }
+                else
+                {
+                    assert(ptr);
+                    if(ptr)
+                    {
+                        assert(ptr->getRetainCount()==0);
+//                        DEBUG_PRINT("ERROR : Ref object's retainCount is %d at this time, can't destroy this object now. Returning this object to memory pool");
+//                        destroyPool.erase(std::remove(destroyPool.begin(), destroyPool.end(), ptr));
+//                        addRefToPool(ptr);
+                    }
+                }
             }
         }
 

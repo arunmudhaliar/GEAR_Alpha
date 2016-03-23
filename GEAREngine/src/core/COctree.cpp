@@ -11,7 +11,10 @@ OctreeNode::OctreeNode()
 
 OctreeNode::~OctreeNode()
 {
+    for(auto obj : objectList)
+        REF_RELEASE(obj);
 	objectList.clear();
+    
 	for(int x=0;x<MAX_OCTREECHILD;x++)
 		GX_DELETE(childs[x]);
 }
@@ -40,6 +43,7 @@ void OctreeNode::setAABB(vector3f min_, vector3f max_)
 void OctreeNode::appendObject(object3d* transformObj)
 {
 	objectList.push_back(transformObj);
+    REF_RETAIN(transformObj);
 }
 
 //====================================================================
@@ -85,41 +89,40 @@ bool COctree::createOctree(gxWorld* world, int minTransformObj/* =4 */, int maxL
 	return true;
 }
 
-void COctree::pushToRootNode(object3d* obj)
+void COctree::pushToRootNode(object3d* obj3d)
 {
-	if(obj && (obj->getID()==OBJECT3D_MESH || obj->getID()==OBJECT3D_SKINNED_MESH))
+	if(obj3d && (obj3d->getID()==OBJECT3D_MESH || obj3d->getID()==OBJECT3D_SKINNED_MESH))
 	{
-		rootNode->appendObject(obj);
-		create(rootNode, obj);
+		rootNode->appendObject(obj3d);
+		create(rootNode, obj3d);
 	}
 
-	std::vector<object3d*>* list=obj->getChildList();
-	for(std::vector<object3d*>::iterator it = list->begin(); it != list->end(); ++it)
+    const std::vector<object3d*>* childList=obj3d->getChildList();
+    for (auto childobj : *childList)
 	{
-		object3d* childobj=*it;
 		pushToRootNode(childobj);
 	}
 }
 
-bool COctree::create(OctreeNode* node, object3d* obj)
+bool COctree::create(OctreeNode* node, object3d* obj3d)
 {
 	if(!node || node->getLevel()>=maximumLevelToBreak || node->getNumOfObjects()<=minimumTransformObjectToBreak)
 		return true;
 
 	//chk the overlapping objects
-	overlapWithObject(node, obj);
+	overlapWithObject(node, obj3d);
 
 	//here we can clear the objects from the node
 
 	for(int x=0;x<MAX_OCTREECHILD;x++)
-		create(node->getChild(x), obj);
+		create(node->getChild(x), obj3d);
 
 	return false;
 }
 
-void COctree::overlapWithObject(OctreeNode* node, object3d* obj)
+void COctree::overlapWithObject(OctreeNode* node, object3d* obj3d)
 {
-	object3d* transform=obj;
+	object3d* transform=obj3d;
 	gxAABBf oAABB(node->getAABB());
 	oAABB.scale(0.5f);
 	vector3f sz(oAABB.getSize());
@@ -263,27 +266,26 @@ void COctree::resetCollidedTransformObjList()
 	collidedAlphaObjectList.Clear();
 }
 
-void COctree::checkOverlapWithOctree(OctreeNode* node, object3d* obj)
+void COctree::checkOverlapWithOctree(OctreeNode* node, object3d* obj3d)
 {
-	if(!node || !obj) return;
+	if(!node || !obj3d) return;
 
 	//sphere overlap test
-	float obj_radius=obj->getAABB().getLongestAxis()*0.5f;
-	vector3f obj_center(obj->getAABB().getCenter());
+	float obj_radius=obj3d->getAABB().getLongestAxis()*0.5f;
+	vector3f obj_center(obj3d->getAABB().getCenter());
 	if(!node->getAABB().isOverlapsSphere(obj_radius, obj_center)) return;
 
 
 	//chk if the curent node collides with 'obj'
-	if(!node->getAABB().isOverLap(obj->getAABB())) return;
+	if(!node->getAABB().isOverLap(obj3d->getAABB())) return;
 
 	//chk if the meshes collide with 'obj'
-	std::vector<object3d*>* list=node->getObjectList();
-	for(std::vector<object3d*>::iterator it = list->begin(); it != list->end(); ++it)
+	const std::vector<object3d*>* list=node->getObjectList();
+    for(auto transf : *list)
 	{
-		object3d* transf=*it;
 		if(!transf->isVisited())
 		{
-			if(obj->getAABB().isOverLap(transf->getAABB()))
+			if(obj3d->getAABB().isOverLap(transf->getAABB()))
 			{
 				transf->setVisited(true);
 				if(transf->isBaseFlag(object3d::eObject3dBaseFlag_Alpha))
@@ -295,7 +297,7 @@ void COctree::checkOverlapWithOctree(OctreeNode* node, object3d* obj)
 	}
 
 	for(int x=0;x<MAX_OCTREECHILD;x++)
-		checkOverlapWithOctree(node->getChild(x), obj);
+		checkOverlapWithOctree(node->getChild(x), obj3d);
 }
 
 void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustum, unsigned int cullingmask)
@@ -308,10 +310,9 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 
 	if(result==1)	//completely inside
 	{
-		std::vector<object3d*>* list=node->getObjectList();
-		for(std::vector<object3d*>::iterator it = list->begin(); it != list->end(); ++it)
+		const std::vector<object3d*>* list=node->getObjectList();
+        for(auto transf : *list)
 		{
-			object3d* transf=*it;
 			if(!transf->isVisited() && ((1<<transf->getLayer())&cullingmask))
 			{
 				transf->setVisited(true);
@@ -325,11 +326,9 @@ void COctree::checkFrustumOverlapWithOctree(OctreeNode* node, gxFrustumf* frustu
 	}
 
 	//chk if the meshes collide with 'obj'
-	std::vector<object3d*>* list=node->getObjectList();
-	for(std::vector<object3d*>::iterator it = list->begin(); it != list->end(); ++it)
-	{
-		object3d* transf=*it;
-
+	const std::vector<object3d*>* list=node->getObjectList();
+    for(auto transf : *list)
+    {
 		if(!transf->isVisited() && ((1<<transf->getLayer())&cullingmask))
 		{
 			if(frustum->isAABBInside(transf->getAABB()))
@@ -359,15 +358,15 @@ object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)
 	int count=collidedObjectList.GetCount();
 	while(collidedtransformObjNode && count--)
 	{
-		object3d* obj=collidedtransformObjNode->GetData();
-		float distance=obj->getAABB().getRayIntersection(rayOrig, rayDir);
-		if(distance<=smallest_distance && distance>=0.0f && obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+		object3d* obj3d=collidedtransformObjNode->GetData();
+		float distance=obj3d->getAABB().getRayIntersection(rayOrig, rayDir);
+		if(distance<=smallest_distance && distance>=0.0f && obj3d->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 		{
 			if(distance==0.0f)
 			{
-				raystartsfrominideobjects.push_back(obj);
+				raystartsfrominideobjects.push_back(obj3d);
 			}
-			selectedObj=obj;
+			selectedObj=obj3d;
 			smallest_distance=distance;
 		}
 		collidedtransformObjNode=collidedtransformObjNode->GetNext();
@@ -378,15 +377,15 @@ object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)
 	int alpha_count=collidedAlphaObjectList.GetCount();
 	while(collidedtransformAlphaObjNode && alpha_count--)
 	{
-		object3d* obj=collidedtransformAlphaObjNode->GetData();
-		float distance=obj->getAABB().getRayIntersection(rayOrig, rayDir);
-		if(distance<=smallest_distance && distance>=0.0f && obj->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+		object3d* obj3d=collidedtransformAlphaObjNode->GetData();
+		float distance=obj3d->getAABB().getRayIntersection(rayOrig, rayDir);
+		if(distance<=smallest_distance && distance>=0.0f && obj3d->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 		{
 			if(distance==0.0f)//TODO : getRayIntersection() returns 0.0, so '== 0.0f' is a valid statement here.
 			{
-				raystartsfrominideobjects.push_back(obj);
+				raystartsfrominideobjects.push_back(obj3d);
 			}
-			selectedObj=obj;
+			selectedObj=obj3d;
 			smallest_distance=distance;
 		}
 		collidedtransformAlphaObjNode=collidedtransformAlphaObjNode->GetNext();
@@ -396,12 +395,12 @@ object3d* COctree::pickBruteForce(vector3f& rayOrig, vector3f& rayDir)
 	//check if anyobject completely covers over ray origin
 	for(std::vector<object3d*>::iterator it = raystartsfrominideobjects.begin(); it != raystartsfrominideobjects.end(); ++it)
 	{
-		object3d* obj = *it;
-		vector3f v=obj->getAABB().getCenter()-rayOrig;
+		object3d* obj3d = *it;
+		vector3f v=obj3d->getAABB().getCenter()-rayOrig;
 		float distance=v.length();
 		if(distance<=smallest_distance)
 		{
-			selectedObj=obj;
+			selectedObj=obj3d;
 			smallest_distance=distance;
 		}
 	}

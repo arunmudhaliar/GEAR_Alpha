@@ -19,11 +19,12 @@ struct stMaterialPass
 	std::vector<gxSubMap*> vUsedSubMap;
 };
 
-class DECLSPEC gxMaterial : public GEARAsset
+class DECLSPEC gxMaterial : public GEARAsset, public Ref
 {
 public:
 	gxMaterial();
 	~gxMaterial();
+    static gxMaterial* create();
 
 	bool isTwoSided()                   {	return twoSided;	}
 

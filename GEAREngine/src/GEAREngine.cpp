@@ -42,7 +42,8 @@ extern DECLSPEC void engine_resize(gxWorld* world, float x, float y, float cx, f
 
 extern DECLSPEC void engine_destroy()
 {
-	g_cGEAREngine.resetEngine();    
+	g_cGEAREngine.resetEngine();
+    AutoReleasePool::getInstance().clearPool();
 }
 
 extern DECLSPEC void engine_setMetaFolder(gxWorld* world, const char* metaFolder)
@@ -183,7 +184,7 @@ extern bool engine_destroyObject3d(gxWorld* world, object3d* obj)
 	{
 		if(g_EngineObserver)
 			g_EngineObserver->onRemoveFromWorld(world, obj);
-		GX_DELETE(obj);
+		//GX_DELETE(obj);
 		return true;
 	}
 
@@ -192,30 +193,33 @@ extern bool engine_destroyObject3d(gxWorld* world, object3d* obj)
 
 extern DECLSPEC object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name)
 {
-	object3d* emptyObject=new object3d(OBJECT3D_DUMMY);
+    object3d* emptyObject = object3d::create(OBJECT3D_DUMMY);
 	emptyObject->setObject3dObserver(g_Object3dObserver);
 	emptyObject->setName(name);
 	parentObj->appendChild(emptyObject);
+    REF_RELEASE(emptyObject);
 	return emptyObject;
 }
 
 extern DECLSPEC object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType)
 {
-	gxLight* light = new gxLight();
+    gxLight* light = gxLight::create();
 	light->setObject3dObserver(g_Object3dObserver);
 	light->setName(name);
 	light->setLightType(eType);
 	parentObj->appendChild(light);
+    REF_RELEASE(light);
 	return light;
 }
 
 extern DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* name, gxRenderer* renderer)
 {
-	Camera* camera = new Camera();
+    Camera* camera = Camera::create();
 	camera->initCamera(renderer);
 	camera->setObject3dObserver(g_Object3dObserver);
 	camera->setName(name);
 	parentObj->appendChild(camera);
+    REF_RELEASE(camera);
 	return camera;
 }
 }
@@ -237,7 +241,7 @@ void GEAREngine::resetEngine()
 	for(std::vector<gxWorld*>::iterator it = worldList.begin(); it != worldList.end(); ++it)
 	{
 		gxWorld* obj = *it;
-		GX_DELETE(obj);
+		REF_RELEASE(obj);
 	}
 	worldList.clear();
 }
@@ -246,7 +250,7 @@ void GEAREngine::initEngine(int nWorldToCreate)
 {
 	for(int x=0;x<nWorldToCreate;x++)
 	{
-		gxWorld* newWorld = new gxWorld();
+        gxWorld* newWorld = gxWorld::create();
 		//newWorld->setLayer(0, true);	//no need to put world inside layer, by default it is considered to be in default layer
 		worldList.push_back(newWorld);
 	}

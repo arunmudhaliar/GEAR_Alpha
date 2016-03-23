@@ -50,9 +50,9 @@ void gePropertySaveMetaData::saveMaterialRecursiveToMeta(object3d* obj)
 		}
 	}
 
-	for(std::vector<object3d*>::iterator it = obj->getChildList()->begin(); it != obj->getChildList()->end(); ++it)
+    const std::vector<object3d*>* childlist = obj->getChildList();
+    for (auto child : *childlist)
 	{
-		object3d* child = *it;
 		saveMaterialRecursiveToMeta(child);
 	}
 }

@@ -194,9 +194,9 @@ void gearScenePropertyEditor::removeAllProperties()
 
 	for(std::vector<stMonoScriptTVNode*>::iterator it = monoScriptTreeViewNodeList.begin(); it != monoScriptTreeViewNodeList.end(); ++it)
 	{
-		stMonoScriptTVNode* obj = *it;
-		rootNode->removeTVChild(obj->m_pMonoScriptParentNode);
-		GX_DELETE(obj);
+		stMonoScriptTVNode* scriptNode = *it;
+		rootNode->removeTVChild(scriptNode->m_pMonoScriptParentNode);
+		GX_DELETE(scriptNode);
 	}
 	monoScriptTreeViewNodeList.clear();
 

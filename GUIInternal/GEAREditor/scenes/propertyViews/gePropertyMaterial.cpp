@@ -4,6 +4,7 @@
 gePropertyMaterial::gePropertyMaterial(rendererGL10* renderer, geGUIBase* parent, const char* name, Sprite2Dx* sprite, gxTriInfo* triinfo, geFontManager* fontManager):
 	geTreeNode(renderer, parent, name, sprite, fontManager, 10)
 {
+    m_pCurrentMaterialPtr = nullptr;
 	shininessHorizontalSlider=NULL;
 	colorControl=NULL;
 	shaderPropertiesWindowColumnControl = NULL;
@@ -32,6 +33,7 @@ gePropertyMaterial::~gePropertyMaterial()
 	subMapList.clear();
 
 	destroyShaderPropertiesControls();
+    REF_RELEASE(m_pCurrentMaterialPtr);
 }
 
 //#if !defined(GEAR_APPLE) //disable Drag-Drop
@@ -50,10 +52,10 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDropData* dropObject)
 			gxMaterial* matchingMaterial=NULL;
 			//check if the material name already exists in our list or not
 			gxWorld* world=monoWrapper::mono_engine_getWorld(0);
-			std::vector<gxMaterial*>* materialList = world->getMaterialList();
-			for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+			const std::vector<gxMaterial*>* materialList = world->getMaterialList();
+			//for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+            for(auto material_in_list : *materialList)
 			{
-				gxMaterial* material_in_list = *it;
 				if(material_in_list->getAssetFileCRC()==crc32)
 				{
 					//match found, so assing and delete the new material object
@@ -75,7 +77,7 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDropData* dropObject)
                 metaHeader.readMetaHeader(file_meta);
 
                 //read the material
-				gxMaterial* material = new gxMaterial();
+                gxMaterial* material = gxMaterial::create();
 				material->read(file_meta);
 				file_meta.CloseFile();
 
@@ -94,8 +96,9 @@ void gePropertyMaterial::onDragDrop(int x, int y, MDropData* dropObject)
 				}
 
 				m_pTriInfoPtr->setMaterial(material);
-				world->getMaterialList()->push_back(m_pTriInfoPtr->getMaterial());
+				world->appendMaterialToWorld(material);
 				loadClientViewFromMaterial(material);
+                REF_RELEASE(material);
 			}
 		}
 	}
@@ -289,6 +292,9 @@ void gePropertyMaterial::destroyShaderPropertiesControls()
 
 void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 {
+    if(m_pCurrentMaterialPtr==material)
+        return;
+    
 	destroyShaderPropertiesControls();
 	destroySubMapView();
 
@@ -301,7 +307,9 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 	childControlList.clear();
 	//
 
+    REF_RELEASE(m_pCurrentMaterialPtr);
 	m_pCurrentMaterialPtr=material;
+    REF_RETAIN(m_pCurrentMaterialPtr);
 	if(m_pCurrentMaterialPtr)
 	{
 		geTextBox* text_material = new geTextBox("MaterialName", fontManagerGUI);

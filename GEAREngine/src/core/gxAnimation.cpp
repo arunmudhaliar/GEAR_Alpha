@@ -1,6 +1,21 @@
 #include "gxAnimation.h"
 
-gxAnimation::gxAnimation()
+gxAnimation* gxAnimation::create()
+{
+    auto newObject = new gxAnimation();
+    if(newObject)
+    {
+        newObject->autoRelease();
+        REF_RETAIN(newObject);
+        
+        return newObject;
+    }
+    
+    return nullptr;
+}
+
+gxAnimation::gxAnimation():
+    Ref()
 {
 	activeAnimationSet=NULL;
 	isAnimationPlaying=false;

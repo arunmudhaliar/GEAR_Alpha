@@ -23,6 +23,7 @@ gxWorld* gxWorld::create()
 gxWorld::gxWorld():
 	object3d(OBJECT3D_WORLD)
 {
+    setName("gxWorld");
 	layerID = ELAYER_DEFAULT;	//CAUTION: Do not use setLayer() for gxWorld()
 	worldObserver = NULL;
 	activeCamera = NULL;
@@ -48,15 +49,6 @@ gxWorld::gxWorld():
 gxWorld::~gxWorld()
 {
 	resetWorld(true);
-
-	////remove and destroy the default camera
-	//if(activeCamera);
-	//{
-	//	removeChild(activeCamera);
-	//	GX_DELETE(activeCamera);
-	//	cameraList.clear();
-	//}
-
 	materialList.clear();	//since our Default material may reside inside: check resetWorld()
 }
 
@@ -77,7 +69,7 @@ void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
 		gxMaterial* material = *it;
 		if(material==&defaultMaterial)
 			continue;
-		GX_DELETE(material);
+		REF_RELEASE(material);
 	}
 	materialList.clear();
 	//repush our Default Material;
@@ -99,7 +91,7 @@ void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
 	for(std::vector<object3d*>::iterator it = childList.begin(); it != childList.end(); ++it)
 	{
 		object3d* obj = *it;
-		GX_DELETE(obj);
+		REF_RELEASE(obj);
 	}
 	childList.clear();
 	//
@@ -452,26 +444,29 @@ const char* gxWorld::getMetaDataFolder()
 
 void gxWorld::setActiveCamera(Camera* camera)
 {
-	if(activeCamera)
+    if(activeCamera==camera) return;
+
+    if(activeCamera)
 		activeCamera->setMainCamera(false);
+    REF_RELEASE(activeCamera);
 	activeCamera = camera;
+    REF_RETAIN(activeCamera);
 	if(activeCamera)
 		activeCamera->setMainCamera(true);
 }
 
 Camera* gxWorld::createDefaultCameraAndSetActive()
 {
-	//activeCamera=&defaultCamera;
 	if(activeCamera)
 	{
 		removeChild(activeCamera);
-		GX_DELETE(activeCamera);
 	}
-	activeCamera = new Camera();
+    activeCamera = Camera::create();
 	activeCamera->initCamera(&renderer);
 	activeCamera->setMainCamera(true);
 	activeCamera->setObject3dObserver(object3DObserver);
 	appendChild(activeCamera);
+    REF_RELEASE(activeCamera);
 	return activeCamera;
 }
 
@@ -524,6 +519,16 @@ void gxWorld::callback_object3dLayerChanged(object3d* child, int oldLayerID)
 	layerManager.appendOnLayer(child, child->getLayer());
 }
 
+bool gxWorld::appendMaterialToWorld(gxMaterial* mat)
+{
+    if(std::find(materialList.begin(), materialList.end(), mat)!=materialList.end())
+        return false;
+    
+    REF_RETAIN(mat);
+    materialList.push_back(mat);
+    return true;
+}
+
 void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 {
 	if(obj3d->getID()==OBJECT3D_MESH || obj3d->getID()==OBJECT3D_SKINNED_MESH)
@@ -547,7 +552,7 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 				stMetaHeader metaHeader;
                 metaHeader.readMetaHeader(file_meta);
 
-				gxMaterial* material = new gxMaterial();
+                gxMaterial* material = gxMaterial::create();
 				material->read(file_meta);
 
 				HWShaderManager* hwShaderManager = engine_getHWShaderManager();
@@ -570,15 +575,15 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 				}
 
 				//check if the material name already exists in our list or not
-				std::vector<gxMaterial*>* materialList = getMaterialList();
-				for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+				//const std::vector<gxMaterial*>* materialList = getMaterialList();
+				for(std::vector<gxMaterial*>::iterator it = materialList.begin(); it != materialList.end(); ++it)
 				{
 					gxMaterial* material_in_list = *it;
 					if(material_in_list->getAssetFileCRC()==material->getAssetFileCRC())
 					{
 						//match found, so assing and delete the new material object
 						triInfo->setMaterial(material_in_list);
-						GX_DELETE(material);
+						REF_RELEASE(material);
 						break;
 					}
 				}
@@ -587,14 +592,17 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 				{
 					//assign the new materiak
 					triInfo->setMaterial(material);
-					materialList->push_back(material);
+					appendMaterialToWorld(material);
+                    REF_RELEASE(material);
 				}
 				file_meta.CloseFile();
 			}
 			else
 			{
-				triInfo->setMaterial(gxMaterial::createNewMaterial());
-				getMaterialList()->push_back(triInfo->getMaterial());
+                auto newMat = gxMaterial::createNewMaterial();
+				triInfo->setMaterial(newMat);
+                appendMaterialToWorld(newMat);
+                REF_RELEASE(newMat);
 			}
 		}
 	}
@@ -608,10 +616,9 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
         node=node->getNext();
 	}
 #else
-	std::vector<object3d*>* childList=obj3d->getChildList();
-	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
-	{
-		object3d* childobj = *it;
+	const std::vector<object3d*>* childList=obj3d->getChildList();
+    for (auto childobj : *childList)
+    {
 		loadMaterialFromObject3d(childobj);
 	}
 #endif
@@ -668,10 +675,9 @@ void gxWorld::tryLoadTexturesFromObject3d(object3d* obj3d, const char* filepath)
 		node=node->getNext();
 	}
 #else
-	std::vector<object3d*>* childList=obj3d->getChildList();
-	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
+    const std::vector<object3d*>* childList=obj3d->getChildList();
+    for (auto childobj : *childList)
 	{
-		object3d* childobj = *it;
 		tryLoadTexturesFromObject3d(childobj, filepath);
 	}
 #endif
@@ -735,20 +741,19 @@ void gxWorld::loadAnmationFromObject3d(object3d* obj3d, int crc)
         node=node->getNext();
 	}
 #else
-	std::vector<object3d*>* childList=obj3d->getChildList();
-	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
+    const std::vector<object3d*>* childList=obj3d->getChildList();
+    for (auto childobj : *childList)
 	{
-		object3d* childobj = *it;
 		loadAnmationFromObject3d(childobj, crc);
 	}
 #endif
 }
 
-void gxWorld::populateBonesToMeshNode(object3d* obj, object3d* rootNode)
+void gxWorld::populateBonesToMeshNode(object3d* obj3d, object3d* rootNode)
 {
-	if(obj->getID()==OBJECT3D_SKINNED_MESH)
+	if(obj3d->getID()==OBJECT3D_SKINNED_MESH)
 	{
-		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj;
+		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj3d;
 		int index=0;
 		skinMesh->setRootNode(rootNode);
 		skinMesh->clearPrivateIterator();
@@ -764,10 +769,9 @@ void gxWorld::populateBonesToMeshNode(object3d* obj, object3d* rootNode)
         node=node->getNext();
 	}
 #else
-	std::vector<object3d*>* childlist=obj->getChildList();
-	for(std::vector<object3d*>::iterator it = childlist->begin(); it != childlist->end(); ++it)
+    const std::vector<object3d*>* childList=obj3d->getChildList();
+    for (auto childobj : *childList)
 	{
-		object3d* childobj = *it;
 		populateBonesToMeshNode(childobj, rootNode);
 	}
 #endif
@@ -787,27 +791,28 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
 		switch(objID)
 		{
 		case OBJECT3D_MESH:
-			tempObj = new gxMesh();
+                tempObj = gxMesh::create();
 			break;
 		case OBJECT3D_SKINNED_MESH:
-			tempObj = new gxSkinnedMesh();
+                tempObj = gxSkinnedMesh::create();
 			break;
 		case OBJECT3D_LIGHT:
-			tempObj = new gxLight();
+                tempObj = gxLight::create();
 			break;
 		case OBJECT3D_CAMERA:
 			{
-				tempObj = new Camera();
+                tempObj = Camera::create();
 				((Camera*)tempObj)->initCamera(&renderer);
 			}
 			break;
 		default:
-			tempObj = new object3d(objID);
+            tempObj = object3d::create(objID);
 		}
 
 		tempObj->setObject3dObserver(object3DObserver);
 		tempObj->read(file);
 		obj->appendChild(tempObj);
+        REF_RELEASE(tempObj);
 		read3dFile(file, tempObj);
 	}
 }
@@ -825,22 +830,22 @@ object3d* gxWorld::loadObjectsFromFile(gxFile& file, int crc)
     switch(objID)
     {
         case OBJECT3D_MESH:
-            tempObj = new gxMesh();
+            tempObj = gxMesh::create();
             break;
         case OBJECT3D_SKINNED_MESH:
-            tempObj = new gxSkinnedMesh();
+            tempObj = gxSkinnedMesh::create();
             break;
         case OBJECT3D_LIGHT:
-            tempObj = new gxLight();
+            tempObj = gxLight::create();
             break;
         case OBJECT3D_CAMERA:
         {
-            tempObj = new Camera();
+            tempObj = Camera::create();
             ((Camera*)tempObj)->initCamera(&renderer);
         }
             break;
         default:
-            tempObj = new object3d(objID);
+            tempObj = object3d::create(objID);
     }
     
     if(tempObj)
@@ -848,6 +853,7 @@ object3d* gxWorld::loadObjectsFromFile(gxFile& file, int crc)
         tempObj->setObject3dObserver(object3DObserver);
         tempObj->read(file);
         appendChild(tempObj);
+        REF_RELEASE(tempObj);
         read3dFile(file, tempObj);
         obj=tempObj;
         loadMaterialFromObject3d(obj);

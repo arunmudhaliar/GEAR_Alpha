@@ -41,6 +41,8 @@ gxSkinnedMesh::~gxSkinnedMesh()
 	GX_DELETE_ARY(vertexCopyBuffer);
 	GX_DELETE_ARY(inverseBoneTransformationList);
 	GX_DELETE_ARY(boneOffsetList);
+    
+    REF_RELEASE(rootNode);
 }
 
 void gxSkinnedMesh::update(float dt)
@@ -180,10 +182,9 @@ void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
         node=node->getNext();
 	}
 #else
-	std::vector<object3d*>* childList = bone->getChildList();
-	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
+    const std::vector<object3d*>* childList=bone->getChildList();
+    for (auto childobj : *childList)
 	{
-		object3d* childobj = *it;
 		populateBoneList(childobj, index);
 	}
 #endif

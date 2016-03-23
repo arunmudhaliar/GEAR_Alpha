@@ -68,7 +68,7 @@ void monoWrapper::loadMonoModules(const std::string& monoInstallPath)
 	return;
 #endif
 
-    g_null_obj = new object3d(999);
+    g_null_obj = new object3d(999); //TODO: Need to verify if we need to ref count this or not.
     
     g_cMonoInstallPath = monoInstallPath;
     mono_set_dirs((g_cMonoInstallPath+"/lib").c_str(), (g_cMonoInstallPath+"/etc").c_str());

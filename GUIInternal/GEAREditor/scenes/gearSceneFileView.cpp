@@ -37,7 +37,7 @@ geWindow("File View", fontManager)
 
 gearSceneFileView::~gearSceneFileView()
 {
-	GE_DELETE(previewCubeObject);
+	REF_RELEASE(previewCubeObject);
 	destroyTVUserData(fileTreeView->getRoot());
     GE_DELETE(fileTreeView);
 }
@@ -100,20 +100,21 @@ void gearSceneFileView::read3dFile(gxFile& file, object3d* obj)
 		switch(objID)
 		{
 		case OBJECT3D_MESH:
-			tempObj = new gxMesh();
+            tempObj = gxMesh::create();
 			break;
 		case OBJECT3D_SKINNED_MESH:
-			tempObj = new gxSkinnedMesh();
+            tempObj = gxSkinnedMesh::create();
 			break;
 		case OBJECT3D_LIGHT:
-			tempObj = new gxLight();
+            tempObj = gxLight::create();
 			break;
 		default:
-			tempObj = new object3d(objID);
+            tempObj = object3d::create(objID);
 		}
 
 		tempObj->read(file);
 		obj->appendChild(tempObj);
+        REF_RELEASE(tempObj);
 		read3dFile(file, tempObj);
 	}
 }
@@ -126,10 +127,9 @@ void gearSceneFileView::deleteAnmationFromObject3d(object3d* obj3d)
         animationController->removeAllAnimationSet();
 	}
 
-	std::vector<object3d*>* childList=obj3d->getChildList();
-	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
+    const std::vector<object3d*>* childlist = obj3d->getChildList();
+    for (auto childobj : *childlist)
 	{
-		object3d* childobj = *it;
 		deleteAnmationFromObject3d(childobj);
 	}
 }
@@ -152,7 +152,7 @@ void gearSceneFileView::loadPreviewObjects()
 		object3d* tempObj=NULL;
 		if(objID!=OBJECT3D_MESH)    //Note:- Expecting the preview cube starts with object3D as root
 		{
-			tempObj = new object3d(objID);
+            tempObj = object3d::create(objID);
 			tempObj->read(file_meta);
 			read3dFile(file_meta, tempObj);
 			obj=tempObj;
@@ -222,17 +222,17 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			switch(objID)
 			{
 			case OBJECT3D_MESH:
-				tempObj = new gxMesh();
+                tempObj = gxMesh::create();
 				break;
 			case OBJECT3D_SKINNED_MESH:
-				tempObj = new gxSkinnedMesh();
+                tempObj = gxSkinnedMesh::create();
 				break;
 			case OBJECT3D_LIGHT:
-				tempObj = new gxLight();
+                tempObj = gxLight::create();
 				break;
 
 			default:
-				tempObj = new object3d(objID);
+                tempObj = object3d::create(objID);
 			}
 
 			if(tempObj)
@@ -261,10 +261,9 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			gxMaterial* matchingMaterial=NULL;
 			//check if the material name already exists in our list or not
 			gxWorld* world=monoWrapper::mono_engine_getWorld(0);
-			std::vector<gxMaterial*>* materialList = world->getMaterialList();
-			for(std::vector<gxMaterial*>::iterator it = materialList->begin(); it != materialList->end(); ++it)
+			const std::vector<gxMaterial*>* materialList = world->getMaterialList();
+            for(auto material_in_list : *materialList)
 			{
-				gxMaterial* material_in_list = *it;
 				if(material_in_list->getAssetFileCRC()==crc32)
 				{
 					//match found, so assing and delete the new material object
@@ -286,7 +285,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
                     metaHeader.readMetaHeader(file_meta);
 
                     //read the material
-					gxMaterial* material = new gxMaterial();
+                    gxMaterial* material = gxMaterial::create();
 					material->read(file_meta);
 					file_meta.CloseFile();
 
@@ -308,7 +307,8 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 					gxMesh* mesh=(gxMesh*)previewCubeObject->getChild(0);
 					gxTriInfo* triinfo = mesh->getTriInfo(0);
 					triinfo->setMaterial(material);
-					world->getMaterialList()->push_back(triinfo->getMaterial());
+                    world->appendMaterialToWorld(material);
+                    REF_RELEASE(material);
 					obj=previewCubeObject;
 				}
 			}
@@ -384,7 +384,7 @@ void gearSceneFileView::destroyTVUserData(geGUIBase* parent)
 	if(userdata)
 	{
 		object3d* obj=(object3d*)userdata->getAssetObjectPtr();
-		GE_DELETE(obj);
+		REF_RELEASE(obj);
 	}
 	GE_DELETE(userdata);
 	for(std::vector<geGUIBase*>::iterator it = list->begin(); it != list->end(); ++it)

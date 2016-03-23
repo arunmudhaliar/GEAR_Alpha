@@ -48,9 +48,10 @@ public:
 	void resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane);
 
 	gxMaterial* getDefaultMaterial()					{	return &defaultMaterial;		}
-	std::vector<gxMaterial*>* getMaterialList()			{	return &materialList;		}
+	const std::vector<gxMaterial*>* getMaterialList()			{	return &materialList;		}
 	const std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &animationSetList;	}
-
+    bool appendMaterialToWorld(gxMaterial* mat);
+    
 	void createOctree(int minTransformObj, int maxLevel);
 	COctree* getOctree()	{	return octree;	}
 
@@ -81,7 +82,7 @@ public:
 	object3d* loadFromCRCFile(int crc);
     object3d* loadObjectsFromFile(gxFile& file, int crc);
     
-	void populateBonesToMeshNode(object3d* obj, object3d* rootNode);
+	void populateBonesToMeshNode(object3d* obj3d, object3d* rootNode);
 	void loadAnmationFromObject3d(object3d* obj3d, int crc);
 	void loadMaterialFromObject3d(object3d* obj3d);
 	void tryLoadTexturesFromObject3d(object3d* obj3d, const char* filepath);

@@ -5,12 +5,13 @@
 #include "../util/gxFile.h"
 
 class gxAnimationSet;
-class DECLSPEC gxAnimation
+class DECLSPEC gxAnimation : public Ref
 {
 public:
 	gxAnimation();
 	~gxAnimation();
-
+    static gxAnimation* create();
+    
 	bool appendAnimationSet(gxAnimationSet* animationSet);
     bool removeAnimationSet(gxAnimationSet* animationSet);
     void removeAllAnimationSet();

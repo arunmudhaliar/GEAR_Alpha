@@ -1564,10 +1564,9 @@ void gearSceneWorldEditor::getTringleCountForThisTree(object3d* obj, int& count)
 		count+=mesh->getTriangleCount();
 	}
 
-	std::vector<object3d*>* childList = obj->getChildList();
-	for(std::vector<object3d*>::iterator it = childList->begin(); it != childList->end(); ++it)
-	{
-		object3d* child = *it;
+	const std::vector<object3d*>* childList = obj->getChildList();
+    for (auto child : *childList)
+    {
 		getTringleCountForThisTree(child, count);
 	}
 }

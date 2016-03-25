@@ -402,6 +402,7 @@ void gearSceneHierarchy::clearHierarchy()
 	EditorGEARApp::getScenePropertyEditor()->populatePropertyOfObject(nullptr);
 //	geTreeNode* selectedProjectFile = EditorApp::getSceneProject()->getSelectedNode();
 	EditorGEARApp::getSceneFileView()->populateFileView();
+    AutoReleasePool::getInstance().clearPool();
 }
 
 void gearSceneHierarchy::onButtonClicked(geGUIBase* btn)

@@ -138,7 +138,7 @@ void gearSceneFileView::loadPreviewObjects()
 {
 	//cube
 	gxFile file_meta;
-	object3d* obj=NULL;
+    object3d* tempObj=NULL;
 	if(file_meta.OpenFile("res//preview//cube.preview"))
 	{
         //read meta header
@@ -149,19 +149,17 @@ void gearSceneFileView::loadPreviewObjects()
 		int objID=0;
 		file_meta.Read(objID);
 
-		object3d* tempObj=NULL;
 		if(objID!=OBJECT3D_MESH)    //Note:- Expecting the preview cube starts with object3D as root
 		{
             tempObj = object3d::create(objID);
 			tempObj->read(file_meta);
 			read3dFile(file_meta, tempObj);
-			obj=tempObj;
 			//arun:transform obj->transformationChangedf();
 		}
 		file_meta.CloseFile();
 	}
-	deleteAnmationFromObject3d(obj);
-	previewCubeObject=obj;
+	deleteAnmationFromObject3d(tempObj);
+	previewCubeObject=tempObj;
 	//
 
 	//Material
@@ -314,7 +312,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			}
 			else
 			{
-
+                //FIXME : //Do we need this else block ?.
 			}
 		}
 		else if(util::GE_IS_EXTENSION(relativePath, ".cs") || util::GE_IS_EXTENSION(relativePath, ".CS"))

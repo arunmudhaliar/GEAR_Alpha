@@ -27,7 +27,6 @@ gxMesh(OBJECT3D_SKINNED_MESH)
 	vertexCopyBuffer=NULL;
 	inverseBoneTransformationList=NULL;
 	boneOffsetList=NULL;
-	rootNode=NULL;
 	reSetBaseFlag(eObject3dBaseFlag_Static);
 }
 
@@ -40,9 +39,7 @@ gxSkinnedMesh::~gxSkinnedMesh()
 	GX_DELETE_ARY(boneList);
 	GX_DELETE_ARY(vertexCopyBuffer);
 	GX_DELETE_ARY(inverseBoneTransformationList);
-	GX_DELETE_ARY(boneOffsetList);
-    
-    REF_RELEASE(rootNode);
+	GX_DELETE_ARY(boneOffsetList);    
 }
 
 void gxSkinnedMesh::update(float dt)

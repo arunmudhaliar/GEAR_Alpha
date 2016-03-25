@@ -23,16 +23,6 @@ public:
 	float* allocateAndCopyVertexCopyBuffer();
 	void clearPrivateIterator()             {	privateIterator=0;          }
 
-	void setRootNode(object3d* rootNode)
-    {
-        if(this->rootNode == rootNode)
-            return;
-        
-        REF_RELEASE(this->rootNode);
-        this->rootNode = rootNode;
-        REF_RETAIN(this->rootNode);
-    }
-
 protected:
     virtual void writeData(gxFile& file);
     virtual void readData(gxFile& file);
@@ -50,5 +40,4 @@ private:
 	object3d** boneList;
 	matrix4x4f* inverseBoneTransformationList;
 	matrix4x4f* boneOffsetList;
-	object3d* rootNode;
 };

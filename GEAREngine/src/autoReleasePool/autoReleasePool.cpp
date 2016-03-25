@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <algorithm>
 #include <sstream>
+#include "../core/object3d.h"
 
 namespace GEAR{
     namespace Memory{
@@ -40,6 +41,15 @@ namespace GEAR{
         void Ref::retain()
         {
             retainCount++;
+            
+//            auto obj = dynamic_cast<object3d*>(this);
+//            if(obj)
+//            {
+//                if(obj->getName().compare("R3_decoration.FBX")==0)
+//                {
+//                    obj=obj;
+//                }
+//            }
         }
         
         #pragma mark AutoReleasePool
@@ -86,13 +96,15 @@ namespace GEAR{
             }
             
             
-            DEBUG_PRINT("INFO : Ref objet added to destroy pool. It may be get deleted on next clearPool().");
+            //DEBUG_PRINT("INFO : Ref objet added to destroy pool. It may be get deleted on next clearPool().");
             destroyPool.push_back(ref);
             return true;
         }
         
         void AutoReleasePool::clearPool()
         {
+            int refDestroyedCount = 0;
+            
             while (destroyPool.size())
             {
                 auto ptr = destroyPool[0];
@@ -100,6 +112,7 @@ namespace GEAR{
                 {
                     destroyPool.erase(std::remove(destroyPool.begin(), destroyPool.end(), ptr));
                     GX_DELETE(ptr);
+                    refDestroyedCount++;
                 }
                 else
                 {
@@ -112,6 +125,12 @@ namespace GEAR{
 //                        addRefToPool(ptr);
                     }
                 }
+            }
+            
+            if(refDestroyedCount>0)
+            {
+                DEBUG_PRINT("INFO : Total Ref objects destroyed in clearPool() is %d", refDestroyedCount);
+                DEBUG_PRINT("INFO : Total Ref objects in memoryPool is %d", memoryPool.size());
             }
         }
 

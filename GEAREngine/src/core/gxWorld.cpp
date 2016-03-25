@@ -755,7 +755,7 @@ void gxWorld::populateBonesToMeshNode(object3d* obj3d, object3d* rootNode)
 	{
 		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj3d;
 		int index=0;
-		skinMesh->setRootNode(rootNode);
+//		skinMesh->setRootNode(rootNode);
 		skinMesh->clearPrivateIterator();
 		skinMesh->populateBoneList(rootNode, index);
 	}
@@ -819,14 +819,10 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
 
 object3d* gxWorld::loadObjectsFromFile(gxFile& file, int crc)
 {
-    object3d* obj = NULL;
-    object3d* root_object_node=NULL;
-
-    int objID=0;
-    file.Read(objID);
-    
     object3d* tempObj=NULL;
     
+    int objID=0;
+    file.Read(objID);
     switch(objID)
     {
         case OBJECT3D_MESH:
@@ -855,25 +851,23 @@ object3d* gxWorld::loadObjectsFromFile(gxFile& file, int crc)
         appendChild(tempObj);
         REF_RELEASE(tempObj);
         read3dFile(file, tempObj);
-        obj=tempObj;
-        loadMaterialFromObject3d(obj);
-        loadAnmationFromObject3d(obj, crc);
-        root_object_node=obj;
+        loadMaterialFromObject3d(tempObj);
+        loadAnmationFromObject3d(tempObj, crc);
     }
 
     transformationChangedf();
     
     if(engineObserver)
-        engineObserver->onAppendToWorld(this, root_object_node);
+        engineObserver->onAppendToWorld(this, tempObj);
     
     //cache the transform
-    matrix4x4f temp(*root_object_node);
-    populateBonesToMeshNode(root_object_node, root_object_node);
+    matrix4x4f temp(*tempObj);
+    populateBonesToMeshNode(tempObj, tempObj);
     
     //restore the original transform
-    root_object_node->copyMatrix(temp);
+    tempObj->copyMatrix(temp);
 
-    return root_object_node;
+    return tempObj;
 }
 
 object3d* gxWorld::loadFromCRCFile(int crc)

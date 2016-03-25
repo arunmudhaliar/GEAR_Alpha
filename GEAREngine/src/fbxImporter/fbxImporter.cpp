@@ -171,7 +171,7 @@ void fbxImporter::populateBonesToMeshNode(stBoneList* boneList, object3d* obj, o
 	{
 		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj;
 		int index=0;
-		skinMesh->setRootNode(rootNode);
+//		skinMesh->setRootNode(rootNode);
 		skinMesh->clearPrivateIterator();
 		skinMesh->populateBoneList(rootNode, index);
 	}

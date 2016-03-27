@@ -319,7 +319,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
 
                 if(g_mAppInitialised)
                 {
-                    //g_mReInitMono = true;
+                    g_mReInitMono = true;
                     printf("ReInit mono after one loop\n");
                 }
                 else

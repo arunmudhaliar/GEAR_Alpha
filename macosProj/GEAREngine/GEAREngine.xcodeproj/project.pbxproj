@@ -153,6 +153,8 @@
 		555571F81C9DBD6700EEC0CB /* gxFileUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 555571F61C9DBD6700EEC0CB /* gxFileUtil.h */; };
 		5580DE741C8C442200B5D6D5 /* IAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */; };
 		5580DE751C8C442200B5D6D5 /* IAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */; };
+		55A179C21CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55A179C01CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp */; };
+		55A179C31CA877AB00989B35 /* gxKeyFrameAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 55A179C11CA877AB00989B35 /* gxKeyFrameAnimationTrack.h */; };
 		55AB5CB91C0481D3005B8747 /* BlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */; };
 		55AB5CBA1C0481D3005B8747 /* BlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB21C0481D3005B8747 /* BlurFilter.h */; };
 		55AB5CBB1C0481D3005B8747 /* BrightPassFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB31C0481D3005B8747 /* BrightPassFilter.cpp */; };
@@ -318,6 +320,8 @@
 		555571F61C9DBD6700EEC0CB /* gxFileUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxFileUtil.h; sourceTree = "<group>"; };
 		5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAnimationTrack.cpp; sourceTree = "<group>"; };
 		5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnimationTrack.h; sourceTree = "<group>"; };
+		55A179C01CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxKeyFrameAnimationTrack.cpp; sourceTree = "<group>"; };
+		55A179C11CA877AB00989B35 /* gxKeyFrameAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxKeyFrameAnimationTrack.h; sourceTree = "<group>"; };
 		55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurFilter.cpp; sourceTree = "<group>"; };
 		55AB5CB21C0481D3005B8747 /* BlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurFilter.h; sourceTree = "<group>"; };
 		55AB5CB31C0481D3005B8747 /* BrightPassFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BrightPassFilter.cpp; sourceTree = "<group>"; };
@@ -436,6 +440,8 @@
 				5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */,
 				5554EA961AD26CEC00FD80AF /* gxAnimationTrack.cpp */,
 				5554EA971AD26CEC00FD80AF /* gxAnimationTrack.h */,
+				55A179C01CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp */,
+				55A179C11CA877AB00989B35 /* gxKeyFrameAnimationTrack.h */,
 				5554EA981AD26CEC00FD80AF /* gxCamera.cpp */,
 				5554EA991AD26CEC00FD80AF /* gxCamera.h */,
 				5554EA9A1AD26CEC00FD80AF /* gxDebug.cpp */,
@@ -728,6 +734,7 @@
 				5554ED9B1AD26CED00FD80AF /* pngconf.h in Headers */,
 				55AB5CBA1C0481D3005B8747 /* BlurFilter.h in Headers */,
 				5554EFB71AD26CED00FD80AF /* deflate.h in Headers */,
+				55A179C31CA877AB00989B35 /* gxKeyFrameAnimationTrack.h in Headers */,
 				5554EFA41AD26CED00FD80AF /* FontManager.h in Headers */,
 				5554ED941AD26CED00FD80AF /* GEAREngine.h in Headers */,
 				5554ED841AD26CED00FD80AF /* plane.h in Headers */,
@@ -845,6 +852,7 @@
 				5554ED5B1AD26CED00FD80AF /* COctree.cpp in Sources */,
 				5554EFC51AD26CED00FD80AF /* zutil.c in Sources */,
 				5554ED951AD26CED00FD80AF /* gxHWShader.cpp in Sources */,
+				55A179C21CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp in Sources */,
 				5554EDB21AD26CED00FD80AF /* monoWrapper.cpp in Sources */,
 				5554EFB61AD26CED00FD80AF /* deflate.c in Sources */,
 				5554ED681AD26CED00FD80AF /* gxCamera.cpp in Sources */,

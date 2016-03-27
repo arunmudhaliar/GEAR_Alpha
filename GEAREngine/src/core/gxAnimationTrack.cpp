@@ -3,14 +3,12 @@
 gxAnimationTrack::gxAnimationTrack():
 IAnimationTrack()
 {
-	animationFPS=0;
-	numberOfFrames=0;
-	currentAnimationFrame=0;
+    animationFrames=nullptr;
 }
 
 gxAnimationTrack::~gxAnimationTrack()
 {
-	//GX_DELETE_ARY(animationTrack);
+    GX_DELETE_ARY(animationFrames);
 }
 
 gxAnimationTrack* gxAnimationTrack::create()
@@ -50,9 +48,14 @@ bool gxAnimationTrack::getFrame(int frame, matrix4x4f& mat)
 
 bool gxAnimationTrack::getFrameFromTime(float time, matrix4x4f& mat)
 {
-    //Not implemented
-    assert(false);
+    assert(false);  //NOT IMPLEMENTED
     return false;
+}
+
+matrix4x4f* gxAnimationTrack::addFrame(int index)
+{
+    assert(false);  //NOT IMPLEMENTED
+    return nullptr;
 }
 
 void gxAnimationTrack::write(gxFile& file)

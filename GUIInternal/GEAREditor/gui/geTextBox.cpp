@@ -513,6 +513,48 @@ int geTextBox::keyMapping(int32_t scancode, uint16_t mod)
     return KeyMapper::getInstance().getAsciiCode((SDL_Scancode)scancode);
 }
 
+void geTextBox::doRealign()
+{
+    if(cursorIndexPosition<=0)
+    {
+        cursorIndexPosition=0;
+        //check if there are any chars in the left side
+        long diff = startChar-internalTextBuffer;
+        if(diff>0)
+        {
+            int tempIndex=cursorIndexPosition;
+            float remaining_width = getVirtualEndBound(tempIndex);
+            long iterator = diff;
+            float cursorPosInPx = remaining_width;
+            for(long m=diff-1;m>=0;m--, iterator--)
+            {
+                float temp=cursorPosInPx;
+                cursorPosInPx+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(internalTextBuffer[m]);
+                if(cursorPosInPx>m_cSize.x)
+                {
+                    iterator--;
+                    cursorPosInPx=temp;
+                    break;
+                }
+            }
+            
+            if(iterator<0)
+            {
+                printf("ERROR\n");
+            }
+            startStringCharToDisplay=(int)iterator;
+            startChar=internalTextBuffer+iterator;
+            setCursorPos((int)strlen(startChar)-tempIndex);
+        }
+    }
+    else if(cursorIndexPosition>=strlen(startChar))
+    {
+        
+    }
+    
+    setCursorPos(cursorIndexPosition);
+}
+
 bool geTextBox::onKeyDown(int charValue, int flag)
 {
 	if(geTextBox::g_pCurrentlyActiveTextBoxPtr!=this)
@@ -523,13 +565,15 @@ bool geTextBox::onKeyDown(int charValue, int flag)
 //	{
 //		endCursorSelectionPosition=endCursorSelectionPosition;
 //	}
-    
-    int ascii_val = keyMapping(charValue, flag);
-    if(ascii_val==0)
-        return false;
+    int ascii_val=0;
+    if(!(charValue==SDL_SCANCODE_LEFT || charValue==SDL_SCANCODE_RIGHT))
+    {
+        ascii_val = keyMapping(charValue, flag);
+        if(ascii_val==0)
+            return false;
+    }
     
     bool bReplaced=false;
-    
     if(isClearAll)
     {
         startChar=internalTextBuffer;
@@ -561,40 +605,16 @@ bool geTextBox::onKeyDown(int charValue, int flag)
 			bReplaced=replaceSelection(startChar, cursorIndexPosition-1, cursorIndexPosition);
 		if(bReplaced)
 			cursorIndexPosition--;
-		if(cursorIndexPosition<=0)
-        {
-            cursorIndexPosition=0;
-            //check if there are any chars in the left side
-            long diff = startChar-internalTextBuffer;
-            if(diff>0)
-            {
-                int tempIndex=cursorIndexPosition;
-                float remaining_width = getVirtualEndBound(tempIndex);
-                long iterator = diff;
-                float cursorPosInPx = remaining_width;
-                for(long m=diff-1;m>=0;m--, iterator--)
-                {
-                    float temp=cursorPosInPx;
-                    cursorPosInPx+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(internalTextBuffer[m]);
-                    if(cursorPosInPx>m_cSize.x)
-                    {
-                        iterator--;
-                        cursorPosInPx=temp;
-                        break;
-                    }
-                }
-                
-                if(iterator<0)
-                {
-                    printf("ERROR\n");
-                }
-                startStringCharToDisplay=(int)iterator;
-                startChar=internalTextBuffer+iterator;
-                setCursorPos((int)strlen(startChar)-tempIndex);
-            }
-        }
-		setCursorPos(cursorIndexPosition);
+        doRealign();
 	}
+    else if(charValue==SDL_SCANCODE_LEFT || charValue==SDL_SCANCODE_RIGHT)
+    {
+        if(charValue==SDL_SCANCODE_LEFT)
+            cursorIndexPosition--;
+        else
+            cursorIndexPosition++;
+        doRealign();
+    }
 	else
 	{
         if(cursorIndexPosition<strlen(startChar))

@@ -310,6 +310,13 @@ void EditorGEARApp::init(SDL_Window* window)
     UNUSED(graphEditorLayout);
     animEditorWnd->setGraphControlView(graphEditorWnd->getGraphControl());
 
+    gearSceneGraphEditor* graphEditorWnd2 = new gearSceneGraphEditor(guiManager->getLayoutManager()->getFontManager());
+    graphEditorWnd2->create(rendererGL10Instance, NULL, 0, 0, 400, 250, true);
+    guiManager->appendWindow(graphEditorWnd2);
+    graphEditorLayout->appendWindow(graphEditorWnd2);
+    graphEditorLayout->setActiveWindow(0);
+    //animEditorWnd->setGraphControlView(graphEditorWnd->getGraphControl());
+
     gearSceneProject* projectWindow = new gearSceneProject(guiManager->getLayoutManager()->getFontManager());
     projectWindow->create(rendererGL10Instance, NULL, 0, 0, 300, 200, true);
     guiManager->appendWindow(projectWindow);

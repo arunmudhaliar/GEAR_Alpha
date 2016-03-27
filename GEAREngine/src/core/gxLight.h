@@ -13,7 +13,6 @@
 class DECLSPEC gxLight : public object3d
 {
 public:
-	gxLight();
 	~gxLight();
 
     static gxLight* create();
@@ -57,6 +56,8 @@ protected:
     virtual void readData(gxFile& file);
 
 private:
+    gxLight();
+
 	ELIGHT_TYPE lightType;
 	vector4f diffuseColor;
 	vector4f specularColor;

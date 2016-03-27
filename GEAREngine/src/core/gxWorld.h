@@ -30,7 +30,6 @@ class COctree;
 class DECLSPEC gxWorld : public object3d
 {
 public:
-	gxWorld();
 	~gxWorld();
     static gxWorld* create();
     
@@ -90,6 +89,7 @@ public:
 	LayerManager* getLayerManager()	{	return &layerManager;	}
 
 private:
+    gxWorld();
 	void read3dFile(gxFile& file, object3d* obj);
 	void renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list, int renderFlag);
 

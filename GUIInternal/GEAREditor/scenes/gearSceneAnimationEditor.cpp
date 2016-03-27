@@ -1,5 +1,7 @@
 #include "gearSceneAnimationEditor.h"
 #include "../EditorApp.h"
+#include "../gui/geToolBarSeperator.h"
+#include "../gui/geToolBarDropMenu.h"
 
 gearSceneAnimationEditor::gearSceneAnimationEditor(geFontManager* fontmanager):
 geWindow("Animation Editor", fontmanager)
@@ -25,6 +27,50 @@ void gearSceneAnimationEditor::onCreate(float cx, float cy)
     spriteArray[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
     spriteArray[0].setClip(26, 298, 16, 16);
 
+    //Toolbar buttons
+    auto propertyMenu=new geToolBarDropMenu(rendererGUI, "Property", getToolBar(), fontManagerGUI);
+    propertyMenu->setGUIObserver(this);
+    propertyMenu->appendMenuItem("Transform", 0x00002000);
+    propertyMenu->appendMenuItem("Color", 0x00002001);
+    getToolBar()->appendToolBarControl(propertyMenu);
+
+    auto seperator = new geToolBarSeperator(rendererGUI, getToolBar(), 40, fontManagerGUI);
+    getToolBar()->appendToolBarControl(seperator);
+
+    auto recordBtn=new geToolBarButton(rendererGUI, "R", getToolBar(), fontManagerGUI);
+    recordBtn->loadImage("res//icons16x16.png", 6, 216);
+    recordBtn->setGUIObserver(this);
+    getToolBar()->appendToolBarControl(recordBtn);
+    
+    auto playBtn=new geToolBarButton(rendererGUI, "P", getToolBar(), fontManagerGUI);
+    playBtn->loadImage("res//icons16x16.png", 27, 216);
+    playBtn->setGUIObserver(this);
+    getToolBar()->appendToolBarControl(playBtn);
+    
+    auto previousFrameBtn=new geToolBarButton(rendererGUI, "P", getToolBar(), fontManagerGUI);
+    previousFrameBtn->loadImage("res//icons16x16.png", 66, 216);
+    previousFrameBtn->setGUIObserver(this);
+    getToolBar()->appendToolBarControl(previousFrameBtn);
+    
+    auto nextFrameBtn=new geToolBarButton(rendererGUI, "N", getToolBar(), fontManagerGUI);
+    nextFrameBtn->loadImage("res//icons16x16.png", 47, 216);
+    nextFrameBtn->setGUIObserver(this);
+    getToolBar()->appendToolBarControl(nextFrameBtn);
+    
+    seperator = new geToolBarSeperator(rendererGUI, getToolBar(), 80, fontManagerGUI);
+    getToolBar()->appendToolBarControl(seperator);
+
+    auto addKeyFrameBtn=new geToolBarButton(rendererGUI, "K", getToolBar(), fontManagerGUI);
+    addKeyFrameBtn->loadImage("res//icons16x16.png", 362, 216);
+    addKeyFrameBtn->setGUIObserver(this);
+    getToolBar()->appendToolBarControl(addKeyFrameBtn);
+    
+    auto addEventBtn=new geToolBarButton(rendererGUI, "E", getToolBar(), fontManagerGUI);
+    addEventBtn->loadImage("res//icons16x16.png", 280, 216);
+    addEventBtn->setGUIObserver(this);
+    getToolBar()->appendToolBarControl(addEventBtn);
+
+    //
 }
 
 void gearSceneAnimationEditor::onSize(float cx, float cy, int flag)

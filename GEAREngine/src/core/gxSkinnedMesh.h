@@ -5,7 +5,6 @@
 class DECLSPEC gxSkinnedMesh : public gxMesh
 {
 public:
-	gxSkinnedMesh();
 	~gxSkinnedMesh();
 
     static gxSkinnedMesh* create();
@@ -28,6 +27,8 @@ protected:
     virtual void readData(gxFile& file);
 
 private:
+    gxSkinnedMesh();
+
 	int* boneInfluenceCountBuffer;
 	int* boneIndexBuffer;
 	float* weightBuffer;

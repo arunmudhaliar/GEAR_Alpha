@@ -49,8 +49,8 @@ class DECLSPEC gxMesh : public object3d
 {
 protected:
 	gxMesh(int ID);
+    
 public:
-	gxMesh();
 	~gxMesh();
 
     static gxMesh* create();
@@ -131,4 +131,7 @@ protected:
 	int uvChannelCount;
 	gxUV* uvChannel;
 	int noOfTrianglesForInternalUse;
+    
+private:
+    gxMesh();
 };

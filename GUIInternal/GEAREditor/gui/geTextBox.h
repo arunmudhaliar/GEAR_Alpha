@@ -53,6 +53,7 @@ protected:
 	float getVirtualEndBound(int& index);
     
 private:
+    void doRealign();
     void resetVars();
 
     int keyMapping(int32_t scancode, uint16_t mod);

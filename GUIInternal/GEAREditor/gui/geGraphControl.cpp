@@ -64,12 +64,6 @@ void geGraphControl::setTrack(IAnimationTrack* track)
     
     animationTrack = track;
     //REF_RETAIN(animationTrack);
-    
-    //code to restrict the graph to total no of frames.
-//    this->upperLimit = track->getTotalFrames();
-//    this->divisions = lowerLimit+(upperLimit-lowerLimit)*0.2f;
-//    graphMatrix.setScale(divisions, divisions, divisions);
-
 
     memset(verticalScale, 0, sizeof(verticalScale));
     memset(midPoint, 0, sizeof(midPoint));
@@ -81,15 +75,15 @@ void geGraphControl::setTrack(IAnimationTrack* track)
     minExtend[0] = minExtend[1] = minExtend[2] = minExtend[3] = minExtend[4] = minExtend[5] = minExtend[6] = minExtend[7] = minExtend[8] = 1e16f;
     maxExtend[0] = maxExtend[1] = maxExtend[2] = maxExtend[3] = maxExtend[4] = maxExtend[5] = maxExtend[6] = maxExtend[7] = maxExtend[8] = -1e16f;
     
-    auto matrixPtr = animationTrack->getFrames();
+    matrix4x4f mat;
     for(int x=0;x<animationTrack->getTotalFrames();x++)
     {
-        auto mat = &matrixPtr[x];
+        animationTrack->getFrame(x, mat);
         vector3f value[]=
         {
-            mat->getPosition(),
-            mat->getRotation(),
-            mat->getScale()
+            mat.getPosition(),
+            mat.getRotation(),
+            mat.getScale()
         };
         float* vPtr = &value[0].x;
         
@@ -101,19 +95,6 @@ void geGraphControl::setTrack(IAnimationTrack* track)
                 maxExtend[y]=*(vPtr+y);
         }
     }
-    
-//    for(int x=0;x<animationTrack->getTotalFrames();x++)
-//    {
-//        auto mat = &matrixPtr[x];
-//        vector3f value[]=
-//        {
-//            mat->getPosition(),
-//            mat->getRotation(),
-//            mat->getScale()
-//        };
-//        
-//        printf("%3.2f, %3.2f, %3.2f\n", value[1].x, value[1].y, value[1].z);
-//    }
     
     float topMargin=getMainWindow()->getTopMarginOffsetHeight();
     for (int x=0; x<9; x++)
@@ -134,8 +115,6 @@ void geGraphControl::setTrack(IAnimationTrack* track)
 
 void geGraphControl::draw()
 {
-    //applyClipIfIamOnMainWindow();
-    
     glPushMatrix();
     glTranslatef(m_cPos.x+graphOffset.x, m_cPos.y, 0);
     
@@ -229,15 +208,15 @@ void geGraphControl::draw()
     
     if(animationTrack)
     {
-        auto matrixPtr = animationTrack->getFrames();
+        matrix4x4f mat;
         for(int x=0;x<animationTrack->getTotalFrames();x++)
         {
-            auto mat = &matrixPtr[x];
+            animationTrack->getFrame(x, mat);
             vector3f value[]=
             {
-                mat->getPosition(),
-                mat->getRotation(),
-                mat->getScale()
+                mat.getPosition(),
+                mat.getRotation(),
+                mat.getScale()
             };
             float* vPtr = &value[0].x;
             vPtr+=showValueIndex;

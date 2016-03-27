@@ -22,8 +22,8 @@ struct stMaterialPass
 class DECLSPEC gxMaterial : public GEARAsset, public Ref
 {
 public:
-	gxMaterial();
-	~gxMaterial();
+    gxMaterial();
+    ~gxMaterial();
     static gxMaterial* create();
 
 	bool isTwoSided()                   {	return twoSided;	}

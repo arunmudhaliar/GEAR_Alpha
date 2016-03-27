@@ -10,7 +10,6 @@ using namespace GEAR::Memory;
 class DECLSPEC gxAnimationSet : public Ref
 {
 public:
-    gxAnimationSet(const std::string& animationName);
 	~gxAnimationSet();
     static gxAnimationSet* create(const std::string& name);
     
@@ -30,6 +29,7 @@ public:
 	int getFrameCount()	{	return numberOfFrames;	}
 
 private:
+    gxAnimationSet(const std::string& animationName);
     gxAnimationSet(){}
     
 	std::vector<IAnimationTrack*> animationTracks;

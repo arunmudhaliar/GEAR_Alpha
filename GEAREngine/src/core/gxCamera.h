@@ -13,7 +13,7 @@ public:
 		ORTHOGRAPHIC_PROJECTION
 	};
 
-	gxCamera();
+    gxCamera();
 	~gxCamera();
     static gxCamera* create();
     

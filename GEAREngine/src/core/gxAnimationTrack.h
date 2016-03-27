@@ -5,7 +5,6 @@
 class DECLSPEC gxAnimationTrack : public IAnimationTrack
 {
 public:
-	gxAnimationTrack();
 	~gxAnimationTrack();
     static gxAnimationTrack* create();
     
@@ -17,4 +16,11 @@ public:
     int getAnimationTrackType()     {   return 1;   }
     bool getFrame(int frame, matrix4x4f& mat);
     bool getFrameFromTime(float time, matrix4x4f& mat);
+    
+    matrix4x4f* addFrame(int index);
+    bool isReadOnly()   {   return true;    }
+    
+private:
+    gxAnimationTrack();
+    matrix4x4f* animationFrames;
 };

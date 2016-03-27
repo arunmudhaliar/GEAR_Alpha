@@ -4,7 +4,7 @@
 #include "../gui/geTreeView.h"
 #include "gearSceneGraphEditor.h"
 
-class gearSceneAnimationEditor : public geWindow, public MTreeViewObserver
+class gearSceneAnimationEditor : public geWindow, public MTreeViewObserver, public MGUIObserver
 {
 public:
 

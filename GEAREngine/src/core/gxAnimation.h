@@ -8,7 +8,6 @@ class gxAnimationSet;
 class DECLSPEC gxAnimation : public Ref
 {
 public:
-	gxAnimation();
 	~gxAnimation();
     static gxAnimation* create();
     
@@ -40,6 +39,8 @@ public:
 	int getFrameCount()			{	return numberOfFrames;          }
 
 private:
+    gxAnimation();
+    
 	std::vector<gxAnimationSet*> animationSets;
 	gxAnimationSet* activeAnimationSet;		//must not delete this
 

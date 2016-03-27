@@ -53,9 +53,17 @@ EditorApp::EditorApp()
 
 EditorApp::~EditorApp()
 {
-	guiManager->reset();
-    GE_DELETE(guiManager);
-	GE_DELETE(rendererGL10Instance);
+    EditorApp::destroy();
+}
+
+void EditorApp::destroy()
+{
+    if(EditorApp::g_pEditorAppInstance->guiManager)
+    {
+        EditorApp::g_pEditorAppInstance->guiManager->reset();
+    }
+    GE_DELETE(EditorApp::g_pEditorAppInstance->guiManager);
+    GE_DELETE(EditorApp::g_pEditorAppInstance->rendererGL10Instance);
 }
 
 void EditorApp::init(SDL_Window* window)

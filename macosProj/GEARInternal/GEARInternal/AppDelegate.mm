@@ -36,6 +36,10 @@
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
     // Insert code here to tear down your application
+    if(engine_isRunning())
+    {
+        EditorGEARApp::destroy();
+    }
 }
 
 -(IBAction) newScene:(id)sender

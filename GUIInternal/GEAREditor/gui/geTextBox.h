@@ -1,6 +1,20 @@
 #pragma once
 
 #include "geGUIBase.h"
+#include <SDL2/SDL.h>
+#include <map>
+
+class KeyMapper
+{
+public:
+    static KeyMapper& getInstance();
+    int getAsciiCode(SDL_Scancode scancode);
+    
+private:
+    KeyMapper();
+    void init();
+    std::map<SDL_Scancode, int> asciiCodeMap;
+};
 
 class geTextBox : public geGUIBase
 {
@@ -19,7 +33,8 @@ public:
 	static geTextBox* g_pCurrentSelectedTextBoxPtr;
 	static geTextBox* g_pCurrentlyActiveTextBoxPtr;
 	void clearSelection();
-
+    void setAcceptOnlyNumbers(bool val) {   acceptOnlyNumbers=val;  }
+    
 protected:
 	virtual void onPosition(float x, float y, int flag);
 	virtual void onSize(float cx, float cy, int flag);
@@ -36,23 +51,30 @@ protected:
 
 	virtual void onSetName();
 	float getVirtualEndBound(int& index);
-
+    
 private:
+    void resetVars();
+
+    int keyMapping(int32_t scancode, uint16_t mod);
+    
+    bool acceptOnlyNumbers;
 	stVertexBuffer vertexBufferSelectionArea;
 	float vertexBufferClientAreaArray[10];
 	float vertexBufferCursorLine[4];
 	bool isStartSelection;
 	bool isShowSelection;
 	bool isShowCursor;
+    bool isClearAll;
 	float previousMouseXPosition;
 	float selectionStartXPosition;
 	float cursorPositionInPixel;
 	bool isControlSelected;
-	int cursorPosition;
-	int startCursorSelectionPosition;
-	int endCursorSelectionPosition;
-
+	int cursorIndexPosition;
+	int startCursorSelectionIndexPosition;
+	int endCursorSelectionIndexPosition;
+//
 	int startStringCharToDisplay;
-	int noOfStringCharToDisplay;
+//	int noOfStringCharToDisplay;
 	char* startChar;
+    char internalTextBuffer[512];
 };

@@ -31,6 +31,7 @@ extern DECLSPEC int engine_test_function_for_mono()
 
 extern DECLSPEC void engine_init(int nWorldToCreate)
 {
+    g_isEngineRunning = true;
 	g_cGEAREngine.initEngine(nWorldToCreate);
 	g_cMousePrevPos.zero();
 }
@@ -44,6 +45,7 @@ extern DECLSPEC void engine_destroy()
 {
 	g_cGEAREngine.resetEngine();
     AutoReleasePool::getInstance().clearPool();
+    g_isEngineRunning=false;
 }
 
 extern DECLSPEC void engine_setMetaFolder(gxWorld* world, const char* metaFolder)
@@ -222,6 +224,12 @@ extern DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* n
     REF_RELEASE(camera);
 	return camera;
 }
+    
+extern DECLSPEC bool engine_isRunning()
+{
+    return g_isEngineRunning;
+}
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

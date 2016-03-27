@@ -43,6 +43,12 @@ gePropertyTransform::gePropertyTransform(rendererGL10* renderer, geGUIBase* pare
 	scaleTextBox[2]->create(renderer, this, "0.0", 180, 50, 60, 16);
 	scaleTextBox[2]->setGUIObserver(this);
 
+    for(int x=0;x<3;x++)
+    {
+        translationTextBox[x]->setAcceptOnlyNumbers(true);
+        rotationTextBox[x]->setAcceptOnlyNumbers(true);
+        scaleTextBox[x]->setAcceptOnlyNumbers(true);
+    }
 
 	//window column
 	geWindowColumn* pWindowColumn = new geWindowColumn(fontManager);

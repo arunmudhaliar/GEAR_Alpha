@@ -71,6 +71,9 @@ void gearSceneFileView::onCreate(float cx, float cy)
     spriteArray[6].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
     spriteArray[6].setClip(425, 259, 16, 16);
 
+    spriteArray[7].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
+    spriteArray[7].setClip(26, 298, 16, 16);
+
 	loadPreviewObjects();
 }
 
@@ -591,6 +594,8 @@ int gearSceneFileView::open_project_directory_for_files(rendererGL10* renderer, 
                             sprite=&spriteArray[5];
                         else if(util::GE_IS_EXTENSION(buffer, ".gearscene") || util::GE_IS_EXTENSION(buffer, ".GEARSCENE"))
                             sprite=&spriteArray[6];
+                        else if(util::GE_IS_EXTENSION(buffer, ".anim") || util::GE_IS_EXTENSION(buffer, ".ANIM"))
+                            sprite=&spriteArray[7];
 						else
 							sprite=&spriteArray[1];
 

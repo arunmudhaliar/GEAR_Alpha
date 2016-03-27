@@ -1,47 +1,102 @@
 #include "geTextBox.h"
 #include "geGUIManager.h"
 
+KeyMapper& KeyMapper::getInstance()
+{
+    static KeyMapper instance;
+    return instance;
+}
+
+KeyMapper::KeyMapper()
+{
+    init();
+}
+
+void KeyMapper::init()
+{
+    int asciiCode=65;   //A-Z loop
+    for (int scancode=SDL_SCANCODE_A; scancode<=SDL_SCANCODE_Z; scancode++, asciiCode++)
+    {
+        asciiCodeMap[(SDL_Scancode)scancode]=asciiCode;
+    }
+    
+    //space
+    asciiCodeMap[SDL_SCANCODE_SPACE]=32;
+    //0
+    asciiCodeMap[SDL_SCANCODE_0]=48;
+    //-
+    asciiCodeMap[SDL_SCANCODE_MINUS]=45;
+    //=
+    asciiCodeMap[SDL_SCANCODE_EQUALS]=61;
+
+    asciiCodeMap[SDL_SCANCODE_LEFTBRACKET]=91;
+    asciiCodeMap[SDL_SCANCODE_RIGHTBRACKET]=93;
+    
+    asciiCodeMap[SDL_SCANCODE_SEMICOLON] = 59;
+    asciiCodeMap[SDL_SCANCODE_APOSTROPHE] = 39;
+    
+    asciiCodeMap[SDL_SCANCODE_COMMA] = 44;
+    asciiCodeMap[SDL_SCANCODE_PERIOD] = 46;
+    asciiCodeMap[SDL_SCANCODE_SLASH] = 47;
+    asciiCodeMap[SDL_SCANCODE_BACKSLASH] = 92;
+
+    asciiCodeMap[SDL_SCANCODE_KP_DIVIDE] = 47;
+    asciiCodeMap[SDL_SCANCODE_KP_MULTIPLY] = 42;
+    asciiCodeMap[SDL_SCANCODE_KP_MINUS] = 45;
+    asciiCodeMap[SDL_SCANCODE_KP_PLUS] = 43;
+
+    asciiCodeMap[SDL_SCANCODE_BACKSPACE] = 8;
+    
+    asciiCode=49;   //1-9 loop
+    for (int scancode=SDL_SCANCODE_1; scancode<=SDL_SCANCODE_9; scancode++, asciiCode++)
+    {
+        asciiCodeMap[(SDL_Scancode)scancode]=asciiCode;
+    }
+    
+}
+
+int KeyMapper::getAsciiCode(SDL_Scancode scancode)
+{
+    return asciiCodeMap[scancode];
+}
+
 geTextBox* geTextBox::g_pCurrentSelectedTextBoxPtr=NULL;
 geTextBox* geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
 
 geTextBox::geTextBox(geFontManager* fontmanager):
 	geGUIBase(GEGUI_TEXTBOX, "Text Box", fontmanager)
 {
-	isStartSelection=false;
-	isShowSelection=false;
-	previousMouseXPosition=0.0f;
-	selectionStartXPosition=0.0f;
-	isShowCursor=false;
-	cursorPositionInPixel=0.0f;
-	isControlSelected=false;
-	cursorPosition=0;
-	startCursorSelectionPosition=0;
-	endCursorSelectionPosition=0;
-	startStringCharToDisplay=0;
-	startChar=NULL;
+    resetVars();
 }
 
 geTextBox::geTextBox(const char* name, geFontManager* fontmanager):
 	geGUIBase(GEGUI_TEXTBOX, name, fontmanager)
 {
-	isStartSelection=false;
-	isShowSelection=false;
-	previousMouseXPosition=0.0f;
-	selectionStartXPosition=0.0f;
-	isShowCursor=false;
-	cursorPositionInPixel=0.0f;
-	isControlSelected=false;
-	cursorPosition=0;
-	startCursorSelectionPosition=0;
-	endCursorSelectionPosition=0;
-	startStringCharToDisplay=0;
-	startChar=NULL;
+    acceptOnlyNumbers=false;
+    resetVars();
 }
 
 geTextBox::~geTextBox()
 {
 	if(geTextBox::g_pCurrentSelectedTextBoxPtr==this)
 		geTextBox::g_pCurrentSelectedTextBoxPtr=NULL;
+}
+
+void geTextBox::resetVars()
+{
+    isStartSelection=false;
+    isShowSelection=false;
+    previousMouseXPosition=0.0f;
+    selectionStartXPosition=0.0f;
+    isShowCursor=false;
+    cursorPositionInPixel=0.0f;
+    isControlSelected=false;
+    cursorIndexPosition=0;
+    startCursorSelectionIndexPosition=0;
+    endCursorSelectionIndexPosition=0;
+    startStringCharToDisplay=0;
+    isClearAll=false;
+    memset(internalTextBuffer, 0, sizeof(internalTextBuffer));
 }
 
 void geTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y, float cx, float cy)
@@ -51,11 +106,10 @@ void geTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* na
 	//int width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(name, strlen(name), 0);
     setName(name);
 
-
 	setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
 	applyPrimaryColorToVBClientArea();
-	setColor(&vertexBufferSelectionArea, 0.24f, 0.38f, 0.57f, 1.0f);
-	startChar=const_cast<char*>(m_szName.c_str());  //TODO: CAREFULL
+    setColor(&vertexBufferSelectionArea, 0.24f, 0.38f, 0.57f, 1.0f);
+    startChar=internalTextBuffer;
 }
 
 void geTextBox::draw()
@@ -72,26 +126,26 @@ void geTextBox::draw()
 			leftX=selectionStartXPosition+diff;
 		}
 
-		if(leftX<10 /*&& diff<0*/)
-		{
-			if(startStringCharToDisplay)
-			{
-				startStringCharToDisplay--;
-				if(startStringCharToDisplay<=0)
-					startStringCharToDisplay=0;
-				startChar = &m_szName[startStringCharToDisplay];
-			}
-		}
-
-		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, (int)strlen(startChar), 0);
-		if(rightX>m_cSize.x-10 /*&& diff>0*/)
-		{
-			if(full_width>m_cSize.x)
-			{
-				startStringCharToDisplay++;
-				startChar = &m_szName[startStringCharToDisplay];
-			}
-		}
+//		if(leftX<10 )
+//		{
+//			if(startStringCharToDisplay)
+//			{
+//				startStringCharToDisplay--;
+//				if(startStringCharToDisplay<=0)
+//					startStringCharToDisplay=0;
+//				startChar = &m_szName[startStringCharToDisplay];
+//			}
+//		}
+//
+//		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(&*startChar, (int)strlen(&*startChar), 0);
+//		if(rightX>m_cSize.x-10 )
+//		{
+//			if(full_width>m_cSize.x)
+//			{
+//				startStringCharToDisplay++;
+//				startChar = &m_szName[startStringCharToDisplay];
+//			}
+//		}
 	}
 
 	glPushMatrix();
@@ -118,14 +172,6 @@ void geTextBox::onPosition(float x, float y, int flag)
 
 void geTextBox::onSize(float cx, float cy, int flag)
 {
-//	const float title_vertLst[8] =
-//	{
-//		cx,	0,
-//		0,		0,
-//		cx,	cy,
-//		0,		cy,
-//	};
-//	memcpy(vertexBufferClientArea.vertexArray, title_vertLst, sizeof(title_vertLst));
     vertexBufferClientArea.updateRect(0, 0, cx, cy);
 	const float clientarea_linevertLst[10] =
 	{
@@ -146,44 +192,47 @@ void geTextBox::clearSelection()
 	isShowSelection=false;
 	isStartSelection=false;
 	isShowCursor=false;
-	startCursorSelectionPosition=0;
-	endCursorSelectionPosition=0;
-	setCursorPos(cursorPosition);
+	startCursorSelectionIndexPosition=0;
+	endCursorSelectionIndexPosition=0;
+	setCursorPos(cursorIndexPosition);
 }
 
 void geTextBox::setCursorPos(int index)
 {
-	if(index<0) return;
-
-	cursorPosition=index;
+	if(index<0)
+        return;
+    
+	cursorIndexPosition=index;
 	cursorPositionInPixel=0;
-	for(int x=0;x<cursorPosition;x++)
+	for(int x=0;x<cursorIndexPosition;x++)
 		cursorPositionInPixel+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(startChar[x]);
+    
+    printf("cursorIndexPosition %d %s %s\n",cursorIndexPosition, &*startChar, internalTextBuffer);
 }
 
 float geTextBox::getVirtualEndBound(int& index)
 {
 	index=0;
-	float cursorPos=0;
+	float cursorPosInPx=0;
 	for(index=0;index<strlen(startChar);index++)
 	{
-		float temp=cursorPos;
-		cursorPos+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(startChar[index]);
-		if(cursorPos>m_cSize.x)
+		float temp=cursorPosInPx;
+		cursorPosInPx+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(startChar[index]);
+		if(cursorPosInPx>m_cSize.x)
 		{
-			cursorPos=temp;
+			cursorPosInPx=temp;
 			break;
 		}
 	}
 
-	return cursorPos;
+	return cursorPosInPx;
 }
 
 bool geTextBox::onMouseLButtonDown(float x, float y, int nFlag)
 {
 	if(!isPointInsideClientArea(x, y))
 		return false;
-	//isStartSelection=true;
+//	isStartSelection=true;
 	geTextBox::g_pCurrentlyActiveTextBoxPtr=this;
 
 	if(geTextBox::g_pCurrentSelectedTextBoxPtr && geTextBox::g_pCurrentSelectedTextBoxPtr!=this)
@@ -191,17 +240,17 @@ bool geTextBox::onMouseLButtonDown(float x, float y, int nFlag)
 	geTextBox::g_pCurrentSelectedTextBoxPtr=this;
 
 	previousMouseXPosition=x;
-	selectionStartXPosition=x-m_cPos.x;
-	float full_width=getVirtualEndBound(cursorPosition);//geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, strlen(startChar), 0);
-	if(selectionStartXPosition>full_width)
+	selectionStartXPosition=x;
+	float full_width=getVirtualEndBound(cursorIndexPosition);
+	if(selectionStartXPosition>=full_width)
 	{
 		selectionStartXPosition=full_width;
-		setCursorPos(cursorPosition);
-		startCursorSelectionPosition=0;
-		endCursorSelectionPosition=cursorPosition;
+		setCursorPos(cursorIndexPosition);
+		startCursorSelectionIndexPosition=0;
+		endCursorSelectionIndexPosition=cursorIndexPosition;
 	}
 	isControlSelected=true;
-	isStartSelection=false;
+//	isStartSelection=false;
 
 	return true;
 }
@@ -215,64 +264,56 @@ bool geTextBox::onMouseLButtonUp(float x, float y, int nFlag)
 	{
 		//insert cursor
 		int len=(int)strlen(startChar);
-		float cursorPos=0;
+		float cursorPosInPx=0;
 		bool bflag=false;
 		for(int m=0;m<len;m++)
 		{
-			float startX=cursorPos;
-			cursorPos+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(startChar[m]);
-			float endX=cursorPos;
-			if(x-m_cPos.x>startX && x-m_cPos.x<endX)
+			float startX=cursorPosInPx;
+			cursorPosInPx+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(startChar[m]);
+			float endX=cursorPosInPx;
+			if(x>=startX && x<=endX)
 			{
 				setCursorPos(m);
 				bflag=true;
 				break;
 			}
 		}
+        
 		if(!bflag)
 		{
-			startCursorSelectionPosition=0;
-			endCursorSelectionPosition=len;
+			startCursorSelectionIndexPosition=0;
+			endCursorSelectionIndexPosition=len;
 			setCursorPos(len);
 		}
 		isShowCursor=true;
 		if(isShowSelection)
 		{
+            isClearAll=false;
 			isControlSelected=false;
-			startCursorSelectionPosition=0;
-			endCursorSelectionPosition=0;
+			startCursorSelectionIndexPosition=0;
+			endCursorSelectionIndexPosition=0;
 			isShowSelection=false;
 			return true;
 		}
-		//
-	}
-
-	if(!isStartSelection)
-	{
-		float full_width=getVirtualEndBound(cursorPosition);
-		//float line_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, len, 0);
-//		const float selection_vertLst[8] =
-//		{
-//			full_width,	0,
-//			0,			0,
-//			full_width,	m_cSize.y,
-//			0,			m_cSize.y,
-//		};
-//		memcpy(vertexBufferSelectionArea.vertexArray, selection_vertLst, sizeof(selection_vertLst));
-        vertexBufferClientArea.updateRect(0, 0, full_width, m_cSize.y);
         
-		setCursorPos(cursorPosition);
-		startCursorSelectionPosition=0;
-		endCursorSelectionPosition=cursorPosition;
+        float full_width=getVirtualEndBound(cursorIndexPosition);
+        vertexBufferSelectionArea.updateRect(0, 0, full_width, m_cSize.y);
+        setCursorPos(cursorIndexPosition);
+        startCursorSelectionIndexPosition=0;
+        endCursorSelectionIndexPosition=cursorIndexPosition;
+        isShowSelection=true;
+        if(strlen(startChar)==cursorIndexPosition)
+        {
+            isClearAll=true;
+        }
 	}
 
-	isShowSelection=true;
 
-	isStartSelection=false;
-	isControlSelected=false;
-	previousMouseXPosition=x;
+//    isStartSelection=false;
+    isControlSelected=false;
+    previousMouseXPosition=x;
 
-	return true;
+    return true;
 }
 
 bool geTextBox::onMouseMove(float x, float y, int flag)
@@ -280,101 +321,103 @@ bool geTextBox::onMouseMove(float x, float y, int flag)
 	if(!isPointInsideClientArea(x, y))
 		return false;
 
-	if(flag&MK_LBUTTON)
-		isStartSelection=true;
-
-	if(isStartSelection && isControlSelected && geTextBox::g_pCurrentlyActiveTextBoxPtr==this && (flag&MK_LBUTTON))
-	{
-		float diff=x-m_cPos.x-selectionStartXPosition;
-		float leftX=selectionStartXPosition;
-		float rightX=selectionStartXPosition+diff;
-
-		if(selectionStartXPosition+diff<selectionStartXPosition)
-		{
-			rightX=selectionStartXPosition;
-			leftX=selectionStartXPosition+diff;
-		}
-
-		if(leftX<10 /*&& diff<0*/)
-		{
-			if(startStringCharToDisplay)
-			{
-				startStringCharToDisplay--;
-				if(startStringCharToDisplay<=0)
-					startStringCharToDisplay=0;
-				startChar = &m_szName[startStringCharToDisplay];
-			}
-		}
-
-		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, (int)strlen(startChar), 0);
-		if(rightX>m_cSize.x-10 /*&& diff>0*/)
-		{
-			if(full_width>m_cSize.x)
-			{
-				startStringCharToDisplay++;
-				startChar = &m_szName[startStringCharToDisplay];
-			}
-		}
-
-		//
-		int len=0;//strlen(startChar);
-		float cursorPos=getVirtualEndBound(len);
-		full_width	=cursorPos;//reassign the virtual full width
-		for(int m=len-1;m>=0;m--)
-		{
-			//float endX=cursorPos;
-			cursorPos-=geFontManager::g_pFontArial10_80Ptr->getCharWidth(startChar[m]);
-			if(leftX>cursorPos)
-			{
-				startCursorSelectionPosition=m;
-				leftX=cursorPos;
-				break;
-			}
-		}
-
-		cursorPos=0;
-		for(int m=0;m<len;m++)
-		{
-			//float startX=cursorPos;
-			cursorPos+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(startChar[m]);
-			if(rightX<cursorPos)
-			{
-				endCursorSelectionPosition=m+1;
-				rightX=cursorPos;
-				break;
-			}
-		}
-
-		if(selectionStartXPosition+diff<selectionStartXPosition)
-		{
-			setCursorPos(startCursorSelectionPosition);
-		}
-		else
-		{
-			setCursorPos(endCursorSelectionPosition);
-		}
-
-		if(rightX>full_width && diff>0)
-		{
-			rightX=full_width;
-			//if(rightX>m_cSize.x)
-			//	rightX=m_cSize.x;
-			setCursorPos((int)strlen(startChar));
-		}
-
-//		const float selection_vertLst[8] =
+//	if(flag&MK_LBUTTON)
+//		isStartSelection=true;
+//
+//	if(isStartSelection && isControlSelected && geTextBox::g_pCurrentlyActiveTextBoxPtr==this && (flag&MK_LBUTTON))
+//	{
+//		float diff=x-m_cPos.x-selectionStartXPosition;
+//		float leftX=selectionStartXPosition;
+//		float rightX=selectionStartXPosition+diff;
+//
+//		if(selectionStartXPosition+diff<selectionStartXPosition)
 //		{
-//			rightX,		0,
-//			leftX,		0,
-//			rightX,		m_cSize.y,
-//			leftX,		m_cSize.y,
-//		};
-//		memcpy(vertexBufferSelectionArea.vertexArray, selection_vertLst, sizeof(selection_vertLst));
-        vertexBufferSelectionArea.updateRect(leftX, 0, rightX-leftX, m_cSize.y);
-	}
-	previousMouseXPosition=x;
-
-	return true;
+//			rightX=selectionStartXPosition;
+//			leftX=selectionStartXPosition+diff;
+//		}
+//
+//		if(leftX<10 /*&& diff<0*/)
+//		{
+//			if(startStringCharToDisplay)
+//			{
+//				startStringCharToDisplay--;
+//				if(startStringCharToDisplay<=0)
+//					startStringCharToDisplay=0;
+//				startChar = &m_szName[startStringCharToDisplay];
+//			}
+//		}
+//
+//		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, (int)strlen(startChar), 0);
+//		if(rightX>m_cSize.x-10 /*&& diff>0*/)
+//		{
+//			if(full_width>m_cSize.x)
+//			{
+//				startStringCharToDisplay++;
+//				startChar = &m_szName[startStringCharToDisplay];
+//			}
+//		}
+//
+//		//
+//		int len=0;//strlen(startChar);
+//		float cursorPos=getVirtualEndBound(len);
+//		full_width	=cursorPos;//reassign the virtual full width
+//		for(int m=len-1;m>=0;m--)
+//		{
+//			//float endX=cursorPos;
+//			cursorPos-=geFontManager::g_pFontArial10_80Ptr->getCharWidth(startChar[m]);
+//			if(leftX>cursorPos)
+//			{
+//				startCursorSelectionPosition=m;
+//				leftX=cursorPos;
+//				break;
+//			}
+//		}
+//
+//		cursorPos=0;
+//		for(int m=0;m<len;m++)
+//		{
+//			//float startX=cursorPos;
+//			cursorPos+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(startChar[m]);
+//			if(rightX<cursorPos)
+//			{
+//				endCursorSelectionPosition=m+1;
+//				rightX=cursorPos;
+//				break;
+//			}
+//		}
+//
+//		if(selectionStartXPosition+diff<selectionStartXPosition)
+//		{
+//			setCursorPos(startCursorSelectionPosition);
+//		}
+//		else
+//		{
+//			setCursorPos(endCursorSelectionPosition);
+//		}
+//
+//		if(rightX>full_width && diff>0)
+//		{
+//			rightX=full_width;
+//			//if(rightX>m_cSize.x)
+//			//	rightX=m_cSize.x;
+//			setCursorPos((int)strlen(startChar));
+//		}
+//
+////		const float selection_vertLst[8] =
+////		{
+////			rightX,		0,
+////			leftX,		0,
+////			rightX,		m_cSize.y,
+////			leftX,		m_cSize.y,
+////		};
+////		memcpy(vertexBufferSelectionArea.vertexArray, selection_vertLst, sizeof(selection_vertLst));
+//        vertexBufferSelectionArea.updateRect(leftX, 0, rightX-leftX, m_cSize.y);
+//	}
+//	previousMouseXPosition=x;
+//
+//	return true;
+    
+    return true;
 }
 
 void geTextBox::onCancelEngagedControls()
@@ -383,6 +426,92 @@ void geTextBox::onCancelEngagedControls()
 }
 
 bool replaceSelection(char* str, int start, int end);
+
+int geTextBox::keyMapping(int32_t scancode, uint16_t mod)
+{
+    bool isCAPS = (mod&KMOD_CAPS);
+    bool isSHIFT = (mod&KMOD_LSHIFT) || (mod&KMOD_RSHIFT);
+    bool isCTRL = (mod&KMOD_LCTRL) || (mod&KMOD_RCTRL);
+    
+    if(scancode==SDL_SCANCODE_BACKSPACE)
+        return KeyMapper::getInstance().getAsciiCode((SDL_Scancode)scancode);
+    else if(scancode==SDL_SCANCODE_LSHIFT || scancode==SDL_SCANCODE_RSHIFT)
+        return 0;
+    else if(scancode==SDL_SCANCODE_CAPSLOCK)
+        return 0;
+    
+    if(acceptOnlyNumbers)
+    {
+        if((scancode>=SDL_SCANCODE_1 && scancode<=SDL_SCANCODE_0 && !isSHIFT))
+            return KeyMapper::getInstance().getAsciiCode((SDL_Scancode)scancode);
+        if(scancode==SDL_SCANCODE_MINUS && isSHIFT)
+        {
+            long diff = startChar-internalTextBuffer;
+            if(diff==0 && cursorIndexPosition==0 && !(geUtil::isSubString(internalTextBuffer, "-") || geUtil::isSubString(internalTextBuffer, "+")))
+                return KeyMapper::getInstance().getAsciiCode((SDL_Scancode)scancode);
+            else
+                return 0;
+        }
+        if(scancode==SDL_SCANCODE_EQUALS && isSHIFT)
+        {
+            long diff = startChar-internalTextBuffer;
+            if(diff==0 && cursorIndexPosition==0 && !(geUtil::isSubString(internalTextBuffer, "-") || geUtil::isSubString(internalTextBuffer, "+")))
+                return 43;
+            else
+                return 0;
+        }
+        if(scancode==SDL_SCANCODE_PERIOD && !isSHIFT)
+        {
+            if(!(geUtil::isSubString(internalTextBuffer, ".")))
+                return KeyMapper::getInstance().getAsciiCode((SDL_Scancode)scancode);
+            else
+                return 0;
+        }
+        return 0;
+    }
+    
+    int ascii_code = 0;
+    //for ascii chars
+    if(scancode>=SDL_SCANCODE_A && scancode<=SDL_SCANCODE_Z)
+    {
+        ascii_code = KeyMapper::getInstance().getAsciiCode((SDL_Scancode)scancode);
+
+        if((!isCAPS && !isSHIFT) || (isCAPS && isSHIFT))
+            ascii_code+=32;
+        
+        return ascii_code;
+    }
+    
+    //for shift key
+    if(isSHIFT)
+    {
+        int oneTozero[] ={ 33, 64, 35, 36, 37, 94, 38, 42, 40, 41};
+        if(scancode>=SDL_SCANCODE_1 && scancode<=SDL_SCANCODE_0)
+            return oneTozero[scancode-SDL_SCANCODE_1];
+        else if(scancode==SDL_SCANCODE_LEFTBRACKET)
+            return 123;
+        else if(scancode==SDL_SCANCODE_RIGHTBRACKET)
+            return 125;
+        else if(scancode==SDL_SCANCODE_SLASH)
+            return 63;
+        else if(scancode==SDL_SCANCODE_BACKSLASH)
+            return 124;
+        else if(scancode==SDL_SCANCODE_APOSTROPHE)
+            return 34;
+        else if(scancode==SDL_SCANCODE_SEMICOLON)
+            return 58;
+        else if(scancode==SDL_SCANCODE_COMMA)
+            return 60;
+        else if(scancode==SDL_SCANCODE_PERIOD)
+            return 62;
+        else if(scancode==SDL_SCANCODE_MINUS)
+            return 95;
+        else if(scancode==SDL_SCANCODE_EQUALS)
+            return 43;
+    }
+    
+    return KeyMapper::getInstance().getAsciiCode((SDL_Scancode)scancode);
+}
 
 bool geTextBox::onKeyDown(int charValue, int flag)
 {
@@ -394,67 +523,129 @@ bool geTextBox::onKeyDown(int charValue, int flag)
 //	{
 //		endCursorSelectionPosition=endCursorSelectionPosition;
 //	}
-
-	bool bReplaced=bReplaced=replaceSelection(startChar, startCursorSelectionPosition, endCursorSelectionPosition);
-
+    
+    int ascii_val = keyMapping(charValue, flag);
+    if(ascii_val==0)
+        return false;
+    
+    bool bReplaced=false;
+    
+    if(isClearAll)
+    {
+        startChar=internalTextBuffer;
+        startStringCharToDisplay=0;
+        startCursorSelectionIndexPosition=0;
+        endCursorSelectionIndexPosition=0;
+        bReplaced = replaceSelection(internalTextBuffer, 0, (int)strlen(internalTextBuffer));
+        isClearAll=false;
+        printf("CLEAR ALL\n");
+    }
+    else
+    {
+        bReplaced = replaceSelection(startChar, startCursorSelectionIndexPosition, endCursorSelectionIndexPosition);
+    }
+    
 	if(bReplaced)
 	{
-		cursorPosition=startCursorSelectionPosition;
-		startCursorSelectionPosition=0;
-		endCursorSelectionPosition=0;
+        printf("REPLACED\n");
+		cursorIndexPosition=startCursorSelectionIndexPosition;
+		startCursorSelectionIndexPosition=0;
+		endCursorSelectionIndexPosition=0;
 		isStartSelection=false;
 		isShowSelection=false;
 	}
 
-	for(int x=(int)strlen(startChar);x>=cursorPosition;x--)
+	if(ascii_val==8)    //backspace
 	{
-		startChar[x+1]=startChar[x];
-	}
-	if(charValue==8)
-	{
-		if(!bReplaced && cursorPosition)
-			bReplaced=replaceSelection(startChar, cursorPosition-1, cursorPosition);
+		if(!bReplaced && cursorIndexPosition)
+			bReplaced=replaceSelection(startChar, cursorIndexPosition-1, cursorIndexPosition);
 		if(bReplaced)
-			cursorPosition--;
-		if(cursorPosition-1<=0)
-			cursorPosition=0;
-		setCursorPos(cursorPosition);
+			cursorIndexPosition--;
+		if(cursorIndexPosition<=0)
+        {
+            cursorIndexPosition=0;
+            //check if there are any chars in the left side
+            long diff = startChar-internalTextBuffer;
+            if(diff>0)
+            {
+                int tempIndex=cursorIndexPosition;
+                float remaining_width = getVirtualEndBound(tempIndex);
+                long iterator = diff;
+                float cursorPosInPx = remaining_width;
+                for(long m=diff-1;m>=0;m--, iterator--)
+                {
+                    float temp=cursorPosInPx;
+                    cursorPosInPx+=geFontManager::g_pFontArial10_80Ptr->getCharWidth(internalTextBuffer[m]);
+                    if(cursorPosInPx>m_cSize.x)
+                    {
+                        iterator--;
+                        cursorPosInPx=temp;
+                        break;
+                    }
+                }
+                
+                if(iterator<0)
+                {
+                    printf("ERROR\n");
+                }
+                startStringCharToDisplay=(int)iterator;
+                startChar=internalTextBuffer+iterator;
+                setCursorPos((int)strlen(startChar)-tempIndex);
+            }
+        }
+		setCursorPos(cursorIndexPosition);
 	}
 	else
 	{
-		startChar[cursorPosition]=charValue;
-		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, (int)strlen(m_szName.c_str()), 0);
+        if(cursorIndexPosition<strlen(startChar))
+        {
+            for(int x=(int)strlen(startChar);x>=cursorIndexPosition;x--)
+            {
+                startChar[x+1]=startChar[x];
+            }
+        }
+		startChar[cursorIndexPosition]=ascii_val;
+		float full_width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(startChar, (int)strlen(startChar), 0);
 		if(full_width>m_cSize.x)
 		{
 			int temp=0;
 			getVirtualEndBound(temp);
-			if(cursorPosition==temp)
+			if(cursorIndexPosition==temp)
 			{
 				startStringCharToDisplay++;
-				startChar=&m_szName[startStringCharToDisplay];
-				setCursorPos(cursorPosition);
+				startChar=&internalTextBuffer[startStringCharToDisplay];
+				setCursorPos(cursorIndexPosition);
 			}
 			else
-				setCursorPos(cursorPosition+1);
+            {
+                startStringCharToDisplay++;
+                startChar=&internalTextBuffer[startStringCharToDisplay];
+                setCursorPos(cursorIndexPosition);
+            }
 		}
 		else
-			setCursorPos(cursorPosition+1);
-		
-		if(guiObserver)
-			guiObserver->onTextChange(this);
+			setCursorPos(cursorIndexPosition+1);
 	}
+
+    m_szName.assign(internalTextBuffer, strlen(internalTextBuffer));
+    if(guiObserver)
+        guiObserver->onTextChange(this);
 
 	return false;	//handled by special case
 }
 
 bool replaceSelection(char* str, int start, int end)
 {
-	if(end>start)
+	if(end>start && start>=0)
 	{
 		int remaining_len=(int)strlen(&str[end]);
 		if(remaining_len==0)
 		{
-			strcpy(&str[start], "");
+			//strcpy(&str[start], "");
+            for (int x=start; x<end; x++)
+            {
+                str[x]='\0';
+            }
 		}
 		else
 		{
@@ -485,6 +676,19 @@ bool geTextBox::onKeyUp(int charValue, int flag)
 
 void geTextBox::onSetName()
 {
+    resetVars();
+    
+    if(acceptOnlyNumbers)
+    {
+        auto val = geUtil::getFloat(m_szName.c_str());
+        char buffer[256];
+        sprintf(buffer, "%f", val);
+        m_szName.assign(buffer, strlen(buffer));
+        strcpy(internalTextBuffer, m_szName.c_str());
+    }
+    else
+        strcpy(internalTextBuffer, m_szName.c_str());
+    
 	if(guiObserver)
 		guiObserver->onTextChange(this);
 }

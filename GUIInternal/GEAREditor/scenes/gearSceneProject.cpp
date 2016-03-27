@@ -13,6 +13,7 @@
 #include "../EditorApp.h"
 #include"assetUserData.h"
 #include "../AssetImporter.h"
+#include "../OSSpecific/OSSpecificInterface.h"
 
 gearSceneProject::gearSceneProject(geFontManager* fontmanager):
 geWindow("Project", fontmanager)
@@ -30,6 +31,12 @@ void gearSceneProject::onCreate(float cx, float cy)
 {
 	assetTreeView->create(rendererGUI, this, "AssetsTV", this);
 
+    auto createToolBarDropMenuButton=new geToolBarDropMenu(rendererGUI, "Create", getToolBar(), fontManagerGUI);
+    createToolBarDropMenuButton->setGUIObserver(this);
+    getToolBar()->appendToolBarControl(createToolBarDropMenuButton);
+    
+    createToolBarDropMenuButton->appendMenuItem("Animation", 0x00003000);
+
 	spriteArray[0].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
 	spriteArray[0].setClip(362, 70, 16, 16);
 	spriteArray[1].loadTexture(&geGUIManager::g_cTextureManager, "res//icons16x16.png");
@@ -46,6 +53,12 @@ void gearSceneProject::populateProjectView()
 	traverse_project_directory(rendererGUI, EditorGEARApp::getProjectHomeDirectory(), assetTreeView->getRoot(), spriteArray, fontManagerGUI);
 	assetTreeView->getRoot()->traverseSetWidth(m_cSize.x);
 	assetTreeView->refreshTreeView();
+    
+//    if(assetTreeView->getRoot()->getChildControls()->size())
+//    {
+//        auto assetsNode = dynamic_cast<geTreeNode*>(assetTreeView->getRoot()->getChildControls()->at(0));
+//        assetTreeView->selectNode(assetsNode);
+//    }
 }
 
 void gearSceneProject::onDraw()
@@ -130,6 +143,20 @@ void gearSceneProject::onDragLeave()
 {
 }
 //#endif
+
+void gearSceneProject::onCommand(int cmd)
+{
+    switch(cmd)
+    {
+        case 0x00003000:
+        {
+            std::string root_dir = EditorGEARApp::getProjectHomeDirectory();
+            root_dir+="/Assets";
+            cpp_saveAnimationFile(root_dir);
+        }
+        break;
+    }
+}
 
 int gearSceneProject::traverse_project_directory(rendererGL10* renderer, const char *dirname, geTreeNode* parentNode, Sprite2Dx* spriteArray, geFontManager* fontmanager)
 {

@@ -54,6 +54,10 @@ extern "C" {
 
 	//logs
 	DECLSPEC void engine_consoleLog(const char* msg, int msgtype=0);	//0=info, 1=warning, 2=error
+    
+    DECLSPEC bool engine_isRunning();
+    
+    static bool g_isEngineRunning = false;
 }
 //
 

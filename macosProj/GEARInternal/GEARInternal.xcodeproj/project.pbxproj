@@ -77,6 +77,7 @@
 		556F65C91AD9C85700CDF3C8 /* appEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 556F65C71AD9C85700CDF3C8 /* appEntry.cpp */; };
 		5576F3051AD2DD5E008642F5 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5576F3041AD2DD5E008642F5 /* AppKit.framework */; };
 		5576F3071AD2F052008642F5 /* MenuImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5576F3061AD2F052008642F5 /* MenuImp.mm */; };
+		55A179BA1CA5FC4C00989B35 /* OSSpecificImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55A179B91CA5FC4C00989B35 /* OSSpecificImpl.mm */; };
 		55AB5CC61C048959005B8747 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55AB5CC51C048959005B8747 /* Images.xcassets */; };
 		55BEFD391AD59EC40071A2D5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */; };
 		55BEFD3C1AD59F480071A2D5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55BEFD3A1AD59F480071A2D5 /* MainMenu.xib */; };
@@ -316,6 +317,9 @@
 		5576F3061AD2F052008642F5 /* MenuImp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuImp.mm; sourceTree = "<group>"; };
 		5576F3081AD2F153008642F5 /* MenuImp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuImp.h; sourceTree = "<group>"; };
 		5576F3091AD30242008642F5 /* MenuCPPInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuCPPInterface.h; sourceTree = "<group>"; };
+		55A179B91CA5FC4C00989B35 /* OSSpecificImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OSSpecificImpl.mm; sourceTree = "<group>"; };
+		55A179BE1CA5FC6C00989B35 /* OSSpecificImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSSpecificImpl.h; sourceTree = "<group>"; };
+		55A179BF1CA5FC9100989B35 /* OSSpecificInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSSpecificInterface.h; sourceTree = "<group>"; };
 		55AB5CC51C048959005B8747 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = GEARInternal/Images.xcassets; sourceTree = "<group>"; };
 		55BEFD371AD59EC40071A2D5 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		55BEFD381AD59EC40071A2D5 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
@@ -504,6 +508,9 @@
 				5554F0461AD2717000FD80AF /* ConfirmationDialog.h */,
 				5554F0471AD2717000FD80AF /* MDropData.h */,
 				5576F3091AD30242008642F5 /* MenuCPPInterface.h */,
+				55A179B91CA5FC4C00989B35 /* OSSpecificImpl.mm */,
+				55A179BE1CA5FC6C00989B35 /* OSSpecificImpl.h */,
+				55A179BF1CA5FC9100989B35 /* OSSpecificInterface.h */,
 			);
 			path = OSSpecific;
 			sourceTree = "<group>";
@@ -844,6 +851,7 @@
 				5554F0F51AD2717000FD80AF /* geTextureThumbnail.cpp in Sources */,
 				5554F0FD1AD2717000FD80AF /* renderer.cpp in Sources */,
 				5554F11B1AD2717000FD80AF /* geTextureDlg.cpp in Sources */,
+				55A179BA1CA5FC4C00989B35 /* OSSpecificImpl.mm in Sources */,
 				5521D2D01C6F52F000C3D085 /* gearSceneAnimationEditor.cpp in Sources */,
 				5554F11D1AD2717000FD80AF /* Sprite2Dx.cpp in Sources */,
 				5554F10C1AD2717000FD80AF /* gePropertyLayers.cpp in Sources */,

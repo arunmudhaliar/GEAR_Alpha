@@ -5,6 +5,7 @@
 bool g_mControlKeyPressed = false;
 bool g_mAppInitialised = false;
 bool g_mReInitMono = false;
+//int handleAppEvents(void *userdata, SDL_Event *event);
 
 int appEntry()
 {
@@ -22,12 +23,15 @@ int appEntry()
     EditorGEARApp editorApp;
     EditorGEARApp::setAppDirectory(cCurrentPath);
 
+
     // init SDL
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         std::cout << "ERROR SDL_Init" << std::endl;
         return -1;
     }
+
+//    SDL_SetEventFilter(handleAppEvents, NULL);
 
     // create a window
     SDL_Window * window = SDL_CreateWindow(
@@ -231,6 +235,50 @@ int appEntry()
     return 0;
 }
 
+/*
+int handleAppEvents(void *userdata, SDL_Event *event)
+{
+    switch (event->type)
+    {
+        case SDL_APP_TERMINATING:
+//            Terminate the app.
+//            Shut everything down before returning from this function.
+            printf("SDL_APP_TERMINATING");
+            return 0;
+        case SDL_APP_LOWMEMORY:
+//            You will get this when your app is paused and iOS wants more memory.
+//            Release as much memory as possible.
+            printf("SDL_APP_LOWMEMORY");
+            return 0;
+        case SDL_APP_WILLENTERBACKGROUND:
+//            Prepare your app to go into the background.  Stop loops, etc.
+//            This gets called when the user hits the home button, or gets a call.
+            printf("SDL_APP_WILLENTERBACKGROUND");
+            return 0;
+        case SDL_APP_DIDENTERBACKGROUND:
+//            This will get called if the user accepted whatever sent your app to the background.
+//            If the user got a phone call and canceled it, you'll instead get an    SDL_APP_DIDENTERFOREGROUND event and restart your loops.
+//            When you get this, you have 5 seconds to save all your state or the app will be terminated.
+//            Your app is NOT active at this point.
+            printf("SDL_APP_DIDENTERBACKGROUND");
+            return 0;
+        case SDL_APP_WILLENTERFOREGROUND:
+//            This call happens when your app is coming back to the foreground.
+//            Restore all your state here.
+            printf("SDL_APP_WILLENTERFOREGROUND");
+            return 0;
+        case SDL_APP_DIDENTERFOREGROUND:
+//            Restart your loops here.
+//            Your app is interactive and getting CPU again.
+            printf("SDL_APP_DIDENTERFOREGROUND");
+            return 0;
+        default:
+//            No special processing, add it to the event queue
+            return 1;
+    }
+}
+*/
+
 void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
 {
 	EditorApp& editorApp = *(EditorApp*)userdata;
@@ -271,7 +319,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
 
                 if(g_mAppInitialised)
                 {
-                    g_mReInitMono = true;
+                    //g_mReInitMono = true;
                     printf("ReInit mono after one loop\n");
                 }
                 else
@@ -300,27 +348,11 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
     else if(e.type==SDL_KEYDOWN)
     {
         SDL_KeyboardEvent* keyBoardEvent = (SDL_KeyboardEvent*)&e;
-        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        //const Uint8 *keystate = SDL_GetKeyboardState(NULL);
 		g_mControlKeyPressed = (keyBoardEvent->keysym.scancode == SDL_SCANCODE_LCTRL) || (keyBoardEvent->keysym.scancode == SDL_SCANCODE_RCTRL);
         if(geTextBox::g_pCurrentlyActiveTextBoxPtr)
         {
-            //if(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT])
-            //    break;
-            bool bShiftKeyPressed=(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]);
-            UNUSED(bShiftKeyPressed);
-//            char ch=MapVirtualKey(wParam, MAPVK_VK_TO_CHAR);
-//            if(ch>=0x41 && ch<=0x5A)
-//            {
-//                if(!(shift_keystate&0x8000))
-//                    ch=ch+32;
-//            }
-//            else if(ch>=0x31 && ch<=0x39)
-//            {
-//                if((shift_keystate&0x8000))
-//                    ch=ch-16;
-//            }
-            
-            bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyDown(keyBoardEvent->keysym.scancode, 0/*lParam*/);   //TODO: need to check if lparam is used somewere in the code or not.
+            bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyDown(keyBoardEvent->keysym.scancode, keyBoardEvent->keysym.mod);
             UNUSED(bCaptured);
         }
         else
@@ -331,28 +363,16 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
     else if(e.type==SDL_KEYUP)
     {
         SDL_KeyboardEvent* keyBoardEvent = (SDL_KeyboardEvent*)&e;
-        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
-		g_mControlKeyPressed = !((keyBoardEvent->keysym.scancode == SDL_SCANCODE_LCTRL) || (keyBoardEvent->keysym.scancode == SDL_SCANCODE_RCTRL));
+        //const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        if(g_mControlKeyPressed)
+        {
+            if((keyBoardEvent->keysym.scancode == SDL_SCANCODE_LCTRL) || (keyBoardEvent->keysym.scancode == SDL_SCANCODE_RCTRL))
+                g_mControlKeyPressed = false;
+        }
 
         if(geTextBox::g_pCurrentlyActiveTextBoxPtr)
         {
-            //if(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT])
-            //    break;
-            bool bShiftKeyPressed=(keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]);
-            UNUSED(bShiftKeyPressed);
-            //            char ch=MapVirtualKey(wParam, MAPVK_VK_TO_CHAR);
-            //            if(ch>=0x41 && ch<=0x5A)
-            //            {
-            //                if(!(shift_keystate&0x8000))
-            //                    ch=ch+32;
-            //            }
-            //            else if(ch>=0x31 && ch<=0x39)
-            //            {
-            //                if((shift_keystate&0x8000))
-            //                    ch=ch-16;
-            //            }
-            
-            bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyUp(keyBoardEvent->keysym.scancode, 0/*lParam*/);   //TODO: need to check if lparam is used somewere in the code or not.
+            bool bCaptured=geTextBox::g_pCurrentlyActiveTextBoxPtr->KeyUp(keyBoardEvent->keysym.scancode, keyBoardEvent->keysym.mod);
             UNUSED(bCaptured);
         }
         else
@@ -404,7 +424,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
             case SDL_BUTTON_LEFT:
             {
                 //DEBUG_PRINT("Left Mouse Up");
-                geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
+                //geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
 				editorApp.MouseLButtonUp(mouse_x, mouse_y, MK_LBUTTON | ((g_mControlKeyPressed) ? MK_CONTROL : 0));
             }
                 break;

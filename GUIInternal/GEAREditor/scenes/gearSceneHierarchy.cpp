@@ -200,27 +200,31 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 			if(selectedNode && !droppedDataObject->isNodeExistsInTree(selectedNode))
 			{
 				object3d* selectedObj=(object3d*)selectedNode->getUserData();
-				object3d* droppedObj=(object3d*)droppedDataObject->getUserData();
+				object3d* droppedObj3d=(object3d*)droppedDataObject->getUserData();
 				
-				matrix4x4f inselectedNodesSpace = selectedObj->getInverse() * *droppedObj->getWorldMatrix();
-				droppedObj->copyMatrix(inselectedNodesSpace);
+				matrix4x4f inselectedNodesSpace = selectedObj->getInverse() * *droppedObj3d->getWorldMatrix();
+				droppedObj3d->copyMatrix(inselectedNodesSpace);
 
-				if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
+                REF_RETAIN(droppedObj3d); //prevent from deleting this object by Ref::release()
+				if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj3d))
 				{
-					selectedObj->appendChild(droppedObj);
+					selectedObj->appendChild(droppedObj3d);
 				}
+                REF_RELEASE(droppedObj3d);
 			}
 			else if(selectedNode==NULL)
 			{
 				//add to the root node
-				object3d* droppedObj=(object3d*)droppedDataObject->getUserData();
+				object3d* droppedObj3d=(object3d*)droppedDataObject->getUserData();
 		
-				if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj))
+                REF_RETAIN(droppedObj3d); //prevent from deleting this object by Ref::release()
+				if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), droppedObj3d))
 				{
-					droppedObj->copyMatrix(*droppedObj->getWorldMatrix());	//thinking world is at the center; if not we need to get it in to the world space
+					droppedObj3d->copyMatrix(*droppedObj3d->getWorldMatrix());	//thinking world is at the center; if not we need to get it in to the world space
 					//monoWrapper::mono_engine_appendObject3dToRoot(monoWrapper::mono_engine_getWorld(0), droppedObj);
-					monoWrapper::mono_engine_getWorld(0)->appendChild(droppedObj);
+					monoWrapper::mono_engine_getWorld(0)->appendChild(droppedObj3d);
 				}
+                REF_RELEASE(droppedObj3d);
 			}
 		}
 		else if(dropObject->getSourcePtr()==EditorGEARApp::getScenePropertyEditor())
@@ -362,7 +366,7 @@ void gearSceneHierarchy::onObject3dDestroy(object3d* obj)
 
 bool gearSceneHierarchy::onKeyDown(int charValue, int flag)
 {
-	if(charValue==46)	//DEL key
+	if(charValue==42)	//DEL key
 	{
 		geTreeNode* selectedNode=gameObjectTreeView->getSelectedNode();
 		if(selectedNode)
@@ -370,7 +374,6 @@ bool gearSceneHierarchy::onKeyDown(int charValue, int flag)
 			object3d* obj=(object3d*)selectedNode->getUserData();
 			if(monoWrapper::mono_engine_removeObject3d(monoWrapper::mono_engine_getWorld(0), obj))
 			{
-				GE_DELETE(obj);
 				EditorGEARApp::getSceneWorldEditor()->selectedObject3D(NULL);
 				EditorGEARApp::getScenePropertyEditor()->populatePropertyOfObject(NULL);
 			}

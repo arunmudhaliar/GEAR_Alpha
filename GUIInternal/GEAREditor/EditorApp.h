@@ -30,6 +30,8 @@ public:
 
     virtual void init(SDL_Window* window);
     
+    static void destroy();
+    
 	void size(int cx, int cy);
 	void update(float dt);
 	void draw();

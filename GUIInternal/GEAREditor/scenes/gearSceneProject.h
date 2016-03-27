@@ -5,7 +5,7 @@
 #include "../SpriteManager/Sprite2Dx.h"
 //#include "gearSceneFileView.h"
 
-class gearSceneProject : public geWindow, public MTreeViewObserver
+class gearSceneProject : public geWindow, public MTreeViewObserver, public MGUIObserver
 {
 public:
 	gearSceneProject(geFontManager* fontmanager);
@@ -26,6 +26,8 @@ protected:
 	virtual bool onMouseMove(float x, float y, int flag);
 	virtual void onMouseWheel(int zDelta, int x, int y, int flag);
 
+    virtual void onCommand(int cmd);
+    
 //#if !defined(GEAR_APPLE) //disable Drag-Drop
 	virtual void onDragEnter(int x, int y);
 	virtual void onDragDrop(int x, int y, MDropData* dropObject);

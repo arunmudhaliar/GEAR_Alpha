@@ -131,7 +131,7 @@ public:
     static object3d* create();
     
     //clone
-    object3d* clone();
+    virtual object3d* clone();
     
 	//message pump
 	virtual void update(float dt);

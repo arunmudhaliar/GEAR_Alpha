@@ -38,7 +38,7 @@ private:
 	void deleteAnmationFromObject3d(object3d* obj3d);
 	static int open_project_directory_for_files(rendererGL10* renderer, const char *dirname, const char* searchString, geTreeNode* parentNode, Sprite2Dx* spriteArray);
 
-	Sprite2Dx spriteArray[7];
+	Sprite2Dx spriteArray[8];
 	geTreeView* fileTreeView;
 	geTextBox* serachStringTextBox;
 	char directoryPath[512];

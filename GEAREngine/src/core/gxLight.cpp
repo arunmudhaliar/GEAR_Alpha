@@ -1,9 +1,87 @@
 #include "gxLight.h"
 #include "../GEAREngine.h"
 
-gxLight* gxLight::create()
+////////////////////GXLIGHT C# BRIDGE////////////////////
+extern "C" {
+    DECLSPEC void gxLight_setLightType(gxLight* light, gxLight::ELIGHT_TYPE eType)
+    {
+        light->setLightType(eType);
+    }
+    DECLSPEC gxLight::ELIGHT_TYPE gxLight_getLightType(gxLight* light)
+    {
+        return light->getLightType();
+    }
+    DECLSPEC void gxLight_setDiffuseColor(gxLight* light, float clr[4])
+    {
+        light->setDiffuseColor(clr);
+    }
+    DECLSPEC void gxLight_setAmbientColor(gxLight* light, float clr[4])
+    {
+        light->setAmbientColor(clr);
+    }
+    DECLSPEC void gxLight_setSpecularColor(gxLight* light, float clr[4])
+    {
+        light->setSpecularColor(clr);
+    }
+    
+    DECLSPEC void gxLight_getDiffuseColor(gxLight* light, float* clr)
+    {
+        clr[0]=light->getDiffuseColor().x;
+        clr[1]=light->getDiffuseColor().y;
+        clr[2]=light->getDiffuseColor().z;
+        clr[3]=light->getDiffuseColor().w;
+    }
+    
+    DECLSPEC void gxLight_getAmbientColor(gxLight* light, float* clr)
+    {
+        clr[0]=light->getAmbientColor().x;
+        clr[1]=light->getAmbientColor().y;
+        clr[2]=light->getAmbientColor().z;
+        clr[3]=light->getAmbientColor().w;
+    }
+    
+    DECLSPEC void gxLight_getSpecularColor(gxLight* light, float* clr)
+    {
+        clr[0]=light->getSpecularColor().x;
+        clr[1]=light->getSpecularColor().y;
+        clr[2]=light->getSpecularColor().z;
+        clr[3]=light->getSpecularColor().w;
+    }
+    
+    DECLSPEC void gxLight_setConstantAttenuation(gxLight* light, float value)
+    {
+        light->setConstantAttenuation(value);
+    }
+    
+    DECLSPEC void gxLight_setLinearAttenuation(gxLight* light, float value)
+    {
+        light->setLinearAttenuation(value);
+    }
+    
+    DECLSPEC void gxLight_setQuadraticAttenuation(gxLight* light, float value)
+    {
+        light->setQuadraticAttenuation(value);
+    }
+    
+    DECLSPEC float gxLight_getConstantAttenuation(gxLight* light)
+    {
+        return light->getConstantAttenuation();
+    }
+    
+    DECLSPEC float gxLight_getLinearAttenuation(gxLight* light)
+    {
+        return light->getLinearAttenuation();
+    }
+    
+    DECLSPEC float gxLight_getQuadraticAttenuation(gxLight* light)
+    {
+        return light->getQuadraticAttenuation();
+    }
+}
+
+gxLight* gxLight::create(monoClassDef* script, object3d* obj)
 {
-    auto newObject = new gxLight();
+    auto newObject = new gxLight(script, obj);
     if(newObject)
     {
         newObject->autoRelease();
@@ -15,17 +93,17 @@ gxLight* gxLight::create()
     return nullptr;
 }
 
-gxLight::gxLight():
-object3d(OBJECT3D_LIGHT)
+gxLight::gxLight(monoClassDef* script, object3d* obj):
+    monoScriptObjectInstance(script, obj)
 {
-	setName("Point Light");
+	//setName("Point Light");
 	setLightType(LIGHT_POINT);
-	oobb.set(vector3f(-5, -5, -5), vector3f(5, 5, 5));
+	//oobb.set(vector3f(-5, -5, -5), vector3f(5, 5, 5));
 
 	diffuseColor.set(0.7f, 0.7f, 0.7f, 1.0f);
 	ambientColor.set(0.05f, 0.05f, 0.05f, 1.0f);
 	specularColor.set(0.2f, 0.2f, 0.2f, 1.0f);
-	setPosition(0, 0, 1);
+	//setPosition(0, 0, 1);
 
 	constantAttenuation = 0.1f;
 	linearAttenuation = 0.0025f;
@@ -56,10 +134,10 @@ gxLight::~gxLight()
 
 void gxLight::update(float dt)
 {
-	object3d::update(dt);
+	monoScriptObjectInstance::update(dt);
 
 	matrix4x4f depthViewMatrix;
-	vector3f light_pos(getPosition());
+	vector3f light_pos(getAttachedObject()->getPosition());
 	vector3f forward(light_pos);
 	forward.normalize();
 	vector3f up(0, 0, 1);
@@ -78,10 +156,10 @@ void gxLight::update(float dt)
 
 void gxLight::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
-	if(!isBaseFlag(eObject3dBaseFlag_Visible))
+    if(!getAttachedObject()->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 		return;
 
-	object3d::render(renderer, light, renderFlag);
+	monoScriptObjectInstance::render(renderer, light, renderFlag);
 }
 
 void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)
@@ -97,7 +175,7 @@ void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)
 	vector3f eye(renderer->getMainCameraEye());
 	shader->sendUniform3fv("_WorldSpaceCameraPos", &eye.x);
 	//vector3f lightPos(*renderer->getViewMatrix() * getWorldMatrix()->getPosition());
-	vector3f lightPos(getWorldMatrix()->getPosition());
+	vector3f lightPos(getAttachedObject()->getWorldMatrix()->getPosition());
 
 	shader->sendUniform4f("light.position", lightPos.x, lightPos.y, lightPos.z, (lightType==LIGHT_POINT)?1.0f:0.0f);
 #endif

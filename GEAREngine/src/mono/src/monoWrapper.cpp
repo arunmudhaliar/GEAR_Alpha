@@ -17,6 +17,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+#include "../../core/gxLight.h"
 
 std::string     monoWrapper::g_cMonoInstallPath="";
 uint32_t        monoWrapper::g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE=0;
@@ -57,7 +58,7 @@ MonoMethod* monoWrapper::g_mono_object3d_onObject3dChildAppend = NULL;
 MonoMethod* monoWrapper::g_mono_object3d_onObject3dChildRemove = NULL;
 
 std::vector<std::string> monoWrapper::g_monoscriptlist;
-std::vector<monoScript*> monoWrapper::g_monoScriptClassDefs;
+std::vector<monoClassDef*> monoWrapper::g_monoUserDefinedClasses;
 
 bool monoWrapper::g_isSimulationRunning = false;
 object3d* monoWrapper::g_null_obj = nullptr;
@@ -92,12 +93,12 @@ void monoWrapper::destroyUserDefinedMonoClassDefs()
         mono_gchandle_free(g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE);
     }
     
-	for(int x=0;x<g_monoScriptClassDefs.size();x++)
+	for(int x=0;x<g_monoUserDefinedClasses.size();x++)
 	{
-		monoScript* script = g_monoScriptClassDefs[x];
-		GX_DELETE(script);
+		monoClassDef* script = g_monoUserDefinedClasses[x];
+		REF_RELEASE(script);
 	}
-	g_monoScriptClassDefs.clear();
+	g_monoUserDefinedClasses.clear();
 }
 
 void monoWrapper::unloadAddDomain()
@@ -208,73 +209,9 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 	g_pMonoobject3d = mono_class_from_name (g_pImage, "MonoGEAR", "object3d");
 	g_pMonoScript = mono_class_from_name (g_pImage, "MonoGEAR", "monoScript");
 
-#if 0
-	int table_id []={
-			MONO_TABLE_MODULE,
-	MONO_TABLE_TYPEREF,
-	MONO_TABLE_TYPEDEF,
-	MONO_TABLE_FIELD_POINTER,
-	MONO_TABLE_FIELD,
-	MONO_TABLE_METHOD_POINTER,
-	MONO_TABLE_METHOD,
-	MONO_TABLE_PARAM_POINTER,
-	MONO_TABLE_PARAM,
-	MONO_TABLE_INTERFACEIMPL,
-	MONO_TABLE_MEMBERREF, /* 0xa */
-	MONO_TABLE_CONSTANT,
-	MONO_TABLE_CUSTOMATTRIBUTE,
-	MONO_TABLE_FIELDMARSHAL,
-	MONO_TABLE_DECLSECURITY,
-	MONO_TABLE_CLASSLAYOUT,
-	MONO_TABLE_FIELDLAYOUT, /* 0x10 */
-	MONO_TABLE_STANDALONESIG,
-	MONO_TABLE_EVENTMAP,
-	MONO_TABLE_EVENT_POINTER,
-	MONO_TABLE_EVENT,
-	MONO_TABLE_PROPERTYMAP,
-	MONO_TABLE_PROPERTY_POINTER,
-	MONO_TABLE_PROPERTY,
-	MONO_TABLE_METHODSEMANTICS,
-	MONO_TABLE_METHODIMPL,
-	MONO_TABLE_MODULEREF, /* 0x1a */
-	MONO_TABLE_TYPESPEC,
-	MONO_TABLE_IMPLMAP,
-	MONO_TABLE_FIELDRVA,
-	MONO_TABLE_UNUSED6,
-	MONO_TABLE_UNUSED7,
-	MONO_TABLE_ASSEMBLY, /* 0x20 */
-	MONO_TABLE_ASSEMBLYPROCESSOR,
-	MONO_TABLE_ASSEMBLYOS,
-	MONO_TABLE_ASSEMBLYREF,
-	MONO_TABLE_ASSEMBLYREFPROCESSOR,
-	MONO_TABLE_ASSEMBLYREFOS,
-	MONO_TABLE_FILE,
-	MONO_TABLE_EXPORTEDTYPE,
-	MONO_TABLE_MANIFESTRESOURCE,
-	MONO_TABLE_NESTEDCLASS,
-	MONO_TABLE_GENERICPARAM, /* 0x2a */
-	MONO_TABLE_METHODSPEC,
-	MONO_TABLE_GENERICPARAMCONSTRAINT
-	};
-	//
-	int nn=sizeof(table_id)/4;
-	for(int y=0;y<sizeof(table_id)/4;y++)
-	{
-		const MonoTableInfo* mono_table = mono_image_get_table_info (g_pUserImage, table_id[y]);
-		int tmpp=mono_table_info_get_rows (mono_table);
-		tmpp=0;
-		//unsigned int monodata[MONO_FILE_SIZE];
-		//for(int x=0;x<mono_table_info_get_rows (mono_table);x++)
-		//{
-		//	mono_metadata_decode_row (mono_table, x, monodata, MONO_FILE_SIZE);
-		//	const char* ttt=mono_metadata_string_heap (g_pUserImage, monodata[MONO_FILE_NAME]);
-		//	ttt=ttt;
-		//}
-	}
-#endif
 
+    //User defined classes.
 	int nUserDefinedClasses = mono_image_get_table_rows (g_pUserImage, MONO_TABLE_TYPEDEF);
-	
 	for(int x=1;x<nUserDefinedClasses;x++)
 	{
 		MonoClass* uklass = mono_class_get (g_pUserImage, (x+1) | MONO_TOKEN_TYPE_DEF);		
@@ -289,13 +226,46 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 			sprintf(kclass_cs, "%s.cs", klassname);
 			if(strcmp(scriptname, kclass_cs)==0)
 			{
-				monoScript* newScript = new monoScript(scriptname, appDomain, uklass, klassname, klassnamespace, g_pMonoScript);
-				g_monoScriptClassDefs.push_back(newScript);
+                stMonoScriptArgs args;
+                args.script = scriptname;
+                args.domain = appDomain;
+                args.klass=uklass;
+                args.klassname = klassname;
+                args.knamespace = klassnamespace;
+                args.monoscript_klass = g_pMonoScript;
+                
+                monoClassDef* newScript = monoClassDef::create(args);
+				g_monoUserDefinedClasses.push_back(newScript);
 			}
 		}
 	}
 	//
 
+    //BuiltIn classes.
+    int nBuiltInClasses = mono_image_get_table_rows (g_pImage, MONO_TABLE_TYPEDEF);
+    for(int x=1;x<nBuiltInClasses;x++)
+    {
+        MonoClass* uklass = mono_class_get (g_pImage, (x+1) | MONO_TOKEN_TYPE_DEF);
+        const char* klassname=mono_class_get_name(uklass);
+        const char* klassnamespace=mono_class_get_namespace(uklass);
+        
+        char kclass_cs[512];
+        memset(kclass_cs, 0, sizeof(kclass_cs));
+        sprintf(kclass_cs, "%s.cs", klassname);
+
+        stMonoScriptArgs args;
+        args.script = kclass_cs;
+        args.domain = appDomain;
+        args.klass=uklass;
+        args.klassname = klassname;
+        args.knamespace = klassnamespace;
+        args.monoscript_klass = g_pMonoScript;
+        
+        monoClassDef* newScript = monoClassDef::create(args);
+        g_monoUserDefinedClasses.push_back(newScript);
+    }
+    //
+    
 	///* allocate memory for the object */
 	g_pMonoGEAREntryPointClass_Instance_Variable = mono_object_new(appDomain, g_pMonoGEAREntryPointClass);
     g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE = mono_gchandle_new(g_pMonoGEAREntryPointClass_Instance_Variable, false);
@@ -305,12 +275,12 @@ void monoWrapper::reInitMono(const char* projecthomedirectory)
 	mono_runtime_object_init(g_pMonoGEAREntryPointClass_Instance_Variable);
 }
 
-monoScript* monoWrapper::mono_getMonoScripDef(const char* scriptname)
+monoClassDef* monoWrapper::mono_getMonoScriptClass(const char* scriptname)
 {
 	const char* _scriptname = gxUtil::getFileNameFromPath(scriptname);
-	for(int x=0;x<g_monoScriptClassDefs.size();x++)
+	for(int x=0;x<g_monoUserDefinedClasses.size();x++)
 	{
-		monoScript* script = g_monoScriptClassDefs[x];
+		monoClassDef* script = g_monoUserDefinedClasses[x];
 		if(strcmp(_scriptname, script->getScriptFileName().c_str())==0)
 			return script;
 	}
@@ -660,6 +630,11 @@ void monoWrapper::mono_object3d_onObject3dChildRemove(object3d* parent, object3d
 	void* args[2]={&parent, &child};
 	mono_runtime_invoke(g_mono_object3d_onObject3dChildRemove, NULL, args, NULL);
 #endif
+}
+
+const std::string& monoWrapper::mono_getMonoInstallPath()
+{
+    return g_cMonoInstallPath;
 }
 
 #if defined(GEAR_EDITOR)

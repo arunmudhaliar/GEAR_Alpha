@@ -7,6 +7,7 @@
 #include "core/gxSkinnedMesh.h"
 
 #include "core/gxMetaStructures.h"
+#include "mono/src/monoWrapper.h"
 
 extern "C" {
 static GEAREngine g_cGEAREngine;
@@ -67,14 +68,9 @@ extern DECLSPEC void engine_update(gxWorld* world, float dt)
 	world->update(dt);
 }
 
-extern DECLSPEC void engine_render(gxWorld* world, object3d* light, int renderFlag)
+extern DECLSPEC void engine_render(gxWorld* world, monoScriptObjectInstance* lightScriptInstance, int renderFlag)
 {
-	world->render(world->getRenderer(), light, renderFlag);
-}
-
-void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light, int renderFlag)
-{
-	world->renderSingleObject(obj, light, renderFlag);
+	world->render(world->getRenderer(), lightScriptInstance, renderFlag);
 }
 
 void engine_consoleLog(const char* msg, int msgtype)
@@ -203,8 +199,9 @@ extern DECLSPEC object3d* engine_createEmptyObject3d(object3d* parentObj, const 
 	return emptyObject;
 }
 
-extern DECLSPEC object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType)
+extern DECLSPEC monoScriptObjectInstance* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType)
 {
+#if REFACTOR_MONO_SCRIPT
     gxLight* light = gxLight::create();
 	light->setObject3dObserver(g_Object3dObserver);
 	light->setName(name);
@@ -212,6 +209,20 @@ extern DECLSPEC object3d* engine_createLight(object3d* parentObj, const char* na
 	parentObj->appendChild(light);
     REF_RELEASE(light);
 	return light;
+#else
+    auto obj3d = object3d::create(OBJECT3D_LIGHT);
+    obj3d->setObject3dObserver(g_Object3dObserver);
+    obj3d->setName(name);
+    
+    auto lightScriptInstance = gxLight::create(monoWrapper::mono_getMonoScriptClass("gxLight.cs"), obj3d);
+    obj3d->attachMonoScrip(lightScriptInstance);
+    REF_RELEASE(lightScriptInstance);
+    lightScriptInstance->setLightType(eType);
+    parentObj->appendChild(obj3d);
+    REF_RELEASE(obj3d);
+    return lightScriptInstance;
+#endif
+    return nullptr;
 }
 
 extern DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* name, gxRenderer* renderer)

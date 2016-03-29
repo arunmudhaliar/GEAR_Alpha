@@ -109,7 +109,7 @@ void gearSceneFileView::read3dFile(gxFile& file, object3d* obj)
             tempObj = gxSkinnedMesh::create();
 			break;
 		case OBJECT3D_LIGHT:
-            tempObj = gxLight::create();
+            tempObj = object3d::create(objID);  //TODO: FIX ME
 			break;
 		default:
             tempObj = object3d::create(objID);
@@ -229,7 +229,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
                 tempObj = gxSkinnedMesh::create();
 				break;
 			case OBJECT3D_LIGHT:
-                tempObj = gxLight::create();
+                tempObj = object3d::create(objID);  //TODO: FIX ME
 				break;
 
 			default:

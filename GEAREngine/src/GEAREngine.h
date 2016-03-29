@@ -25,8 +25,7 @@ extern "C" {
 
 	//message pump
 	DECLSPEC void engine_update(gxWorld* world, float dt);
-	DECLSPEC void engine_render(gxWorld* world, object3d* light, int renderFlag);
-	DECLSPEC void engine_renderSingleObject(gxWorld* world, object3d* obj, object3d* light, int renderFlag);
+	DECLSPEC void engine_render(gxWorld* world, monoScriptObjectInstance* lightScriptInstance, int renderFlag);
 
 	//load
 	DECLSPEC object3d* engine_loadAndAppendMesh(gxWorld* world, const char* filename);
@@ -49,7 +48,7 @@ extern "C" {
 
 	//object3d creation interfaces
 	DECLSPEC object3d* engine_createEmptyObject3d(object3d* parentObj, const char* name);
-	DECLSPEC object3d* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType);
+	DECLSPEC monoScriptObjectInstance* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType);
 	DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* name, gxRenderer* renderer);
 
 	//logs

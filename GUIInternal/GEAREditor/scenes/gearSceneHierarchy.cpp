@@ -190,8 +190,15 @@ void gearSceneHierarchy::onDragDrop(int x, int y, MDropData* dropObject)
 				{
 					object3d* selectedObj=(object3d*)selectedNode->getUserData();
 
-					monoScript* script = monoWrapper::mono_getMonoScripDef(relativePath);
-					selectedObj->attachMonoScrip(script);
+					monoClassDef* script = monoWrapper::mono_getMonoScriptClass(relativePath);
+                    if(script==nullptr)
+                    {
+                        DEBUG_PRINT("monoScriptObjectInstance not found for the script %s", relativePath);
+                        continue;
+                    }
+                    auto scriptInstance = monoScriptObjectInstance::create(script, selectedObj);
+					selectedObj->attachMonoScrip(scriptInstance);
+                    REF_RELEASE(scriptInstance);
 				}
 			}
 		}

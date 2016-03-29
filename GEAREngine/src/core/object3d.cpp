@@ -126,7 +126,7 @@ object3d::~object3d()
 	for(std::vector<monoScriptObjectInstance*>::iterator it = attachedScriptInstanceList.begin(); it != attachedScriptInstanceList.end(); ++it)
 	{
 		monoScriptObjectInstance* scriptinstance = *it;
-		GX_DELETE(scriptinstance);
+		REF_RELEASE(scriptinstance);
 	}
 	attachedScriptInstanceList.clear();
 
@@ -260,11 +260,10 @@ void object3d::update(float dt)
 #endif
 }
 
-void object3d::attachMonoScrip(monoScript* script)
+void object3d::attachMonoScrip(monoScriptObjectInstance* scriptInstance)
 {
-    monoScriptObjectInstance* newscript = new monoScriptObjectInstance(script, this);
-    
-    attachedScriptInstanceList.push_back(newscript);
+    attachedScriptInstanceList.push_back(scriptInstance);
+    REF_RETAIN(scriptInstance);
 }
 
 monoScriptObjectInstance* object3d::getMonoScriptInstance(int index)
@@ -365,7 +364,7 @@ void object3d::updateAnimationFrameToObject3d(int frame)
 #endif
 }
 
-void object3d::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
+void object3d::render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
@@ -762,12 +761,16 @@ void object3d::read(gxFile& file)
 		char temp_scriptname[FILENAME_MAX];
 		GX_STRCPY(temp_scriptname, scriptname);
 		GX_DELETE_ARY(scriptname);
-		DEBUG_PRINT("attached script %s", temp_scriptname);
-		monoScript* script = monoWrapper::mono_getMonoScripDef(temp_scriptname);
+		monoClassDef* script = monoWrapper::mono_getMonoScriptClass(temp_scriptname);
 
-		attachMonoScrip(script);
-		if(script==nullptr)
-			DEBUG_PRINT("script==nullptr");
+        if(script==nullptr)
+        {
+            DEBUG_PRINT("monoScriptObjectInstance not found for the script %s", temp_scriptname);
+            continue;
+        }
+        auto scriptInstance = monoScriptObjectInstance::create(script, this);
+        attachMonoScrip(scriptInstance);
+        REF_RELEASE(scriptInstance);
 	}
 	//
     

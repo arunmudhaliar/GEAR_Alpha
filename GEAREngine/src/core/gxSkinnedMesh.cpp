@@ -88,7 +88,7 @@ void gxSkinnedMesh::update(float dt)
 	}
 }
 
-void gxSkinnedMesh::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
+void gxSkinnedMesh::render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;

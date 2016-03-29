@@ -156,15 +156,14 @@ void gxWorld::renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3
 			CHECK_GL_ERROR(glEnable(GL_BLEND));
 			CHECK_GL_ERROR(glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR));		//really good result	(2x Multiplicative)
 			//CHECK_GL_ERROR(glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE));	//not good result	(Soft Additive)
-			std::vector<gxLight*>* lightList = getLightList();
-			for(int x=0;x<lightList->size();x++)
+			std::vector<monoScriptObjectInstance*>* lightList = getLightList();
+            for(auto lightScriptInstance : *lightList)
 			{
-				gxLight* light = lightList->at(x);
-				if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+				if(!lightScriptInstance->getAttachedObject()->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 					continue;
 				
 				//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-				obj->render(renderer, light, renderFlag);
+				obj->render(renderer, lightScriptInstance, renderFlag);
 			}
 			CHECK_GL_ERROR(glDisable(GL_BLEND));
 		}
@@ -189,7 +188,7 @@ void gxWorld::renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3
 #endif
 }
 
-void gxWorld::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
+void gxWorld::render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
 	if(activeCamera)
 	{
@@ -225,15 +224,14 @@ void gxWorld::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOB
 		//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
 		//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
 		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
-		std::vector<gxLight*>* lightList = getLightList();
-		for(int x=0;x<lightList->size();x++)
+		std::vector<monoScriptObjectInstance*>* lightList = getLightList();
+        for(auto lightScriptInstance : *lightList)
 		{
-			gxLight* light = lightList->at(x);
-			if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			if(!lightScriptInstance->getAttachedObject()->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 				continue;
 
 			//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-			CHECK_GL_ERROR(object3d::render(renderer, light, renderFlag));
+			CHECK_GL_ERROR(object3d::render(renderer, lightScriptInstance, renderFlag));
 		}
 		CHECK_GL_ERROR(glDisable(GL_BLEND));
 		//glDepthMask(GL_TRUE);
@@ -246,7 +244,7 @@ void gxWorld::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOB
 
 void gxWorld::renderShadow(int renderFlag)
 {
-	std::vector<gxLight*>* lightList = getLightList();
+	std::vector<monoScriptObjectInstance*>* lightList = getLightList();
 	if (lightList->size() == 0)
 		return;
 
@@ -257,12 +255,13 @@ void gxWorld::renderShadow(int renderFlag)
 	shader->enableProgram();
 	renderer.setRenderPassType(gxRenderer::RENDER_SHADOWMAP);
 
-	for (std::vector<gxLight*>::iterator it = lightList->begin(); it != lightList->end(); ++it)
+    for (auto lightInstance : *lightList)
 	{
-		gxLight* light = *it;
-		if (!light->isBaseFlag(eObject3dBaseFlag_Visible))
+        auto light = dynamic_cast<gxLight*>(lightInstance);
+		if (!lightInstance->getAttachedObject()->isBaseFlag(eObject3dBaseFlag_Visible))
 			continue;
 
+        
 		FBO& shadowMapFBO = light->getShadowMapFBO();
 		shadowMapFBO.BindFBO();
 		CHECK_GL_ERROR(glViewport(0, 0, shadowMapFBO.getFBOWidth(), shadowMapFBO.getFBOHeight()));
@@ -343,36 +342,6 @@ void gearSceneWorldEditor::drawShadowMapPass()
 	shader->disableProgram();
 	shadowMapFBO.UnBindFBO();
 }*/
-
-void gxWorld::renderSingleObject(object3d* obj, object3d* lightPtr, int renderFlag)
-{
-	if(activeCamera)
-	{
-		activeCamera->processCamera();
-	}
-
-	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
-	getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
-	obj->render(&renderer, NULL, renderFlag);
-
-	CHECK_GL_ERROR(glEnable(GL_BLEND));
-	CHECK_GL_ERROR(glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR));		//really good result	(2x Multiplicative)
-	//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
-	//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
-	//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
-	std::vector<gxLight*>* lightList = getLightList();
-	for(int x=0;x<lightList->size();x++)
-	{
-		gxLight* light = lightList->at(x);
-		if(!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
-			continue;
-
-		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
-		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
-		obj->render(&renderer, light, renderFlag);
-	}
-	CHECK_GL_ERROR(glDisable(GL_BLEND));
-}
 
 void gxWorld::resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane)
 {
@@ -472,6 +441,7 @@ Camera* gxWorld::createDefaultCameraAndSetActive()
 
 void gxWorld::callback_object3dRemovedFromTree(object3d* child)
 {
+#if REFACTOR_MONO_SCRIPT
 	if(child->getID()==OBJECT3D_LIGHT)
 	{
 		std::vector<gxLight*>* lightList=getLightList();
@@ -481,22 +451,26 @@ void gxWorld::callback_object3dRemovedFromTree(object3d* child)
 	{
 		cameraList.erase(std::remove(cameraList.begin(), cameraList.end(), child), cameraList.end());
 	}
+#endif
 }
 
 void gxWorld::callback_object3dAppendToTree(object3d* child)
 {
+#if REFACTOR_MONO_SCRIPT
 	//if light
 	if(child->getID()==OBJECT3D_LIGHT)
-		getLightList()->push_back((gxLight*)child);
+		getLightList()->push_back((gxLight*)child); //TODO: obj is not a gxLight anymore. FIX THIS ASAP
 	else if(child->getID()==OBJECT3D_CAMERA)
 	{
 		cameraList.push_back((Camera*)child);
 	}
 	//
+#endif
 }
 
 void gxWorld::callback_object3dDestroyedFromTree(object3d* child)
 {
+#if REFACTOR_MONO_SCRIPT
 	if(child->getID()==OBJECT3D_LIGHT)
 	{
 		std::vector<gxLight*>* lightList=getLightList();
@@ -510,6 +484,7 @@ void gxWorld::callback_object3dDestroyedFromTree(object3d* child)
 	}
 
 	layerManager.removeFromLayer(child, child->getLayer());
+#endif
 }
 
 void gxWorld::callback_object3dLayerChanged(object3d* child, int oldLayerID)
@@ -797,7 +772,7 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
                 tempObj = gxSkinnedMesh::create();
 			break;
 		case OBJECT3D_LIGHT:
-                tempObj = gxLight::create();
+                tempObj = object3d::create(objID);  //TODO: FIX ME
 			break;
 		case OBJECT3D_CAMERA:
 			{
@@ -832,7 +807,7 @@ object3d* gxWorld::loadObjectsFromFile(gxFile& file, int crc)
             tempObj = gxSkinnedMesh::create();
             break;
         case OBJECT3D_LIGHT:
-            tempObj = gxLight::create();
+            tempObj = object3d::create(objID);  //TODO: FIX ME
             break;
         case OBJECT3D_CAMERA:
         {

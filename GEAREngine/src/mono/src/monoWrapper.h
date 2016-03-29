@@ -8,7 +8,7 @@
 #include <mono/jit/jit.h>
 
 #include "../../GEAREngine.h"   //TODO: Need to check this path
-#include "monoScript.h"
+#include "monoClassDef.h"
 #include "signalHandler.h"
 
 class DECLSPEC monoWrapper
@@ -28,7 +28,7 @@ public:
 	static void destroyDebugConsole();
 #endif
 	static void destroyUserDefinedMonoClassDefs();
-
+    
 	//MONO C# test function
 	static int mono_engine_test_function_for_mono();
 	//
@@ -72,9 +72,10 @@ public:
 	static int exec_cmd(char const *cmd);
 #endif
 
-	static monoScript* mono_getMonoScripDef(const char* scriptname);
+	static monoClassDef* mono_getMonoScriptClass(const char* scriptname);
 
     static bool mono_isSimulationRunning();
+    static const std::string& mono_getMonoInstallPath();
     
 private:
     static std::string      g_cMonoInstallPath;
@@ -122,6 +123,6 @@ private:
     static bool g_isSimulationRunning;
 	//scripts
 	static std::vector<std::string> g_monoscriptlist;
-	static std::vector<monoScript*> g_monoScriptClassDefs;
+	static std::vector<monoClassDef*> g_monoUserDefinedClasses;
     static object3d* g_null_obj;
 };

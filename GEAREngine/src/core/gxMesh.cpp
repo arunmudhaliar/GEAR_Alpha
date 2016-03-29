@@ -153,7 +153,7 @@ void gxMesh::update(float dt)
 	object3d::update(dt);
 }
 
-void gxMesh::render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
+void gxMesh::render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
@@ -343,14 +343,14 @@ void gxMesh::renderForShadowMap(gxRenderer* renderer)
 	}
 }
 
-void gxMesh::renderWithHWShader(gxRenderer* renderer, object3d* light)
+void gxMesh::renderWithHWShader(gxRenderer* renderer, monoScriptObjectInstance* lightScriptInstance)
 {
 	int pass=0;
 	gxLight* light_ob=NULL;
 	if(renderer->getRenderPassType()==gxRenderer::RENDER_LIGHTING_ONLY)
 	{
 		pass=1;
-		light_ob=(gxLight*)light;
+		light_ob=dynamic_cast<gxLight*>(lightScriptInstance);
 	}
 
 	matrix4x4f cMV = *renderer->getViewMatrix() * *getWorldMatrix();

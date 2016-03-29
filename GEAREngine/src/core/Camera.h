@@ -1,8 +1,8 @@
 #pragma once
 
-#include "gxCamera.h"
 #include "object3d.h"
 #include "../renderer/gxRenderer.h"
+#include "frustum.h"
 
 class DECLSPEC Camera : public object3d
 {

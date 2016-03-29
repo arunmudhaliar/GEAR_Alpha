@@ -630,14 +630,14 @@ void gearSceneWorldEditor::drawCameraFrustum(Camera* camera, gxHWShader* shader)
 void gearSceneWorldEditor::drawSelectedObject()
 {
 	//lights
-	std::vector<gxLight*>* lightList = m_pMainWorldPtr->getLightList();
+	std::vector<monoScriptObjectInstance*>* lightList = m_pMainWorldPtr->getLightList();
 	if(lightList->size() && m_pMainWorldPtr->getActiveCamera())
 	{
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_GUI_SHADER);
 		shader->enableProgram();
-		for(int x=0;x<lightList->size();x++)
-		{
-			gxLight* light=lightList->at(x);
+        for (auto lightScriptInstance : *lightList)
+        {
+            auto light = lightScriptInstance->getAttachedObject();
 			float distance_frm_cam=(light->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
 			if(distance_frm_cam<500.0f)
 				distance_frm_cam=1.0f;
@@ -877,13 +877,15 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 	//shadow maps
 	int nLight = -1;
 	//int offset = 10;
-	for (std::vector<gxLight*>::iterator it = m_pMainWorldPtr->getLightList()->begin(); it != m_pMainWorldPtr->getLightList()->end(); ++it)
+    auto lightList = m_pMainWorldPtr->getLightList();
+    for (auto lightScriptInstance : *lightList)
 	{
-		gxLight* light = *it;
+		auto light = lightScriptInstance->getAttachedObject();
+        auto lightScript = dynamic_cast<gxLight*>(lightScriptInstance);
 		if (!light->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 			continue;
 
-		drawFBO(light->getShadowMapFBO().getFBODepthBuffer(), -m_cSize.x*0.5f + thumbnailFBOSz*(1.5f + nLight), (m_cSize.y - thumbnailFBOSz)*0.5f, thumbnailFBOSz, thumbnailFBOSz);
+		drawFBO(lightScript->getShadowMapFBO().getFBODepthBuffer(), -m_cSize.x*0.5f + thumbnailFBOSz*(1.5f + nLight), (m_cSize.y - thumbnailFBOSz)*0.5f, thumbnailFBOSz, thumbnailFBOSz);
         nLight++;
 	}
 	//

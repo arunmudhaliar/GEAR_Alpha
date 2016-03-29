@@ -30,8 +30,6 @@
 		5554ED651AD26CED00FD80AF /* gxAnimationSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA951AD26CEC00FD80AF /* gxAnimationSet.h */; };
 		5554ED661AD26CED00FD80AF /* gxAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA961AD26CEC00FD80AF /* gxAnimationTrack.cpp */; };
 		5554ED671AD26CED00FD80AF /* gxAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA971AD26CEC00FD80AF /* gxAnimationTrack.h */; };
-		5554ED681AD26CED00FD80AF /* gxCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA981AD26CEC00FD80AF /* gxCamera.cpp */; };
-		5554ED691AD26CED00FD80AF /* gxCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA991AD26CEC00FD80AF /* gxCamera.h */; };
 		5554ED6A1AD26CED00FD80AF /* gxDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA9A1AD26CEC00FD80AF /* gxDebug.cpp */; };
 		5554ED6B1AD26CED00FD80AF /* gxDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA9B1AD26CEC00FD80AF /* gxDebug.h */; };
 		5554ED6C1AD26CED00FD80AF /* gxLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA9C1AD26CEC00FD80AF /* gxLight.cpp */; };
@@ -101,8 +99,8 @@
 		5554EDAC1AD26CED00FD80AF /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5554EADF1AD26CEC00FD80AF /* pngwrite.c */; };
 		5554EDAD1AD26CED00FD80AF /* pngwtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAE01AD26CEC00FD80AF /* pngwtran.c */; };
 		5554EDAE1AD26CED00FD80AF /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAE11AD26CEC00FD80AF /* pngwutil.c */; };
-		5554EDB01AD26CED00FD80AF /* monoScript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAE61AD26CEC00FD80AF /* monoScript.cpp */; };
-		5554EDB11AD26CED00FD80AF /* monoScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAE71AD26CEC00FD80AF /* monoScript.h */; };
+		5554EDB01AD26CED00FD80AF /* monoClassDef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAE61AD26CEC00FD80AF /* monoClassDef.cpp */; };
+		5554EDB11AD26CED00FD80AF /* monoClassDef.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAE71AD26CEC00FD80AF /* monoClassDef.h */; };
 		5554EDB21AD26CED00FD80AF /* monoWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAE81AD26CEC00FD80AF /* monoWrapper.cpp */; };
 		5554EDB31AD26CED00FD80AF /* monoWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAE91AD26CEC00FD80AF /* monoWrapper.h */; };
 		5554EF9C1AD26CED00FD80AF /* glew.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554ED221AD26CED00FD80AF /* glew.h */; };
@@ -194,8 +192,6 @@
 		5554EA951AD26CEC00FD80AF /* gxAnimationSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxAnimationSet.h; sourceTree = "<group>"; };
 		5554EA961AD26CEC00FD80AF /* gxAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxAnimationTrack.cpp; sourceTree = "<group>"; };
 		5554EA971AD26CEC00FD80AF /* gxAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxAnimationTrack.h; sourceTree = "<group>"; };
-		5554EA981AD26CEC00FD80AF /* gxCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxCamera.cpp; sourceTree = "<group>"; };
-		5554EA991AD26CEC00FD80AF /* gxCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxCamera.h; sourceTree = "<group>"; };
 		5554EA9A1AD26CEC00FD80AF /* gxDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxDebug.cpp; sourceTree = "<group>"; };
 		5554EA9B1AD26CEC00FD80AF /* gxDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxDebug.h; sourceTree = "<group>"; };
 		5554EA9C1AD26CEC00FD80AF /* gxLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxLight.cpp; sourceTree = "<group>"; };
@@ -267,8 +263,8 @@
 		5554EAE11AD26CEC00FD80AF /* pngwutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngwutil.c; sourceTree = "<group>"; };
 		5554EAE31AD26CEC00FD80AF /* mono.def */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mono.def; sourceTree = "<group>"; };
 		5554EAE41AD26CEC00FD80AF /* mono.lib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = mono.lib; sourceTree = "<group>"; };
-		5554EAE61AD26CEC00FD80AF /* monoScript.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = monoScript.cpp; sourceTree = "<group>"; };
-		5554EAE71AD26CEC00FD80AF /* monoScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = monoScript.h; sourceTree = "<group>"; };
+		5554EAE61AD26CEC00FD80AF /* monoClassDef.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = monoClassDef.cpp; sourceTree = "<group>"; };
+		5554EAE71AD26CEC00FD80AF /* monoClassDef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = monoClassDef.h; sourceTree = "<group>"; };
 		5554EAE81AD26CEC00FD80AF /* monoWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = monoWrapper.cpp; sourceTree = "<group>"; };
 		5554EAE91AD26CEC00FD80AF /* monoWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = monoWrapper.h; sourceTree = "<group>"; };
 		5554ED221AD26CED00FD80AF /* glew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glew.h; sourceTree = "<group>"; };
@@ -442,8 +438,6 @@
 				5554EA971AD26CEC00FD80AF /* gxAnimationTrack.h */,
 				55A179C01CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp */,
 				55A179C11CA877AB00989B35 /* gxKeyFrameAnimationTrack.h */,
-				5554EA981AD26CEC00FD80AF /* gxCamera.cpp */,
-				5554EA991AD26CEC00FD80AF /* gxCamera.h */,
 				5554EA9A1AD26CEC00FD80AF /* gxDebug.cpp */,
 				5554EA9B1AD26CEC00FD80AF /* gxDebug.h */,
 				5554EA9C1AD26CEC00FD80AF /* gxLight.cpp */,
@@ -549,8 +543,8 @@
 		5554EAE51AD26CEC00FD80AF /* src */ = {
 			isa = PBXGroup;
 			children = (
-				5554EAE61AD26CEC00FD80AF /* monoScript.cpp */,
-				5554EAE71AD26CEC00FD80AF /* monoScript.h */,
+				5554EAE61AD26CEC00FD80AF /* monoClassDef.cpp */,
+				5554EAE71AD26CEC00FD80AF /* monoClassDef.h */,
 				5554EAE81AD26CEC00FD80AF /* monoWrapper.cpp */,
 				5554EAE91AD26CEC00FD80AF /* monoWrapper.h */,
 				555571E51C9B4B5B00EEC0CB /* signalHandler.cpp */,
@@ -701,7 +695,7 @@
 				5554ED8D1AD26CED00FD80AF /* transform.h in Headers */,
 				5554EFB51AD26CED00FD80AF /* crc32.h in Headers */,
 				5554EFA91AD26CED00FD80AF /* gxFile.h in Headers */,
-				5554EDB11AD26CED00FD80AF /* monoScript.h in Headers */,
+				5554EDB11AD26CED00FD80AF /* monoClassDef.h in Headers */,
 				5554ED6B1AD26CED00FD80AF /* gxDebug.h in Headers */,
 				55AB5CBC1C0481D3005B8747 /* BrightPassFilter.h in Headers */,
 				5554ED8B1AD26CED00FD80AF /* Timer.h in Headers */,
@@ -723,7 +717,6 @@
 				5554EFBB1AD26CED00FD80AF /* inffixed.h in Headers */,
 				5554ED921AD26CED00FD80AF /* fbxImporter.h in Headers */,
 				5554ED571AD26CED00FD80AF /* aabb.h in Headers */,
-				5554ED691AD26CED00FD80AF /* gxCamera.h in Headers */,
 				5554ED891AD26CED00FD80AF /* TextureManager.h in Headers */,
 				5554EDA91AD26CED00FD80AF /* pngstruct.h in Headers */,
 				5554EFC31AD26CED00FD80AF /* zconf.h in Headers */,
@@ -855,7 +848,6 @@
 				55A179C21CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp in Sources */,
 				5554EDB21AD26CED00FD80AF /* monoWrapper.cpp in Sources */,
 				5554EFB61AD26CED00FD80AF /* deflate.c in Sources */,
-				5554ED681AD26CED00FD80AF /* gxCamera.cpp in Sources */,
 				5554EDA81AD26CED00FD80AF /* pngset.c in Sources */,
 				55AB5CB91C0481D3005B8747 /* BlurFilter.cpp in Sources */,
 				5554ED711AD26CED00FD80AF /* gxMesh.cpp in Sources */,
@@ -867,7 +859,7 @@
 				55E88E991C9F2BC000B355BB /* autoReleasePool.cpp in Sources */,
 				5554EDA41AD26CED00FD80AF /* pngread.c in Sources */,
 				5554EFB21AD26CED00FD80AF /* adler32.c in Sources */,
-				5554EDB01AD26CED00FD80AF /* monoScript.cpp in Sources */,
+				5554EDB01AD26CED00FD80AF /* monoClassDef.cpp in Sources */,
 				5554ED621AD26CED00FD80AF /* gxAnimation.cpp in Sources */,
 				5554ED881AD26CED00FD80AF /* TextureManager.cpp in Sources */,
 				555571F71C9DBD6700EEC0CB /* gxFileUtil.cpp in Sources */,

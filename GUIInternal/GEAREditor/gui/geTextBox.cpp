@@ -66,6 +66,7 @@ geTextBox* geTextBox::g_pCurrentlyActiveTextBoxPtr=NULL;
 geTextBox::geTextBox(geFontManager* fontmanager):
 	geGUIBase(GEGUI_TEXTBOX, "Text Box", fontmanager)
 {
+    acceptOnlyNumbers=false;
     resetVars();
 }
 

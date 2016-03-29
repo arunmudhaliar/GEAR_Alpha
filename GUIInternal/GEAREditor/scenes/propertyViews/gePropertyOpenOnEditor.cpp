@@ -53,9 +53,9 @@ void gePropertyOpenOnEditor::onButtonClicked(geGUIBase* btn)
 #endif
 #else
 #ifdef GEAR_DEBUG
-            sprintf(buffer, "mono %s/CSharpProjectMaker.exe gearProject %s %s/MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
+            sprintf(buffer, "%s/bin/mono %s/CSharpProjectMaker.exe gearProject %s %s/MonoGEAR.dll", monoWrapper::mono_getMonoInstallPath().c_str(), EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
 #else
-            sprintf(buffer, "mono %s/CSharpProjectMaker.exe gearProject %s %s/MonoGEAR.dll", EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
+            sprintf(buffer, "%s/bin/mono %s/CSharpProjectMaker.exe gearProject %s %s/MonoGEAR.dll", monoWrapper::mono_getMonoInstallPath().c_str(), EditorGEARApp::getAppDirectory().c_str(), EditorGEARApp::getProjectHomeDirectory(), EditorGEARApp::getAppDirectory().c_str());
 #endif
 #endif
 			printf("\n================Creating Visual Studio Project===============\n");

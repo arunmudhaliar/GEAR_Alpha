@@ -36,7 +36,7 @@ private:
 
 	object3d* selectedObject;
 	gxWorld* previewWorld;	//1th world. Must not delete this pointer
-	object3d* previewLight;
+	monoScriptObjectInstance* previewLight;
 	bool stopFollowCam;
 	vector2i previousMousePosition;
 };

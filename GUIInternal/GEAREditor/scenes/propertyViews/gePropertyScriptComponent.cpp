@@ -50,7 +50,7 @@ void gePropertyScriptComponent::onTVSelectionChange(geTreeNode* tvnode, geTreeVi
 
 }
 
-void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, monoScriptObjectInstance* monoScript)
+void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, monoScriptObjectInstance* monoScriptobject)
 {
 	object3dPtr=obj;
 
@@ -85,9 +85,9 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
 	//}
 
 	//mono vars
-	for(int x=0;x<monoScript->getScriptPtr()->getMonoVarCount();x++)
+	for(int x=0;x<monoScriptobject->getScriptPtr()->getMonoVarCount();x++)
 	{
-		stWindowColumnRow* row = windowColumnControl->addRow(monoScript->getScriptPtr()->getMonoVarName(x));
+		stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoVarName(x));
 		geTextBox* variableeditbox = new geTextBox("", fontManagerGUI);
 		variableeditbox->create(rendererGUI, this, "", 0, 0, 30, 15);
 		windowColumnControl->addControl(row, variableeditbox, 16.0f);

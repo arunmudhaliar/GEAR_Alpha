@@ -47,17 +47,26 @@ void gearSceneAnimationEditor::onCreate(float cx, float cy)
     playBtn->setGUIObserver(this);
     getToolBar()->appendToolBarControl(playBtn);
     
-    auto previousFrameBtn=new geToolBarButton(rendererGUI, "P", getToolBar(), fontManagerGUI);
+    auto previousFrameBtn=new geToolBarButton(rendererGUI, "PF", getToolBar(), fontManagerGUI);
     previousFrameBtn->loadImage("res//icons16x16.png", 66, 216);
     previousFrameBtn->setGUIObserver(this);
     getToolBar()->appendToolBarControl(previousFrameBtn);
     
-    auto nextFrameBtn=new geToolBarButton(rendererGUI, "N", getToolBar(), fontManagerGUI);
+    auto nextFrameBtn=new geToolBarButton(rendererGUI, "NF", getToolBar(), fontManagerGUI);
     nextFrameBtn->loadImage("res//icons16x16.png", 47, 216);
     nextFrameBtn->setGUIObserver(this);
     getToolBar()->appendToolBarControl(nextFrameBtn);
     
-    seperator = new geToolBarSeperator(rendererGUI, getToolBar(), 80, fontManagerGUI);
+    seperator = new geToolBarSeperator(rendererGUI, getToolBar(), 5, fontManagerGUI);
+    getToolBar()->appendToolBarControl(seperator);
+
+    auto currentFrameTextBox=new geTextBox(fontManagerGUI);
+    currentFrameTextBox->create(rendererGUI, getToolBar(), "0", 0, 1, 30, 13);
+    currentFrameTextBox->setGUIObserver(this);
+    currentFrameTextBox->setAcceptOnlyNumbers(true);
+    getToolBar()->appendToolBarControl(currentFrameTextBox);
+
+    seperator = new geToolBarSeperator(rendererGUI, getToolBar(), 50, fontManagerGUI);
     getToolBar()->appendToolBarControl(seperator);
 
     auto addKeyFrameBtn=new geToolBarButton(rendererGUI, "K", getToolBar(), fontManagerGUI);

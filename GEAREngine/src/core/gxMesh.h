@@ -71,10 +71,10 @@ public:
 	unsigned int getVBOTangentID()  {   return vboTangentID;    }
 
 	virtual void update(float dt);
-	virtual void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
+	virtual void render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
 	//void renderNormal(gxRenderer* renderer);
 	//void renderWithLight(gxRenderer* renderer, object3d* light);
-	void renderWithHWShader(gxRenderer* renderer, object3d* light);
+	void renderWithHWShader(gxRenderer* renderer, monoScriptObjectInstance* lightScriptInstance);
 	void renderForShadowMap(gxRenderer* renderer);
 
 	float* allocateVertexBuffer(int nTris);

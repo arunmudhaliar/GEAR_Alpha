@@ -26,13 +26,14 @@ void gearScenePreview::reinitPreviewWorld()
 		previewWorld->resetWorld();
 	previewWorld=monoWrapper::mono_engine_getWorld(1);
 	previewWorld->getActiveCamera()->setNear(1.0f);
-	object3d* light=engine_createLight(previewWorld, "Light", gxLight::LIGHT_DIRECTIONAL);
-	((gxLight*)light)->setDiffuseColor(vector4f(0.75f, 0.75f, 0.75f, 1.0f));
-	((gxLight*)light)->setAmbientColor(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
-	((gxLight*)light)->setSpecularColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
-	((gxLight*)light)->setConstantAttenuation(0.5f);
-	light->updatePositionf(-1, -10, 1);
-	previewLight=light;
+	auto lightScriptInstance = engine_createLight(previewWorld, "Light", gxLight::LIGHT_DIRECTIONAL);
+    auto light = dynamic_cast<gxLight*>(lightScriptInstance);
+	light->setDiffuseColor(vector4f(0.75f, 0.75f, 0.75f, 1.0f));
+	light->setAmbientColor(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
+	light->setSpecularColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
+	light->setConstantAttenuation(0.5f);
+	lightScriptInstance->getAttachedObject()->updatePositionf(-1, -10, 1);
+	previewLight=lightScriptInstance;
 }
 
 void gearScenePreview::draw()
@@ -131,7 +132,7 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	chasingObj->setZAxis(forward);
 	chasingObj->setPosition(updatedPos);
 	
-	previewLight->setPosition(updatedPos);
+	previewLight->getAttachedObject()->setPosition(updatedPos);
 
 	cam->updateCamera();
 }

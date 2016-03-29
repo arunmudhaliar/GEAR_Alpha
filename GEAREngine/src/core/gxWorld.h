@@ -36,14 +36,13 @@ public:
 	void resetWorld(bool bDontCreateDefaultCamera=false);
 
 	void update(float dt);
-	void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
+	void render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
 	void renderShadow(int renderFlag);
 
 	void setActiveCamera(Camera* camera);
 	Camera* getActiveCamera()	{	return activeCamera;	}
 	Camera* createDefaultCameraAndSetActive();
 
-	void renderSingleObject(object3d* obj, object3d* lightPtr, int renderFlag);
 	void resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane);
 
 	gxMaterial* getDefaultMaterial()					{	return &defaultMaterial;		}
@@ -65,8 +64,7 @@ public:
 
 	void setWorldObserver(MWorldObserver* observer)	{	worldObserver = observer;	}
 
-	std::vector<gxLight*>* getLightList()	{	return &lightList;		}
-	gxLight* getLight(int index)			{	return lightList[index];	}
+	std::vector<monoScriptObjectInstance*>* getLightList()	{	return &lightList;		}
 
 #ifdef USE_BULLET
 	physicsEngine* getPhysicsEngine()		{	return &m_cPhysicsEngine;	}
@@ -95,13 +93,12 @@ private:
 
 	std::vector<gxMaterial*> materialList;
 	std::vector<gxAnimationSet*> animationSetList;
-	std::vector<gxLight*> lightList;
+	std::vector<monoScriptObjectInstance*> lightList;
 	std::vector<Camera*> cameraList;
 
 	gxRenderer renderer;
 	Camera* activeCamera;	//must not delete this pointer
 	Camera defaultCamera;
-	gxCamera defaultCameraStruct;
 
 	gxMaterial defaultMaterial;
 	CTextureManager textureManager;

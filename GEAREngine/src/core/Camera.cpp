@@ -111,7 +111,7 @@ void Camera::updateCamera()
 
 void Camera::perspectiveChanged()
 {
-	if(getProjectionType()==(int)gxCamera::PERSPECTIVE_PROJECTION)
+	if(getProjectionType()==(int)PERSPECTIVE_PROJECTION)
 		projectionMatrix.setPerspective(fov, 1.0f, nearValue, farValue);
 	else
 	{
@@ -129,7 +129,7 @@ void Camera::setUpCameraPerspective(float cx, float cy/*, float fov, float nearV
 	if(cx==0.0f || cy==0.0f)	return;
 
 	float aspect=cx/cy;
-	if(getProjectionType()==(int)gxCamera::PERSPECTIVE_PROJECTION)
+	if(getProjectionType()==(int)Camera::PERSPECTIVE_PROJECTION)
 		projectionMatrix.setPerspective(fov, aspect, nearValue, farValue);
 	else
 	{

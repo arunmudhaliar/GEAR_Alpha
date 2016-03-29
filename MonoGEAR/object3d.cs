@@ -133,6 +133,7 @@ namespace MonoGEAR
                 //not implemented
             }
         }
+
         public static void mono_object3d_onObject3dChildAppend(IntPtr parent, IntPtr child)
         {
            //Console.WriteLine(Marshal.PtrToStringAnsi(object3d_getName(child)) + " added");
@@ -161,7 +162,5 @@ namespace MonoGEAR
 
         string m_pName;
         gxAnimation m_pAnimation;
-
-        List<Object> m_vComponents;
     }
 }

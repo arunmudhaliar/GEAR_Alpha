@@ -21,7 +21,7 @@
 #endif
 #include "quaternion.h"
 #include "GEARAsset.h"
-#include "../mono/src/monoScript.h"
+#include "../mono/src/monoClassDef.h"
 #include "../autoReleasePool/autoReleasePool.h"
 
 using namespace GEAR::Memory;
@@ -80,6 +80,9 @@ enum EDEFAULT_LAYERS
 //
 
 class gxAnimation;
+class monoClassDef;
+class monoScriptObjectInstance;
+
 class gxAnimationSet;
 
 class DECLSPEC object3d : public transform, public GEARAsset, public MRootObserver, public Ref
@@ -135,7 +138,7 @@ public:
     
 	//message pump
 	virtual void update(float dt);
-	virtual void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);	//
+	virtual void render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);	//
     void startMono();
 	void updateMono();
     void stopMono();
@@ -213,10 +216,11 @@ public:
 	int getLayer()				{	return layerID;	}
 
 	//mono scripts
-	void attachMonoScrip(monoScript* script);
+	void attachMonoScrip(monoScriptObjectInstance* scriptInstance);
 	monoScriptObjectInstance* getMonoScriptInstance(int index);
 	int getMonoScriptInstanceCount();
-
+    const std::vector<monoScriptObjectInstance*>& getAttachedMonoScripts()  {   return attachedScriptInstanceList;  }
+    
 protected:
     
     virtual void writeData(gxFile& file)    {   }
@@ -258,6 +262,8 @@ private:
     void updateAnimationFrameToObject3d(int frame);
     void setAnimationTrack(IAnimationTrack* track);
     void clearAnimTrackOnAllNodes();
+    
+    //std::map<std::string, IComponent*> components;
 };
 
 ////////////////////OBJECT3D C# BRIDGE////////////////////

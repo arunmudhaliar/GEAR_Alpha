@@ -41,7 +41,6 @@ public:
 
 	void setActiveCamera(Camera* camera);
 	Camera* getActiveCamera()	{	return activeCamera;	}
-	Camera* createDefaultCameraAndSetActive();
 
 	void renderSingleObject(object3d* obj, monoScriptObjectInstance* lightPtr, int renderFlag);
 	void resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane);
@@ -89,6 +88,8 @@ public:
 
 private:
     gxWorld();
+
+    Camera* createDefaultCameraAndSetActive();
 	void read3dFile(gxFile& file, object3d* obj);
 	void renderFromOctreeList(gxRenderer* renderer, ExpandableArray<object3d*>* list, int renderFlag);
 

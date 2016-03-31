@@ -51,6 +51,7 @@ gxWorld::~gxWorld()
 {
 	resetWorld(true);
 	materialList.clear();	//since our Default material may reside inside: check resetWorld()
+    AutoReleasePool::getInstance().clearPool();
 }
 
 void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
@@ -97,8 +98,6 @@ void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
 	childList.clear();
 	//
 
-    activeCameraObj=nullptr;
-	activeCamera=NULL;
 	if(!bDontCreateDefaultCamera)
 		createDefaultCameraAndSetActive();
 }

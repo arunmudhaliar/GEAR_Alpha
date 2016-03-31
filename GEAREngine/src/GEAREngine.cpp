@@ -206,15 +206,6 @@ extern DECLSPEC object3d* engine_createEmptyObject3d(object3d* parentObj, const 
 
 extern DECLSPEC gxLight* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType)
 {
-#if REFACTOR_MONO_SCRIPT
-    gxLight* light = gxLight::create();
-	light->setObject3dObserver(g_Object3dObserver);
-	light->setName(name);
-	light->setLightType(eType);
-	parentObj->appendChild(light);
-    REF_RELEASE(light);
-	return light;
-#else
     auto obj3d = object3d::create(OBJECT3D_LIGHT);
     obj3d->setObject3dObserver(g_Object3dObserver);
     obj3d->setName(name);
@@ -226,17 +217,17 @@ extern DECLSPEC gxLight* engine_createLight(object3d* parentObj, const char* nam
     parentObj->appendChild(obj3d);
     REF_RELEASE(obj3d);
     return lightScriptInstance;
-#endif
-    return nullptr;
 }
 
 extern DECLSPEC Camera* engine_createCamera(object3d* parentObj, const char* name, gxRenderer* renderer)
 {
-    auto obj3d = object3d::create(OBJECT3D_LIGHT);
+    auto obj3d = object3d::create(OBJECT3D_CAMERA);
     obj3d->setObject3dObserver(g_Object3dObserver);
     obj3d->setName(name);
 
     Camera* cameraScriptInstance = Camera::create(monoWrapper::mono_getMonoScriptClass("Camera.cs"), obj3d);
+    obj3d->attachMonoScrip(cameraScriptInstance);
+    REF_RELEASE(cameraScriptInstance);
 	cameraScriptInstance->initCamera(renderer);
 	obj3d->setObject3dObserver(g_Object3dObserver);
 	parentObj->appendChild(obj3d);

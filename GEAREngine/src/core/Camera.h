@@ -4,12 +4,11 @@
 #include "../renderer/gxRenderer.h"
 #include "frustum.h"
 
-class DECLSPEC Camera : public object3d
+class DECLSPEC Camera : public monoScriptObjectInstance
 {
 public:
-	Camera();
 	~Camera();
-    static Camera* create();
+    static Camera* create(monoClassDef* script, object3d* obj);
     
 	enum EPROJECTION_TYPE
 	{
@@ -56,10 +55,13 @@ public:
 	bool isMainCamera()             {	return isMainCam;	}
 
 protected:
-    virtual void writeData(gxFile& file);
-    virtual void readData(gxFile& file);
+    void readScriptObject(gxFile& file);
+    void writeScriptObject(gxFile& file);
 
 private:
+    Camera(){}
+    Camera(monoClassDef* script, object3d* obj);
+    
 	gxRenderer* renderer;	//must not delete this pointer
 	matrix4x4f	projectionMatrix;
 	matrix4x4f	inverseTransformationMatrix;

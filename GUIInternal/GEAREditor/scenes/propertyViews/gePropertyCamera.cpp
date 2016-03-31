@@ -102,7 +102,7 @@ void gePropertyCamera::drawNode()
 
 void gePropertyCamera::populatePropertyOfCamera(object3d* obj)
 {
-	camera = (Camera*)obj;
+	camera = obj->getMonoScriptInstance<Camera*>();
 
 	fovHorizontalSlider->setSliderValue(camera->getFOV()/120.0f, false);
 	nearHorizontalSlider->setSliderValue(camera->getNear()/100.0f, false);

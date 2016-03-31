@@ -23,6 +23,7 @@
 #include "GEARAsset.h"
 #include "../mono/src/monoClassDef.h"
 #include "../autoReleasePool/autoReleasePool.h"
+#include <type_traits>
 
 using namespace GEAR::Memory;
 
@@ -220,6 +221,18 @@ public:
 	monoScriptObjectInstance* getMonoScriptInstance(int index);
 	int getMonoScriptInstanceCount();
     const std::vector<monoScriptObjectInstance*>& getAttachedMonoScripts()  {   return attachedScriptInstanceList;  }
+    
+    template <class T>
+    T getMonoScriptInstance()
+    {
+        for(auto script: attachedScriptInstanceList)
+        {
+            if(dynamic_cast<T>(script))
+                return (T)script;
+        }
+        
+        return nullptr;
+    }
     
 protected:
     

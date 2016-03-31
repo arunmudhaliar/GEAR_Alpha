@@ -1,8 +1,8 @@
 #include "Camera.h"
 
-Camera* Camera::create()
+Camera* Camera::create(monoClassDef* script, object3d* obj)
 {
-    auto newObject = new Camera();
+    auto newObject = new Camera(script, obj);
     if(newObject)
     {
         newObject->autoRelease();
@@ -14,13 +14,12 @@ Camera* Camera::create()
     return nullptr;
 }
 
-Camera::Camera():
-	object3d(OBJECT3D_CAMERA)
+Camera::Camera(monoClassDef* script, object3d* obj):
+	monoScriptObjectInstance(script, obj)
 {
 	renderer=NULL;
 	//m_pCameraStructPtr=NULL;
 	layerCullingMask=0xffffffff;
-	setName("Camera");
 	setMainCamera(false);
 }
 
@@ -45,7 +44,7 @@ void Camera::initCamera(gxRenderer* renderer)
 	setNear(10.0f);
 	setFar(10000.0f);
 	setType(PERSPECTIVE_PROJECTION);
-	updateLocalPositionf(0, 0, 300);
+	getAttachedObject()->updateLocalPositionf(0, 0, 300);
 }
 
 bool Camera::isLayerCullingMask(unsigned int flag)
@@ -104,8 +103,8 @@ void Camera::processCamera(matrix4x4f* matrix)
 
 void Camera::updateCamera()
 {
-	renderer->setMainCameraEye(getWorldMatrix()->getPosition());
-	inverseTransformationMatrix = getWorldMatrix()->getInverse();
+	renderer->setMainCameraEye(getAttachedObject()->getWorldMatrix()->getPosition());
+	inverseTransformationMatrix = getAttachedObject()->getWorldMatrix()->getInverse();
 	viewProjectionMatrix = projectionMatrix * inverseTransformationMatrix;
 }
 
@@ -150,9 +149,11 @@ vector3f Camera::getCameraSpaceLoc(const vector3f& point)
 
 void Camera::transformationChangedf()
 {
+#if REFACTOR_MONO_SCRIPT
     object3d::transformationChangedf();
     
 	updateCamera();
+#endif
 }
 
 void Camera::extractFrustumPlanes()
@@ -165,6 +166,7 @@ void Camera::extractFrustumPlanes()
 
 void Camera::calculateAABB()
 {
+#if REFACTOR_MONO_SCRIPT
     object3d::calculateAABB();
 
 	vector3f	min_v(1e16f, 1e16f, 1e16f);
@@ -188,6 +190,7 @@ void Camera::calculateAABB()
 	}//for
 	
 	aabb.set(min_v, max_v);
+#endif
 }
 
 void Camera::drawFrustum(gxHWShader* shader)
@@ -250,7 +253,7 @@ void Camera::drawFrustum(gxHWShader* shader)
 #endif
 }
 
-void Camera::writeData(gxFile& file)
+void Camera::writeScriptObject(gxFile& file)
 {
 	//write camera data
 	file.Write(projectionType);
@@ -262,7 +265,7 @@ void Camera::writeData(gxFile& file)
 	//
 }
 
-void Camera::readData(gxFile& file)
+void Camera::readScriptObject(gxFile& file)
 {
 	//read camera data
 	int etype=0;

@@ -43,6 +43,7 @@ public:
 	Camera* getActiveCamera()	{	return activeCamera;	}
 	Camera* createDefaultCameraAndSetActive();
 
+	void renderSingleObject(object3d* obj, monoScriptObjectInstance* lightPtr, int renderFlag);
 	void resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane);
 
 	gxMaterial* getDefaultMaterial()					{	return &defaultMaterial;		}
@@ -98,8 +99,8 @@ private:
 
 	gxRenderer renderer;
 	Camera* activeCamera;	//must not delete this pointer
-	Camera defaultCamera;
-
+    object3d* activeCameraObj;
+    
 	gxMaterial defaultMaterial;
 	CTextureManager textureManager;
 	char metaDataFolder[512];

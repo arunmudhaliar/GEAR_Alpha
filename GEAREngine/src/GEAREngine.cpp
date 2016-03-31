@@ -73,6 +73,11 @@ extern DECLSPEC void engine_render(gxWorld* world, monoScriptObjectInstance* lig
 	world->render(world->getRenderer(), lightScriptInstance, renderFlag);
 }
 
+void engine_renderSingleObject(gxWorld* world, object3d* obj, monoScriptObjectInstance* lightScriptInstance, int renderFlag)
+{
+    world->renderSingleObject(obj, lightScriptInstance, renderFlag);
+}
+
 void engine_consoleLog(const char* msg, int msgtype)
 {
 #if defined(GEAR_EDITOR)
@@ -108,15 +113,15 @@ extern DECLSPEC void engine_mouseWheel(gxWorld* world, int zDelta, int x, int y,
 {
 	Camera* camera=world->getActiveCamera();
 	int dir = (zDelta<0)?1:-1;
-	vector3f aCamForwardDir(camera->getZAxis());
-	float d=camera->getPosition().length();
+	vector3f aCamForwardDir(camera->getAttachedObject()->getZAxis());
+	float d=camera->getAttachedObject()->getPosition().length();
 	float factor=20.0f;
 	//if(nFlags&MK_SHIFT)
 	//	factor=500.0f;
 	aCamForwardDir.x=aCamForwardDir.x*(d/factor)*(dir);
 	aCamForwardDir.y=aCamForwardDir.y*(d/factor)*(dir);
 	aCamForwardDir.z=aCamForwardDir.z*(d/factor)*(dir);
-	camera->updatePositionf(aCamForwardDir.x, aCamForwardDir.y, aCamForwardDir.z);
+	camera->getAttachedObject()->updatePositionf(aCamForwardDir.x, aCamForwardDir.y, aCamForwardDir.z);
 }
 
 extern DECLSPEC void engine_mouseMove(gxWorld* world, int x, int y, int flag)
@@ -153,9 +158,9 @@ extern DECLSPEC void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 		vector3f aVect(0, 0, 0);
 		//aVect=m_cPickObjectCenter;	//can modify this later to rotate around mesh center
 
-		camera->rotateArb(0.5f*Pos_dx*aDirX, &aUP.x, aVect);
-		vector3f left=camera->getXAxis();
-		camera->rotateArb(0.5f*Pos_dy*-aDirY, &left.x, aVect);
+		camera->getAttachedObject()->rotateArb(0.5f*Pos_dx*aDirX, &aUP.x, aVect);
+		vector3f left=camera->getAttachedObject()->getXAxis();
+		camera->getAttachedObject()->rotateArb(0.5f*Pos_dy*-aDirY, &left.x, aVect);
 	}
 
 	//DEBUG_PRINT("%f, %f\n", delta.x, delta.y);
@@ -199,7 +204,7 @@ extern DECLSPEC object3d* engine_createEmptyObject3d(object3d* parentObj, const 
 	return emptyObject;
 }
 
-extern DECLSPEC monoScriptObjectInstance* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType)
+extern DECLSPEC gxLight* engine_createLight(object3d* parentObj, const char* name, gxLight::ELIGHT_TYPE eType)
 {
 #if REFACTOR_MONO_SCRIPT
     gxLight* light = gxLight::create();
@@ -225,15 +230,18 @@ extern DECLSPEC monoScriptObjectInstance* engine_createLight(object3d* parentObj
     return nullptr;
 }
 
-extern DECLSPEC object3d* engine_createCamera(object3d* parentObj, const char* name, gxRenderer* renderer)
+extern DECLSPEC Camera* engine_createCamera(object3d* parentObj, const char* name, gxRenderer* renderer)
 {
-    Camera* camera = Camera::create();
-	camera->initCamera(renderer);
-	camera->setObject3dObserver(g_Object3dObserver);
-	camera->setName(name);
-	parentObj->appendChild(camera);
-    REF_RELEASE(camera);
-	return camera;
+    auto obj3d = object3d::create(OBJECT3D_LIGHT);
+    obj3d->setObject3dObserver(g_Object3dObserver);
+    obj3d->setName(name);
+
+    Camera* cameraScriptInstance = Camera::create(monoWrapper::mono_getMonoScriptClass("Camera.cs"), obj3d);
+	cameraScriptInstance->initCamera(renderer);
+	obj3d->setObject3dObserver(g_Object3dObserver);
+	parentObj->appendChild(obj3d);
+    REF_RELEASE(obj3d);
+	return cameraScriptInstance;
 }
     
 extern DECLSPEC bool engine_isRunning()

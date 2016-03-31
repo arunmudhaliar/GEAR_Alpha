@@ -718,6 +718,7 @@ void object3d::write(gxFile& file)
 	{
 		monoScriptObjectInstance* scriptinstance = *it;
 		file.Write(scriptinstance->getScriptPtr()->getScriptFileName().c_str());
+        scriptinstance->write(file);
 	}
 	//
 
@@ -768,8 +769,23 @@ void object3d::read(gxFile& file)
             DEBUG_PRINT("monoScriptObjectInstance not found for the script %s", temp_scriptname);
             continue;
         }
-        auto scriptInstance = monoScriptObjectInstance::create(script, this);
+        
+        monoScriptObjectInstance* scriptInstance = nullptr;
+        if(strcmp(temp_scriptname, "gxLight.cs")==0)
+        {
+            scriptInstance = gxLight::create(script, this);
+        }
+        else if (strcmp(temp_scriptname, "Camera.cs")==0)
+        {
+            scriptInstance = Camera::create(script, this);
+        }
+        else
+        {
+            scriptInstance = monoScriptObjectInstance::create(script, this);
+        }
+        
         attachMonoScrip(scriptInstance);
+        scriptInstance->read(file);
         REF_RELEASE(scriptInstance);
 	}
 	//

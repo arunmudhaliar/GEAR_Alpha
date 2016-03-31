@@ -225,3 +225,13 @@ void monoScriptObjectInstance::update()
         }
 	}
 }
+
+void monoScriptObjectInstance::read(gxFile& file)
+{
+    readScriptObject(file);
+}
+
+void monoScriptObjectInstance::write(gxFile& file)
+{
+    writeScriptObject(file);
+}

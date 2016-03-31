@@ -181,7 +181,7 @@ void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)
 #endif
 }
 
-void gxLight::writeData(gxFile& file)
+void gxLight::writeScriptObject(gxFile& file)
 {
 	//write light data
 	file.Write(lightType);
@@ -194,7 +194,7 @@ void gxLight::writeData(gxFile& file)
 	//
 }
 
-void gxLight::readData(gxFile& file)
+void gxLight::readScriptObject(gxFile& file)
 {
 	//read light data
 	int type=0;

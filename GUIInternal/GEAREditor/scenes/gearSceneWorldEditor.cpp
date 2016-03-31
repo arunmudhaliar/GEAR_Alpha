@@ -629,6 +629,7 @@ void gearSceneWorldEditor::drawCameraFrustum(Camera* camera, gxHWShader* shader)
 
 void gearSceneWorldEditor::drawSelectedObject()
 {
+    Camera* camera = m_pMainWorldPtr->getActiveCamera();
 	//lights
 	std::vector<monoScriptObjectInstance*>* lightList = m_pMainWorldPtr->getLightList();
 	if(lightList->size() && m_pMainWorldPtr->getActiveCamera())
@@ -638,15 +639,15 @@ void gearSceneWorldEditor::drawSelectedObject()
         for (auto lightScriptInstance : *lightList)
         {
             auto light = lightScriptInstance->getAttachedObject();
-			float distance_frm_cam=(light->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
+			float distance_frm_cam=(light->getWorldMatrix()->getPosition()-camera->getAttachedObject()->getWorldMatrix()->getPosition()).length();
 			if(distance_frm_cam<500.0f)
 				distance_frm_cam=1.0f;
 			else
 				distance_frm_cam/=500.0f;
 
 			lightBillBoardSprite.setClip(277, 383, 18, 18);
-            vector3f yaxis(m_pMainWorldPtr->getActiveCamera()->getYAxis());
-            vector3f zaxis(m_pMainWorldPtr->getActiveCamera()->getZAxis());
+            vector3f yaxis(camera->getAttachedObject()->getYAxis());
+            vector3f zaxis(camera->getAttachedObject()->getZAxis());
             
 			lightBillBoardSprite.setDirection(&yaxis, &zaxis);
 			lightBillBoardSprite.scale(distance_frm_cam*0.5f);
@@ -666,7 +667,7 @@ void gearSceneWorldEditor::drawSelectedObject()
 		gxHWShader* shader = engine_getHWShaderManager()->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_DIFFUSE_WITH_COLOR_PTR);
 		shader->enableProgram();
 
-		float distance_frm_cam=(selectedObject->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
+		float distance_frm_cam=(selectedObject->getWorldMatrix()->getPosition()-camera->getAttachedObject()->getWorldMatrix()->getPosition()).length();
 		if(distance_frm_cam<12.0f)
 			distance_frm_cam=1.0f;
 		else
@@ -716,7 +717,8 @@ void gearSceneWorldEditor::drawSelectedObject()
 		{
 			shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4_local, false, 4);
 			shader->sendUniform4f("u_diffuse_v4", 0.6f, 0.6f, 0.6f, 1.0f);
-			((Camera*)selectedObject)->drawFrustum(shader);
+            auto camera = selectedObject->getMonoScriptInstance<Camera*>();
+            camera->drawFrustum(shader);
 		}
 
 		//glDisable(GL_COLOR_MATERIAL);
@@ -949,20 +951,20 @@ void gearSceneWorldEditor::followObject(float dt, object3d* chasedObj)
 	if(dt>0.1f || stopFollowCam) return;
 	if(chasedObj==NULL) return;
 	gxWorld* world = monoWrapper::mono_engine_getWorld(0);
-	Camera* cam=world->getActiveCamera();
-	matrix4x4f* chasingObj=(matrix4x4f*)cam;
+	Camera* camera=world->getActiveCamera();
+	matrix4x4f* chasingObj=(matrix4x4f*)camera->getAttachedObject();
 	vector3f	eyeOff;
 	vector3f	chasedObjectCenter(chasedObj->getAABB().getCenter());
 	float		speed=10.0f;
 
-	vector3f direction(cam->getWorldMatrix()->getPosition()-chasedObjectCenter);
+	vector3f direction(camera->getAttachedObject()->getWorldMatrix()->getPosition()-chasedObjectCenter);
 	direction.normalize();
-	eyeOff = direction*(chasedObj->getAABB().getLongestAxis()*0.5f + cam->getNear())*4.0f;
+	eyeOff = direction*(chasedObj->getAABB().getLongestAxis()*0.5f + camera->getNear())*4.0f;
 
 	vector3f    transformedEye(chasedObjectCenter + eyeOff);
 	vector3f    transformedLookAt(chasedObjectCenter);
 	
-	vector3f    chasingObjPos(cam->getWorldMatrix()->getPosition());
+	vector3f    chasingObjPos(camera->getAttachedObject()->getWorldMatrix()->getPosition());
     vector3f    chasedObjPos(chasedObjectCenter);
     vector3f    lenV(transformedEye-chasingObjPos);
     float		len=lenV.length();
@@ -993,7 +995,7 @@ void gearSceneWorldEditor::followObject(float dt, object3d* chasedObj)
 	chasingObj->setZAxis(forward);
 	chasingObj->setPosition(updatedPos);
 	
-	cam->updateCamera();
+	camera->updateCamera();
 }
 
 void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
@@ -1033,13 +1035,15 @@ void gearSceneWorldEditor::onSize(float cx, float cy, int flag)
 
 bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 {
+    Camera* camera = m_pMainWorldPtr->getActiveCamera();
+
 	if(!isPointInsideClientArea(x, y))
 	{
 		selectedAxisID=-1;
 		return true;
 	}
 	//monoWrapper::mono_engine_mouseLButtonDown(m_pMainWorldPtr, x, y, nFlag);
-	if(!m_pMainWorldPtr || !m_pMainWorldPtr->getActiveCamera()) return true;
+	if(!m_pMainWorldPtr || !camera) return true;
 
 	vector3f minV;
 	vector3f rayminV;
@@ -1057,8 +1061,8 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	GLdouble projectionTM[16];
 	for(int m=0;m<16;m++)
 	{
-		viewTM[m]=m_pMainWorldPtr->getActiveCamera()->getViewMatrix()->getMatrix()[m];
-		projectionTM[m]=m_pMainWorldPtr->getActiveCamera()->getProjectionMatrix()->getMatrix()[m];
+		viewTM[m]=camera->getViewMatrix()->getMatrix()[m];
+		projectionTM[m]=camera->getProjectionMatrix()->getMatrix()[m];
 	}
 
 	gxRectf viewPortRect=m_pMainWorldPtr->getRenderer()->getViewPortRect();
@@ -1088,7 +1092,7 @@ bool gearSceneWorldEditor::onMouseLButtonDown(float x, float y, int nFlag)
 	{
 		matrix4x4f noscale_world_matrix(*selectedObject->getWorldMatrix());
 		noscale_world_matrix.noScale();
-		float distance_frm_cam=(selectedObject->getWorldMatrix()->getPosition()-m_pMainWorldPtr->getActiveCamera()->getWorldMatrix()->getPosition()).length();
+		float distance_frm_cam=(selectedObject->getWorldMatrix()->getPosition()-camera->getAttachedObject()->getWorldMatrix()->getPosition()).length();
 		if(distance_frm_cam<12.0f)
 			distance_frm_cam=1.0f;
 		else
@@ -1241,11 +1245,11 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 
 	if(flag&MK_MBUTTON)
 	{
-		float d=camera->getPosition().length();
+		float d=camera->getAttachedObject()->getPosition().length();
 		if(flag&MK_SHIFT)
-			camera->updateLocalPositionf(-(d/5000.0f)*dx, (d/5000.0f)*dy, 0);
+			camera->getAttachedObject()->updateLocalPositionf(-(d/5000.0f)*dx, (d/5000.0f)*dy, 0);
 		else
-			camera->updateLocalPositionf(-(d/500.0f)*dx, (d/500.0f)*dy, 0);
+			camera->getAttachedObject()->updateLocalPositionf(-(d/500.0f)*dx, (d/500.0f)*dy, 0);
 	}
 	else if(flag&MK_RBUTTON /*&& flag&MK_CONTROL*/)
 	{
@@ -1259,9 +1263,9 @@ bool gearSceneWorldEditor::onMouseMove(float x, float y, int flag)
 		float factor=1.0f;
 		if(flag&MK_SHIFT)
 			factor=0.01f;
-		camera->rotateArb(-0.5f*dx*factor, &aUP.x, aVect);
-		vector3f left=camera->getXAxis();
-		camera->rotateArb(-0.5f*dy*factor, &left.x, aVect);
+		camera->getAttachedObject()->rotateArb(-0.5f*dx*factor, &aUP.x, aVect);
+		vector3f left=camera->getAttachedObject()->getXAxis();
+		camera->getAttachedObject()->rotateArb(-0.5f*dy*factor, &left.x, aVect);
 	}
 	else if(flag&MK_LBUTTON)
 	{
@@ -1389,15 +1393,15 @@ void gearSceneWorldEditor::onMouseWheel(int zDelta, int x, int y, int flag)
 		return;
 
 	int dir = (zDelta<0)?1:-1;
-	vector3f aCamForwardDir(camera->getZAxis());
-	float d=camera->getPosition().length();
+	vector3f aCamForwardDir(camera->getAttachedObject()->getZAxis());
+	float d=camera->getAttachedObject()->getPosition().length();
 	float factor=20.0f;
 	if(flag&MK_SHIFT)
 		factor=500.0f;
 	aCamForwardDir.x=aCamForwardDir.x*(d/factor)*(dir);
 	aCamForwardDir.y=aCamForwardDir.y*(d/factor)*(dir);
 	aCamForwardDir.z=aCamForwardDir.z*(d/factor)*(dir);
-	camera->updatePositionf(aCamForwardDir.x, aCamForwardDir.y, aCamForwardDir.z);
+	camera->getAttachedObject()->updatePositionf(aCamForwardDir.x, aCamForwardDir.y, aCamForwardDir.z);
 }
 
 void gearSceneWorldEditor::onButtonClicked(geGUIBase* btn)

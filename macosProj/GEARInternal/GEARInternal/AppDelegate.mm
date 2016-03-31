@@ -130,7 +130,7 @@
 
 -(IBAction) openCameraProperty:(id)sender
 {
-    object3d* cam=monoWrapper::mono_engine_getWorld(0)->getActiveCamera();
+    object3d* cam=monoWrapper::mono_engine_getWorld(0)->getActiveCamera()->getAttachedObject();
     EditorGEARApp::getSceneWorldEditor()->selectedObject3D(cam);
     EditorGEARApp::getScenePropertyEditor()->populatePropertyOfObject(cam);
 }

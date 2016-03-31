@@ -56,7 +56,7 @@ void gearSceneHierarchy::onCreate(float cx, float cy)
 	EditorGEARApp::getSceneWorldEditor()->getMainWorld()->setEditorUserData(gameObjectTreeView->getRoot());
 
 	//HACK: Since the default camera of world0 wont be added to the heirarchy when it initially created, we create it here.
-	object3d* defaultCamera=EditorGEARApp::getSceneWorldEditor()->getMainWorld()->getActiveCamera();
+	object3d* defaultCamera=EditorGEARApp::getSceneWorldEditor()->getMainWorld()->getActiveCamera()->getAttachedObject();
 	object3d* parent_obj=defaultCamera->getParent();
 	geTreeNode* rootNode = (geTreeNode*)parent_obj->getEditorUserData();//gameObjectTreeView->getRoot();
 	createTVNode(rootNode, defaultCamera, defaultCamera->getName().c_str());
@@ -347,9 +347,10 @@ void gearSceneHierarchy::onObject3dChildAppend(object3d* child)
 
 	if(child->getID()==OBJECT3D_CAMERA)
 	{
-		if(((Camera*)child)->isMainCamera())
+        auto camera = child->getMonoScriptInstance<Camera*>();
+		if(camera->isMainCamera())
 		{
-			monoWrapper::mono_engine_getWorld(0)->setActiveCamera((Camera*)child);
+			monoWrapper::mono_engine_getWorld(0)->setActiveCamera(camera);
 		}
 	}
 }
@@ -460,7 +461,7 @@ bool gearSceneHierarchy::saveCurrentScene(const std::string& sceneFilePath)
 	{
 		geTreeNode* node = (geTreeNode*)*it;
 		object3d* obj = (object3d*)node->getUserData();
-		if(obj==monoWrapper::mono_engine_getWorld(0)->getActiveCamera())
+		if(obj==monoWrapper::mono_engine_getWorld(0)->getActiveCamera()->getAttachedObject())
 		{
 			DEBUG_PRINT("Active camera (main camera) wont be saved", sceneFilePath.c_str());
 			continue;
@@ -475,7 +476,7 @@ bool gearSceneHierarchy::saveCurrentScene(const std::string& sceneFilePath)
         object3d* obj = (object3d*)node->getUserData();
         
         //dont save the active camera since it will be created when the world resets or reloads.
-        if(obj==monoWrapper::mono_engine_getWorld(0)->getActiveCamera())
+        if(obj==monoWrapper::mono_engine_getWorld(0)->getActiveCamera()->getAttachedObject())
             continue;
         sceneFile.Write(obj->getAssetFileCRC());
         if(obj->getAssetFileCRC()==0)

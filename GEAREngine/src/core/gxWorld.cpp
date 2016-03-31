@@ -5,6 +5,7 @@
 #include "../GEAREngine.h"
 #include "gxSkinnedMesh.h"
 #include "../util/gxCrc32.h"
+#include "../mono/src/monoWrapper.h"
 
 gxWorld* gxWorld::create()
 {
@@ -27,10 +28,10 @@ gxWorld::gxWorld():
 	layerID = ELAYER_DEFAULT;	//CAUTION: Do not use setLayer() for gxWorld()
 	worldObserver = NULL;
 	activeCamera = NULL;
-
+    activeCameraObj = nullptr;
+    
 	setRootObserverOfTree(this);
 
-	activeCamera=NULL;
 	createDefaultCameraAndSetActive();
 
 	defaultMaterial.setMaterialName("Default");
@@ -96,6 +97,7 @@ void gxWorld::resetWorld(bool bDontCreateDefaultCamera)
 	childList.clear();
 	//
 
+    activeCameraObj=nullptr;
 	activeCamera=NULL;
 	if(!bDontCreateDefaultCamera)
 		createDefaultCameraAndSetActive();
@@ -343,6 +345,34 @@ void gearSceneWorldEditor::drawShadowMapPass()
 	shadowMapFBO.UnBindFBO();
 }*/
 
+void gxWorld::renderSingleObject(object3d* obj, monoScriptObjectInstance* lightPtr, int renderFlag)
+{
+	if(activeCamera)
+	{
+		activeCamera->processCamera();
+	}
+
+	CHECK_GL_ERROR(glEnable(GL_DEPTH_TEST));
+	getRenderer()->setRenderPassType(gxRenderer::RENDER_NORMAL);
+	obj->render(&renderer, NULL, renderFlag);
+
+	CHECK_GL_ERROR(glEnable(GL_BLEND));
+	CHECK_GL_ERROR(glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR));		//really good result	(2x Multiplicative)
+	//glBlendFunc(GL_DST_COLOR, GL_ZERO);			//good result	(Multiplicative)
+	//glBlendFunc(GL_ONE, GL_ONE);					//not good result	(Additive)
+	//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);	//not good result	(Soft Additive)
+    for (auto light : lightList)
+    {
+		if(!light->getAttachedObject()->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
+			continue;
+
+		getRenderer()->setRenderPassType(gxRenderer::RENDER_LIGHTING_ONLY);
+		//Note:- glDepthFunc(GL_LEQUAL); by default its GL_LEQUAL in engine so no need to change here
+		obj->render(&renderer, light, renderFlag);
+	}
+	CHECK_GL_ERROR(glDisable(GL_BLEND));
+}
+
 void gxWorld::resizeWorld(float x, float y, float cx, float cy, float nearplane, float farplane)
 {
 	renderer.setViewPort(x, y, cx, cy);
@@ -426,65 +456,71 @@ void gxWorld::setActiveCamera(Camera* camera)
 
 Camera* gxWorld::createDefaultCameraAndSetActive()
 {
-	if(activeCamera)
+	if(activeCameraObj)
 	{
-		removeChild(activeCamera);
+		removeChild(activeCameraObj);
 	}
-    activeCamera = Camera::create();
+    activeCameraObj = object3d::create();
+    activeCameraObj->setName("Default Camera");
+    activeCamera = Camera::create(monoWrapper::mono_getMonoScriptClass("Camera.cs"), activeCameraObj);
+    activeCameraObj->attachMonoScrip(activeCamera);
+    REF_RELEASE(activeCamera);
 	activeCamera->initCamera(&renderer);
 	activeCamera->setMainCamera(true);
-	activeCamera->setObject3dObserver(object3DObserver);
-	appendChild(activeCamera);
-    REF_RELEASE(activeCamera);
+	activeCameraObj->setObject3dObserver(object3DObserver);
+	appendChild(activeCameraObj);
+    REF_RELEASE(activeCameraObj);
 	return activeCamera;
 }
 
 void gxWorld::callback_object3dRemovedFromTree(object3d* child)
 {
-#if REFACTOR_MONO_SCRIPT
-	if(child->getID()==OBJECT3D_LIGHT)
-	{
-		std::vector<gxLight*>* lightList=getLightList();
-		lightList->erase(std::remove(lightList->begin(), lightList->end(), child), lightList->end());
-	}
-	else if(child->getID()==OBJECT3D_CAMERA)
-	{
-		cameraList.erase(std::remove(cameraList.begin(), cameraList.end(), child), cameraList.end());
-	}
-#endif
+    auto monoScripInstances = child->getAttachedMonoScripts();
+    for (auto script : monoScripInstances)
+    {
+        if(child->getID()==OBJECT3D_LIGHT && dynamic_cast<gxLight*>(script))
+        {
+            lightList.erase(std::remove(lightList.begin(), lightList.end(), script), lightList.end());
+        }
+        else if(child->getID()==OBJECT3D_CAMERA && dynamic_cast<Camera*>(script))
+        {
+            cameraList.erase(std::remove(cameraList.begin(), cameraList.end(), script), cameraList.end());
+        }
+    }
 }
 
 void gxWorld::callback_object3dAppendToTree(object3d* child)
 {
-#if REFACTOR_MONO_SCRIPT
-	//if light
-	if(child->getID()==OBJECT3D_LIGHT)
-		getLightList()->push_back((gxLight*)child); //TODO: obj is not a gxLight anymore. FIX THIS ASAP
-	else if(child->getID()==OBJECT3D_CAMERA)
-	{
-		cameraList.push_back((Camera*)child);
-	}
-	//
-#endif
+    auto monoScripInstances = child->getAttachedMonoScripts();
+    for (auto script : monoScripInstances)
+    {
+        if(child->getID()==OBJECT3D_LIGHT && dynamic_cast<gxLight*>(script))
+            lightList.push_back(script);
+        else if(child->getID()==OBJECT3D_CAMERA && dynamic_cast<Camera*>(script))
+        {
+            cameraList.push_back((Camera*)script);
+        }
+    }
 }
 
 void gxWorld::callback_object3dDestroyedFromTree(object3d* child)
 {
-#if REFACTOR_MONO_SCRIPT
-	if(child->getID()==OBJECT3D_LIGHT)
-	{
-		std::vector<gxLight*>* lightList=getLightList();
-		lightList->erase(std::remove(lightList->begin(), lightList->end(), child), lightList->end());
-	}
-	else if(child->getID()==OBJECT3D_CAMERA)
-	{
-		if(activeCamera==child)
-			activeCamera=NULL;
-		cameraList.erase(std::remove(cameraList.begin(), cameraList.end(), child), cameraList.end());
-	}
-
-	layerManager.removeFromLayer(child, child->getLayer());
-#endif
+    auto monoScripInstances = child->getAttachedMonoScripts();
+    for (auto script : monoScripInstances)
+    {
+        if(child->getID()==OBJECT3D_LIGHT && dynamic_cast<gxLight*>(script))
+        {
+            lightList.erase(std::remove(lightList.begin(), lightList.end(), script), lightList.end());
+        }
+        else if(child->getID()==OBJECT3D_CAMERA && dynamic_cast<Camera*>(script))
+        {
+            if(activeCamera==script)
+                activeCamera=NULL;
+            cameraList.erase(std::remove(cameraList.begin(), cameraList.end(), script), cameraList.end());
+        }
+    }
+    
+    layerManager.removeFromLayer(child, child->getLayer());
 }
 
 void gxWorld::callback_object3dLayerChanged(object3d* child, int oldLayerID)
@@ -775,10 +811,7 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
                 tempObj = object3d::create(objID);  //TODO: FIX ME
 			break;
 		case OBJECT3D_CAMERA:
-			{
-                tempObj = Camera::create();
-				((Camera*)tempObj)->initCamera(&renderer);
-			}
+                tempObj = object3d::create(objID);  //TODO: FIX ME
 			break;
 		default:
             tempObj = object3d::create(objID);
@@ -810,10 +843,7 @@ object3d* gxWorld::loadObjectsFromFile(gxFile& file, int crc)
             tempObj = object3d::create(objID);  //TODO: FIX ME
             break;
         case OBJECT3D_CAMERA:
-        {
-            tempObj = Camera::create();
-            ((Camera*)tempObj)->initCamera(&renderer);
-        }
+            tempObj = object3d::create(objID);  //TODO: FIX ME
             break;
         default:
             tempObj = object3d::create(objID);

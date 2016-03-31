@@ -52,8 +52,8 @@ public:
 	FBO& getShadowMapFBO()				{ return shadowMapFBO; }
 
 protected:
-    virtual void writeData(gxFile& file);
-    virtual void readData(gxFile& file);
+    void readScriptObject(gxFile& file);
+    void writeScriptObject(gxFile& file);
 
 private:
     gxLight(monoClassDef* script, object3d* obj);

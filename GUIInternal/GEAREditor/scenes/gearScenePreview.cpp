@@ -90,18 +90,18 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	if(dt>0.1f || stopFollowCam) return;
 	if(chasedObj==NULL) return;
 
-	Camera* cam=previewWorld->getActiveCamera();
-	matrix4x4f* chasingObj=(matrix4x4f*)cam;
+	Camera* camera=previewWorld->getActiveCamera();
+	matrix4x4f* chasingObj=(matrix4x4f*)camera->getAttachedObject();
     //matrix4x4f* chasedObj=(matrix4x4f*)this;
 	vector3f	eyeOff;
 	float speed=10.0f;
 	
-	eyeOff = vector3f(0, -(chasedObj->getAABB().getLongestAxis()*0.5f + cam->getNear())*2.5f, 0);
+	eyeOff = vector3f(0, -(chasedObj->getAABB().getLongestAxis()*0.5f + camera->getNear())*2.5f, 0);
 
 	vector3f    transformedEye((chasedObj->getAABB().getCenter()) + eyeOff);
 	vector3f    transformedLookAt(chasedObj->getAABB().getCenter());
 	
-	vector3f    chasingObjPos(cam->getWorldMatrix()->getPosition());
+	vector3f    chasingObjPos(camera->getAttachedObject()->getWorldMatrix()->getPosition());
     vector3f    chasedObjPos(chasedObj->getAABB().getCenter());
     vector3f    lenV(transformedEye-chasingObjPos);
     float       len=lenV.length();
@@ -134,7 +134,7 @@ void gearScenePreview::followObject(float dt, object3d* chasedObj)
 	
 	previewLight->getAttachedObject()->setPosition(updatedPos);
 
-	cam->updateCamera();
+	camera->updateCamera();
 }
 
 bool gearScenePreview::onMouseLButtonDown(float x, float y, int nFlag)
@@ -199,10 +199,10 @@ bool gearScenePreview::onMouseMove(float x, float y, int flag)
 		//aUP=camera->getYAxis();
 		vector3f aVect(selectedObject->getAABB().getCenter());
 		//aVect=m_cPickObjectCenter;	//can modify this later to rotate around mesh center
-		Camera* cam=previewWorld->getActiveCamera();
+		Camera* camera=previewWorld->getActiveCamera();
 
 		selectedObject->rotateArb(0.5f*Pos_dx*-aDirX, &aUP.x, aVect);
-		vector3f left=cam->getXAxis();
+		vector3f left=camera->getAttachedObject()->getXAxis();
 		selectedObject->rotateArb(0.5f*Pos_dy*aDirY, &left.x, aVect);
 	}
 	previousMousePosition.set(x, y);

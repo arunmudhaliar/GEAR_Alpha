@@ -113,6 +113,7 @@ namespace GEAR{
                     destroyPool.erase(std::remove(destroyPool.begin(), destroyPool.end(), ptr));
                     GX_DELETE(ptr);
                     refDestroyedCount++;
+                    clearPool();
                 }
                 else
                 {

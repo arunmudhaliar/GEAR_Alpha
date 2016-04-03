@@ -1,7 +1,13 @@
 #pragma once
 
 #include "geGUIBase.h"
+#ifdef GEAR_WINDOWS
+#include <SDL.h>
+#elif defined(GEAR_APPLE)
 #include <SDL2/SDL.h>
+#else
+#error SDL not included
+#endif
 #include <map>
 
 class KeyMapper

@@ -143,11 +143,11 @@ extern DECLSPEC void engine_mouseMove(gxWorld* world, int x, int y, int flag)
 #ifdef GEAR_WINDOWS
 	if(flag&MK_MBUTTON /*&& !(flag&MK_CONTROL)*/)
 	{
-		float d=camera->getPosition().length();
+		float d=camera->getAttachedObject()->getPosition().length();
 		if(flag&MK_SHIFT)
-			camera->updateLocalPositionf((d/5000.0f)*Pos_dx*aDirX, (d/5000.0f)*Pos_dy*aDirY, 0);
+			camera->getAttachedObject()->updateLocalPositionf((d/5000.0f)*Pos_dx*aDirX, (d/5000.0f)*Pos_dy*aDirY, 0);
 		else
-			camera->updateLocalPositionf((d/500.0f)*Pos_dx*aDirX, (d/500.0f)*Pos_dy*aDirY, 0);
+			camera->getAttachedObject()->updateLocalPositionf((d/500.0f)*Pos_dx*aDirX, (d/500.0f)*Pos_dy*aDirY, 0);
 	}
 	else if(flag&MK_RBUTTON /*&& flag&MK_CONTROL*/)
 #endif

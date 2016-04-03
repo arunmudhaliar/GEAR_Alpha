@@ -630,9 +630,6 @@
     <ClCompile Include="..\src\physics\debug\GL_ShapeDrawer.cpp">
       <Filter>engine\physics\debug</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\core\gxCamera.cpp">
-      <Filter>engine\core</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\zlib-1.2.4\adler32.c">
       <Filter>engine\zlib</Filter>
     </ClCompile>
@@ -687,9 +684,6 @@
     <ClCompile Include="..\src\core\GEARAsset.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mono\src\monoScript.cpp">
-      <Filter>engine\mono</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\postProcessor\PostProcessor.cpp">
       <Filter>engine\postProcessor</Filter>
     </ClCompile>
@@ -713,6 +707,9 @@
     </ClCompile>
     <ClCompile Include="..\src\util\gxFileUtil.cpp">
       <Filter>engine\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mono\src\monoClassDef.cpp">
+      <Filter>engine\mono</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1589,9 +1586,6 @@
     <ClInclude Include="..\src\physics\debug\GL_ShapeDrawer.h">
       <Filter>engine\physics\debug</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\core\gxCamera.h">
-      <Filter>engine\core</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\util\gxCrc32.h">
       <Filter>engine\util</Filter>
     </ClInclude>
@@ -1658,9 +1652,6 @@
     <ClInclude Include="..\src\core\GEARAsset.h">
       <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mono\src\monoScript.h">
-      <Filter>engine\mono</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\postProcessor\PostProcessor.h">
       <Filter>engine\postProcessor</Filter>
     </ClInclude>
@@ -1684,6 +1675,9 @@
     </ClInclude>
     <ClInclude Include="..\src\util\gxFileUtil.h">
       <Filter>engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mono\src\monoClassDef.h">
+      <Filter>engine\mono</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

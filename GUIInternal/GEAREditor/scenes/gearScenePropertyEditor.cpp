@@ -291,7 +291,7 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		materialParentTreeNode->destroyAllTVChilds();
 	if(obj->getID()==OBJECT3D_MESH || obj->getID()==OBJECT3D_SKINNED_MESH)	//mesh
 	{
-		gxMesh* mesh=(gxMesh*)obj;
+		gxMesh* mesh=obj->getMonoScriptInstance<gxMesh*>();
 
 		for(int x=0;x<mesh->getNoOfTriInfo();x++)
 		{
@@ -302,16 +302,6 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 		}
 
 		rootNode->appnendTVChild(materialParentTreeNode);
-	}
-	else if(obj->getID()==OBJECT3D_LIGHT)
-	{
-		lightProperty->populatePropertyOfLight(obj);
-		rootNode->appnendTVChild(lightParentTreeNode);
-	}
-	else if(obj->getID()==OBJECT3D_CAMERA)
-	{
-		cameraProperty->populatePropertyOfCamera(obj);
-		rootNode->appnendTVChild(cameraParentTreeNode);
 	}
 
 	//animation
@@ -347,16 +337,28 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 	//mono scripts
 	if(obj->getMonoScriptInstanceCount())
 	{
-		for(int x=0;x<obj->getMonoScriptInstanceCount();x++)
+        for(auto monoInstance : obj->getAttachedMonoScripts())
 		{
-			monoScriptObjectInstance* monoInstance = obj->getMonoScriptInstance(x);
-			stMonoScriptTVNode* monoScriptTVNode = new stMonoScriptTVNode();
-			monoScriptTVNode->m_pMonoScriptParentNode = new geTreeNode(rendererGUI, rootNode, monoInstance->getScriptPtr()->getScriptFileName().c_str(), &spriteArray[10], 0);
-			monoScriptTVNode->m_pSettingsMonoScript = new gePropertyScriptComponent(rendererGUI, monoScriptTVNode->m_pMonoScriptParentNode, "", NULL, fontManagerGUI);
-			monoScriptTVNode->m_pMonoScriptParentNode->closeNode();
+            if(monoInstance->getScriptPtr()->getScriptFileName().compare("gxLight.cs")==0)
+            {
+                lightProperty->populatePropertyOfLight(obj);
+                rootNode->appnendTVChild(lightParentTreeNode);
+            }
+            else if (monoInstance->getScriptPtr()->getScriptFileName().compare("Camera.cs")==0)
+            {
+                cameraProperty->populatePropertyOfCamera(obj);
+                rootNode->appnendTVChild(cameraParentTreeNode);
+            }
+            else
+            {
+                stMonoScriptTVNode* monoScriptTVNode = new stMonoScriptTVNode();
+                monoScriptTVNode->m_pMonoScriptParentNode = new geTreeNode(rendererGUI, rootNode, monoInstance->getScriptPtr()->getScriptFileName().c_str(), &spriteArray[10], 0);
+                monoScriptTVNode->m_pSettingsMonoScript = new gePropertyScriptComponent(rendererGUI, monoScriptTVNode->m_pMonoScriptParentNode, "", NULL, fontManagerGUI);
+                monoScriptTVNode->m_pMonoScriptParentNode->closeNode();
 
-			monoScriptTVNode->m_pSettingsMonoScript->populatePropertyOfMonoScripts(obj, monoInstance);
-			monoScriptTreeViewNodeList.push_back(monoScriptTVNode);
+                monoScriptTVNode->m_pSettingsMonoScript->populatePropertyOfMonoScripts(obj, monoInstance);
+                monoScriptTreeViewNodeList.push_back(monoScriptTVNode);
+            }
 		}
 	}
 

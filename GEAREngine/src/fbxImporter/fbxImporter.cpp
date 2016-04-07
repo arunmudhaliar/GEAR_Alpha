@@ -1,7 +1,7 @@
 #include "fbxImporter.h"
 #include "../util/gxUtil.h"
 #include "../util/gxCrc32.h"
-
+#include "../mono/src/monoWrapper.h"
 
 #include <assert.h>
 
@@ -169,7 +169,7 @@ void fbxImporter::populateBonesToMeshNode(stBoneList* boneList, object3d* obj, o
 {
 	if(obj->getID()==OBJECT3D_SKINNED_MESH)
 	{
-		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj;
+		gxSkinnedMesh* skinMesh = obj->getMonoScriptInstance<gxSkinnedMesh*>();
 		int index=0;
 //		skinMesh->setRootNode(rootNode);
 		skinMesh->clearPrivateIterator();
@@ -268,13 +268,19 @@ object3d* fbxImporter::tryImportFBXSkinnedMesh(FbxNode &fbxNode, const FbxMatrix
 			}
 		}
 
-        gxSkinnedMesh* newSkinnedMesh = gxSkinnedMesh::create();
+        object3d* skinnedMeshObj = object3d::create(OBJECT3D_SKINNED_MESH);
+        gxSkinnedMesh* newSkinnedMesh = gxSkinnedMesh::create(monoWrapper::mono_getMonoScriptClass("gxSkinnedMesh.cs"), skinnedMeshObj);
+        skinnedMeshObj->attachMonoScrip(newSkinnedMesh);
+        REF_RELEASE(newSkinnedMesh);
+        //importFBXMesh(newMesh, fbxNode, fbxGeometryOffset, materialList, rootObject3d, NULL, NULL);
+        skinnedMeshObj->setName(fbxNode.GetName());
+        REF_RELEASE(skinnedMeshObj);
+
 		importFBXMesh(newSkinnedMesh, fbxNode, geometryOffset, materialList, rootObject3d, boneInfluenceList, boneList);
-		newSkinnedMesh->setName(fbxNode.GetName());
 
 		newSkinnedMesh->allocateBoneList((int)boneList->bonelst.size());
 		delete [] boneInfluenceList;
-		return newSkinnedMesh;
+		return newSkinnedMesh->getAttachedObject();
 	}
 	else
 	{
@@ -556,12 +562,15 @@ void fbxImporter::importFBXNode(FbxNode &fbxNode, object3d* parent_obj_node, std
 		else
 		{
 			//we don't have any skin modifier in this node, so only import mesh
-            gxMesh* newMesh = gxMesh::create();
-			importFBXMesh(newMesh, fbxNode, fbxGeometryOffset, materialList, rootObject3d, NULL, NULL);
-			newMesh->setName(fbxNode.GetName());
-			parent_obj_node->appendChild(newMesh);
+            object3d* meshObj = object3d::create(OBJECT3D_MESH);
+            gxMesh* newMesh = gxMesh::create(monoWrapper::mono_getMonoScriptClass("gxMesh.cs"), meshObj);
+            meshObj->attachMonoScrip(newMesh);
             REF_RELEASE(newMesh);
-			parent_obj_node=newMesh;
+			importFBXMesh(newMesh, fbxNode, fbxGeometryOffset, materialList, rootObject3d, NULL, NULL);
+			meshObj->setName(fbxNode.GetName());
+			parent_obj_node->appendChild(meshObj);
+            REF_RELEASE(newMesh);
+			parent_obj_node=meshObj;
 		}
 	}
 	else
@@ -636,7 +645,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxM
 		nMaxBonePerVert=4;	//hack
 #endif
 		//allocation for influence bones and weights
-		boneInfluenceCountBuffer=((gxSkinnedMesh*)newMesh)->allocateBoneInfluenceCountBuffer(fbxMesh.GetPolygonCount());
+		boneInfluenceCountBuffer=(dynamic_cast<gxSkinnedMesh*>(newMesh))->allocateBoneInfluenceCountBuffer(fbxMesh.GetPolygonCount());
 
 		int nData=0;
 		for(int x=0;x<fbxMesh.GetPolygonCount();x++)
@@ -648,8 +657,8 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxM
 			}
 		}
 
-		boneIndexBuffer=((gxSkinnedMesh*)newMesh)->allocateBoneIndexBuffer(nData);
-		weightBuffer=((gxSkinnedMesh*)newMesh)->allocateWeightBuffer(nData);
+		boneIndexBuffer=(dynamic_cast<gxSkinnedMesh*>(newMesh))->allocateBoneIndexBuffer(nData);
+		weightBuffer=(dynamic_cast<gxSkinnedMesh*>(newMesh))->allocateWeightBuffer(nData);
 		//tempcount=nData;
 	}
 	//
@@ -721,7 +730,7 @@ gxMesh* fbxImporter::importFBXMesh(gxMesh* newMesh, FbxNode &fbxNode, const FbxM
 	fbxMesh.ComputeBBox();
 	FbxDouble3 bbmin=geometryOffset.MultNormalize(FbxVector4(fbxMesh.BBoxMin));
 	FbxDouble3 bbmax=geometryOffset.MultNormalize(FbxVector4(fbxMesh.BBoxMax));
-	newMesh->getOOBB().set(vector3f((float)bbmin.mData[0], (float)bbmin.mData[1], (float)bbmin.mData[2]), vector3f((float)bbmax.mData[0], (float)bbmax.mData[1], (float)bbmax.mData[2]));
+	newMesh->getAttachedObject()->getOOBB().set(vector3f((float)bbmin.mData[0], (float)bbmin.mData[1], (float)bbmin.mData[2]), vector3f((float)bbmax.mData[0], (float)bbmax.mData[1], (float)bbmax.mData[2]));
 
 	//UV sets
 	//fbxMesh.GetTextureUVCount();

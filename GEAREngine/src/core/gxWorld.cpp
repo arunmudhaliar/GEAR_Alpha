@@ -459,7 +459,7 @@ Camera* gxWorld::createDefaultCameraAndSetActive()
 	{
 		removeChild(activeCameraObj);
 	}
-    activeCameraObj = object3d::create();
+    activeCameraObj = object3d::create(OBJECT3D_CAMERA);
     activeCameraObj->setName("Default Camera");
     activeCamera = Camera::create(monoWrapper::mono_getMonoScriptClass("Camera.cs"), activeCameraObj);
     activeCameraObj->attachMonoScrip(activeCamera);
@@ -543,7 +543,7 @@ void gxWorld::loadMaterialFromObject3d(object3d* obj3d)
 {
 	if(obj3d->getID()==OBJECT3D_MESH || obj3d->getID()==OBJECT3D_SKINNED_MESH)
 	{
-		gxMesh* mesh = (gxMesh*)obj3d;
+		gxMesh* mesh = obj3d->getMonoScriptInstance<gxMesh*>();
 		for(int x=0;x<mesh->getNoOfTriInfo();x++)
 		{
 			gxTriInfo* triInfo = mesh->getTriInfo(x);
@@ -647,7 +647,7 @@ void gxWorld::tryLoadTexturesFromObject3d(object3d* obj3d, const char* filepath)
 
 	if(obj3d->getID()==OBJECT3D_MESH || obj3d->getID()==OBJECT3D_SKINNED_MESH)
 	{
-		gxMesh* mesh = (gxMesh*)obj3d;
+		gxMesh* mesh = obj3d->getMonoScriptInstance<gxMesh*>();
 		for(int x=0;x<mesh->getNoOfTriInfo();x++)
 		{
 			gxTriInfo* triInfo = mesh->getTriInfo(x);
@@ -763,7 +763,7 @@ void gxWorld::populateBonesToMeshNode(object3d* obj3d, object3d* rootNode)
 {
 	if(obj3d->getID()==OBJECT3D_SKINNED_MESH)
 	{
-		gxSkinnedMesh* skinMesh = (gxSkinnedMesh*)obj3d;
+		gxSkinnedMesh* skinMesh = obj3d->getMonoScriptInstance<gxSkinnedMesh*>();
 		int index=0;
 //		skinMesh->setRootNode(rootNode);
 		skinMesh->clearPrivateIterator();
@@ -801,10 +801,10 @@ void gxWorld::read3dFile(gxFile& file, object3d* obj)
 		switch(objID)
 		{
 		case OBJECT3D_MESH:
-                tempObj = gxMesh::create();
+                tempObj = object3d::create(objID);
 			break;
 		case OBJECT3D_SKINNED_MESH:
-                tempObj = gxSkinnedMesh::create();
+                tempObj = object3d::create(objID);
 			break;
 		case OBJECT3D_LIGHT:
                 tempObj = object3d::create(objID);  //TODO: FIX ME
@@ -833,10 +833,10 @@ object3d* gxWorld::loadObjectsFromFile(gxFile& file, int crc)
     switch(objID)
     {
         case OBJECT3D_MESH:
-            tempObj = gxMesh::create();
+            tempObj = object3d::create(objID);
             break;
         case OBJECT3D_SKINNED_MESH:
-            tempObj = gxSkinnedMesh::create();
+            tempObj = object3d::create(objID);
             break;
         case OBJECT3D_LIGHT:
             tempObj = object3d::create(objID);  //TODO: FIX ME

@@ -45,15 +45,16 @@ public:
 };
 
 
-class DECLSPEC gxMesh : public object3d
+class DECLSPEC gxMesh : public monoScriptObjectInstance
 {
 protected:
-	gxMesh(int ID);
+	gxMesh(monoClassDef* script, object3d* obj);
+    gxMesh(){}
     
 public:
-	~gxMesh();
+	virtual ~gxMesh();
 
-    static gxMesh* create();
+    static gxMesh* create(monoClassDef* script, object3d* obj);
 
 	float* getVertexBuffer()	{	return vertexBuffer;	}
 	float* getColorBuffer()		{	return colorBuffer;	}
@@ -106,8 +107,8 @@ public:
 	int getTriangleCount()		{    return noOfTrianglesForInternalUse;	}
 
 protected:
-    virtual void writeData(gxFile& file);
-    virtual void readData(gxFile& file);
+    virtual void writeScriptObject(gxFile& file);
+    virtual void readScriptObject(gxFile& file);
 
 	bool applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triInfo, gxUV* uv, gxSubMap* submap, int aTexEnv1, int aTexEnv2, unsigned int texCoordSz, gxHWShader* shader, const char* texCoordAttribName);	
 	void disableTextureOperations(int stage, gxHWShader* shader, const char* texCoordAttribName);
@@ -131,7 +132,4 @@ protected:
 	int uvChannelCount;
 	gxUV* uvChannel;
 	int noOfTrianglesForInternalUse;
-    
-private:
-    gxMesh();
 };

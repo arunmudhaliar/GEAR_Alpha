@@ -1,8 +1,8 @@
 #include "gxSkinnedMesh.h"
 
-gxSkinnedMesh* gxSkinnedMesh::create()
+gxSkinnedMesh* gxSkinnedMesh::create(monoClassDef* script, object3d* obj)
 {
-    auto newObject = new gxSkinnedMesh();
+    auto newObject = new gxSkinnedMesh(script, obj);
     if(newObject)
     {
         newObject->autoRelease();
@@ -14,8 +14,8 @@ gxSkinnedMesh* gxSkinnedMesh::create()
     return nullptr;
 }
 
-gxSkinnedMesh::gxSkinnedMesh():
-gxMesh(OBJECT3D_SKINNED_MESH)
+gxSkinnedMesh::gxSkinnedMesh(monoClassDef* script, object3d* obj):
+gxMesh(script, obj)
 {
 	boneInfluenceCountBuffer=NULL;
 	boneIndexBuffer=NULL;
@@ -27,7 +27,7 @@ gxMesh(OBJECT3D_SKINNED_MESH)
 	vertexCopyBuffer=NULL;
 	inverseBoneTransformationList=NULL;
 	boneOffsetList=NULL;
-	reSetBaseFlag(eObject3dBaseFlag_Static);
+    obj->reSetBaseFlag(object3d::eObject3dBaseFlag_Static);
 }
 
 gxSkinnedMesh::~gxSkinnedMesh()
@@ -49,9 +49,9 @@ void gxSkinnedMesh::update(float dt)
 	int* boneindexbuffer=boneIndexBuffer;
 	float* weightbuffer=weightBuffer;
 	int tmp=noOfBoneIndexBuffer;
-	matrix4x4f skinTM(*this);
+	matrix4x4f skinTM(*getAttachedObject());
 	//skinTM.setPosition(0, 0, 0);
-	matrix4x4f rootNodeInverse(getWorldMatrix()->getInverse());	//TODO: try optimize this by transforming the skin in transformchanged()
+	matrix4x4f rootNodeInverse(getAttachedObject()->getWorldMatrix()->getInverse());	//TODO: try optimize this by transforming the skin in transformchanged()
 
 	for(int x=0;x<noOfTrianglesForInternalUse*3;x++)
 	{
@@ -90,7 +90,7 @@ void gxSkinnedMesh::update(float dt)
 
 void gxSkinnedMesh::render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
-	if(!isBaseFlag(eObject3dBaseFlag_Visible))
+    if(!getAttachedObject()->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 		return;
 
 #if defined (USE_ProgrammablePipeLine)
@@ -106,7 +106,7 @@ void gxSkinnedMesh::render(gxRenderer* renderer, monoScriptObjectInstance* light
 	renderNormal(renderer);
 #endif
 
-	object3d::render(renderer, light, renderFlag);
+	monoScriptObjectInstance::render(renderer, light, renderFlag);
 }
 
 int* gxSkinnedMesh::allocateBoneInfluenceCountBuffer(int nTris)
@@ -157,10 +157,10 @@ void gxSkinnedMesh::populateBoneList(object3d* bone, int index)
 
 	boneList[privateIterator]=bone;
 	matrix4x4f bone_backup(*bone);
-	if(bone!=this /*&& bone!=this->getParent()*/)
+	if(bone!=getAttachedObject() /*&& bone!=this->getParent()*/)
 	{
 		//boneOffsetList[privateIterator]=*bone->getWorldMatrix();
-		*(matrix4x4f*)bone = *bone * this->getWorldMatrix()->getInverse();
+		*(matrix4x4f*)bone = *bone * getAttachedObject()->getWorldMatrix()->getInverse();
 	}
 	inverseBoneTransformationList[privateIterator]=bone->getWorldMatrix()->getInverse();
 	
@@ -195,9 +195,9 @@ float* gxSkinnedMesh::allocateAndCopyVertexCopyBuffer()
 	return vertexCopyBuffer;
 }
 
-void gxSkinnedMesh::writeData(gxFile& file)
+void gxSkinnedMesh::writeScriptObject(gxFile& file)
 {
-	gxMesh::writeData(file);
+	gxMesh::writeScriptObject(file);
 
 	//write skin data
 	if(boneInfluenceCountBuffer)
@@ -237,9 +237,9 @@ void gxSkinnedMesh::writeData(gxFile& file)
 	//
 }
 
-void gxSkinnedMesh::readData(gxFile& file)
+void gxSkinnedMesh::readScriptObject(gxFile& file)
 {
-    gxMesh::readData(file);
+    gxMesh::readScriptObject(file);
     
 	//read skin data
 	bool bBoneInfluenceCountBuffer=false;

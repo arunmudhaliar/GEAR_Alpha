@@ -18,7 +18,6 @@ Camera::Camera(monoClassDef* script, object3d* obj):
 	monoScriptObjectInstance(script, obj)
 {
 	renderer=NULL;
-	//m_pCameraStructPtr=NULL;
 	layerCullingMask=0xffffffff;
 	setMainCamera(false);
 }

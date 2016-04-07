@@ -1,5 +1,6 @@
 #include "object3d.h"
 #include "../mono/src/monoWrapper.h"
+#include "gxSkinnedMesh.h"
 
 extern "C" {
 extern DECLSPEC const char* object3d_getName(object3d* obj)
@@ -369,8 +370,14 @@ void object3d::render(gxRenderer* renderer, monoScriptObjectInstance* light, int
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
 
+    for(auto script : attachedScriptInstanceList)
+    {
+        script->render(renderer, light, renderFlag);
+    }
+
 	if((renderFlag&eObject3dBase_RenderFlag_DontRenderChilds))
 		return;
+    
 
 #ifdef USE_BXLIST
 	stLinkNode<object3d*>* node=childList.getHead();
@@ -778,6 +785,14 @@ void object3d::read(gxFile& file)
         else if (strcmp(temp_scriptname, "Camera.cs")==0)
         {
             scriptInstance = Camera::create(script, this);
+        }
+        else if (strcmp(temp_scriptname, "gxMesh.cs")==0)
+        {
+            scriptInstance = gxMesh::create(script, this);
+        }
+        else if (strcmp(temp_scriptname, "gxSkinnedMesh.cs")==0)
+        {
+            scriptInstance = gxSkinnedMesh::create(script, this);
         }
         else
         {

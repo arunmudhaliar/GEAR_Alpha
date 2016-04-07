@@ -40,7 +40,7 @@ int appEntry()
                                            SDL_WINDOWPOS_CENTERED,     // y position, centered
                                            640,                        // width, in pixels
                                            480,                        // height, in pixels
-                                           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | SDL_WINDOW_RESIZABLE        // flags
+                                           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | SDL_WINDOW_RESIZABLE  |  SDL_WINDOW_ALLOW_HIGHDPI    // flags
                                            );
 
 #ifdef GEAR_WINDOWS
@@ -396,12 +396,8 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
                 break;
             case SDL_BUTTON_MIDDLE:
             {
-                editorApp.MouseMButtonDown(mouse_x, mouse_y, MK_MBUTTON);
                 //DEBUG_PRINT("Middle Mouse Down");
-                //geTestDlg* view = new geTestDlg(&geFontManager::g_cFontManager, editorApp.rendererGL10);
-                //view->showView();
-                //showMenu();
-                //cpp_createMenu();
+                editorApp.MouseMButtonDown(mouse_x, mouse_y, MK_MBUTTON);
             }
                 break;
             case SDL_BUTTON_RIGHT:

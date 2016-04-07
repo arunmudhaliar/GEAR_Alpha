@@ -113,7 +113,7 @@ void gePropertyLight::drawNode()
 
 void gePropertyLight::populatePropertyOfLight(object3d* obj)
 {
-	previewLight = (gxLight*)obj;   //TODO: obj is not a gxLight anymore. FIX THIS ASAP
+	previewLight = obj->getMonoScriptInstance<gxLight*>();
 	vector4f diff(previewLight->getDiffuseColor());
 	vector4f ambient(previewLight->getAmbientColor());
 	vector4f specular(previewLight->getSpecularColor());

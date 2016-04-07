@@ -146,8 +146,8 @@ const unsigned int gxCrc32::CrcTable[] =
 		/// <returns></returns>
 		int gxCrc32::Calc( unsigned char* data )
 		{
-			//if( data == null )
-			//	return 0;
+			if( (int)strlen((char*)data) == 0 )
+				return 0;
 
 			crcData = 0;
 			Update( data );

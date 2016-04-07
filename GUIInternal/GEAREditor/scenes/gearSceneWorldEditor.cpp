@@ -1566,7 +1566,7 @@ void gearSceneWorldEditor::getTringleCountForThisTree(object3d* obj, int& count)
 
 	if(obj->getID()==OBJECT3D_MESH || obj->getID()==OBJECT3D_SKINNED_MESH)
 	{
-		gxMesh* mesh = (gxMesh*)obj;
+		gxMesh* mesh = obj->getMonoScriptInstance<gxMesh*>();
 		count+=mesh->getTriangleCount();
 	}
 

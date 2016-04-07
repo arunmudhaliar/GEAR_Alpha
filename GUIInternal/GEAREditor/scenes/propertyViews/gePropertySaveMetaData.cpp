@@ -31,7 +31,7 @@ void gePropertySaveMetaData::saveMaterialRecursiveToMeta(object3d* obj)
 {
 	if(obj->getID()==OBJECT3D_MESH || obj->getID()==OBJECT3D_SKINNED_MESH)
 	{
-		gxMesh* mesh=(gxMesh*)obj;
+		gxMesh* mesh=obj->getMonoScriptInstance<gxMesh*>();
 		for(int x=0;x<mesh->getNoOfTriInfo();x++)
 		{
 			gxTriInfo* triinfo=mesh->getTriInfo(x);

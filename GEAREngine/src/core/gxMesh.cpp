@@ -3,9 +3,9 @@
 #include "Timer.h"
 
 
-gxMesh* gxMesh::create()
+gxMesh* gxMesh::create(monoClassDef* script, object3d* obj)
 {
-    auto newObject = new gxMesh();
+    auto newObject = new gxMesh(script, obj);
     if(newObject)
     {
         newObject->autoRelease();
@@ -17,8 +17,8 @@ gxMesh* gxMesh::create()
     return nullptr;
 }
 
-gxMesh::gxMesh(int ID):
-	object3d(ID)
+gxMesh::gxMesh(monoClassDef* script, object3d* obj):
+	monoScriptObjectInstance(script, obj)
 {
 	triangleInfoArrayCount=0;
 	triangleInfoArray=NULL;
@@ -36,29 +36,7 @@ gxMesh::gxMesh(int ID):
 	vboColorID=0;
 	vboNormalID=0;
 	vboTangentID=0;
-	setBaseFlag(eObject3dBaseFlag_Static);
-}
-
-gxMesh::gxMesh():
-	object3d(OBJECT3D_MESH)
-{
-	triangleInfoArrayCount=0;
-	triangleInfoArray=NULL;
-
-	vertexBuffer=NULL;
-	colorBuffer=NULL;
-	normalBuffer=NULL;
-	tangentBuffer=NULL;
-	uvChannelCount=0;
-	uvChannel=NULL;
-	noOfTrianglesForInternalUse=0;
-
-	is_VBO=0;
-    vboVertexID=0;
-	vboColorID=0;
-	vboNormalID=0;
-	vboTangentID=0;
-	setBaseFlag(eObject3dBaseFlag_Static);
+    obj->setBaseFlag(object3d::eObject3dBaseFlag_Static);
 }
 
 gxMesh::~gxMesh()
@@ -150,12 +128,12 @@ void gxMesh::deleteVBO()
 
 void gxMesh::update(float dt)
 {
-	object3d::update(dt);
+    monoScriptObjectInstance::update(dt);
 }
 
 void gxMesh::render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/)
 {
-	if(!isBaseFlag(eObject3dBaseFlag_Visible))
+    if(!getAttachedObject()->isBaseFlag(object3d::eObject3dBaseFlag_Visible))
 		return;
 
 #if defined (USE_ProgrammablePipeLine)
@@ -171,7 +149,7 @@ void gxMesh::render(gxRenderer* renderer, monoScriptObjectInstance* light, int r
 	renderNormal(renderer);
 #endif
 
-	object3d::render(renderer, light, renderFlag);
+	monoScriptObjectInstance::render(renderer, light, renderFlag);
 }
 
 #if 0
@@ -299,7 +277,7 @@ void gxMesh::renderForShadowMap(gxRenderer* renderer)
 	gxHWShader* shader = hwShaderManager->GetHWShader(HW_BUILTIN_DEFAULT_SHADER_ONLY_SHADOWMAP_SHADER);	//no need to enable it, since its been enabled/disable by the caller.
 	int vIN_Position = shader->getAttribLoc("a_vertex_coord_v4");
 
-	const float* u_mvp_m4x4 = getWorldMatrix()->getMatrix();
+	const float* u_mvp_m4x4 = getAttachedObject()->getWorldMatrix()->getMatrix();
 	shader->sendUniformTMfv("u_mvp_m4x4", u_mvp_m4x4, false, 4);
 
 	if(is_VBO)
@@ -353,7 +331,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, monoScriptObjectInstance* 
 		light_ob=dynamic_cast<gxLight*>(lightScriptInstance);
 	}
 
-	matrix4x4f cMV = *renderer->getViewMatrix() * *getWorldMatrix();
+	matrix4x4f cMV = *renderer->getViewMatrix() * *getAttachedObject()->getWorldMatrix();
 	const float* u_modelview_m4x4=cMV.getMatrix();
 
 	matrix4x4f noscaleMV(cMV);
@@ -362,7 +340,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, monoScriptObjectInstance* 
 	cMVInverse.transpose();
 //	const float* u_modelview_inverse_m4x4=cMVInverse.getMatrix();
 
-	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getWorldMatrix();
+	matrix4x4f cMVP = *renderer->getViewProjectionMatrix() * *getAttachedObject()->getWorldMatrix();
     const float* u_mvp_m4x4=cMVP.getMatrix();
 
 	for(int x=0;x<triangleInfoArrayCount;x++)
@@ -423,12 +401,12 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, monoScriptObjectInstance* 
 
 		if(pass_struct->GEAR_M)
 		{
-			shader->sendUniform_GEAR_MODEL_MATRIX(getWorldMatrix()->getMatrix());
+			shader->sendUniform_GEAR_MODEL_MATRIX(getAttachedObject()->getWorldMatrix()->getMatrix());
 		}
 
 		if(pass_struct->GEAR_M_INVERSE)
 		{
-			matrix4x4f inv_model=*getWorldMatrix();
+			matrix4x4f inv_model=*getAttachedObject()->getWorldMatrix();
 			inv_model.inverse();
 			shader->sendUniform_GEAR_MODEL_INVERSE(inv_model.getMatrix());
 		}
@@ -542,7 +520,7 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, monoScriptObjectInstance* 
 		//shadowmap
 		if (pass_struct->shadow == 1 && light_ob)
 		{
-			float* depth_bias_mvp = (light_ob->getShadowDepthBiasMVP() * *getWorldMatrix()).getOGLMatrix();
+			float* depth_bias_mvp = (light_ob->getShadowDepthBiasMVP() * *getAttachedObject()->getWorldMatrix()).getOGLMatrix();
 			//GEAR_SHADOW_DEPTH_BIAS_MVP
 			int GEAR_SHADOW_DEPTH_BIAS_MVP = shader->getUniformLoc("GEAR_SHADOW_DEPTH_BIAS_MVP");
 			CHECK_GL_ERROR(glUniformMatrix4fv(GEAR_SHADOW_DEPTH_BIAS_MVP, 1, false, depth_bias_mvp));
@@ -673,7 +651,7 @@ bool gxMesh::applyStageTexture(gxRenderer* renderer, int stage, gxTriInfo* triIn
 			//need to fix this bug
 			CHECK_GL_ERROR(glEnable(GL_BLEND));
 			CHECK_GL_ERROR(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-			setBaseFlag(eObject3dBaseFlag_Alpha);	//check this
+            getAttachedObject()->setBaseFlag(object3d::eObject3dBaseFlag_Alpha);	//check this
 			//
 		}
 	}
@@ -878,7 +856,7 @@ int gxMesh::getVerticesCount()
 	return nVerts;
 }
 
-void gxMesh::writeData(gxFile& file)
+void gxMesh::writeScriptObject(gxFile& file)
 {
     file.Write(triangleInfoArrayCount);
     for(int x=0;x<triangleInfoArrayCount;x++)
@@ -938,7 +916,7 @@ void gxMesh::writeData(gxFile& file)
     }
 }
 
-void gxMesh::readData(gxFile& file)
+void gxMesh::readScriptObject(gxFile& file)
 {
 	file.Read(triangleInfoArrayCount);
 	if(triangleInfoArrayCount)
@@ -995,7 +973,7 @@ void gxMesh::readData(gxFile& file)
 		file.ReadBuffer((unsigned char*)uvChannel[x].textureCoordArray, sizeof(float)*noOfTrianglesForInternalUse*3*2);
 	}
 
-	if(getID()==OBJECT3D_MESH)
+	if(getAttachedObject()->getID()==OBJECT3D_MESH)
 		buildVBO();
 	//createTBN_Data();
 }

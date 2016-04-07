@@ -71,6 +71,8 @@
     <Compile Include="vector3.cs" />
     <Compile Include="vector4.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="gxMesh.cs" />
+    <Compile Include="gxSkinnedMesh.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

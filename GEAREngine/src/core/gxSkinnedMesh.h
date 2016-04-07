@@ -7,7 +7,7 @@ class DECLSPEC gxSkinnedMesh : public gxMesh
 public:
 	~gxSkinnedMesh();
 
-    static gxSkinnedMesh* create();
+    static gxSkinnedMesh* create(monoClassDef* script, object3d* obj);
 
 	void update(float dt);
 	void render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/);
@@ -23,12 +23,13 @@ public:
 	void clearPrivateIterator()             {	privateIterator=0;          }
 
 protected:
-    virtual void writeData(gxFile& file);
-    virtual void readData(gxFile& file);
+    virtual void writeScriptObject(gxFile& file);
+    virtual void readScriptObject(gxFile& file);
 
 private:
-    gxSkinnedMesh();
-
+    gxSkinnedMesh(monoClassDef* script, object3d* obj);
+    gxSkinnedMesh(){}
+    
 	int* boneInfluenceCountBuffer;
 	int* boneIndexBuffer;
 	float* weightBuffer;

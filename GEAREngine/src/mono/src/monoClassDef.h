@@ -83,13 +83,13 @@ public:
     
     void read(gxFile& file);
     void write(gxFile& file);
-    
+
+    virtual void update(float dt){};
+    virtual void render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/){};
+
 protected:
     monoScriptObjectInstance();
     monoScriptObjectInstance(monoClassDef* script, object3d* obj);
-
-    virtual void update(float dt){};
-    virtual void render(gxRenderer* renderer, object3d* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/){};
 
     virtual void readScriptObject(gxFile& file){}
     virtual void writeScriptObject(gxFile& file){}

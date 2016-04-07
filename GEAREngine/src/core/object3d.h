@@ -234,6 +234,19 @@ public:
         return nullptr;
     }
     
+    template <class T>
+    const std::vector<T>& getMonoScriptInstances()
+    {
+        std::vector<T> list;
+        for(auto script: attachedScriptInstanceList)
+        {
+            if(dynamic_cast<T>(script))
+                list.push_back( (T)script);
+        }
+
+        return list;
+    }
+    
 protected:
     
     virtual void writeData(gxFile& file)    {   }

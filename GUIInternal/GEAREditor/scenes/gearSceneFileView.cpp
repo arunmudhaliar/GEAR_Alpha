@@ -103,10 +103,10 @@ void gearSceneFileView::read3dFile(gxFile& file, object3d* obj)
 		switch(objID)
 		{
 		case OBJECT3D_MESH:
-            tempObj = gxMesh::create();
+            tempObj = object3d::create(objID);
 			break;
 		case OBJECT3D_SKINNED_MESH:
-            tempObj = gxSkinnedMesh::create();
+            tempObj = object3d::create(objID);
 			break;
 		case OBJECT3D_LIGHT:
             tempObj = object3d::create(objID);  //TODO: FIX ME
@@ -223,10 +223,10 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 			switch(objID)
 			{
 			case OBJECT3D_MESH:
-                tempObj = gxMesh::create();
+                tempObj = object3d::create(objID);
 				break;
 			case OBJECT3D_SKINNED_MESH:
-                tempObj = gxSkinnedMesh::create();
+                tempObj = object3d::create(objID);
 				break;
 			case OBJECT3D_LIGHT:
                 tempObj = object3d::create(objID);  //TODO: FIX ME
@@ -269,7 +269,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				{
 					//match found, so assing and delete the new material object
 					matchingMaterial=material_in_list;
-					gxMesh* mesh=(gxMesh*)previewCubeObject->getChild(0);
+					gxMesh* mesh=previewCubeObject->getChild(0)->getMonoScriptInstance<gxMesh*>();
 					gxTriInfo* triinfo = mesh->getTriInfo(0);
 					triinfo->setMaterial(matchingMaterial);
 					obj=previewCubeObject;
@@ -305,7 +305,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 						submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
 					}
 
-					gxMesh* mesh=(gxMesh*)previewCubeObject->getChild(0);
+					gxMesh* mesh=previewCubeObject->getChild(0)->getMonoScriptInstance<gxMesh*>();
 					gxTriInfo* triinfo = mesh->getTriInfo(0);
 					triinfo->setMaterial(material);
                     world->appendMaterialToWorld(material);
@@ -351,7 +351,7 @@ void gearSceneFileView::onTVSelectionChange(geTreeNode* tvnode, geTreeView* tree
 				submap->loadTextureFromMeta(*world->getTextureManager(), submap->getTextureCRC());
 			}
 
-			gxMesh* mesh=(gxMesh*)previewCubeObject->getChild(0);
+			gxMesh* mesh=previewCubeObject->getChild(0)->getMonoScriptInstance<gxMesh*>();
 			gxTriInfo* triinfo = mesh->getTriInfo(0);
 			triinfo->setMaterial(&previewMaterial);
 			obj=previewCubeObject;

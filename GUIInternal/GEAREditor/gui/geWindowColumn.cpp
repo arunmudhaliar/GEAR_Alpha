@@ -82,7 +82,7 @@ stWindowColumnRow* geWindowColumn::addRow(const char* name)
 	for(std::vector<stWindowColumnRow*>::iterator it = windowColumnRowControlList.begin(); it != windowColumnRowControlList.end(); ++it)
 	{
 		stWindowColumnRow* obj = *it;
-		ypos+=obj->getHeight();
+		ypos+=obj->getHeight()+2.0f;
 	}
 
 	stWindowColumnRow* newrow = new stWindowColumnRow(name, ypos);

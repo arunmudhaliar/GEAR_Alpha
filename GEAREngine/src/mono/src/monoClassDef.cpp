@@ -111,6 +111,13 @@ MonoClassField* monoClassDef::getMonoVar(int index)
 	return monoVariableList[index];
 }
 
+const char* monoClassDef::getMonoVarTypeName(int index)
+{
+    auto mvar = getMonoVar(index);
+    auto mtype = mono_field_get_type(mvar);
+    return mono_type_get_name(mtype);
+}
+
 monoClassDef::~monoClassDef()
 {
     typedef std::map<MonoObject*, unsigned int>::iterator it_type;

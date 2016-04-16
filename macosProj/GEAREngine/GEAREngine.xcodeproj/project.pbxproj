@@ -151,6 +151,7 @@
 		555571F81C9DBD6700EEC0CB /* gxFileUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 555571F61C9DBD6700EEC0CB /* gxFileUtil.h */; };
 		5580DE741C8C442200B5D6D5 /* IAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */; };
 		5580DE751C8C442200B5D6D5 /* IAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */; };
+		5598C4F71CC2E037009178C2 /* gxColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5598C4F61CC2E037009178C2 /* gxColor.h */; };
 		55A179C21CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55A179C01CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp */; };
 		55A179C31CA877AB00989B35 /* gxKeyFrameAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 55A179C11CA877AB00989B35 /* gxKeyFrameAnimationTrack.h */; };
 		55AB5CB91C0481D3005B8747 /* BlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */; };
@@ -318,6 +319,7 @@
 		555571F61C9DBD6700EEC0CB /* gxFileUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxFileUtil.h; sourceTree = "<group>"; };
 		5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAnimationTrack.cpp; sourceTree = "<group>"; };
 		5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnimationTrack.h; sourceTree = "<group>"; };
+		5598C4F61CC2E037009178C2 /* gxColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxColor.h; sourceTree = "<group>"; };
 		55A179C01CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxKeyFrameAnimationTrack.cpp; sourceTree = "<group>"; };
 		55A179C11CA877AB00989B35 /* gxKeyFrameAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxKeyFrameAnimationTrack.h; sourceTree = "<group>"; };
 		55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurFilter.cpp; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 		5554EA861AD26CEC00FD80AF /* core */ = {
 			isa = PBXGroup;
 			children = (
+				5598C4F61CC2E037009178C2 /* gxColor.h */,
 				5554EA871AD26CEC00FD80AF /* aabb.h */,
 				5554EA881AD26CEC00FD80AF /* basicIncludes.h */,
 				5554EA891AD26CEC00FD80AF /* Camera.cpp */,
@@ -750,6 +753,7 @@
 				5554ED801AD26CED00FD80AF /* object3d.h in Headers */,
 				5554ED521AD26CED00FD80AF /* SoundEngine.h in Headers */,
 				5554EFC61AD26CED00FD80AF /* zutil.h in Headers */,
+				5598C4F71CC2E037009178C2 /* gxColor.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

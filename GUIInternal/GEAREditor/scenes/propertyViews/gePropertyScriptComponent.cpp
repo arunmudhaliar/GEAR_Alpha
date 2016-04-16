@@ -87,11 +87,25 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
 	//mono vars
 	for(int x=0;x<monoScriptobject->getScriptPtr()->getMonoVarCount();x++)
 	{
-		stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoVarName(x));
-		geTextBox* variableeditbox = new geTextBox("", fontManagerGUI);
-		variableeditbox->create(rendererGUI, this, "", 0, 0, 30, 15);
-		windowColumnControl->addControl(row, variableeditbox, 16.0f);
-		lastControl=variableeditbox;
+        auto mvartypename = monoScriptobject->getScriptPtr()->getMonoVarTypeName(x);
+        if(strncmp(mvartypename, "MonoGEAR.gxColor", strlen("MonoGEAR.gxColor"))==0)
+        {
+            stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoVarName(x));
+            geColorControl* colorControl = new geColorControl(fontManagerGUI);
+            colorControl->create(rendererGUI, this, 100, 10);
+            colorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
+            colorControl->setGUIObserver(this);
+            windowColumnControl->addControl(row, colorControl, 16.0f);
+            lastControl=colorControl;
+        }
+        else
+        {
+            stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoVarName(x));
+            geTextBox* variableeditbox = new geTextBox("", fontManagerGUI);
+            variableeditbox->create(rendererGUI, this, mvartypename, 0, 0);
+            windowColumnControl->addControl(row, variableeditbox, 16.0f);
+            lastControl=variableeditbox;
+        }
 	}
 
 	//

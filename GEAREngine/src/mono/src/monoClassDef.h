@@ -42,7 +42,8 @@ public:
 	int getMonoVarCount()	{	return (int)monoVariableList.size();	}
 	const char* getMonoVarName(int index);
 	MonoClassField* getMonoVar(int index);
-
+    const char* getMonoVarTypeName(int index);
+    
 protected:
     monoClassDef(const stMonoScriptArgs& args);
     monoClassDef(std::string script, MonoDomain* pMonoDomain, MonoClass* klass, std::string klassname, std::string knamespace, MonoClass* monoscript_klass);

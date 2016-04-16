@@ -434,9 +434,9 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 					FbxDouble3 ambient=pong->Ambient.Get();
 					FbxDouble3 specular=pong->Specular.Get();
 					//FbxDouble specular_factor=pong->SpecularFactor;
-					material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
-					material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
-					material->setSpecularClr(vector4f((float)specular.mData[0], (float)specular.mData[1], (float)specular.mData[2], 1.0f));	//lambert doesn't have specular
+					material->setDiffuseClr(gxColor((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
+					material->setAmbientClr(gxColor((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
+					material->setSpecularClr(gxColor((float)specular.mData[0], (float)specular.mData[1], (float)specular.mData[2], 1.0f));	//lambert doesn't have specular
 
 				}
 				else if(surfaceMaterial->GetClassId().Is(FbxSurfaceLambert::ClassId) )
@@ -444,9 +444,9 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 					FbxSurfaceLambert* lambert=(FbxSurfaceLambert*)surfaceMaterial;
 					FbxDouble3 diffuse=lambert->Diffuse.Get();
 					FbxDouble3 ambient=lambert->Ambient.Get();
-					material->setDiffuseClr(vector4f((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
-					material->setAmbientClr(vector4f((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
-					material->setSpecularClr(vector4f(0.5f, 0.5f, 0.5f, 1.0f));	//lambert doesn't have specular
+					material->setDiffuseClr(gxColor((float)diffuse.mData[0], (float)diffuse.mData[1], (float)diffuse.mData[2], 1.0f));
+					material->setAmbientClr(gxColor((float)ambient.mData[0], (float)ambient.mData[1], (float)ambient.mData[2], 1.0f));
+					material->setSpecularClr(gxColor(0.5f, 0.5f, 0.5f, 1.0f));	//lambert doesn't have specular
 				}
 				else
 				{
@@ -469,9 +469,9 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 					FbxColor ambient = (ambient_property.IsValid())?ambient_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
 					FbxColor diffuse = (diffuse_property.IsValid())?diffuse_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
 					FbxColor specular = (specular_property.IsValid())?specular_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
-					material->setDiffuseClr(vector4f((float)diffuse.mRed, (float)diffuse.mGreen, (float)diffuse.mBlue, (float)diffuse.mAlpha));
-					material->setAmbientClr(vector4f((float)ambient.mRed, (float)ambient.mGreen, (float)ambient.mBlue, (float)ambient.mAlpha));
-					material->setSpecularClr(vector4f((float)specular.mRed, (float)specular.mGreen, (float)specular.mBlue, (float)specular.mAlpha));
+					material->setDiffuseClr(gxColor((float)diffuse.mRed, (float)diffuse.mGreen, (float)diffuse.mBlue, (float)diffuse.mAlpha));
+					material->setAmbientClr(gxColor((float)ambient.mRed, (float)ambient.mGreen, (float)ambient.mBlue, (float)ambient.mAlpha));
+					material->setSpecularClr(gxColor((float)specular.mRed, (float)specular.mGreen, (float)specular.mBlue, (float)specular.mAlpha));
 				}
 
 #if 1	//moved the maps to surface shader. so we don't need this anymore
@@ -528,9 +528,9 @@ int fbxImporter::tryImportMaterial(int triIndex, int nMaterialCount, FbxLayerEle
 
 					
 				FbxColor diffuse_color = (color_property.IsValid())?color_property.Get<FbxColor>():FbxColor(0.5f, 0.5f, 0.5f);
-				material->setDiffuseClr(vector4f((float)diffuse_color.mRed, (float)diffuse_color.mGreen, (float)diffuse_color.mBlue, (float)diffuse_color.mAlpha));
-				material->setAmbientClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
-				material->setSpecularClr(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
+				material->setDiffuseClr(gxColor((float)diffuse_color.mRed, (float)diffuse_color.mGreen, (float)diffuse_color.mBlue, (float)diffuse_color.mAlpha));
+				material->setAmbientClr(gxColor(0.2f, 0.2f, 0.2f, 1.0f));
+				material->setSpecularClr(gxColor(0.5f, 0.5f, 0.5f, 1.0f));
 			
 				material->setMainShaderName("Diffuse");
 				triInfoArray[fbxMaterialIndex].setMaterial(material);

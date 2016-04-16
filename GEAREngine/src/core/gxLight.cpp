@@ -26,26 +26,26 @@ extern "C" {
     
     DECLSPEC void gxLight_getDiffuseColor(gxLight* light, float* clr)
     {
-        clr[0]=light->getDiffuseColor().x;
-        clr[1]=light->getDiffuseColor().y;
-        clr[2]=light->getDiffuseColor().z;
-        clr[3]=light->getDiffuseColor().w;
+        clr[0]=light->getDiffuseColor().r;
+        clr[1]=light->getDiffuseColor().g;
+        clr[2]=light->getDiffuseColor().b;
+        clr[3]=light->getDiffuseColor().a;
     }
     
     DECLSPEC void gxLight_getAmbientColor(gxLight* light, float* clr)
     {
-        clr[0]=light->getAmbientColor().x;
-        clr[1]=light->getAmbientColor().y;
-        clr[2]=light->getAmbientColor().z;
-        clr[3]=light->getAmbientColor().w;
+        clr[0]=light->getAmbientColor().r;
+        clr[1]=light->getAmbientColor().g;
+        clr[2]=light->getAmbientColor().b;
+        clr[3]=light->getAmbientColor().a;
     }
     
     DECLSPEC void gxLight_getSpecularColor(gxLight* light, float* clr)
     {
-        clr[0]=light->getSpecularColor().x;
-        clr[1]=light->getSpecularColor().y;
-        clr[2]=light->getSpecularColor().z;
-        clr[3]=light->getSpecularColor().w;
+        clr[0]=light->getSpecularColor().r;
+        clr[1]=light->getSpecularColor().g;
+        clr[2]=light->getSpecularColor().b;
+        clr[3]=light->getSpecularColor().a;
     }
     
     DECLSPEC void gxLight_setConstantAttenuation(gxLight* light, float value)
@@ -165,9 +165,9 @@ void gxLight::render(gxRenderer* renderer, monoScriptObjectInstance* light, int 
 void gxLight::renderPass(gxRenderer* renderer, gxHWShader* shader)
 {
 #if defined (USE_ProgrammablePipeLine)
-	shader->sendUniform4fv("light.diffuse", &diffuseColor.x);
-	shader->sendUniform4fv("light.ambient", &ambientColor.x);
-	shader->sendUniform4fv("light.specular", &specularColor.x);
+	shader->sendUniform4fv("light.diffuse", &diffuseColor.r);
+	shader->sendUniform4fv("light.ambient", &ambientColor.r);
+	shader->sendUniform4fv("light.specular", &specularColor.r);
 	shader->sendUniform1f("light.constant_attenuation", constantAttenuation);
 	shader->sendUniform1f("light.linear_attenuation", linearAttenuation);
 	shader->sendUniform1f("light.quadratic_attenuation", quadraticAttenuation);

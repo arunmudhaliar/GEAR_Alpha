@@ -149,9 +149,9 @@ gxMaterial* gxMaterial::createNewMaterial()
     gxMaterial* material = gxMaterial::create();
 	material->setMaterialName("New Material");
 
-	material->setDiffuseClr(vector4f(0.7f, 0.7f, 0.7f, 1.0f));
-	material->setAmbientClr(vector4f(0.7f, 0.7f, 0.7f, 1.0f));
-	material->setSpecularClr(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
+	material->setDiffuseClr(gxColor(0.7f, 0.7f, 0.7f, 1.0f));
+	material->setAmbientClr(gxColor(0.7f, 0.7f, 0.7f, 1.0f));
+	material->setSpecularClr(gxColor(0.2f, 0.2f, 0.2f, 1.0f));
 
 	return material;
 }

@@ -460,9 +460,9 @@ void gxMesh::renderWithHWShader(gxRenderer* renderer, monoScriptObjectInstance* 
 		{
 			if(triInfo->getMaterial())
 			{
-				shader->sendUniform_material_diffuse(&material->getDiffuseClr().x);
-				shader->sendUniform_material_ambient(&material->getAmbientClr().x);
-				shader->sendUniform_material_specular(&material->getSpecularClr().x);
+				shader->sendUniform_material_diffuse(&material->getDiffuseClr().r);
+				shader->sendUniform_material_ambient(&material->getAmbientClr().r);
+				shader->sendUniform_material_specular(&material->getSpecularClr().r);
 				shader->sendUniform_material_shininess(material->getShininess());
 			}
 			else

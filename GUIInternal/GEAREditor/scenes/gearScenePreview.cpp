@@ -28,9 +28,9 @@ void gearScenePreview::reinitPreviewWorld()
 	previewWorld->getActiveCamera()->setNear(1.0f);
 	auto lightScriptInstance = engine_createLight(previewWorld, "Light", gxLight::LIGHT_DIRECTIONAL);
     auto light = dynamic_cast<gxLight*>(lightScriptInstance);
-	light->setDiffuseColor(vector4f(0.75f, 0.75f, 0.75f, 1.0f));
-	light->setAmbientColor(vector4f(0.2f, 0.2f, 0.2f, 1.0f));
-	light->setSpecularColor(vector4f(0.5f, 0.5f, 0.5f, 1.0f));
+	light->setDiffuseColor(gxColor(0.75f, 0.75f, 0.75f, 1.0f));
+	light->setAmbientColor(gxColor(0.2f, 0.2f, 0.2f, 1.0f));
+	light->setSpecularColor(gxColor(0.5f, 0.5f, 0.5f, 1.0f));
 	light->setConstantAttenuation(0.5f);
 	lightScriptInstance->getAttachedObject()->updatePositionf(-1, -10, 1);
 	previewLight=lightScriptInstance;

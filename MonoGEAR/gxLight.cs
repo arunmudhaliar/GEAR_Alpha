@@ -88,13 +88,13 @@ namespace MonoGEAR
 			}
 		}
 
-		public vector4 diffuseColor
+		public gxColor diffuseColor
 		{
 			get
 			{
 				float[] array = new float[4];
 				gxLight_getDiffuseColor (scriptInstanceHandle_cpp, array);
-				return new vector4 (array);
+				return new gxColor (array);
 			}
 			set
 			{
@@ -102,13 +102,13 @@ namespace MonoGEAR
 			}
 		}
 
-		public vector4 specularColor
+		public gxColor specularColor
 		{
 			get
 			{
 				float[] array = new float[4];
 				gxLight_getSpecularColor (scriptInstanceHandle_cpp, array);
-				return new vector4 (array);
+				return new gxColor (array);
 			}
 			set
 			{
@@ -116,13 +116,13 @@ namespace MonoGEAR
 			}
 		}
 
-		public vector4 ambientColor
+		public gxColor ambientColor
 		{
 			get
 			{
 				float[] array = new float[4];
 				gxLight_getAmbientColor (scriptInstanceHandle_cpp, array);
-				return new vector4 (array);
+				return new gxColor (array);
 			}
 			set
 			{

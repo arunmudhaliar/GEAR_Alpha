@@ -343,18 +343,20 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
             {
                 lightProperty->populatePropertyOfLight(obj);
                 rootNode->appnendTVChild(lightParentTreeNode);
+                lightParentTreeNode->openNode();
             }
             else if (monoInstance->getScriptPtr()->getScriptFileName().compare("Camera.cs")==0)
             {
                 cameraProperty->populatePropertyOfCamera(obj);
                 rootNode->appnendTVChild(cameraParentTreeNode);
+                cameraParentTreeNode->openNode();
             }
             else
             {
                 stMonoScriptTVNode* monoScriptTVNode = new stMonoScriptTVNode();
                 monoScriptTVNode->m_pMonoScriptParentNode = new geTreeNode(rendererGUI, rootNode, monoInstance->getScriptPtr()->getScriptFileName().c_str(), &spriteArray[10], 0);
                 monoScriptTVNode->m_pSettingsMonoScript = new gePropertyScriptComponent(rendererGUI, monoScriptTVNode->m_pMonoScriptParentNode, "", NULL, fontManagerGUI);
-                monoScriptTVNode->m_pMonoScriptParentNode->closeNode();
+                monoScriptTVNode->m_pMonoScriptParentNode->openNode();
 
                 monoScriptTVNode->m_pSettingsMonoScript->populatePropertyOfMonoScripts(obj, monoInstance);
                 monoScriptTreeViewNodeList.push_back(monoScriptTVNode);

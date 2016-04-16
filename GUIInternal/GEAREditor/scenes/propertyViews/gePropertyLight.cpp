@@ -114,13 +114,13 @@ void gePropertyLight::drawNode()
 void gePropertyLight::populatePropertyOfLight(object3d* obj)
 {
 	previewLight = obj->getMonoScriptInstance<gxLight*>();
-	vector4f diff(previewLight->getDiffuseColor());
-	vector4f ambient(previewLight->getAmbientColor());
-	vector4f specular(previewLight->getSpecularColor());
+	gxColor diff(previewLight->getDiffuseColor());
+	gxColor ambient(previewLight->getAmbientColor());
+	gxColor specular(previewLight->getSpecularColor());
 
-	colorControl->setControlColor(diff.x, diff.y, diff.z, diff.w);
-	ambientColorControl->setControlColor(ambient.x, ambient.y, ambient.z, ambient.w);
-	specularColorControl->setControlColor(specular.x, specular.y, specular.z, specular.w);
+	colorControl->setControlColor(diff.r, diff.g, diff.b, diff.a);
+	ambientColorControl->setControlColor(ambient.r, ambient.g, ambient.b, ambient.a);
+	specularColorControl->setControlColor(specular.r, specular.g, specular.b, specular.a);
 
 	constantAttenuationHorizontalSlider->setSliderValue(previewLight->getConstantAttenuation(), false);
 	linearAttenuationHorizontalSlider->setSliderValue(previewLight->getLinearAttenuation()*100.0f, false);
@@ -138,26 +138,26 @@ void gePropertyLight::onTextChange(geGUIBase* textbox)
 
 void gePropertyLight::onColorChange(geGUIBase* colorControl)
 {
-	vector4f diff(previewLight->getDiffuseColor());
-	vector4f ambient(previewLight->getAmbientColor());
-	vector4f specular(previewLight->getSpecularColor());
+	gxColor diff(previewLight->getDiffuseColor());
+	gxColor ambient(previewLight->getAmbientColor());
+	gxColor specular(previewLight->getSpecularColor());
 
 	if(colorControl==this->colorControl)
 	{
 		geVector4f newClr(this->colorControl->getControlColor());
-        vector4f tmp(newClr.x, newClr.y, newClr.z, newClr.w);
+        gxColor tmp(newClr.x, newClr.y, newClr.z, newClr.w);
 		previewLight->setDiffuseColor(tmp);
 	}
 	else if(colorControl==ambientColorControl)
 	{
 		geVector4f newClr(ambientColorControl->getControlColor());
-        vector4f tmp(newClr.x, newClr.y, newClr.z, newClr.w);
+        gxColor tmp(newClr.x, newClr.y, newClr.z, newClr.w);
 		previewLight->setAmbientColor(tmp);
 	}
 	else if(colorControl==specularColorControl)
 	{
 		geVector4f newClr(specularColorControl->getControlColor());
-        vector4f tmp(newClr.x, newClr.y, newClr.z, newClr.w);
+        gxColor tmp(newClr.x, newClr.y, newClr.z, newClr.w);
 		previewLight->setSpecularColor(tmp);
 	}
 }

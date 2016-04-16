@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector4.h"
+#include "gxColor.h"
 #include "TextureManager.h"
 #include <algorithm>
 #include "gxSurfaceShader.h"
@@ -28,13 +28,13 @@ public:
 
 	bool isTwoSided()                   {	return twoSided;	}
 
-	const vector4f& getAmbientClr()		{	return ambientColor;	}
-	const vector4f& getDiffuseClr()		{	return diffuseColor;	}
-	const vector4f& getSpecularClr()	{	return specularColor;	}
+	const gxColor& getAmbientClr()		{	return ambientColor;	}
+	const gxColor& getDiffuseClr()		{	return diffuseColor;	}
+	const gxColor& getSpecularClr()     {	return specularColor;	}
 
-	void setAmbientClr(vector4f clr)	{	ambientColor=clr;		}
-	void setDiffuseClr(vector4f clr)	{	diffuseColor=clr;		}
-	void setSpecularClr(vector4f clr)	{	specularColor=clr;	}
+	void setAmbientClr(gxColor clr)     {	ambientColor=clr;		}
+	void setDiffuseClr(gxColor clr)     {	diffuseColor=clr;		}
+	void setSpecularClr(gxColor clr)	{	specularColor=clr;	}
 
 	float getShininess()				{	return shininess;	}
 	void setShininess(float value)		{	shininess=value;	}
@@ -64,9 +64,9 @@ public:
 	std::vector<std::string>* getListOfTextureNamesFromFBX()	{  return &textureNameFromFBXList;	}
 
 private:
-	vector4f ambientColor;
-	vector4f diffuseColor;
-	vector4f specularColor;
+	gxColor ambientColor;
+	gxColor diffuseColor;
+	gxColor specularColor;
 	float alpha;
 	float shininess;
 	bool twoSided;

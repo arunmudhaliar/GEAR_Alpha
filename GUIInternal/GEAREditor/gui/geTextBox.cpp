@@ -113,6 +113,18 @@ void geTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* na
     startChar=internalTextBuffer;
 }
 
+void geTextBox::create(rendererGL10* renderer, geGUIBase* parent, const char* name, float x, float y)
+{
+    int width=geFontManager::g_pFontArial10_80Ptr->calculateStringWidthInPixelTillNewLine(name, (int)strlen(name), 0);
+    createBase(renderer, parent, x, y, width*1.25f, geFontManager::g_pFontArial10_80Ptr->getLineHeight());
+    setName(name);
+    
+    setClientAreaPrimaryActiveForeColor(0.21f, 0.21f, 0.21f, 1.0f);
+    applyPrimaryColorToVBClientArea();
+    setColor(&vertexBufferSelectionArea, 0.24f, 0.38f, 0.57f, 1.0f);
+    startChar=internalTextBuffer;
+}
+
 void geTextBox::draw()
 {
 	if(isStartSelection && isControlSelected && geTextBox::g_pCurrentlyActiveTextBoxPtr==this)

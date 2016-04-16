@@ -317,8 +317,8 @@ void gePropertyMaterial::loadClientViewFromMaterial(gxMaterial* material)
 		
 		colorControl = new geColorControl(fontManagerGUI);
 		colorControl->create(rendererGUI, this, 10, 10);
-		vector4f diffuse=m_pCurrentMaterialPtr->getDiffuseClr();
-		colorControl->setControlColor(diffuse.x, diffuse.y, diffuse.z, diffuse.w);
+		gxColor diffuse=m_pCurrentMaterialPtr->getDiffuseClr();
+		colorControl->setControlColor(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
 		colorControl->setGUIObserver(this);
 
 		surfaceShaderToolBarDropMenuButton=new geToolBarDropMenu(rendererGUI, "Empty", this, fontManagerGUI);
@@ -385,7 +385,7 @@ void gePropertyMaterial::onColorChange(geGUIBase* colorControl)
 {
 	if(colorControl==this->colorControl)
 	{
-		m_pCurrentMaterialPtr->setDiffuseClr(vector4f(
+		m_pCurrentMaterialPtr->setDiffuseClr(gxColor(
 			this->colorControl->getControlColor().x,
 			this->colorControl->getControlColor().y,
 			this->colorControl->getControlColor().z,

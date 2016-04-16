@@ -1,7 +1,7 @@
 #pragma once
 
 #include "object3d.h"
-#include "vector4.h"
+#include "gxColor.h"
 #include "fbo.h"
 
 #define GX_SHADOW_MAP_SIZE	256
@@ -28,13 +28,13 @@ public:
 
 	void renderPass(gxRenderer* renderer, gxHWShader* shader);
 
-	void setDiffuseColor(const vector4f& clr)		{	diffuseColor=clr;	}
-	void setAmbientColor(const vector4f& clr)		{	ambientColor=clr;	}
-	void setSpecularColor(const vector4f& clr)	{	specularColor=clr;	}
+	void setDiffuseColor(const gxColor& clr)		{	diffuseColor=clr;	}
+	void setAmbientColor(const gxColor& clr)		{	ambientColor=clr;	}
+	void setSpecularColor(const gxColor& clr)	{	specularColor=clr;	}
 
-	const vector4f& getDiffuseColor()	{	return diffuseColor;	}
-	const vector4f& getSpecularColor()	{	return specularColor;	}
-	const vector4f& getAmbientColor()	{	return ambientColor;	}
+	const gxColor& getDiffuseColor()	{	return diffuseColor;	}
+	const gxColor& getSpecularColor()	{	return specularColor;	}
+	const gxColor& getAmbientColor()	{	return ambientColor;	}
 	ELIGHT_TYPE	getLightType()			{	return lightType;		}
 	void setLightType(ELIGHT_TYPE eType){	lightType=eType;		}
 
@@ -59,9 +59,9 @@ private:
     gxLight(monoClassDef* script, object3d* obj);
 
 	ELIGHT_TYPE lightType;
-	vector4f diffuseColor;
-	vector4f specularColor;
-	vector4f ambientColor;
+	gxColor diffuseColor;
+	gxColor specularColor;
+	gxColor ambientColor;
 	float constantAttenuation;
 	float linearAttenuation;
 	float quadraticAttenuation;

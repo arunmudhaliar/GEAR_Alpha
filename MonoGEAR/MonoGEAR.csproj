@@ -72,6 +72,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="gxMesh.cs" />
     <Compile Include="gxSkinnedMesh.cs" />
+    <Compile Include="gxColor.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

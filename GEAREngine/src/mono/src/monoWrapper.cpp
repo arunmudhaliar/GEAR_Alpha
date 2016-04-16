@@ -736,26 +736,20 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
 
 #if GEAR_WINDOWS
 #if GEAR_DEBUG
-	command_buffer += "-v -o Debug//out.exe -r:Debug//MonoGEAR.dll";
+	command_buffer += "-v -out:Debug//out.exe -r:Debug//MonoGEAR.dll";
 #else
-	command_buffer += "-v -o Release//out.exe -r:Release//MonoGEAR.dll";
+	command_buffer += "-v -out:Release//out.exe -r:Release//MonoGEAR.dll";
 #endif
 #elif GEAR_APPLE
 #if GEAR_DEBUG
-    command_buffer += "-v -o out.exe -r:MonoGEAR.dll";
+    command_buffer += "-v -out:out.exe -r:MonoGEAR.dll";
 #else
-    command_buffer += "-v -o out.exe -r:MonoGEAR.dll";
+    command_buffer += "-v -out:out.exe -r:MonoGEAR.dll";
 #endif
 #endif
 
 	char responsebuffer[4096];
-	if(exec_cmd((g_cMonoInstallPath+"/bin/gmcs "+command_buffer).c_str(), responsebuffer)==0)
-    {
-        printf("\n================GMCS COMPILATION RESULT===============\n");
-        printf("%s", responsebuffer);
-        printf("\n======================================================\n");
-    }
-    else if(exec_cmd((g_cMonoInstallPath+"/bin/mcs "+command_buffer).c_str(), responsebuffer)==0)
+    if(exec_cmd((g_cMonoInstallPath+"/bin/mcs "+command_buffer).c_str(), responsebuffer)==0)
     {
         printf("\n================MCS COMPILATION RESULT===============\n");
         printf("%s", responsebuffer);
@@ -769,6 +763,12 @@ bool monoWrapper::compileCSharpScripts(std::vector<std::string>* list)
         printf("\n======================================================\n");
     }
 #endif
+    else if(exec_cmd((g_cMonoInstallPath+"/bin/gmcs "+command_buffer).c_str(), responsebuffer)==0)
+    {
+        printf("\n================GMCS COMPILATION RESULT===============\n");
+        printf("%s", responsebuffer);
+        printf("\n======================================================\n");
+    }
     else
     {
         printf("\n\n\nERROR: ======BOTH GMCS & MCS FAILED TO COMPILE===============\n\n\n");

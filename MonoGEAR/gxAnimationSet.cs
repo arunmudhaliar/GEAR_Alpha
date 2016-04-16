@@ -11,16 +11,16 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr gxAnimationSet_getAnimationName(IntPtr animSet);
 
-        IntPtr m_pHandle;
+		IntPtr animationSetHandle;
 
         public gxAnimationSet(IntPtr handle)
         {
-            m_pHandle = handle;
+            animationSetHandle = handle;
         }
 
-        public IntPtr getHandle()
+		public IntPtr getHandle()
         {
-            return m_pHandle;
+            return animationSetHandle;
         }
 
         public string name

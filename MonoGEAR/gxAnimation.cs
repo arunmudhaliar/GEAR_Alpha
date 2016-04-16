@@ -40,59 +40,59 @@ namespace MonoGEAR
 
         public gxAnimation(IntPtr ptr)
         {
-            m_pAnimationHandle = ptr;
+            animationHandle_cpp = ptr;
         }
 
         public void play(int animSetIndex)
         {
-            gxAnimation_play(m_pAnimationHandle, animSetIndex);
+            gxAnimation_play(animationHandle_cpp, animSetIndex);
         }
 
         public void stop()
         {
-            gxAnimation_stop(m_pAnimationHandle);
+            gxAnimation_stop(animationHandle_cpp);
         }
 
         public void pause()
         {
-            gxAnimation_pause(m_pAnimationHandle);
+            gxAnimation_pause(animationHandle_cpp);
         }
 
         public void resume()
         {
-            gxAnimation_resume(m_pAnimationHandle);
+            gxAnimation_resume(animationHandle_cpp);
         }
 
         public void rewind()
         {
-            gxAnimation_rewind(m_pAnimationHandle);
+            gxAnimation_rewind(animationHandle_cpp);
         }
 
         public void rewindAll()
         {
-            gxAnimation_rewindAll(m_pAnimationHandle);
+            gxAnimation_rewindAll(animationHandle_cpp);
         }
 
         public bool isPlaying()
         {
-            return gxAnimation_isPlaying(m_pAnimationHandle);
+            return gxAnimation_isPlaying(animationHandle_cpp);
         }
 
         public int getAnimationSetCount()
         {
-            return gxAnimation_getAnimSetCount(m_pAnimationHandle);
+            return gxAnimation_getAnimSetCount(animationHandle_cpp);
         }
 
         public gxAnimationSet getAnimationSet(int index)
         {
-            return new gxAnimationSet(gxAnimation_getAnimationSet(m_pAnimationHandle, index));
+            return new gxAnimationSet(gxAnimation_getAnimationSet(animationHandle_cpp, index));
         }
 
         public void appendAnimationSet(gxAnimationSet animationSet)
         {
-            gxAnimation_appendAnimationSet(m_pAnimationHandle, animationSet.getHandle());
+            gxAnimation_appendAnimationSet(animationHandle_cpp, animationSet.getHandle());
         }
 
-        IntPtr m_pAnimationHandle;
+		IntPtr animationHandle_cpp;
     }
 }

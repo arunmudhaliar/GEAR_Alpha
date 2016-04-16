@@ -4,7 +4,7 @@ namespace MonoGEAR
 {
 	public class Camera : monoScript
 	{
-		public Camera ():
+		private Camera ():
 		base()
 		{
 		}

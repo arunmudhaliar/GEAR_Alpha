@@ -161,6 +161,8 @@
 		55AB5CBE1C0481D3005B8747 /* PostProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB61C0481D3005B8747 /* PostProcessor.h */; };
 		55AB5CBF1C0481D3005B8747 /* ToneMappingFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB71C0481D3005B8747 /* ToneMappingFilter.cpp */; };
 		55AB5CC01C0481D3005B8747 /* ToneMappingFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */; };
+		55ADDCA31CB7922F00F36B43 /* gxTweenFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55ADDCA11CB7922F00F36B43 /* gxTweenFunctions.cpp */; };
+		55ADDCA41CB7922F00F36B43 /* gxTweenFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 55ADDCA21CB7922F00F36B43 /* gxTweenFunctions.h */; };
 		55E88D831C9E5AC400B355BB /* GEARFirstInclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */; };
 		55E88DE01C9E950600B355BB /* libfbxsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E88DDF1C9E950600B355BB /* libfbxsdk.a */; };
 		55E88E991C9F2BC000B355BB /* autoReleasePool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55E88E971C9F2BC000B355BB /* autoReleasePool.cpp */; };
@@ -326,6 +328,8 @@
 		55AB5CB61C0481D3005B8747 /* PostProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostProcessor.h; sourceTree = "<group>"; };
 		55AB5CB71C0481D3005B8747 /* ToneMappingFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ToneMappingFilter.cpp; sourceTree = "<group>"; };
 		55AB5CB81C0481D3005B8747 /* ToneMappingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToneMappingFilter.h; sourceTree = "<group>"; };
+		55ADDCA11CB7922F00F36B43 /* gxTweenFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxTweenFunctions.cpp; sourceTree = "<group>"; };
+		55ADDCA21CB7922F00F36B43 /* gxTweenFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxTweenFunctions.h; sourceTree = "<group>"; };
 		55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEARFirstInclude.h; sourceTree = "<group>"; };
 		55E88DDF1C9E950600B355BB /* libfbxsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk.a; path = ../../FBXSDK/macos/2015.1/lib/clang/libstdcpp/release/libfbxsdk.a; sourceTree = "<group>"; };
 		55E88E971C9F2BC000B355BB /* autoReleasePool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = autoReleasePool.cpp; sourceTree = "<group>"; };
@@ -388,6 +392,7 @@
 				55E88E961C9F2B8B00B355BB /* autoReleasePool */,
 				55AB5CB01C0481D3005B8747 /* postProcessor */,
 				5554EA7F1AD26CEC00FD80AF /* audio */,
+				55ADDCA01CB7920900F36B43 /* tween */,
 				5554EA861AD26CEC00FD80AF /* core */,
 				5554EAC11AD26CEC00FD80AF /* fbxImporter */,
 				5554EAC61AD26CEC00FD80AF /* hwShader */,
@@ -636,6 +641,15 @@
 			path = postProcessor;
 			sourceTree = "<group>";
 		};
+		55ADDCA01CB7920900F36B43 /* tween */ = {
+			isa = PBXGroup;
+			children = (
+				55ADDCA11CB7922F00F36B43 /* gxTweenFunctions.cpp */,
+				55ADDCA21CB7922F00F36B43 /* gxTweenFunctions.h */,
+			);
+			path = tween;
+			sourceTree = "<group>";
+		};
 		55E88E961C9F2B8B00B355BB /* autoReleasePool */ = {
 			isa = PBXGroup;
 			children = (
@@ -677,6 +691,7 @@
 				5554ED851AD26CED00FD80AF /* quaternion.h in Headers */,
 				5554ED541AD26CED00FD80AF /* SoundSample.h in Headers */,
 				5554ED861AD26CED00FD80AF /* rect.h in Headers */,
+				55ADDCA41CB7922F00F36B43 /* gxTweenFunctions.h in Headers */,
 				5554ED611AD26CED00FD80AF /* GEARAsset.h in Headers */,
 				5554ED7E1AD26CED00FD80AF /* matrix4x4f.h in Headers */,
 				5554ED9A1AD26CED00FD80AF /* png.h in Headers */,
@@ -836,6 +851,7 @@
 				5554EFC01AD26CED00FD80AF /* trees.c in Sources */,
 				5554ED931AD26CED00FD80AF /* GEAREngine.cpp in Sources */,
 				5554EFC21AD26CED00FD80AF /* uncompr.c in Sources */,
+				55ADDCA31CB7922F00F36B43 /* gxTweenFunctions.cpp in Sources */,
 				5554EFB31AD26CED00FD80AF /* compress.c in Sources */,
 				5554EDA51AD26CED00FD80AF /* pngrio.c in Sources */,
 				5554EDAE1AD26CED00FD80AF /* pngwutil.c in Sources */,

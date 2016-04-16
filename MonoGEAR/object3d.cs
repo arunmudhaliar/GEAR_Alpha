@@ -38,35 +38,35 @@ namespace MonoGEAR
         protected object3d():
             base(MonoGEAREntryPointClass.engine_createEmptyObject3d(MonoGEAREntryPointClass.engine_getWorld(0), "emptyobject"))
         {
-			Console.WriteLine("object3d() called "+handle);
+			Console.WriteLine("object3d() called "+handle_cpp);
             initObject3d();
         }
 
         public object3d(string name):
             base(MonoGEAREntryPointClass.engine_createEmptyObject3d(MonoGEAREntryPointClass.engine_getWorld(0), name))
         {
-			Console.WriteLine("object3d(string name) called "+handle);
+			Console.WriteLine("object3d(string name) called "+handle_cpp);
             initObject3d();
         }
 
         public object3d(object3d parent, string name):
             base(MonoGEAREntryPointClass.engine_createEmptyObject3d(parent.getHandle(), name))
         {
-			Console.WriteLine("object3d(object3d parent, string name) called "+handle);
+			Console.WriteLine("object3d(object3d parent, string name) called "+handle_cpp);
             initObject3d();
         }
 
         public object3d(IntPtr ptr):
             base(ptr)
         {
-			Console.WriteLine("object3d(IntPtr ptr) called "+handle);
+			Console.WriteLine("object3d(IntPtr ptr) called "+handle_cpp);
             initObject3d();
         }
 
         protected override void setHandle(IntPtr ptr)
         {
-			handle = ptr;
-			Console.WriteLine("object3d::setHandle(IntPtr ptr) called "+handle);
+			handle_cpp = ptr;
+			Console.WriteLine("object3d::setHandle(IntPtr ptr) called "+handle_cpp);
         }
 
         public static object3d load(string name)
@@ -86,19 +86,19 @@ namespace MonoGEAR
 
         public gxAnimation createAnimationController()
         {
-            m_pAnimation = new gxAnimation(object3d_createAnimationController(getHandle()));
-            return m_pAnimation;
+            animationInstance = new gxAnimation(object3d_createAnimationController(getHandle()));
+            return animationInstance;
         }
 
         public gxAnimation animation
         {
             get
             {
-                if(m_pAnimation!=null)
-                    return m_pAnimation;
+                if(animationInstance!=null)
+                    return animationInstance;
                 else
-                    m_pAnimation = new gxAnimation(object3d_getAnimationController(getHandle()));
-                return m_pAnimation;
+                    animationInstance = new gxAnimation(object3d_getAnimationController(getHandle()));
+                return animationInstance;
             }
         }
 
@@ -125,8 +125,8 @@ namespace MonoGEAR
         {
             get
             {
-                m_pName = Marshal.PtrToStringAnsi(object3d_getName(getHandle()));
-                return m_pName;
+                objectName = Marshal.PtrToStringAnsi(object3d_getName(getHandle()));
+                return objectName;
             }
             set
             {
@@ -146,21 +146,62 @@ namespace MonoGEAR
 
         public void appendChild(object3d child)
         {
-			object3d_appendChild(handle, child.getHandle());
+			object3d_appendChild(handle_cpp, child.getHandle());
         }
 
         public bool removeChild(object3d child)
         {
-			return object3d_removeChild(handle, child.getHandle());
+			return object3d_removeChild(handle_cpp, child.getHandle());
         }
-        //List<object3d> m_cChildList;
-
 
         protected virtual void initObject3d()
         {
         }
 
-        string m_pName;
-        gxAnimation m_pAnimation;
+		public bool addComponent(monoScript script)
+		{
+			if (components.Equals (script))
+				return false;
+
+			components.Add (script);
+			return true;
+		}
+			
+		public IList<T> getComponents<T>()
+		{
+			IList<monoScript> list = new List<monoScript> ();
+			foreach (monoScript script in components)
+			{
+				if (script is T)
+				{
+					list.Add (script);
+				}
+			}
+
+			return (IList<T>)list;
+		}
+
+		public T getComponent<T>(int index)
+		{
+			if (index >= components.Count)
+				return default(T);
+
+			int iterator = 0;
+			foreach (monoScript script in components)
+			{
+				if (script is T)
+				{
+					if (iterator == index)
+						return (T)(object)script;
+					iterator++;
+				}
+			}
+
+			return default(T);
+		}
+
+		string objectName;
+		gxAnimation animationInstance;
+		List<monoScript> components = new List<monoScript> ();
     }
 }

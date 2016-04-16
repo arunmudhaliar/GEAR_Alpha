@@ -56,7 +56,7 @@ namespace MonoGEAR
         [DllImport("GEAREngine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void transform_copy(IntPtr a, IntPtr b);
 
-        protected IntPtr handle;
+        protected IntPtr handle_cpp;
 
 		private transform():
 			base()
@@ -67,88 +67,88 @@ namespace MonoGEAR
         public transform(IntPtr ptr):
             base()
         {
-			handle = ptr;
-			Console.WriteLine("transform::transform(IntPtr ptr) called "+handle);
+			handle_cpp = ptr;
+			Console.WriteLine("transform::transform(IntPtr ptr) called "+handle_cpp);
         }
 
         protected IntPtr getHandle()
         {
-			return handle;
+			return handle_cpp;
         }
 
         protected abstract void setHandle(IntPtr ptr);
 
         public void updatePositionf(float aXdt, float aYdt, float aZdt)
         {
-			transform_updatePositionf(handle, aXdt, aYdt, aZdt);
+			transform_updatePositionf(handle_cpp, aXdt, aYdt, aZdt);
         }
 
         public void updateLocalPositionf(float aXdt, float aYdt, float aZdt)
         {
-			transform_updateLocalPositionf(handle, aXdt, aYdt, aZdt);
+			transform_updateLocalPositionf(handle_cpp, aXdt, aYdt, aZdt);
         }
 
         public void scaleX(float scale)
         {
-			transform_scaleX(handle, scale);
+			transform_scaleX(handle_cpp, scale);
         }
 
         public void scaleY(float scale)
         {
-			transform_scaleY(handle, scale);
+			transform_scaleY(handle_cpp, scale);
         }
 
         public void scaleZ(float scale)
         {
-			transform_scaleZ(handle, scale);
+			transform_scaleZ(handle_cpp, scale);
         }
 
         public void rotateLocalXf(float aAngleInDeg)
         {
-			transform_rotateLocalXf(handle, aAngleInDeg);
+			transform_rotateLocalXf(handle_cpp, aAngleInDeg);
         }
         public void rotateLocalYf(float aAngleInDeg)
         {
-			transform_rotateLocalYf(handle, aAngleInDeg);
+			transform_rotateLocalYf(handle_cpp, aAngleInDeg);
         }
         public void rotateLocalZf(float aAngleInDeg)
         {
-			transform_rotateLocalZf(handle, aAngleInDeg);
+			transform_rotateLocalZf(handle_cpp, aAngleInDeg);
         }
 
         public void rotateWorldXf(float aAngleInDeg)
         {
-			transform_rotateWorldXf(handle, aAngleInDeg);
+			transform_rotateWorldXf(handle_cpp, aAngleInDeg);
         }
         public void rotateWorldYf(float aAngleInDeg)
         {
-			transform_rotateWorldYf(handle, aAngleInDeg);
+			transform_rotateWorldYf(handle_cpp, aAngleInDeg);
         }
         public void rotateWorldZf(float aAngleInDeg)
         {
-			transform_rotateWorldZf(handle, aAngleInDeg);
+			transform_rotateWorldZf(handle_cpp, aAngleInDeg);
         }
 
         public void setPosition(float x, float y, float z)
         {
-			transform_setPosition(handle, x, y, z);
+			transform_setPosition(handle_cpp, x, y, z);
         }
         public float getX()
         {
-			return transform_getX(handle);
+			return transform_getX(handle_cpp);
         }
         public float getY()
         {
-			return transform_getY(handle);
+			return transform_getY(handle_cpp);
         }
         public float getZ()
         {
-			return transform_getZ(handle);
+			return transform_getZ(handle_cpp);
         }
 
         public void copyTranfrom(transform t)
         {
-			transform_copy(handle, t.getHandle());
+			transform_copy(handle_cpp, t.getHandle());
         }
     }
 }

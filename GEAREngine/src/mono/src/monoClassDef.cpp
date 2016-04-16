@@ -46,7 +46,7 @@ void monoClassDef::init(const stMonoScriptArgs& args)
     if(mono_class_is_subclass_of(monoObjectClass, args.monoscript_klass, false))
     {
         isValidMonoScript=true;
-        monoMethod_setHandle =  mono_class_get_method_from_name(args.monoscript_klass, "setHandle", 2);
+        monoMethod_setHandle =  mono_class_get_method_from_name(args.monoscript_klass, "setHandle", 1);
     }
     
     //    DEBUG_PRINT("------------------Mono Class Definitions (%s)------------------", klassname.c_str());
@@ -149,6 +149,13 @@ bool monoClassDef::destroyObject(MonoObject* obj)
 
 /////////////////////////////////////////////////////////////////////
 
+extern "C" {
+    extern DECLSPEC object3d* monoScriptObjectInstance_getAttachedObject(monoScriptObjectInstance* instance)
+    {
+        return instance->getAttachedObject();
+    }
+}
+
 monoScriptObjectInstance* monoScriptObjectInstance::create(monoClassDef* script, object3d* obj)
 {
     auto newObject = new monoScriptObjectInstance(script, obj);
@@ -188,7 +195,7 @@ void monoScriptObjectInstance::start()
         if(monoObjectInstance==nullptr)
         {
             monoObjectInstance = monoScriptPtr->createNewObject();
-            void* args[2]={this, &attachedObject};
+            void* args[1]={this};
             mono_runtime_invoke(monoScriptPtr->getSetHandleMethod(), monoObjectInstance, args, NULL);
         }
         

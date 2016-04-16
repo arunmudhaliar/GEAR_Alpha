@@ -243,6 +243,12 @@ void object3d::update(float dt)
 		updateAnimationFrameToObject3d((int)animationController->getCurrentFrame());
 	}
 //#endif
+    
+    //update the unmanaged part of the monoscript
+    for(auto scriptinstance : attachedScriptInstanceList)
+    {
+        scriptinstance->update(dt);
+    }
 
 #ifdef USE_BXLIST
 	stLinkNode<object3d*>* node=childList.getHead();
@@ -370,6 +376,7 @@ void object3d::render(gxRenderer* renderer, monoScriptObjectInstance* light, int
 	if(!isBaseFlag(eObject3dBaseFlag_Visible))
 		return;
 
+    //render the unmanaged part of the monoscript
     for(auto script : attachedScriptInstanceList)
     {
         script->render(renderer, light, renderFlag);

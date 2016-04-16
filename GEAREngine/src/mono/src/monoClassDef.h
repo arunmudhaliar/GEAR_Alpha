@@ -67,6 +67,10 @@ private:
     std::map<MonoObject*, unsigned int> monoObjectList;
 };
 
+extern "C" {
+    DECLSPEC object3d* monoScriptObjectInstance_getAttachedObject(monoScriptObjectInstance* instance);
+}
+
 class monoScriptObjectInstance : public Ref
 {
 public:

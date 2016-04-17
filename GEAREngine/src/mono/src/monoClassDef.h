@@ -72,7 +72,7 @@ extern "C" {
     DECLSPEC object3d* monoScriptObjectInstance_getAttachedObject(monoScriptObjectInstance* instance);
 }
 
-class monoScriptObjectInstance : public Ref
+class DECLSPEC monoScriptObjectInstance : public Ref
 {
 public:
 	virtual ~monoScriptObjectInstance();
@@ -93,7 +93,7 @@ public:
     virtual void render(gxRenderer* renderer, monoScriptObjectInstance* light, int renderFlag /*EOBJECT3DRENDERFLAGS*/){};
 
 protected:
-    monoScriptObjectInstance();
+	monoScriptObjectInstance(){}
     monoScriptObjectInstance(monoClassDef* script, object3d* obj);
 
     virtual void readScriptObject(gxFile& file){}

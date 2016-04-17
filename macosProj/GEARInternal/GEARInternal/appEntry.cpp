@@ -519,9 +519,9 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
 					break;
 				case ID_EDIT_ACTIVECAMERAPROPERTY:
 					{
-						object3d* cam=monoWrapper::mono_engine_getWorld(0)->getActiveCamera();
-						EditorGEARApp::getSceneWorldEditor()->selectedObject3D(cam);
-						EditorGEARApp::getScenePropertyEditor()->populatePropertyOfObject(cam);
+						auto cam=monoWrapper::mono_engine_getWorld(0)->getActiveCamera();
+						EditorGEARApp::getSceneWorldEditor()->selectedObject3D(cam->getAttachedObject());
+						EditorGEARApp::getScenePropertyEditor()->populatePropertyOfObject(cam->getAttachedObject());
 					}
 					break;
 				case ID_EDIT_OCTREEPROPERTY:

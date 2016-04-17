@@ -64,6 +64,9 @@
     <None Include="GEAREditor\OSSpecific\MenuImp.mm">
       <Filter>GEAREditor\OSSpecific</Filter>
     </None>
+    <None Include="GEAREditor\OSSpecific\OSSpecificImpl.mm">
+      <Filter>GEAREditor\OSSpecific</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -336,6 +339,12 @@
     <ClInclude Include="GEAREditor\secondryViews\geModalDialog.h">
       <Filter>GEAREditor\secondryViews</Filter>
     </ClInclude>
+    <ClInclude Include="GEAREditor\OSSpecific\OSSpecificInterface.h">
+      <Filter>GEAREditor\OSSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="GEAREditor\OSSpecific\OSSpecificImpl.h">
+      <Filter>GEAREditor\OSSpecific</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -535,6 +544,9 @@
     </ClCompile>
     <ClCompile Include="GEAREditor\secondryViews\geModalDialog.cpp">
       <Filter>GEAREditor\secondryViews</Filter>
+    </ClCompile>
+    <ClCompile Include="GEAREditor\OSSpecific\OSSpecificImplWin32.cpp">
+      <Filter>GEAREditor\OSSpecific</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

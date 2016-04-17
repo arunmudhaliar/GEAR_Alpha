@@ -55,50 +55,65 @@ void monoClassDef::init(const stMonoScriptArgs& args)
     //    DEBUG_PRINT("monoClassDef class(%s) : no of properties : %d", klassname.c_str(), mono_class_num_properties(monoObjectClass));
     
     //properties
-    void** iter_property[mono_class_num_methods(monoObjectClass)];
-    memset(iter_property, 0, sizeof(iter_property));
-    for(int x=0;x<mono_class_num_properties(monoObjectClass);x++)
-    {
-        MonoProperty* property = mono_class_get_properties(monoObjectClass, (void**)iter_property);
-        if(!property)
-        {
-            continue;
-        }
-        
-        monoPropertyList.push_back(property);
-        //        DEBUG_PRINT("property : %s", mono_property_get_name(property));
-    }
-    
+	const int total_properties = mono_class_num_methods(monoObjectClass);
+	if (total_properties)
+	{
+		void** iter_property = new void*[total_properties];
+		memset(iter_property, 0, sizeof(iter_property));
+		for (int x = 0; x < mono_class_num_properties(monoObjectClass); x++)
+		{
+			MonoProperty* property = mono_class_get_properties(monoObjectClass, (void**)iter_property);
+			if (!property)
+			{
+				continue;
+			}
+
+			monoPropertyList.push_back(property);
+			//        DEBUG_PRINT("property : %s", mono_property_get_name(property));
+		}
+		delete[] iter_property;
+	}
+
     //method
-    void** iter_method[mono_class_num_methods(monoObjectClass)];
-    memset(iter_method, 0, sizeof(iter_method));
-    for(int x=0;x<mono_class_num_methods(monoObjectClass);x++)
-    {
-        
-        MonoMethod* method = mono_class_get_methods(monoObjectClass, (void**)iter_method);
-        if(!method)
-        {
-            continue;
-        }
-        
-        monoMethodList.push_back(method);
-        //        DEBUG_PRINT("method : %s", mono_method_get_name(method));
-    }
-    
+	const int total_methods = mono_class_num_methods(monoObjectClass);
+	if (total_methods)
+	{
+		void** iter_method = new void*[total_methods];
+		memset(iter_method, 0, sizeof(iter_method));
+		for (int x = 0; x < mono_class_num_methods(monoObjectClass); x++)
+		{
+
+			MonoMethod* method = mono_class_get_methods(monoObjectClass, (void**)iter_method);
+			if (!method)
+			{
+				continue;
+			}
+
+			monoMethodList.push_back(method);
+			//        DEBUG_PRINT("method : %s", mono_method_get_name(method));
+		}
+		delete[] iter_method;
+	}
+
     //field
-    void** iter_field[mono_class_num_fields(monoObjectClass)];
-    memset(iter_field, 0, sizeof(iter_field));
-    for(int x=0;x<mono_class_num_fields(monoObjectClass);x++)
-    {
-        MonoClassField* classfiled = mono_class_get_fields(monoObjectClass, (void**)iter_field);
-        if(!classfiled)
-        {
-            continue;   //THIS SHOULD NEVER HAPPEN. THIS MEANS THE BINARY IS NOT COMPILED PROPER.
-        }
-        
-        monoVariableList.push_back(classfiled);
-        //        DEBUG_PRINT("field : %s", mono_field_get_name(classfiled));
-    }
+	const int total_fields = mono_class_num_fields(monoObjectClass);
+	if (total_fields)
+	{
+		void** iter_field = new void*[total_fields];
+		memset(iter_field, 0, sizeof(iter_field));
+		for (int x = 0; x < mono_class_num_fields(monoObjectClass); x++)
+		{
+			MonoClassField* classfiled = mono_class_get_fields(monoObjectClass, (void**)iter_field);
+			if (!classfiled)
+			{
+				continue;   //THIS SHOULD NEVER HAPPEN. THIS MEANS THE BINARY IS NOT COMPILED PROPER.
+			}
+
+			monoVariableList.push_back(classfiled);
+			//        DEBUG_PRINT("field : %s", mono_field_get_name(classfiled));
+		}
+		delete[] iter_field;
+	}
 }
 
 const char* monoClassDef::getMonoVarName(int index)

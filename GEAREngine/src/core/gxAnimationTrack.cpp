@@ -52,10 +52,15 @@ bool gxAnimationTrack::getFrameFromTime(float time, matrix4x4f& mat)
     return false;
 }
 
-matrix4x4f* gxAnimationTrack::addFrame(int index)
+matrix4x4f* gxAnimationTrack::addFrame(int index, gxTweenFunctions::TweenType tweenFunction)
 {
     assert(false);  //NOT IMPLEMENTED
     return nullptr;
+}
+
+void gxAnimationTrack::updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction)
+{
+    assert(false);  //NOT IMPLEMENTED
 }
 
 void gxAnimationTrack::write(gxFile& file)

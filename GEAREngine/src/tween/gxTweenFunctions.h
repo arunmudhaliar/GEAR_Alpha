@@ -5,6 +5,8 @@ class gxTweenFunctions
 public:
     enum TweenType
     {
+        Tween_None,
+        
         Tween_Linear,
         
         Tween_Sine_EaseIn,

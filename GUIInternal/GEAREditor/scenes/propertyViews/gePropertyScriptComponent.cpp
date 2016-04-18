@@ -50,47 +50,17 @@ void gePropertyScriptComponent::onTVSelectionChange(geTreeNode* tvnode, geTreeVi
 
 }
 
-void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, monoScriptObjectInstance* monoScriptobject)
+void gePropertyScriptComponent::populatePropertyOfMonoScripts(monoScriptObjectInstance* monoScriptobject)
 {
-	object3dPtr=obj;
-
-	/*
-	//destroy the controls in the column
-	for(std::vector<stWindowColumnRow*>::iterator it = windowColumnControl->getRowList()->begin(); it != windowColumnControl->getRowList()->end(); ++it)
-	{
-		stWindowColumnRow* row = *it;
-		for(std::vector<geGUIBase*>::iterator ctrl_it = row->getControlList()->begin(); ctrl_it != row->getControlList()->end(); ++ctrl_it)
-		{
-			geGUIBase* control = *ctrl_it;
-			childControlList.erase(std::remove(childControlList.begin(), childControlList.end(), control), childControlList.end());
-			GE_DELETE(control);
-		}
-		row->getControlList()->clear();
-		GE_DELETE(row);
-	}
-	windowColumnControl->getRowList()->clear();
-	//
-	*/
-
-
 	geGUIBase* lastControl=NULL;
-	////window column
-	////for(int x=0;x<object3dPtr->getMonoScriptInstanceCount();x++)
-	//{
-	//	stWindowColumnRow* firstrow = windowColumnControl->addRow("Script");
-	//	geStaticTextBox* scripteditbox = new geStaticTextBox("");
-	//	scripteditbox->create(rendererGUI, this, monoScript->getScriptPtr()->getScriptFileName().c_str(), 0, 0, -7, geFontManager::g_pFontArial10_80Ptr);
-	//	windowColumnControl->addControl(firstrow, scripteditbox, 16.0f);
-	//	lastControl=scripteditbox;
-	//}
 
-	//mono vars
-	for(int x=0;x<monoScriptobject->getScriptPtr()->getMonoVarCount();x++)
+	//mono fields
+	for(int x=0;x<monoScriptobject->getScriptPtr()->getMonoFieldCount();x++)
 	{
-        auto mvartypename = monoScriptobject->getScriptPtr()->getMonoVarTypeName(x);
+        auto mvartypename = monoScriptobject->getScriptPtr()->getMonoFieldTypeName(x);
         if(strncmp(mvartypename, "MonoGEAR.gxColor", strlen("MonoGEAR.gxColor"))==0)
         {
-            stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoVarName(x));
+            stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoFieldName(x));
             geColorControl* colorControl = new geColorControl(fontManagerGUI);
             colorControl->create(rendererGUI, this, 100, 10);
             colorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -100,7 +70,7 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
         }
         else
         {
-            stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoVarName(x));
+            stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoFieldName(x));
             geTextBox* variableeditbox = new geTextBox("", fontManagerGUI);
             variableeditbox->create(rendererGUI, this, mvartypename, 0, 0);
             windowColumnControl->addControl(row, variableeditbox, 16.0f);
@@ -108,6 +78,36 @@ void gePropertyScriptComponent::populatePropertyOfMonoScripts(object3d* obj, mon
         }
 	}
 
+    //mono properties
+    for(auto property : monoScriptobject->getScriptPtr()->getMonoProperties())
+    {
+        auto propertyName = monoScriptobject->getScriptPtr()->getPropertyName(property);
+        auto getType = monoScriptobject->getScriptPtr()->getPropertyGetMethodType(property);
+        const char* typeName = nullptr;
+        if(getType )
+        {
+            typeName = monoScriptobject->getScriptPtr()->getMonoPropertyTypeName(getType);
+        }
+        
+        if(getType && strncmp(typeName, "MonoGEAR.gxColor", strlen("MonoGEAR.gxColor"))==0)
+        {
+            stWindowColumnRow* row = windowColumnControl->addRow(propertyName);
+            geColorControl* colorControl = new geColorControl(fontManagerGUI);
+            colorControl->create(rendererGUI, this, 100, 10);
+            colorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
+            colorControl->setGUIObserver(this);
+            windowColumnControl->addControl(row, colorControl, 16.0f);
+            lastControl=colorControl;
+        }
+        else
+        {
+            stWindowColumnRow* row = windowColumnControl->addRow(propertyName);
+            geTextBox* propertyeditbox = new geTextBox("", fontManagerGUI);
+            propertyeditbox->create(rendererGUI, this, propertyName, 0, 0);
+            windowColumnControl->addControl(row, propertyeditbox, 16.0f);
+            lastControl=propertyeditbox;
+        }
+    }
 	//
 
 	if(lastControl)

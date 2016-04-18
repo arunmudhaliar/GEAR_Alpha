@@ -4,6 +4,7 @@
 #include "matrix4x4f.h"
 #include "../util/gxFile.h"
 #include "../autoReleasePool/autoReleasePool.h"
+#include "../tween/gxTweenFunctions.h"
 
 using namespace GEAR::Memory;
 
@@ -31,8 +32,9 @@ public:
     virtual bool getFrame(int frame, matrix4x4f& mat) = 0;
     virtual int getAnimationTrackType() = 0;
 
-    virtual matrix4x4f* addFrame(int index) = 0;
-
+    virtual matrix4x4f* addFrame(int index, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None) = 0;
+    virtual void updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction) = 0;
+    
     virtual bool isReadOnly() = 0;
     
 protected:

@@ -39,11 +39,22 @@ public:
 	bool isMonoScript()	{ 	return isValidMonoScript;	}
 	MonoMethod* getSetHandleMethod()	{	return monoMethod_setHandle;	}
 
-	int getMonoVarCount()	{	return (int)monoVariableList.size();	}
-	const char* getMonoVarName(int index);
-	MonoClassField* getMonoVar(int index);
-    const char* getMonoVarTypeName(int index);
+	int getMonoFieldCount()	{	return (int)monoFieldList.size();	}
+	const char* getMonoFieldName(int index);
+	MonoClassField* getMonoField(int index);
+    const char* getMonoFieldTypeName(int index);
     
+    const std::vector<MonoMethod*>& getMonoMethods()        {   return monoMethodList;  }
+    const std::vector<MonoProperty*>& getMonoProperties()   {   return monoPropertyList;}
+    const char* getPropertyName(MonoProperty* property);
+    
+    MonoMethod* getPropertyGetMethod(MonoProperty* property);
+    MonoMethod* getPropertySetMethod(MonoProperty* property);
+    MonoType* getPropertyGetMethodType(MonoProperty* property);
+    MonoType* getPropertySetMethodType(MonoProperty* property);
+
+    const char* getMonoPropertyTypeName(MonoType* type);
+
 protected:
     monoClassDef(const stMonoScriptArgs& args);
     monoClassDef(std::string script, MonoDomain* pMonoDomain, MonoClass* klass, std::string klassname, std::string knamespace, MonoClass* monoscript_klass);
@@ -64,7 +75,7 @@ private:
 
     std::vector<MonoProperty*> monoPropertyList;
     std::vector<MonoMethod*> monoMethodList;
-	std::vector<MonoClassField*> monoVariableList;
+	std::vector<MonoClassField*> monoFieldList;
     std::map<MonoObject*, unsigned int> monoObjectList;
 };
 

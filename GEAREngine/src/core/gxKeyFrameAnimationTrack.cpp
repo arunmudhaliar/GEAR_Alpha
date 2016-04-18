@@ -30,15 +30,24 @@ gxKeyFrameAnimationTrack* gxKeyFrameAnimationTrack::create(const std::string& pr
     return nullptr;
 }
 
-matrix4x4f* gxKeyFrameAnimationTrack::addFrame(int index)
+matrix4x4f* gxKeyFrameAnimationTrack::addFrame(int index, gxTweenFunctions::TweenType tweenFunction)
 {
     if(keyFrames.find(index)!=keyFrames.end())
     {
-        return keyFrames[index];
+        return keyFrames[index]->frame;
     }
     
-    keyFrames[index] = new matrix4x4f();
-    return keyFrames[index];
+    keyFrames[index] = new stAnimationFrameKey();
+    keyFrames[index]->tweenFunction = tweenFunction;
+    return keyFrames[index]->frame;
+}
+
+void gxKeyFrameAnimationTrack::updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction)
+{
+    if(keyFrames.find(index)!=keyFrames.end())
+    {
+        keyFrames[index]->tweenFunction=tweenFunction;
+    }
 }
 
 bool gxKeyFrameAnimationTrack::getFrame(int frame, matrix4x4f& mat)

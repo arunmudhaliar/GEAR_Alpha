@@ -190,8 +190,8 @@ void geGraphControl::draw()
     
     drawLine(last_line, 0.6f, 0.6f, 0.6f, 1, 2, false);
         
-    sprintf(timeLineLabel, "%4.3f", last_index/animationFPS);
-    geFontManager::g_pFontArial10_80Ptr->drawString(timeLineLabel, last_plotX-3, geFontManager::g_pFontArial10_80Ptr->getLineHeight()*3, m_cSize.x, false, false, 0, -90);
+    sprintf(timeLineLabel, "%4.3f fr: %d", last_index/animationFPS, last_index);
+    geFontManager::g_pFontArial10_80Ptr->drawString(timeLineLabel, last_plotX-3, geFontManager::g_pFontArial10_80Ptr->getLineHeight()*5, m_cSize.x, false, false, 0, -90);
     //
     
     //middle line
@@ -202,8 +202,8 @@ void geGraphControl::draw()
     float pivotLine[4] = {pivot.x, 0, pivot.x, (m_cSize.y-topMargin)};
     drawLine(pivotLine, 0.5f, 0.0f, 0.0f, 1, 2, false);
     
-    sprintf(timeLineLabel, "%4.3f s", (pivot.x/divisions)/animationFPS);
-    geFontManager::g_pFontArial10_80Ptr->drawString(timeLineLabel, pivot.x-3, (m_cSize.y-topMargin)*0.5f, m_cSize.x, false, false, 0, -90);
+    sprintf(timeLineLabel, "%4.3f fr: %d", (pivot.x/divisions)/animationFPS, (int)(pivot.x/divisions));
+    geFontManager::g_pFontArial10_80Ptr->drawString(timeLineLabel, pivot.x-3, (m_cSize.y-topMargin)*0.85f, m_cSize.x, false, false, 0, -90);
 
     
     if(animationTrack)

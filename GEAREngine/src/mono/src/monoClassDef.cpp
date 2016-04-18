@@ -55,11 +55,11 @@ void monoClassDef::init(const stMonoScriptArgs& args)
     //    DEBUG_PRINT("monoClassDef class(%s) : no of properties : %d", klassname.c_str(), mono_class_num_properties(monoObjectClass));
     
     //properties
-	const int total_properties = mono_class_num_methods(monoObjectClass);
+	const int total_properties = mono_class_num_properties(monoObjectClass);
 	if (total_properties)
 	{
 		void** iter_property = new void*[total_properties];
-		memset(iter_property, 0, sizeof(iter_property));
+		memset(iter_property, 0, sizeof(*iter_property));
 		for (int x = 0; x < mono_class_num_properties(monoObjectClass); x++)
 		{
 			MonoProperty* property = mono_class_get_properties(monoObjectClass, (void**)iter_property);
@@ -79,7 +79,7 @@ void monoClassDef::init(const stMonoScriptArgs& args)
 	if (total_methods)
 	{
 		void** iter_method = new void*[total_methods];
-		memset(iter_method, 0, sizeof(iter_method));
+		memset(iter_method, 0, sizeof(*iter_method));
 		for (int x = 0; x < mono_class_num_methods(monoObjectClass); x++)
 		{
 
@@ -100,7 +100,7 @@ void monoClassDef::init(const stMonoScriptArgs& args)
 	if (total_fields)
 	{
 		void** iter_field = new void*[total_fields];
-		memset(iter_field, 0, sizeof(iter_field));
+		memset(iter_field, 0, sizeof(*iter_field));
 		for (int x = 0; x < mono_class_num_fields(monoObjectClass); x++)
 		{
 			MonoClassField* classfiled = mono_class_get_fields(monoObjectClass, (void**)iter_field);
@@ -109,28 +109,66 @@ void monoClassDef::init(const stMonoScriptArgs& args)
 				continue;   //THIS SHOULD NEVER HAPPEN. THIS MEANS THE BINARY IS NOT COMPILED PROPER.
 			}
 
-			monoVariableList.push_back(classfiled);
+			monoFieldList.push_back(classfiled);
 			//        DEBUG_PRINT("field : %s", mono_field_get_name(classfiled));
 		}
 		delete[] iter_field;
 	}
 }
 
-const char* monoClassDef::getMonoVarName(int index)
+const char* monoClassDef::getMonoFieldName(int index)
 {
-	return mono_field_get_name(monoVariableList[index]);
+	return mono_field_get_name(monoFieldList[index]);
 }
 
-MonoClassField* monoClassDef::getMonoVar(int index)
+MonoClassField* monoClassDef::getMonoField(int index)
 {
-	return monoVariableList[index];
+	return monoFieldList[index];
 }
 
-const char* monoClassDef::getMonoVarTypeName(int index)
+const char* monoClassDef::getMonoFieldTypeName(int index)
 {
-    auto mvar = getMonoVar(index);
+    auto mvar = getMonoField(index);
     auto mtype = mono_field_get_type(mvar);
     return mono_type_get_name(mtype);
+}
+
+const char* monoClassDef::getPropertyName(MonoProperty* property)
+{
+    return mono_property_get_name(property);
+}
+
+MonoMethod* monoClassDef::getPropertyGetMethod(MonoProperty* property)
+{
+    return mono_property_get_get_method(property);
+}
+
+MonoMethod* monoClassDef::getPropertySetMethod(MonoProperty* property)
+{
+    return mono_property_get_set_method(property);
+}
+
+MonoType* monoClassDef::getPropertyGetMethodType(MonoProperty* property)
+{
+    MonoMethod* method = getPropertyGetMethod(property);
+    if(!method) return nullptr;
+    
+    MonoMethodSignature* sig = mono_method_get_signature(method, 0, 0);
+    return mono_signature_get_return_type (sig);
+}
+
+MonoType* monoClassDef::getPropertySetMethodType(MonoProperty* property)
+{
+    MonoMethod* method = getPropertySetMethod(property);
+    if(!method) return nullptr;
+    
+    MonoMethodSignature* sig = mono_method_get_signature(method, 0, 0);
+    return mono_signature_get_return_type (sig);
+}
+
+const char* monoClassDef::getMonoPropertyTypeName(MonoType* type)
+{
+    return mono_type_get_name(type);
 }
 
 monoClassDef::~monoClassDef()
@@ -142,7 +180,7 @@ monoClassDef::~monoClassDef()
     }
     
     monoObjectList.clear();
-	monoVariableList.clear();
+	monoFieldList.clear();
 }
 
 MonoObject* monoClassDef::createNewObject()

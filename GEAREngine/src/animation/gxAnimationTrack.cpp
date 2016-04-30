@@ -36,6 +36,16 @@ matrix4x4f* gxAnimationTrack::allocateFrames()
 	return animationFrames;
 }
 
+int gxAnimationTrack::getTotalTimeInMilliSec()
+{
+    return SEC_TO_MILLISEC(getTotalTimeInSec());
+}
+
+float gxAnimationTrack::getTotalTimeInSec()
+{
+    return (float)numberOfFrames/(float)getFPS();
+}
+
 bool gxAnimationTrack::getFrame(int frame, matrix4x4f& mat)
 {
     if(frame>=numberOfFrames)
@@ -46,20 +56,10 @@ bool gxAnimationTrack::getFrame(int frame, matrix4x4f& mat)
     return true;
 }
 
-bool gxAnimationTrack::getFrameFromTime(float time, matrix4x4f& mat)
+bool gxAnimationTrack::getFrameFromTime(int timeInMilliSec, matrix4x4f& mat)
 {
-    assert(false);  //NOT IMPLEMENTED
-    return false;
-}
-
-void gxAnimationTrack::addFrame(int index, gxTweenFunctions::TweenType tweenFunction, matrix4x4f* outMatrix)
-{
-    assert(false);  //NOT IMPLEMENTED
-}
-
-void gxAnimationTrack::updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction)
-{
-    assert(false);  //NOT IMPLEMENTED
+    int frame = MILLISEC_TO_SEC(timeInMilliSec)*getFPS();
+    return getFrame(frame, mat);
 }
 
 void gxAnimationTrack::write(gxFile& file)

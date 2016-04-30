@@ -12,31 +12,31 @@ IAnimationTrack::~IAnimationTrack()
 {
 }
 
-bool IAnimationTrack::getFrameFromTime(float time, matrix4x4f& mat)
+bool IAnimationTrack::getFrameFromTime(int timeInMilliSec, matrix4x4f& mat)
 {
     assert(false);
     return false;
 }
 
-bool IAnimationTrack::getFrameFromTime(float time, gxColor& clr)
+bool IAnimationTrack::getFrameFromTime(int timeInMilliSec, gxColor& clr)
 {
     assert(false);
     return false;
 }
 
-bool IAnimationTrack::getFrameFromTime(float time, vector3f& v)
+bool IAnimationTrack::getFrameFromTime(int timeInMilliSec, vector3f& v)
 {
     assert(false);
     return false;
 }
 
-bool IAnimationTrack::getFrameFromTime(float time, vector4f& v)
+bool IAnimationTrack::getFrameFromTime(int timeInMilliSec, vector4f& v)
 {
     assert(false);
     return false;
 }
 
-bool IAnimationTrack::getFrameFromTime(float time, float& v)
+bool IAnimationTrack::getFrameFromTime(int timeInMilliSec, float& v)
 {
     assert(false);
     return false;
@@ -72,27 +72,32 @@ bool IAnimationTrack::getFrame(int frame, float& v)
     return false;
 }
 
-void IAnimationTrack::addFrame(int index, gxTweenFunctions::TweenType tweenFunction, matrix4x4f* outMatrix)
+void IAnimationTrack::addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction, matrix4x4f* outMatrix)
 {
     assert(false);
 }
 
-void IAnimationTrack::addFrame(int index, gxTweenFunctions::TweenType tweenFunction, gxColor* outColor)
+void IAnimationTrack::addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction, gxColor* outColor)
 {
     assert(false);
 }
 
-void IAnimationTrack::addFrame(int index, gxTweenFunctions::TweenType tweenFunction, vector3f* outVec3)
+void IAnimationTrack::addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction, vector3f* outVec3)
 {
     assert(false);
 }
 
-void IAnimationTrack::addFrame(int index, gxTweenFunctions::TweenType tweenFunction, vector4f* outVec4)
+void IAnimationTrack::addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction, vector4f* outVec4)
 {
     assert(false);
 }
 
-void IAnimationTrack::addFrame(int index, gxTweenFunctions::TweenType tweenFunction, float* outFloat)
+void IAnimationTrack::addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction, float* outFloat)
 {
     assert(false);
+}
+
+void IAnimationTrack::updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction)
+{
+    
 }

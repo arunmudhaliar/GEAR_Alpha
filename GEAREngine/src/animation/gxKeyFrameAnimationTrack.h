@@ -9,6 +9,7 @@ struct stAnimationFrameKey
 {
     stAnimationFrameKey()
     {
+        time = 0.0f;
         frame = new matrix4x4f();
         tweenFunction = gxTweenFunctions::Tween_None;
     }
@@ -19,6 +20,7 @@ struct stAnimationFrameKey
     
     matrix4x4f* frame;
     gxTweenFunctions::TweenType tweenFunction;
+    float time;
 };
 
 class DECLSPEC gxKeyFrameAnimationTrack : public IAnimationTrack
@@ -27,12 +29,14 @@ public:
 	~gxKeyFrameAnimationTrack();
     static gxKeyFrameAnimationTrack* create(const std::string& property);
 
-    void addFrame(int index, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, matrix4x4f* outMatrix=nullptr);
-    void updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction);
+    void addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, matrix4x4f* outMatrix=nullptr);
     
 	void write(gxFile& file);
 	void read(gxFile& file);
     
+    int getTotalTimeInMilliSec();
+    float getTotalTimeInSec();
+
     int getAnimationTrackType()     {   return 1;   }
     bool getFrame(int frame, matrix4x4f& mat);
     bool getFrameFromTime(float time, matrix4x4f& mat);

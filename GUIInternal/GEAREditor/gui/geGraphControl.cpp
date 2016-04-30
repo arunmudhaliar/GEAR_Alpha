@@ -209,9 +209,13 @@ void geGraphControl::draw()
     if(animationTrack)
     {
         matrix4x4f mat;
-        for(int x=0;x<animationTrack->getTotalFrames();x++)
+        const float singleFrameTime = 1.0f/animationFPS;
+        float totalTimeInSec = animationTrack->getTotalTimeInSec();
+        for(float x=0;x<totalTimeInSec;x+=singleFrameTime)
         {
-            animationTrack->getFrame(x, mat);
+            if(!animationTrack->getFrameFromTime(SEC_TO_MILLISEC(x), mat))
+                continue;
+            
             vector3f value[]=
             {
                 mat.getPosition(),
@@ -222,7 +226,7 @@ void geGraphControl::draw()
             vPtr+=showValueIndex;
             glPushMatrix();
             
-            float plotX = x*lowerLimit*divisions;
+            float plotX = x*lowerLimit*divisions*animationFPS;  //*lowerLimit*divisions;
             float plotY = ((*vPtr) - midPoint[showValueIndex])* verticalScale[showValueIndex] + (m_cSize.y-topMargin)*0.5f;
             glTranslatef(plotX, plotY, 0);
             
@@ -248,6 +252,50 @@ void geGraphControl::draw()
                 }
             }
 
+            glPopMatrix();
+        }
+        
+        
+        
+        for(int x=0;x<animationTrack->getTotalFrames();x++)
+        {
+            animationTrack->getFrame(x, mat);
+            vector3f value[]=
+            {
+                mat.getPosition(),
+                mat.getRotation(),
+                mat.getScale()
+            };
+            float* vPtr = &value[0].x;
+            vPtr+=showValueIndex;
+            glPushMatrix();
+            
+            float plotX = x*lowerLimit*divisions;
+            float plotY = ((*vPtr) - midPoint[showValueIndex])* verticalScale[showValueIndex] + (m_cSize.y-topMargin)*0.5f + 30.0f;
+            glTranslatef(plotX, plotY, 0);
+            
+            //draw the animation node
+            if(pivot.x>plotX-2 && pivot.x<plotX+2)    //4px is the width of the animation node
+            {
+                float line[4] = {0, -plotY, 0, -plotY+(m_cSize.y-topMargin)};
+                drawLine(line, 0.63922f, 0.66275f, 0.2353f, 1, 2, false);
+                
+                drawRect(&hoverKeyVertexBuffer);
+            }
+            else
+            {
+                const gxRectf& rect = selectionRectVertexBuffer.getRect();
+                if(plotX>rect.m_pos.x && plotX<rect.m_pos.x+rect.m_size.x &&
+                   plotY>rect.m_pos.y && plotY<rect.m_pos.y+rect.m_size.y)
+                {
+                    drawRect(&selectedKeyVertexBuffer);
+                }
+                else
+                {
+                    drawRect(&normalKeyVertexBuffer);
+                }
+            }
+            
             glPopMatrix();
         }
     }

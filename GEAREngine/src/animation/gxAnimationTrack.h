@@ -9,16 +9,16 @@ public:
     static gxAnimationTrack* create();
     
     matrix4x4f* allocateFrames();
+    
+    int getTotalTimeInMilliSec();
+    float getTotalTimeInSec();
 
 	void write(gxFile& file);
 	void read(gxFile& file);
     
     int getAnimationTrackType()     {   return 1;   }
     bool getFrame(int frame, matrix4x4f& mat);
-    bool getFrameFromTime(float time, matrix4x4f& mat);
-    
-    void addFrame(int index, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, matrix4x4f* outMatrix=nullptr);
-    void updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction);
+    bool getFrameFromTime(int timeInMilliSec, matrix4x4f& mat);
 
     bool isReadOnly()   {   return true;    }
     

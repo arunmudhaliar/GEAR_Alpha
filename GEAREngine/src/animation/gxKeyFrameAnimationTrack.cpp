@@ -30,24 +30,28 @@ gxKeyFrameAnimationTrack* gxKeyFrameAnimationTrack::create(const std::string& pr
     return nullptr;
 }
 
-void gxKeyFrameAnimationTrack::addFrame(int index, gxTweenFunctions::TweenType tweenFunction, matrix4x4f* outMatrix)
+int gxKeyFrameAnimationTrack::getTotalTimeInMilliSec()
 {
-    if(keyFrames.find(index)!=keyFrames.end())
-    {
-        outMatrix = keyFrames[index]->frame;
-    }
-    
-    keyFrames[index] = new stAnimationFrameKey();
-    keyFrames[index]->tweenFunction = tweenFunction;
-    outMatrix = keyFrames[index]->frame;
+    assert(false);
+    return 0;
 }
 
-void gxKeyFrameAnimationTrack::updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction)
+float gxKeyFrameAnimationTrack::getTotalTimeInSec()
 {
-    if(keyFrames.find(index)!=keyFrames.end())
+    assert(false);
+    return 0;
+}
+
+void gxKeyFrameAnimationTrack::addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction, matrix4x4f* outMatrix)
+{
+    if(keyFrames.find(timeInMilliSec)!=keyFrames.end())
     {
-        keyFrames[index]->tweenFunction=tweenFunction;
+        outMatrix = keyFrames[timeInMilliSec]->frame;
     }
+    
+    keyFrames[timeInMilliSec] = new stAnimationFrameKey();
+    keyFrames[timeInMilliSec]->tweenFunction = tweenFunction;
+    outMatrix = keyFrames[timeInMilliSec]->frame;
 }
 
 bool gxKeyFrameAnimationTrack::getFrame(int frame, matrix4x4f& mat)

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "object3d.h"
-#include "gxMesh.h"
-#include "gxLight.h"
-#include "Camera.h"
+#include "../script/gxMesh.h"
+#include "../script/gxLight.h"
+#include "../script/Camera.h"
 #include "../renderer/gxRenderer.h"
 #include "gxMaterial.h"
 #include "TextureManager.h"

@@ -146,28 +146,103 @@ void gearSceneAnimationEditor::populatePropertyOfObject3d(object3d* object)
     selectedObject = object;
     animationsTreeView->clearAndDestroyAll();
 
-    if(selectedObject==nullptr || !selectedObject->getAnimationTrack())
+    if(selectedObject==nullptr)
     {
-        graphControlView->setTrack(nullptr);
         return;
     }
     
+//    if(selectedObject==nullptr || !selectedObject->getAnimationTrack())
+//    {
+//        //graphControlView->setTrack(nullptr);
+//        //return;
+//    }
+    
     auto track = selectedObject->getAnimationTrack();
     graphControlView->setTrack(track);
-    auto animationTrackNode = new geTreeNode(rendererGUI, animationsTreeView->getRoot(), track->getName(), &spriteArray[0], fontManagerGUI);
-    auto positionRootNode = new geTreeNode(rendererGUI, animationTrackNode, "Position", &spriteArray[0], fontManagerGUI);
-    auto rotationRootNode = new geTreeNode(rendererGUI, animationTrackNode, "Rotation", &spriteArray[0], fontManagerGUI);
-    auto scaleRootNode = new geTreeNode(rendererGUI, animationTrackNode, "Scale", &spriteArray[0], fontManagerGUI);
+//    auto animationTrackNode = new geTreeNode(rendererGUI, animationsTreeView->getRoot(), track->getName(), &spriteArray[0], fontManagerGUI);
+//    auto positionRootNode = new geTreeNode(rendererGUI, animationTrackNode, "Position", &spriteArray[0], fontManagerGUI);
+//    auto rotationRootNode = new geTreeNode(rendererGUI, animationTrackNode, "Rotation", &spriteArray[0], fontManagerGUI);
+//    auto scaleRootNode = new geTreeNode(rendererGUI, animationTrackNode, "Scale", &spriteArray[0], fontManagerGUI);
+//    
+//    positionNode[0] = new geTreeNode(rendererGUI, positionRootNode, "X", &spriteArray[0], fontManagerGUI);
+//    positionNode[1] = new geTreeNode(rendererGUI, positionRootNode, "Y", &spriteArray[0], fontManagerGUI);
+//    positionNode[2] = new geTreeNode(rendererGUI, positionRootNode, "Z", &spriteArray[0], fontManagerGUI);
+//    
+//    rotationNode[0] = new geTreeNode(rendererGUI, rotationRootNode, "X", &spriteArray[0], fontManagerGUI);
+//    rotationNode[1] = new geTreeNode(rendererGUI, rotationRootNode, "Y", &spriteArray[0], fontManagerGUI);
+//    rotationNode[2] = new geTreeNode(rendererGUI, rotationRootNode, "Z", &spriteArray[0], fontManagerGUI);
+//
+//    scaleNode[0] = new geTreeNode(rendererGUI, scaleRootNode, "X", &spriteArray[0], fontManagerGUI);
+//    scaleNode[1] = new geTreeNode(rendererGUI, scaleRootNode, "Y", &spriteArray[0], fontManagerGUI);
+//    scaleNode[2] = new geTreeNode(rendererGUI, scaleRootNode, "Z", &spriteArray[0], fontManagerGUI);
     
-    positionNode[0] = new geTreeNode(rendererGUI, positionRootNode, "X", &spriteArray[0], fontManagerGUI);
-    positionNode[1] = new geTreeNode(rendererGUI, positionRootNode, "Y", &spriteArray[0], fontManagerGUI);
-    positionNode[2] = new geTreeNode(rendererGUI, positionRootNode, "Z", &spriteArray[0], fontManagerGUI);
+    auto propertiesNode = new geTreeNode(rendererGUI, animationsTreeView->getRoot(), object->getName().c_str(), &spriteArray[0], fontManagerGUI);
     
-    rotationNode[0] = new geTreeNode(rendererGUI, rotationRootNode, "X", &spriteArray[0], fontManagerGUI);
-    rotationNode[1] = new geTreeNode(rendererGUI, rotationRootNode, "Y", &spriteArray[0], fontManagerGUI);
-    rotationNode[2] = new geTreeNode(rendererGUI, rotationRootNode, "Z", &spriteArray[0], fontManagerGUI);
+//    //mono fields
+//    for(int x=0;x<monoScriptobject->getScriptPtr()->getMonoFieldCount();x++)
+//    {
+//        auto mvartypename = monoScriptobject->getScriptPtr()->getMonoFieldTypeName(x);
+//        if(strncmp(mvartypename, "MonoGEAR.gxColor", strlen("MonoGEAR.gxColor"))==0)
+//        {
+//            stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoFieldName(x));
+//            geColorControl* colorControl = new geColorControl(fontManagerGUI);
+//            colorControl->create(rendererGUI, this, 100, 10);
+//            colorControl->setControlColor(1.0f, 1.0f, 1.0f, 1.0f);
+//            colorControl->setGUIObserver(this);
+//            windowColumnControl->addControl(row, colorControl, 16.0f);
+//            lastControl=colorControl;
+//        }
+//        else
+//        {
+//            stWindowColumnRow* row = windowColumnControl->addRow(monoScriptobject->getScriptPtr()->getMonoFieldName(x));
+//            geTextBox* variableeditbox = new geTextBox("", fontManagerGUI);
+//            variableeditbox->create(rendererGUI, this, mvartypename, 0, 0);
+//            windowColumnControl->addControl(row, variableeditbox, 16.0f);
+//            lastControl=variableeditbox;
+//        }
+//    }
 
-    scaleNode[0] = new geTreeNode(rendererGUI, scaleRootNode, "X", &spriteArray[0], fontManagerGUI);
-    scaleNode[1] = new geTreeNode(rendererGUI, scaleRootNode, "Y", &spriteArray[0], fontManagerGUI);
-    scaleNode[2] = new geTreeNode(rendererGUI, scaleRootNode, "Z", &spriteArray[0], fontManagerGUI);
+    
+    for(auto monoInstance : object->getAttachedMonoScripts())
+    {
+        auto script = monoInstance->getScriptPtr();
+        
+        //mono properties
+        auto properties = script->getMonoProperties();
+        for(auto property : properties)
+        {
+            auto propertyName = script->getPropertyName(property);
+            auto getType = script->getPropertyGetMethodType(property);
+            auto setType = script->getPropertySetMethodType(property);
+            const char* typeName = nullptr;
+            if(getType && setType)
+            {
+                typeName = script->getMonoPropertyTypeName(getType);
+            }
+            
+            if(getType && setType && strncmp(typeName, "MonoGEAR.gxColor", strlen("MonoGEAR.gxColor"))==0)
+            {
+                auto propertyNode = new geTreeNode(rendererGUI, propertiesNode, propertyName, &spriteArray[0], fontManagerGUI);
+                UNUSED(propertyNode);
+            }
+        }
+        
+        //mono fields
+        auto fields = script->getMonoFields();
+        for(auto field : fields)
+        {
+            auto fieldTypeName = monoClassDef::getMonoFieldTypeName(field);
+            auto fieldName = monoClassDef::getMonoFieldName(field);
+            if(strncmp(fieldTypeName, "MonoGEAR.gxColor", strlen("MonoGEAR.gxColor"))==0)
+            {
+                auto fieldNode = new geTreeNode(rendererGUI, propertiesNode, fieldName, &spriteArray[0], fontManagerGUI);
+                UNUSED(fieldNode);
+            }
+            else
+            {
+                auto fieldNode = new geTreeNode(rendererGUI, propertiesNode, fieldName, &spriteArray[0], fontManagerGUI);
+                UNUSED(fieldNode);
+            }
+        }
+    }
 }

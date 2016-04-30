@@ -39,21 +39,20 @@ public:
 	bool isMonoScript()	{ 	return isValidMonoScript;	}
 	MonoMethod* getSetHandleMethod()	{	return monoMethod_setHandle;	}
 
-	int getMonoFieldCount()	{	return (int)monoFieldList.size();	}
-	const char* getMonoFieldName(int index);
-	MonoClassField* getMonoField(int index);
-    const char* getMonoFieldTypeName(int index);
+	static const char* getMonoFieldName(MonoClassField* field);
+    static const char* getMonoFieldTypeName(MonoClassField* field);
     
+    const std::vector<MonoClassField*>& getMonoFields()     {   return monoFieldList;   }
     const std::vector<MonoMethod*>& getMonoMethods()        {   return monoMethodList;  }
     const std::vector<MonoProperty*>& getMonoProperties()   {   return monoPropertyList;}
     const char* getPropertyName(MonoProperty* property);
     
-    MonoMethod* getPropertyGetMethod(MonoProperty* property);
-    MonoMethod* getPropertySetMethod(MonoProperty* property);
-    MonoType* getPropertyGetMethodType(MonoProperty* property);
-    MonoType* getPropertySetMethodType(MonoProperty* property);
+    static MonoMethod* getPropertyGetMethod(MonoProperty* property);
+    static MonoMethod* getPropertySetMethod(MonoProperty* property);
+    static MonoType* getPropertyGetMethodType(MonoProperty* property);
+    static MonoType* getPropertySetMethodType(MonoProperty* property);
 
-    const char* getMonoPropertyTypeName(MonoType* type);
+    static const char* getMonoPropertyTypeName(MonoType* type);
 
 protected:
     monoClassDef(const stMonoScriptArgs& args);

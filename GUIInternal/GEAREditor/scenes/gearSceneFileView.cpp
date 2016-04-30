@@ -14,12 +14,12 @@
 #include "../EditorApp.h"
 #include "assetUserData.h"
 #include "../../../GEAREngine/src/core/gxMetaStructures.h"
-#include "../../../GEAREngine/src/core/gxAnimationSet.h"
+#include "../../../GEAREngine/src/animation/gxAnimationSet.h"
 #ifdef GEAR_WINDOWS
 #include <Windows.h>
 #include "../../resource.h"
 #endif
-#include "../../../GEAREngine/src/core/gxSkinnedMesh.h"
+#include "../../../GEAREngine/src/script/gxSkinnedMesh.h"
 
 #ifdef GEAR_WINDOWS
 LRESULT CALLBACK Proj_InputDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);

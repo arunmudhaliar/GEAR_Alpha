@@ -1,8 +1,8 @@
 #pragma once
 
-#include "object3d.h"
-#include "gxColor.h"
-#include "fbo.h"
+#include "../core/object3d.h"
+#include "../core/gxColor.h"
+#include "../core/fbo.h"
 
 #define GX_SHADOW_MAP_SIZE	256
 

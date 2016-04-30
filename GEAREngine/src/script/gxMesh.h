@@ -1,8 +1,8 @@
 #pragma once
 
-#include "object3d.h"
+#include "../core/object3d.h"
 #include "gxTriInfo.h"
-#include "gxMaterial.h"
+#include "../core/gxMaterial.h"
 #include "../hwShader/gxHWShader.h"
 
 class gxUV

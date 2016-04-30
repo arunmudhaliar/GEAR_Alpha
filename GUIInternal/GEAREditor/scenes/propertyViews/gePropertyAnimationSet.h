@@ -7,7 +7,7 @@
 #include "../../gui/geTextBox.h"
 #include "../../gui/geGUIManager.h"
 #include "../../../../GEAREngine/src/core/object3d.h"
-#include "../../../../GEAREngine/src/core/gxAnimationSet.h"
+#include "../../../../GEAREngine/src/animation/gxAnimationSet.h"
 
 class gePropertyAnimationSet : public geTreeNode, public MGUIObserver
 {

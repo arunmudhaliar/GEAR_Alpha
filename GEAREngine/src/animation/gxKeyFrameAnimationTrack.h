@@ -27,7 +27,7 @@ public:
 	~gxKeyFrameAnimationTrack();
     static gxKeyFrameAnimationTrack* create(const std::string& property);
 
-    matrix4x4f* addFrame(int index, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None);
+    void addFrame(int index, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, matrix4x4f* outMatrix=nullptr);
     void updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction);
     
 	void write(gxFile& file);

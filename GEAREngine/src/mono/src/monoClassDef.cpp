@@ -116,21 +116,15 @@ void monoClassDef::init(const stMonoScriptArgs& args)
 	}
 }
 
-const char* monoClassDef::getMonoFieldName(int index)
+const char* monoClassDef::getMonoFieldName(MonoClassField* field)
 {
-	return mono_field_get_name(monoFieldList[index]);
+	return mono_field_get_name(field);
 }
 
-MonoClassField* monoClassDef::getMonoField(int index)
+const char* monoClassDef::getMonoFieldTypeName(MonoClassField* field)
 {
-	return monoFieldList[index];
-}
-
-const char* monoClassDef::getMonoFieldTypeName(int index)
-{
-    auto mvar = getMonoField(index);
-    auto mtype = mono_field_get_type(mvar);
-    return mono_type_get_name(mtype);
+    auto type = mono_field_get_type(field);
+    return mono_type_get_name(type);
 }
 
 const char* monoClassDef::getPropertyName(MonoProperty* property)

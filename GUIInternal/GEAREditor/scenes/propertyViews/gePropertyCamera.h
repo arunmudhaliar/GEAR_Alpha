@@ -7,7 +7,7 @@
 #include "../../gui/geTextBox.h"
 #include "../../gui/geHorizontalSlider.h"
 #include "../../gui/geColorControl.h"
-#include "../../../../GEAREngine/src/core/Camera.h"
+#include "../../../../GEAREngine/src/script/Camera.h"
 #include "../../gui/geToolBarDropMenu.h"
 #include "../../gui/geWindowColumn.h"
 #include "../../gui/geButton.h"

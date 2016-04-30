@@ -2,7 +2,7 @@
 
 #include "geGUIBase.h"
 #include "geScrollBar.h"
-#include "../../../GEAREngine/src/core/gxAnimationTrack.h"
+#include "../../../GEAREngine/src/animation/gxAnimationTrack.h"
 
 class geGraphControl : public geGUIBase, public MScrollBarObserver
 {

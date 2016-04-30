@@ -5,9 +5,9 @@
 
 #include <fbxsdk.h>
 #include "../core/object3d.h"
-#include "../core/gxMesh.h"
-#include "../core/gxSkinnedMesh.h"
-#include "../core/gxAnimationTrack.h"
+#include "../script/gxMesh.h"
+#include "../script/gxSkinnedMesh.h"
+#include "../animation/gxAnimationTrack.h"
 
 class DECLSPEC fbxImporter
 {

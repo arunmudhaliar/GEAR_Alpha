@@ -7,7 +7,7 @@
 #include "../../gui/geTextBox.h"
 #include "../../gui/geHorizontalSlider.h"
 #include "../../gui/geColorControl.h"
-#include "../../../../GEAREngine/src/core/gxLight.h"
+#include "../../../../GEAREngine/src/script/gxLight.h"
 #include "../../gui/geToolBarDropMenu.h"
 #include "../../gui/geWindowColumn.h"
 

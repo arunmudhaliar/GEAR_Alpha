@@ -3,8 +3,8 @@
 #include "fbxImporter/fbxImporter.h"
 #endif
 #include "core/object3d.h"
-#include "core/gxMesh.h"
-#include "core/gxSkinnedMesh.h"
+#include "script/gxMesh.h"
+#include "script/gxSkinnedMesh.h"
 
 #include "core/gxMetaStructures.h"
 #include "mono/src/monoWrapper.h"

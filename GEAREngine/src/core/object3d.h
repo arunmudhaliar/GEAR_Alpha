@@ -13,7 +13,7 @@
 #include "basicIncludes.h"
 #include "aabb.h"
 #include "oobb.h"
-#include "gxAnimation.h"
+#include "../animation/gxAnimation.h"
 #include "../util/gxFile.h"
 #include "../renderer/gxRenderer.h"
 #if USE_BULLET

@@ -2,7 +2,7 @@
 
 #include "../gui/geWindow.h"
 #include "../gui/geTreeView.h"
-#include "../../../GEAREngine/src/core/gxMesh.h"
+#include "../../../GEAREngine/src/script/gxMesh.h"
 
 #include "propertyViews/gePropertyObject3d.h"
 #include "propertyViews/gePropertyTransform.h"

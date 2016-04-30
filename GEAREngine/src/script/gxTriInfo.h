@@ -1,7 +1,7 @@
 #pragma once
 
-#include "basicIncludes.h"
-#include "gxMaterial.h"
+#include "../core/basicIncludes.h"
+#include "../core/gxMaterial.h"
 
 class gxTriInfo
 {

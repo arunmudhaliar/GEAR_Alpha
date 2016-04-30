@@ -1,8 +1,8 @@
 #pragma once
 
-#include "object3d.h"
+#include "../core/object3d.h"
 #include "../renderer/gxRenderer.h"
-#include "frustum.h"
+#include "../core/frustum.h"
 
 class DECLSPEC Camera : public monoScriptObjectInstance
 {

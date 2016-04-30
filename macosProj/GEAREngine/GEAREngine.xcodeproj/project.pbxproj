@@ -15,8 +15,6 @@
 		5554ED561AD26CED00FD80AF /* SoundSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA851AD26CEC00FD80AF /* SoundSource.h */; };
 		5554ED571AD26CED00FD80AF /* aabb.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA871AD26CEC00FD80AF /* aabb.h */; };
 		5554ED581AD26CED00FD80AF /* basicIncludes.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA881AD26CEC00FD80AF /* basicIncludes.h */; };
-		5554ED591AD26CED00FD80AF /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA891AD26CEC00FD80AF /* Camera.cpp */; };
-		5554ED5A1AD26CED00FD80AF /* Camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA8A1AD26CEC00FD80AF /* Camera.h */; };
 		5554ED5B1AD26CED00FD80AF /* COctree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA8B1AD26CEC00FD80AF /* COctree.cpp */; };
 		5554ED5C1AD26CED00FD80AF /* COctree.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA8C1AD26CEC00FD80AF /* COctree.h */; };
 		5554ED5D1AD26CED00FD80AF /* fbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA8D1AD26CEC00FD80AF /* fbo.cpp */; };
@@ -24,28 +22,15 @@
 		5554ED5F1AD26CED00FD80AF /* frustum.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA8F1AD26CEC00FD80AF /* frustum.h */; };
 		5554ED601AD26CED00FD80AF /* GEARAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA901AD26CEC00FD80AF /* GEARAsset.cpp */; };
 		5554ED611AD26CED00FD80AF /* GEARAsset.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA911AD26CEC00FD80AF /* GEARAsset.h */; };
-		5554ED621AD26CED00FD80AF /* gxAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA921AD26CEC00FD80AF /* gxAnimation.cpp */; };
-		5554ED631AD26CED00FD80AF /* gxAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA931AD26CEC00FD80AF /* gxAnimation.h */; };
-		5554ED641AD26CED00FD80AF /* gxAnimationSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA941AD26CEC00FD80AF /* gxAnimationSet.cpp */; };
-		5554ED651AD26CED00FD80AF /* gxAnimationSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA951AD26CEC00FD80AF /* gxAnimationSet.h */; };
-		5554ED661AD26CED00FD80AF /* gxAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA961AD26CEC00FD80AF /* gxAnimationTrack.cpp */; };
-		5554ED671AD26CED00FD80AF /* gxAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA971AD26CEC00FD80AF /* gxAnimationTrack.h */; };
 		5554ED6A1AD26CED00FD80AF /* gxDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA9A1AD26CEC00FD80AF /* gxDebug.cpp */; };
 		5554ED6B1AD26CED00FD80AF /* gxDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA9B1AD26CEC00FD80AF /* gxDebug.h */; };
-		5554ED6C1AD26CED00FD80AF /* gxLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA9C1AD26CEC00FD80AF /* gxLight.cpp */; };
-		5554ED6D1AD26CED00FD80AF /* gxLight.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA9D1AD26CEC00FD80AF /* gxLight.h */; };
 		5554ED6E1AD26CED00FD80AF /* gxMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EA9E1AD26CEC00FD80AF /* gxMaterial.cpp */; };
 		5554ED6F1AD26CED00FD80AF /* gxMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EA9F1AD26CEC00FD80AF /* gxMaterial.h */; };
 		5554ED701AD26CED00FD80AF /* gxMath.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAA01AD26CEC00FD80AF /* gxMath.h */; };
-		5554ED711AD26CED00FD80AF /* gxMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAA11AD26CEC00FD80AF /* gxMesh.cpp */; };
-		5554ED721AD26CED00FD80AF /* gxMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAA21AD26CEC00FD80AF /* gxMesh.h */; };
 		5554ED731AD26CED00FD80AF /* gxMetaStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAA31AD26CEC00FD80AF /* gxMetaStructures.h */; };
-		5554ED741AD26CED00FD80AF /* gxSkinnedMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAA41AD26CEC00FD80AF /* gxSkinnedMesh.cpp */; };
-		5554ED751AD26CED00FD80AF /* gxSkinnedMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAA51AD26CEC00FD80AF /* gxSkinnedMesh.h */; };
 		5554ED761AD26CED00FD80AF /* gxSurfaceShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAA61AD26CEC00FD80AF /* gxSurfaceShader.cpp */; };
 		5554ED771AD26CED00FD80AF /* gxSurfaceShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAA71AD26CEC00FD80AF /* gxSurfaceShader.h */; };
 		5554ED781AD26CED00FD80AF /* gxTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAA81AD26CEC00FD80AF /* gxTexture.h */; };
-		5554ED791AD26CED00FD80AF /* gxTriInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAA91AD26CEC00FD80AF /* gxTriInfo.h */; };
 		5554ED7A1AD26CED00FD80AF /* gxWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAAA1AD26CEC00FD80AF /* gxWorld.cpp */; };
 		5554ED7B1AD26CED00FD80AF /* gxWorld.h in Headers */ = {isa = PBXBuildFile; fileRef = 5554EAAB1AD26CEC00FD80AF /* gxWorld.h */; };
 		5554ED7C1AD26CED00FD80AF /* LayerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5554EAAC1AD26CEC00FD80AF /* LayerManager.cpp */; };
@@ -149,11 +134,26 @@
 		555571E81C9B4B5B00EEC0CB /* signalHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 555571E61C9B4B5B00EEC0CB /* signalHandler.h */; };
 		555571F71C9DBD6700EEC0CB /* gxFileUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 555571F51C9DBD6700EEC0CB /* gxFileUtil.cpp */; };
 		555571F81C9DBD6700EEC0CB /* gxFileUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 555571F61C9DBD6700EEC0CB /* gxFileUtil.h */; };
-		5580DE741C8C442200B5D6D5 /* IAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */; };
-		5580DE751C8C442200B5D6D5 /* IAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */; };
+		55803BF61CD555E4008BD590 /* gxAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55803BEC1CD555E4008BD590 /* gxAnimation.cpp */; };
+		55803BF71CD555E4008BD590 /* gxAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 55803BED1CD555E4008BD590 /* gxAnimation.h */; };
+		55803BF81CD555E4008BD590 /* gxAnimationSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55803BEE1CD555E4008BD590 /* gxAnimationSet.cpp */; };
+		55803BF91CD555E4008BD590 /* gxAnimationSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 55803BEF1CD555E4008BD590 /* gxAnimationSet.h */; };
+		55803BFA1CD555E4008BD590 /* gxAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55803BF01CD555E4008BD590 /* gxAnimationTrack.cpp */; };
+		55803BFB1CD555E4008BD590 /* gxAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 55803BF11CD555E4008BD590 /* gxAnimationTrack.h */; };
+		55803BFC1CD555E4008BD590 /* gxKeyFrameAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55803BF21CD555E4008BD590 /* gxKeyFrameAnimationTrack.cpp */; };
+		55803BFD1CD555E4008BD590 /* gxKeyFrameAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 55803BF31CD555E4008BD590 /* gxKeyFrameAnimationTrack.h */; };
+		55803BFE1CD555E4008BD590 /* IAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55803BF41CD555E4008BD590 /* IAnimationTrack.cpp */; };
+		55803BFF1CD555E4008BD590 /* IAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 55803BF51CD555E4008BD590 /* IAnimationTrack.h */; };
+		5586F2851CD5580100CEFF80 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5586F27D1CD5580100CEFF80 /* Camera.cpp */; };
+		5586F2861CD5580100CEFF80 /* Camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 5586F27E1CD5580100CEFF80 /* Camera.h */; };
+		5586F2871CD5580100CEFF80 /* gxLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5586F27F1CD5580100CEFF80 /* gxLight.cpp */; };
+		5586F2881CD5580100CEFF80 /* gxLight.h in Headers */ = {isa = PBXBuildFile; fileRef = 5586F2801CD5580100CEFF80 /* gxLight.h */; };
+		5586F2891CD5580100CEFF80 /* gxMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5586F2811CD5580100CEFF80 /* gxMesh.cpp */; };
+		5586F28A1CD5580100CEFF80 /* gxMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 5586F2821CD5580100CEFF80 /* gxMesh.h */; };
+		5586F28B1CD5580100CEFF80 /* gxSkinnedMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5586F2831CD5580100CEFF80 /* gxSkinnedMesh.cpp */; };
+		5586F28C1CD5580100CEFF80 /* gxSkinnedMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 5586F2841CD5580100CEFF80 /* gxSkinnedMesh.h */; };
+		5586F28E1CD5594100CEFF80 /* gxTriInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 5586F28D1CD5594100CEFF80 /* gxTriInfo.h */; };
 		5598C4F71CC2E037009178C2 /* gxColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5598C4F61CC2E037009178C2 /* gxColor.h */; };
-		55A179C21CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55A179C01CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp */; };
-		55A179C31CA877AB00989B35 /* gxKeyFrameAnimationTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = 55A179C11CA877AB00989B35 /* gxKeyFrameAnimationTrack.h */; };
 		55AB5CB91C0481D3005B8747 /* BlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */; };
 		55AB5CBA1C0481D3005B8747 /* BlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AB5CB21C0481D3005B8747 /* BlurFilter.h */; };
 		55AB5CBB1C0481D3005B8747 /* BrightPassFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55AB5CB31C0481D3005B8747 /* BrightPassFilter.cpp */; };
@@ -180,8 +180,6 @@
 		5554EA851AD26CEC00FD80AF /* SoundSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundSource.h; sourceTree = "<group>"; };
 		5554EA871AD26CEC00FD80AF /* aabb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aabb.h; sourceTree = "<group>"; };
 		5554EA881AD26CEC00FD80AF /* basicIncludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = basicIncludes.h; sourceTree = "<group>"; };
-		5554EA891AD26CEC00FD80AF /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
-		5554EA8A1AD26CEC00FD80AF /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		5554EA8B1AD26CEC00FD80AF /* COctree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = COctree.cpp; sourceTree = "<group>"; };
 		5554EA8C1AD26CEC00FD80AF /* COctree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COctree.h; sourceTree = "<group>"; };
 		5554EA8D1AD26CEC00FD80AF /* fbo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fbo.cpp; sourceTree = "<group>"; };
@@ -189,28 +187,15 @@
 		5554EA8F1AD26CEC00FD80AF /* frustum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = frustum.h; sourceTree = "<group>"; };
 		5554EA901AD26CEC00FD80AF /* GEARAsset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GEARAsset.cpp; sourceTree = "<group>"; };
 		5554EA911AD26CEC00FD80AF /* GEARAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEARAsset.h; sourceTree = "<group>"; };
-		5554EA921AD26CEC00FD80AF /* gxAnimation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxAnimation.cpp; sourceTree = "<group>"; };
-		5554EA931AD26CEC00FD80AF /* gxAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxAnimation.h; sourceTree = "<group>"; };
-		5554EA941AD26CEC00FD80AF /* gxAnimationSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxAnimationSet.cpp; sourceTree = "<group>"; };
-		5554EA951AD26CEC00FD80AF /* gxAnimationSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxAnimationSet.h; sourceTree = "<group>"; };
-		5554EA961AD26CEC00FD80AF /* gxAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxAnimationTrack.cpp; sourceTree = "<group>"; };
-		5554EA971AD26CEC00FD80AF /* gxAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxAnimationTrack.h; sourceTree = "<group>"; };
 		5554EA9A1AD26CEC00FD80AF /* gxDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxDebug.cpp; sourceTree = "<group>"; };
 		5554EA9B1AD26CEC00FD80AF /* gxDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxDebug.h; sourceTree = "<group>"; };
-		5554EA9C1AD26CEC00FD80AF /* gxLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxLight.cpp; sourceTree = "<group>"; };
-		5554EA9D1AD26CEC00FD80AF /* gxLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxLight.h; sourceTree = "<group>"; };
 		5554EA9E1AD26CEC00FD80AF /* gxMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxMaterial.cpp; sourceTree = "<group>"; };
 		5554EA9F1AD26CEC00FD80AF /* gxMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxMaterial.h; sourceTree = "<group>"; };
 		5554EAA01AD26CEC00FD80AF /* gxMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxMath.h; sourceTree = "<group>"; };
-		5554EAA11AD26CEC00FD80AF /* gxMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxMesh.cpp; sourceTree = "<group>"; };
-		5554EAA21AD26CEC00FD80AF /* gxMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxMesh.h; sourceTree = "<group>"; };
 		5554EAA31AD26CEC00FD80AF /* gxMetaStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxMetaStructures.h; sourceTree = "<group>"; };
-		5554EAA41AD26CEC00FD80AF /* gxSkinnedMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxSkinnedMesh.cpp; sourceTree = "<group>"; };
-		5554EAA51AD26CEC00FD80AF /* gxSkinnedMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxSkinnedMesh.h; sourceTree = "<group>"; };
 		5554EAA61AD26CEC00FD80AF /* gxSurfaceShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxSurfaceShader.cpp; sourceTree = "<group>"; };
 		5554EAA71AD26CEC00FD80AF /* gxSurfaceShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxSurfaceShader.h; sourceTree = "<group>"; };
 		5554EAA81AD26CEC00FD80AF /* gxTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxTexture.h; sourceTree = "<group>"; };
-		5554EAA91AD26CEC00FD80AF /* gxTriInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxTriInfo.h; sourceTree = "<group>"; };
 		5554EAAA1AD26CEC00FD80AF /* gxWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxWorld.cpp; sourceTree = "<group>"; };
 		5554EAAB1AD26CEC00FD80AF /* gxWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxWorld.h; sourceTree = "<group>"; };
 		5554EAAC1AD26CEC00FD80AF /* LayerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LayerManager.cpp; sourceTree = "<group>"; };
@@ -317,11 +302,26 @@
 		555571E61C9B4B5B00EEC0CB /* signalHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = signalHandler.h; sourceTree = "<group>"; };
 		555571F51C9DBD6700EEC0CB /* gxFileUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxFileUtil.cpp; sourceTree = "<group>"; };
 		555571F61C9DBD6700EEC0CB /* gxFileUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxFileUtil.h; sourceTree = "<group>"; };
-		5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAnimationTrack.cpp; sourceTree = "<group>"; };
-		5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnimationTrack.h; sourceTree = "<group>"; };
+		55803BEC1CD555E4008BD590 /* gxAnimation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxAnimation.cpp; sourceTree = "<group>"; };
+		55803BED1CD555E4008BD590 /* gxAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxAnimation.h; sourceTree = "<group>"; };
+		55803BEE1CD555E4008BD590 /* gxAnimationSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxAnimationSet.cpp; sourceTree = "<group>"; };
+		55803BEF1CD555E4008BD590 /* gxAnimationSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxAnimationSet.h; sourceTree = "<group>"; };
+		55803BF01CD555E4008BD590 /* gxAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxAnimationTrack.cpp; sourceTree = "<group>"; };
+		55803BF11CD555E4008BD590 /* gxAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxAnimationTrack.h; sourceTree = "<group>"; };
+		55803BF21CD555E4008BD590 /* gxKeyFrameAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxKeyFrameAnimationTrack.cpp; sourceTree = "<group>"; };
+		55803BF31CD555E4008BD590 /* gxKeyFrameAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxKeyFrameAnimationTrack.h; sourceTree = "<group>"; };
+		55803BF41CD555E4008BD590 /* IAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAnimationTrack.cpp; sourceTree = "<group>"; };
+		55803BF51CD555E4008BD590 /* IAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnimationTrack.h; sourceTree = "<group>"; };
+		5586F27D1CD5580100CEFF80 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		5586F27E1CD5580100CEFF80 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		5586F27F1CD5580100CEFF80 /* gxLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxLight.cpp; sourceTree = "<group>"; };
+		5586F2801CD5580100CEFF80 /* gxLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxLight.h; sourceTree = "<group>"; };
+		5586F2811CD5580100CEFF80 /* gxMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxMesh.cpp; sourceTree = "<group>"; };
+		5586F2821CD5580100CEFF80 /* gxMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxMesh.h; sourceTree = "<group>"; };
+		5586F2831CD5580100CEFF80 /* gxSkinnedMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxSkinnedMesh.cpp; sourceTree = "<group>"; };
+		5586F2841CD5580100CEFF80 /* gxSkinnedMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxSkinnedMesh.h; sourceTree = "<group>"; };
+		5586F28D1CD5594100CEFF80 /* gxTriInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxTriInfo.h; sourceTree = "<group>"; };
 		5598C4F61CC2E037009178C2 /* gxColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxColor.h; sourceTree = "<group>"; };
-		55A179C01CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gxKeyFrameAnimationTrack.cpp; sourceTree = "<group>"; };
-		55A179C11CA877AB00989B35 /* gxKeyFrameAnimationTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gxKeyFrameAnimationTrack.h; sourceTree = "<group>"; };
 		55AB5CB11C0481D3005B8747 /* BlurFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurFilter.cpp; sourceTree = "<group>"; };
 		55AB5CB21C0481D3005B8747 /* BlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurFilter.h; sourceTree = "<group>"; };
 		55AB5CB31C0481D3005B8747 /* BrightPassFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BrightPassFilter.cpp; sourceTree = "<group>"; };
@@ -391,10 +391,12 @@
 				55E88D821C9E5AC400B355BB /* GEARFirstInclude.h */,
 				5554EAC41AD26CEC00FD80AF /* GEAREngine.cpp */,
 				5554EAC51AD26CEC00FD80AF /* GEAREngine.h */,
+				55803BEB1CD555E4008BD590 /* animation */,
 				55E88E961C9F2B8B00B355BB /* autoReleasePool */,
 				55AB5CB01C0481D3005B8747 /* postProcessor */,
 				5554EA7F1AD26CEC00FD80AF /* audio */,
 				55ADDCA01CB7920900F36B43 /* tween */,
+				5586F27C1CD5580100CEFF80 /* script */,
 				5554EA861AD26CEC00FD80AF /* core */,
 				5554EAC11AD26CEC00FD80AF /* fbxImporter */,
 				5554EAC61AD26CEC00FD80AF /* hwShader */,
@@ -427,8 +429,6 @@
 				5598C4F61CC2E037009178C2 /* gxColor.h */,
 				5554EA871AD26CEC00FD80AF /* aabb.h */,
 				5554EA881AD26CEC00FD80AF /* basicIncludes.h */,
-				5554EA891AD26CEC00FD80AF /* Camera.cpp */,
-				5554EA8A1AD26CEC00FD80AF /* Camera.h */,
 				5554EA8B1AD26CEC00FD80AF /* COctree.cpp */,
 				5554EA8C1AD26CEC00FD80AF /* COctree.h */,
 				5554EA8D1AD26CEC00FD80AF /* fbo.cpp */,
@@ -436,32 +436,15 @@
 				5554EA8F1AD26CEC00FD80AF /* frustum.h */,
 				5554EA901AD26CEC00FD80AF /* GEARAsset.cpp */,
 				5554EA911AD26CEC00FD80AF /* GEARAsset.h */,
-				5554EA921AD26CEC00FD80AF /* gxAnimation.cpp */,
-				5554EA931AD26CEC00FD80AF /* gxAnimation.h */,
-				5554EA941AD26CEC00FD80AF /* gxAnimationSet.cpp */,
-				5554EA951AD26CEC00FD80AF /* gxAnimationSet.h */,
-				5580DE721C8C442200B5D6D5 /* IAnimationTrack.cpp */,
-				5580DE731C8C442200B5D6D5 /* IAnimationTrack.h */,
-				5554EA961AD26CEC00FD80AF /* gxAnimationTrack.cpp */,
-				5554EA971AD26CEC00FD80AF /* gxAnimationTrack.h */,
-				55A179C01CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp */,
-				55A179C11CA877AB00989B35 /* gxKeyFrameAnimationTrack.h */,
 				5554EA9A1AD26CEC00FD80AF /* gxDebug.cpp */,
 				5554EA9B1AD26CEC00FD80AF /* gxDebug.h */,
-				5554EA9C1AD26CEC00FD80AF /* gxLight.cpp */,
-				5554EA9D1AD26CEC00FD80AF /* gxLight.h */,
 				5554EA9E1AD26CEC00FD80AF /* gxMaterial.cpp */,
 				5554EA9F1AD26CEC00FD80AF /* gxMaterial.h */,
 				5554EAA01AD26CEC00FD80AF /* gxMath.h */,
-				5554EAA11AD26CEC00FD80AF /* gxMesh.cpp */,
-				5554EAA21AD26CEC00FD80AF /* gxMesh.h */,
 				5554EAA31AD26CEC00FD80AF /* gxMetaStructures.h */,
-				5554EAA41AD26CEC00FD80AF /* gxSkinnedMesh.cpp */,
-				5554EAA51AD26CEC00FD80AF /* gxSkinnedMesh.h */,
 				5554EAA61AD26CEC00FD80AF /* gxSurfaceShader.cpp */,
 				5554EAA71AD26CEC00FD80AF /* gxSurfaceShader.h */,
 				5554EAA81AD26CEC00FD80AF /* gxTexture.h */,
-				5554EAA91AD26CEC00FD80AF /* gxTriInfo.h */,
 				5554EAAA1AD26CEC00FD80AF /* gxWorld.cpp */,
 				5554EAAB1AD26CEC00FD80AF /* gxWorld.h */,
 				5554EAAC1AD26CEC00FD80AF /* LayerManager.cpp */,
@@ -629,6 +612,39 @@
 			path = "zlib-1.2.4";
 			sourceTree = "<group>";
 		};
+		55803BEB1CD555E4008BD590 /* animation */ = {
+			isa = PBXGroup;
+			children = (
+				55803BEC1CD555E4008BD590 /* gxAnimation.cpp */,
+				55803BED1CD555E4008BD590 /* gxAnimation.h */,
+				55803BEE1CD555E4008BD590 /* gxAnimationSet.cpp */,
+				55803BEF1CD555E4008BD590 /* gxAnimationSet.h */,
+				55803BF01CD555E4008BD590 /* gxAnimationTrack.cpp */,
+				55803BF11CD555E4008BD590 /* gxAnimationTrack.h */,
+				55803BF21CD555E4008BD590 /* gxKeyFrameAnimationTrack.cpp */,
+				55803BF31CD555E4008BD590 /* gxKeyFrameAnimationTrack.h */,
+				55803BF41CD555E4008BD590 /* IAnimationTrack.cpp */,
+				55803BF51CD555E4008BD590 /* IAnimationTrack.h */,
+			);
+			path = animation;
+			sourceTree = "<group>";
+		};
+		5586F27C1CD5580100CEFF80 /* script */ = {
+			isa = PBXGroup;
+			children = (
+				5586F27D1CD5580100CEFF80 /* Camera.cpp */,
+				5586F27E1CD5580100CEFF80 /* Camera.h */,
+				5586F27F1CD5580100CEFF80 /* gxLight.cpp */,
+				5586F2801CD5580100CEFF80 /* gxLight.h */,
+				5586F2811CD5580100CEFF80 /* gxMesh.cpp */,
+				5586F2821CD5580100CEFF80 /* gxMesh.h */,
+				5586F28D1CD5594100CEFF80 /* gxTriInfo.h */,
+				5586F2831CD5580100CEFF80 /* gxSkinnedMesh.cpp */,
+				5586F2841CD5580100CEFF80 /* gxSkinnedMesh.h */,
+			);
+			path = script;
+			sourceTree = "<group>";
+		};
 		55AB5CB01C0481D3005B8747 /* postProcessor */ = {
 			isa = PBXGroup;
 			children = (
@@ -675,22 +691,21 @@
 				5554EF9F1AD26CED00FD80AF /* stFog.h in Headers */,
 				555571E81C9B4B5B00EEC0CB /* signalHandler.h in Headers */,
 				5554ED561AD26CED00FD80AF /* SoundSource.h in Headers */,
-				5554ED721AD26CED00FD80AF /* gxMesh.h in Headers */,
 				5554ED981AD26CED00FD80AF /* HWShaderManager.h in Headers */,
 				5554EFA61AD26CED00FD80AF /* gxCrc32.h in Headers */,
 				5554EFA01AD26CED00FD80AF /* Tga.h in Headers */,
 				5554ED6F1AD26CED00FD80AF /* gxMaterial.h in Headers */,
 				5554EFBA1AD26CED00FD80AF /* inffast.h in Headers */,
 				555571F81C9DBD6700EEC0CB /* gxFileUtil.h in Headers */,
-				5554ED791AD26CED00FD80AF /* gxTriInfo.h in Headers */,
+				55803BFF1CD555E4008BD590 /* IAnimationTrack.h in Headers */,
+				5586F28A1CD5580100CEFF80 /* gxMesh.h in Headers */,
 				5554EF9E1AD26CED00FD80AF /* gxRenderer.h in Headers */,
 				5554ED7D1AD26CED00FD80AF /* LayerManager.h in Headers */,
 				5554EFBF1AD26CED00FD80AF /* inftrees.h in Headers */,
+				5586F28C1CD5580100CEFF80 /* gxSkinnedMesh.h in Headers */,
 				5554EFC11AD26CED00FD80AF /* trees.h in Headers */,
-				5554ED651AD26CED00FD80AF /* gxAnimationSet.h in Headers */,
 				5554EFA71AD26CED00FD80AF /* gxExpandableArray.h in Headers */,
 				5554EFBD1AD26CED00FD80AF /* inflate.h in Headers */,
-				5554ED671AD26CED00FD80AF /* gxAnimationTrack.h in Headers */,
 				5554ED851AD26CED00FD80AF /* quaternion.h in Headers */,
 				5554ED541AD26CED00FD80AF /* SoundSample.h in Headers */,
 				5554ED861AD26CED00FD80AF /* rect.h in Headers */,
@@ -698,17 +713,18 @@
 				5554ED611AD26CED00FD80AF /* GEARAsset.h in Headers */,
 				5554ED7E1AD26CED00FD80AF /* matrix4x4f.h in Headers */,
 				5554ED9A1AD26CED00FD80AF /* png.h in Headers */,
+				55803BF91CD555E4008BD590 /* gxAnimationSet.h in Headers */,
 				5554EFC41AD26CED00FD80AF /* zlib.h in Headers */,
 				5554ED901AD26CED00FD80AF /* vector4.h in Headers */,
 				5554ED5E1AD26CED00FD80AF /* fbo.h in Headers */,
 				5554ED781AD26CED00FD80AF /* gxTexture.h in Headers */,
+				5586F28E1CD5594100CEFF80 /* gxTriInfo.h in Headers */,
 				5554EFA21AD26CED00FD80AF /* bxLinkedList.h in Headers */,
 				5554ED771AD26CED00FD80AF /* gxSurfaceShader.h in Headers */,
 				5554EDA01AD26CED00FD80AF /* pnglibconf.h in Headers */,
+				5586F2861CD5580100CEFF80 /* Camera.h in Headers */,
 				5554ED8E1AD26CED00FD80AF /* vector2.h in Headers */,
-				5554ED6D1AD26CED00FD80AF /* gxLight.h in Headers */,
 				5554EF9C1AD26CED00FD80AF /* glew.h in Headers */,
-				5580DE751C8C442200B5D6D5 /* IAnimationTrack.h in Headers */,
 				5554EFB11AD26CED00FD80AF /* pngLoader.h in Headers */,
 				5554ED8D1AD26CED00FD80AF /* transform.h in Headers */,
 				5554EFB51AD26CED00FD80AF /* crc32.h in Headers */,
@@ -723,14 +739,13 @@
 				5554ED811AD26CED00FD80AF /* oobb.h in Headers */,
 				5554ED701AD26CED00FD80AF /* gxMath.h in Headers */,
 				5554ED5C1AD26CED00FD80AF /* COctree.h in Headers */,
-				5554ED631AD26CED00FD80AF /* gxAnimation.h in Headers */,
 				5554ED581AD26CED00FD80AF /* basicIncludes.h in Headers */,
 				55E88E9A1C9F2BC000B355BB /* autoReleasePool.h in Headers */,
 				5554ED871AD26CED00FD80AF /* stTexturePacket.h in Headers */,
 				5554ED9F1AD26CED00FD80AF /* pnginfo.h in Headers */,
 				5554ED961AD26CED00FD80AF /* gxHWShader.h in Headers */,
 				5554ED5F1AD26CED00FD80AF /* frustum.h in Headers */,
-				5554ED5A1AD26CED00FD80AF /* Camera.h in Headers */,
+				55803BF71CD555E4008BD590 /* gxAnimation.h in Headers */,
 				5554EDB31AD26CED00FD80AF /* monoWrapper.h in Headers */,
 				5554EFBB1AD26CED00FD80AF /* inffixed.h in Headers */,
 				5554ED921AD26CED00FD80AF /* fbxImporter.h in Headers */,
@@ -738,6 +753,7 @@
 				5554ED891AD26CED00FD80AF /* TextureManager.h in Headers */,
 				5554EDA91AD26CED00FD80AF /* pngstruct.h in Headers */,
 				5554EFC31AD26CED00FD80AF /* zconf.h in Headers */,
+				55803BFB1CD555E4008BD590 /* gxAnimationTrack.h in Headers */,
 				5554ED731AD26CED00FD80AF /* gxMetaStructures.h in Headers */,
 				55AB5CC01C0481D3005B8747 /* ToneMappingFilter.h in Headers */,
 				5554ED7B1AD26CED00FD80AF /* gxWorld.h in Headers */,
@@ -745,11 +761,11 @@
 				5554ED9B1AD26CED00FD80AF /* pngconf.h in Headers */,
 				55AB5CBA1C0481D3005B8747 /* BlurFilter.h in Headers */,
 				5554EFB71AD26CED00FD80AF /* deflate.h in Headers */,
-				55A179C31CA877AB00989B35 /* gxKeyFrameAnimationTrack.h in Headers */,
 				5554EFA41AD26CED00FD80AF /* FontManager.h in Headers */,
+				55803BFD1CD555E4008BD590 /* gxKeyFrameAnimationTrack.h in Headers */,
 				5554ED941AD26CED00FD80AF /* GEAREngine.h in Headers */,
 				5554ED841AD26CED00FD80AF /* plane.h in Headers */,
-				5554ED751AD26CED00FD80AF /* gxSkinnedMesh.h in Headers */,
+				5586F2881CD5580100CEFF80 /* gxLight.h in Headers */,
 				5554ED801AD26CED00FD80AF /* object3d.h in Headers */,
 				5554ED521AD26CED00FD80AF /* SoundEngine.h in Headers */,
 				5554EFC61AD26CED00FD80AF /* zutil.h in Headers */,
@@ -815,20 +831,21 @@
 			files = (
 				5554ED7C1AD26CED00FD80AF /* LayerManager.cpp in Sources */,
 				5554EDA71AD26CED00FD80AF /* pngrutil.c in Sources */,
+				55803BF61CD555E4008BD590 /* gxAnimation.cpp in Sources */,
 				55AB5CBD1C0481D3005B8747 /* PostProcessor.cpp in Sources */,
-				5554ED591AD26CED00FD80AF /* Camera.cpp in Sources */,
+				55803BFA1CD555E4008BD590 /* gxAnimationTrack.cpp in Sources */,
 				55AB5CBF1C0481D3005B8747 /* ToneMappingFilter.cpp in Sources */,
 				5554EF9D1AD26CED00FD80AF /* gxRenderer.cpp in Sources */,
 				555571E71C9B4B5B00EEC0CB /* signalHandler.cpp in Sources */,
 				5554EFAA1AD26CED00FD80AF /* gxUtil.cpp in Sources */,
 				5554EFB81AD26CED00FD80AF /* infback.c in Sources */,
+				55803BF81CD555E4008BD590 /* gxAnimationSet.cpp in Sources */,
 				5554ED8C1AD26CED00FD80AF /* transform.cpp in Sources */,
+				5586F2851CD5580100CEFF80 /* Camera.cpp in Sources */,
 				5554EFA31AD26CED00FD80AF /* FontManager.cpp in Sources */,
 				5554ED7A1AD26CED00FD80AF /* gxWorld.cpp in Sources */,
-				5554ED6C1AD26CED00FD80AF /* gxLight.cpp in Sources */,
-				5554ED661AD26CED00FD80AF /* gxAnimationTrack.cpp in Sources */,
+				55803BFC1CD555E4008BD590 /* gxKeyFrameAnimationTrack.cpp in Sources */,
 				5554ED511AD26CED00FD80AF /* SoundEngine.cpp in Sources */,
-				5580DE741C8C442200B5D6D5 /* IAnimationTrack.cpp in Sources */,
 				5554ED991AD26CED00FD80AF /* png.c in Sources */,
 				5554ED601AD26CED00FD80AF /* GEARAsset.cpp in Sources */,
 				5554EFA51AD26CED00FD80AF /* gxCrc32.cpp in Sources */,
@@ -841,7 +858,6 @@
 				5554EFB41AD26CED00FD80AF /* crc32.c in Sources */,
 				5554EDAC1AD26CED00FD80AF /* pngwrite.c in Sources */,
 				5554EDAD1AD26CED00FD80AF /* pngwtran.c in Sources */,
-				5554ED641AD26CED00FD80AF /* gxAnimationSet.cpp in Sources */,
 				5554ED761AD26CED00FD80AF /* gxSurfaceShader.cpp in Sources */,
 				5554ED8A1AD26CED00FD80AF /* Timer.cpp in Sources */,
 				5554ED6A1AD26CED00FD80AF /* gxDebug.cpp in Sources */,
@@ -850,7 +866,6 @@
 				5554ED6E1AD26CED00FD80AF /* gxMaterial.cpp in Sources */,
 				5554EFBE1AD26CED00FD80AF /* inftrees.c in Sources */,
 				5554ED9D1AD26CED00FD80AF /* pngerror.c in Sources */,
-				5554ED741AD26CED00FD80AF /* gxSkinnedMesh.cpp in Sources */,
 				55AB5CBB1C0481D3005B8747 /* BrightPassFilter.cpp in Sources */,
 				5554EFC01AD26CED00FD80AF /* trees.c in Sources */,
 				5554ED931AD26CED00FD80AF /* GEAREngine.cpp in Sources */,
@@ -865,12 +880,10 @@
 				5554ED5B1AD26CED00FD80AF /* COctree.cpp in Sources */,
 				5554EFC51AD26CED00FD80AF /* zutil.c in Sources */,
 				5554ED951AD26CED00FD80AF /* gxHWShader.cpp in Sources */,
-				55A179C21CA877AB00989B35 /* gxKeyFrameAnimationTrack.cpp in Sources */,
 				5554EDB21AD26CED00FD80AF /* monoWrapper.cpp in Sources */,
 				5554EFB61AD26CED00FD80AF /* deflate.c in Sources */,
 				5554EDA81AD26CED00FD80AF /* pngset.c in Sources */,
 				55AB5CB91C0481D3005B8747 /* BlurFilter.cpp in Sources */,
-				5554ED711AD26CED00FD80AF /* gxMesh.cpp in Sources */,
 				5554ED971AD26CED00FD80AF /* HWShaderManager.cpp in Sources */,
 				5554EFA81AD26CED00FD80AF /* gxFile.cpp in Sources */,
 				5554EDAA1AD26CED00FD80AF /* pngtrans.c in Sources */,
@@ -879,8 +892,11 @@
 				55E88E991C9F2BC000B355BB /* autoReleasePool.cpp in Sources */,
 				5554EDA41AD26CED00FD80AF /* pngread.c in Sources */,
 				5554EFB21AD26CED00FD80AF /* adler32.c in Sources */,
+				5586F28B1CD5580100CEFF80 /* gxSkinnedMesh.cpp in Sources */,
+				5586F2891CD5580100CEFF80 /* gxMesh.cpp in Sources */,
 				5554EDB01AD26CED00FD80AF /* monoClassDef.cpp in Sources */,
-				5554ED621AD26CED00FD80AF /* gxAnimation.cpp in Sources */,
+				55803BFE1CD555E4008BD590 /* IAnimationTrack.cpp in Sources */,
+				5586F2871CD5580100CEFF80 /* gxLight.cpp in Sources */,
 				5554ED881AD26CED00FD80AF /* TextureManager.cpp in Sources */,
 				555571F71C9DBD6700EEC0CB /* gxFileUtil.cpp in Sources */,
 				5554EFBC1AD26CED00FD80AF /* inflate.c in Sources */,

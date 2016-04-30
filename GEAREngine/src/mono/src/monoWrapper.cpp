@@ -17,7 +17,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
-#include "../../core/gxLight.h"
+#include "../../script/gxLight.h"
 
 std::string     monoWrapper::g_cMonoInstallPath="";
 uint32_t        monoWrapper::g_uMonoGEAREntryPointClass_Instance_Variable_HANDLE=0;

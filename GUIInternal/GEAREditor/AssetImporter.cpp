@@ -2,7 +2,6 @@
 #include "EditorApp.h"
 #include "../../GEAREngine/src/util/gxFile.h"
 #include "../../GEAREngine/src/lpng151/png.h"
-#include "../../GEAREngine/src/tga/Tga.h"
 #include "../../GEAREngine/src/util/gxCrc32.h"
 #include "../../GEAREngine/src/fbxImporter/fbxImporter.h"
 #include "../../GEAREngine/src/util/gxUtil.cpp"
@@ -19,6 +18,8 @@
 #include <string.h>
 
 #include "../../FreeImage/FreeImage.h"
+
+using namespace gearEngine;
 
 AssetImporter::AssetImporter()
 {
@@ -507,9 +508,10 @@ bool AssetImporter::saveMaterialToMetaData(const char* crcFileName, gxMaterial* 
 
 int AssetImporter::import_tga_to_metadata(const char* tga_file_name, const char* crcFileName, struct stat srcStat)
 {
-	tgaTexture texture;
+    TgaLoader loader;
+    TgaLoader::tgaTexture texture;
 	memset(&texture, 0, sizeof(texture));
-	if(LoadTGA(&texture, tga_file_name))
+	if(loader.LoadTGA(&texture, tga_file_name))
 	{
 		gxFile file_meta;
 		if(!file_meta.OpenFile(crcFileName, gxFile::FILE_w))

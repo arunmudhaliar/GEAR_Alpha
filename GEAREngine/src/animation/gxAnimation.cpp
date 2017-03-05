@@ -31,6 +31,19 @@ gxAnimation::~gxAnimation()
     removeAllAnimationSet();
 }
 
+gxAnimationSet* gxAnimation::getAnimationSet(const std::string& proprtyName)
+{
+    for(auto animSet : animationSets)
+    {
+        if(animSet->getAnimationName().compare(proprtyName)==0)
+        {
+            return animSet;
+        }
+    }
+    
+    return nullptr;
+}
+
 bool gxAnimation::appendAnimationSet(gxAnimationSet* animationSet)
 {
     if(std::find(animationSets.begin(), animationSets.end(), animationSet)==animationSets.end())

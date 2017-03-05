@@ -17,6 +17,8 @@ gearScenePropertyEditor::stMonoScriptTVNode::~stMonoScriptTVNode()
 gearScenePropertyEditor::gearScenePropertyEditor(geFontManager* fontmanager):
 geWindow("Property Editor", fontmanager)
 {
+    selectedObject = nullptr;
+    
 	object3dParentTreeNode=NULL;
 	materialParentTreeNode=NULL;
 	transformParentTreeNode=NULL;
@@ -277,6 +279,8 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
         propertiesTreeView->resetSelectedNodePtr();
 		return;
 	}
+    
+    selectedObject = obj;
 
 	//object3d
 	object3dProperty->populatePropertyOfObject(obj);
@@ -366,6 +370,11 @@ void gearScenePropertyEditor::populatePropertyOfObject(object3d* obj)
 
 	propertiesTreeView->refreshTreeView();
 	propertiesTreeView->resetSelectedNodePtr();
+}
+
+void gearScenePropertyEditor::refreshProperties()
+{
+    populatePropertyOfObject(selectedObject);
 }
 
 void gearScenePropertyEditor::updateTransformPropertyOfCurrentSelectedObject()

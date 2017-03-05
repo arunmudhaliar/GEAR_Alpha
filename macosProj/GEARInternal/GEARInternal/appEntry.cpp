@@ -40,7 +40,7 @@ int appEntry()
                                            SDL_WINDOWPOS_CENTERED,     // y position, centered
                                            640,                        // width, in pixels
                                            480,                        // height, in pixels
-                                           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | SDL_WINDOW_RESIZABLE  |  SDL_WINDOW_ALLOW_HIGHDPI    // flags
+                                           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN  | SDL_WINDOW_RESIZABLE  /*|  SDL_WINDOW_ALLOW_HIGHDPI */   // flags
                                            );
 
 #ifdef GEAR_WINDOWS
@@ -63,7 +63,8 @@ int appEntry()
     int window_cx=1;
     int window_cy=1;
     SDL_GetWindowSize(window, &window_cx, &window_cy);
-
+    SDL_GL_GetDrawableSize(window, &window_cx, &window_cy);
+    
     if( window == NULL )
     {
         std::cout << "ERROR SDL_CreateWindow" << std::endl;
@@ -297,6 +298,7 @@ void processEvent(SDL_Window * window, SDL_Event& e, void* userdata)
                 int window_cx=1;
                 int window_cy=1;
                 SDL_GetWindowSize(window, &window_cx, &window_cy);
+                SDL_GL_GetDrawableSize(window, &window_cx, &window_cy);
                 editorApp.size(window_cx, window_cy);
             }
                 break;

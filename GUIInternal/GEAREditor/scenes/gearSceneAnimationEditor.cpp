@@ -2,6 +2,7 @@
 #include "../EditorApp.h"
 #include "../gui/geToolBarSeperator.h"
 #include "../gui/geToolBarDropMenu.h"
+#include "../../../GEAREngine/src/animation/gxColorAnimationTrack.h"
 
 gearSceneAnimationEditor::gearSceneAnimationEditor(geFontManager* fontmanager):
 geWindow("Animation Editor", fontmanager)
@@ -12,6 +13,8 @@ geWindow("Animation Editor", fontmanager)
     memset(positionNode, 0, sizeof(positionNode));
     memset(rotationNode, 0, sizeof(rotationNode));
     memset(scaleNode, 0, sizeof(scaleNode));
+    
+    addKeyFrameBtn = nullptr;
 }
 
 gearSceneAnimationEditor::~gearSceneAnimationEditor()
@@ -28,11 +31,10 @@ void gearSceneAnimationEditor::onCreate(float cx, float cy)
     spriteArray[0].setClip(26, 298, 16, 16);
 
     //Toolbar buttons
-    auto propertyMenu=new geToolBarDropMenu(rendererGUI, "Property", getToolBar(), fontManagerGUI);
-    propertyMenu->setGUIObserver(this);
-    propertyMenu->appendMenuItem("Transform", 0x00002000);
-    propertyMenu->appendMenuItem("Color", 0x00002001);
-    getToolBar()->appendToolBarControl(propertyMenu);
+    auto actionMenu=new geToolBarDropMenu(rendererGUI, "Action", getToolBar(), fontManagerGUI);
+    actionMenu->setGUIObserver(this);
+    actionMenu->appendMenuItem("Create Property", 0x00002000);
+    getToolBar()->appendToolBarControl(actionMenu);
 
     auto seperator = new geToolBarSeperator(rendererGUI, getToolBar(), 40, fontManagerGUI);
     getToolBar()->appendToolBarControl(seperator);
@@ -69,7 +71,7 @@ void gearSceneAnimationEditor::onCreate(float cx, float cy)
     seperator = new geToolBarSeperator(rendererGUI, getToolBar(), 50, fontManagerGUI);
     getToolBar()->appendToolBarControl(seperator);
 
-    auto addKeyFrameBtn=new geToolBarButton(rendererGUI, "K", getToolBar(), fontManagerGUI);
+    addKeyFrameBtn=new geToolBarButton(rendererGUI, "K", getToolBar(), fontManagerGUI);
     addKeyFrameBtn->loadImage("res//icons16x16.png", 362, 216);
     addKeyFrameBtn->setGUIObserver(this);
     getToolBar()->appendToolBarControl(addKeyFrameBtn);
@@ -136,6 +138,96 @@ void gearSceneAnimationEditor::onTVSelectionChange(geTreeNode* tvnode, geTreeVie
     }
 }
 
+void gearSceneAnimationEditor::onButtonClicked(geGUIBase* btn)
+{
+    if(btn==addKeyFrameBtn)
+    {
+        if(addKeyFrameBtn->isButtonPressed())
+        {
+            addKeyFrameBtn->buttonNormal(true);
+            
+            if(!selectedObject)
+                return;
+            auto selectedTreeNode = animationsTreeView->getSelectedNode();
+            if(!selectedTreeNode || treeNode_PropertyTypeMap.find(selectedTreeNode)==treeNode_PropertyTypeMap.end())
+                return;
+            auto animationController = selectedObject->getAnimationController();
+            auto keyFrameAnimationSet = animationController->getAnimationSet("gxKeyFrameAnimationSet");
+            if(!keyFrameAnimationSet)
+                return;
+            
+            auto animationTrack = keyFrameAnimationSet->getAnimationTrack(selectedTreeNode->getName());
+            if(!animationTrack)
+                return;
+
+            switch (animationTrack->getAnimationTrackType())
+            {
+                case 2:
+                {
+                    break;
+                }
+                case 3:
+                {
+                    
+                    break;
+                }
+                default:
+                    DEBUG_PRINT("Unknown key frame animation type");
+                    break;
+            }
+        }
+    }
+}
+
+void gearSceneAnimationEditor::onCommand(int cmd)
+{
+    switch(cmd)
+    {
+        case 0x00002000:
+        {
+            if(!selectedObject)
+                return;
+            
+            auto selectedTreeNode = animationsTreeView->getSelectedNode();
+            if(!selectedTreeNode || treeNode_PropertyTypeMap.find(selectedTreeNode)==treeNode_PropertyTypeMap.end())
+                return;
+            
+            auto animationController = selectedObject->getAnimationController();
+            std::string typeName = treeNode_PropertyTypeMap[selectedTreeNode];
+            if(typeName.compare("MonoGEAR.gxColor")==0)
+            {
+                auto keyFrameAnimationSet = animationController->getAnimationSet("gxKeyFrameAnimationSet");
+                if(keyFrameAnimationSet)
+                {
+                    //check if the animation track is there or not
+                    auto colorAnimationTrack = keyFrameAnimationSet->getAnimationTrack(selectedTreeNode->getName());
+                    if(!colorAnimationTrack)
+                    {
+                        colorAnimationTrack = gxColorAnimationTrack::create(selectedTreeNode->getName());
+                        keyFrameAnimationSet->appendTrack(colorAnimationTrack);
+                        REF_RELEASE(colorAnimationTrack);
+                        graphControlView->setTrack(colorAnimationTrack);
+                    }
+                }
+                else
+                {
+                    //create
+                    keyFrameAnimationSet = gxAnimationSet::create("gxKeyFrameAnimationSet");
+                    auto colorAnimationTrack = gxColorAnimationTrack::create(selectedTreeNode->getName());
+                    keyFrameAnimationSet->appendTrack(colorAnimationTrack);
+                    REF_RELEASE(colorAnimationTrack);
+                    animationController->appendAnimationSet(keyFrameAnimationSet);
+                    REF_RELEASE(keyFrameAnimationSet);
+                    graphControlView->setTrack(colorAnimationTrack);
+                    
+                    EditorGEARApp::getScenePropertyEditor()->refreshProperties();
+                }
+            }
+        }
+            break;
+    }
+}
+
 void gearSceneAnimationEditor::populatePropertyOfObject3d(object3d* object)
 {
     if(selectedObject==object)
@@ -145,6 +237,7 @@ void gearSceneAnimationEditor::populatePropertyOfObject3d(object3d* object)
     
     selectedObject = object;
     animationsTreeView->clearAndDestroyAll();
+    treeNode_PropertyTypeMap.clear();
 
     if(selectedObject==nullptr)
     {
@@ -222,8 +315,8 @@ void gearSceneAnimationEditor::populatePropertyOfObject3d(object3d* object)
             
             if(getType && setType && strncmp(typeName, "MonoGEAR.gxColor", strlen("MonoGEAR.gxColor"))==0)
             {
-                auto propertyNode = new geTreeNode(rendererGUI, propertiesNode, propertyName, &spriteArray[0], fontManagerGUI);
-                UNUSED(propertyNode);
+                auto treeNode = new geTreeNode(rendererGUI, propertiesNode, propertyName, &spriteArray[0], fontManagerGUI);
+                treeNode_PropertyTypeMap[treeNode] = typeName;
             }
         }
         
@@ -236,7 +329,7 @@ void gearSceneAnimationEditor::populatePropertyOfObject3d(object3d* object)
             if(strncmp(fieldTypeName, "MonoGEAR.gxColor", strlen("MonoGEAR.gxColor"))==0)
             {
                 auto fieldNode = new geTreeNode(rendererGUI, propertiesNode, fieldName, &spriteArray[0], fontManagerGUI);
-                UNUSED(fieldNode);
+                treeNode_PropertyTypeMap[fieldNode] = fieldTypeName;
             }
             else
             {

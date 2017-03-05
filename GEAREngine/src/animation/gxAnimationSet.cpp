@@ -54,6 +54,19 @@ void gxAnimationSet::write(gxFile& file)
 	}
 }
 
+IAnimationTrack* gxAnimationSet::getAnimationTrack(const std::string& animationName)
+{
+    for(auto animationTrack : animationTracks)
+    {
+        if(animationName.compare(animationTrack->getName())==0)
+        {
+            return animationTrack;
+        }
+    }
+    
+    return nullptr;
+}
+
 void gxAnimationSet::read(gxFile& file)
 {
 	char* name=file.ReadString();

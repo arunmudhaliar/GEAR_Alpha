@@ -76,18 +76,57 @@ void geGraphControl::setTrack(IAnimationTrack* track)
     maxExtend[0] = maxExtend[1] = maxExtend[2] = maxExtend[3] = maxExtend[4] = maxExtend[5] = maxExtend[6] = maxExtend[7] = maxExtend[8] = -1e16f;
     
     matrix4x4f mat;
+    gxColor clr;
+    vector3f v3;
+    vector4f v4;
+    
+    coordinateCount = 0;
+    
     for(int x=0;x<animationTrack->getTotalFrames();x++)
     {
-        animationTrack->getFrame(x, mat);
-        vector3f value[]=
+        float* vPtr = nullptr;
+        switch (animationTrack->getAnimationTrackType())
         {
-            mat.getPosition(),
-            mat.getRotation(),
-            mat.getScale()
-        };
-        float* vPtr = &value[0].x;
+            case 1:
+            {
+                animationTrack->getFrame(x, mat);
+                vector3f value[]=
+                {
+                    mat.getPosition(),
+                    mat.getRotation(),
+                    mat.getScale()
+                };
+                vPtr = &value[0].x;
+                coordinateCount = 9;
+                break;
+            }
+            case 2:
+            {
+                animationTrack->getFrame(x, mat);
+                vector3f value[]=
+                {
+                    mat.getPosition(),
+                    mat.getRotation(),
+                    mat.getScale()
+                };
+                vPtr = &value[0].x;
+                coordinateCount = 9;
+                break;
+            }
+            case 3:
+            {
+                animationTrack->getFrame(x, clr);
+                vPtr = &clr.r;
+                coordinateCount = 3;
+                break;
+            }
+            default:
+                DEBUG_PRINT("Unknown animationTrack type");
+                continue;
+                break;
+        }
         
-        for (int y=0; y<9; y++)
+        for (int y=0; y<coordinateCount; y++)
         {
             if(minExtend[y]>*(vPtr+y))
                 minExtend[y]=*(vPtr+y);
@@ -97,7 +136,7 @@ void geGraphControl::setTrack(IAnimationTrack* track)
     }
     
     float topMargin=getMainWindow()->getTopMarginOffsetHeight();
-    for (int x=0; x<9; x++)
+    for (int x=0; x<coordinateCount; x++)
     {
         float diff = maxExtend[x]-minExtend[x];
         if(std::abs(diff)<1.0f)
@@ -209,6 +248,10 @@ void geGraphControl::draw()
     if(animationTrack)
     {
         matrix4x4f mat;
+        gxColor clr;
+        vector3f v3;
+        vector4f v4;
+
         const float singleFrameTime = 1.0f/animationFPS;
         float totalTimeInSec = animationTrack->getTotalTimeInSec();
         for(float x=0;x<totalTimeInSec;x+=singleFrameTime)
@@ -216,14 +259,47 @@ void geGraphControl::draw()
             if(!animationTrack->getFrameFromTime(SEC_TO_MILLISEC(x), mat))
                 continue;
             
-            vector3f value[]=
+            float* vPtr = nullptr;
+            switch (animationTrack->getAnimationTrackType())
             {
-                mat.getPosition(),
-                mat.getRotation(),
-                mat.getScale()
-            };
-            float* vPtr = &value[0].x;
+                case 1:
+                {
+                    animationTrack->getFrame(x, mat);
+                    vector3f value[]=
+                    {
+                        mat.getPosition(),
+                        mat.getRotation(),
+                        mat.getScale()
+                    };
+                    vPtr = &value[0].x;
+                    break;
+                }
+                case 2:
+                {
+                    animationTrack->getFrame(x, mat);
+                    vector3f value[]=
+                    {
+                        mat.getPosition(),
+                        mat.getRotation(),
+                        mat.getScale()
+                    };
+                    vPtr = &value[0].x;
+                    break;
+                }
+                case 3:
+                {
+                    animationTrack->getFrame(x, clr);
+                    vPtr = &clr.r;
+                    break;
+                }
+                default:
+                    DEBUG_PRINT("Unknown animationTrack type");
+                    continue;
+                    break;
+            }
+
             vPtr+=showValueIndex;
+            
             glPushMatrix();
             
             float plotX = x*lowerLimit*divisions*animationFPS;  //*lowerLimit*divisions;
@@ -553,6 +629,7 @@ void geGraphControl::showPositionValues(int coordinate)
     if(coordinate<0 || coordinate>2)
         return;
     showValueIndex = 3*0+coordinate;
+    assert(showValueIndex<coordinateCount);
 }
 
 void geGraphControl::showRotationValues(int coordinate)
@@ -560,6 +637,7 @@ void geGraphControl::showRotationValues(int coordinate)
     if(coordinate<0 || coordinate>2)
         return;
     showValueIndex = 3*1+coordinate;
+    assert(showValueIndex<coordinateCount);
 }
 
 void geGraphControl::showScaleValues(int coordinate)
@@ -567,5 +645,6 @@ void geGraphControl::showScaleValues(int coordinate)
     if(coordinate<0 || coordinate>2)
         return;
     showValueIndex = 3*2+coordinate;
+    assert(showValueIndex<coordinateCount);
 }
 

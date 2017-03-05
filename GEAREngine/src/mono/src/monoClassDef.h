@@ -10,6 +10,7 @@
 #include "../../core/basicIncludes.h"
 #include "../../renderer/gxRenderer.h"
 #include "../../core/object3d.h"
+#include "../../animation/gxKeyFrameAnimationTrack.h"
 #include <string>
 
 struct stMonoScriptArgs
@@ -23,6 +24,7 @@ struct stMonoScriptArgs
 };
 
 class monoScriptObjectInstance;
+class gxKeyFrameAnimationTrack;
 class DECLSPEC monoClassDef : public Ref
 {
 public:
@@ -76,6 +78,10 @@ private:
     std::vector<MonoMethod*> monoMethodList;
 	std::vector<MonoClassField*> monoFieldList;
     std::map<MonoObject*, unsigned int> monoObjectList;
+    
+    std::map<MonoClassField*, gxKeyFrameAnimationTrack*> animationKeyFrameMapForClassFields;
+    std::map<MonoProperty*, gxKeyFrameAnimationTrack*> animationKeyFrameMapForProperties;
+    
 };
 
 extern "C" {

@@ -21,7 +21,9 @@ protected:
     virtual void onSize(float cx, float cy, int flag);
 
 	virtual void onDraw();
-
+    virtual void onCommand(int cmd);
+    virtual void onButtonClicked(geGUIBase* btn);
+    
 private:
     object3d* selectedObject;
 	geTreeView* animationsTreeView;
@@ -32,4 +34,8 @@ private:
     geTreeNode* positionNode[3];
     geTreeNode* rotationNode[3];
     geTreeNode* scaleNode[3];
+    std::map<geTreeNode*, std::string> treeNode_PropertyTypeMap;
+    
+    //gui
+    geToolBarButton* addKeyFrameBtn;
 };

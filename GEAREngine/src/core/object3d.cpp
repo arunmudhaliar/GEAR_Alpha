@@ -1,6 +1,7 @@
 #include "object3d.h"
 #include "../mono/src/monoWrapper.h"
 #include "gxSkinnedMesh.h"
+#include "gxKeyFrameAnimationTrack.h"
 
 extern "C" {
 extern DECLSPEC const char* object3d_getName(object3d* obj)
@@ -351,7 +352,15 @@ void object3d::updateAnimationFrameToObject3d(int frame)
 {
 	if(animationTrack)
 	{
-        animationTrack->getFrame(frame, *(matrix4x4f*)this);
+        if(animationTrack->getAnimationTrackType()==1)
+        {
+            animationTrack->getFrame(frame, *(matrix4x4f*)this);
+        }
+        else
+        {
+            auto track = (gxKeyFrameAnimationTrack*)animationTrack;
+            track->applyKeyFrameAnimation();
+        }
 	}
 
 #ifdef USE_BXLIST

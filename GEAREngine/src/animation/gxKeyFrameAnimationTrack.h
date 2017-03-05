@@ -7,18 +7,49 @@
 
 struct stAnimationFrameKey
 {
-    stAnimationFrameKey()
+    enum EANIMATIONFRAMETYPE
     {
+        MATRIX,
+        COLOR,
+        VECTOR3,
+        VECTRO4,
+        FLOAT,
+        FRAMETYPE_MAX
+    };
+    
+    stAnimationFrameKey(EANIMATIONFRAMETYPE type)
+    {
+        animatedfloatValue = 0.0f;
         time = 0.0f;
-        frame = new matrix4x4f();
+        frameType = type;
         tweenFunction = gxTweenFunctions::Tween_None;
+        
+        sourceMatrix        = nullptr;
+        sourcefloat         = nullptr;
+        sourceColorValue    = nullptr;
+        sourceVector3Value  = nullptr;
+        sourceVector4Value  = nullptr;
     }
     ~stAnimationFrameKey()
     {
-        GX_DELETE(frame);
     }
     
-    matrix4x4f* frame;
+    //animated values
+    matrix4x4f animatedMatrixValue;
+    float      animatedfloatValue;
+    gxColor    animatedColorValue;
+    vector3f   animatedVector3Value;
+    vector4f   animatedVector4Value;
+    
+    //input pointers
+    matrix4x4f* sourceMatrix;
+    float*      sourcefloat;
+    gxColor*    sourceColorValue;
+    vector3f*   sourceVector3Value;
+    vector4f*   sourceVector4Value;
+
+    //types & time
+    EANIMATIONFRAMETYPE frameType;
     gxTweenFunctions::TweenType tweenFunction;
     float time;
 };
@@ -26,27 +57,20 @@ struct stAnimationFrameKey
 class DECLSPEC gxKeyFrameAnimationTrack : public IAnimationTrack
 {
 public:
-	~gxKeyFrameAnimationTrack();
-    static gxKeyFrameAnimationTrack* create(const std::string& property);
+    bool isReadOnly()   {   return false;    }
+    virtual void applyKeyFrameAnimation() = 0;
 
-    void addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, matrix4x4f* outMatrix=nullptr);
-    
-	void write(gxFile& file);
-	void read(gxFile& file);
-    
     int getTotalTimeInMilliSec();
     float getTotalTimeInSec();
 
-    int getAnimationTrackType()     {   return 1;   }
-    bool getFrame(int frame, matrix4x4f& mat);
-    bool getFrameFromTime(float time, matrix4x4f& mat);
-    
-    bool isReadOnly()   {   return false;    }
-
-private:
-    gxKeyFrameAnimationTrack(){}
+protected:
+    gxKeyFrameAnimationTrack();
     gxKeyFrameAnimationTrack(const std::string& property);
-
+    virtual ~gxKeyFrameAnimationTrack();
+    
+    void resetKeyFrames();
+    
+    int totalTimeInMilliSec;
     std::map<int, stAnimationFrameKey*> keyFrames;
     std::string property;
 };

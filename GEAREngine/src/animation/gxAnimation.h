@@ -17,12 +17,12 @@ public:
     
 	void update(float dt);
 
-	//gxAnimationSet* setActiveAnimationSet(int index);
 	gxAnimationSet* getActiveAnimationSet()             {	return activeAnimationSet;          }
-	const std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &animationSets;              }
+	const std::vector<gxAnimationSet*>* getAnimationSetList()	{	return &animationSets;      }
 	gxAnimationSet* getAnimationSet(int index)          {	return animationSets[index];        }
 	int getAnimSetCount()                               {	return (int)animationSets.size();	}
-
+    gxAnimationSet* getAnimationSet(const std::string& proprtyName);
+    
 	void write(gxFile& file);
 	void read(gxFile& file);
 

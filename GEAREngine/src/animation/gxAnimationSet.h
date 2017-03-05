@@ -14,11 +14,12 @@ public:
     static gxAnimationSet* create(const std::string& name);
     
 	void appendTrack(IAnimationTrack* animationTrack);
-	//void update(float dt);
 
     const std::string& getAnimationName()               {	return animationName;   }
 	const std::vector<IAnimationTrack*>& getTrackList()	{	return animationTracks;	}
 
+    IAnimationTrack* getAnimationTrack(const std::string& animationName);
+    
 	void write(gxFile& file);
 	void read(gxFile& file);
 

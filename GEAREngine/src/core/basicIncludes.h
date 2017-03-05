@@ -39,10 +39,12 @@
 #include "gxDebug.h"
 #include <cmath>
 
+#if 0
 #if defined(GEAR_WINDOWS) || defined(GEAR_APPLE)
 #define USE_OPENAL
 #elif defined(GEAR_ANDROID)
 #define USE_OPENSL
+#endif
 #endif
 
 #include <string>

@@ -45,6 +45,8 @@ public:
 	void populatePropertyOfLayers();
 	void populateSettingsOfFog();
 
+    void refreshProperties();
+    
 	void updateTransformPropertyOfCurrentSelectedObject();
 
 	geTreeNode* getMaterialParentNode()		{	return materialParentTreeNode;		}
@@ -77,6 +79,8 @@ private:
 	gePropertyAddComponent* addComponentProperty;
 	gePropertyCamera* cameraProperty;
 
+    object3d* selectedObject;
+    
 	//open on editor
 	geTreeNode* openOnEditorParentTreeNode;
 	gePropertyOpenOnEditor* openOnEditorProperty;

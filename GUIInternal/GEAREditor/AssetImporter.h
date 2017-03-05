@@ -3,7 +3,7 @@
 #include "../../GEAREngine/src/core/gxMaterial.h"
 #include "../../GEAREngine/src/core/object3d.h"
 #include "../../GEAREngine/src/core/gxMetaStructures.h"
-
+#include "../../GEAREngine/src/tga/Tga.h"
 #include "secondryViews/geAssetImportDlg.h"
 
 class AssetImporter

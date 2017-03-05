@@ -59,6 +59,7 @@ private:
     float verticalScale[9];
     float midPoint[9];
     int showValueIndex;
+    int coordinateCount;
     
     stVertexBuffer normalKeyVertexBuffer;
     stVertexBuffer hoverKeyVertexBuffer;

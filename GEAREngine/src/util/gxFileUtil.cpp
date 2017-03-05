@@ -5,6 +5,7 @@
 #include <sys/syslimits.h>
 #endif
 #include <dirent.h>
+#include <unistd.h>
 
 const gxFileUtil& gxFileUtil::getInstance()
 {

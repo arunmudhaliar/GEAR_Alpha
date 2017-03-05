@@ -7,6 +7,7 @@
 #include "../tween/gxTweenFunctions.h"
 #include "../core/gxColor.h"
 #include "../core/vector4.h"
+#include "IKeyFrame.h"
 
 #define MILLISEC_TO_SEC(x) (x*0.001f)
 #define SEC_TO_MILLISEC(x) (x*1000.0f)
@@ -49,11 +50,11 @@ public:
     virtual bool getFrame(int frame, vector4f& v);
     virtual bool getFrame(int frame, float& v);
     
-    virtual void addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, matrix4x4f* outMatrix=nullptr);
-    virtual void addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, gxColor* outColor=nullptr);
-    virtual void addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, vector3f* outVec3=nullptr);
-    virtual void addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, vector4f* outVec4=nullptr);
-    virtual void addFrame(int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, float* outFloat=nullptr);
+    virtual void addFrame(matrix4x4f* source, int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, matrix4x4f* outMatrix=nullptr);
+    virtual void addFrame(gxColor* source, int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, gxColor* outColor=nullptr);
+    virtual void addFrame(vector3f* source, int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, vector3f* outVec3=nullptr);
+    virtual void addFrame(vector4f* source, int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, vector4f* outVec4=nullptr);
+    virtual void addFrame(float* source, int timeInMilliSec, gxTweenFunctions::TweenType tweenFunction=gxTweenFunctions::Tween_None, float* outFloat=nullptr);
     
     virtual void updateTweenFunction(int index, gxTweenFunctions::TweenType tweenFunction);
     

@@ -8,7 +8,6 @@
 {
     std::vector<std::string> projectsArray;
 }
-
 @property (weak) IBOutlet NSTableColumn *columnHandle;
 @property (weak) IBOutlet NSTableView *tableView;
 @end
@@ -19,15 +18,12 @@
 {
     self = [super initWithWindowNibName:@"projectSelectorDialogue"];
     
-    if(self!=nil)
-    {
-        //read the recent dialog
+    if (self != nil) {
+        // read the recent dialog
         FILE* fp = fopen("recentProjects", "r");
-        if(fp)
-        {
+        if (fp) {
             char temp_buffer[1024];
-            while (fscanf(fp, "%s\n", temp_buffer) != EOF)
-            {
+            while (fscanf(fp, "%s\n", temp_buffer) != EOF) {
                 projectsArray.push_back(temp_buffer);
             }
             fclose(fp);
@@ -37,7 +33,7 @@
     return self;
 }
 
-//this is a simple override of -showWindow: to ensure the window is always centered
+// this is a simple override of -showWindow: to ensure the window is always centered
 -(IBAction)showWindow:(id)sender
 {
     [super showWindow:sender];
@@ -58,14 +54,12 @@
 - (NSView *)tableView:(NSTableView *)tableView
    viewForTableColumn:(NSTableColumn *)tableColumn
                   row:(NSInteger)row {
-    
     // Get an existing cell with the projectTableCellView identifier if it exists
     NSTableCellView *result = [tableView makeViewWithIdentifier:@"projectTableCellView" owner:self];
     NSString* projectPath = [NSString stringWithUTF8String:projectsArray[row].c_str()];
     [result.textField setStringValue:projectPath];
     
     return result;
-    
 }
 
 -(IBAction) newProject:(id)sender
@@ -77,18 +71,16 @@
     [openDlg setCanChooseDirectories:YES];
     [openDlg setCanCreateDirectories:YES];
     [openDlg setCanChooseFiles:NO];
-    //[openDlg setAllowedFileTypes:fileTypesArray];
+    // [openDlg setAllowedFileTypes:fileTypesArray];
     [openDlg setAllowsMultipleSelection:FALSE];
     
     // Display the dialog box.  If the OK pressed,
-    if ( [openDlg runModal] == NSModalResponseOK )
-    {
+    if ( [openDlg runModal] == NSModalResponseOK ) {
         // Gets list of all files selected
         NSURL *theFile = [openDlg URL];
         char output_buffer[FILENAME_MAX];
-        strcpy(output_buffer, [[theFile path] UTF8String]);
-        if(EditorGEARApp::createNewProject(output_buffer)!=0)
-        {
+        strcpy(output_buffer, [[theFile path] UTF8String]);     // NOLINT
+        if (EditorGEARApp::createNewProject(output_buffer) != 0) {
             ConfirmationDialog::ShowMessageDialog("Project creation failed");
             return;
         }
@@ -100,19 +92,15 @@
 
 -(IBAction) otherProject:(id)sender
 {
-    
 }
 
 -(IBAction) openProject:(id)sender
 {
     // Get current selection index in listbox
-    int itemIndex = (int)[_tableView selectedRow];
-    if (itemIndex == -1)
-    {
+    int itemIndex = static_cast<int>([_tableView selectedRow]);
+    if (itemIndex == -1) {
         ConfirmationDialog::ShowMessageDialog("Select atleast one recent project");
-    }
-    else
-    {
+    } else {
         EditorGEARApp::setProjectHomeDirectory(projectsArray[itemIndex].c_str());
         appEntry();
     }

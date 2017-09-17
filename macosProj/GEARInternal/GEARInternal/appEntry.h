@@ -1,12 +1,21 @@
 #pragma once
+//
+//  appentry.h
+//  Copyright 2017 GEAR3D
+//  Gear3D
+//
+//  Created by Arun Mudaliar.
+//
+//
+
 #include "../../../GEAREngine/src/GEARFirstInclude.h"
 
 #ifdef GEAR_WINDOWS
-	#include <SDL.h>
+    #include <SDL.h>
 #elif defined(GEAR_APPLE)
-	#include <SDL2/SDL.h>
+    #include <SDL2/SDL.h>
 #else
-	#error SDL not included
+    #error SDL not included
 #endif
 
 #include "../../../GUIInternal/GEAREditor/EditorApp.h"

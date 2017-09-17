@@ -1,14 +1,23 @@
 #pragma once
 
+//
+//  geCrc32.h
+//  Copyright 2017 GEAR3D
+//  Gear3D
+//
+//  Created by Arun Mudaliar.
+//
+//
+
 #include <stdio.h>
 #include <string.h>
 
-class __declspec( dllexport ) geCrc32
-	{
-	private:
-		static const unsigned int CrcSeed = 0xFFFFFFFF;
-		static unsigned int crc; // crc data checksum so far.
-		static const unsigned int CrcTable[];/*=
+class declspec(dllexport) geCrc32 {
+    private:
+        static const unsigned int CrcSeed = 0xFFFFFFFF;
+        static unsigned int crc;    // crc data checksum so far.
+        static const unsigned int CrcTable[];
+        /*=
         {
             0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419,
             0x706AF48F, 0xE963A535, 0x9E6495A3, 0x0EDB8832, 0x79DCB8A4,
@@ -64,7 +73,7 @@ class __declspec( dllexport ) geCrc32
             0x2D02EF8D
         };*/
 
-	public:
+    public:
 		/*
 		static int CalcBinFile( string filename )
 		{
@@ -146,178 +155,178 @@ class __declspec( dllexport ) geCrc32
 		}
 		*/
 
-		/// <summary>
-		/// Calculates the CRC32 value
-		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
-		static int Calc( unsigned char* data )
-		{
-			//if( data == null )
-			//	return 0;
+        /// <summary>
+        /// Calculates the CRC32 value
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        static int Calc(unsigned char* data)
+        {
+            // if(data == null)
+            //  return 0;
 
-			crc = 0;
-			Update( data );
+            crc = 0;
+            Update(data);
 
-			return (int)crc;
-		}
+            return static_cast<int>crc;
+        }
 
-		/// <summary>
-		/// Calculates the CRC32 value
-		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
-		static int Calc( unsigned char* data, int offset, int len )
-		{
-			//if( data == null )
-			//	return 0;
+        /// <summary>
+        /// Calculates the CRC32 value
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        static int Calc(unsigned char* data, int offset, int len)
+        {
+            // if(data == null)
+            //  return 0;
 
-			crc = 0;
-			Update( data, offset, len );
+            crc = 0;
+            Update(data, offset, len);
 
-			return (int)crc;
-		}
+            return static_cast<int>crc;
+        }
 
-		///// <summary>
-		///// Calculates the CRC32 value
-		///// </summary>
-		///// <param name="data"></param>
-		///// <returns></returns>
-		//static int Calc( unsigned char* data )
-		//{
-		//	//if( data == null )
-		//	//	return 0;
+        ///// <summary>
+        ///// Calculates the CRC32 value
+        ///// </summary>
+        ///// <param name="data"></param>
+        ///// <returns></returns>
+        // static int Calc(unsigned char* data)
+        // {
+        //  //if(data == null)
+        //  //  return 0;
 
-		//	crc = 0;
-		//	Update( data );
+        //  crc = 0;
+        //  Update( data );
 
-		//	return (int)crc;
-		//}
+        //  return (int)crc;
+        // }
 
-		///// <summary>
-		///// Calculates the CRC32 value
-		///// </summary>
-		///// <param name="text"></param>
-		///// <returns></returns>
-		//static int Calc( const char* text )
-		//{
-		//	if( text == NULL )
-		//		return 0;
+        ///// <summary>
+        ///// Calculates the CRC32 value
+        ///// </summary>
+        ///// <param name="text"></param>
+        ///// <returns></returns>
+        // static int Calc(const char* text)
+        // {
+        //  if (text == NULL)
+        //      return 0;
 
-		//	crc = 0;
-		//	Update( text );
+        //  crc = 0;
+        //  Update( text );
 
-		//	return (int)crc;
-		//}
+        //  return (int)crc;
+        // }
 
 private:
-		/// <summary>
-		/// Updates the checksum with the int bval.
-		/// </summary>
-		/// <param name = "bval">
-		/// the byte is taken as the lower 8 bits of bval
-		/// </param>
-		static void Update( int bval )
-		{
-			crc ^= CrcSeed;
-			crc = CrcTable[( crc ^ bval ) & 0xFF] ^ ( crc >> 8 );
-			crc ^= CrcSeed;
-		}
+        /// <summary>
+        /// Updates the checksum with the int bval.
+        /// </summary>
+        /// <param name = "bval">
+        /// the byte is taken as the lower 8 bits of bval
+        /// </param>
+        static void Update(int bval)
+        {
+            crc ^= CrcSeed;
+            crc = CrcTable[(crc ^ bval) & 0xFF] ^ (crc >> 8);
+            crc ^= CrcSeed;
+        }
 
-		/// <summary>
-		/// Updates the checksum with the bytes taken from the array.
-		/// </summary>
-		/// <param name="buffer">
-		/// buffer an array of bytes
-		/// </param>
-		//static void Update( const char* buffer )
-		//{
-		//	Update( buffer, 0, strlen((char*)buffer));
-		//}
+        /// <summary>
+        /// Updates the checksum with the bytes taken from the array.
+        /// </summary>
+        /// <param name="buffer">
+        /// buffer an array of bytes
+        /// </param>
+        // static void Update(const char* buffer)
+        // {
+        //  Update( buffer, 0, strlen((char*)buffer));
+        // }
 
-		/// <summary>
-		/// Updates the checksum with the bytes taken from the array.
-		/// </summary>
-		/// <param name="buffer">
-		/// buffer an array of bytes
-		/// </param>
-		static void Update( unsigned char* buffer )
-		{
-			Update( buffer, 0, strlen((char*)buffer) );
-		}
+        /// <summary>
+        /// Updates the checksum with the bytes taken from the array.
+        /// </summary>
+        /// <param name="buffer">
+        /// buffer an array of bytes
+        /// </param>
+        static void Update(unsigned char* buffer)
+        {
+            Update(buffer, 0, strlen(reinterpret_cast<char*>buffer));
+        }
 
 
-		/// <summary>
-		/// Adds the byte array to the data checksum.
-		/// </summary>
-		/// <param name = "buf">
-		/// the buffer which contains the data
-		/// </param>
-		/// <param name = "off">
-		/// the offset in the buffer where the data starts
-		/// </param>
-		/// <param name = "len">
-		/// the length of the data
-		/// </param>
-		static void Update(  unsigned char* buf, int off, int len )
-		{
-			if( buf == NULL )
-			{
-				return;	//throw new ArgumentNullException( "buf" );
-			}
+        /// <summary>
+        /// Adds the byte array to the data checksum.
+        /// </summary>
+        /// <param name = "buf">
+        /// the buffer which contains the data
+        /// </param>
+        /// <param name = "off">
+        /// the offset in the buffer where the data starts
+        /// </param>
+        /// <param name = "len">
+        /// the length of the data
+        /// </param>
+        static void Update(unsigned char* buf, int off, int len)
+        {
+            if (buf == NULL)
+            {
+                return;     // throw new ArgumentNullException( "buf" );
+            }
 
-			if( off < 0 || len < 0 || off + len > strlen((char*)buf) )
-			{
-				return; //throw new ArgumentOutOfRangeException();
-			}
+            if (off < 0 || len < 0 || off + len > strlen(reinterpret_cast<char*>buf))
+            {
+                return;     // throw new ArgumentOutOfRangeException();
+            }
 
-			crc ^= CrcSeed;
+            crc ^= CrcSeed;
 
-			while( --len >= 0 )
-			{
-				crc = CrcTable[( crc ^ buf[off++] ) & 0xFF] ^ ( crc >> 8 );
-			}
+            while (--len >= 0)
+            {
+                crc = CrcTable[(crc ^ buf[off++]) & 0xFF] ^ (crc >> 8);
+            }
 
-			crc ^= CrcSeed;
-		}
+            crc ^= CrcSeed;
+        }
 
-		///// <summary>
-		///// Adds the byte array to the data checksum.
-		///// </summary>
-		///// <param name = "buf">
-		///// the buffer which contains the data
-		///// </param>
-		///// <param name = "off">
-		///// the offset in the buffer where the data starts
-		///// </param>
-		///// <param name = "len">
-		///// the length of the data
-		///// </param>
-		//static void Update( unsigned char* buf, int off, int len )
-		//{
-		//	if( buf == NULL )
-		//	{
-		//		return;
-		//	}
+        ///// <summary>
+        ///// Adds the byte array to the data checksum.
+        ///// </summary>
+        ///// <param name = "buf">
+        ///// the buffer which contains the data
+        ///// </param>
+        ///// <param name = "off">
+        ///// the offset in the buffer where the data starts
+        ///// </param>
+        ///// <param name = "len">
+        ///// the length of the data
+        ///// </param>
+        // static void Update( unsigned char* buf, int off, int len )
+        // {
+        //  if ( buf == NULL )
+        //  {
+        //      return;
+        //  }
 
-		//	if( off < 0 || len < 0 || off + len > buf.Length )
-		//	{
-		//		return;//throw new ArgumentOutOfRangeException();
-		//	}
+        //  if ( off < 0 || len < 0 || off + len > buf.Length )
+        //  {
+        //      return;//throw new ArgumentOutOfRangeException();
+        //  }
 
-		//	crc ^= CrcSeed;
+        //  crc ^= CrcSeed;
 
-		//	while( --len >= 0 )
-		//	{
-		//		crc = CrcTable[ ( crc ^ buf[ off++ ] ) & 0xFF ] ^ ( crc >> 8 );
-		//	}
+        //  while ( --len >= 0 )
+        //  {
+        //      crc = CrcTable[ ( crc ^ buf[ off++ ] ) & 0xFF ] ^ ( crc >> 8 );
+        //  }
 
-		//	crc ^= CrcSeed;
-		//}
+        //  crc ^= CrcSeed;
+        // }
 };
 
 const unsigned int geCrc32::CrcSeed;
-unsigned int geCrc32::crc=0;
+unsigned int geCrc32::crc = 0;
 const unsigned int geCrc32::CrcTable[] =
 {
     0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419,

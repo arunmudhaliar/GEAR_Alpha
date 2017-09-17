@@ -13,14 +13,12 @@
 #include "../../../../GEAR2D_Alpha/GEAR2D/app/Editor2DApp.h"
 #endif
 
-class ConfirmationDialog
-{
+class ConfirmationDialog {
 private:
-	static std::string g_ConfirmationDlgMessage;
+    static std::string g_ConfirmationDlgMessage;
 
 public:
-    enum ConfirmationDialogButton
-    {
+    enum ConfirmationDialogButton {
         BTN_NO,
         BTN_YES,
         BTN_CANCEL,

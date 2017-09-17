@@ -2,8 +2,7 @@
 
 std::string ConfirmationDialog::g_ConfirmationDlgMessage ="";
 
-ConfirmationDialog::ConfirmationDialogButton ConfirmationDialog::ShowConfirmationDialog(std::string msg)
-{
+ConfirmationDialog::ConfirmationDialogButton ConfirmationDialog::ShowConfirmationDialog(std::string msg) {
     g_ConfirmationDlgMessage=msg;
     
     const SDL_MessageBoxButtonData buttons[] = {
@@ -49,8 +48,7 @@ ConfirmationDialog::ConfirmationDialogButton ConfirmationDialog::ShowConfirmatio
     return (ConfirmationDialogButton)buttonid;
 }
 
-void ConfirmationDialog::ShowMessageDialog(std::string msg)
-{
+void ConfirmationDialog::ShowMessageDialog(std::string msg) {
     g_ConfirmationDlgMessage=msg;
     
     const SDL_MessageBoxButtonData buttons[] = {

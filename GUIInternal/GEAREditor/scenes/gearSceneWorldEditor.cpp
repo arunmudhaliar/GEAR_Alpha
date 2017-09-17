@@ -871,10 +871,17 @@ void gearSceneWorldEditor::drawFBO2FrameBuffer()
 		0.0f,
 		m_cSize.x,
 		m_cSize.y);
+    
+//    drawFBO(toneMappingFilter.getOutPutFBO().getFBOTextureBuffer(0),
+//            0.0f,
+//            0.0f,
+//            m_cSize.x,
+//            m_cSize.y);
 
 	drawFBO(multiPassFBO.getFBOTextureBuffer(0), (m_cSize.x - thumbnailFBOSz)*0.5f, (m_cSize.y - thumbnailFBOSz)*0.5f, thumbnailFBOSz, thumbnailFBOSz);
 	drawFBO(brightPassFilter.getOutPutFBO().getFBOTextureBuffer(0), (m_cSize.x - thumbnailFBOSz)*0.5f, (m_cSize.y - thumbnailFBOSz)*0.5f-thumbnailFBOSz*1, thumbnailFBOSz, thumbnailFBOSz);
 	drawFBO(blurFilter.getOutPutFBO().getFBOTextureBuffer(0), (m_cSize.x - thumbnailFBOSz)*0.5f, (m_cSize.y - thumbnailFBOSz)*0.5f-thumbnailFBOSz*2, thumbnailFBOSz, thumbnailFBOSz);
+    drawFBO(toneMappingFilter.getOutPutFBO().getFBOTextureBuffer(0), (m_cSize.x - thumbnailFBOSz)*0.5f, (m_cSize.y - thumbnailFBOSz)*0.5f-thumbnailFBOSz*3, thumbnailFBOSz, thumbnailFBOSz);
 
 	//shadow maps
 	int nLight = -1;

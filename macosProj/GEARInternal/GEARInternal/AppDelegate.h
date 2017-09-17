@@ -1,5 +1,14 @@
 #pragma once
 
+//
+//  AppDelegate.h
+//  Copyright 2017 GEAR3D
+//  Gear3D
+//
+//  Created by Arun Mudaliar.
+//
+//
+
 #import <Cocoa/Cocoa.h>
 #include <SDL2/SDL.h>
 #include "EditorApp.h"

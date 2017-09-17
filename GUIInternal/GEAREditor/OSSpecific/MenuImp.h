@@ -11,9 +11,9 @@
 class MenuWin32
 {
 public:
-	HMENU createMenu(std::vector<stDropMenuItem*>& list, unsigned int wndID);
-	void showMenu(float x, float y);
-	HMENU popupMenuHandle;
+    HMENU createMenu(std::vector<stDropMenuItem*>& list, unsigned int wndID);
+    void showMenu(float x, float y);
+    HMENU popupMenuHandle;
     unsigned int sdlWndID;
 };
 

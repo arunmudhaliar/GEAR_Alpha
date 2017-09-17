@@ -1,5 +1,14 @@
 #pragma once
 
+//
+//  MenuCppInterface.h
+//  Copyright 2017 GEAR3D
+//  Gear3D
+//
+//  Created by Arun Mudaliar.
+//
+//
+
 #ifdef GEAR_WINDOWS
     #include <windows.h>
 #endif

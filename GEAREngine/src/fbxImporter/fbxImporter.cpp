@@ -367,7 +367,7 @@ bool fbxImporter::tryImportAnimation(FbxNode &fbxNode, object3d* parent_obj_node
 				FbxTime tt(0);
 				FbxLongLong ti=0;
 				double frame_time=0;
-				for(int m=0;m<nGlobalFrame;m++)
+				for(FbxLongLong m=0;m<nGlobalFrame;m++)
 				{
 					FbxAMatrix local_tm;
 					if(parent_obj_node->getID()!=OBJECT3D_SKINNED_MESH)
